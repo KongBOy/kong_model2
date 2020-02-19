@@ -1,4 +1,4 @@
-from util import get_db_all_move,method2
+from util import get_dir_move,method2
 import numpy as np 
 import cv2
 
@@ -39,13 +39,13 @@ def search_mask_have_hole(dis_msk, hole_size=1):
 #                hole_around_visual[go_row,go_col] +=1  ## debug用，視覺化偵測到哪邊有洞
                 around_have_hole_amount +=1
     print("around_have_hole_amount",around_have_hole_amount )
-#    cv2.imwrite("step2_result/%s-3a-hole_around_visual.bmp"%(name),hole_around_visual*100)
-#    cv2.imwrite("step2_result/%s-3a-foreground_visual.bmp"%(name),foreground_visual*100)
+#    cv2.imwrite("step2_flow_build/%s-3a-hole_around_visual.bmp"%(name),hole_around_visual*100)
+#    cv2.imwrite("step2_flow_build/%s-3a-foreground_visual.bmp"%(name),foreground_visual*100)
     return around_have_hole_amount
 
 
 img = cv2.imread("book.jpg")
-move_list = get_db_all_move("result-2088/move_map")
+move_list = get_dir_move("result-2088/move_map")
 move_map = move_list[0]
 name = "000000"
 print("img.max()",img.max())
@@ -88,10 +88,10 @@ for go_row in range(dis_img.shape[0]):
 
 ### 視覺化
 move_map_visual = method2(move_map[...,0], move_map[...,1],color_shift=1)
-cv2.imwrite("step2_result/%s-1-I.bmp"%(name), img)
-cv2.imwrite("step2_result/%s-2-q.bmp"%(name), move_map_visual)
-cv2.imwrite("step2_result/%s-3a-I1.bmp"%(name),dis_img)
-cv2.imwrite("step2_result/%s-3a-Mask.bmp"%(name),dis_msk*100)
+cv2.imwrite("step2_flow_build/%s-1-I.bmp"%(name), img)
+cv2.imwrite("step2_flow_build/%s-2-q.bmp"%(name), move_map_visual)
+cv2.imwrite("step2_flow_build/%s-3a-I1.bmp"%(name),dis_img)
+cv2.imwrite("step2_flow_build/%s-3a-Mask.bmp"%(name),dis_msk*100)
             
 ####################################################################################################################
 #### 扭曲影像 空洞的地方補起來
@@ -115,12 +115,12 @@ while(search_mask_have_hole(dis_msk) > 0):
                 rec_mov[go_row,go_col,1] = (rec_mov_ref[go_row-t:go_row+d,go_col-l:go_col+r,1]*dis_msk_ref[go_row-t:go_row+d,go_col-l:go_col+r]).sum()/(msk_sum)
             
             
-cv2.imwrite("step2_result/%s-3b-I1-patch.bmp"%(name), dis_img.astype(np.uint8))
-cv2.imwrite("step2_result/%s-3b-Mask-patch.bmp"%(name), dis_msk*100)
+cv2.imwrite("step2_flow_build/%s-3b-I1-patch.bmp"%(name), dis_img.astype(np.uint8))
+cv2.imwrite("step2_flow_build/%s-3b-Mask-patch.bmp"%(name), dis_msk*100)
 
-np.save("step2_result/%s-4-rec_mov_map"%(name),rec_mov)
+np.save("step2_flow_build/%s-4-rec_mov_map"%(name),rec_mov)
 rec_mov_visual = method2(rec_mov[:,:,0],rec_mov[:,:,0],2)
-cv2.imwrite("step2_result/%s-4-rec_mov_visual.bmp"%(name), rec_mov_visual)
+cv2.imwrite("step2_flow_build/%s-4-rec_mov_visual.bmp"%(name), rec_mov_visual)
 
 ####################################################################################################################
 ####################################################################################################################

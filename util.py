@@ -2,7 +2,16 @@ import numpy as np
 import cv2 
 import os
 
-def get_db_all_move(ord_dir):
+def get_dir_img(ord_dir):
+    file_names = [file_name for file_name in os.listdir(ord_dir) if (".bmp" in file_name) or (".jpg" in file_name) ]
+    img_list = []
+    for file_name in file_names:
+        img_list.append( cv2.imread(ord_dir + "/" + file_name) )
+    img_list = np.array(img_list)
+    return img_list
+
+
+def get_dir_move(ord_dir):
     file_names = [file_name for file_name in os.listdir(ord_dir) if ".npy" in file_name]
     move_map_list = []
     for file_name in file_names:
@@ -25,7 +34,7 @@ def get_reference_map(ord_dir,color_shift=5): ### 根據你的db內 最大最小
     return map1, map2, x, y
 
 def find_db_max_move(ord_dir):
-    move_map_list = get_db_all_move(ord_dir)
+    move_map_list = get_dir_move(ord_dir)
     max_move = np.absolute(move_map_list).max()
     print("max_move:",max_move)
     return max_move

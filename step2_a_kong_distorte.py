@@ -99,9 +99,9 @@ def distorte_rand(row=40, col=30, distort_times=None, curl_probability=0.3, inde
 
         ### 紀錄扭曲參數
         if(curve_type == "fold"):    
-            distrore_info_log("step2_result/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_fold, )
+            distrore_info_log("step2_flow_build/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_fold, )
         elif curve_type == "curl":
-            distrore_info_log("step2_result/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_curl, )
+            distrore_info_log("step2_flow_build/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_curl, )
 
     return result_move_f
     
@@ -147,9 +147,9 @@ if(__name__=="__main__"):
 #    plt.show()
     ##############################################################################################
     ### 隨機生成
-    Check_dir_exist_and_build_new_dir("step2_result/distorted_mesh")
-    Check_dir_exist_and_build_new_dir("step2_result/move_map")
-    Check_dir_exist_and_build_new_dir("step2_result/distorte_info")
+    Check_dir_exist_and_build_new_dir("step2_flow_build/distorted_mesh")
+    Check_dir_exist_and_build_new_dir("step2_flow_build/move_map")
+    Check_dir_exist_and_build_new_dir("step2_flow_build/distorte_info")
 
     import time
     start_time = time.time()
@@ -160,7 +160,7 @@ if(__name__=="__main__"):
         fig.set_size_inches(4, 5)
         show_distorted_mesh(row,col, result_move_f, fig, ax)
         # plt.show()
-        plt.savefig("step2_result/distorted_mesh/%06i.png"%index)
+        plt.savefig("step2_flow_build/distorted_mesh/%06i.png"%index)
         plt.close()
         # print("result_move_f.shape",result_move_f.shape) ### (65536, 2)
         result_move_map = result_move_f.reshape(row,col,2)
@@ -168,7 +168,7 @@ if(__name__=="__main__"):
             for go_col in range(col):
                 if result_move_map[go_row,go_col].sum() == 0: ### 如果不是背景的話，都會有小小的移動量來跟背景做區別，前景背景的區別在rec_move_map的時候會用到！ 
                     result_move_map[go_row,go_col] += 0.00001 
-        np.save("step2_result/move_map/%06i"%index,result_move_map.astype(np.float32))
+        np.save("step2_flow_build/move_map/%06i"%index,result_move_map.astype(np.float32))
         print("%06i process 1 mesh cost time:"%index, "%.3f"%(time.time()-dis_start_time), "total_time:", "%.3f"%(time.time()-start_time))
     ##############################################################################################
 #    fig, ax = plt.subplots(1,1)
