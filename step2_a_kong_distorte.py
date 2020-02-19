@@ -73,24 +73,25 @@ def distorte(row, col, x, y, move_x, move_y, curve_type="fold", alpha_fold=50, a
     return mesh_move
 
 ### 只有 參數隨機產生， funciton 重複使用 上面寫好的function喔！
-def distorte_rand(row=40, col=30, index=0):
+def distorte_rand(row=40, col=30, distort_times=None, curl_probability=0.3, index=0):
     ratio = row/4
     result_move_f = np.zeros(shape=(row*col,2), dtype=np.float64)
-    distore_times  = np.random.randint(4)+1  ### 隨機決定 扭曲幾次
-    for _ in range(distore_times):
+    if(distort_times is None):
+        distort_times  = np.random.randint(4)+1  ### 隨機決定 扭曲幾次
+    for _ in range(distort_times):
         x = np.random.randint(col)
         y = np.random.randint(row)
         move_x = ((np.random.rand()-0.5)*0.9)*ratio ### (-0.45~0.45) * ratio
         move_y = ((np.random.rand()-0.5)*0.9)*ratio ### (-0.45~0.45) * ratio
         curve_type = np.random.rand(1)
-        if(curve_type > 0.3):
+        if(curve_type > curl_probability):
             curve_type="fold"
             alpha_fold = np.random.rand(1) * 50 + 50 ### 結果發現web上的還不錯
         #    alpha_fold = (np.random.rand(1)*2.25 + 2.25)*ratio
             move_f = distorte( row, col, x, y, move_x, move_y , curve_type, alpha_fold=alpha_fold, debug=False )
         else:
             curve_type="curl"
-            alpha_curl = np.random.rand(1)/2 + 0.5 ### ### 結果發現web上的還不錯，只有多rand部分除2
+            alpha_curl = (np.random.rand(1)/2 + 0.5)*1.7 ### ### 結果發現web上的還不錯，只有多rand部分除2
         #    alpha_curl = (np.random.rand(1)*0.045 + 0.045)*ratio
             move_f = distorte( row, col, x, y, move_x, move_y , curve_type, alpha_curl=alpha_curl, debug=False )
         result_move_f = result_move_f + move_f
@@ -98,9 +99,9 @@ def distorte_rand(row=40, col=30, index=0):
 
         ### 紀錄扭曲參數
         if(curve_type == "fold"):    
-            distrore_info_log("step2_result/distorte_info", index, row, col, distore_times, x, y, move_x, move_y, curve_type, alpha_fold, )
+            distrore_info_log("step2_result/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_fold, )
         elif curve_type == "curl":
-            distrore_info_log("step2_result/distorte_info", index, row, col, distore_times, x, y, move_x, move_y, curve_type, alpha_curl, )
+            distrore_info_log("step2_result/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_curl, )
 
     return result_move_f
     
@@ -152,16 +153,16 @@ if(__name__=="__main__"):
 
     import time
     start_time = time.time()
-    for index in range(100):
+    for index in range(1000):
         dis_start_time = time.time()
-        result_move_f = distorte_rand(row,col, index=index)
+        result_move_f = distorte_rand(row,col, index=index, distort_times=1 ,curl_probability=0.9)
         fig, ax = plt.subplots(1,1)
         fig.set_size_inches(4, 5)
         show_distorted_mesh(row,col, result_move_f, fig, ax)
         # plt.show()
         plt.savefig("step2_result/distorted_mesh/%06i.png"%index)
         plt.close()
-        print("result_move_f.shape",result_move_f.shape)
+        # print("result_move_f.shape",result_move_f.shape) ### (65536, 2)
         result_move_map = result_move_f.reshape(row,col,2)
         for go_row in range(row):
             for go_col in range(col):
