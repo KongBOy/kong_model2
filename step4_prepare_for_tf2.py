@@ -1,4 +1,4 @@
-from step1_c_move_map_visual import get_db_all_move
+from util import get_db_all_move
 
 move_list = get_db_all_move("result-2088/move_map")
 max_value = move_list.max() ### 228.015008014

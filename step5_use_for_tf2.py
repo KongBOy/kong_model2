@@ -1,7 +1,7 @@
 import cv2
 import numpy as np 
 from build_dataset_combine import Check_dir_exist_and_build
-from step1_c_move_map_visual import method2
+from util import method2
 from step2_apply_mov2ord_img_sucess import apply_move
 Check_dir_exist_and_build("step5_result_result")
 
