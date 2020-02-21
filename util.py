@@ -2,6 +2,26 @@ import numpy as np
 import cv2 
 import os
 
+def get_dir_certain_file_name(ord_dir, certain_word):
+    file_names = [file_name for file_name in os.listdir(ord_dir) if (certain_word in file_name)]
+    return file_names
+
+def get_dir_certain_img(ord_dir, certain_word):
+    file_names = [file_name for file_name in os.listdir(ord_dir) if (".bmp" in file_name) and (certain_word in file_name) ]
+    img_list = []
+    for file_name in file_names:
+        img_list.append( cv2.imread(ord_dir + "/" + file_name) )
+    img_list = np.array(img_list)
+    return img_list
+
+def get_dir_certain_move(ord_dir, certain_word):
+    file_names = [file_name for file_name in os.listdir(ord_dir) if (".npy" in file_name) and (certain_word in file_name)]
+    move_map_list = []
+    for file_name in file_names:
+        move_map_list.append( np.load(ord_dir + "/" + file_name) )
+    move_map_list = np.array(move_map_list)
+    return move_map_list
+
 def get_dir_img(ord_dir):
     file_names = [file_name for file_name in os.listdir(ord_dir) if (".bmp" in file_name) or (".jpg" in file_name) ]
     img_list = []

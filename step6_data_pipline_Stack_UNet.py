@@ -25,7 +25,7 @@ def preprocess_distorted_img(file_name):
     img  = step3_normalize(img)     ### 因為用tanh，所以把值弄到 [-1, 1]
     return img 
 
-def get_all_distorted(ord_dir):
+def get_all_distorted_and_norm(ord_dir):
     file_names = [file_name for file_name in os.listdir(ord_dir) if ".bmp" in file_name]
     distorted_list = []
     for file_name in file_names:
@@ -71,8 +71,8 @@ def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1):
     # start_time = time.time()
 
     ### 拿到 扭曲影像 的 train dataset，從 檔名 → tensor
-    distorted_train_load_path = db_dir + "/" + db_name + "/" + "train/distorted" 
-    distorted_train_db = get_all_distorted(distorted_train_load_path)
+    distorted_train_load_path = db_dir + "/" + db_name + "/" + "train/distorted_img" 
+    distorted_train_db = get_all_distorted_and_norm(distorted_train_load_path)
     distorted_train_db = tf.data.Dataset.from_tensor_slices(distorted_train_db)
     # distorted_train_db = tf.data.Dataset.list_files(distorted_train_load_path + "/" + "*.bmp", shuffle=False)
     # distorted_train_db = distorted_train_db.map(preprocess_distorted_img, num_parallel_calls=tf.data.experimental.AUTOTUNE)
@@ -86,8 +86,8 @@ def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1):
     rec_move_map_train_db = rec_move_map_train_db.batch(batch_size)
 
     ### 拿到 扭曲影像 的 test dataset，從 檔名 → tensor
-    distorted_test_load_path = db_dir + "/" + db_name + "/" + "test/distorted" 
-    distorted_test_db = get_all_distorted(distorted_test_load_path)
+    distorted_test_load_path = db_dir + "/" + db_name + "/" + "test/distorted_img" 
+    distorted_test_db = get_all_distorted_and_norm(distorted_test_load_path)
     distorted_test_db = tf.data.Dataset.from_tensor_slices(distorted_test_db)
     # distorted_test_db = tf.data.Dataset.list_files(distorted_test_load_path + "/" + "*.bmp", shuffle=False)
     # distorted_test_db = distorted_test_db.map(preprocess_distorted_img, num_parallel_calls=tf.data.experimental.AUTOTUNE)
@@ -132,7 +132,7 @@ if(__name__ == "__main__"):
     start_time = time.time()
 
     db_dir  = "datasets"
-    db_name = "stack_unet-256-4000"
+    db_name = "stack_unet-easy300"
     _ = get_dataset(db_dir=db_dir, db_name=db_name)
 
 

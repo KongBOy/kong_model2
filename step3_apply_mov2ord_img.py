@@ -47,7 +47,7 @@ def search_mask_have_hole(dis_msk, hole_size=1):
 
 
 
-def apply_move(img, move_map, name="0", write_to_step2=False):
+def apply_move(img, move_map, name="0", write_to_step3=False):
     ksize = 3
     move_x = move_map[..., 0]
     move_x_max = abs(move_x.max())
@@ -102,11 +102,11 @@ def apply_move(img, move_map, name="0", write_to_step2=False):
     
 
     ### 視覺化
-    if(write_to_step2):
+    if(write_to_step3):
         move_map_visual = method2(move_map[...,0], move_map[...,1],color_shift=1)
         cv2.imwrite("step3_apply_flow_result/%s-1-I.bmp"%(name), img)
         cv2.imwrite("step3_apply_flow_result/%s-2-q.jpg"%(name), move_map_visual)
-        cv2.imwrite("step3_apply_flow_result/%s-3a2-I1.bmp"%(name),dis_img)
+        cv2.imwrite("step3_apply_flow_result/%s-3a2-I1.jpg"%(name),dis_img)
         cv2.imwrite("step3_apply_flow_result/%s-3a3-Mask.jpg"%(name),dis_msk*100)
                 
     ####################################################################################################################
@@ -132,8 +132,8 @@ def apply_move(img, move_map, name="0", write_to_step2=False):
 
                     dis_msk[go_row,go_col] += 1
         search_mask_have_hole_count += 1
-    if(write_to_step2):
-        cv2.imwrite("step3_apply_flow_result/%s-3a1-I1-patch.jpg"%(name), dis_img.astype(np.uint8))
+    if(write_to_step3):
+        cv2.imwrite("step3_apply_flow_result/%s-3a1-I1-patch.bmp"%(name), dis_img.astype(np.uint8))
         cv2.imwrite("step3_apply_flow_result/%s-3a4-Mask-patch.jpg"%(name), dis_msk*100)
         
         np.save("step3_apply_flow_result/%s-3b-rec_mov_map"%(name),rec_mov.astype(np.float32))
@@ -158,7 +158,7 @@ if(__name__=="__main__"):
         img = img_list[np.random.randint(img_amount)]
         apply_start_time = time.time()
         name = "%06i"%(i+start_index)
-        dis_img, rec_mov = apply_move(img, move_map, name, write_to_step2=True)
+        dis_img, rec_mov = apply_move(img, move_map, name, write_to_step3=True)
         print("%06i process 1 mesh cost time:"%(i+start_index), "%.3f"%(time.time()-apply_start_time), "total_time:", "%.3f"%(time.time()-start_time))
 
 

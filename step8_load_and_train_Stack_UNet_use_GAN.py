@@ -1,9 +1,9 @@
 import os 
 import tensorflow as tf
 import matplotlib.pyplot as plt 
-from step0_unet_util import method2
-from step1_data_pipline import get_dataset
-from step2_kong_model import Generator, Discriminator
+from util import method2
+from step6_data_pipline_Stack_UNet import get_dataset
+from step7_kong_model import Generator, Discriminator
 
 import time
 
@@ -42,7 +42,7 @@ def train_step(generator, discriminator,generator_optimizer, discriminator_optim
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
         gen_output = generator(input_image, training=True)
 
-        disc_real_output = discriminator([input_image, target], training=True)
+        disc_real_output      = discriminator([input_image, target]    , training=True)
         disc_generated_output = discriminator([input_image, gen_output], training=True)
 
         gen_total_loss, \
@@ -67,28 +67,7 @@ def train_step(generator, discriminator,generator_optimizer, discriminator_optim
         tf.summary.scalar('disc_loss', disc_loss, step=epoch)
 
 
-# def fit(generator, discriminator, generator_optimizer, discriminator_optimizer, summary_writer, checkpoint, train_db, epochs, test_db):
-#     for epoch in range(epochs):
-#         print("Epoch: ", epoch)
-#         start = time.time()
-#         for example_input, example_target in test_db.take(1):
-#             generate_images(test_db, generator, example_input, example_target, epoch)
-        
-#         # Train
-#         for n, (input_image, target) in train_db.enumerate():
-#             print('.', end='')
-#             if (n+1) % 100 == 0:
-#                 print()
-#             train_step(generator, discriminator, generator_optimizer, discriminator_optimizer, summary_writer, input_image, target, epoch)
-#         print()
 
-#         # saving (checkpoint) the model every 20 epochs
-#         if (epoch + 1) % 20 == 0:
-#             checkpoint.save(file_prefix = checkpoint_prefix)
-
-#         print('Time taken for epoch {} is {} sec\n'.format(epoch + 1,
-#                                                             time.time()-start))
-    # checkpoint.save(file_prefix = checkpoint_prefix)
 
 def generate_images( model, test_input, test_label, max_value_train, min_value_train,  epoch=0, result_dir="."):
     sample_start_time = time.time()
@@ -111,10 +90,13 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
         plt.axis('off')
     # plt.show()
     plt.savefig(result_dir + "/" + "epoch_%02i-result.png"%epoch)
+    plt.close()
     print("sample image cost time:", time.time()-sample_start_time)
+
+
 #######################################################################################################################################
 if(__name__=="__main__"):
-    from step1_data_pipline_Stack_UNet import get_dataset
+    from step6_data_pipline_Stack_UNet import get_dataset
     from build_dataset_combine import Check_dir_exist_and_build
     import os
 
@@ -122,7 +104,8 @@ if(__name__=="__main__"):
     BATCH_SIZE = 1
     
     db_dir  = "datasets"
-    db_name = "stack_unet-256-4000"
+    db_name = "stack_unet-easy2000"
+    model_name="use_GAN"
 
     start_time = time.time()
     train_db, train_label_db, \
@@ -136,7 +119,7 @@ if(__name__=="__main__"):
     generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     discriminator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-    checkpoint_dir    = './training_checkpoints'
+    checkpoint_dir    = './training_checkpoints'+"_"+db_name
     checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
     checkpoint        = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
                                             discriminator_optimizer=discriminator_optimizer,
@@ -144,15 +127,15 @@ if(__name__=="__main__"):
                                             discriminator=discriminator)
     print("build model cost time:", time.time()-start_time)
     ##############################################################################################################################
-    epochs = 150
+    epochs = 160
     epoch_step = 100
     import datetime
+
+    result_dir = "result" + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +"_"+db_name
+    # summary_writer = tf.summary.create_file_writer(log_dir + "fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
     log_dir="logs/"
+    summary_writer = tf.summary.create_file_writer( result_dir + "/" + log_dir )
 
-    summary_writer = tf.summary.create_file_writer(log_dir + "fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
-
-    result_dir = "result" + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") 
-    Check_dir_exist_and_build(result_dir)
 
     for epoch in range(epochs):
         print("Epoch: ", epoch)
@@ -175,5 +158,4 @@ if(__name__=="__main__"):
         if (epoch + 1) % 20 == 0:
             checkpoint.save(file_prefix = checkpoint_prefix)
 
-        print('Time taken for epoch {} is {} sec\n'.format(epoch + 1,
-                                                            time.time()-start))
+        print('Time taken for epoch {} is {} sec\n'.format(epoch + 1, time.time()-start))

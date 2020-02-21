@@ -5,8 +5,15 @@ datasets
 step1_page*
 step2_flow_build*
 step3_apply_flow_result*
-step4_result*
-step5_result*
+step4_apply_rec_flow_result*
+
+step9_model_result*
+result*
 dont track
+
+training_checkpoints*
+
 ºî¦X*
 *.bmp
+
+model*
