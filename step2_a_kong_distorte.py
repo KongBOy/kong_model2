@@ -173,8 +173,8 @@ if(__name__=="__main__"):
         result_move_f = distorte_rand(row,col, index=index, distort_times=1 ,curl_probability=0.9)
         # print("result_move_f.shape",result_move_f.shape) ### (..., 2)
 
-        result_move_f = shift_distort_move_f(result_move_f) ### 調整move_f，讓最小的位移量為0，意思就是不會有負數的狀況！好處是可以設-1為背景～
-        print(result_move_f[:,0].min(), result_move_f[:,1].min()) ### 確認位移量為0，意思就是不會有負數的狀況！好處是可以設-1為背景～
+        # result_move_f = shift_distort_move_f(result_move_f) ### 調整move_f，讓最小的位移量為0，意思就是不會有負數的狀況！好處是可以設-1為背景～
+        # print(result_move_f[:,0].min(), result_move_f[:,1].min()) ### 確認位移量為0，意思就是不會有負數的狀況！好處是可以設-1為背景～
 
         fig, ax = plt.subplots(1,1)
         fig.set_size_inches(4, 5)
