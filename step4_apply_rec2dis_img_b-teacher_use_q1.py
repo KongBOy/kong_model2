@@ -119,7 +119,7 @@ cv2.imwrite("step2_flow_build/%s-3b-I1-patch.bmp"%(name), dis_img.astype(np.uint
 cv2.imwrite("step2_flow_build/%s-3b-Mask-patch.bmp"%(name), dis_msk*100)
 
 np.save("step2_flow_build/%s-4-rec_mov_map"%(name),rec_mov)
-rec_mov_visual = method2(rec_mov[:,:,0],rec_mov[:,:,0],2)
+rec_mov_visual = method2(rec_mov[:,:,0],rec_mov[:,:,0],1)
 cv2.imwrite("step2_flow_build/%s-4-rec_mov_visual.bmp"%(name), rec_mov_visual)
 
 ####################################################################################################################

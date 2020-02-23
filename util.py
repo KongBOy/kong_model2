@@ -2,6 +2,15 @@ import numpy as np
 import cv2 
 import os
 
+def get_xy_map(row, col):
+    x = np.arange(col)
+    x = np.tile(x,(row,1))
+    
+#    y = np.arange(row-1, -1, -1) ### 就是這裡要改一下拉！不要抄網路的，網路的是用scatter的方式來看(左下角(0,0)，x往右增加，y往上增加)
+    y = np.arange(row) ### 改成這樣子 就是用image的方式來處理囉！(左上角(0,0)，x往右增加，y往上增加)
+    y = np.tile(y,(col,1)).T
+    return x, y
+
 def get_dir_certain_file_name(ord_dir, certain_word):
     file_names = [file_name for file_name in os.listdir(ord_dir) if (certain_word in file_name)]
     return file_names
@@ -73,7 +82,7 @@ def method1(x, y, max_value=-10000): ### 這個 max_value的值 意義上來說�
     return visual_map
 
 ### 視覺化方法2：用hsv，感覺可以！
-def method2(x, y, color_shift=5):       ### 最大位移量不可以超過 255，要不然顏色強度會不準，不過實際用了map來顯示發現通常值都不大，所以還加個color_shift喔~
+def method2(x, y, color_shift=1):       ### 最大位移量不可以超過 255，要不然顏色強度會不準，不過實際用了map來顯示發現通常值都不大，所以還加個color_shift喔~
     h, w = x.shape[:2]                  ### 影像寬高
     fx, fy = x, y                       ### u是x方向怎麼移動，v是y方向怎麼移動
     ang = np.arctan2(fy, fx) + np.pi    ### 得到運動的角度

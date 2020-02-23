@@ -1,5 +1,5 @@
 from build_dataset_combine import Check_dir_exist_and_build
-from util import get_dir_move, get_dir_img, method2
+from util import get_dir_move, get_dir_img, method2, get_xy_map
 import numpy as np 
 import cv2
 
@@ -8,6 +8,22 @@ def get_l_r_t_d(kernel_size):
     r = d = kernel_size//2 +1
     return l,r,t,d
 
+
+def emulate_apply_and_find_boundary(img, move_map): ### 模擬apply後的結果 來找右下角的 boundary
+    ### 注意喔！move_map位移量最小是(0,0) 不代表 影像配合move_map 位移後 在 完全切得剛剛好的情況下 其 左上角的座標是(0,0)喔！
+    ### 因為有可能 偏上面的 往下移動 或者 偏左邊的點 往右邊移動喔～
+    ### 然後除非剛剛好 位移後 左上角的座標是(0,0)，否則 我們不能手動切成左上角剛剛好是座標(0,0)，因為這樣就代表 位移量 最小不是(0,0)了！
+    ### 所以不要在這邊 把影像的 左邊、上面 切得剛剛好喔！
+    row, col = img.shape[:2]
+    x, y = get_xy_map(row, col)
+
+    x = x + move_map[...,0]
+    y = y + move_map[...,1]
+    right = int(x.max())+1
+    down = int(y.max())+1
+    return down, right 
+
+    
 def search_mask_have_hole(dis_msk, hole_size=1):
     pag_msk = dis_msk.copy()
     pag_msk[pag_msk>1] = 1
@@ -40,57 +56,43 @@ def search_mask_have_hole(dis_msk, hole_size=1):
 #                hole_around_visual[go_row,go_col] +=1  ## debug用，視覺化偵測到哪邊有洞
                 around_have_hole_amount +=1
     print("around_have_hole_amount",around_have_hole_amount )
-#    cv2.imwrite("step2_flow_build/%s-3a-hole_around_visual.bmp"%(name),hole_around_visual*100)
-#    cv2.imwrite("step2_flow_build/%s-3a-foreground_visual.bmp"%(name),foreground_visual*100)
+#    cv2.imwrite("step2_flow_build/%s-3a-hole_around_visual.bmp"%(name),hole_around_visual*70)
+#    cv2.imwrite("step2_flow_build/%s-3a-foreground_visual.bmp"%(name),foreground_visual*70)
     return around_have_hole_amount
 
 
 
 
 def apply_move(img, move_map, name="0", write_to_step3=False):
-    ksize = 3
-    move_x = move_map[..., 0]
-    move_x_max = abs(move_x.max())
-    move_x_min = abs(move_x.min())
-    move_y = move_map[..., 1]
-    move_y_max = abs(move_y.max())
-    move_y_min = abs(move_y.min())
-    
-    row, col = move_x.shape[:2]
+    row, col = move_map.shape[:2] ### row, col 由 step2產生的flow 決定
     img = cv2.resize(img, (col, row), interpolation=cv2.INTER_NEAREST) 
 
-    ### 初始化各種canvas
-    dis_h = int( np.around(move_y_min + row + move_y_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
-    dis_w = int( np.around(move_x_min + col + move_x_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
+    ksize = 3
+    move_y_max, move_x_max = emulate_apply_and_find_boundary(img, move_map) ### 模擬apply後的結果 來找右下角的 boundary
+
+    ### 初始化各個會用到的canvas
+    dis_h = move_y_max
+    dis_w = move_x_max 
     dis_img  = np.zeros(shape=(dis_h,dis_w,3), dtype=np.float64)
     rec_mov  = np.zeros(shape=(dis_h,dis_w,2), dtype=np.float64)
-    dis_msk  = np.zeros(shape=(dis_h,dis_w),   dtype=np.float64)
+    dis_msk  = np.zeros(shape=(dis_h,dis_w),   dtype=np.uint8)
     
     ### 把原始影像扭曲，並取得 rec_mov
     for go_row in range(row):
         for go_col in range(col):
-            ### 我已經設定成如果不是背景的話，都會有小小的移動量來跟背景做區別，所以.sum!=0就代表前景囉！前景才需做移動！
-            if(move_map[go_row,go_col].sum() != 0):
-                dst_x = go_col + int(move_map[go_row,go_col,0] + move_x_min) ### 現在的起點是(move_x_min, move_y_min)，所以要位移一下
-                dst_y = go_row + int(move_map[go_row,go_col,1] + move_y_min) ### 現在的起點是(move_x_min, move_y_min)，所以要位移一下
+            dst_x = go_col + int(move_map[go_row,go_col,0] ) ### 找出位移後的x，因為array的存取要int，所以把move_map的值(float)強制轉int
+            dst_y = go_row + int(move_map[go_row,go_col,1] ) ### 找出位移後的y，因為array的存取要int，所以把move_map的值(float)強制轉int
+            dis_img[dst_y,dst_x,:] += img[go_row,go_col,:]
+            rec_mov[dst_y,dst_x,:] += move_map[go_row,go_col,:]*-1
 
-                dis_img[dst_y,dst_x,:] += img[go_row,go_col,:]
-                rec_mov[dst_y,dst_x,:] += move_map[go_row,go_col,:]*-1
-                if(rec_mov[dst_y,dst_x].sum() == 0): ### 如果位移量剛好xy全0時，加一個小小的移動量來跟背景做區別
-                    rec_mov[dst_y,dst_x] += 0.00001
-                    print("here all zero")
+            dis_msk[dst_y,dst_x]   += 1
 
+            # print(dst_y,dst_x)
+            # cv2.imshow("img",img)
+            # cv2.imshow("Mask.bmp",(dis_msk*70).astype(np.uint8))
+            # cv2.imshow("dis_img",dis_img.astype(np.uint8))
+            # cv2.waitKey()
 
-                dis_msk[dst_y,dst_x]   += 1
-                # rec_mov[dst_y,dst_x,0] += move_map[go_row,go_col,0]*-1
-                # rec_mov[dst_y,dst_x,1] += move_map[go_row,go_col,1]*-1
-                # print(dst_y,dst_x)
-                # cv2.imshow("img",img)
-                # cv2.imshow("Mask.bmp",(dis_msk*100).astype(np.uint8))
-                # cv2.imshow("dis_img",dis_img.astype(np.uint8))
-                # cv2.waitKey()
-            # else:
-                # print("background, do nothing")
 
     for go_row in range(dis_img.shape[0]):
         for go_col in range(dis_img.shape[1]):
@@ -107,7 +109,8 @@ def apply_move(img, move_map, name="0", write_to_step3=False):
         cv2.imwrite("step3_apply_flow_result/%s-1-I.bmp"%(name), img)
         cv2.imwrite("step3_apply_flow_result/%s-2-q.jpg"%(name), move_map_visual)
         cv2.imwrite("step3_apply_flow_result/%s-3a2-I1.jpg"%(name),dis_img)
-        cv2.imwrite("step3_apply_flow_result/%s-3a3-Mask.jpg"%(name),dis_msk*100)
+        cv2.imwrite("step3_apply_flow_result/%s-3a3-Mask.bmp"%(name),dis_msk*70)
+        np.save("step3_apply_flow_result/%s-3a3-Mask"%(name),dis_msk)
                 
     ####################################################################################################################
     #### 扭曲影像 空洞的地方補起來
@@ -134,11 +137,13 @@ def apply_move(img, move_map, name="0", write_to_step3=False):
         search_mask_have_hole_count += 1
     if(write_to_step3):
         cv2.imwrite("step3_apply_flow_result/%s-3a1-I1-patch.bmp"%(name), dis_img.astype(np.uint8))
-        cv2.imwrite("step3_apply_flow_result/%s-3a4-Mask-patch.jpg"%(name), dis_msk*100)
+        cv2.imwrite("step3_apply_flow_result/%s-3a4-Mask-patch.bmp"%(name), dis_msk*70)
+        np.save("step3_apply_flow_result/%s-3a4-Mask-patch"%(name),dis_msk)
         
         np.save("step3_apply_flow_result/%s-3b-rec_mov_map"%(name),rec_mov.astype(np.float32))
-        rec_mov_visual = method2(rec_mov[:,:,0],rec_mov[:,:,1],2)
+        rec_mov_visual = method2(rec_mov[:,:,0],rec_mov[:,:,1],1)
         cv2.imwrite("step3_apply_flow_result/%s-3b-rec_mov_visual.jpg"%(name), rec_mov_visual)
+        print("dis_msk.max()",dis_msk.max())
     
 
     return dis_img.copy(), rec_mov.copy()

@@ -44,7 +44,7 @@ if(__name__=="__main__"):
 #    plt.imshow(visual_map)
 #
 #    plt.figure()
-#    bgr = method2(test_move[...,0], test_move[...,1], color_shift=5)
+#    bgr = method2(test_move[...,0], test_move[...,1], color_shift=1)
 #    plt.imshow(bgr)
 #    plt.show()
     
