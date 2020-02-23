@@ -12,7 +12,7 @@ from step7_kong_model import Generator, Discriminator
 db_dir="datasets"
 db_name="stack_unet-easy2000"
 # model_name = "use_GAN"
-model_name = "G_stack"
+model_name = "just_G"
 
 
 
@@ -52,39 +52,49 @@ result_dir = "step9_model_result"+"_"+db_name+"_"+model_name
 Check_dir_exist_and_build_new_dir(result_dir)
 
 for i, distorted_img in enumerate(distorted_test_db):
+    print("doing %06i test image"%i)
     ### 把 test 的 distorted_img 丟進去 generator，生成rec_move_map
     result = generator(distorted_img.reshape(1,256,256,3), training=True)
     result = result.numpy()
-    result = result[1] ### BHWC，所以取第零張~~
+    result = result[0] ### BHWC，所以取第零張~~
     result_back = (result+1)/2 * (max_value_train-min_value_train) + min_value_train ### G生成的rec_move_map值是-1~1， 用 train_move_map_db 的 max_value, min_value 恢復
 
     ### rec_move_map apply進去
     distorted_img = (distorted_img+1)*127.5
     distorted_img = distorted_img[:,:,::-1]
-    rec_img , _ = apply_move(distorted_img, result_back)
-    cv2.imwrite( result_dir + "/" + "%06i_5-G-rec_img.jpg"%i,rec_img.astype(np.uint8))
+    rec_img , rec_debug_move = apply_move(distorted_img, result_back)
+    cv2.imwrite( result_dir + "/" + "%06i_b_4-G-rec_img.jpg"%i, rec_img.astype(np.uint8))
+    ####################################################################################
+    ### rec_move_map 視覺化 並存起來
+    result_back_bgr = method2(result_back[...,0], result_back[...,1], 2)
+    cv2.imwrite(result_dir+"/%06i_a_2-G_rec_move_map_visual.jpg"%i,result_back_bgr) ### 視覺化的結果存起來
+    np.save(result_dir+"/%06i_c_1-G_rec_move_map"%i, result_back) ### 存起來
 
-    ### rec_move_map 視覺化出來
-    result_back_bgr = method2(result_back[...,0], result_back[...,1],2)
-    cv2.imwrite(result_dir+"/%06i_2-G_rec_move_map_visual.jpg"%i,result_back_bgr)
-    
-    ### rec_move_map 存起來
-    np.save(result_dir+"/%06i_7-G_rec_move_map"%i, result_back)
-
-    ####################################################################################################################
+    ### rec_debug_move 視覺化 並 存起來
+    rec_debug_move_bgr = method2(rec_debug_move[...,0], rec_debug_move[...,1], 2)
+    cv2.imwrite(result_dir + "/%06i_b_2-G_rec_debug_move_map.bmp"%i, rec_debug_move_bgr) ### 視覺化的結果存起來
+    np.save(result_dir + "/%06i_c_3-G_rec_debug_move_map"%i, rec_debug_move) ### 存起來
+    ################################################################################################################################
     ### 讀取 test 的 GT rec_move_map
     result_ref = rec_move_map_test_list[i]
     result_ref_back = (result_ref+1)/2 * (max_value_train-min_value_train) + min_value_train
 
     ### GT rec_move_map apply進去
-    gt_rec_img, _ = apply_move(distorted_img, result_ref_back)
-    cv2.imwrite( result_dir + "/" + "%06i_6-rec_img.jpg"%i,gt_rec_img.astype(np.uint8))
-
-    ### GT rec_move_map 視覺化出來
+    gt_rec_img, gt_rec_debug_move = apply_move(distorted_img, result_ref_back)
+    cv2.imwrite( result_dir + "/" + "%06i_b_5-rec_img.jpg"%i,gt_rec_img.astype(np.uint8))
+    ####################################################################################
+    ### GT rec_move_map 視覺化 並存起來
     result_ref_bgr = method2(result_ref_back[...,0], result_ref_back[...,1],2)
-    cv2.imwrite(result_dir+"/%06i_1-ord_distorted_img.jpg"%i,distorted_img.astype(np.uint8))
-    cv2.imwrite(result_dir+"/%06i_4-ord_distorted_img.jpg"%i,distorted_img.astype(np.uint8))
-    cv2.imwrite(result_dir+"/%06i_3-GT-rec_move_map.jpg"%i,result_ref_bgr)
+    cv2.imwrite(result_dir+"/%06i_a_3-GT-rec_move_map.jpg"%i,result_ref_bgr) ### 視覺化的結果存起來
+    np.save(result_dir + "/%06i_c_2_GT_rec_move_map"%i ,result_ref_back )
+
+    ### GT_rec_debug_move 視覺化 並 存起來
+    gt_rec_debug_move_bgr = method2(gt_rec_debug_move[...,0], gt_rec_debug_move[...,1], 2)
+    cv2.imwrite(result_dir + "/%06i_b_3-GT_rec_debug_move_map.bmp"%i, gt_rec_debug_move_bgr) ### 視覺化的結果存起來
+    np.save(result_dir + "/%06i_c_4-GT_rec_debug_move_map"%i, rec_debug_move) ### 存起來
+
+    cv2.imwrite(result_dir+"/%06i_a_1-ord_distorted_img.jpg"%i,distorted_img.astype(np.uint8)) 
+    cv2.imwrite(result_dir+"/%06i_b_1-ord_distorted_img.jpg"%i,distorted_img.astype(np.uint8))
 
     plt.close()
 print("finish~~~~~~~~~~~~~~~~~")
