@@ -119,7 +119,7 @@ def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1):
 
     #     # move_back = (move[0]+1)/2 * (max_value_train-min_value_train) + min_value_train  ### 想看train的部分用這行 且 註解掉下行
     #     move_back = (move[0]+1)/2 * (max_value_train-min_value_train) + min_value_train       ### 想看test 的部分用這行 且 註解掉上行
-    #     move_bgr = method2(move_back[...,0], move_back[...,1],2)
+    #     move_bgr = method2(move_back[...,0], move_back[...,1],1)
     #     ax[1].imshow(move_bgr)
     #     plt.show()
     ##########################################################################################################################################

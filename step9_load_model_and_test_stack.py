@@ -65,7 +65,7 @@ for i, distorted_img in enumerate(distorted_test_db):
     cv2.imwrite( result_dir + "/" + "%06i_5-G-rec_img.jpg"%i,rec_img.astype(np.uint8))
 
     ### rec_move_map 視覺化出來
-    result_back_bgr = method2(result_back[...,0], result_back[...,1],2)
+    result_back_bgr = method2(result_back[...,0], result_back[...,1],1)
     cv2.imwrite(result_dir+"/%06i_2-G_rec_move_map_visual.jpg"%i,result_back_bgr)
     
     ### rec_move_map 存起來
@@ -81,7 +81,7 @@ for i, distorted_img in enumerate(distorted_test_db):
     cv2.imwrite( result_dir + "/" + "%06i_6-rec_img.jpg"%i,gt_rec_img.astype(np.uint8))
 
     ### GT rec_move_map 視覺化出來
-    result_ref_bgr = method2(result_ref_back[...,0], result_ref_back[...,1],2)
+    result_ref_bgr = method2(result_ref_back[...,0], result_ref_back[...,1],1)
     cv2.imwrite(result_dir+"/%06i_1-ord_distorted_img.jpg"%i,distorted_img.astype(np.uint8))
     cv2.imwrite(result_dir+"/%06i_4-ord_distorted_img.jpg"%i,distorted_img.astype(np.uint8))
     cv2.imwrite(result_dir+"/%06i_3-GT-rec_move_map.jpg"%i,result_ref_bgr)

@@ -68,7 +68,7 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
             plt.imshow(display_list[i] * 0.5 + 0.5)
         else:
             back = (display_list[i]+1)/2 * (max_value_train-min_value_train) + min_value_train
-            back_bgr = method2(back[...,0], back[...,1],2)
+            back_bgr = method2(back[...,0], back[...,1],1)
             plt.imshow(back_bgr)
         plt.axis('off')
     # plt.show()
