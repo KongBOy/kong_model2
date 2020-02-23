@@ -17,3 +17,6 @@ training_checkpoints*
 *.bmp
 
 model*
+
+
+位移量最小弄成0備份*

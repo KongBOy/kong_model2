@@ -69,10 +69,19 @@ def apply_move(img, move_map, name="0", write_to_step3=False):
 
     ksize = 3
     move_y_max, move_x_max = emulate_apply_and_find_boundary(img, move_map) ### 模擬apply後的結果 來找右下角的 boundary
+    # move_x = move_map[..., 0]
+    # move_x_max = abs(move_x.max())
+    # move_x_min = abs(move_x.min())
+    # move_y = move_map[..., 1]
+    # move_y_max = abs(move_y.max())
+    # move_y_min = abs(move_y.min())
+
 
     ### 初始化各個會用到的canvas
     dis_h = move_y_max
     dis_w = move_x_max 
+    # dis_h = int( np.around(move_y_min + row + move_y_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
+    # dis_w = int( np.around(move_x_min + col + move_x_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
     dis_img  = np.zeros(shape=(dis_h,dis_w,3), dtype=np.float64)
     rec_mov  = np.zeros(shape=(dis_h,dis_w,2), dtype=np.float64)
     dis_msk  = np.zeros(shape=(dis_h,dis_w),   dtype=np.uint8)
@@ -82,11 +91,25 @@ def apply_move(img, move_map, name="0", write_to_step3=False):
         for go_col in range(col):
             dst_x = go_col + int(move_map[go_row,go_col,0] ) ### 找出位移後的x，因為array的存取要int，所以把move_map的值(float)強制轉int
             dst_y = go_row + int(move_map[go_row,go_col,1] ) ### 找出位移後的y，因為array的存取要int，所以把move_map的值(float)強制轉int
+
             dis_img[dst_y,dst_x,:] += img[go_row,go_col,:]
             rec_mov[dst_y,dst_x,:] += move_map[go_row,go_col,:]*-1
 
             dis_msk[dst_y,dst_x]   += 1
 
+            # ### 我已經設定成如果不是背景的話，都會有小小的移動量來跟背景做區別，所以.sum!=0就代表前景囉！前景才需做移動！
+            # if(move_map[go_row,go_col].sum() != 0):
+            #     dst_x = go_col + int(move_map[go_row,go_col,0] + move_x_min) ### 現在的起點是(move_x_min, move_y_min)，所以要位移一下
+            #     dst_y = go_row + int(move_map[go_row,go_col,1] + move_y_min) ### 現在的起點是(move_x_min, move_y_min)，所以要位移一下
+
+            #     dis_img[dst_y,dst_x,:] += img[go_row,go_col,:]
+            #     rec_mov[dst_y,dst_x,:] += move_map[go_row,go_col,:]*-1
+            #     if(rec_mov[dst_y,dst_x].sum() == 0): ### 如果位移量剛好xy全0時，加一個小小的移動量來跟背景做區別
+            #         rec_mov[dst_y,dst_x] += 0.00001
+            #         print("here all zero")
+            #     dis_msk[dst_y,dst_x]   += 1
+
+            
             # print(dst_y,dst_x)
             # cv2.imshow("img",img)
             # cv2.imshow("Mask.bmp",(dis_msk*70).astype(np.uint8))
