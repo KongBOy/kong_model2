@@ -16,7 +16,7 @@ Check_dir_exist_and_build(result_dir)
 data_amount = len(dis_imgs)
 for i in range(data_amount):
     ### 為了方便看 整個還原的流程，把 dis_img 和 rec_move_map 也寫一份進來
-    rec_move_map_visual = method2(rec_movs[i][..., 0], rec_movs[i][...,1], color_shift=2)
+    rec_move_map_visual = method2(rec_movs[i][..., 0], rec_movs[i][...,1], color_shift=1)
     cv2.imwrite( result_dir + "/" + "%06i-4a-dis_img.jpg"%i,dis_imgs[i].astype(np.uint8))
     cv2.imwrite( result_dir + "/" + "%06i-4b-rec_move_map_visual.jpg"%i,rec_move_map_visual)
     # cv2.waitKey(0)
