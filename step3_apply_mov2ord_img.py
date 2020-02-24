@@ -63,7 +63,7 @@ def search_mask_have_hole(dis_msk, hole_size=1):
 
 
 
-def apply_move(img, move_map, name="0", write_to_step3=False):
+def apply_move(img, move_map, name="0", write_to_step3=False, return_base_xy=False):
     row, col = move_map.shape[:2] ### row, col 由 step2產生的flow 決定
     img = cv2.resize(img, (col, row), interpolation=cv2.INTER_NEAREST) 
 
@@ -129,6 +129,7 @@ def apply_move(img, move_map, name="0", write_to_step3=False):
     ### 視覺化
     if(write_to_step3):
         move_map_visual = method2(move_map[...,0], move_map[...,1],color_shift=1)
+        np.save("step3_apply_flow_result/%s-2-q"%(name), move_map)
         cv2.imwrite("step3_apply_flow_result/%s-1-I.bmp"%(name), img)
         cv2.imwrite("step3_apply_flow_result/%s-2-q.jpg"%(name), move_map_visual)
         cv2.imwrite("step3_apply_flow_result/%s-3a2-I1.jpg"%(name),dis_img)
@@ -168,7 +169,9 @@ def apply_move(img, move_map, name="0", write_to_step3=False):
         cv2.imwrite("step3_apply_flow_result/%s-3b-rec_mov_visual.jpg"%(name), rec_mov_visual)
         print("dis_msk.max()",dis_msk.max())
     
-
+    if(return_base_xy):
+        return dis_img.copy(), rec_mov.copy(), move_x_min, move_y_min
+        
     return dis_img.copy(), rec_mov.copy()
 
 if(__name__=="__main__"):
@@ -181,7 +184,7 @@ if(__name__=="__main__"):
 
 
     Check_dir_exist_and_build("step3_apply_flow_result")
-    start_index = 0 ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
+    start_index = 1800 ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
     for i, move_map in enumerate(move_list[start_index:]):
         img = img_list[np.random.randint(img_amount)]
         apply_start_time = time.time()

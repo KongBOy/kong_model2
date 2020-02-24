@@ -91,7 +91,7 @@ for i, distorted_img in enumerate(distorted_test_db):
     ### GT_rec_debug_move 視覺化 並 存起來
     gt_rec_debug_move_bgr = method2(gt_rec_debug_move[...,0], gt_rec_debug_move[...,1], 1)
     cv2.imwrite(result_dir + "/%06i_b_3-GT_rec_debug_move_map.bmp"%i, gt_rec_debug_move_bgr) ### 視覺化的結果存起來
-    np.save(result_dir + "/%06i_c_4-GT_rec_debug_move_map"%i, rec_debug_move) ### 存起來
+    np.save(result_dir + "/%06i_c_4-GT_rec_debug_move_map"%i, gt_rec_debug_move) ### 存起來
 
     cv2.imwrite(result_dir+"/%06i_a_1-ord_distorted_img.jpg"%i,distorted_img.astype(np.uint8)) 
     cv2.imwrite(result_dir+"/%06i_b_1-ord_distorted_img.jpg"%i,distorted_img.astype(np.uint8))
