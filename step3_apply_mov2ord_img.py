@@ -1,5 +1,5 @@
 from build_dataset_combine import Check_dir_exist_and_build
-from util import get_dir_move, get_dir_img, method2, get_xy_map
+from util import get_dir_move, get_dir_img, method2, get_xy_map, get_max_move_xy_from_numpy
 import numpy as np 
 import cv2
 
@@ -52,31 +52,30 @@ def apply_move(img, move_map, move_x_max=None, move_y_max=None, name="0", write_
     img = cv2.resize(img, (col, row), interpolation=cv2.INTER_NEAREST) 
 
     ksize = 3
-    if(move_x_max is None or move_y_max is None):
+    if(move_x_max is None and move_y_max is None):
         move_x = move_map[..., 0]
         move_x_max = abs(move_x.max())
-        move_x_min = abs(move_x.min())
+        # move_x_min = abs(move_x.min())
         move_y = move_map[..., 1]
         move_y_max = abs(move_y.max())
-        move_y_min = abs(move_y.min())
+        # move_y_min = abs(move_y.min())
 
 
     ### 初始化各個會用到的canvas
-    # dis_h = move_y_max
-    # dis_w = move_x_max 
-    dis_h = int( np.around(move_y_min + row + move_y_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
-    dis_w = int( np.around(move_x_min + col + move_x_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
+    dis_h = int( np.around(move_y_max + row + move_y_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
+    dis_w = int( np.around(move_x_max + col + move_x_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
     dis_img  = np.zeros(shape=(dis_h,dis_w,3), dtype=np.float64)
     rec_mov  = np.zeros(shape=(dis_h,dis_w,2), dtype=np.float64)
     dis_msk  = np.zeros(shape=(dis_h,dis_w),   dtype=np.uint8)
+
     
     ### 把原始影像扭曲，並取得 rec_mov
     for go_row in range(row):
         for go_col in range(col):
             ### 我已經設定成如果不是背景的話，都會有小小的移動量來跟背景做區別，所以.sum!=0就代表前景囉！前景才需做移動！
             if(move_map[go_row,go_col].sum() != 0):
-                dst_x = go_col + int(move_map[go_row,go_col,0] + move_x_min) ### 現在的起點是(move_x_min, move_y_min)，所以要位移一下
-                dst_y = go_row + int(move_map[go_row,go_col,1] + move_y_min) ### 現在的起點是(move_x_min, move_y_min)，所以要位移一下
+                dst_x = go_col + int(move_map[go_row,go_col,0] + move_x_max) ### 現在的起點是(move_x_max, move_y_max)，所以要位移一下
+                dst_y = go_row + int(move_map[go_row,go_col,1] + move_y_max) ### 現在的起點是(move_x_max, move_y_max)，所以要位移一下
 
                 dis_img[dst_y,dst_x,:] += img[go_row,go_col,:]
                 rec_mov[dst_y,dst_x,:] += move_map[go_row,go_col,:]*-1
@@ -146,7 +145,7 @@ def apply_move(img, move_map, move_x_max=None, move_y_max=None, name="0", write_
         print("dis_msk.max()",dis_msk.max())
     
     if(return_base_xy):
-        return dis_img.copy(), rec_mov.copy(), move_x_min, move_y_min
+        return dis_img.copy(), rec_mov.copy(), move_x_max, move_y_max
         
     return dis_img.copy(), rec_mov.copy()
 
@@ -157,7 +156,7 @@ if(__name__=="__main__"):
     img_list  = get_dir_img("step1_page")
     img_amount = len(img_list)
     move_list = get_dir_move("step2_flow_build/move_map")
-
+    move_x_max, move_y_max = get_max_move_xy_from_numpy(move_list)
 
     Check_dir_exist_and_build("step3_apply_flow_result")
     start_index = 0 ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
@@ -165,7 +164,7 @@ if(__name__=="__main__"):
         img = img_list[np.random.randint(img_amount)]
         apply_start_time = time.time()
         name = "%06i"%(i+start_index)
-        dis_img, rec_mov = apply_move(img, move_map, name, write_to_step3=True)
+        dis_img, rec_mov = apply_move(img, move_map,move_x_max=move_x_max, move_y_max=move_y_max, name=name, write_to_step3=True)
         print("%06i process 1 mesh cost time:"%(i+start_index), "%.3f"%(time.time()-apply_start_time), "total_time:", "%.3f"%(time.time()-start_time))
 
 
