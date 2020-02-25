@@ -184,7 +184,7 @@ if(__name__=="__main__"):
 
 
     Check_dir_exist_and_build("step3_apply_flow_result")
-    start_index = 1800 ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
+    start_index = 0 ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
     for i, move_map in enumerate(move_list[start_index:]):
         img = img_list[np.random.randint(img_amount)]
         apply_start_time = time.time()
