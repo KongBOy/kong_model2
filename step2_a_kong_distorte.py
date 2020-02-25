@@ -105,20 +105,6 @@ def distorte_rand(row=40, col=30, distort_times=None, curl_probability=0.3, inde
 
     return result_move_f
 
-def shift_distort_move_f(move_f): ### 調整move_f，讓最小的位移量為0，意思就是不會有負數的狀況！好處是可以設-1為背景～
-    ### 注意喔！move_map位移量最小是(0,0) 不代表 影像配合move_map 位移後 在 完全切得剛剛好的情況下 其 左上角的座標是(0,0)喔！
-    ### 因為有可能 偏上面的 往下移動 或者 偏左邊的點 往右邊移動喔～
-    ### 然後除非剛剛好 位移後 左上角的座標是(0,0)，否則 我們不能手動切成左上角剛剛好是座標(0,0)，因為這樣就代表 位移量 最小不是(0,0)了！
-    ### 所以不要在這邊嘗試 shift 成 影像配合move_map 位移後 在 完全切得剛剛好的情況下 其 左上角的座標是(0,0)喔！
-    shift_move_f = move_f.copy() 
-    left = move_f[:,0].min()
-    top  = move_f[:,1].min()
-    
-    shift_move_f[:,0] += left*-1
-    shift_move_f[:,1] += top *-1
-    return shift_move_f
-    
-    
     
 def distrore_info_log(log_dir, index, row, col, distorte_times, x, y, move_x, move_y, curve_type, alpha, ):
     str_template = \
@@ -172,10 +158,6 @@ if(__name__=="__main__"):
         dis_start_time = time.time()
         result_move_f = distorte_rand(row,col, index=index, distort_times=1 ,curl_probability=0.9)
         # print("result_move_f.shape",result_move_f.shape) ### (..., 2)
-
-        # result_move_f = shift_distort_move_f(result_move_f) ### 調整move_f，讓最小的位移量為0，意思就是不會有負數的狀況！好處是可以設-1為背景～
-        # print(result_move_f[:,0].min(), result_move_f[:,1].min()) ### 確認位移量為0，意思就是不會有負數的狀況！好處是可以設-1為背景～
-
         fig, ax = plt.subplots(1,1)
         fig.set_size_inches(4, 5)
         show_distorted_mesh(row,col, result_move_f, fig, ax)
