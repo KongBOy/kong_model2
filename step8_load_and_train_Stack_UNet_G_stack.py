@@ -87,7 +87,7 @@ if(__name__=="__main__"):
     BATCH_SIZE = 1
     
     db_dir  = "datasets"
-    db_name = "stack_unet-easy2000"
+    db_name = "stack_unet-padding2000"
 
     model_name = "G_stack"
 
@@ -109,7 +109,7 @@ if(__name__=="__main__"):
                                             # discriminator_optimizer=discriminator_optimizer,
                                             generator=generator)#,
                                             # discriminator=discriminator)
-    checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir)) ### 被中斷的話就把註解打開吧
+    # checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir)) ### 被中斷的話就把註解打開吧
     
     print("build model cost time:", time.time()-start_time)
     ##############################################################################################################################
@@ -122,8 +122,8 @@ if(__name__=="__main__"):
     log_dir="logs/"
     summary_writer = tf.summary.create_file_writer( result_dir + "/" + log_dir )
 
-    restart_epoch = 20
-    # restart_epoch = 0
+    # restart_epoch = 20
+    restart_epoch = 0
     for epoch in range(restart_epoch,epochs):
         print("Epoch: ", epoch)
         start = time.time()

@@ -3,7 +3,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt 
 from util import method2
 from step6_data_pipline_Stack_UNet import get_dataset
-from step7_kong_model import Generator, Discriminator
+from step7_kong_model_512to256 import Generator, Discriminator
 
 import time
 
@@ -105,7 +105,7 @@ if(__name__=="__main__"):
     BATCH_SIZE = 1
     
     db_dir  = "datasets"
-    db_name = "stack_unet-easy2000"
+    db_name = "stack_unet-padding2000"
 
     model_name = "just_G"
 
