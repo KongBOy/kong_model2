@@ -2,7 +2,7 @@ import os
 import tensorflow as tf
 import matplotlib.pyplot as plt 
 from util import method2
-from step6_data_pipline_Stack_UNet import get_dataset
+from step6_data_pipline import get_dataset
 from step7_kong_model_stack import Generator_stack
 
 import time
@@ -10,7 +10,6 @@ import time
 tf.keras.backend.set_floatx('float32') ### 這步非常非常重要！用了才可以加速！
 
 
-# def generator_loss(disc_generated_output, gen_output, target):
 def generator_loss(y1, y2, target):
     target = tf.cast(target,tf.float32)
 
@@ -21,27 +20,14 @@ def generator_loss(y1, y2, target):
 
     return y1_l1_loss, y2_l1_loss, total_gen_loss
 
-
-# def discriminator_loss(disc_real_output, disc_generated_output):
-#     loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-#     real_loss = loss_object(tf.ones_like(disc_real_output), disc_real_output)
-
-#     generated_loss = loss_object(tf.zeros_like(disc_generated_output), disc_generated_output)
-
-#     total_disc_loss = real_loss + generated_loss
-
-#     return total_disc_loss
-
-
 #######################################################################################################################################
 @tf.function()
 def train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch):
-    with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
+    with tf.GradientTape() as gen_tape:
         y1, y2 = generator(input_image, training=True)
         y1_l1_loss, y2_l1_loss, total_gen_loss  = generator_loss( y1, y2, target)
 
     generator_gradients     = gen_tape.gradient(total_gen_loss, generator.trainable_variables)
-
     generator_optimizer.apply_gradients(zip(generator_gradients, generator.trainable_variables))
 
     with summary_writer.as_default():
@@ -79,7 +65,6 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
 
 #######################################################################################################################################
 if(__name__=="__main__"):
-    from step6_data_pipline_Stack_UNet import get_dataset
     from build_dataset_combine import Check_dir_exist_and_build
     import os
 
@@ -91,34 +76,32 @@ if(__name__=="__main__"):
 
     model_name = "G_stack"
 
+    restore_train = False
+
     start_time = time.time()
     train_db, train_label_db, \
     test_db , test_label_db , \
     max_value_train, min_value_train = get_dataset(db_dir=db_dir, db_name=db_name,batch_size=BATCH_SIZE)
     ##############################################################################################################################
     start_time = time.time()
-    generator     = Generator_stack()
-    # discriminator = Discriminator()
+    generator     = Generator_stack() ### 建立模型
+    generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5) ### 建立 optimizer
 
-    generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-    # discriminator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-
+    ### 建立 load/save 的checkpoint
     checkpoint_dir    = './training_checkpoints'+"_"+db_name+"_"+model_name
     checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
     checkpoint        = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
-                                            # discriminator_optimizer=discriminator_optimizer,
-                                            generator=generator)#,
-                                            # discriminator=discriminator)
-    # checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir)) ### 被中斷的話就把註解打開吧
-    
+                                            generator=generator)
+    if(restore_train): ### 如果是要繼續上次的結果繼續訓練
+        checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir)) 
     print("build model cost time:", time.time()-start_time)
     ##############################################################################################################################
     epochs = 160
-    epoch_step = 100
+    epoch_step = 100 ### 從 epoch_step 後開始下降learning rate
     import datetime
 
+    ### 大概長這樣： result/20200225-195407_stack_unet-padding2000_G_stack
     result_dir = "result" + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +"_"+db_name+"_"+model_name
-    # summary_writer = tf.summary.create_file_writer(log_dir + "fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
     log_dir="logs/"
     summary_writer = tf.summary.create_file_writer( result_dir + "/" + log_dir )
 
@@ -138,7 +121,6 @@ if(__name__=="__main__"):
             print('.', end='')
             if (n+1) % 100 == 0:
                 print()
-            # train_step(generator, discriminator, generator_optimizer, discriminator_optimizer, summary_writer, input_image, target, epoch)
             train_step(generator, generator_optimizer, summary_writer, input_image, target, epoch)
         print()
 

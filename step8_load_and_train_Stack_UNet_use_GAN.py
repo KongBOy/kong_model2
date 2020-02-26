@@ -2,7 +2,7 @@ import os
 import tensorflow as tf
 import matplotlib.pyplot as plt 
 from util import method2
-from step6_data_pipline_Stack_UNet import get_dataset
+from step6_data_pipline import get_dataset
 from step7_kong_model import Generator, Discriminator
 
 import time
@@ -96,7 +96,6 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
 
 #######################################################################################################################################
 if(__name__=="__main__"):
-    from step6_data_pipline_Stack_UNet import get_dataset
     from build_dataset_combine import Check_dir_exist_and_build
     import os
 
