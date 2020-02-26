@@ -197,6 +197,61 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
     print("sample image cost time:", time.time()-sample_start_time)
 
 
+def testing( model, test_input, test_label, max_value_train, min_value_train, max_move_x_resize, max_move_y_resize,  index=0, result_dir="."):
+    testing_start_time = time.time()
+    # import numpy as np 
+    # import cv2
+    # test_start_time = time.time()
+    # prediction = model(test_input, training=True)
+    # prediction = prediction.numpy()
+    # back_prediction = ( prediction[0]+1)/2 * (max_value_train-min_value_train) + min_value_train
+    # print("back_prediction",type(back_prediction))
+    # np.save(result_dir + "/" + "test_%06i-result"%index,back_prediction)
+
+    # row, col = test_label[0].shape[:2]
+    # dis_img  = test_input[0]
+    # rec_img = np.zeros(shape=(row,col,3))
+    # move_map = back_prediction
+    # move_x_min = max_move_x_resize
+    # move_y_min = max_move_y_resize
+    # for go_row in range(row):
+    #     row_start_time = time.time()
+    #     for go_col in range(col):
+    #         x = int(go_col + move_map[go_row, go_col, 0] + move_x_min) 
+    #         y = int(go_row + move_map[go_row, go_col, 1] + move_y_min)  
+    #         if(y>=0 and y < 512 and x >=0 and x<512):
+    #             rec_img[go_row, go_col,:] = dis_img[y, x,:]
+    #     print("go_row",go_row, "cost time", time.time()-row_start_time)
+    # print("testing cost time", time.time()- test_start_time)
+    # cv2.imwrite(result_dir+"/"+"test_%06i-result.bmp"%index, rec_img.astype(np.uint8))
+
+    # fig, ax = plt.subplots(nrows=1, ncols=1)
+    # ax.imshow(rec_img)
+    # plt.show()
+    # print("finish")
+
+    prediction = model(test_input, training=True)
+    plt.figure(figsize=(20,6))
+    display_list = [test_input[0], test_label[0], prediction[0]]
+    title = ['Input Image', 'Ground Truth', 'Predicted Image']
+
+    for i in range(3):
+        plt.subplot(1, 4, i+1)
+        plt.title(title[i])
+        # getting the pixel values between [0, 1] to plot it.
+        if(i==0):
+            plt.imshow(display_list[i] * 0.5 + 0.5)
+        else:
+            back = (display_list[i]+1)/2 * (max_value_train-min_value_train) + min_value_train
+            back_bgr = method2(back[...,0], back[...,1],1)
+            plt.imshow(back_bgr)
+        plt.axis('off')
+    plt.show()
+    plt.savefig(result_dir + "/" + "index%02i-result.png"%index)
+    plt.close()
+    print("testing image cost time:", time.time()-testing_start_time)
+
+
 
 #######################################################################################################################################
 if(__name__=="__main__"):

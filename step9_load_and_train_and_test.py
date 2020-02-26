@@ -114,12 +114,14 @@ model_name="model_2_G_512to256"
 ### train 參數
 epochs = 160
 epoch_down_step = 100 ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
-epoch_save_freq = 5
+epoch_save_freq = 20
 start_epoch = 0
 
 ### train 和 test 參數
-restore_model = True ### 如果 restore_model 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
-restore_result_dir = "result/20200226-194945_pad2000-512to256_model_2_G_512to256"
+restore_model = False ### 如果 restore_model 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
+# restore_model = True ### 如果 restore_model 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
+# restore_result_dir = "result/20200226-194945_pad2000-512to256_model_2_G_512to256"
+restore_result_dir = "20200225-205654_stack_unet-padding2000_just_G"
 restore_log_dir    = restore_result_dir + "/"  + "logs"
 restore_ckpt_dir   = restore_result_dir + "/"  + "ckpt_dir" + "_" + db_name + "_" + model_name
 
@@ -130,6 +132,7 @@ data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dist
 ####################################################################################################
 train_db, train_label_db, test_db, test_label_db, \
 max_value_train, min_value_train         = step1_data_pipline(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE)
+
 generator, generator_optimizer,\
 discriminator, discriminator_optimizer,\
 generate_images, train_step              = step2_build_model_and_optimizer(model_name=model_name)
@@ -152,10 +155,12 @@ manager        = tf.train.CheckpointManager (checkpoint=ckpt, directory=ckpt_dir
 if(restore_model==True): 
     ckpt.restore(manager.latest_checkpoint)     ### 從restore_ckpt_dir 抓存的model出來
     start_epoch = ckpt.epoch_log.numpy()
+    print("load model ok~~~")
 ####################################################################################################
 ####################################################################################################
 
-
+#######################################################################################################################
+### training 的部分 ####################################################################################################
 total_start = time.time()
 for epoch in range(start_epoch, epochs):
     print("Epoch: ", epoch)
@@ -199,3 +204,32 @@ for epoch in range(start_epoch, epochs):
     print("batch cost time:%.2f"   %(epoch_cost_time/data_maount) )
     print("total cost time:%s"     %(time_util(total_cost_time))  )
     print("")
+#######################################################################################################################
+
+### testing 的部分 ####################################################################################################
+# from step7_kong_model_2_G_512to256 import testing
+
+# from util import get_dir_move, get_max_move_xy_from_numpy
+# move_list = get_dir_move("step2_flow_build/move_map")
+# max_move_x, max_move_y = get_max_move_xy_from_numpy(move_list)
+# row = max_move_y+max_move_y+256
+# col = max_move_x+max_move_x+256
+# row_rate = 512/row
+# col_rate = 512/col
+# max_move_x_resize = max_move_x * col_rate
+# max_move_y_resize = max_move_y * row_rate
+
+# print("row, col", row, col)
+# print("max_move_x, max_move_y", max_move_x, max_move_y)
+# print("max_move_x_resize, max_move_y_resize", max_move_x_resize, max_move_y_resize)
+
+# result_dir = "testing"
+# for index,(test_input, test_label)  in enumerate(zip(test_db.take(1), test_label_db.take(1))): 
+#     if  (model_name == "model_1_G"):
+#         generate_images( generator, test_input, test_label, max_value_train, min_value_train, index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+#     elif(model_name == "model_2_G_512to256"):
+#         testing( generator, test_input, test_label, max_value_train, min_value_train, max_move_x_resize, max_move_y_resize, index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+#     elif(model_name == "model_3_G_stack"):
+#         generate_images( generator, test_input, test_label, max_value_train, min_value_train, index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+#     elif(model_name == "model_4_G_and_D"):
+#         generate_images( generator, test_input, test_label, max_value_train, min_value_train, index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
