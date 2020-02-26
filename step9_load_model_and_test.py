@@ -5,7 +5,7 @@ import numpy as np
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
 from util import method2
 from step3_apply_mov2ord_img import apply_move
-from step6_data_pipline_Stack_UNet import get_all_distorted_and_norm, get_db_all_move_map, use_db_to_norm, use_number_to_norm
+from step6_data_pipline_Stack_UNet import get_all_distorted_and_resize_and_norm, get_db_all_move_map_and_resize, use_db_to_norm, use_number_to_norm
 from step7_kong_model import Generator, Discriminator
 ########################################################################################################################
 
@@ -18,17 +18,17 @@ model_name = "just_G"
 
 ### 讀 distorted_test_db
 ord_dir = db_dir + "/" + db_name + "/" + "test/distorted_img" 
-distorted_test_db = get_all_distorted_and_norm(ord_dir)
+distorted_test_db = get_all_distorted_and_resize_and_norm(ord_dir)
 # distorted_img = distorted_test_db[0]
 
 ### 讀 rec_move_map_train_db，用抓 max/min 值給test_ref用
 rec_move_map_train_path = db_dir + "/" + db_name + "/" + "train/rec_move_map" 
-rec_move_map_train_list = get_db_all_move_map(rec_move_map_train_path)
+rec_move_map_train_list = get_db_all_move_map_and_resize(rec_move_map_train_path)
 rec_move_map_train_list, max_value_train, min_value_train = use_db_to_norm(rec_move_map_train_list)
 
 ### 讀 rec_move_map_test_db，用來當test_ref來看train的對不對(GT的概念)
 rec_move_map_test_path = db_dir + "/" + db_name + "/" + "test/rec_move_map" 
-rec_move_map_test_list = get_db_all_move_map(rec_move_map_test_path)
+rec_move_map_test_list = get_db_all_move_map_and_resize(rec_move_map_test_path)
 rec_move_map_test_list = use_number_to_norm(rec_move_map_test_list, max_value_train, min_value_train)
 ########################################################################################################################
 ### 讀 model 的 checkpoint

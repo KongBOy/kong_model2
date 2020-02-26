@@ -2,6 +2,9 @@ import tensorflow as tf
 import os
 import numpy as np
 import cv2
+from util import get_dir_move, use_plt_show_move
+
+import matplotlib.pyplot as plt
 tf.keras.backend.set_floatx('float32') ### 這步非常非常重要！用了才可以加速！
 
 def step1_load_one_img(file_name):
@@ -20,35 +23,58 @@ def step3_normalize(img): ### 因為用tanh，所以把值弄到 [-1, 1]
     return img
 
 def preprocess_distorted_img(file_name):
-    img  = step1_load_one_img(file_name)            ### 根據檔名，把圖片讀近來且把圖切開來
+    img  = step1_load_one_img(file_name)  ### 根據檔名，把圖片讀近來且把圖切開來
     img  = step2_resize(img)
-    img  = step3_normalize(img)     ### 因為用tanh，所以把值弄到 [-1, 1]
+    img  = step3_normalize(img)           ### 因為用tanh，所以把值弄到 [-1, 1]
     return img 
 
-def get_all_distorted_and_norm(ord_dir):
+### 以上是 file_name -> tensor  還不大會用一直出問題，有空再去學好他，先直接用numpy全讀近來且處理好再丟進tensor
+########################################################################################################
+########################################################################################################
+
+######################################################################################################################################
+### 經過老師講解後 move_map 不用padding 了
+
+# def get_db_all_move_map_and_padding_and_resize(ord_dir):
+#     move_maps = get_dir_move(ord_dir)
+#     max_move_x, max_move_y = get_max_move_xy_from_numpy(move_maps)
+#     max_move_x = int(max_move_x) ### 先直接捨去小數，有時間再考慮精確
+#     max_move_y = int(max_move_y) ### 先直接捨去小數，有時間再考慮精確
+
+#     move_padding_list = []
+#     for move in move_maps:
+#         move = np.pad(move, ( (max_move_y, max_move_y), (max_move_x, max_move_x), (0,0) ))
+#         fig, ax = use_plt_show_move(move) ; plt.show() ### debug用
+#         move = cv2.resize(move, (256,256), interpolation = cv2.INTER_NEAREST)
+#         move_padding_list.append(move)
+#     move_padding_list = np.array(move_padding_list)
+
+
+######################################################################################################################################
+
+######################################################################################################################################
+def get_all_distorted_and_resize_and_norm(ord_dir, resize_shape=(256,256)):
     file_names = [file_name for file_name in os.listdir(ord_dir) if ".bmp" in file_name]
     distorted_list = []
     for file_name in file_names:
         distorted = cv2.imread(ord_dir + "/" + file_name)
-        distorted = cv2.resize(distorted, (256,256), interpolation=cv2.INTER_CUBIC)
+        distorted = cv2.resize(distorted, resize_shape, interpolation=cv2.INTER_CUBIC)
         distorted = distorted[:,:,::-1]
         distorted_list.append(distorted)
     distorted_list = np.array(distorted_list)
     distorted_list = (distorted_list / 127.5)-1
     distorted_list = distorted_list.astype(np.float32)
     return distorted_list
-
+######################################################################################
 ### 可以再思考一下要不要把 get 和 resize 和 norm 拆開funtcion寫~~~ 因為直接get完直接norm，在外面就得不到原始 max min 了
-def get_db_all_move_map(ord_dir):
-    file_names = [file_name for file_name in os.listdir(ord_dir) if ".npy" in file_name]
-    move_map_list = []
-    for file_name in file_names:
-        #print(file_name)
-        move = np.load(ord_dir + "/" + file_name)
-        move = cv2.resize( move, (256,256), interpolation = cv2.INTER_NEAREST)
-        move_map_list.append( move )
-    move_map_list = np.array(move_map_list)
-    return move_map_list
+def get_db_all_move_map_and_resize(ord_dir, resize_shape=(256,256)):
+    move_map_list = get_dir_move(ord_dir)
+    move_map_resize_list = []
+    for move in move_map_list:
+        move_resize = cv2.resize( move, resize_shape, interpolation = cv2.INTER_NEAREST)
+        move_map_resize_list.append(move_resize)
+    move_map_resize_list = np.array(move_map_resize_list)
+    return move_map_resize_list
 
     # max_value = move_map_list.max() ###  236.52951204508076
     # min_value = move_map_list.min() ### -227.09562801056995
@@ -64,6 +90,8 @@ def use_db_to_norm(move_map_list):
 def use_number_to_norm(move_map_list, max_value, min_value): ### 給test來用，要用和train一樣的 max_value, min_value
     move_map_list = ((move_map_list-min_value)/(max_value-min_value))*2-1
     return move_map_list
+######################################################################################################################################
+
 
 ### 這部分就針對個別情況來寫好了，以目前資料庫很固定就是 train/test，就直接寫死在裡面囉～遇到CycleGAN的情況在自己改trainA,B/testA,B
 def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1):
@@ -72,7 +100,7 @@ def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1):
 
     ### 拿到 扭曲影像 的 train dataset，從 檔名 → tensor
     distorted_train_load_path = db_dir + "/" + db_name + "/" + "train/distorted_img" 
-    distorted_train_db = get_all_distorted_and_norm(distorted_train_load_path)
+    distorted_train_db = get_all_distorted_and_resize_and_norm(distorted_train_load_path, resize_shape=(512,512))
     distorted_train_db = tf.data.Dataset.from_tensor_slices(distorted_train_db)
     # distorted_train_db = tf.data.Dataset.list_files(distorted_train_load_path + "/" + "*.bmp", shuffle=False)
     # distorted_train_db = distorted_train_db.map(preprocess_distorted_img, num_parallel_calls=tf.data.experimental.AUTOTUNE)
@@ -80,14 +108,14 @@ def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1):
 
     ### 拿到 扭曲影像如何復原move 的 train dataset，從 直切先全部讀出來成npy → tensor
     rec_move_map_train_path = db_dir + "/" + db_name + "/" + "train/rec_move_map" 
-    rec_move_map_train_list = get_db_all_move_map(rec_move_map_train_path)
+    rec_move_map_train_list = get_db_all_move_map_and_resize(rec_move_map_train_path, resize_shape=(256,256))
     rec_move_map_train_list, max_value_train, min_value_train = use_db_to_norm(rec_move_map_train_list)
     rec_move_map_train_db = tf.data.Dataset.from_tensor_slices(rec_move_map_train_list)
     rec_move_map_train_db = rec_move_map_train_db.batch(batch_size)
 
     ### 拿到 扭曲影像 的 test dataset，從 檔名 → tensor
     distorted_test_load_path = db_dir + "/" + db_name + "/" + "test/distorted_img" 
-    distorted_test_db = get_all_distorted_and_norm(distorted_test_load_path)
+    distorted_test_db = get_all_distorted_and_resize_and_norm(distorted_test_load_path, resize_shape=(512,512))
     distorted_test_db = tf.data.Dataset.from_tensor_slices(distorted_test_db)
     # distorted_test_db = tf.data.Dataset.list_files(distorted_test_load_path + "/" + "*.bmp", shuffle=False)
     # distorted_test_db = distorted_test_db.map(preprocess_distorted_img, num_parallel_calls=tf.data.experimental.AUTOTUNE)
@@ -95,7 +123,7 @@ def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1):
 
     ### 拿到 扭曲影像如何復原move 的 test dataset，從 直切先全部讀出來成npy → tensor
     rec_move_map_test_path = db_dir + "/" + db_name + "/" + "test/rec_move_map" 
-    rec_move_map_test_list = get_db_all_move_map(rec_move_map_test_path)
+    rec_move_map_test_list = get_db_all_move_map_and_resize(rec_move_map_test_path, resize_shape=(256,256))
     rec_move_map_test_list = use_number_to_norm(rec_move_map_test_list, max_value_train, min_value_train)
     rec_move_map_test_db = tf.data.Dataset.from_tensor_slices(rec_move_map_test_list)
     rec_move_map_test_db = rec_move_map_test_db.batch(batch_size)
@@ -133,7 +161,10 @@ if(__name__ == "__main__"):
 
     db_dir  = "datasets"
     db_name = "stack_unet-easy300"
-    _ = get_dataset(db_dir=db_dir, db_name=db_name)
+    # _ = get_dataset(db_dir=db_dir, db_name=db_name)
+
+    move_map_dir = "step2_flow_build/move_map"
+    get_db_all_move_map_and_padding_and_resize(move_map_dir)
 
 
     print(time.time()- start_time)
