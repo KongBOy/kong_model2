@@ -1,5 +1,6 @@
 import tensorflow as tf 
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, BatchNormalization, Concatenate
+from util import method2
 import matplotlib.pyplot as plt 
 import time
 
@@ -302,10 +303,10 @@ class Generator_second(tf.keras.models.Model):
         return tf.keras.models.Model(inputs=[x], outputs=self.call(x) )
 
 class Generator_stack(tf.keras.models.Model):
-    def __init__(self, **kwargs):
+    def __init__(self, out_channel=2, **kwargs):
         super(Generator_stack, self).__init__()
-        self.g1 = Generator_first (out_channel=2, name="G1")
-        self.g2 = Generator_second(out_channel=2, name="G2")
+        self.g1 = Generator_first (out_channel=out_channel, name="G1")
+        self.g2 = Generator_second(out_channel=out_channel, name="G2")
     
     def call(self, img):
         feature, y1 = self.g1(img)
@@ -314,84 +315,67 @@ class Generator_stack(tf.keras.models.Model):
         return y1, y2
 
 
+def generator_loss(y1, y2, target):
+    target = tf.cast(target,tf.float32)
+
+    y1_l1_loss = tf.reduce_mean(tf.abs(target - y1))
+    y2_l1_loss = tf.reduce_mean(tf.abs(target - y2))
+
+    total_gen_loss = y1_l1_loss + y2_l1_loss
+
+    return y1_l1_loss, y2_l1_loss, total_gen_loss
 
 #######################################################################################################################################
-# def downsample(filters, size, apply_batchnorm=True):
-#     initializer = tf.random_normal_initializer(0., 0.02)
+@tf.function()
+def train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch):
+    with tf.GradientTape() as gen_tape:
+        y1, y2 = generator(input_image, training=True)
+        y1_l1_loss, y2_l1_loss, total_gen_loss  = generator_loss( y1, y2, target)
 
-#     result = tf.keras.Sequential()
-#     result.add(
-#         tf.keras.layers.Conv2D(filters, size, strides=2, padding='same',
-#                              kernel_initializer=initializer, use_bias=False))
+    generator_gradients     = gen_tape.gradient(total_gen_loss, generator.trainable_variables)
+    generator_optimizer.apply_gradients(zip(generator_gradients, generator.trainable_variables))
 
-#     if apply_batchnorm:
-#         result.add(tf.keras.layers.BatchNormalization())
-
-#     result.add(tf.keras.layers.LeakyReLU())
-
-#     return result
-# def Discriminator():
-#     initializer = tf.random_normal_initializer(0., 0.02)
-
-#     inp = tf.keras.layers.Input(shape=[256, 256, 3], name='input_image')
-#     tar = tf.keras.layers.Input(shape=[256, 256, 2], name='target_image')
-
-#     x = tf.keras.layers.concatenate([inp, tar]) # (bs, 256, 256, channels*2)
-
-#     down1 = downsample(64, 4, False)(x) # (bs, 128, 128, 64)
-#     down2 = downsample(128, 4)(down1) # (bs, 64, 64, 128)
-#     down3 = downsample(256, 4)(down2) # (bs, 32, 32, 256)
-
-#     zero_pad1 = tf.keras.layers.ZeroPadding2D()(down3) # (bs, 34, 34, 256)
-#     conv = tf.keras.layers.Conv2D(512, 4, strides=1,
-#                                 kernel_initializer=initializer,
-#                                 use_bias=False)(zero_pad1) # (bs, 31, 31, 512)
-
-#     batchnorm1 = tf.keras.layers.BatchNormalization()(conv)
-
-#     leaky_relu = tf.keras.layers.LeakyReLU()(batchnorm1)
-
-#     zero_pad2 = tf.keras.layers.ZeroPadding2D()(leaky_relu) # (bs, 33, 33, 512)
-
-#     last = tf.keras.layers.Conv2D(1, 4, strides=1,
-#                                 kernel_initializer=initializer)(zero_pad2) # (bs, 30, 30, 1)
-
-#     return tf.keras.Model(inputs=[inp, tar], outputs=last)
+    with summary_writer.as_default():
+        tf.summary.scalar('gen_total_loss', total_gen_loss, step=epoch)
+        tf.summary.scalar('y1_l1_loss', y1_l1_loss, step=epoch)
+        tf.summary.scalar('y2_l1_loss', y2_l1_loss, step=epoch)
 
 
+def generate_images( model, test_input, test_label, max_value_train, min_value_train,  epoch=0, result_dir="."):
+    sample_start_time = time.time()
+    y1, y2 = model(test_input, training=True)
+
+    plt.figure(figsize=(20,6))
+    display_list = [test_input[0], test_label[0], y1[0], y2[0]]
+    title = ['Input Image', 'Ground Truth', 'y1 Image', 'y2 Image']
+
+    for i in range(4):
+        plt.subplot(1, 4, i+1)
+        plt.title(title[i])
+        # getting the pixel values between [0, 1] to plot it.
+        if(i==0):
+            plt.imshow(display_list[i] * 0.5 + 0.5)
+        else:
+            back = (display_list[i]+1)/2 * (max_value_train-min_value_train) + min_value_train
+            back_bgr = method2(back[...,0], back[...,1],1)
+            plt.imshow(back_bgr)
+        plt.axis('off')
+    # plt.show()
+    plt.savefig(result_dir + "/" + "epoch_%02i-result.png"%epoch)
+    plt.close()
+    print("sample image cost time:", time.time()-sample_start_time)
 #######################################################################################################################################
+
 if(__name__=="__main__"):
     # from data_pipline import step1_load_one_img, get_dataset
     import os
     import time
     import numpy as np 
 
-    # PATH = "datasets/facades" 
-    # inp, re = step1_load_one_img(PATH+"/"+'train/100.jpg')
-    
-    # BUFFER_SIZE = 400
-    # BATCH_SIZE = 1
-
-    # start_time = time.time()
-    # train_dataset, test_dataset = get_dataset(db_dir="datasets", db_name="facades")
-
-    ##############################################################################################################################
     start_time = time.time()
 
     generator = Generator_stack()
-    # tf.keras.utils.plot_model(generator, show_shapes=True, dpi=64)
     img = np.ones(shape=(1,256,256,3), dtype= np.float32)
     y1, y2 = generator(img)
     print(y1)
     print(y2)
-    # gen_output = generator(inp[tf.newaxis,...], training=False) 
-    # plt.imshow(gen_output[0,...])
-    # plt.show()
-
-    # discriminator = Discriminator()
-    # tf.keras.utils.plot_model(discriminator, show_shapes=True, dpi=64)
-
-    # disc_out = discriminator([inp[tf.newaxis,...], gen_output], training=False)
-    # plt.imshow(disc_out[0,...,-1], vmin=-20, vmax=20, cmap='RdBu_r')
-    # plt.colorbar()
-    # plt.show()

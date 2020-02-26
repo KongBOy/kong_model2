@@ -1,14 +1,15 @@
 import tensorflow as tf 
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, BatchNormalization, Concatenate
+from util import method2
 import matplotlib.pyplot as plt 
 import time
 
 
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
-class Generator(tf.keras.models.Model):
+class Generator512to256(tf.keras.models.Model):
     def __init__(self,out_channel=3, **kwargs):
-        super(Generator,self).__init__(**kwargs)
+        super(Generator512to256,self).__init__(**kwargs)
         self.conv1 = Conv2D(64, kernel_size=(4, 4), strides=(2, 2), padding="same",name="conv1") #,bias=False) ### in_channel:3
 
         self.lrelu2 = LeakyReLU(alpha=0.2,name="lrelu2")
@@ -70,7 +71,7 @@ class Generator(tf.keras.models.Model):
 
 
         self.relu1t = ReLU(name="relu1t")
-        self.conv1t = Conv2DTranspose(out_channel, kernel_size=(4, 4), strides=(2, 2), padding="same",name="conv1t") ### in_channel:128
+        self.conv_out = Conv2D(out_channel, kernel_size=(4, 4), strides=(1, 1), padding="same",name="conv_out") ### in_channel:128
         # (4): Tanh()
 
     def call(self, input_tensor):
@@ -145,87 +146,66 @@ class Generator(tf.keras.models.Model):
         x = self.concat2([x,skip2])
 
         x = self.relu1t(x)
-        x = self.conv1t(x)
+        x = self.conv_out(x)
         return tf.nn.tanh(x)
         
     
     def model(self, x):
         return tf.keras.models.Model(inputs=[x], outputs=self.call(x) )
         
-
+def generator_loss(gen_output, target):
+    target = tf.cast(target,tf.float32)
+    l1_loss = tf.reduce_mean(tf.abs(target - gen_output))
+    return l1_loss
 
 #######################################################################################################################################
-def downsample(filters, size, apply_batchnorm=True):
-    initializer = tf.random_normal_initializer(0., 0.02)
+@tf.function()
+def train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch):
+    with tf.GradientTape() as gen_tape:
+        gen_output = generator(input_image, training=True)
+        gen_l1_loss  = generator_loss( gen_output, target)
 
-    result = tf.keras.Sequential()
-    result.add(
-        tf.keras.layers.Conv2D(filters, size, strides=2, padding='same',
-                             kernel_initializer=initializer, use_bias=False))
+    generator_gradients     = gen_tape.gradient(gen_l1_loss, generator.trainable_variables)
+    generator_optimizer.apply_gradients(zip(generator_gradients, generator.trainable_variables))
 
-    if apply_batchnorm:
-        result.add(tf.keras.layers.BatchNormalization())
+    with summary_writer.as_default():
+        tf.summary.scalar('gen_l1_loss', gen_l1_loss, step=epoch)
 
-    result.add(tf.keras.layers.LeakyReLU())
+#######################################################################################################################################
+def generate_images( model, test_input, test_label, max_value_train, min_value_train,  epoch=0, result_dir="."):
+    sample_start_time = time.time()
+    prediction = model(test_input, training=True)
 
-    return result
-def Discriminator():
-    initializer = tf.random_normal_initializer(0., 0.02)
+    plt.figure(figsize=(20,6))
+    display_list = [test_input[0], test_label[0], prediction[0]]
+    title = ['Input Image', 'Ground Truth', 'Predicted Image']
 
-    inp = tf.keras.layers.Input(shape=[256, 256, 3], name='input_image')
-    tar = tf.keras.layers.Input(shape=[256, 256, 2], name='target_image')
+    for i in range(3):
+        plt.subplot(1, 3, i+1)
+        plt.title(title[i])
+        # getting the pixel values between [0, 1] to plot it.
+        if(i==0):
+            plt.imshow(display_list[i] * 0.5 + 0.5)
+        else:
+            back = (display_list[i]+1)/2 * (max_value_train-min_value_train) + min_value_train
+            back_bgr = method2(back[...,0], back[...,1],1)
+            plt.imshow(back_bgr)
+        plt.axis('off')
+    # plt.show()
+    plt.savefig(result_dir + "/" + "epoch_%02i-result.png"%epoch)
+    plt.close()
+    print("sample image cost time:", time.time()-sample_start_time)
 
-    x = tf.keras.layers.concatenate([inp, tar]) # (bs, 256, 256, channels*2)
-
-    down1 = downsample(64, 4, False)(x) # (bs, 128, 128, 64)
-    down2 = downsample(128, 4)(down1) # (bs, 64, 64, 128)
-    down3 = downsample(256, 4)(down2) # (bs, 32, 32, 256)
-
-    zero_pad1 = tf.keras.layers.ZeroPadding2D()(down3) # (bs, 34, 34, 256)
-    conv = tf.keras.layers.Conv2D(512, 4, strides=1,
-                                kernel_initializer=initializer,
-                                use_bias=False)(zero_pad1) # (bs, 31, 31, 512)
-
-    batchnorm1 = tf.keras.layers.BatchNormalization()(conv)
-
-    leaky_relu = tf.keras.layers.LeakyReLU()(batchnorm1)
-
-    zero_pad2 = tf.keras.layers.ZeroPadding2D()(leaky_relu) # (bs, 33, 33, 512)
-
-    last = tf.keras.layers.Conv2D(1, 4, strides=1,
-                                kernel_initializer=initializer)(zero_pad2) # (bs, 30, 30, 1)
-
-    return tf.keras.Model(inputs=[inp, tar], outputs=last)
 
 
 #######################################################################################################################################
 if(__name__=="__main__"):
-    from data_pipline import step1_load_one_img, get_dataset
-    import os
     import time
+    import numpy as np 
 
-    PATH = "datasets/facades" 
-    inp, re = step1_load_one_img(PATH+"/"+'train/100.jpg')
-    
-    BUFFER_SIZE = 400
-    BATCH_SIZE = 1
-
-    start_time = time.time()
-    train_dataset, test_dataset = get_dataset(db_dir="datasets", db_name="facades")
-
-    ##############################################################################################################################
-    start_time = time.time()
-    generator = Generator()
-    tf.keras.utils.plot_model(generator, show_shapes=True, dpi=64)
-
-    gen_output = generator(inp[tf.newaxis,...], training=False) 
-    plt.imshow(gen_output[0,...])
-    plt.show()
-
-    discriminator = Discriminator()
-    tf.keras.utils.plot_model(discriminator, show_shapes=True, dpi=64)
-
-    disc_out = discriminator([inp[tf.newaxis,...], gen_output], training=False)
-    plt.imshow(disc_out[0,...,-1], vmin=-20, vmax=20, cmap='RdBu_r')
-    plt.colorbar()
-    plt.show()
+    generator = Generator512to256()  ### 建G
+    img = np.ones(shape=(1,256,256,3), dtype= np.float32) ### 建 假資料
+    start_time = time.time() ### 看資料跑一次花多少時間
+    y= generator(img)
+    print(y)
+    print("cost time", time.time()- start_time)

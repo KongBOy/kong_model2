@@ -48,6 +48,10 @@ def get_dir_move(ord_dir):
     move_map_list = np.array(move_map_list)
     return move_map_list
 
+def get_db_amount(ord_dir):
+    file_names = [file_name for file_name in os.listdir(ord_dir) if (".bmp" in file_name) or (".jpg" in file_name) or (".npy" in file_name) ]
+    return len(file_names)
+
 ##########################################################
 def apply_move_map_boundary_mask(move_maps):
     boundary_width = 20 

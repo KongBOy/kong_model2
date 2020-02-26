@@ -5,8 +5,8 @@ import numpy as np
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
 from util import method2
 from step3_apply_mov2ord_img import apply_move
-from step6_data_pipline_Stack_UNet import get_all_distorted_and_resize_and_norm, get_db_all_move_map_and_resize, use_db_to_norm, use_number_to_norm
-from step8_load_and_train_Stack_UNet_G_stack import Generator_stack#, Discriminator
+from step6_data_pipline import get_all_distorted_and_resize_and_norm, get_db_all_move_map_and_resize, use_db_to_norm, use_number_to_norm
+from step8_load_and_train_G_stack import Generator_stack#, Discriminator
 ########################################################################################################################
 
 db_dir="datasets"
