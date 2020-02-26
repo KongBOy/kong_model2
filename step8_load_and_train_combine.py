@@ -8,11 +8,7 @@ import time
 tf.random.set_seed(123)
 tf.keras.backend.set_floatx('float32') ### 這步非常非常重要！用了才可以加速！
 
-def time_util(cost_time):
-    hour = cost_time//3600 
-    minute = cost_time%3600//60 
-    second = cost_time%3600%60
-    return "%02i:%02i:%02i"%(hour, minute, second)
+
 #######################################################################################################################################
 # db_name = "stack_unet-easy300"
 # db_name = "stack_unet-easy300"
@@ -45,13 +41,15 @@ if(__name__=="__main__"):
     epoch_save_freq = 20
     start_epoch = 0
 
-    restore_train = False ### 如果 restore_train 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
+    restore_model = True ### 如果 restore_model 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
     # restore_ckpt_dir = "." 
     restore_result_dir = "result/20200226-194945_pad2000-512to256_model_2_G_512to256"
     restore_ckpt_dir   = restore_result_dir + "/"  + "ckpt_dir" + "_" + db_name + "_" + model_name
 
     ### 目前只有在算 b_cost_time會用到
     data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "distorted_img" )
+
+
     ##############################################################################################################################
     ### step1.讀取 data_pipline
     img_resize  = None
@@ -121,7 +119,7 @@ if(__name__=="__main__"):
 
 
     import datetime
-    if(restore_train == False):
+    if(restore_model == False):
         ###     建立 放結果的資料夾名稱，大概長這樣： result/20200225-195407_stack_unet-pad2000_G_stack
         result_dir = "result" + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +"_"+db_name+"_"+model_name  ### result資料夾，裡面放checkpoint和tensorboard資料夾
         ckpt_dir    = result_dir + '/' + 'ckpt_dir'+"_"+db_name+"_"+model_name ### checkpoint資料夾
@@ -130,7 +128,7 @@ if(__name__=="__main__"):
         summary_writer = tf.summary.create_file_writer( result_dir + "/" + log_dir ) ### 建tensorboard，這會自動建資料夾喔！
         manager = tf.train.CheckpointManager(checkpoint=ckpt, directory=ckpt_dir, max_to_keep=2) ### checkpoint管理器，設定最多存2份
 
-    elif(restore_train == True): ### 如果是要繼續上次的結果繼續訓練
+    elif(restore_model == True): ### 如果是要繼續上次的結果繼續訓練
         result_dir = restore_result_dir  ### result資料夾，裡面放checkpoint和tensorboard資料夾
         ckpt_dir   = restore_ckpt_dir    ### checkpoint資料夾
         log_dir    ="logs/"              ### tensorboard 資料夾
@@ -152,13 +150,13 @@ if(__name__=="__main__"):
         ###     用來看目前訓練的狀況 
         for test_input, test_label in zip(test_db.take(1), test_label_db.take(1)): 
             if  (model_name == "model_1_G"):
-                generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                generate_images( generator, test_input, test_label, max_value_train, min_value_train,  index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif(model_name == "model_2_G_512to256"):
-                generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                generate_images( generator, test_input, test_label, max_value_train, min_value_train,  index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif(model_name == "model_3_G_stack"):
-                generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                generate_images( generator, test_input, test_label, max_value_train, min_value_train,  index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif(model_name == "model_4_G_and_D"):
-                generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                generate_images( generator, test_input, test_label, max_value_train, min_value_train,  index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
         ###     訓練
         for n, (input_image, target) in enumerate( zip(train_db, train_label_db) ):
             print('.', end='')

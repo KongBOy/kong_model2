@@ -258,7 +258,7 @@ def train_step(generator, discriminator, generator_optimizer, discriminator_opti
 
 
 
-def generate_images( model, test_input, test_label, max_value_train, min_value_train,  epoch=0, result_dir="."):
+def generate_images( model, test_input, test_label, max_value_train, min_value_train,training=True, index=0, result_dir="."):
     sample_start_time = time.time()
     prediction = model(test_input, training=True)
 
@@ -278,7 +278,10 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
             plt.imshow(back_bgr)
         plt.axis('off')
     # plt.show()
-    plt.savefig(result_dir + "/" + "epoch_%02i-result.png"%epoch)
+    if(training):
+        plt.savefig(result_dir + "/" + "epoch_%02i-result.png"%index)
+    else:
+        plt.savefig(result_dir + "/" + "%06i-test.png"%index)
     plt.close()
     print("sample image cost time:", time.time()-sample_start_time)
 
