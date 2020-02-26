@@ -48,6 +48,27 @@ def get_dir_move(ord_dir):
     move_map_list = np.array(move_map_list)
     return move_map_list
 
+##########################################################
+def apply_move_map_boundary_mask(move_maps):
+    boundary_width = 20 
+    _, row, col = move_maps.shape[:3]
+    move_maps[:, boundary_width:row-boundary_width,boundary_width:col-boundary_width,:] = 0
+    return move_maps
+
+def get_max_move_xy_from_dir(ord_dir):
+    move_maps = get_dir_move(ord_dir)
+    move_maps = apply_move_map_boundary_mask(move_maps)
+    max_move_x = move_maps[:,:,0].max()
+    max_move_y = move_maps[:,:,1].max()
+    return max_move_x, max_move_y
+
+def get_max_move_xy_from_numpy(move_maps): ### 注意這裡的 max/min 是找位移最大，不管正負號！ 跟 normalize 用的max/min 不一樣喔！ 
+    move_maps = abs(move_maps)
+    move_maps = apply_move_map_boundary_mask(move_maps)
+    max_move_x = move_maps[:,:,0].max()
+    max_move_y = move_maps[:,:,1].max()
+    return max_move_x, max_move_y
+
 #######################################################
 ### 用來給視覺化參考的顏色map
 def get_reference_map(ord_dir,color_shift=5): ### 根據你的db內 最大最小值 產生 參考流的map
@@ -102,3 +123,10 @@ def method2(x, y, color_shift=1):       ### 最大位移量不可以超過 255�
     return bgr
 
 #######################################################
+import matplotlib.pyplot as plt
+def use_plt_show_move(move, color_shift=1):
+    move_bgr = method2(move[:,:,0], move[:,:,1], color_shift=color_shift)
+    move_rgb = move_bgr[:,:,::-1]
+    fig, ax = plt.subplots(nrows=1, ncols=1)
+    ax.imshow(move_rgb) ### 這裡不會秀出來喔！只是把圖畫進ax裡面而已
+    return fig, ax
