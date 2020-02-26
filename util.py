@@ -61,14 +61,23 @@ def apply_move_map_boundary_mask(move_maps):
 
 def get_max_move_xy_from_dir(ord_dir):
     move_maps = get_dir_move(ord_dir)
-    move_maps = apply_move_map_boundary_mask(move_maps)
+    move_maps = abs(move_maps)
+    # move_maps = apply_move_map_boundary_mask(move_maps) ### 目前的dataset還是沒有只看邊邊，有空再用它來產生db，雖然實驗過有沒有用差不多(因為1019位移邊邊很大)
+    max_move_x = move_maps[:,:,0].max()
+    max_move_y = move_maps[:,:,1].max()
+    return max_move_x, max_move_y
+
+def get_max_move_xy_from_certain_move(ord_dir, certain_word):
+    move_maps = get_dir_certain_move(ord_dir, certain_word)
+    move_maps = abs(move_maps)
+    # move_maps = apply_move_map_boundary_mask(move_maps) ### 目前的dataset還是沒有只看邊邊，有空再用它來產生db，雖然實驗過有沒有用差不多(因為1019位移邊邊很大)
     max_move_x = move_maps[:,:,0].max()
     max_move_y = move_maps[:,:,1].max()
     return max_move_x, max_move_y
 
 def get_max_move_xy_from_numpy(move_maps): ### 注意這裡的 max/min 是找位移最大，不管正負號！ 跟 normalize 用的max/min 不一樣喔！ 
     move_maps = abs(move_maps)
-    move_maps = apply_move_map_boundary_mask(move_maps)
+    # move_maps = apply_move_map_boundary_mask(move_maps) ### 目前的dataset還是沒有只看邊邊，有空再用它來產生db，雖然實驗過有沒有用差不多(因為1019位移邊邊很大)
     max_move_x = move_maps[:,:,0].max()
     max_move_y = move_maps[:,:,1].max()
     return max_move_x, max_move_y
@@ -134,3 +143,11 @@ def use_plt_show_move(move, color_shift=1):
     fig, ax = plt.subplots(nrows=1, ncols=1)
     ax.imshow(move_rgb) ### 這裡不會秀出來喔！只是把圖畫進ax裡面而已
     return fig, ax
+
+
+
+def time_util(cost_time):
+    hour = cost_time//3600 
+    minute = cost_time%3600//60 
+    second = cost_time%3600%60
+    return "%02i:%02i:%02i"%(hour, minute, second)
