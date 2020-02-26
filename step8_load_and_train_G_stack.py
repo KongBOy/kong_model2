@@ -3,7 +3,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt 
 from util import method2
 from step6_data_pipline import get_dataset
-from step7_kong_model_stack import Generator_stack
+from step7_kong_model_G_stack import Generator_stack
 
 import time
 
