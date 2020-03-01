@@ -196,7 +196,7 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
     plt.close()
     print("sample image cost time:", time.time()-sample_start_time)
 
-
+### 不知道為什麼在這邊寫的，generator沒有辦法用到load進來的G，有空再調，寫在step9的已經成功了！
 def testing( model, test_input, test_label, max_value_train, min_value_train, max_move_x_resize, max_move_y_resize,  index=0, result_dir="."):
     testing_start_time = time.time()
     # import numpy as np 
