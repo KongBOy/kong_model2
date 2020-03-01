@@ -15,16 +15,16 @@ def step1_data_pipline(db_dir="datasets", db_name="easy300", batch_size=1):
     ### step1.讀取 data_pipline
     img_resize  = None
     move_resize = None
-    if  (model_name == "model_1_G"):          
+    if  (model_name == "model1_UNet"):          
         img_resize =(256,256)
         move_resize=(256,256)
-    elif(model_name == "model_2_G_512to256"): 
+    elif(model_name == "model2_UNet_512to256"): 
         img_resize =(512,512)
         move_resize=(256,256)
-    elif(model_name == "model_3_G_stack"):    
+    elif(model_name == "model3_UNet_stack"):    
         img_resize =(256,256)
         move_resize=(256,256)
-    elif(model_name == "model_4_G_and_D"):    
+    elif(model_name == "model4_UNet_and_D"):    
         img_resize =(256,256)
         move_resize=(256,256)
 
@@ -36,30 +36,30 @@ def step1_data_pipline(db_dir="datasets", db_name="easy300", batch_size=1):
            test_db , test_label_db , \
            max_value_train, min_value_train
 
-def step2_build_model_and_optimizer(model_name="model_1_G"):
+def step2_build_model_and_optimizer(model_name="model1_UNet"):
     ### step2.建立 model 和 optimizer
     start_time = time.time()
     generator               = None
     generator_optimizer     = None
     discriminator           = None
     discriminator_optimizer = None
-    if  (model_name == "model_1_G"):
-        from step7_kong_model1_G import Generator, generate_images, train_step
+    if  (model_name == "model1_UNet"):
+        from step7_kong_model1_UNet import Generator, generate_images, train_step
         generator     = Generator(out_channel=2)
         generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-    elif(model_name == "model_2_G_512to256"):
-        from step7_kong_model2_G_512to256 import Generator512to256, generate_images, train_step
+    elif(model_name == "model2_UNet_512to256"):
+        from step7_kong_model2_UNet_512to256 import Generator512to256, generate_images, train_step
         generator     = Generator512to256(out_channel=2)
         generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-    elif(model_name == "model_3_G_stack"):
-        from step7_kong_model3_G_stack import Generator_stack, generate_images, train_step
+    elif(model_name == "model3_UNet_stack"):
+        from step7_kong_model3_UNet_stack import Generator_stack, generate_images, train_step
         generator     = Generator_stack() ### 建立模型
         generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     
-    elif(model_name == "model_4_G_and_D"):
-        from step7_kong_model4_G_and_D import Generator, Discriminator, generate_images, train_step
+    elif(model_name == "model4_UNet_and_D"):
+        from step7_kong_model4_UNet_and_D import Generator, Discriminator, generate_images, train_step
         generator     = Generator(out_channel=2)
         generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         discriminator = Discriminator()
@@ -73,13 +73,13 @@ def step3_build_checkpoint(model_name, generator, generator_optimizer, discrimin
     ### step3.建立 save/load model 的checkpoint
     ckpt = None
     epoch_log = tf.Variable(1) ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
-    if  (model_name == "model_1_G"):
+    if  (model_name == "model1_UNet"):
         ckpt = tf.train.Checkpoint(epoch_log=epoch_log, generator_optimizer=generator_optimizer, generator=generator)
-    elif(model_name == "model_2_G_512to256"):
+    elif(model_name == "model2_UNet_512to256"):
         ckpt = tf.train.Checkpoint(epoch_log=epoch_log, generator_optimizer=generator_optimizer, generator=generator)
-    elif(model_name == "model_3_G_stack"):
+    elif(model_name == "model3_UNet_stack"):
         ckpt = tf.train.Checkpoint(epoch_log=epoch_log, generator_optimizer=generator_optimizer, generator=generator)
-    elif(model_name == "model_4_G_and_D"):
+    elif(model_name == "model4_UNet_and_D"):
         ckpt = tf.train.Checkpoint(epoch_log=epoch_log, generator_optimizer=generator_optimizer, generator=generator,
                                                         discriminator_optimizer=discriminator_optimizer, discriminator=discriminator)
     return ckpt
@@ -106,10 +106,10 @@ db_dir  = "datasets"
 # db_name = "easy2000"
 db_name = "pad2000-512to256" ### 這資料集 要搭配 512to256 的架構喔！
 
-# model_name="model_1_G"
-model_name="model_2_G_512to256"
-# model_name="model_3_G_stack"
-# model_name="model_4_G_and_D"
+# model_name="model1_UNet"
+model_name="model2_UNet_512to256"
+# model_name="model3_UNet_stack"
+# model_name="model4_UNet_and_D"
 
 ### train 參數
 epochs = 160
@@ -120,8 +120,8 @@ start_epoch = 0
 ### train 和 test 參數
 restore_model = True ### 如果 restore_model 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
 # restore_model = True ### 如果 restore_model 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
-# restore_result_dir = "result/20200226-194945_pad2000-512to256_model_2_G_512to256"
-restore_result_dir = "result/20200227-071341_pad2000-512to256_model_2_G_512to256"
+# restore_result_dir = "result/20200226-194945_pad2000-512to256_model2_UNet_512to256"
+restore_result_dir = "result/20200227-071341_pad2000-512to256_model2_UNet_512to256"
 restore_log_dir    = restore_result_dir + "/"  + "logs"
 restore_ckpt_dir   = restore_result_dir + "/"  + "ckpt_dir" + "_" + db_name + "_" + model_name
 
@@ -170,26 +170,26 @@ if(restore_model==True):
 #     generator_optimizer.lr = lr
 #     ###     用來看目前訓練的狀況 
 #     for test_input, test_label in zip(test_db.take(1), test_label_db.take(1)): 
-#         if  (model_name == "model_1_G"):
+#         if  (model_name == "model1_UNet"):
 #             generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-#         elif(model_name == "model_2_G_512to256"):
+#         elif(model_name == "model2_UNet_512to256"):
 #             generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-#         elif(model_name == "model_3_G_stack"):
+#         elif(model_name == "model3_UNet_stack"):
 #             generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-#         elif(model_name == "model_4_G_and_D"):
+#         elif(model_name == "model4_UNet_and_D"):
 #             generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
 #     ###     訓練
 #     for n, (input_image, target) in enumerate( zip(train_db, train_label_db) ):
 #         print('.', end='')
 #         if (n+1) % 100 == 0:
 #             print()
-#         if  (model_name == "model_1_G"):
+#         if  (model_name == "model1_UNet"):
 #             train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch)
-#         elif(model_name == "model_2_G_512to256"):
+#         elif(model_name == "model2_UNet_512to256"):
 #             train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch)
-#         elif(model_name == "model_3_G_stack"):
+#         elif(model_name == "model3_UNet_stack"):
 #             train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch)
-#         elif(model_name == "model_4_G_and_D"):
+#         elif(model_name == "model4_UNet_and_D"):
 #             train_step(generator, discriminator, generator_optimizer, discriminator_optimizer, summary_writer, input_image, target, epoch)
 #     print()
 
@@ -281,7 +281,7 @@ for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_d
 #######################################################################################################################
 
 ### 下面是分流進去 step7裡面，目前失敗，因為進去step7後好像用不到這邊load的G，有空再調
-# from step7_kong_model2_G_512to256 import testing
+# from step7_kong_model2_UNet_512to256 import testing
 
 # from util import get_dir_move, get_max_move_xy_from_numpy
 # move_list = get_dir_move("step2_flow_build/move_map")
@@ -299,11 +299,11 @@ for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_d
 
 # result_dir = "testing"
 # for index,(test_input, test_label)  in enumerate(zip(test_db.take(1), test_label_db.take(1))): 
-#     if  (model_name == "model_1_G"):
+#     if  (model_name == "model1_UNet"):
 #         generate_images( generator, test_input, test_label, max_value_train, min_value_train, index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-#     elif(model_name == "model_2_G_512to256"):
+#     elif(model_name == "model2_UNet_512to256"):
 #         testing( generator, test_input, test_label, max_value_train, min_value_train, max_move_x_resize, max_move_y_resize, index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-#     elif(model_name == "model_3_G_stack"):
+#     elif(model_name == "model3_UNet_stack"):
 #         generate_images( generator, test_input, test_label, max_value_train, min_value_train, index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-#     elif(model_name == "model_4_G_and_D"):
+#     elif(model_name == "model4_UNet_and_D"):
 #         generate_images( generator, test_input, test_label, max_value_train, min_value_train, index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
