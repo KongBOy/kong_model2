@@ -79,22 +79,22 @@ if(__name__=="__main__"):
     discriminator           = None
     discriminator_optimizer = None
     if  (model_name == "model_1_G"):
-        from step7_kong_model_1_G import Generator, generate_images, train_step
+        from step7_kong_model1_G import Generator, generate_images, train_step
         generator     = Generator(out_channel=2)
         generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
     elif(model_name == "model_2_G_512to256"):
-        from step7_kong_model_2_G_512to256 import Generator512to256, generate_images, train_step
+        from step7_kong_model2_G_512to256 import Generator512to256, generate_images, train_step
         generator     = Generator512to256(out_channel=2)
         generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
     elif(model_name == "model_3_G_stack"):
-        from step7_kong_model_3_G_stack import Generator_stack, generate_images, train_step
+        from step7_kong_model3_G_stack import Generator_stack, generate_images, train_step
         generator     = Generator_stack() ### 建立模型
         generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     
     elif(model_name == "model_4_G_and_D"):
-        from step7_kong_model_4_G_and_D import Generator, Discriminator, generate_images, train_step
+        from step7_kong_model4_G_and_D import Generator, Discriminator, generate_images, train_step
         generator     = Generator(out_channel=2)
         generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         discriminator = Discriminator()
