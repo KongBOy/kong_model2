@@ -1,7 +1,8 @@
+from step0_access_path import access_path
 import numpy as np 
 import matplotlib.pyplot as plt 
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
-
+from step0_access_path import access_path
 ### 參考連結：https://stackoverflow.com/questions/53907633/how-to-warp-an-image-using-deformed-mesh
 def get_xy_f(row,col): ### get_xy_flatten，拿到的map的shape：(..., 2)
     x = np.arange(col)
@@ -99,9 +100,9 @@ def distorte_rand(row=40, col=30, distort_times=None, curl_probability=0.3, inde
 
         ### 紀錄扭曲參數
         if(curve_type == "fold"):    
-            distrore_info_log("step2_flow_build/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_fold, )
+            distrore_info_log(access_path+"step2_flow_build/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_fold, )
         elif curve_type == "curl":
-            distrore_info_log("step2_flow_build/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_curl, )
+            distrore_info_log(access_path+"step2_flow_build/distorte_info", index, row, col, distort_times, x, y, move_x, move_y, curve_type, alpha_curl, )
 
     return result_move_f
 
@@ -135,6 +136,8 @@ def show_move_map_visual(move_map, ax):
     plt.show()
 
 if(__name__=="__main__"):
+    # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
+
     row = 256#40*10#472 #40*10
     col = 256#30*10#304 #30*10
 
@@ -148,9 +151,9 @@ if(__name__=="__main__"):
 #    plt.show()
     ##############################################################################################
     ### 隨機生成
-    Check_dir_exist_and_build_new_dir("step2_flow_build/distorted_mesh")
-    Check_dir_exist_and_build_new_dir("step2_flow_build/move_map")
-    Check_dir_exist_and_build_new_dir("step2_flow_build/distorte_info")
+    Check_dir_exist_and_build_new_dir(access_path+"step2_flow_build/distorted_mesh")
+    Check_dir_exist_and_build_new_dir(access_path+"step2_flow_build/move_map")
+    Check_dir_exist_and_build_new_dir(access_path+"step2_flow_build/distorte_info")
 
     import time
     start_time = time.time()
@@ -162,7 +165,7 @@ if(__name__=="__main__"):
         fig.set_size_inches(4, 5)
         show_distorted_mesh(row,col, result_move_f, fig, ax)
         # plt.show()
-        plt.savefig("step2_flow_build/distorted_mesh/%06i.png"%index)
+        plt.savefig(access_path+"step2_flow_build/distorted_mesh/%06i.png"%index)
         plt.close()
         
         result_move_map = result_move_f.reshape(row,col,2) ### ### (..., 2)→(row, col, 2)
@@ -170,7 +173,7 @@ if(__name__=="__main__"):
             for go_col in range(col):
                 if result_move_map[go_row,go_col].sum() == 0: ### 如果不是背景的話，都會有小小的移動量來跟背景做區別，前景背景的區別在rec_move_map的時候會用到！ 
                     result_move_map[go_row,go_col] += 0.00001 
-        np.save("step2_flow_build/move_map/%06i"%index,result_move_map.astype(np.float32))
+        np.save(access_path+"step2_flow_build/move_map/%06i"%index,result_move_map.astype(np.float32))
         print("%06i process 1 mesh cost time:"%index, "%.3f"%(time.time()-dis_start_time), "total_time:", "%.3f"%(time.time()-start_time))
     ##############################################################################################
 #    fig, ax = plt.subplots(1,1)

@@ -1,7 +1,7 @@
 import os 
 import tensorflow as tf
 import matplotlib.pyplot as plt 
-from util import method2, get_db_amount
+from util import method2, get_db_amount, time_util
 from step6_data_pipline import get_dataset
 import time
 
@@ -21,11 +21,12 @@ tf.keras.backend.set_floatx('float32') ### 這步非常非常重要！用了才�
 if(__name__=="__main__"):
     from build_dataset_combine import Check_dir_exist_and_build
     import os
+    # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
     ##############################################################################################################################
     ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
     BATCH_SIZE = 1
     
-    db_dir  = "datasets"
+    db_dir  = access_path+"datasets"
 
     # db_name = "easy300"
     # db_name = "easy2000"
@@ -43,7 +44,7 @@ if(__name__=="__main__"):
 
     restore_model = True ### 如果 restore_model 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
     # restore_ckpt_dir = "." 
-    restore_result_dir = "result/20200226-194945_pad2000-512to256_model2_UNet_512to256"
+    restore_result_dir = access_path+"result/20200226-194945_pad2000-512to256_model2_UNet_512to256"
     restore_ckpt_dir   = restore_result_dir + "/"  + "ckpt_dir" + "_" + db_name + "_" + model_name
 
     ### 目前只有在算 b_cost_time會用到
@@ -121,7 +122,7 @@ if(__name__=="__main__"):
     import datetime
     if(restore_model == False):
         ###     建立 放結果的資料夾名稱，大概長這樣： result/20200225-195407_stack_unet-pad2000_G_stack
-        result_dir = "result" + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +"_"+db_name+"_"+model_name  ### result資料夾，裡面放checkpoint和tensorboard資料夾
+        result_dir = access_path+"result" + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +"_"+db_name+"_"+model_name  ### result資料夾，裡面放checkpoint和tensorboard資料夾
         ckpt_dir    = result_dir + '/' + 'ckpt_dir'+"_"+db_name+"_"+model_name ### checkpoint資料夾
         log_dir="logs/"  ### tensorboard 資料夾
 
@@ -148,7 +149,7 @@ if(__name__=="__main__"):
         lr = 0.0002 if epoch < epoch_down_step else 0.0002*(epochs-epoch)/(epochs-epoch_down_step)
         generator_optimizer.lr = lr
         ###     用來看目前訓練的狀況 
-        for test_input, test_label in zip(test_db.take(1), test_label_db.take(1)): 
+        for index, (test_input, test_label) in enumerate(zip(test_db.take(1), test_label_db.take(1))): 
             if  (model_name == "model1_UNet"):
                 generate_images( generator, test_input, test_label, max_value_train, min_value_train,  index, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif(model_name == "model2_UNet_512to256"):

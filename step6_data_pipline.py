@@ -1,3 +1,4 @@
+from step0_access_path import access_path
 import tensorflow as tf
 import os
 import numpy as np
@@ -156,10 +157,12 @@ def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1, i
     
     
 if(__name__ == "__main__"):
+    # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
+
     import time
     start_time = time.time()
 
-    db_dir  = "datasets"
+    db_dir  = access_path+"datasets"
     db_name = "stack_unet-easy300"
     # _ = get_dataset(db_dir=db_dir, db_name=db_name)
 

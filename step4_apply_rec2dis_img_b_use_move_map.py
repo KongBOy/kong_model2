@@ -1,3 +1,4 @@
+from step0_access_path import access_path
 from util import get_dir_move, get_max_move_xy_from_numpy, get_dir_certain_move, get_dir_certain_img, method2, get_max_move_xy_from_certain_move
 import numpy as np 
 import cv2
@@ -21,20 +22,22 @@ def apply_move_to_rec(dis_img, move_map, max_move_x, max_move_y):
 
 
 if(__name__=="__main__"):
+    # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
+
     ### 拿到 dis_img
-    dis_imgs = get_dir_certain_img("step3_apply_flow_result","3a1-I1-patch")
+    dis_imgs = get_dir_certain_img(access_path+"step3_apply_flow_result","3a1-I1-patch")
     dis_img = dis_imgs[0]
     ### 拿到 move_map
-    moves = get_dir_certain_move("step3_apply_flow_result","2-q")
+    moves = get_dir_certain_move(access_path+"step3_apply_flow_result","2-q")
     move_map = moves[0]
     ### 拿到 當初建 dis_img_db時 用的 move_map max/min 的移動量
-    max_move_x, max_move_y = get_max_move_xy_from_certain_move("step3_apply_flow_result","2-q")
+    max_move_x, max_move_y = get_max_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q")
 
     ### 拿 dis_img 配 move_map 來做 rec囉！
     rec_img = apply_move_to_rec(dis_img, move_map, max_move_x, max_move_y)
 
-    # cv2.imshow("rec_img", rec_img.astype(np.uint8))
-    # cv2.imwrite("rec_img.png", rec_img.astype(np.uint8))
+    # cv2.imshow(access_path+"rec_img", rec_img.astype(np.uint8))
+    # cv2.imwrite(access_path+"rec_img.png", rec_img.astype(np.uint8))
     # cv2.waitKey()
     # cv2.destroyAllWindows()
 
@@ -52,6 +55,6 @@ if(__name__=="__main__"):
 
     #         rec_img[go_row, go_col,:] = dis_img[y, x,:]
     # cv2.imshow("rec_img", rec_img)
-    # cv2.imwrite("rec_img.png", rec_img)
+    # cv2.imwrite(access_path+"rec_img.png", rec_img)
     # cv2.waitKey()
     # cv2.destroyAllWindows()

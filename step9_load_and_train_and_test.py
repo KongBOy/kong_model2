@@ -1,3 +1,4 @@
+from step0_access_path import access_path
 import os 
 import tensorflow as tf
 import matplotlib.pyplot as plt 
@@ -9,6 +10,7 @@ import time
 from build_dataset_combine import Check_dir_exist_and_build
 import os
 
+# access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
 
 def step1_data_pipline(db_dir="datasets", db_name="easy300", batch_size=1):
@@ -87,11 +89,10 @@ def step3_build_checkpoint(model_name, generator, generator_optimizer, discrimin
 
 def step4_get_default_dir_name(db_name, model_name):
     import datetime
-    result_dir = "result" + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +"_"+db_name+"_"+model_name  ### result資料夾，裡面放checkpoint和tensorboard資料夾
+    result_dir = access_path+"result" + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +"_"+db_name+"_"+model_name  ### result資料夾，裡面放checkpoint和tensorboard資料夾
     log_dir  = result_dir + "/" + "logs"
     ckpt_dir = result_dir + '/' + 'ckpt_dir'+"_"+db_name+"_"+model_name 
     return result_dir, log_dir, ckpt_dir
-
 
 
 
@@ -100,7 +101,7 @@ def step4_get_default_dir_name(db_name, model_name):
 ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
 BATCH_SIZE = 1
 
-db_dir  = "datasets"
+db_dir  = access_path+"datasets"
 
 # db_name = "easy300"
 # db_name = "easy2000"
@@ -121,7 +122,7 @@ start_epoch = 0
 restore_model = True ### 如果 restore_model 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
 # restore_model = True ### 如果 restore_model 設True，下面 restore_result_dir 和 restore_ckpt_dir 才會有用處喔！
 # restore_result_dir = "result/20200226-194945_pad2000-512to256_model2_UNet_512to256"
-restore_result_dir = "result/20200227-071341_pad2000-512to256_model2_UNet_512to256"
+restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"
 restore_log_dir    = restore_result_dir + "/"  + "logs"
 restore_ckpt_dir   = restore_result_dir + "/"  + "ckpt_dir" + "_" + db_name + "_" + model_name
 
@@ -217,7 +218,7 @@ import matplotlib.pyplot as plt
 from util import get_dir_img, get_dir_move, get_max_move_xy_from_certain_move
 from build_dataset_combine import Check_dir_exist_and_build
 import numpy as np 
-test_dir = result_dir + "/" + "testing"
+test_dir = access_path+result_dir + "/" + "testing"
 Check_dir_exist_and_build(test_dir)
 print("current_epoch_log", ckpt.epoch_log)
 for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_db.take(200))): 
@@ -230,7 +231,7 @@ for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_d
     fig.set_size_inches(col_img_num*5,col_img_num) ### 2200~2300可以放4張圖，配500的高度，所以一張圖大概550~575寬，500高，但為了好計算還是用 500寬配500高好了！
 
     ### 圖. dis_img
-    dis_imgs = get_dir_img("datasets/pad2000-512to256/test/distorted_img") ### 這是沒有resize過的
+    dis_imgs = get_dir_img(access_path+"datasets/pad2000-512to256/test/distorted_img") ### 這是沒有resize過的
     dis_img = dis_imgs[i]
     ### test_input是有resize過的！我們不是recover這個喔！
     # dis_img  = test_input[0].numpy() 
@@ -254,7 +255,7 @@ for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_d
 
     ###  拿g/gt 的move_map 來恢復dis_img
     ###   前置動作：拿到 當初建 dis_img_db時 用的 move_map max/min 的移動量
-    max_move_x, max_move_y = get_max_move_xy_from_certain_move("step3_apply_flow_result","2-q") ### 注意這裡要去 step3才對！因為當初建db時是用整個db的最大移動量(step3裡的即整個db的資料)，如果去dataset/train的話只有train的資料喔
+    max_move_x, max_move_y = get_max_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q") ### 注意這裡要去 step3才對！因為當初建db時是用整個db的最大移動量(step3裡的即整個db的資料)，如果去dataset/train的話只有train的資料喔
     # print("max_move_x, max_move_y", max_move_x, max_move_y)
 
     ### 拿 dis_img 配 g_move_map 來做 rec囉！
@@ -264,7 +265,7 @@ for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_d
 
 
     ### 拿gt流
-    gt_moves = get_dir_move("datasets/pad2000-512to256/test/rec_move_map")
+    gt_moves = get_dir_move(access_path+"datasets/pad2000-512to256/test/rec_move_map")
     gt_move_map = gt_moves[i]
     gt_move_map_bgr = method2(gt_move_map[:,:,0],gt_move_map[:,:,1])
     ax[2].imshow(gt_move_map_bgr.astype(np.uint8))
@@ -274,7 +275,7 @@ for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_d
     ax[4].imshow(gt_rec_img.astype(np.uint8))
     ax[4].set_title("gt_rec")
 
-    plt.savefig(test_dir + "/" + "index%02i-result.png"%i)
+    plt.savefig(access_path+test_dir + "/" + "index%02i-result.png"%i)
     # plt.show()
     plt.close()
 #######################################################################################################################
