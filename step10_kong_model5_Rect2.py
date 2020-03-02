@@ -192,34 +192,63 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1.,tf.float32)):
     return loss * lamb
 
 @tf.function
-def train_step(dis_img, gt_img, optimizer_G, optimizer_D, rect2):
+def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, epoch ):
     with tf.GradientTape(persistent=True) as tape:
         g_rec_img, fake_score, real_score = rect2(dis_img, gt_img)
-
-        g_total_loss = mae_kong(g_rec_img, gt_img, lamb=tf.constant(10.,tf.float32))
+        
+        loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(10.,tf.float32))
+        loss_g2d = mse_kong(fake_score, tf.ones_like(fake_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32))
+        g_total_loss = loss_rec + loss_g2d
         
         loss_d_fake = mse_kong( fake_score, tf.zeros_like(fake_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
         loss_d_real = mse_kong( real_score, tf.ones_like (real_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
-        
         d_total_loss = (loss_d_real+loss_d_fake)/2
         
     grad_D = tape.gradient(d_total_loss, rect2.discriminator.trainable_weights + rect2.discriminator.trainable_weights)
     grad_G = tape.gradient(g_total_loss, rect2.generator.    trainable_weights + rect2.generator.     trainable_weights)
     optimizer_D.apply_gradients( zip(grad_D, rect2.discriminator.trainable_weights + rect2.discriminator.trainable_weights)  )
     optimizer_G.apply_gradients( zip(grad_G, rect2.generator.    trainable_weights + rect2.generator.    trainable_weights)  )
+
+    with summary_writer.as_default():
+        tf.summary.scalar('1_loss_rec', loss_rec, step=epoch)
+        tf.summary.scalar('2_loss_g2d', loss_g2d, step=epoch)
+        tf.summary.scalar('3_g_total_loss', g_total_loss, step=epoch)
+        tf.summary.scalar('4_loss_d_fake' , loss_d_fake,  step=epoch)
+        tf.summary.scalar('5_loss_d_real' , loss_d_real,  step=epoch)
+        tf.summary.scalar('6_d_total_loss', d_total_loss, step=epoch)
     
 
+import time
+import matplotlib.pyplot as plt
+def generate_images( model, dis_img, gt_img,  epoch=0, result_dir="."):
+    sample_start_time = time.time()
+    rect2 = model(dis_img, training=True)
 
+    plt.figure(figsize=(20,6))
+    display_list = [dis_img[0], gt_img[0], rect2[0]]
+    title = ['Input Image', 'Ground Truth', 'rect2 Image']
+
+    for i in range(3):
+        plt.subplot(1, 3, i+1)
+        plt.title(title[i])
+        # getting the pixel values between [0, 1] to plot it.
+        plt.imshow(display_list[i] * 0.5 + 0.5)
+    
+        plt.axis('off')
+    # plt.show()
+    plt.savefig(result_dir + "/" + "epoch_%02i-result.png"%epoch)
+    plt.close()
+    print("sample image cost time:", time.time()-sample_start_time)
 
 if(__name__ == "__main__"):
     import numpy as np
     import matplotlib.pyplot as plt
-    generator = Generator()
-    img_g = np.ones( shape=(1,256,256,3), dtype=np.float32)
-    out_g = generator(img_g)
-    plt.imshow(out_g[0,...])
-    plt.show()
-    print("out_g.numpy()",out_g.numpy())
+    # generator = Generator()
+    # img_g = np.ones( shape=(1,256,256,3), dtype=np.float32)
+    # out_g = generator(img_g)
+    # plt.imshow(out_g[0,...])
+    # plt.show()
+    # print("out_g.numpy()",out_g.numpy())
 
     # discriminator = Discriminator()
     # img_d1 = np.ones(shape=(1,256,256,3),dtype=np.float32)
@@ -230,11 +259,12 @@ if(__name__ == "__main__"):
     # plt.show()
     # print("out_d.numpy()",out_d.numpy())
 
-    # rect2 = Rect2()
-    # dis_img = np.ones( shape=(1,256,256,3), dtype=np.float32)
-    # gt_img  = np.ones( shape=(1,256,256,3), dtype=np.float32)
-    # optimizer_G = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
-    # optimizer_D = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
-    # train_step(dis_img, gt_img, optimizer_G, optimizer_D, rect2)
+    rect2 = Rect2()
+    dis_img = np.ones( shape=(1,256,256,3), dtype=np.float32)
+    gt_img  = np.ones( shape=(1,256,256,3), dtype=np.float32)
+    optimizer_G = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
+    optimizer_D = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
+    summary_writer = tf.summary.create_file_writer( "temp_logs_dir" ) ### 建tensorboard，這會自動建資料夾喔！
+    train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, 0)
 
     print("finish")

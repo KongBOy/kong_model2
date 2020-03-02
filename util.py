@@ -21,7 +21,7 @@ def get_dir_certain_img(ord_dir, certain_word):
     img_list = []
     for file_name in file_names:
         img_list.append( cv2.imread(ord_dir + "/" + file_name) )
-    img_list = np.array(img_list)
+    img_list = np.array(img_list, dtype=np.float32)
     return img_list
 
 def get_dir_certain_move(ord_dir, certain_word):
@@ -29,7 +29,7 @@ def get_dir_certain_move(ord_dir, certain_word):
     move_map_list = []
     for file_name in file_names:
         move_map_list.append( np.load(ord_dir + "/" + file_name) )
-    move_map_list = np.array(move_map_list)
+    move_map_list = np.array(move_map_list, dtype=np.float32)
     return move_map_list
 
 def get_dir_img(ord_dir):
@@ -37,7 +37,7 @@ def get_dir_img(ord_dir):
     img_list = []
     for file_name in file_names:
         img_list.append( cv2.imread(ord_dir + "/" + file_name) )
-    img_list = np.array(img_list)
+    img_list = np.array(img_list, dtype=np.float32)
     return img_list
 
 
@@ -46,7 +46,7 @@ def get_dir_move(ord_dir):
     move_map_list = []
     for file_name in file_names:
         move_map_list.append( np.load(ord_dir + "/" + file_name) )
-    move_map_list = np.array(move_map_list)
+    move_map_list = np.array(move_map_list, dtype=np.float32)
     return move_map_list
 
 def get_db_amount(ord_dir):
@@ -145,7 +145,7 @@ def predict_move_maps_back(predict_move_maps):
     for predict_move_map in predict_move_maps:
         predict_back = (predict_move_map[0]+1)/2 * (max_value_train-min_value_train) + min_value_train ### 把 -1~1 轉回原始的值域
         predict_back_list.append(predict_back)
-    return np.array(predict_back_list)
+    return np.array(predict_back_list, dtype=np.float32)
 
 
 

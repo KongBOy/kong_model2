@@ -27,7 +27,7 @@ from build_dataset_combine import Check_dir_exist_and_build_new_dir
 from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec
 from step6_data_pipline import distorted_resize_and_norm
 
-result_dir = access_path+"step10_unet_rec_img"
+result_dir = access_path+"step11_unet_rec_img"
 Check_dir_exist_and_build_new_dir(result_dir)
 
 resize_shape = (512,512)

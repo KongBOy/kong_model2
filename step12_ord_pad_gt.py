@@ -4,7 +4,7 @@ from build_dataset_combine import Check_dir_exist_and_build_new_dir
 import numpy as np 
 import cv2
 
-result_dir = access_path+"step11_ord_pad_gt"
+result_dir = access_path+"step12_ord_pad_gt"
 Check_dir_exist_and_build_new_dir( result_dir )
 
 
@@ -25,7 +25,8 @@ move_y_max = int(move_y_max)
 dis_imgs[:, move_y_max:move_y_max+row, move_x_max:move_x_max+col, :] = imgs
 
 for i, dis_img in enumerate(dis_imgs):
-    cv2.imwrite(result_dir + "/" + "%06i_img-pad.bmp"%i, dis_img)
+    # cv2.imwrite(result_dir + "/" + "%06i_img-pad.bmp"%i, dis_img)
+    cv2.imwrite(result_dir + "/" + "%06i_img.bmp"%i, imgs[i])
     # cv2.waitKey()
     # cv2.destroyAllWindows()
 
