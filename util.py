@@ -1,3 +1,4 @@
+from step0_access_path import access_path
 import numpy as np  
 import cv2 
 import os
@@ -136,6 +137,20 @@ def method2(x, y, color_shift=1):       ### 最大位移量不可以超過 255�
     return bgr
 
 #######################################################
+def predict_move_maps_back(predict_move_maps):
+    train_move_maps = get_dir_move(access_path+"datasets/pad2000-512to256/train/rec_move_map")
+    max_value_train = train_move_maps.max()
+    min_value_train = train_move_maps.min()
+    predict_back_list = []
+    for predict_move_map in predict_move_maps:
+        predict_back = (predict_move_map[0]+1)/2 * (max_value_train-min_value_train) + min_value_train ### 把 -1~1 轉回原始的值域
+        predict_back_list.append(predict_back)
+    return np.array(predict_back_list)
+
+
+
+#######################################################
+
 import matplotlib.pyplot as plt
 def use_plt_show_move(move, color_shift=1):
     move_bgr = method2(move[:,:,0], move[:,:,1], color_shift=color_shift)

@@ -4,7 +4,7 @@ from build_dataset_combine import Check_dir_exist_and_build_new_dir
 import numpy as np 
 import cv2
 
-result_dir = access_path+"step10_ord_pad_gt"
+result_dir = access_path+"step11_ord_pad_gt"
 Check_dir_exist_and_build_new_dir( result_dir )
 
 

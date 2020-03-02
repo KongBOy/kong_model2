@@ -60,31 +60,47 @@ class ResBlock(tf.keras.layers.Layer):
 class Discriminator(tf.keras.models.Model):
     def __init__(self,**kwargs):
         super(Discriminator, self).__init__(**kwargs)
+        self.concat = Concatenate()
+
         self.conv_1 = Conv2D(64  ,   kernel_size=4, strides=2, padding="same")
+        self.leaky_lr1 = LeakyReLU(alpha=0.2)
+
         self.conv_2 = Conv2D(64*2,   kernel_size=4, strides=2, padding="same")
+        self.in_c2   = InstanceNorm_kong()
+        self.leaky_lr2 = LeakyReLU(alpha=0.2)
+
         self.conv_3 = Conv2D(64*4,   kernel_size=4, strides=2, padding="same")
+        self.in_c3   = InstanceNorm_kong()
+        self.leaky_lr3 = LeakyReLU(alpha=0.2)
+
         self.conv_4 = Conv2D(64*8,   kernel_size=4, strides=2, padding="same")
+        self.in_c4   = InstanceNorm_kong()
+        self.leaky_lr4 = LeakyReLU(alpha=0.2)
+
         self.conv_map = Conv2D(1   ,   kernel_size=4, strides=1, padding="same")
 
-        self.in_c2   = InstanceNorm_kong()
-        self.in_c3   = InstanceNorm_kong()
-        self.in_c4   = InstanceNorm_kong()
-    
-    def call(self, input_tensor):
-        x = self.conv_1(input_tensor)
-        x = tf.nn.leaky_relu(x, alpha=0.2)
+        
+    def call(self, dis_img, gt_img):
+        concat_img = self.concat([dis_img, gt_img])
+        x = self.conv_1(concat_img)
+
+        x = self.leaky_lr1(x)
+        # x = tf.nn.leaky_relu(x, alpha=0.2)
 
         x = self.conv_2(x)
         x = self.in_c2(x)
-        x = tf.nn.leaky_relu(x, alpha=0.2)
+        x = self.leaky_lr2(x)
+        # x = tf.nn.leaky_relu(x, alpha=0.2)
 
         x = self.conv_3(x)
         x = self.in_c3(x)
-        x = tf.nn.leaky_relu(x, alpha=0.2)
+        x = self.leaky_lr3(x)
+        # x = tf.nn.leaky_relu(x, alpha=0.2)
 
         x = self.conv_4(x)
         x = self.in_c4(x)
-        x = tf.nn.leaky_relu(x, alpha=0.2)
+        x = self.leaky_lr4(x)
+        # x = tf.nn.leaky_relu(x, alpha=0.2)
 
         return self.conv_map(x)
 
@@ -152,38 +168,16 @@ class Generator(tf.keras.models.Model):
         x_RGB = self.convRGB(x)
         return tf.nn.tanh(x_RGB)
 
-class CycleGAN(tf.keras.models.Model):
+class Rect2(tf.keras.models.Model):
     def __init__(self):
-        super(CycleGAN, self).__init__()
-        self.discriminator_a = Discriminator(name="D_A")
-        self.discriminator_b = Discriminator(name="D_B")
-        self.generator_a2b   = Generator(name="G_A2B")
-        self.generator_b2a   = Generator(name="G_B2A")
-
-    def call(self, imgA, imgB):
-        fake_b       = self.generator_a2b  (imgA)
-        fake_b_score = self.discriminator_b(fake_b)
-        fake_b_cyc_a = self.generator_b2a  (fake_b)
-        real_b_score = self.discriminator_b(imgB)
-        
-        fake_a       = self.generator_b2a(imgB)
-        fake_a_score = self.discriminator_a(fake_a)
-        fake_a_cyc_b = self.generator_a2b  (fake_a)
-        real_a_score = self.discriminator_a(imgA)
-
-        ### 沒有用 identical loss
-        # return fake_b_score, real_b_score, \
-        #        fake_a_score, real_a_score, \
-        #        fake_b_cyc_a, fake_a_cyc_b
-
-        ### 有用 identical loss
-        same_a       = self.generator_b2a(imgA)
-        same_b       = self.generator_a2b(imgB)
-
-        return fake_b_score, real_b_score, \
-               fake_a_score, real_a_score, \
-               fake_b_cyc_a, fake_a_cyc_b, \
-               same_a, same_b
+        super(Rect2, self).__init__()
+        self.generator = Generator()
+        self.discriminator = Discriminator()
+    def call(self, dis_img, gt_img):
+        g_rec_img = self.generator(dis_img)
+        fake_score = self.discriminator(dis_img, g_rec_img)
+        real_score = self.discriminator(dis_img, gt_img)
+        return g_rec_img, fake_score, real_score
 
 
 
@@ -197,71 +191,50 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1.,tf.float32)):
     loss = tf.reduce_mean( tf.math.abs( tensor1 - tensor2 ) )
     return loss * lamb
 
-
-# def train_step(imgA, imgB, optimizer_G, optimizer_D, cyclegan):
 @tf.function
-def train_step(imgA, imgB, optimizer_G_A2B, optimizer_G_B2A, optimizer_D_A, optimizer_D_B, cyclegan):
+def train_step(dis_img, gt_img, optimizer_G, optimizer_D, rect2):
     with tf.GradientTape(persistent=True) as tape:
-        fake_b_score, real_b_score, \
-        fake_a_score, real_a_score, \
-        fake_b_cyc_a, fake_a_cyc_b, \
-        same_a,  same_b = cyclegan(imgA,imgB)
+        g_rec_img, fake_score, real_score = rect2(dis_img, gt_img)
 
-        loss_rec_a = mae_kong(imgA, fake_b_cyc_a, lamb=tf.constant(10.,tf.float32))
-        loss_rec_b = mae_kong(imgB, fake_a_cyc_b, lamb=tf.constant(10.,tf.float32))
-        loss_g2d_b = mse_kong(fake_b_score, tf.ones_like(fake_b_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32))
-        loss_g2d_a = mse_kong(fake_a_score, tf.ones_like(fake_b_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32))
-        loss_same_a = mae_kong(imgA, same_a, lamb=tf.constant(0.5,tf.float32))
-        loss_same_b = mae_kong(imgB, same_b, lamb=tf.constant(0.5,tf.float32))
-        # g_total_loss = loss_rec_a + loss_rec_b + loss_g2d_b + loss_g2d_a
-        G_A2B_loss = loss_rec_a + loss_g2d_b + loss_same_b
-        G_B2A_loss = loss_rec_b + loss_g2d_a + loss_same_a
-
-        loss_da_real = mse_kong( real_a_score, tf.ones_like(real_a_score ,dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
-        loss_da_fake = mse_kong( fake_a_score, tf.zeros_like(fake_a_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
-        loss_db_real = mse_kong( real_b_score, tf.ones_like(real_b_score ,dtype=tf.float32),   lamb=tf.constant(1.,tf.float32) )
-        loss_db_fake = mse_kong( fake_b_score, tf.zeros_like(fake_b_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
-        # d_total_loss = (loss_da_real+loss_da_fake)/2 + (loss_db_real+loss_db_fake)/2
-        D_A_loss = (loss_da_real+loss_da_fake)/2  
-        D_B_loss = (loss_db_real+loss_db_fake)/2
-
-    # grad_D = tape.gradient(d_total_loss, cyclegan.discriminator_a.trainable_weights + cyclegan.discriminator_b.trainable_weights)
-    # grad_G = tape.gradient(g_total_loss, cyclegan.generator_b2a.  trainable_weights + cyclegan.generator_a2b.  trainable_weights)
-    # optimizer_D.apply_gradients( zip(grad_D, cyclegan.discriminator_a.trainable_weights + cyclegan.discriminator_b.trainable_weights)  )
-    # optimizer_G.apply_gradients( zip(grad_G, cyclegan.generator_b2a.  trainable_weights + cyclegan.generator_a2b.  trainable_weights)  )
+        g_total_loss = mae_kong(g_rec_img, gt_img, lamb=tf.constant(10.,tf.float32))
+        
+        loss_d_fake = mse_kong( fake_score, tf.zeros_like(fake_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
+        loss_d_real = mse_kong( real_score, tf.ones_like (real_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
+        
+        d_total_loss = (loss_d_real+loss_d_fake)/2
+        
+    grad_D = tape.gradient(d_total_loss, rect2.discriminator.trainable_weights + rect2.discriminator.trainable_weights)
+    grad_G = tape.gradient(g_total_loss, rect2.generator.    trainable_weights + rect2.generator.     trainable_weights)
+    optimizer_D.apply_gradients( zip(grad_D, rect2.discriminator.trainable_weights + rect2.discriminator.trainable_weights)  )
+    optimizer_G.apply_gradients( zip(grad_G, rect2.generator.    trainable_weights + rect2.generator.    trainable_weights)  )
     
-    grad_D_A = tape.gradient(D_A_loss, cyclegan.discriminator_a.trainable_weights )
-    grad_D_B = tape.gradient(D_B_loss, cyclegan.discriminator_b.trainable_weights )
-    grad_G_A2B = tape.gradient(G_A2B_loss, cyclegan.generator_a2b.trainable_weights )
-    grad_G_B2A = tape.gradient(G_B2A_loss, cyclegan.generator_b2a.trainable_weights )
-    
-    
-    optimizer_D_A.apply_gradients( zip(grad_D_A, cyclegan.discriminator_a.trainable_weights )  )
-    optimizer_D_B.apply_gradients( zip(grad_D_B, cyclegan.discriminator_b.trainable_weights )  )
-    optimizer_G_A2B.apply_gradients( zip(grad_G_A2B, cyclegan.generator_a2b.  trainable_weights)  )
-    optimizer_G_B2A.apply_gradients( zip(grad_G_B2A, cyclegan.generator_b2a.  trainable_weights)  )
-
-
-
 
 
 
 if(__name__ == "__main__"):
     import numpy as np
-    # generator = build_G()
-    # img_g = np.ones( shape=(1,16,16,3), dtype=np.float32)
-    # out_g = generator(img_g)
-    # print("out_g.numpy()",out_g.numpy())
+    import matplotlib.pyplot as plt
+    generator = Generator()
+    img_g = np.ones( shape=(1,256,256,3), dtype=np.float32)
+    out_g = generator(img_g)
+    plt.imshow(out_g[0,...])
+    plt.show()
+    print("out_g.numpy()",out_g.numpy())
 
-    # discriminator = build_D()
-    # img_d = np.ones(shape=(1,16,16,6),dtype=np.float32)
-    # out_d = discriminator(img_d)
+    # discriminator = Discriminator()
+    # img_d1 = np.ones(shape=(1,256,256,3),dtype=np.float32)
+    # img_d2 = np.ones(shape=(1,256,256,3),dtype=np.float32)
+    # out_d = discriminator(img_d1, img_d2)
+    # plt.imshow(out_d[0,...,-1], vmin=-20, vmax=20, cmap='RdBu_r')
+    # plt.colorbar()
+    # plt.show()
     # print("out_d.numpy()",out_d.numpy())
 
-    # discriminator_a, discriminator_b, generator_a2b, generator_b2a, GAN_b2a, GAN_a2b = build_CycleGAN()
-    # discriminator_a.save('discriminator_a.h5') 
-    # generator_a2b.save('generator_a2b.h5') 
-
-    # cyclegan = CycleGAN()
+    # rect2 = Rect2()
+    # dis_img = np.ones( shape=(1,256,256,3), dtype=np.float32)
+    # gt_img  = np.ones( shape=(1,256,256,3), dtype=np.float32)
+    # optimizer_G = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
+    # optimizer_D = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
+    # train_step(dis_img, gt_img, optimizer_G, optimizer_D, rect2)
 
     print("finish")

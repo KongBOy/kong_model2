@@ -31,24 +31,6 @@ def preprocess_distorted_img(file_name):
 
 ### 以上是 file_name -> tensor  還不大會用一直出問題，有空再去學好他，先直接用numpy全讀近來且處理好再丟進tensor
 ########################################################################################################
-########################################################################################################
-
-######################################################################################################################################
-### 經過老師講解後 move_map 不用padding 了
-
-# def get_db_all_move_map_and_padding_and_resize(ord_dir):
-#     move_maps = get_dir_move(ord_dir)
-#     max_move_x, max_move_y = get_max_move_xy_from_numpy(move_maps)
-#     max_move_x = int(max_move_x) ### 先直接捨去小數，有時間再考慮精確
-#     max_move_y = int(max_move_y) ### 先直接捨去小數，有時間再考慮精確
-
-#     move_padding_list = []
-#     for move in move_maps:
-#         move = np.pad(move, ( (max_move_y, max_move_y), (max_move_x, max_move_x), (0,0) ))
-#         fig, ax = use_plt_show_move(move) ; plt.show() ### debug用
-#         move = cv2.resize(move, (256,256), interpolation = cv2.INTER_NEAREST)
-#         move_padding_list.append(move)
-#     move_padding_list = np.array(move_padding_list)
 
 
 ######################################################################################################################################
