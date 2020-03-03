@@ -204,10 +204,10 @@ def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer,
         loss_d_real = mse_kong( real_score, tf.ones_like (real_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
         d_total_loss = (loss_d_real+loss_d_fake)/2
         
-    grad_D = tape.gradient(d_total_loss, rect2.discriminator.trainable_weights + rect2.discriminator.trainable_weights)
-    grad_G = tape.gradient(g_total_loss, rect2.generator.    trainable_weights + rect2.generator.     trainable_weights)
-    optimizer_D.apply_gradients( zip(grad_D, rect2.discriminator.trainable_weights + rect2.discriminator.trainable_weights)  )
-    optimizer_G.apply_gradients( zip(grad_G, rect2.generator.    trainable_weights + rect2.generator.    trainable_weights)  )
+    grad_D = tape.gradient(d_total_loss, rect2.discriminator.trainable_weights)
+    grad_G = tape.gradient(g_total_loss, rect2.generator.    trainable_weights)
+    optimizer_D.apply_gradients( zip(grad_D, rect2.discriminator.trainable_weights )  )
+    optimizer_G.apply_gradients( zip(grad_G, rect2.generator.    trainable_weights )  )
 
     with summary_writer.as_default():
         tf.summary.scalar('1_loss_rec', loss_rec, step=epoch)
