@@ -32,17 +32,18 @@ Check_dir_exist_and_build_new_dir(result_dir)
 
 resize_shape = (512,512)
 
-dis_imgs = get_dir_certain_img(access_path+"step3_apply_flow_result","3a1-I1-patch.bmp")
-dis_imgs_resize_norm = distorted_resize_and_norm(dis_imgs, resize_shape)
+### 用 dis_img 得到 move_map
+dis_imgs = get_dir_certain_img(access_path+"step3_apply_flow_result","3a1-I1-patch.bmp")  ### 讀取dis_imgs 等等輸入unet
+dis_imgs_resize_norm = distorted_resize_and_norm(dis_imgs, resize_shape) ### 前處理，要符合unet的格式：-1~1 和 resize_shape 
 move_maps = []
 for i, dis_img in enumerate(dis_imgs_resize_norm):
     print("doing %06i"%i)
-    move_map = generator(np.expand_dims(dis_img, axis=0), training=True)
-    move_maps.append(move_map.numpy())
-move_maps = np.array(move_maps)
-move_maps = predict_move_maps_back(move_maps)
+    move_map = generator(np.expand_dims(dis_img, axis=0), training=True) ### dis_img 丟進去generator 來 predict move_map
+    move_maps.append(move_map.numpy()) ### move_map 存起來
+move_maps = np.array(move_maps) 
+move_maps = predict_move_maps_back(move_maps)  ### 把 move_map"s" 的值 從-1~1 還原
 
-
+### 用得到 move_map 來還原 dis_img
 max_move_x, max_move_y = get_max_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q") ### 注意這裡要去 step3才對！因為當初建db時是用整個db的最大移動量(step3裡的即整個db的資料)，如果去dataset/train的話只有train的資料喔
 
 import matplotlib.pyplot as plt

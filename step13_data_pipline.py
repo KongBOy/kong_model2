@@ -89,17 +89,17 @@ for epoch in range(start_epoch, epochs):
     e_start = time.time()
 
     lr = 0.0002 if epoch < epoch_down_step else 0.0002*(epochs-epoch)/(epochs-epoch_down_step)
-    generator_optimizer.lr = lr
+    generator_optimizer.lr     = lr
+    discriminator_optimizer.lr = lr
     ##     用來看目前訓練的狀況 
     for test_input, test_label in zip(g_imgs_test_db.take(1), gt_imgs_test_db.take(1)): 
         generate_images( rect2.generator, test_input, test_label, epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
     ###     訓練
     for n, (input_image, target) in enumerate( zip(g_imgs_train_db, gt_imgs_train_db) ):
         print('.', end='')
-        if (n+1) % 100 == 0:
-            print()
+        if (n+1) % 100 == 0:print()
             
-            train_step(rect2, input_image, target, generator_optimizer, discriminator_optimizer, summary_writer, epoch)
+        train_step(rect2, input_image, target, generator_optimizer, discriminator_optimizer, summary_writer, epoch)
     print()
 
     ###     儲存模型 (checkpoint) the model every 20 epochs
@@ -109,7 +109,7 @@ for epoch in range(start_epoch, epochs):
 
     epoch_cost_time = time.time()-e_start
     total_cost_time = time.time()-total_start
-    print('epoch %i cost time:%.2f'%(epoch + 1, epoch_cost_time)  )
+    print('epoch %i cost time:%.2f'%(epoch, epoch_cost_time)  )
     print("batch cost time:%.2f"   %(epoch_cost_time/data_maount) )
     print("total cost time:%s"     %(time_util(total_cost_time))  )
     print("")

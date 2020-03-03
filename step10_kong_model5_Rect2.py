@@ -225,8 +225,8 @@ def generate_images( model, dis_img, gt_img,  epoch=0, result_dir="."):
     rect2 = model(dis_img, training=True)
 
     plt.figure(figsize=(20,6))
-    display_list = [dis_img[0], gt_img[0], rect2[0]]
-    title = ['Input Image', 'Ground Truth', 'rect2 Image']
+    display_list = [dis_img[0], rect2[0], gt_img[0]]
+    title = ['Input Image', 'rect2 Image', 'Ground Truth']
 
     for i in range(3):
         plt.subplot(1, 3, i+1)
