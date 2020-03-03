@@ -14,6 +14,13 @@ def norm_imgs(imgs):
     return (imgs/127.5)-1
 
 
+### train 和 test 參數
+restore_model = False ### 如果 restore_model 設True，下面 restore_result_dir 才會有用處喔！
+restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"
+
+data_maount = 1800
+
+#####################################################################################
 batch_size = 1
 g_imgs  = get_dir_img(access_path+"step11_unet_rec_img")
 gt_imgs = get_dir_img(access_path+"step12_ord_pad_gt")
@@ -34,28 +41,44 @@ gt_imgs_test_db = gt_imgs_test_db.batch(batch_size)
 
 # from step10_kong_model5_Rect2 import Generator, Discriminator, generate_images, train_step
 from step10_kong_model5_Rect2 import Rect2, generate_images, train_step
-
+#####################################################################################
 rect2 = Rect2()
 generator_optimizer = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
 discriminator_optimizer   = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
 
+#####################################################################################
 epoch_log = tf.Variable(1) ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
 ckpt = tf.train.Checkpoint(epoch_log=epoch_log, rect2=rect2, 
                                                 generator_optimizer=generator_optimizer,
                                                 discriminator_optimizer=discriminator_optimizer)
-
+#####################################################################################
+### 決定 結果要寫哪邊 或 從哪邊讀資料
 import datetime 
+### 預設用 rect2_2020....-...... 當開頭
 result_dir = "rect2_"+datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 logs_dir, ckpt_dir = step4_get_result_dir_default_logs_ckpt_dir_name(result_dir)
+##################################################
+### 如果要restore_model，再改用restore的位置並重新取logs、ckpt資料夾
+if(restore_model==True):
+    result_dir = restore_result_dir
+    logs_dir, ckpt_dir = step4_get_result_dir_default_logs_ckpt_dir_name(result_dir)
+##################################################
 Check_dir_exist_and_build(result_dir)
 Check_dir_exist_and_build(logs_dir)
 Check_dir_exist_and_build(ckpt_dir)
 
-
+#####################################################################################
 summary_writer = tf.summary.create_file_writer( logs_dir ) ### 建tensorboard，這會自動建資料夾喔！
 manager        = tf.train.CheckpointManager (checkpoint=ckpt, directory=ckpt_dir, max_to_keep=2) ### checkpoint管理器，設定最多存2份
 
-data_maount = 1800
+
+### 決定 要不要讀取上次的結果
+if(restore_model==True): 
+    ckpt.restore(manager.latest_checkpoint)     ### 從restore_ckpt_dir 抓存的model出來
+    start_epoch = ckpt.epoch_log.numpy()
+    print("load model ok~~~~~~~~~~~")
+
+#####################################################################################
 
 
 ######################################################################################################################
