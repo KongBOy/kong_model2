@@ -225,7 +225,7 @@ if(__name__=="__main__"):
     from util import get_dir_img, get_dir_move, get_max_move_xy_from_certain_move
     from build_dataset_combine import Check_dir_exist_and_build
     import numpy as np 
-    test_dir = result_dir + "/" + "testing"
+    test_dir = result_dir + "/" + "test"
     Check_dir_exist_and_build(test_dir)
     print("current_epoch_log", ckpt.epoch_log)
     for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_db.take(200))): 
