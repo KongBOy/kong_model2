@@ -4,17 +4,19 @@ from build_dataset_combine import Check_dir_exist_and_build_new_dir
 import numpy as np 
 import cv2
 
+
 result_dir = access_path+"step12_ord_pad_gt"
 Check_dir_exist_and_build_new_dir( result_dir )
 
+imgs = get_dir_certain_img("step3_apply_flow_result","1-I.bmp")
 
 
+### 本來想要padding，但後來發現好像不用，所以其實直接拿step3裡的 1-I.bmp也行喔！
+### 初始化各個會用到的canvas
 row=256
 col=256
-imgs = get_dir_certain_img("step3_apply_flow_result","1-I.bmp")
 move_x_max, move_y_max = get_max_move_xy_from_certain_move("step3_apply_flow_result","2-q.npy")
 
-### 初始化各個會用到的canvas
 dis_h = int( np.around(move_y_max + row + move_y_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
 dis_w = int( np.around(move_x_max + col + move_x_max) ) ### np.around 是四捨五入，然後因為要丟到shape裡所以轉int
 dis_img  = np.zeros(shape=(dis_h,dis_w,3), dtype=np.uint8)

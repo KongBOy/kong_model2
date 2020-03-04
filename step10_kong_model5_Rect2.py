@@ -196,7 +196,7 @@ def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer,
     with tf.GradientTape(persistent=True) as tape:
         g_rec_img, fake_score, real_score = rect2(dis_img, gt_img)
         
-        loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(10.,tf.float32))
+        loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(20.,tf.float32))
         loss_g2d = mse_kong(fake_score, tf.ones_like(fake_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32))
         g_total_loss = loss_rec + loss_g2d
         

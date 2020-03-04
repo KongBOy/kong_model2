@@ -6,9 +6,9 @@ import time
 import tensorflow as tf 
 
 start_epoch = 0
-epochs = 1000
+epochs = 160
 epoch_down_step = 100
-epoch_save_freq = 60
+epoch_save_freq = 20
 
 def norm_imgs(imgs):
     return (imgs/127.5)-1
@@ -22,21 +22,21 @@ data_maount = 1800
 
 #####################################################################################
 batch_size = 1
-g_imgs  = get_dir_img(access_path+"step11_unet_rec_img")
+unet_imgs  = get_dir_img(access_path+"step11_unet_rec_img")
 gt_imgs = get_dir_img(access_path+"step12_ord_pad_gt")
 
-g_imgs  = norm_imgs(g_imgs)
+unet_imgs  = norm_imgs(unet_imgs)
 gt_imgs = norm_imgs(gt_imgs)
 
-g_imgs_train_db = tf.data.Dataset.from_tensor_slices(g_imgs[:1800])
-g_imgs_train_db = g_imgs_train_db.batch(batch_size)
+unet_imgs_train_db = tf.data.Dataset.from_tensor_slices(unet_imgs[:1800])
+unet_imgs_train_db = unet_imgs_train_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 gt_imgs_train_db = tf.data.Dataset.from_tensor_slices(gt_imgs[:1800])
-gt_imgs_train_db = gt_imgs_train_db.batch(batch_size)
+gt_imgs_train_db = gt_imgs_train_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 
-g_imgs_test_db = tf.data.Dataset.from_tensor_slices(g_imgs[1800:])
-g_imgs_test_db = g_imgs_test_db.batch(batch_size)
+unet_imgs_test_db = tf.data.Dataset.from_tensor_slices(unet_imgs[1800:])
+unet_imgs_test_db = unet_imgs_test_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 gt_imgs_test_db = tf.data.Dataset.from_tensor_slices(gt_imgs[1800:])
-gt_imgs_test_db = gt_imgs_test_db.batch(batch_size)
+gt_imgs_test_db = gt_imgs_test_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 
 
 # from step10_kong_model5_Rect2 import Generator, Discriminator, generate_images, train_step
@@ -92,15 +92,13 @@ for epoch in range(start_epoch, epochs):
     generator_optimizer.lr     = lr
     discriminator_optimizer.lr = lr
     ##     用來看目前訓練的狀況 
-    for test_input, test_label in zip(g_imgs_test_db.take(1), gt_imgs_test_db.take(1)): 
+    for test_input, test_label in zip(unet_imgs_test_db.take(1), gt_imgs_test_db.take(1)): 
         generate_images( rect2.generator, test_input, test_label, epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
     ###     訓練
-    for n, (input_image, target) in enumerate( zip(g_imgs_train_db, gt_imgs_train_db) ):
+    for n, (input_image, target) in enumerate( zip(unet_imgs_train_db, gt_imgs_train_db) ):
         print('.', end='')
         if (n+1) % 100 == 0:print()
-            
         train_step(rect2, input_image, target, generator_optimizer, discriminator_optimizer, summary_writer, epoch)
-    print()
 
     ###     儲存模型 (checkpoint) the model every 20 epochs
     if (epoch + 1) % epoch_save_freq == 0:
