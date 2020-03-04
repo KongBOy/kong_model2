@@ -5,6 +5,7 @@ from build_dataset_combine import Check_dir_exist_and_build
 import time
 import tensorflow as tf 
 
+phase = "train"
 start_epoch = 0
 epochs = 160
 epoch_down_step = 100
@@ -79,7 +80,18 @@ if(restore_model==True):
     print("load model ok~~~~~~~~~~~")
 
 #####################################################################################
+def save_rect2_train_code(result_dir):
+    import shutil
+    dst_dir = result_dir+"/"+"train_code"
+    Check_dir_exist_and_build(dst_dir)
+    shutil.copy("step10_kong_model5_Rect2.py",dst_dir + "/" + "step10_kong_model5_Rect2.py")
+    shutil.copy("step11_unet_rec_img.py"     ,dst_dir + "/" + "step11_unet_rec_img.py")
+    shutil.copy("step12_ord_pad_gt.py"       ,dst_dir + "/" + "step12_ord_pad_gt.py")
+    shutil.copy("step13_data_pipline.py"     ,dst_dir + "/" + "step13_data_pipline.py")
+    shutil.copy("util.py"                    ,dst_dir + "/" + "util.py")
 
+if(phase.lower() == "train"):
+    save_rect2_train_code(result_dir)
 
 ######################################################################################################################
 ## training 的部分 ####################################################################################################
