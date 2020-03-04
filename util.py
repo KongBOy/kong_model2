@@ -12,12 +12,18 @@ def get_xy_map(row, col):
     y = np.tile(y,(col,1)).T
     return x, y
 
+def check_img_file_name(file_name):
+    file_name = file_name.lower()
+    if(".bmp" in file_name or ".jpg" in file_name or ".jpeg" in file_name or ".png" in file_name ):return True
+    else: return False
+
+
 def get_dir_certain_file_name(ord_dir, certain_word):
     file_names = [file_name for file_name in os.listdir(ord_dir) if (certain_word in file_name)]
     return file_names
 
 def get_dir_certain_img(ord_dir, certain_word):
-    file_names = [file_name for file_name in os.listdir(ord_dir) if (".bmp" in file_name) and (certain_word in file_name) ]
+    file_names = [file_name for file_name in os.listdir(ord_dir) if check_img_file_name(file_name) and (certain_word in file_name) ]
     img_list = []
     for file_name in file_names:
         img_list.append( cv2.imread(ord_dir + "/" + file_name) )
@@ -33,7 +39,7 @@ def get_dir_certain_move(ord_dir, certain_word):
     return move_map_list
 
 def get_dir_img(ord_dir):
-    file_names = [file_name for file_name in os.listdir(ord_dir) if (".bmp" in file_name) or (".jpg" in file_name) ]
+    file_names = [file_name for file_name in os.listdir(ord_dir) if check_img_file_name(file_name) ]
     img_list = []
     for file_name in file_names:
         img_list.append( cv2.imread(ord_dir + "/" + file_name) )
@@ -50,7 +56,7 @@ def get_dir_move(ord_dir):
     return move_map_list
 
 def get_db_amount(ord_dir):
-    file_names = [file_name for file_name in os.listdir(ord_dir) if (".bmp" in file_name) or (".jpg" in file_name) or (".npy" in file_name) ]
+    file_names = [file_name for file_name in os.listdir(ord_dir) if check_img_file_name(file_name) or (".npy" in file_name) ]
     return len(file_names)
 
 ##########################################################
@@ -166,3 +172,6 @@ def time_util(cost_time):
     minute = cost_time%3600//60 
     second = cost_time%3600%60
     return "%02i:%02i:%02i"%(hour, minute, second)
+
+#######################################################
+
