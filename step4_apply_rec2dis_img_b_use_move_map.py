@@ -19,6 +19,63 @@ def apply_move_to_rec(dis_img, move_map, max_move_x, max_move_y):
     return rec_img
 
 
+def apply_move_to_rec2(dis_img, move_map, max_move_x, max_move_y):
+    import time
+    from util import get_xy_map
+    start_time = time.time()
+    dis_row, dis_col = dis_img.shape[:2] ### 原始的 5xx, 5xx，不是5125, 512喔！
+    row, col = move_map.shape[:2] ### 256, 256
+
+    rec_img = np.zeros(shape=(row,col,3),dtype=np.uint8) ### 建立存恢復影像的畫布，256,256
+    go_x, go_y = get_xy_map(row,col)
+    move_map2 = move_map.copy()
+    move_map2[...,0] += go_x+max_move_x
+    move_map2[...,1] += go_y+max_move_y
+    move_map2 = move_map2.astype(np.int32)
+    
+    rec_img = dis_img[move_map2[...,1],move_map2[...,0],:]
+    rec_img[ move_map2[...,0]<0 ] = 0
+    rec_img[ move_map2[...,0]>dis_col ] = 0
+    rec_img[ move_map2[...,1]<0 ] = 0
+    rec_img[ move_map2[...,1]>dis_row ] = 0
+    
+    ### 拿 move_map2 來恢復 dis_img
+    # for go_row in range(row):
+        # for go_col in range(col):
+    #         x = int(go_col + move_map[go_row, go_col, 0] + max_move_x)  ### 設定 rec_img的go_col 去dis_img 的哪裡抓，去你 原始影像 apply move_map 後的位置抓
+    #         y = int(go_row + move_map[go_row, go_col, 1] + max_move_y)  ### 設定 rec_img的go_row 去dis_img 的哪裡抓，去你 原始影像 apply move_map 後的位置抓
+            # if(y>=0 and y<dis_row and x>=0 and x<dis_col): ### 要注意可能 設定x,y 回去dis_img時，x,y 可能會因為train的不好 或 本身test扭曲就過大??(會嗎，有空想想) 超出dis_img，超出去就不抓值囉~~
+                # rec_img[go_row, go_col] = dis_img[y, x]
+    print("cost time:",time.time()-start_time)
+    return rec_img
+
+
+import tensorflow as tf 
+
+
+@tf.function
+def apply_move_to_rec_tf(dis_img, move_map, max_move_x, max_move_y):
+    import time
+    from util import get_xy_map
+    
+    start_time = time.time()
+    dis_row, dis_col = dis_img.shape[:2] ### 原始的 5xx, 5xx，不是5125, 512喔！
+    row, col = move_map.shape[:2] ### 256, 256
+
+    rec_img = np.zeros(shape=(row,col,3)) ### 建立存恢復影像的畫布，256,256
+    tf_rec_img = tf.Variable(shape=(row,col,3))
+    go_x, go_y = get_xy_map(row,col)
+    move_map2 = move_map.copy()
+    move_map2[...,0] += go_x+max_move_x
+    move_map2[...,1] += go_y+max_move_y
+    move_map2 = move_map2.astype(np.int32)
+    
+    # rec_img = dis_img[move_map2[...,1],move_map2[...,0],:]
+    # rec_img[ move_map2[...,0]<0 ] = 0
+    # rec_img[ move_map2[...,0]>dis_col ] = 0
+    # rec_img[ move_map2[...,1]<0 ] = 0
+    # rec_img[ move_map2[...,1]>dis_row ] = 0
+
 
 
 if(__name__=="__main__"):
@@ -34,14 +91,14 @@ if(__name__=="__main__"):
     max_move_x, max_move_y = get_max_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q")
 
     ### 拿 dis_img 配 move_map 來做 rec囉！
-    rec_img = apply_move_to_rec(dis_img, move_map, max_move_x, max_move_y)
+    # rec_img = apply_move_to_rec2(dis_img, move_map, max_move_x, max_move_y)
 
     # cv2.imshow(access_path+"rec_img", rec_img.astype(np.uint8))
     # cv2.imwrite(access_path+"rec_img.png", rec_img.astype(np.uint8))
     # cv2.waitKey()
     # cv2.destroyAllWindows()
 
-
+    rec_img = apply_move_to_rec_tf(dis_img, move_map, max_move_x, max_move_y)
 
     ### 原來要用 inverse flow 的版本還是留一下好了
     # row, col = img.shape[:2]
