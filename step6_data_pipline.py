@@ -72,6 +72,8 @@ def get_certain_distorted_and_resize_and_norm(ord_dir,certain_word, resize_shape
 
 ######################################################################################################################################
 def get_all_distorted_and_resize_and_norm(ord_dir, resize_shape=(256,256)):
+    import time
+    start_time = time.time()
     file_names = [file_name for file_name in os.listdir(ord_dir) if ".bmp" in file_name]
     distorted_list = []
     for file_name in file_names[:]:
@@ -82,16 +84,20 @@ def get_all_distorted_and_resize_and_norm(ord_dir, resize_shape=(256,256)):
     distorted_list = np.array(distorted_list)
     distorted_list = (distorted_list / 127.5)-1
     distorted_list = distorted_list.astype(np.float32)
+    print("get_all_distorted_and_resize_and_norm cost time", time.time()-start_time)
     return distorted_list
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
 ### 可以再思考一下要不要把 get 和 resize 和 norm 拆開funtcion寫~~~ 因為直接get完直接norm，在外面就得不到原始 max min 了
 def get_db_all_move_map_and_resize(ord_dir, resize_shape=(256,256)):
+    import time
+    start_time = time.time()
     move_map_list = get_dir_move(ord_dir)
     move_map_resize_list = []
     for move in move_map_list[:]:
         move_resize = cv2.resize( move, resize_shape, interpolation = cv2.INTER_NEAREST)
         move_map_resize_list.append(move_resize)
     move_map_resize_list = np.array(move_map_resize_list)
+    print("get_db_all_move_map_and_resize cost time", time.time()-start_time)
     return move_map_resize_list
 
     # max_value = move_map_list.max() ###  236.52951204508076
@@ -112,10 +118,7 @@ def use_number_to_norm(move_map_list, max_value, min_value): ### 給test來用�
 
 
 ### 這部分就針對個別情況來寫好了，以目前資料庫很固定就是 train/test，就直接寫死在裡面囉～遇到CycleGAN的情況在自己改trainA,B/testA,B
-def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1, img_resize=(256,256), move_resize=(256,256)):
-    # import time
-    # start_time = time.time()
-
+def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1, img_resize=(256,256), move_resize=(256,256)):    
     ### 拿到 扭曲影像 的 train dataset，從 檔名 → tensor
     distorted_train_load_path = db_dir + "/" + db_name + "/" + "train/distorted_img" 
     distorted_train_db = get_all_distorted_and_resize_and_norm(distorted_train_load_path, resize_shape=img_resize)
@@ -180,8 +183,9 @@ if(__name__ == "__main__"):
     start_time = time.time()
 
     db_dir  = access_path+"datasets"
-    db_name = "stack_unet-easy300"
-    # _ = get_dataset(db_dir=db_dir, db_name=db_name)
+    db_name = "pad2000-512to256_index"
+
+    _ = get_dataset(db_dir=db_dir, db_name=db_name)
 
 
     print(time.time()- start_time)
