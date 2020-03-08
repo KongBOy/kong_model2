@@ -43,7 +43,6 @@ def get_dir_img(ord_dir):
     img_list = []
     for file_name in file_names:
         img_list.append( cv2.imread(ord_dir + "/" + file_name) )
-        print(file_name,img_list[-1].shape)
     img_list = np.array(img_list, dtype=np.float32)
     return img_list
 
