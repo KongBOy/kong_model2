@@ -41,17 +41,17 @@ batch_size = 1
 
 # unet_rec_imgs_train_db = tf.data.Dataset.from_tensor_slices(unet_rec_imgs_train[:1800])
 unet_rec_imgs_train_db = get_img_dataset_from_file_name(access_path+"datasets/rect2_add_dis_imgs/train/distorted_and_unet_rec_imgs")
-unet_rec_imgs_train_db = unet_rec_imgs_train_db.batch(batch_size)#.prefetch(tf.data.experimental.AUTOTUNE)
+unet_rec_imgs_train_db = unet_rec_imgs_train_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 # unet_rec_gt_imgs_train_db = tf.data.Dataset.from_tensor_slices(unet_rec_gt_imgs_train[:1800])
 unet_rec_gt_imgs_train_db = get_img_dataset_from_file_name(access_path+"datasets/rect2_add_dis_imgs/train/distorted_and_unet_rec_gt_imgs")
-unet_rec_gt_imgs_train_db = unet_rec_gt_imgs_train_db.batch(batch_size)#.prefetch(tf.data.experimental.AUTOTUNE)
+unet_rec_gt_imgs_train_db = unet_rec_gt_imgs_train_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 
 # unet_rec_imgs_test_db = tf.data.Dataset.from_tensor_slices(unet_rec_imgs_test[1800:])
 unet_rec_imgs_test_db = get_img_dataset_from_file_name(access_path+"datasets/rect2_add_dis_imgs/test/distorted_and_unet_rec_imgs")
-unet_rec_imgs_test_db = unet_rec_imgs_test_db.batch(batch_size)#.prefetch(tf.data.experimental.AUTOTUNE)
+unet_rec_imgs_test_db = unet_rec_imgs_test_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 # unet_rec_gt_imgs_test_db = tf.data.Dataset.from_tensor_slices(unet_rec_gt_imgs_test[1800:])
 unet_rec_gt_imgs_test_db = get_img_dataset_from_file_name(access_path+"datasets/rect2_add_dis_imgs/test/distorted_and_unet_rec_gt_imgs")
-unet_rec_gt_imgs_test_db = unet_rec_gt_imgs_test_db.batch(batch_size)#.prefetch(tf.data.experimental.AUTOTUNE)
+unet_rec_gt_imgs_test_db = unet_rec_gt_imgs_test_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 
 
 # from step10_kong_model5_Rect2 import Generator, Discriminator, generate_images, train_step
