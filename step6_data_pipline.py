@@ -8,6 +8,8 @@ from util import get_dir_move, use_plt_show_move
 import matplotlib.pyplot as plt
 tf.keras.backend.set_floatx('float32') ### 這步非常非常重要！用了才可以加速！
 
+
+
 def step1_load_one_img(file_name):
     img = tf.io.read_file(file_name)
     img = tf.image.decode_bmp(img)
@@ -29,6 +31,63 @@ def preprocess_distorted_img(file_name):
     img  = step3_normalize(img)           ### 因為用tanh，所以把值弄到 [-1, 1]
     return img 
 
+
+
+index = 1
+def read_move_map(index):
+    move_map = np.load(index+".npy")
+    return move_map
+
+
+def step4_load_one_move_map(file_name):
+    move_map = tf.io.read_file(file_name)
+    print(move_map)
+    # move_map = tf.data.Dataset.from_tensor_slices(move_map)
+    return move_map
+
+def preprocess_move_map(file_name):
+    index = tf.strings.split(file_name, '.')
+    move_map = tf.py_function(read_move_map,[index],[tf.float32])
+
+    # move_map  = step4_load_one_move_map(file_name)  ### 根據檔名，把圖片讀近來且把圖切開來
+    # img  = step2_resize(img)
+    # img  = step3_normalize(img)           ### 因為用tanh，所以把值弄到 [-1, 1]
+    return move_map 
+
+def get_dataset_from_file_name(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1, img_resize=(256,256), move_resize=(256,256)):
+    distorted_train_load_path = db_dir + "/" + db_name + "/" + "train/distorted_img" 
+    distorted_train_db = tf.data.Dataset.list_files(distorted_train_load_path + "/" + "*.bmp", shuffle=False)
+    distorted_train_db = distorted_train_db.map(preprocess_distorted_img, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    # for img in  distorted_train_db.take(1):
+    #     print(img)
+
+    rec_move_map_train_path = db_dir + "/" + db_name + "/" + "train/rec_move_map" 
+    rec_move_map_train_list = get_db_all_move_map_and_resize(rec_move_map_train_path, resize_shape=move_resize)
+    rec_move_map_train_list, max_value_train, min_value_train = use_db_to_norm(rec_move_map_train_list)
+    rec_move_map_train_db = tf.data.Dataset.from_tensor_slices(rec_move_map_train_list)
+    # move_map_train_path = db_dir + "/" + db_name + "/" + "train/rec_move_map" 
+    # move_map_train_db = tf.data.Dataset.list_files(move_map_train_path + "/" + "*.npy", shuffle=False)
+    # move_map_train_db = move_map_train_db.map(preprocess_move_map, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    # for move_map in rec_move_map_train_db.take(1):
+    #     print(move_map)
+
+    combine_db = tf.data.Dataset.zip((distorted_train_db, rec_move_map_train_db))
+    for img, move_map in combine_db.take(1):
+        print(img,move_map)
+
+    return distorted_train_db
+
+
+
+def preprocess_img(file_name):
+    img  = step1_load_one_img(file_name)  ### 根據檔名，把圖片讀近來且把圖切開來
+    img  = step3_normalize(img)           ### 因為用tanh，所以把值弄到 [-1, 1]
+    return img 
+
+def get_img_dataset_from_file_name(train_load_path, batch_size=1, img_resize=(256,256), move_resize=(256,256)):
+    img_db = tf.data.Dataset.list_files(train_load_path + "/" + "*.bmp", shuffle=False)
+    img_db = img_db.map(preprocess_img, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    return img_db
 ### 以上是 file_name -> tensor  還不大會用一直出問題，有空再去學好他，先直接用numpy全讀近來且處理好再丟進tensor
 ########################################################################################################
 ########################################################################################################
@@ -174,7 +233,7 @@ def get_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1, i
     ##########################################################################################################################################
     
     return distorted_train_db, rec_move_map_train_db, distorted_test_db, rec_move_map_test_db, max_value_train, min_value_train
-    
+
     
 if(__name__ == "__main__"):
     # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
@@ -185,7 +244,8 @@ if(__name__ == "__main__"):
     db_dir  = access_path+"datasets"
     db_name = "pad2000-512to256_index"
 
-    _ = get_dataset(db_dir=db_dir, db_name=db_name)
+    # _ = get_dataset(db_dir=db_dir, db_name=db_name)
+    _ = get_dataset_from_file_name(db_dir=db_dir, db_name=db_name)
 
 
     print(time.time()- start_time)
