@@ -76,6 +76,18 @@ def get_dataset_from_file_name(db_dir="datasets", db_name="stack_unet-256-100", 
         print(img,move_map)
 
     return distorted_train_db
+
+
+
+def preprocess_img(file_name):
+    img  = step1_load_one_img(file_name)  ### 根據檔名，把圖片讀近來且把圖切開來
+    img  = step3_normalize(img)           ### 因為用tanh，所以把值弄到 [-1, 1]
+    return img 
+
+def get_img_dataset_from_file_name(train_load_path, batch_size=1, img_resize=(256,256), move_resize=(256,256)):
+    img_db = tf.data.Dataset.list_files(train_load_path + "/" + "*.bmp", shuffle=False)
+    img_db = img_db.map(preprocess_img, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    return img_db
 ### 以上是 file_name -> tensor  還不大會用一直出問題，有空再去學好他，先直接用numpy全讀近來且處理好再丟進tensor
 ########################################################################################################
 ########################################################################################################
