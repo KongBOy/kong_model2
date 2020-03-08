@@ -43,6 +43,7 @@ def get_dir_img(ord_dir):
     img_list = []
     for file_name in file_names:
         img_list.append( cv2.imread(ord_dir + "/" + file_name) )
+        print(file_name,img_list[-1].shape)
     img_list = np.array(img_list, dtype=np.float32)
     return img_list
 
@@ -143,7 +144,7 @@ def method2(x, y, color_shift=1):       ### 最大位移量不可以超過 255�
     return bgr
 
 #######################################################
-def predict_move_maps_back(predict_move_maps):
+def predict_unet_move_maps_back(predict_move_maps):
     train_move_maps = get_dir_move(access_path+"datasets/pad2000-512to256/train/rec_move_map")
     max_value_train = train_move_maps.max()
     min_value_train = train_move_maps.min()

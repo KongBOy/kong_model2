@@ -86,6 +86,18 @@ def step3_build_checkpoint(model_name, generator, generator_optimizer, discrimin
                                                         discriminator_optimizer=discriminator_optimizer, discriminator=discriminator)
     return ckpt
 
+def step2_3_build_model_opti_ckpt(model_name): ### 我覺得這兩步是需要包起來做的，所以才多這個function，但又覺得有點多餘，先留著好了~
+    generator, generator_optimizer,\
+    discriminator, discriminator_optimizer,\
+    generate_images, train_step              = step2_build_model_and_optimizer(model_name=model_name)
+
+    ckpt  = step3_build_checkpoint (model_name=model_name, 
+        generator=generator, generator_optimizer=generator_optimizer, 
+        discriminator=discriminator, discriminator_optimizer=discriminator_optimizer)
+    return  generator, generator_optimizer,\
+            discriminator, discriminator_optimizer,\
+            generate_images, train_step, ckpt
+
 
 def step4_get_result_dir_default_logs_ckpt_dir_name(result_dir):
     logs_dir  = result_dir + "/" + "logs"
