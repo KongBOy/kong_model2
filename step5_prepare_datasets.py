@@ -8,11 +8,11 @@ from util import get_dir_certain_file_name
 dir_name = "stack_unet-padding2000"
 
 train_dir     = access_path+"datasets"+"/"+dir_name+"/"+"train"
-train_dis_dir = access_path+"datasets"+"/"+dir_name+"/"+"train/distorted_img"
-train_rec_dir = access_path+"datasets"+"/"+dir_name+"/"+"train/rec_move_map"
+train_dis_dir = access_path+"datasets"+"/"+dir_name+"/"+"train/dis_imgs"
+train_rec_dir = access_path+"datasets"+"/"+dir_name+"/"+"train/move_map"
 test_dir      = access_path+"datasets"+"/"+dir_name+"/"+"test"
-test_dis_dir  = access_path+"datasets"+"/"+dir_name+"/"+"test/distorted_img"
-test_rec_dir  = access_path+"datasets"+"/"+dir_name+"/"+"test/rec_move_map"
+test_dis_dir  = access_path+"datasets"+"/"+dir_name+"/"+"test/dis_imgs"
+test_rec_dir  = access_path+"datasets"+"/"+dir_name+"/"+"test/move_map"
 
 Check_dir_exist_and_build_new_dir( train_dir )
 Check_dir_exist_and_build_new_dir( train_dis_dir )

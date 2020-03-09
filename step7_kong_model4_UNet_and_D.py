@@ -288,7 +288,7 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
 
 #######################################################################################################################################
 if(__name__=="__main__"):
-    from step6_data_pipline import step1_load_one_img, get_dataset
+    from step6_data_pipline import step1_load_one_img, get_unet_dataset
     import os
     import time
 
@@ -299,7 +299,7 @@ if(__name__=="__main__"):
     BATCH_SIZE = 1
 
     start_time = time.time()
-    train_dataset, test_dataset = get_dataset(db_dir="datasets", db_name="facades")
+    train_dataset, test_dataset = get_unet_dataset(db_dir="datasets", db_name="facades")
 
     ##############################################################################################################################
     start_time = time.time()

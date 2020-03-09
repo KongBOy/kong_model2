@@ -1,5 +1,5 @@
 from step0_access_path import access_path
-from step6_data_pipline import get_img_dataset_from_file_name
+from step6_data_pipline import get_img_db_from_file_name
 from step9_load_and_train_and_test import step4_get_result_dir_default_logs_ckpt_dir_name
 from util import get_dir_img, time_util
 from build_dataset_combine import Check_dir_exist_and_build
@@ -40,17 +40,17 @@ batch_size = 1
 # unet_rec_gt_imgs_test  = norm_imgs(unet_rec_gt_imgs_test)
 
 # unet_rec_imgs_train_db = tf.data.Dataset.from_tensor_slices(unet_rec_imgs_train[:1800])
-unet_rec_imgs_train_db = get_img_dataset_from_file_name(access_path+"datasets/rect2_add_dis_imgs/train/distorted_and_unet_rec_imgs")
+unet_rec_imgs_train_db = get_img_db_from_file_name(access_path+"datasets/rect2_add_dis_imgs/train/distorted_and_unet_rec_imgs")
 unet_rec_imgs_train_db = unet_rec_imgs_train_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 # unet_rec_gt_imgs_train_db = tf.data.Dataset.from_tensor_slices(unet_rec_gt_imgs_train[:1800])
-unet_rec_gt_imgs_train_db = get_img_dataset_from_file_name(access_path+"datasets/rect2_add_dis_imgs/train/distorted_and_unet_rec_gt_imgs")
+unet_rec_gt_imgs_train_db = get_img_db_from_file_name(access_path+"datasets/rect2_add_dis_imgs/train/distorted_and_unet_rec_gt_imgs")
 unet_rec_gt_imgs_train_db = unet_rec_gt_imgs_train_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 
 # unet_rec_imgs_test_db = tf.data.Dataset.from_tensor_slices(unet_rec_imgs_test[1800:])
-unet_rec_imgs_test_db = get_img_dataset_from_file_name(access_path+"datasets/rect2_add_dis_imgs/test/distorted_and_unet_rec_imgs")
+unet_rec_imgs_test_db = get_img_db_from_file_name(access_path+"datasets/rect2_add_dis_imgs/test/distorted_and_unet_rec_imgs")
 unet_rec_imgs_test_db = unet_rec_imgs_test_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 # unet_rec_gt_imgs_test_db = tf.data.Dataset.from_tensor_slices(unet_rec_gt_imgs_test[1800:])
-unet_rec_gt_imgs_test_db = get_img_dataset_from_file_name(access_path+"datasets/rect2_add_dis_imgs/test/distorted_and_unet_rec_gt_imgs")
+unet_rec_gt_imgs_test_db = get_img_db_from_file_name(access_path+"datasets/rect2_add_dis_imgs/test/distorted_and_unet_rec_gt_imgs")
 unet_rec_gt_imgs_test_db = unet_rec_gt_imgs_test_db.batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
 
 

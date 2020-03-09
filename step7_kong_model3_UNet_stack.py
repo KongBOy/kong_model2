@@ -367,7 +367,7 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
 #######################################################################################################################################
 
 if(__name__=="__main__"):
-    # from data_pipline import step1_load_one_img, get_dataset
+    # from data_pipline import step1_load_one_img, get_unet_dataset
     import os
     import time
     import numpy as np 

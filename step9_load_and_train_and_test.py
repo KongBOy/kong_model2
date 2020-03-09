@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 import matplotlib.pyplot as plt 
 from util import method2, get_db_amount, time_util
-from step6_data_pipline import get_dataset
+from step6_data_pipline import get_unet_dataset
 import time
 
 
@@ -32,7 +32,7 @@ def step1_data_pipline(db_dir="datasets", db_name="easy300", batch_size=1):
 
     train_db, train_label_db, \
     test_db , test_label_db , \
-    max_value_train, min_value_train = get_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, move_resize=move_resize)
+    max_value_train, min_value_train = get_unet_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, move_resize=move_resize)
 
     return train_db, train_label_db, \
            test_db , test_label_db , \
@@ -121,7 +121,7 @@ if(__name__=="__main__"):
     ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
     BATCH_SIZE = 1
 
-    phase = "test"
+    phase = "train"
     db_dir  = access_path+"datasets"
     
     db_name = "pad2000-512to256" ### 這資料集 要搭配 512to256 的架構喔！
@@ -143,7 +143,7 @@ if(__name__=="__main__"):
     restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"
 
     ### 目前只有在算 b_cost_time會用到
-    data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "distorted_img" )
+    data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_imgs" )
 
     ### 參數設定結束
     ################################################################################################################################################
@@ -154,10 +154,10 @@ if(__name__=="__main__"):
     train_db, train_label_db, test_db, test_label_db, max_value_train, min_value_train = step1_data_pipline(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE)
     generator, generator_optimizer,discriminator, discriminator_optimizer,generate_images, train_step, ckpt = step2_3_build_model_opti_ckpt(model_name=model_name)
         
-    ###    step4 決定result, logs, ckpt 存哪裡，train的話跟據現在時間新增，train_reload和test 根據 restore_result_dir
-    if  (phase=="train"):
+    ###    step4 決定result, logs, ckpt 存哪裡
+    if  (phase=="train"): ### train的話跟據 "現在時間" 
         result_dir, logs_dir, ckpt_dir = step4_get_datetime_default_result_logs_ckpt_dir_name(db_name=db_name, model_name=model_name)
-    elif(phase=="train_reload" or phase=="test"):
+    elif(phase=="train_reload" or phase=="test"): ### train_reload和test 根據 "restore_result_dir"
         result_dir = restore_result_dir
         logs_dir, ckpt_dir = step4_get_result_dir_default_logs_ckpt_dir_name(result_dir)
 

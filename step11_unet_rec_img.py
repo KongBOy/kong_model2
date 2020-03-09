@@ -26,7 +26,7 @@ import numpy as np
 from util import predict_unet_move_maps_back, get_max_move_xy_from_certain_move
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
 from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
-from step6_data_pipline import distorted_resize_and_norm
+from step6_data_pipline import dis_imgs_resize_and_nrom
 
 
 step11_result_dir = access_path+"step11_unet_rec_img"
@@ -39,7 +39,7 @@ resize_shape = (512,512)
 
 ### 用 dis_img 得到 unet_move_map
 dis_imgs = get_dir_certain_img(access_path+"step3_apply_flow_result","3a1-I1-patch.bmp")  ### 讀取dis_imgs 等等輸入unet
-dis_imgs_resize_norm = distorted_resize_and_norm(dis_imgs, resize_shape) ### unet前處理，為了要符合unet的格式：-1~1 和 resize_shape 
+dis_imgs_resize_norm = dis_imgs_resize_and_nrom(dis_imgs, resize_shape) ### unet前處理，為了要符合unet的格式：-1~1 和 resize_shape 
 unet_move_maps = []
 for i, dis_img in enumerate(dis_imgs_resize_norm):
     print("doing %06i"%i)
