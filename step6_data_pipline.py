@@ -16,17 +16,44 @@ class img_db():
         self.batch_size = batch_size 
 
         self.img_db = None
+        # self.img = None
         self.get_img_db_from_file_name(img_path, resize_shape, batch_size)
         
+    ####################################################################################################
     ### 以下是 bmp file_name -> tensor  成功！
+    ### 這版是 有用 self.img， 各個step的參數就可以不用多一個img，直接存取self.img即可，但這樣好像就少了點 img傳遞過程的概念 ，所以還是先用下一版好了～這就先留著吧commit下一版在刪掉
+    # def step1_load_one_img(self, file_name):
+    #     self.img = tf.io.read_file(file_name)
+    #     self.img = tf.image.decode_bmp(self.img)
+    #     self.img  = tf.cast(self.img, tf.float32)
+    #     return self.img
+
+    # def step2_resize(self):### h=472, w=360
+    #     self.img = tf.image.resize(self.img ,self.resize_shape, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR )
+    #     return self.img
+
+
+    # def step3_normalize(self): ### 因為用tanh，所以把值弄到 [-1, 1]
+    #     self.img = (self.img / 127.5) - 1
+    #     return self.img
+
+
+    # def preprocess_img(self, file_name):
+    #     self.img = self.step1_load_one_img(file_name)  ### 根據檔名，把圖片讀近來且把圖切開來
+    #     self.img = self.step2_resize()
+    #     self.img = self.step3_normalize()           ### 因為用tanh，所以把值弄到 [-1, 1]
+    #     return self.img 
+
+    ####################################################################################################
+    ### 這種寫法是 img 沒有用 self.img 來寫，比較 能夠顯現 img傳遞過程的概念，先用這個好了
     def step1_load_one_img(self, file_name):
         img = tf.io.read_file(file_name)
         img = tf.image.decode_bmp(img)
         img  = tf.cast(img, tf.float32)
         return img
 
-    def step2_resize(self,img,resize_shape=(256,256)):### h=472, w=360
-        img = tf.image.resize(img ,resize_shape, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR )
+    def step2_resize(self, img):### h=472, w=360
+        img = tf.image.resize(img ,self.resize_shape, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR )
         return img
 
 
@@ -36,16 +63,16 @@ class img_db():
 
 
     def preprocess_img(self, file_name):
-        img  = self.step1_load_one_img(file_name)  ### 根據檔名，把圖片讀近來且把圖切開來
-        img  = self.step2_resize(img, self.resize_shape)
-        img  = self.step3_normalize(img)           ### 因為用tanh，所以把值弄到 [-1, 1]
+        img = self.step1_load_one_img(file_name)  ### 根據檔名，把圖片讀近來且把圖切開來
+        img = self.step2_resize(img)
+        img = self.step3_normalize(img)           ### 因為用tanh，所以把值弄到 [-1, 1]
         return img 
-
 
     def get_img_db_from_file_name(self, img_path, resize_shape, batch_size):
         self.img_db = tf.data.Dataset.list_files(img_path + "/" + "*.bmp", shuffle=False)
-        self.img_db = self.img_db.map(self.preprocess_img)#, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+        self.img_db = self.img_db.map(self.preprocess_img, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
         self.img_db = self.img_db.batch(batch_size)
+        self.img_db = self.img_db.prefetch(tf.data.experimental.AUTOTUNE)
 
 ####################################################################
 ### 以下是 numpy 直接整包load進記憶體，因為 file_name -> tensor失敗，
@@ -81,15 +108,15 @@ def use_train_move_value_to_norm(move_map_list, max_train_move, min_train_move):
 
 
 def get_train_test_move_map_db(db_dir, db_name, resize_shape, batch_size):
-    move_map_train_path = db_dir + "/" + db_name + "/" + "train/move_map" 
+    move_map_train_path = db_dir + "/" + db_name + "/" + "train/move_maps" 
     train_move_maps = get_move_map_db_and_resize(move_map_train_path, resize_shape=resize_shape)
-    train_move_maps, max_train_move, min_train_move = use_maxmin_train_move_to_normto_norm(train_move_maps)
+    train_move_maps, max_train_move, min_train_move = use_maxmin_train_move_to_normto_norm(train_move_maps) ### 這裡會得到 max/min_train_move
     train_move_map = tf.data.Dataset.from_tensor_slices(train_move_maps)
     train_move_map = train_move_map.batch(batch_size)
 
-    move_map_test_path = db_dir + "/" + db_name + "/" + "test/move_map" 
+    move_map_test_path = db_dir + "/" + db_name + "/" + "test/move_maps" 
     test_move_maps = get_move_map_db_and_resize(move_map_test_path, resize_shape=resize_shape)
-    test_move_maps = use_train_move_value_to_norm(test_move_maps, max_train_move, min_train_move)
+    test_move_maps = use_train_move_value_to_norm(test_move_maps, max_train_move, min_train_move) ### 這裡要用 max/min_train_move 來對 test_move_maps 做 norm
     test_move_maps = tf.data.Dataset.from_tensor_slices(test_move_maps)
     test_move_maps = test_move_maps.batch(batch_size)
 
@@ -120,8 +147,8 @@ def get_train_test_move_map_db(db_dir, db_name, resize_shape, batch_size):
 ######################################################################################################################################
 
 
-### 這部分就針對個別情況來寫好了，以目前資料庫很固定就是 train/test，就直接寫死在裡面囉～遇到CycleGAN的情況在自己改trainA,B/testA,B
-def get_unet_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1, img_resize=(256,256), move_resize=(256,256)):    
+def get_unet_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size=1, img_resize=(512,512), move_resize=(256,256)): 
+    ### 建db的順序：input, input, output(gt), output(gt)，跟 get_rect2_dataset不一樣喔別混亂了！
     ### 拿到 dis_imgs 的 train dataset，從 檔名 → tensor
     dis_imgs_train_load_path = db_dir + "/" + db_name + "/" + "train/dis_imgs" 
     train_dis_imgs = img_db(dis_imgs_train_load_path, img_resize, 1).img_db
@@ -138,7 +165,7 @@ def get_unet_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size
 
 
     ##########################################################################################################################################
-    # 勿刪！用來測試寫得對不對！
+    ### 勿刪！用來測試寫得對不對！
     # import matplotlib.pyplot as plt 
     # from util import method2
 
@@ -161,7 +188,22 @@ def get_unet_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size
     
     return train_dis_imgs, train_move_map, test_dis_imgs, test_move_maps, max_train_move, min_train_move
 
-    
+
+def get_rect2_dataset(db_dir="datasets", db_name="rect2_add_dis_imgs", batch_size=1, img_resize=(512,512)): 
+    ### 建db的順序：input, output(gt), input , output(gt)，跟 get_unet_dataset不一樣喔別混亂了！
+    train_dis_and_unet_rec_imgs_path = db_dir + "/" + db_name + "/" + "train/dis_and_unet_rec_imgs"  
+    train_dis_and_unet_rec_imgs      = img_db(train_dis_and_unet_rec_imgs_path, img_resize, 1).img_db
+
+    train_gt_dis_and_unet_imgs_path  = db_dir + "/" + db_name + "/" + "train/gt_dis_and_unet_rec_imgs" 
+    train_gt_dis_and_unet_rec_imgs   = img_db(train_gt_dis_and_unet_imgs_path, img_resize, 1).img_db
+
+    test_dis_and_unet_rec_imgs_path  = db_dir + "/" + db_name + "/" + "test/dis_and_unet_rec_imgs"  
+    test_dis_and_unet_rec_imgs       = img_db(test_dis_and_unet_rec_imgs_path, img_resize, 1).img_db
+
+    test_gt_dis_and_unet_imgs_path   = db_dir + "/" + db_name + "/" + "test/gt_dis_and_unet_rec_imgs" 
+    test_gt_dis_and_unet_rec_imgs    = img_db(test_gt_dis_and_unet_imgs_path, img_resize, 1).img_db
+
+
 if(__name__ == "__main__"):
     # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
