@@ -144,7 +144,7 @@ def method2(x, y, color_shift=1):       ### 最大位移量不可以超過 255�
 
 #######################################################
 def predict_unet_move_maps_back(predict_move_maps):
-    train_move_maps = get_dir_move(access_path+"datasets/pad2000-512to256/train/rec_move_map")
+    train_move_maps = get_dir_move(access_path+"datasets/pad2000-512to256/train/move_maps")
     max_value_train = train_move_maps.max()
     min_value_train = train_move_maps.min()
     predict_back_list = []

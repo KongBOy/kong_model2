@@ -7,7 +7,7 @@ import tensorflow as tf
 
 model_name="model2_UNet_512to256"
 model_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"
-pad_result = True ### pad 和 沒pad 的差別只有：1.存結果的地方不同、2.unet_rec_img 有沒有pad成 H,W 的大小
+pad_result = False ### pad 和 沒pad 的差別只有：1.存結果的地方不同、2.unet_rec_img 有沒有pad成 H,W 的大小
 
 #############################################################################################################
 ### 讀出model的部分
@@ -37,7 +37,7 @@ def dis_imgs_resize_and_nrom(dis_imgs, resize_shape):
         proc = cv2.resize(dis_img, resize_shape, interpolation=cv2.INTER_NEAREST) 
         proc_list.append(proc)
     dis_imgs = np.array(proc_list)
-    dis_imgs = dis_img/127.5 -1
+    dis_imgs = dis_imgs/127.5 -1
     return dis_imgs
 
 
@@ -53,7 +53,7 @@ resize_shape = (512,512)
 dis_imgs = get_dir_certain_img(access_path+"step3_apply_flow_result","3a1-I1-patch.bmp")  ### 讀取dis_imgs 等等輸入unet
 dis_imgs_resize_norm = dis_imgs_resize_and_nrom(dis_imgs, resize_shape) ### unet前處理，為了要符合unet的格式：-1~1 和 resize_shape 
 unet_move_maps = []
-for i, dis_img in enumerate(dis_imgs_resize_norm):
+for i, dis_img in enumerate(dis_imgs_resize_norm[:]):
     print("doing %06i"%i)
     unet_move_map = model_dict["generator"](np.expand_dims(dis_img, axis=0), training=True) ### dis_img 丟進去generator 來 predict unet_move_map
     unet_move_maps.append(unet_move_map.numpy()) ### unet_move_map 存起來
@@ -63,7 +63,7 @@ unet_move_maps = predict_unet_move_maps_back(unet_move_maps)  ### 把 unet_move_
 ### 用得到 unet_move_map 來還原 dis_img
 max_move_x, max_move_y = get_max_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q") ### 注意這裡要去 step3才對！因為當初建db時是用整個db的最大移動量(step3裡的即整個db的資料)，如果去dataset/train的話只有train的資料喔
 import matplotlib.pyplot as plt
-for i, dis_img in enumerate(dis_imgs):
+for i, dis_img in enumerate(dis_imgs[:]):
     unet_rec_img = apply_move_to_rec2(dis_img, unet_move_maps[i], max_move_x, max_move_y) ### 用unet_move_map來還原dis_img
     if(pad_result): 
         # unet_rec_img = np.pad( unet_rec_img, ( (max_move_y,max_move_x), (max_move_y,max_move_x), (0,0) )) ### 不精確的寫法，結果x就少1個pixel了！
