@@ -219,7 +219,7 @@ def test(result_dir, test_db, max_value_train, min_value_train, generator):
         fig.set_size_inches(col_img_num*5,col_img_num) ### 2200~2300可以放4張圖，配500的高度，所以一張圖大概550~575寬，500高，但為了好計算還是用 500寬配500高好了！
 
         ### 圖. dis_img
-        dis_imgs = get_dir_img(access_path+"datasets/pad2000-512to256/test/distorted_img") ### 這是沒有resize過的
+        dis_imgs = get_dir_img(access_path+"datasets/pad2000-512to256/test/dis_imgs") ### 這是沒有resize過的
         dis_img = dis_imgs[i]
         ### test_input是有resize過的！我們不是recover這個喔！
         # dis_img  = test_input[0].numpy() 
@@ -253,7 +253,7 @@ def test(result_dir, test_db, max_value_train, min_value_train, generator):
 
 
         ### 拿gt流
-        gt_moves = get_dir_move(access_path+"datasets/pad2000-512to256/test/rec_move_map")
+        gt_moves = get_dir_move(access_path+"datasets/pad2000-512to256/test/move_maps")
         gt_move_map = gt_moves[i]
         gt_move_map_bgr = method2(gt_move_map[:,:,0],gt_move_map[:,:,1])
         ax[2].imshow(gt_move_map_bgr.astype(np.uint8))
