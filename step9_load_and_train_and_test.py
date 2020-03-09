@@ -20,7 +20,7 @@ def step0_save_rect2_train_code(result_dir):
     shutil.copy("step8_kong_model5_Rect2.py",code_dir + "/" + "step8_kong_model5_Rect2.py")
     shutil.copy("step11_unet_rec_img.py"     ,code_dir + "/" + "step11_unet_rec_img.py")
     shutil.copy("step12_ord_pad_gt.py"       ,code_dir + "/" + "step12_ord_pad_gt.py")
-    shutil.copy("step13_data_pipline.py"     ,code_dir + "/" + "step13_data_pipline.py")
+    shutil.copy("step13_rect2_dataset.py"     ,code_dir + "/" + "step13_rect2_dataset.py")
     shutil.copy("util.py"                    ,code_dir + "/" + "util.py")
 
 def step0_save_rect1_train_code(result_dir):
@@ -38,7 +38,7 @@ def step0_save_rect1_train_code(result_dir):
 
 
 
-def step1_data_pipline(db_dir="datasets", db_name="easy300", batch_size=1):
+def step1_data_pipline(db_dir, db_name, model_name, batch_size=1):
     ### step1.讀取 data_pipline
     img_resize  = None
     move_resize = None
@@ -68,9 +68,12 @@ def step1_data_pipline(db_dir="datasets", db_name="easy300", batch_size=1):
         data_dict["min_value_train"] = min_value_train
 
     elif(model_name == "model_rect2"):
-        img_resize = (512,512)
+        if(db_name=="rect2_2000"):
+            img_resize = (256,256)
+        elif(db_name=="rect2_add_dis_imgs"):
+            img_resize = (512,512)
         train_dis_and_unet_rec_imgs_db, train_gt_dis_and_unet_rec_imgs_db, \
-        test_dis_and_unet_rec_imgs_db,  test_gt_dis_and_unet_rec_imgs_db = get_rect2_dataset(db_dir=db_dir, db_name=db_name)
+        test_dis_and_unet_rec_imgs_db,  test_gt_dis_and_unet_rec_imgs_db = get_rect2_dataset(db_dir=db_dir, db_name=db_name, img_resize=img_resize, batch_size=1)
 
         # data_dict["train_dis_and_unet_rec_imgs_db"]    = train_dis_and_unet_rec_imgs_db
         # data_dict["train_gt_dis_and_unet_rec_imgs_db"] = train_gt_dis_and_unet_rec_imgs_db
@@ -172,7 +175,8 @@ if(__name__=="__main__"):
     db_dir  = access_path+"datasets"
     
     # db_name = "pad2000-512to256" ### 這pad2000資料集 要搭配 512to256 的架構喔！
-    db_name = "rect2_add_dis_imgs" 
+    db_name = "rect2_2000" 
+    # db_name = "rect2_add_dis_imgs" 
 
     # model_name="model1_UNet"
     # model_name="model2_UNet_512to256"
@@ -194,7 +198,11 @@ if(__name__=="__main__"):
     if  (model_name in ["model1_UNet", "model2_UNet_512to256", "model3_UNet_stack", "model4_UNet_and_D"]):
         data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_imgs" )
     elif(model_name == "model_rect2"):
-        data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_and_unet_rec_imgs_db" )
+        if(db_name=="rect2_2000"):
+            data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "unet_rec_img_db" )
+
+        elif(db_name=="rect2_add_dis_imgs"):
+            data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_and_unet_rec_img_db" )
 
     ### 參數設定結束
     ################################################################################################################################################
@@ -216,7 +224,7 @@ if(__name__=="__main__"):
     ################################################################################################################################################
     ### 第一階段：datapipline、模型、訓練結果存哪邊
     ###    step1_data_pipline、step2_3_build_model_opti_ckpt 是 train, train_reload, test 都要做的事情
-    data_dict  = step1_data_pipline(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE)
+    data_dict  = step1_data_pipline(db_dir=db_dir, db_name=db_name, model_name=model_name, batch_size=BATCH_SIZE)
     
     model_dict, generate_images, train_step, ckpt = step2_3_build_model_opti_ckpt(model_name=model_name)
 

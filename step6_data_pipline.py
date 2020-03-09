@@ -139,21 +139,26 @@ def get_unet_dataset(db_dir="datasets", db_name="stack_unet-256-100", batch_size
     return train_dis_img_db, train_move_map_db, test_dis_img_db, test_move_map_db, max_train_move, min_train_move
 
 
-def get_rect2_dataset(db_dir="datasets", db_name="rect2_add_dis_imgs_db", batch_size=1, img_resize=(512,512)): 
+def get_rect2_dataset(db_dir="datasets", db_name="rect2_2000", batch_size=1, img_resize=(512,512)): 
     ### 建db的順序：input, output(gt), input , output(gt)，跟 get_unet_dataset不一樣喔別混亂了！
-    train_dis_and_unet_rec_imgs_db_path = db_dir + "/" + db_name + "/" + "train/dis_and_unet_rec_imgs_db"  
-    train_dis_and_unet_rec_imgs_db      = img_db(train_dis_and_unet_rec_imgs_db_path, img_resize, 1).img_db
+    if  (db_name == "rect2_2000"):
+        train_img_db_path    = db_dir + "/" + db_name + "/" + "train/unet_rec_img_db"  
+        train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/gt_unet_rec_img_db" 
+        test_img_db_path     = db_dir + "/" + db_name + "/" + "test/unet_rec_img_db"  
+        test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/gt_unet_rec_img_db" 
 
-    train_gt_dis_and_unet_imgs_db_path  = db_dir + "/" + db_name + "/" + "train/gt_dis_and_unet_rec_imgs_db" 
-    train_gt_dis_and_unet_rec_imgs_db   = img_db(train_gt_dis_and_unet_imgs_db_path, img_resize, 1).img_db
+    elif(db_name == "rect2_add_dis_imgs_db"):
+        train_img_db_path    = db_dir + "/" + db_name + "/" + "train/dis_and_unet_rec_img_db"  
+        train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/gt_dis_and_unet_rec_img_db" 
+        test_img_db_path     = db_dir + "/" + db_name + "/" + "test/dis_and_unet_rec_img_db"  
+        test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/gt_dis_and_unet_rec_img_db" 
 
-    test_dis_and_unet_rec_imgs_db_path  = db_dir + "/" + db_name + "/" + "test/dis_and_unet_rec_imgs_db"  
-    test_dis_and_unet_rec_imgs_db       = img_db(test_dis_and_unet_rec_imgs_db_path, img_resize, 1).img_db
+    train_img_db    = img_db(train_img_db_path, img_resize, 1).img_db
+    train_gt_img_db = img_db(train_gt_img_db_path, img_resize, 1).img_db
+    test_img_db     = img_db(test_img_db_path, img_resize, 1).img_db
+    test_gt_img_db  = img_db(test_gt_img_db_path, img_resize, 1).img_db
 
-    test_gt_dis_and_unet_imgs_db_path   = db_dir + "/" + db_name + "/" + "test/gt_dis_and_unet_rec_imgs_db" 
-    test_gt_dis_and_unet_rec_imgs_db    = img_db(test_gt_dis_and_unet_imgs_db_path, img_resize, 1).img_db
-
-    return train_dis_and_unet_rec_imgs_db, train_gt_dis_and_unet_rec_imgs_db, test_dis_and_unet_rec_imgs_db, test_gt_dis_and_unet_rec_imgs_db
+    return train_img_db, train_gt_img_db, test_img_db, test_gt_img_db
 
 if(__name__ == "__main__"):
     # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
