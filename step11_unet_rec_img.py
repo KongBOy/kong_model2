@@ -1,5 +1,6 @@
 from step0_access_path import access_path
-from step9_load_and_train_and_test import step2_build_model_and_optimizer, step3_build_checkpoint, step4_get_result_dir_default_logs_ckpt_dir_name
+# from step9_load_and_train_and_test import step2_build_model_and_optimizer, step3_build_checkpoint, step4_get_result_dir_default_logs_ckpt_dir_name
+from step9_load_and_train_and_test import step2_3_build_model_opti_ckpt, step4_get_result_dir_default_logs_ckpt_dir_name
 from util import get_dir_certain_img
 import tensorflow as tf 
 
@@ -10,10 +11,11 @@ pad_result = True ### pad 和 沒pad 的差別只有：1.存結果的地方不�
 
 #############################################################################################################
 ### 讀出model的部分
-generator, generator_optimizer, discriminator, discriminator_optimizer, generate_images, train_step = step2_build_model_and_optimizer(model_name=model_name)
-ckpt  = step3_build_checkpoint (model_name=model_name, generator=generator, generator_optimizer=generator_optimizer, discriminator=discriminator, discriminator_optimizer=discriminator_optimizer)
+# generator, generator_optimizer, discriminator, discriminator_optimizer, generate_images, train_step = step2_build_model_and_optimizer(model_name=model_name)
+# ckpt  = step3_build_checkpoint (model_name=model_name, generator=generator, generator_optimizer=generator_optimizer, discriminator=discriminator, discriminator_optimizer=discriminator_optimizer)
+model_dict, generate_images, train_step, ckpt = step2_3_build_model_opti_ckpt(model_name=model_name)
 
-_, ckpt_dir = step4_get_result_dir_default_logs_ckpt_dir_name(model_result_dir)
+_, ckpt_dir = step4_get_result_dir_default_logs_ckpt_dir_name(model_result_dir) ### 不需要log_dir所以用"_"來接
 manager     = tf.train.CheckpointManager (checkpoint=ckpt, directory=ckpt_dir, max_to_keep=2) ### checkpoint管理器，設定最多存2份
 ckpt.restore(manager.latest_checkpoint)     ### 從restore_ckpt_dir 抓存的model出來
 start_epoch = ckpt.epoch_log.numpy()
@@ -26,7 +28,17 @@ import numpy as np
 from util import predict_unet_move_maps_back, get_max_move_xy_from_certain_move
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
 from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
-from step6_data_pipline import dis_imgs_resize_and_nrom
+
+
+
+def dis_imgs_resize_and_nrom(dis_imgs, resize_shape):
+    proc_list = []
+    for dis_img in dis_imgs:
+        proc = cv2.resize(dis_img, resize_shape, interpolation=cv2.INTER_NEAREST) 
+        proc_list.append(proc)
+    dis_imgs = np.array(proc_list)
+    dis_imgs = dis_img/127.5 -1
+    return dis_imgs
 
 
 step11_result_dir = access_path+"step11_unet_rec_img"
@@ -43,7 +55,7 @@ dis_imgs_resize_norm = dis_imgs_resize_and_nrom(dis_imgs, resize_shape) ### unet
 unet_move_maps = []
 for i, dis_img in enumerate(dis_imgs_resize_norm):
     print("doing %06i"%i)
-    unet_move_map = generator(np.expand_dims(dis_img, axis=0), training=True) ### dis_img 丟進去generator 來 predict unet_move_map
+    unet_move_map = model_dict["generator"](np.expand_dims(dis_img, axis=0), training=True) ### dis_img 丟進去generator 來 predict unet_move_map
     unet_move_maps.append(unet_move_map.numpy()) ### unet_move_map 存起來
 unet_move_maps = np.array(unet_move_maps) 
 unet_move_maps = predict_unet_move_maps_back(unet_move_maps)  ### 把 unet_move_map"s" 的值 從-1~1 還原
