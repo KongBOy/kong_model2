@@ -46,9 +46,9 @@ class img_db():
 
     def get_img_db_from_file_name(self, img_path, batch_size):
         self.img_db = tf.data.Dataset.list_files(img_path + "/" + "*.bmp", shuffle=False)
-        self.img_db = self.img_db.map(self.preprocess_img, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+        self.img_db = self.img_db.map(self.preprocess_img)#, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
         self.img_db = self.img_db.batch(batch_size)
-        self.img_db = self.img_db.prefetch(tf.data.experimental.AUTOTUNE)
+        # self.img_db = self.img_db.prefetch(tf.data.experimental.AUTOTUNE)
 
 ####################################################################
 ### 以下是 numpy 直接整包load進記憶體，因為 file_name -> tensor失敗，
@@ -67,11 +67,6 @@ def get_move_map_db_and_resize(ord_dir, resize_shape=(256,256)):
     print("get_move_map_db_and_resize cost time", time.time()-start_time)
     return move_map_resize_list
 
-    # max_train_move = move_map_list.max() ###  236.52951204508076
-    # min_train_move = move_map_list.min() ### -227.09562801056995
-    # move_map_list = ((move_map_list-min_train_move)/(max_train_move-min_train_move))*2-1
-    # return move_map_list, max_train_move, min_train_move
-
 def use_maxmin_train_move_to_normto_norm(move_map_list): ### 給 train用
     max_train_move = move_map_list.max() ###  236.52951204508076
     min_train_move = move_map_list.min() ### -227.09562801056995
@@ -89,12 +84,14 @@ def get_train_test_move_map_db(db_dir, db_name, resize_shape, batch_size):
     train_move_map_db, max_train_move, min_train_move = use_maxmin_train_move_to_normto_norm(train_move_map_db) ### 這裡會得到 max/min_train_move
     train_move_map_db = tf.data.Dataset.from_tensor_slices(train_move_map_db)
     train_move_map_db = train_move_map_db.batch(batch_size)
+    # train_move_map_db = train_move_map_db.prefetch(tf.data.experimental.AUTOTUNE)
 
     move_map_test_path = db_dir + "/" + db_name + "/" + "test/move_maps" 
     test_move_map_db = get_move_map_db_and_resize(move_map_test_path, resize_shape=resize_shape)
     test_move_map_db = use_train_move_value_to_norm(test_move_map_db, max_train_move, min_train_move) ### 這裡要用 max/min_train_move 來對 test_move_map_db 做 norm
     test_move_map_db = tf.data.Dataset.from_tensor_slices(test_move_map_db)
     test_move_map_db = test_move_map_db.batch(batch_size)
+    # test_move_map_db = test_move_map_db.prefetch(tf.data.experimental.AUTOTUNE)
 
     return train_move_map_db, max_train_move, min_train_move, test_move_map_db
 ########################################################################################################
@@ -156,7 +153,7 @@ def get_rect2_dataset(db_dir="datasets", db_name="rect2_add_dis_imgs_db", batch_
     test_gt_dis_and_unet_imgs_db_path   = db_dir + "/" + db_name + "/" + "test/gt_dis_and_unet_rec_imgs_db" 
     test_gt_dis_and_unet_rec_imgs_db    = img_db(test_gt_dis_and_unet_imgs_db_path, img_resize, 1).img_db
 
-    
+    return train_dis_and_unet_rec_imgs_db, train_gt_dis_and_unet_rec_imgs_db, test_dis_and_unet_rec_imgs_db, test_gt_dis_and_unet_rec_imgs_db
 
 if(__name__ == "__main__"):
     # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
@@ -165,11 +162,12 @@ if(__name__ == "__main__"):
     start_time = time.time()
 
     db_dir  = access_path+"datasets"
-    db_name = "pad2000-512to256_index"
+    db_name = "pad300-512to256"
+    _ = get_unet_dataset (db_dir=db_dir, db_name=db_name)
 
-    _ = get_unet_dataset(db_dir=db_dir, db_name=db_name)
-    # _ = get_unet_dataset_from_file_name(db_dir=db_dir, db_name=db_name)
-
+    db_dir  = access_path+"datasets"
+    db_name = "rect2_add_dis_imgs"
+    _ = get_rect2_dataset(db_dir=db_dir, db_name=db_name)
 
     print(time.time()- start_time)
     print("finish")
