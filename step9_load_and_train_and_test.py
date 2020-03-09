@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 import matplotlib.pyplot as plt 
 from util import method2, get_db_amount, time_util
-from step6_data_pipline import get_unet_dataset
+from step6_data_pipline import get_unet_dataset, get_rect2_dataset
 import time
 
 
@@ -12,91 +12,138 @@ import os
 
 # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
+### 第零階段：決定result, logs, ckpt 存哪裡 並 把source code存起來
+import shutil
+def step0_save_rect2_train_code(result_dir):
+    code_dir = result_dir+"/"+"train_code"
+    Check_dir_exist_and_build(code_dir)
+    shutil.copy("step8_kong_model5_Rect2.py",code_dir + "/" + "step8_kong_model5_Rect2.py")
+    shutil.copy("step11_unet_rec_img.py"     ,code_dir + "/" + "step11_unet_rec_img.py")
+    shutil.copy("step12_ord_pad_gt.py"       ,code_dir + "/" + "step12_ord_pad_gt.py")
+    shutil.copy("step13_data_pipline.py"     ,code_dir + "/" + "step13_data_pipline.py")
+    shutil.copy("util.py"                    ,code_dir + "/" + "util.py")
+
+def step0_save_rect1_train_code(result_dir):
+    code_dir = result_dir+"/"+"train_code"
+    Check_dir_exist_and_build(code_dir)
+    shutil.copy("step5_prepare_datasets.py"        ,code_dir + "/" + "step8_kong_model5_Rect2.py")
+    shutil.copy("step6_data_pipline.py"            ,code_dir + "/" + "step6_data_pipline.py")
+    if  (model_name == "model1_UNet"):          shutil.copy("step7_kong_model1_UNet.py"          ,code_dir + "/" + "step7_kong_model1_UNet.py")
+    elif(model_name == "model2_UNet_512to256"): shutil.copy("step7_kong_model2_UNet_512to256.py" ,code_dir + "/" + "step7_kong_model2_UNet_512to256.py")
+    elif(model_name == "model3_UNet_stack"):    shutil.copy("step7_kong_model3_UNet_stack.py"    ,code_dir + "/" + "step7_kong_model3_UNet_stack.py")
+    elif(model_name == "model4_UNet_and_D"):    shutil.copy("step7_kong_model4_UNet_and_D.py"    ,code_dir + "/" + "step7_kong_model4_UNet_and_D.py")
+    
+    shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
+    shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
+
+
 
 def step1_data_pipline(db_dir="datasets", db_name="easy300", batch_size=1):
     ### step1.讀取 data_pipline
     img_resize  = None
     move_resize = None
-    if  (model_name == "model1_UNet"):          
-        img_resize =(256,256)
-        move_resize=(256,256)
-    elif(model_name == "model2_UNet_512to256"): 
-        img_resize =(512,512)
-        move_resize=(256,256)
-    elif(model_name == "model3_UNet_stack"):    
-        img_resize =(256,256)
-        move_resize=(256,256)
-    elif(model_name == "model4_UNet_and_D"):    
-        img_resize =(256,256)
-        move_resize=(256,256)
+    data_dict = {}
+    if(model_name in ["model1_UNet", "model2_UNet_512to256", "model3_UNet_stack", "model4_UNet_and_D"]):
+        if  (model_name == "model1_UNet"):          
+            img_resize =(256,256)
+            move_resize=(256,256)
+        elif(model_name == "model2_UNet_512to256"): 
+            img_resize =(512,512)
+            move_resize=(256,256)
+        elif(model_name == "model3_UNet_stack"):    
+            img_resize =(256,256)
+            move_resize=(256,256)
+        elif(model_name == "model4_UNet_and_D"):    
+            img_resize =(256,256)
+            move_resize=(256,256)
 
-    train_db, train_label_db, \
-    test_db , test_label_db , \
-    max_value_train, min_value_train = get_unet_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, move_resize=move_resize)
+        train_db, train_label_db, \
+        test_db , test_label_db , \
+        max_value_train, min_value_train = get_unet_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, move_resize=move_resize)
+        data_dict["train_db"]        = train_db
+        data_dict["train_label_db"]  = train_label_db
+        data_dict["test_db"]         = test_db
+        data_dict["test_label_db"]   = test_label_db
+        data_dict["max_value_train"] =max_value_train
+        data_dict["min_value_train"] = min_value_train
 
-    return train_db, train_label_db, \
-           test_db , test_label_db , \
-           max_value_train, min_value_train
+    elif(model_name == "model_rect2"):
+        img_resize = (512,512)
+        train_dis_and_unet_rec_imgs_db, train_gt_dis_and_unet_rec_imgs_db, \
+        test_dis_and_unet_rec_imgs_db,  test_gt_dis_and_unet_rec_imgs_db = get_rect2_dataset(db_dir=db_dir, db_name=db_name)
 
+        # data_dict["train_dis_and_unet_rec_imgs_db"]    = train_dis_and_unet_rec_imgs_db
+        # data_dict["train_gt_dis_and_unet_rec_imgs_db"] = train_gt_dis_and_unet_rec_imgs_db
+        # data_dict["test_dis_and_unet_rec_imgs_db"]     = test_dis_and_unet_rec_imgs_db
+        # data_dict["test_gt_dis_and_unet_rec_imgs_db"]  = test_gt_dis_and_unet_rec_imgs_db
+        data_dict["train_db"]    = train_dis_and_unet_rec_imgs_db
+        data_dict["train_label_db"] = train_gt_dis_and_unet_rec_imgs_db
+        data_dict["test_db"]     = test_dis_and_unet_rec_imgs_db
+        data_dict["test_label_db"]  = test_gt_dis_and_unet_rec_imgs_db
+
+
+    return data_dict
+    
 def step2_build_model_and_optimizer(model_name="model1_UNet"):
     ### step2.建立 model 和 optimizer
     start_time = time.time()
-    generator               = None
-    generator_optimizer     = None
-    discriminator           = None
-    discriminator_optimizer = None
+    model_dict = {}
     if  (model_name == "model1_UNet"):
         from step7_kong_model1_UNet import Generator, generate_images, train_step
-        generator     = Generator(out_channel=2)
-        generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-
+        model_dict["generator"] = Generator(out_channel=2)
+        model_dict["generator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     elif(model_name == "model2_UNet_512to256"):
         from step7_kong_model2_UNet_512to256 import Generator512to256, generate_images, train_step
-        generator     = Generator512to256(out_channel=2)
-        generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-
+        model_dict["generator"] = Generator512to256(out_channel=2)
+        model_dict["generator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     elif(model_name == "model3_UNet_stack"):
         from step7_kong_model3_UNet_stack import Generator_stack, generate_images, train_step
-        generator     = Generator_stack() ### 建立模型
-        generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-    
+        model_dict["generator"] = Generator(out_channel=2)
+        model_dict["generator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     elif(model_name == "model4_UNet_and_D"):
         from step7_kong_model4_UNet_and_D import Generator, Discriminator, generate_images, train_step
-        generator     = Generator(out_channel=2)
-        generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-        discriminator = Discriminator()
-        discriminator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        model_dict["generator"] = Generator(out_channel=2)
+        model_dict["generator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        model_dict["discriminator"] = Discriminator()
+        model_dict["discriminator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     
-    # generator_optimizer     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5) ### 覺得還是不要統一寫出來，這樣比較好看每個模型需要什麼東西
-    print("build model cost time:", time.time()-start_time)
-    return generator, generator_optimizer, discriminator, discriminator_optimizer, generate_images, train_step
+    elif(model_name == "model_rect2"):
+        from step8_kong_model5_Rect2 import Rect2, generate_images, train_step
+        model_dict["rect2"] = Rect2()
+        model_dict["generator_optimizer"]     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        model_dict["discriminator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-def step3_build_checkpoint(model_name, generator, generator_optimizer, discriminator, discriminator_optimizer):
+    print("build model cost time:", time.time()-start_time)
+    return model_dict, generate_images, train_step 
+
+def step3_build_checkpoint(model_name, model_dict):
     ### step3.建立 save/load model 的checkpoint
-    ckpt = None
-    epoch_log = tf.Variable(1) ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
-    if  (model_name == "model1_UNet"):
-        ckpt = tf.train.Checkpoint(epoch_log=epoch_log, generator_optimizer=generator_optimizer, generator=generator)
-    elif(model_name == "model2_UNet_512to256"):
-        ckpt = tf.train.Checkpoint(epoch_log=epoch_log, generator_optimizer=generator_optimizer, generator=generator)
-    elif(model_name == "model3_UNet_stack"):
-        ckpt = tf.train.Checkpoint(epoch_log=epoch_log, generator_optimizer=generator_optimizer, generator=generator)
-    elif(model_name == "model4_UNet_and_D"):
-        ckpt = tf.train.Checkpoint(epoch_log=epoch_log, generator_optimizer=generator_optimizer, generator=generator,
-                                                        discriminator_optimizer=discriminator_optimizer, discriminator=discriminator)
+    model_dict["epoch_log"] = tf.Variable(1) ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
+    ckpt = tf.train.Checkpoint(**model_dict)
     return ckpt
 
 def step2_3_build_model_opti_ckpt(model_name): ### 我覺得這兩步是需要包起來做的，所以才多這個function，但又覺得有點多餘，先留著好了~
-    generator, generator_optimizer,\
-    discriminator, discriminator_optimizer,\
-    generate_images, train_step              = step2_build_model_and_optimizer(model_name=model_name)
-
-    ckpt  = step3_build_checkpoint (model_name=model_name, 
-        generator=generator, generator_optimizer=generator_optimizer, 
-        discriminator=discriminator, discriminator_optimizer=discriminator_optimizer)
-    return  generator, generator_optimizer,\
-            discriminator, discriminator_optimizer,\
+    model_dict, \
+    generate_images, \
+    train_step = step2_build_model_and_optimizer(model_name=model_name)
+    
+    ckpt      = step3_build_checkpoint (model_name, model_dict)
+    
+    return  model_dict, \
             generate_images, train_step, ckpt
+
+    # generator, generator_optimizer,\
+    # discriminator, discriminator_optimizer,\
+    # generate_images, train_step              = step2_build_model_and_optimizer(model_name=model_name)
+
+
+    # ckpt  = step3_build_checkpoint (model_name=model_name, 
+    #     generator=generator, generator_optimizer=generator_optimizer, 
+    #     discriminator=discriminator, discriminator_optimizer=discriminator_optimizer)
+    
+    # return  generator, generator_optimizer,\
+    #         discriminator, discriminator_optimizer,\
+    #         generate_images, train_step, ckpt
 
 
 def step4_get_result_dir_default_logs_ckpt_dir_name(result_dir):
@@ -124,12 +171,14 @@ if(__name__=="__main__"):
     phase = "train"
     db_dir  = access_path+"datasets"
     
-    db_name = "pad2000-512to256" ### 這資料集 要搭配 512to256 的架構喔！
+    # db_name = "pad2000-512to256" ### 這pad2000資料集 要搭配 512to256 的架構喔！
+    db_name = "rect2_add_dis_imgs" 
 
     # model_name="model1_UNet"
-    model_name="model2_UNet_512to256"
+    # model_name="model2_UNet_512to256"
     # model_name="model3_UNet_stack"
     # model_name="model4_UNet_and_D"
+    model_name="model_rect2"
 
     ### train, train_reload 參數
     epochs = 160
@@ -138,42 +187,52 @@ if(__name__=="__main__"):
     start_epoch = 0
 
     ### train_reload 和 test 參數
-    restore_model = True ### 如果 restore_model 設True，下面 restore_result_dir 才會有用處喔！
     # restore_result_dir = "result/20200226-194945_pad2000-512to256_model2_UNet_512to256"
     restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"
 
     ### 目前只有在算 b_cost_time會用到
-    data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_imgs" )
+    if  (model_name in ["model1_UNet", "model2_UNet_512to256", "model3_UNet_stack", "model4_UNet_and_D"]):
+        data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_imgs" )
+    elif(model_name == "model_rect2"):
+        data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_and_unet_rec_imgs_db" )
 
     ### 參數設定結束
     ################################################################################################################################################
-    
-    ################################################################################################################################################
-    ### 第一階段：datapipline、模型、訓練結果存哪邊
-    ###    step1_data_pipline、step2_3_build_model_opti_ckpt 是 train, train_reload, test 都要做的事情
-    train_db, train_label_db, test_db, test_label_db, max_value_train, min_value_train = step1_data_pipline(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE)
-    generator, generator_optimizer,discriminator, discriminator_optimizer,generate_images, train_step, ckpt = step2_3_build_model_opti_ckpt(model_name=model_name)
-        
-    ###    step4 決定result, logs, ckpt 存哪裡
+    ### 第零階段：決定result, logs, ckpt 存哪裡 並 把source code存起來
+
+    ###    決定result, logs, ckpt 存哪裡
     if  (phase=="train"): ### train的話跟據 "現在時間" 
         result_dir, logs_dir, ckpt_dir = step4_get_datetime_default_result_logs_ckpt_dir_name(db_name=db_name, model_name=model_name)
     elif(phase=="train_reload" or phase=="test"): ### train_reload和test 根據 "restore_result_dir"
         result_dir = restore_result_dir
         logs_dir, ckpt_dir = step4_get_result_dir_default_logs_ckpt_dir_name(result_dir)
 
-    ###    step5 建立tensorboard，只有train 和 train_reload需要
+    if  (phase=="train" or phase=="train_reload"): ### 如果是訓練或重新訓練的話，把source_code存一份起來，reload的話就蓋過去
+        if  (model_name in ["model1_UNet", "model2_UNet_512to256", "model3_UNet_stack", "model4_UNet_and_D"]):
+            pass
+        elif(model_name=="model_rect2"):
+            step0_save_rect2_train_code(result_dir)
+
+    ################################################################################################################################################
+    ### 第一階段：datapipline、模型、訓練結果存哪邊
+    ###    step1_data_pipline、step2_3_build_model_opti_ckpt 是 train, train_reload, test 都要做的事情
+    data_dict  = step1_data_pipline(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE)
+    
+    model_dict, generate_images, train_step, ckpt = step2_3_build_model_opti_ckpt(model_name=model_name)
+
+    ###    step4 建立tensorboard，只有train 和 train_reload需要
     if  (phase=="train" or phase=="train_reload"):
         summary_writer = tf.summary.create_file_writer( logs_dir ) ### 建tensorboard，這會自動建資料夾喔！
 
-    ###    step6 建立checkpoint manager，三者都需要
+    ###    step5 建立checkpoint manager，三者都需要
     manager = tf.train.CheckpointManager (checkpoint=ckpt, directory=ckpt_dir, max_to_keep=2) ### checkpoint管理器，設定最多存2份
 
-    ###    step7 看需不需要reload model，只有train_reload 和 test需要
+    ###    step6 看需不需要reload model，只有train_reload 和 test需要
     if (phase=="train_reload" or phase=="test"):
         ckpt.restore(manager.latest_checkpoint)     ### 從restore_ckpt_dir 抓存的model出來
         start_epoch = ckpt.epoch_log.numpy()
         print("load model ok~~~~~~~~~~~ current epoch log", start_epoch)
-
+    
     ################################################################################################################################################
     ### 第二階段：train 和 test
     ###     training 的部分 ###################################################################################################
@@ -185,32 +244,35 @@ if(__name__=="__main__"):
             e_start = time.time()
 
             lr = 0.0002 if epoch < epoch_down_step else 0.0002*(epochs-epoch)/(epochs-epoch_down_step)
-            generator_optimizer.lr = lr
+
+            model_dict["generator_optimizer"].lr = lr
             ###     用來看目前訓練的狀況 
-            for test_input, test_label in zip(test_db.take(1), test_label_db.take(1)): 
+            for test_input, test_label in zip(data_dict["test_db"].take(1), data_dict["test_label_db"].take(1)): 
                 if  (model_name == "model1_UNet"):
-                    generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                    generate_images( model_dict["generator"], test_input, test_label, data_dict["max_value_train"], data_dict["min_value_train"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
                 elif(model_name == "model2_UNet_512to256"):
-                    generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                    generate_images( model_dict["generator"], test_input, test_label, data_dict["max_value_train"], data_dict["min_value_train"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
                 elif(model_name == "model3_UNet_stack"):
-                    generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                    generate_images( model_dict["generator"], test_input, test_label, data_dict["max_value_train"], data_dict["min_value_train"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
                 elif(model_name == "model4_UNet_and_D"):
-                    generate_images( generator, test_input, test_label, max_value_train, min_value_train,  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                    generate_images( model_dict["generator"], test_input, test_label, data_dict["max_value_train"], data_dict["min_value_train"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                elif(model_name == "model_rect2"):
+                    generate_images( model_dict["rect2"].generator, test_input, test_label, epoch, result_dir) 
             ###     訓練
-            for n, (input_image, target) in enumerate( zip(train_db, train_label_db) ):
+            for n, (input_image, target) in enumerate( zip(data_dict["train_db"], data_dict["train_label_db"]) ):
                 print('.', end='')
                 if (n+1) % 100 == 0:
                     print()
                 if  (model_name == "model1_UNet"):
-                    train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch)
+                    train_step(model_dict["generator"], model_dict["generator_optimizer"], summary_writer, input_image, target, epoch)
                 elif(model_name == "model2_UNet_512to256"):
-                    train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch)
+                    train_step(model_dict["generator"], model_dict["generator_optimizer"], summary_writer, input_image, target, epoch)
                 elif(model_name == "model3_UNet_stack"):
-                    train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch)
+                    train_step(model_dict["generator"], model_dict["generator_optimizer"], summary_writer, input_image, target, epoch)
                 elif(model_name == "model4_UNet_and_D"):
-                    train_step(generator, discriminator, generator_optimizer, discriminator_optimizer, summary_writer, input_image, target, epoch)
-            print()
-
+                    train_step(model_dict["generator"], model_dict["discriminator"], model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, input_image, target, epoch)
+                elif(model_name == "model_rect2"):
+                    train_step(model_dict["rect2"], input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
             ###     儲存模型 (checkpoint) the model every 20 epochs
             if (epoch + 1) % epoch_save_freq == 0:
                 ckpt.epoch_log.assign(epoch+1) ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
@@ -222,6 +284,7 @@ if(__name__=="__main__"):
             print("batch cost time:%.2f"   %(epoch_cost_time/data_maount) )
             print("total cost time:%s"     %(time_util(total_cost_time))  )
             print("")
+    
     ######################################################################################################################
     ###     testing 的部分 ####################################################################################################
     elif(phase=="test"):
@@ -229,10 +292,11 @@ if(__name__=="__main__"):
 
         elif(model_name == "model2_UNet_512to256"):
             from step7_kong_model2_UNet_512to256 import test
-            test(result_dir, test_db, max_value_train, min_value_train, generator)
+            test(result_dir, data_dict["test_db"], data_dict["max_value_train"], data_dict["min_value_train"], model_dict["generator"])
 
         elif(model_name == "model3_UNet_stack"):pass ### 還沒做
         elif(model_name == "model4_UNet_and_D"):pass ### 還沒做
 
-
- 
+        elif(model_name == "model_rect2"):
+            from step8_kong_model5_Rect2 import test 
+            test(result_dir, data_dict["test_db"], data_dict["test_label_db"], model_dict["rect2"])

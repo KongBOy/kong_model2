@@ -240,6 +240,61 @@ def generate_images( model, dis_img, gt_img,  epoch=0, result_dir="."):
     plt.close()
     print("sample image cost time:", time.time()-sample_start_time)
 
+
+#######################################################################################################################
+#######################################################################################################################
+### testing 的部分 ####################################################################################################
+def test(result_dir, test_db, test_label_db, rect2):
+    from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec
+    import matplotlib.pyplot as plt
+    from util import get_dir_img, get_dir_move, get_max_move_xy_from_certain_move
+    from build_dataset_combine import Check_dir_exist_and_build
+    import numpy as np 
+    test_dir = result_dir + "/" + "test"
+    Check_dir_exist_and_build(test_dir)
+    # print("current_epoch_log", ckpt.epoch_log)
+
+    # test_db       = unet_rec_imgs_test_db 
+    # test_label_db = unet_rec_gt_imgs_test_db
+
+    for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_db.take(200))): 
+        print("i=",i)
+        # if(i<65):
+        #     continue
+
+        col_img_num = 3
+        fig, ax = plt.subplots(1,col_img_num)
+        fig.set_size_inches(col_img_num*3.5,col_img_num) ### 2200~2300可以放4張圖，配500的高度，所以一張圖大概550~575寬，500高，但為了好計算還是用 500寬配500高好了！
+
+        ### 圖. unet_rec_img
+        unet_rec_img  = test_input[0].numpy() 
+        unet_rec_img = (unet_rec_img+1)*127.5
+        unet_rec_img = unet_rec_img.astype(np.uint8)
+        ax[0].imshow(unet_rec_img)
+        ax[0].set_title("unet_rec_img")
+
+        ### 圖. rect2恢復unet_rec_img的結果
+        prediction = rect2.generator(test_input, training=True)   ### 用generator 去 predict扭曲流，注意這邊值是 -1~1
+        prediction_back = prediction.numpy()
+        prediction_back = (prediction_back[0]+1)*127.5
+        prediction_back =  prediction_back.astype(np.uint8)
+        ax[1].imshow(prediction_back)
+        ax[1].set_title("rect2_rec_img")
+
+        ### 圖. gt影像
+        unet_rec_gt_img = test_label[0].numpy()
+        unet_rec_gt_img = (unet_rec_gt_img+1)*127.5
+        unet_rec_gt_img = unet_rec_gt_img.astype(np.uint8)
+        ax[2].imshow(unet_rec_gt_img)
+        ax[2].set_title("unet_rec_gt_img")
+
+        plt.savefig(test_dir + "/" + "index%02i-result.png"%i)
+        # plt.show()
+        plt.close()
+    ######################################################################################################################
+    ######################################################################################################################
+
+
 if(__name__ == "__main__"):
     import numpy as np
     import matplotlib.pyplot as plt
