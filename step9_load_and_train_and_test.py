@@ -21,7 +21,6 @@ def step0_save_rect2_train_code(result_dir):
     shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
     shutil.copy("step11_unet_rec_img.py"           ,code_dir + "/" + "step11_unet_rec_img.py")
     shutil.copy("step12_gt_ord_or_ord_pad.py"             ,code_dir + "/" + "step12_gt_ord_or_ord_pad.py")
-    shutil.copy("step13_rect2_dataset.py"          ,code_dir + "/" + "step13_rect2_dataset.py")
     shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
 
 def step0_save_rect1_train_code(result_dir):
