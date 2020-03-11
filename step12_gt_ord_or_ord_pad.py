@@ -4,12 +4,12 @@ from build_dataset_combine import Check_dir_exist_and_build_new_dir
 import numpy as np 
 import cv2
 
-pad_result = False ### pad 和 沒pad 的差別只有：1.存結果的地方不同、2.unet_rec_img 有沒有pad成 H,W 的大小
+pad_result = True ### pad 和 沒pad 的差別只有：1.存結果的地方不同、2.unet_rec_img 有沒有pad成 H,W 的大小
 
 #######################################################################
-step12_result_dir = access_path+"step12_ord_pad_gt"
+step12_result_dir = access_path+"step12_gt_ord"
 if(pad_result):
-    step12_result_dir = access_path+"step12_ord_pad_gt_pad"
+    step12_result_dir = access_path+"step12_gt_ord_pad"
 Check_dir_exist_and_build_new_dir( step12_result_dir )
 
 
