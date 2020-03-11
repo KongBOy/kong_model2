@@ -17,16 +17,17 @@ import shutil
 def step0_save_rect2_train_code(result_dir):
     code_dir = result_dir+"/"+"train_code"
     Check_dir_exist_and_build(code_dir)
-    shutil.copy("step8_kong_model5_Rect2.py",code_dir + "/" + "step8_kong_model5_Rect2.py")
-    shutil.copy("step11_unet_rec_img.py"     ,code_dir + "/" + "step11_unet_rec_img.py")
-    shutil.copy("step12_ord_pad_gt.py"       ,code_dir + "/" + "step12_ord_pad_gt.py")
-    shutil.copy("step13_rect2_dataset.py"     ,code_dir + "/" + "step13_rect2_dataset.py")
-    shutil.copy("util.py"                    ,code_dir + "/" + "util.py")
+    shutil.copy("step8_kong_model5_Rect2.py"       ,code_dir + "/" + "step8_kong_model5_Rect2.py")
+    shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
+    shutil.copy("step11_unet_rec_img.py"           ,code_dir + "/" + "step11_unet_rec_img.py")
+    shutil.copy("step12_gt_ord_or_ord_pad.py"             ,code_dir + "/" + "step12_gt_ord_or_ord_pad.py")
+    shutil.copy("step13_rect2_dataset.py"          ,code_dir + "/" + "step13_rect2_dataset.py")
+    shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
 
 def step0_save_rect1_train_code(result_dir):
     code_dir = result_dir+"/"+"train_code"
     Check_dir_exist_and_build(code_dir)
-    shutil.copy("step5_prepare_datasets.py"        ,code_dir + "/" + "step8_kong_model5_Rect2.py")
+    shutil.copy("step5_unet_datasets.py"           ,code_dir + "/" + "step5_unet_datasets.py")
     shutil.copy("step6_data_pipline.py"            ,code_dir + "/" + "step6_data_pipline.py")
     if  (model_name == "model1_UNet"):          shutil.copy("step7_kong_model1_UNet.py"          ,code_dir + "/" + "step7_kong_model1_UNet.py")
     elif(model_name == "model2_UNet_512to256"): shutil.copy("step7_kong_model2_UNet_512to256.py" ,code_dir + "/" + "step7_kong_model2_UNet_512to256.py")
@@ -70,7 +71,7 @@ def step1_data_pipline(db_dir, db_name, model_name, batch_size=1):
     elif(model_name == "model_rect2"):
         if(db_name=="rect2_2000"):
             img_resize = (256,256)
-        elif(db_name=="rect2_add_dis_imgs"):
+        elif(db_name=="rect2_add_dis_imgs" or db_name=="pure_rect2"):
             img_resize = (512,512)
         train_dis_and_unet_rec_imgs_db, train_gt_dis_and_unet_rec_imgs_db, \
         test_dis_and_unet_rec_imgs_db,  test_gt_dis_and_unet_rec_imgs_db = get_rect2_dataset(db_dir=db_dir, db_name=db_name, img_resize=img_resize, batch_size=1)
@@ -79,9 +80,9 @@ def step1_data_pipline(db_dir, db_name, model_name, batch_size=1):
         # data_dict["train_gt_dis_and_unet_rec_imgs_db"] = train_gt_dis_and_unet_rec_imgs_db
         # data_dict["test_dis_and_unet_rec_imgs_db"]     = test_dis_and_unet_rec_imgs_db
         # data_dict["test_gt_dis_and_unet_rec_imgs_db"]  = test_gt_dis_and_unet_rec_imgs_db
-        data_dict["train_db"]    = train_dis_and_unet_rec_imgs_db
+        data_dict["train_db"]       = train_dis_and_unet_rec_imgs_db
         data_dict["train_label_db"] = train_gt_dis_and_unet_rec_imgs_db
-        data_dict["test_db"]     = test_dis_and_unet_rec_imgs_db
+        data_dict["test_db"]        = test_dis_and_unet_rec_imgs_db
         data_dict["test_label_db"]  = test_gt_dis_and_unet_rec_imgs_db
 
 
@@ -151,7 +152,6 @@ def step2_3_build_model_opti_ckpt(model_name): ### 我覺得這兩步是需要�
 
 def step4_get_result_dir_default_logs_ckpt_dir_name(result_dir):
     logs_dir  = result_dir + "/" + "logs"
-    #ckpt_dir = result_dir + '/' + 'ckpt_dir'+"_"+db_name+"_"+model_name ### 試試看不加感受起來會怎麼樣
     ckpt_dir = result_dir + '/' + 'ckpt_dir'
     return  logs_dir, ckpt_dir
 
@@ -159,7 +159,6 @@ def step4_get_datetime_default_result_logs_ckpt_dir_name(db_name, model_name):
     import datetime
     result_dir = access_path+"result" + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +"_"+db_name+"_"+model_name  ### result資料夾，裡面放checkpoint和tensorboard資料夾
     logs_dir  = result_dir + "/" + "logs"
-    #ckpt_dir = result_dir + '/' + 'ckpt_dir'+"_"+db_name+"_"+model_name ### 試試看不加感受起來會怎麼樣
     ckpt_dir = result_dir + '/' + 'ckpt_dir'
     return result_dir, logs_dir, ckpt_dir
 
@@ -175,8 +174,9 @@ if(__name__=="__main__"):
     db_dir  = access_path+"datasets"
     
     # db_name = "pad2000-512to256" ### 這pad2000資料集 要搭配 512to256 的架構喔！
-    db_name = "rect2_2000" 
+    # db_name = "rect2_2000" 
     # db_name = "rect2_add_dis_imgs" 
+    db_name = "pure_rect2" 
 
     # model_name="model1_UNet"
     # model_name="model2_UNet_512to256"
@@ -200,7 +200,8 @@ if(__name__=="__main__"):
     elif(model_name == "model_rect2"):
         if(db_name=="rect2_2000"):
             data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "unet_rec_img_db" )
-
+        elif(db_name=="pure_rect2"):
+            data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_img_db" )
         elif(db_name=="rect2_add_dis_imgs"):
             data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_and_unet_rec_img_db" )
 

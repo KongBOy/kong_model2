@@ -147,6 +147,12 @@ def get_rect2_dataset(db_dir="datasets", db_name="rect2_2000", batch_size=1, img
         test_img_db_path     = db_dir + "/" + db_name + "/" + "test/unet_rec_img_db"  
         test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/gt_unet_rec_img_db" 
 
+    elif(db_name == "pure_rect2"):
+        train_img_db_path    = db_dir + "/" + db_name + "/" + "train/dis_img_db"  
+        train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/pad_gt_img_db" 
+        test_img_db_path     = db_dir + "/" + db_name + "/" + "test/dis_img_db"  
+        test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/pad_gt_img_db" 
+
     elif(db_name == "rect2_add_dis_imgs_db"):
         train_img_db_path    = db_dir + "/" + db_name + "/" + "train/dis_and_unet_rec_img_db"  
         train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/gt_dis_and_unet_rec_img_db" 
