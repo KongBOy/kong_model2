@@ -66,7 +66,7 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                gt_src_word   = ".npy" )
 
 
-build_datasets(build_dir_name="page_h=384,w=256",
+build_datasets(build_dir_name="1_page_h=384,w=256",
                in_dir_name   = "dis_imgs",
                gt_dir_name   = "move_maps",
                in_src_dir    = access_path+"step3_apply_flow_result",

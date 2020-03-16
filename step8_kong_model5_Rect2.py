@@ -108,10 +108,10 @@ class Generator(tf.keras.models.Model):
     def __init__(self,**kwargs):
         super(Generator, self).__init__(**kwargs)
         self.conv1   = Conv2D(64  ,   kernel_size=7, strides=1, padding="valid")
-        self.conv2   = Conv2D(64*2,   kernel_size=3, strides=2, padding="same")
-        self.conv3   = Conv2D(64*4,   kernel_size=3, strides=2, padding="same")
         self.in_c1   = InstanceNorm_kong()
+        self.conv2   = Conv2D(64*2,   kernel_size=3, strides=2, padding="same")
         self.in_c2   = InstanceNorm_kong()
+        self.conv3   = Conv2D(64*4,   kernel_size=3, strides=2, padding="same")
         self.in_c3   = InstanceNorm_kong()
 
         self.resb1   = ResBlock(c_num=64*4)
@@ -125,8 +125,8 @@ class Generator(tf.keras.models.Model):
         self.resb9   = ResBlock(c_num=64*4)
 
         self.convT1  = Conv2DTranspose(64*2, kernel_size=3, strides=2, padding="same")
-        self.convT2  = Conv2DTranspose(64  , kernel_size=3, strides=2, padding="same")
         self.in_cT1  = InstanceNorm_kong()
+        self.convT2  = Conv2DTranspose(64  , kernel_size=3, strides=2, padding="same")
         self.in_cT2  = InstanceNorm_kong()
         self.convRGB = Conv2D(3  ,   kernel_size=7, strides=1, padding="valid")
 
