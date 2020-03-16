@@ -57,13 +57,13 @@ def step1_data_pipline(phase, db_dir, db_name, model_name, batch_size=1):
 
             data_dict = get_unet_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, move_resize=move_resize)
 
-        elif(model_name == "model_rect2"):
+        elif(model_name == "model5_rect2"):
             if  (db_name=="2_pure_rect2_h=256,w=256" ): img_resize = (512,512) 
-            elif(db_name=="2_pure_rect2_h=384,w=256" ): img_resize = (512,384) 
+            elif(db_name=="2_pure_rect2_h=384,w=256" ): img_resize = (496,336) 
 
             elif(db_name=="3_unet_rect2_h=256,w=256" ): img_resize = (256,256)
             elif(db_name=="3_unet_rect2_h=384,w=256" ): img_resize = (384,256)
-            elif(db_name=="rect2_add_dis_imgs"): img_resize = (512,512) ### 做錯
+            # elif(db_name=="rect2_add_dis_imgs"): img_resize = (512,512) ### 做錯
 
     
             data_dict = get_rect2_dataset(db_dir=db_dir, db_name=db_name, img_resize=img_resize, batch_size=1)
@@ -102,7 +102,7 @@ def step2_build_model_and_optimizer(model_name="model1_UNet"):
         model_dict["discriminator"] = Discriminator()
         model_dict["discriminator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     
-    elif(model_name == "model_rect2"):
+    elif(model_name == "model5_rect2"):
         from step8_kong_model5_Rect2 import Rect2, generate_images, train_step
         model_dict["rect2"] = Rect2()
         model_dict["generator_optimizer"]     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
@@ -154,18 +154,19 @@ if(__name__=="__main__"):
     db_dir  = access_path+"datasets"
     
     # db_name = "1_pad2000-512to256" ### 這pad2000資料集 要搭配 512to256 的架構喔！
-    db_name = "1_page_h=384,w=256"
+    # db_name = "1_page_h=384,w=256"
     # db_name = "2_pure_rect2_h=256,w=256" 
+    db_name = "2_pure_rect2_h=384,w=256" 
     # db_name = "3_unet_rect2_h=256,w=256" 
     # db_name = "wei_book" 
     # db_name = "wei_book_w=576,h=575" 
     # db_name = "rect2_add_dis_imgs" ### 錯的
 
     # model_name="model1_UNet"
-    model_name="model2_UNet_512to256"
+    # model_name="model2_UNet_512to256"
     # model_name="model3_UNet_stack"
     # model_name="model4_UNet_and_D"
-    # model_name="model_rect2"
+    model_name="model5_rect2"
 
     ### train, train_reload 參數
     epochs = 160
@@ -177,15 +178,15 @@ if(__name__=="__main__"):
     # restore_result_dir = "result/20200226-194945_pad2000-512to256_model2_UNet_512to256"
     # restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"
     
-    restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"  ### unet
-    # restore_result_dir = access_path+"result/20200309-214802_rect2_2000_model_rect2"               ### unet+rect2
+    restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"  ### 1.unet
+    # restore_result_dir = access_path+"result/20200309-214802_rect2_2000_model5_rect2"              ### 3.unet+rect2
     
 
     ### 目前只有在算 b_cost_time會用到
     if(phase == "train" or phase == "train_reload"):
         if  (model_name in ["model1_UNet", "model2_UNet_512to256", "model3_UNet_stack", "model4_UNet_and_D"]):
             data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_imgs" )
-        elif(model_name == "model_rect2"):
+        elif(model_name == "model5_rect2"):
             if  ("2_pure_rect2" in db_name): data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_img_db" )
             elif("3_unet_rect2" in db_name): data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "unet_rec_img_db" )
             # elif(db_name=="rect2_add_dis_imgs"):data_maount = get_db_amount(db_dir + "/" + db_name + "/" + "train" + "/" + "dis_and_unet_rec_img_db" )
@@ -205,7 +206,7 @@ if(__name__=="__main__"):
     if  (phase=="train" or phase=="train_reload"): ### 如果是訓練或重新訓練的話，把source_code存一份起來，reload的話就蓋過去
         if  (model_name in ["model1_UNet", "model2_UNet_512to256", "model3_UNet_stack", "model4_UNet_and_D"]):
             step0_save_rect1_train_code(result_dir)
-        elif(model_name=="model_rect2"):
+        elif(model_name=="model5_rect2"):
             step0_save_rect2_train_code(result_dir)
 
     ################################################################################################################################################
@@ -251,7 +252,7 @@ if(__name__=="__main__"):
                     generate_images( model_dict["generator"], test_input, test_gt, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
                 elif(model_name == "model4_UNet_and_D"):
                     generate_images( model_dict["generator"], test_input, test_gt, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-                elif(model_name == "model_rect2"):
+                elif(model_name == "model5_rect2"):
                     generate_images( model_dict["rect2"].generator, test_input, test_gt, epoch, result_dir) 
             ###     訓練
             for n, (input_image, target) in enumerate( zip(data_dict["train_in_db"], data_dict["train_gt_db"]) ):
@@ -266,7 +267,7 @@ if(__name__=="__main__"):
                     train_step(model_dict["generator"], model_dict["generator_optimizer"], summary_writer, input_image, target, epoch)
                 elif(model_name == "model4_UNet_and_D"):
                     train_step(model_dict["generator"], model_dict["discriminator"], model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, input_image, target, epoch)
-                elif(model_name == "model_rect2"):
+                elif(model_name == "model5_rect2"):
                     train_step(model_dict["rect2"], input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
             ###     儲存模型 (checkpoint) the model every 20 epochs
             if (epoch + 1) % epoch_save_freq == 0:
@@ -302,6 +303,6 @@ if(__name__=="__main__"):
         elif(model_name == "model3_UNet_stack"):pass ### 還沒做
         elif(model_name == "model4_UNet_and_D"):pass ### 還沒做
 
-        elif(model_name == "model_rect2"):
+        elif(model_name == "model5_rect2"):
             from step8_kong_model5_Rect2 import test
             test(result_dir=result_dir, test_dir_name=test_dir_name, test_db=data_dict["test_db"], test_gt_db=data_dict["test_gt_db"],test_db_amount=test_db_amount, rect2=model_dict["rect2"])

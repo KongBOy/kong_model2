@@ -164,23 +164,23 @@ def get_unet_dataset(db_dir="datasets", db_name="stack_unet-256-100",img_type="b
 
 def get_rect2_dataset(db_dir="datasets", db_name="rect2_2000", batch_size=1, img_resize=(512,512)): 
     ### 建db的順序：input, output(gt), input , output(gt)，跟 get_unet_dataset不一樣喔別混亂了！
-    if  (db_name == "rect2_2000"):
-        train_img_db_path    = db_dir + "/" + db_name + "/" + "train/unet_rec_img_db"  
-        train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/gt_unet_rec_img_db" 
-        test_img_db_path     = db_dir + "/" + db_name + "/" + "test/unet_rec_img_db"  
-        test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/gt_unet_rec_img_db" 
-
-    elif(db_name == "pure_rect2"):
+    if  ("pure_rect2" in db_name):
         train_img_db_path    = db_dir + "/" + db_name + "/" + "train/dis_img_db"  
-        train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/pad_gt_img_db" 
+        train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/gt_ord_pad_img_db" 
         test_img_db_path     = db_dir + "/" + db_name + "/" + "test/dis_img_db"  
-        test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/pad_gt_img_db" 
+        test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/gt_ord_pad_img_db" 
 
-    elif(db_name == "rect2_add_dis_imgs_db"):
-        train_img_db_path    = db_dir + "/" + db_name + "/" + "train/dis_and_unet_rec_img_db"  
-        train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/gt_dis_and_unet_rec_img_db" 
-        test_img_db_path     = db_dir + "/" + db_name + "/" + "test/dis_and_unet_rec_img_db"  
-        test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/gt_dis_and_unet_rec_img_db" 
+    elif("unet_rect2" in db_name):
+        train_img_db_path    = db_dir + "/" + db_name + "/" + "train/unet_rec_img_db"  
+        train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/gt_ord_img" 
+        test_img_db_path     = db_dir + "/" + db_name + "/" + "test/unet_rec_img_db"  
+        test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/gt_ord_img" 
+
+    # elif(db_name == "rect2_add_dis_imgs_db"): ### 做錯的
+    #     train_img_db_path    = db_dir + "/" + db_name + "/" + "train/dis_and_unet_rec_img_db"  
+    #     train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train/gt_dis_and_unet_rec_img_db" 
+    #     test_img_db_path     = db_dir + "/" + db_name + "/" + "test/dis_and_unet_rec_img_db"  
+    #     test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test/gt_dis_and_unet_rec_img_db" 
 
     train_img_db    = img_db(train_img_db_path,   "bmp", img_resize, 1).img_db
     train_gt_img_db = img_db(train_gt_img_db_path,"bmp", img_resize, 1).img_db
