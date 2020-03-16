@@ -258,12 +258,12 @@ def train_step(generator, discriminator, generator_optimizer, discriminator_opti
 
 
 
-def generate_images( model, test_input, test_label, max_value_train, min_value_train,training=True, index=0, result_dir="."):
+def generate_images( model, test_input, test_gt, max_train_move, min_train_move,training=True, index=0, result_dir="."):
     sample_start_time = time.time()
     prediction = model(test_input, training=True)
 
     plt.figure(figsize=(20,6))
-    display_list = [test_input[0], test_label[0], prediction[0]]
+    display_list = [test_input[0], test_gt[0], prediction[0]]
     title = ['Input Image', 'Ground Truth', 'Predicted Image']
 
     for i in range(3):
@@ -273,7 +273,7 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
         if(i==0):
             plt.imshow(display_list[i] * 0.5 + 0.5)
         else:
-            back = (display_list[i]+1)/2 * (max_value_train-min_value_train) + min_value_train
+            back = (display_list[i]+1)/2 * (max_train_move-min_train_move) + min_train_move
             back_bgr = method2(back[...,0], back[...,1],1)
             plt.imshow(back_bgr)
         plt.axis('off')

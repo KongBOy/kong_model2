@@ -1,6 +1,8 @@
 .vscode
 __*
 
+test*
+
 datasets*
 step1_page*
 step2_flow_build*

@@ -172,12 +172,12 @@ def train_step(generator,generator_optimizer, summary_writer, input_image, targe
         tf.summary.scalar('gen_l1_loss', gen_l1_loss, step=epoch)
 
 #######################################################################################################################################
-def generate_images( model, test_input, test_label, max_value_train, min_value_train,  epoch=0, result_dir="."):
+def generate_images( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_dir="."):
     sample_start_time = time.time()
     prediction = model(test_input, training=True)
 
     plt.figure(figsize=(20,6))
-    display_list = [test_input[0], test_label[0], prediction[0]]
+    display_list = [test_input[0], test_gt[0], prediction[0]]
     title = ['Input Image', 'Ground Truth', 'Predicted Image']
 
     for i in range(3):
@@ -187,7 +187,7 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
         if(i==0):
             plt.imshow(display_list[i] * 0.5 + 0.5)
         else:
-            back = (display_list[i]+1)/2 * (max_value_train-min_value_train) + min_value_train
+            back = (display_list[i]+1)/2 * (max_train_move-min_train_move) + min_train_move
             back_bgr = method2(back[...,0], back[...,1],1)
             plt.imshow(back_bgr)
         plt.axis('off')
@@ -199,7 +199,7 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
 
 
 
-def test(result_dir, test_db, max_value_train, min_value_train, generator):
+def test(phase, result_dir, test_dir_name, test_db, test_db_amount, max_train_move, min_train_move, generator):
     from step0_access_path import access_path
     import matplotlib.pyplot as plt
     from util import get_dir_img, get_dir_move, get_max_move_xy_from_certain_move
@@ -207,65 +207,112 @@ def test(result_dir, test_db, max_value_train, min_value_train, generator):
     import numpy as np 
     from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
 
-    test_dir = result_dir + "/" + "test"
+    test_dir = result_dir + "/" + test_dir_name
     Check_dir_exist_and_build(test_dir)
     # print("current_epoch_log", ckpt.epoch_log)
-    for i, test_input in enumerate(test_db.take(200)): 
+    for i, test_input in enumerate(test_db.take(test_db_amount)): 
         print("i=",i)
         # if(i<65): continue ### 可以用這個控制從哪個test開始做
 
-        col_img_num = 5
+        if   (phase=="test"):      col_img_num = 5
+        elif (phase=="test_kong"): col_img_num = 4
         fig, ax = plt.subplots(1,col_img_num)
         fig.set_size_inches(col_img_num*5,col_img_num) ### 2200~2300可以放4張圖，配500的高度，所以一張圖大概550~575寬，500高，但為了好計算還是用 500寬配500高好了！
 
-        ### 圖. dis_img
-        dis_imgs = get_dir_img(access_path+"datasets/pad2000-512to256/test/dis_imgs") ### 這是沒有resize過的
-        dis_img = dis_imgs[i]
-        ### test_input是有resize過的！我們不是recover這個喔！
-        # dis_img  = test_input[0].numpy() 
-        # dis_img = (dis_img+1)*127.5
-        # dis_img = dis_img.astype(np.uint8)
-        ax[0].imshow(dis_img.astype(np.uint8))
-        ax[0].set_title("distorted_img")
+        if(phase=="test"):
+            ### 圖. dis_img
+            dis_imgs = get_dir_img(access_path+"datasets/pad2000-512to256/test/dis_imgs") ### 這是沒有resize過的
+            dis_img = dis_imgs[i]
+            ### test_input是有resize過的！我們不是recover這個喔！
+            # dis_img  = test_input[0].numpy() 
+            # dis_img = (dis_img+1)*127.5
+            # dis_img = dis_img.astype(np.uint8)
+            ax[0].imshow(dis_img.astype(np.uint8))
+            ax[0].set_title("distorted_img")
 
 
-        ### 圖. G predict的 move_map
-        prediction = generator(test_input, training=True)   ### 用generator 去 predict扭曲流，注意這邊值是 -1~1
-        prediction_back = (prediction[0]+1)/2 * (max_value_train-min_value_train) + min_value_train ### 把 -1~1 轉回原始的值域
-        # prediction_back_bgr = method2(prediction_back[...,0], prediction_back[...,1],1)             ### predict出的扭曲流 視覺化
-        # plt.imshow(prediction_back_bgr)
-        # plt.show()
-        g_move_map = prediction_back.numpy() ### 把 tensor轉numpy，在下面處理速度才會快
-        g_move_bgr =  method2(g_move_map[...,0], g_move_map[...,1],1)
-        ax[1].imshow(g_move_bgr.astype(np.uint8))
-        ax[1].set_title("predict_dis_flow")
+            ### 圖. G predict的 move_map
+            prediction = generator(test_input, training=True)   ### 用generator 去 predict扭曲流，注意這邊值是 -1~1
+            prediction_back = (prediction[0]+1)/2 * (max_train_move-min_train_move) + min_train_move ### 把 -1~1 轉回原始的值域
+            # prediction_back_bgr = method2(prediction_back[...,0], prediction_back[...,1],1)             ### predict出的扭曲流 視覺化
+            # plt.imshow(prediction_back_bgr)
+            # plt.show()
+            g_move_map = prediction_back.numpy() ### 把 tensor轉numpy，在下面處理速度才會快
+            g_move_bgr =  method2(g_move_map[...,0], g_move_map[...,1],1)
+            ax[1].imshow(g_move_bgr.astype(np.uint8))
+            ax[1].set_title("predict_dis_flow")
 
 
-        ###  拿g/gt 的move_map 來恢復dis_img
-        ###   前置動作：拿到 當初建 dis_img_db時 用的 move_map max/min 的移動量
-        max_move_x, max_move_y = get_max_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q") ### 注意這裡要去 step3才對！因為當初建db時是用整個db的最大移動量(step3裡的即整個db的資料)，如果去dataset/train的話只有train的資料喔
-        # print("max_move_x, max_move_y", max_move_x, max_move_y)
+            ###  拿g/gt 的move_map 來恢復dis_img
+            ###   前置動作：拿到 當初建 dis_img_db時 用的 move_map max/min 的移動量
+            max_move_x, max_move_y = get_max_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q") ### 注意這裡要去 step3才對！因為當初建db時是用整個db的最大移動量(step3裡的即整個db的資料)，如果去dataset/train的話只有train的資料喔
+            # print("max_move_x, max_move_y", max_move_x, max_move_y)
 
-        ### 拿 dis_img 配 g_move_map 來做 rec囉！
-        g_rec_img = apply_move_to_rec2(dis_img, g_move_map, max_move_x, max_move_y)
-        ax[3].imshow(g_rec_img.astype(np.uint8))
-        ax[3].set_title("predict_rec")
+            ### 拿 dis_img 配 g_move_map 來做 rec囉！
+            g_rec_img = apply_move_to_rec2(dis_img, g_move_map, max_move_x, max_move_y)
+            ax[3].imshow(g_rec_img.astype(np.uint8))
+            ax[3].set_title("predict_rec")
 
 
-        ### 拿gt流
-        gt_moves = get_dir_move(access_path+"datasets/pad2000-512to256/test/move_maps")
-        gt_move_map = gt_moves[i]
-        gt_move_map_bgr = method2(gt_move_map[:,:,0],gt_move_map[:,:,1])
-        ax[2].imshow(gt_move_map_bgr.astype(np.uint8))
-        ax[2].set_title("gt_rec")
-        ### 拿 dis_img 配 gt_move_map 來做 rec囉！
-        gt_rec_img = apply_move_to_rec2(dis_img, gt_move_map, max_move_x, max_move_y)
-        ax[4].imshow(gt_rec_img.astype(np.uint8))
-        ax[4].set_title("gt_rec")
+            ### 拿gt流
+            gt_moves = get_dir_move(access_path+"datasets/pad2000-512to256/test/move_maps")
+            gt_move_map = gt_moves[i]
+            gt_move_map_bgr = method2(gt_move_map[:,:,0],gt_move_map[:,:,1])
+            ax[2].imshow(gt_move_map_bgr.astype(np.uint8))
+            ax[2].set_title("gt_rec")
+            ### 拿 dis_img 配 gt_move_map 來做 rec囉！
+            gt_rec_img = apply_move_to_rec2(dis_img, gt_move_map, max_move_x, max_move_y)
+            ax[4].imshow(gt_rec_img.astype(np.uint8))
+            ax[4].set_title("gt_rec")
+
+        if(phase=="test_kong"):
+            ### 圖. dis_img
+            dis_imgs = get_dir_img(access_path+"datasets/wei_book_w=576,h=575/in_imgs") ### 這是沒有resize過的
+            dis_img = dis_imgs[i,:,:,::-1]
+            ### test_input是有resize過的！我們不是recover這個喔！
+            # dis_img  = test_input[0].numpy() 
+            # dis_img = (dis_img+1)*127.5
+            # dis_img = dis_img.astype(np.uint8)
+            ax[0].imshow(dis_img.astype(np.uint8))
+            ax[0].set_title("distorted_img")
+
+
+            ### 圖. G predict的 move_map
+            prediction = generator(test_input, training=True)   ### 用generator 去 predict扭曲流，注意這邊值是 -1~1
+            prediction_back = (prediction[0]+1)/2 * (max_train_move-min_train_move) + min_train_move ### 把 -1~1 轉回原始的值域
+            # prediction_back_bgr = method2(prediction_back[...,0], prediction_back[...,1],1)             ### predict出的扭曲流 視覺化
+            # plt.imshow(prediction_back_bgr)
+            # plt.show()
+            g_move_map = prediction_back.numpy() ### 把 tensor轉numpy，在下面處理速度才會快
+            g_move_bgr =  method2(g_move_map[...,0], g_move_map[...,1],1)
+            ax[1].imshow(g_move_bgr.astype(np.uint8))
+            ax[1].set_title("predict_dis_flow")
+
+
+            ###  拿g 的move_map 來恢復dis_img
+            ###   前置動作：拿到 當初建 dis_img_db時 用的 move_map max/min 的移動量
+            max_move_x, max_move_y = get_max_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q") ### 注意這裡要去 step3才對！因為當初建db時是用整個db的最大移動量(step3裡的即整個db的資料)，如果去dataset/train的話只有train的資料喔
+            # print("max_move_x, max_move_y", max_move_x, max_move_y)
+
+            ### 拿 dis_img 配 g_move_map 來做 rec囉！
+            g_rec_img = apply_move_to_rec2(dis_img, g_move_map, max_move_x, max_move_y)
+            ax[2].imshow(g_rec_img.astype(np.uint8))
+            ax[2].set_title("predict_rec")
+
+            ### 圖. G predict的 move_map
+            gt_imgs = get_dir_img(access_path+"datasets/wei_book_w=576,h=575/gt_imgs") ### 這是沒有resize過的            
+            gt_img = gt_imgs[i,:,:,::-1]
+            ax[3].imshow(gt_img.astype(np.uint8))
+            ax[3].set_title("gt_img")
+            
 
         plt.savefig(test_dir + "/" + "index%02i-result.png"%i)
         # plt.show()
         plt.close()
+
+
+def test_kong(result_dir, test_dir_name, test_db, test_db_amount, max_train_move, min_train_move, generator):
+    pass
 
 #######################################################################################################################################
 if(__name__=="__main__"):
@@ -273,7 +320,7 @@ if(__name__=="__main__"):
     import numpy as np 
 
     generator = Generator512to256()  ### 建G
-    img = np.ones(shape=(1,256,256,3), dtype= np.float32) ### 建 假資料
+    img = np.ones(shape=(1,384,256,3), dtype= np.float32) ### 建 假資料
     start_time = time.time() ### 看資料跑一次花多少時間
     y= generator(img)
     print(y)

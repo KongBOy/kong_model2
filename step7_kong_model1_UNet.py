@@ -175,7 +175,7 @@ def train_step(generator, generator_optimizer, summary_writer, input_image, targ
 
 
 #######################################################################################################################################
-def generate_images( model, test_input, test_label, max_value_train, min_value_train,  epoch=0, result_dir="."):
+def generate_images( model, test_input, test_label, max_train_move, min_train_move,  epoch=0, result_dir="."):
     sample_start_time = time.time()
     prediction = model(test_input, training=True)
 
@@ -190,7 +190,7 @@ def generate_images( model, test_input, test_label, max_value_train, min_value_t
         if(i==0):
             plt.imshow(display_list[i] * 0.5 + 0.5)
         else:
-            back = (display_list[i]+1)/2 * (max_value_train-min_value_train) + min_value_train
+            back = (display_list[i]+1)/2 * (max_train_move-min_train_move) + min_train_move
             back_bgr = method2(back[...,0], back[...,1],1)
             plt.imshow(back_bgr)
         plt.axis('off')
