@@ -66,6 +66,15 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                gt_src_word   = ".npy" )
 
 
+build_datasets(build_dir_name="page_h=384,w=256",
+               in_dir_name   = "dis_imgs",
+               gt_dir_name   = "move_maps",
+               in_src_dir    = access_path+"step3_apply_flow_result",
+               in_src_word   = "3a1-I1-patch.bmp",
+               gt_src_dir    = access_path+"step2_flow_build/move_maps",
+               gt_src_word   = ".npy" )
+
+
 ### 建立給 rect2 用的 pure_rect2
 # build_datasets(build_dir_name= "pure_rect2",
 #                in_dir_name   = "dis_img_db",

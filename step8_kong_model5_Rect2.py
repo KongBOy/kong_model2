@@ -244,20 +244,21 @@ def generate_images( model, dis_img, gt_img,  epoch=0, result_dir="."):
 #######################################################################################################################
 #######################################################################################################################
 ### testing 的部分 ####################################################################################################
-def test(result_dir, test_db, test_label_db, rect2):
+def test(result_dir, test_dir_name, test_db, test_gt_db, test_db_amount, rect2):
     from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec
     import matplotlib.pyplot as plt
     from util import get_dir_img, get_dir_move, get_max_move_xy_from_certain_move
     from build_dataset_combine import Check_dir_exist_and_build
     import numpy as np 
-    test_dir = result_dir + "/" + "test"
+    print("here~~~~~~~~~~~~~~~~~~~~~~")
+    test_dir = result_dir + "/" + test_dir_name
     Check_dir_exist_and_build(test_dir)
     # print("current_epoch_log", ckpt.epoch_log)
 
     # test_db       = unet_rec_imgs_test_db 
-    # test_label_db = unet_rec_gt_imgs_test_db
+    # test_gt_db = unet_rec_gt_imgs_test_db
 
-    for i, (test_input, test_label) in enumerate(zip(test_db.take(200), test_label_db.take(200))): 
+    for i, (test_input, test_gt) in enumerate(zip(test_db.take(test_db_amount), test_gt_db.take(test_db_amount))): 
         print("i=",i)
         # if(i<65):
         #     continue
@@ -282,7 +283,7 @@ def test(result_dir, test_db, test_label_db, rect2):
         ax[1].set_title("rect2_rec_img")
 
         ### 圖. gt影像
-        unet_rec_gt_img = test_label[0].numpy()
+        unet_rec_gt_img = test_gt[0].numpy()
         unet_rec_gt_img = (unet_rec_gt_img+1)*127.5
         unet_rec_gt_img = unet_rec_gt_img.astype(np.uint8)
         ax[2].imshow(unet_rec_gt_img)

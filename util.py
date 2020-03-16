@@ -70,23 +70,24 @@ def get_max_move_xy_from_dir(ord_dir):
     move_maps = get_dir_move(ord_dir)
     move_maps = abs(move_maps)
     # move_maps = apply_move_map_boundary_mask(move_maps) ### 目前的dataset還是沒有只看邊邊，有空再用它來產生db，雖然實驗過有沒有用差不多(因為1019位移邊邊很大)
-    max_move_x = move_maps[:,:,0].max()
-    max_move_y = move_maps[:,:,1].max()
+    max_move_x = move_maps[:,:,:,0].max()
+    max_move_y = move_maps[:,:,:,1].max()
     return max_move_x, max_move_y
 
 def get_max_move_xy_from_certain_move(ord_dir, certain_word):
     move_maps = get_dir_certain_move(ord_dir, certain_word)
     move_maps = abs(move_maps)
     # move_maps = apply_move_map_boundary_mask(move_maps) ### 目前的dataset還是沒有只看邊邊，有空再用它來產生db，雖然實驗過有沒有用差不多(因為1019位移邊邊很大)
-    max_move_x = move_maps[:,:,0].max()
-    max_move_y = move_maps[:,:,1].max()
+    max_move_x = move_maps[:,:,:,0].max()
+    max_move_y = move_maps[:,:,:,1].max()
     return max_move_x, max_move_y
 
 def get_max_move_xy_from_numpy(move_maps): ### 注意這裡的 max/min 是找位移最大，不管正負號！ 跟 normalize 用的max/min 不一樣喔！ 
     move_maps = abs(move_maps)
+    print("move_maps.shape",move_maps.shape)
     # move_maps = apply_move_map_boundary_mask(move_maps) ### 目前的dataset還是沒有只看邊邊，有空再用它來產生db，雖然實驗過有沒有用差不多(因為1019位移邊邊很大)
-    max_move_x = move_maps[:,:,0].max()
-    max_move_y = move_maps[:,:,1].max()
+    max_move_x = move_maps[:,:,:,0].max()
+    max_move_y = move_maps[:,:,:,1].max()
     return max_move_x, max_move_y
 
 #######################################################
@@ -145,11 +146,11 @@ def method2(x, y, color_shift=1):       ### 最大位移量不可以超過 255�
 #######################################################
 def predict_unet_move_maps_back(predict_move_maps):
     train_move_maps = get_dir_move(access_path+"datasets/pad2000-512to256/train/move_maps")
-    max_value_train = train_move_maps.max()
-    min_value_train = train_move_maps.min()
+    max_train_move = train_move_maps.max()
+    min_train_move = train_move_maps.min()
     predict_back_list = []
     for predict_move_map in predict_move_maps:
-        predict_back = (predict_move_map[0]+1)/2 * (max_value_train-min_value_train) + min_value_train ### 把 -1~1 轉回原始的值域
+        predict_back = (predict_move_map[0]+1)/2 * (max_train_move-min_train_move) + min_train_move ### 把 -1~1 轉回原始的值域
         predict_back_list.append(predict_back)
     return np.array(predict_back_list, dtype=np.float32)
 
@@ -175,3 +176,10 @@ def time_util(cost_time):
 
 #######################################################
 
+if(__name__=="__main__"):
+    in_imgs = get_dir_img(access_path+"datasets/wei_book/in_imgs")
+    gt_imgs = get_dir_img(access_path+"datasets/wei_book/gt_imgs")
+    
+    db = zip(in_imgs, gt_imgs)
+    for imgs in db:
+        print(type(imgs))
