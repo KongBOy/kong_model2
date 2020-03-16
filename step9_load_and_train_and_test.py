@@ -39,8 +39,6 @@ def step0_save_rect2_train_code(result_dir):
     shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
 
 
-
-
 def step1_data_pipline(phase, db_dir, db_name, model_name, batch_size=1):
     ### step1.讀取 data_pipline
     img_resize  = None
@@ -54,7 +52,6 @@ def step1_data_pipline(phase, db_dir, db_name, model_name, batch_size=1):
                 elif(db_name=="1_page_h=384,w=256"):    img_resize =(384*2, 256*2);move_resize=(256, 384) ### 注意img_resize用tf的resize，h放前面喔！
             elif(model_name == "model3_UNet_stack"):    img_resize =(256, 256);move_resize=(256, 256)
             elif(model_name == "model4_UNet_and_D"):    img_resize =(256, 256);move_resize=(256, 256)
-
             data_dict = get_unet_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, move_resize=move_resize)
 
         elif(model_name == "model5_rect2"):
@@ -64,6 +61,7 @@ def step1_data_pipline(phase, db_dir, db_name, model_name, batch_size=1):
             elif(db_name=="3_unet_rect2_h=256,w=256" ): img_resize = (256,256)
             elif(db_name=="3_unet_rect2_h=384,w=256" ): img_resize = (384,256)
             # elif(db_name=="rect2_add_dis_imgs"): img_resize = (512,512) ### 做錯
+
 
     
             data_dict = get_rect2_dataset(db_dir=db_dir, db_name=db_name, img_resize=img_resize, batch_size=1)
@@ -157,16 +155,18 @@ if(__name__=="__main__"):
     # db_name = "1_page_h=384,w=256"
     # db_name = "2_pure_rect2_h=256,w=256" 
     db_name = "2_pure_rect2_h=384,w=256" 
+
     # db_name = "3_unet_rect2_h=256,w=256" 
     # db_name = "wei_book" 
     # db_name = "wei_book_w=576,h=575" 
     # db_name = "rect2_add_dis_imgs" ### 錯的
 
     # model_name="model1_UNet"
-    # model_name="model2_UNet_512to256"
+    model_name="model2_UNet_512to256"
     # model_name="model3_UNet_stack"
     # model_name="model4_UNet_and_D"
     model_name="model5_rect2"
+
 
     ### train, train_reload 參數
     epochs = 160
@@ -180,6 +180,7 @@ if(__name__=="__main__"):
     
     restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"  ### 1.unet
     # restore_result_dir = access_path+"result/20200309-214802_rect2_2000_model5_rect2"              ### 3.unet+rect2
+
     
 
     ### 目前只有在算 b_cost_time會用到
@@ -207,6 +208,7 @@ if(__name__=="__main__"):
         if  (model_name in ["model1_UNet", "model2_UNet_512to256", "model3_UNet_stack", "model4_UNet_and_D"]):
             step0_save_rect1_train_code(result_dir)
         elif(model_name=="model5_rect2"):
+
             step0_save_rect2_train_code(result_dir)
 
     ################################################################################################################################################
@@ -253,6 +255,7 @@ if(__name__=="__main__"):
                 elif(model_name == "model4_UNet_and_D"):
                     generate_images( model_dict["generator"], test_input, test_gt, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
                 elif(model_name == "model5_rect2"):
+
                     generate_images( model_dict["rect2"].generator, test_input, test_gt, epoch, result_dir) 
             ###     訓練
             for n, (input_image, target) in enumerate( zip(data_dict["train_in_db"], data_dict["train_gt_db"]) ):
@@ -304,5 +307,6 @@ if(__name__=="__main__"):
         elif(model_name == "model4_UNet_and_D"):pass ### 還沒做
 
         elif(model_name == "model5_rect2"):
+
             from step8_kong_model5_Rect2 import test
             test(result_dir=result_dir, test_dir_name=test_dir_name, test_db=data_dict["test_db"], test_gt_db=data_dict["test_gt_db"],test_db_amount=test_db_amount, rect2=model_dict["rect2"])
