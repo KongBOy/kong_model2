@@ -178,7 +178,7 @@ if(__name__=="__main__"):
     # restore_result_dir = "result/20200226-194945_pad2000-512to256_model2_UNet_512to256"
     # restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"
     
-    restore_result_dir = access_path+"result/20200227-071341_pad2000-512to256_model2_UNet_512to256"  ### 1.unet
+    restore_result_dir = access_path+ "result" + "/" + "20200227-071341_pad2000-512to256_model2_UNet_512to256"  ### 1.unet
     # restore_result_dir = access_path+"result/20200309-214802_rect2_2000_model5_rect2"              ### 3.unet+rect2
 
     
