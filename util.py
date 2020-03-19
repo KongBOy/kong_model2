@@ -43,7 +43,7 @@ def get_dir_img(ord_dir):
     img_list = []
     for file_name in file_names:
         img_list.append( cv2.imread(ord_dir + "/" + file_name) )
-    img_list = np.array(img_list, dtype=np.float32)
+    img_list = np.array(img_list, dtype=np.uint8)
     return img_list
 
 
@@ -66,29 +66,48 @@ def apply_move_map_boundary_mask(move_maps):
     move_maps[:, boundary_width:row-boundary_width,boundary_width:col-boundary_width,:] = 0
     return move_maps
 
-def get_max_move_xy_from_dir(ord_dir):
-    move_maps = get_dir_move(ord_dir)
-    move_maps = abs(move_maps)
-    # move_maps = apply_move_map_boundary_mask(move_maps) ### 目前的dataset還是沒有只看邊邊，有空再用它來產生db，雖然實驗過有沒有用差不多(因為1019位移邊邊很大)
-    max_move_x = move_maps[:,:,:,0].max()
-    max_move_y = move_maps[:,:,:,1].max()
-    return max_move_x, max_move_y
-
-def get_max_move_xy_from_certain_move(ord_dir, certain_word):
-    move_maps = get_dir_certain_move(ord_dir, certain_word)
-    move_maps = abs(move_maps)
-    # move_maps = apply_move_map_boundary_mask(move_maps) ### 目前的dataset還是沒有只看邊邊，有空再用它來產生db，雖然實驗過有沒有用差不多(因為1019位移邊邊很大)
-    max_move_x = move_maps[:,:,:,0].max()
-    max_move_y = move_maps[:,:,:,1].max()
-    return max_move_x, max_move_y
-
-def get_max_move_xy_from_numpy(move_maps): ### 注意這裡的 max/min 是找位移最大，不管正負號！ 跟 normalize 用的max/min 不一樣喔！ 
+def get_max_db_move_xy_from_numpy(move_maps): ### 注意這裡的 max/min 是找位移最大，不管正負號！ 跟 normalize 用的max/min 不一樣喔！ 
     move_maps = abs(move_maps)
     print("move_maps.shape",move_maps.shape)
     # move_maps = apply_move_map_boundary_mask(move_maps) ### 目前的dataset還是沒有只看邊邊，有空再用它來產生db，雖然實驗過有沒有用差不多(因為1019位移邊邊很大)
     max_move_x = move_maps[:,:,:,0].max()
     max_move_y = move_maps[:,:,:,1].max()
     return max_move_x, max_move_y
+
+def get_max_db_move_xy_from_dir(ord_dir):
+    move_maps = get_dir_move(ord_dir)
+    return get_max_db_move_xy_from_numpy(move_maps)
+
+def get_max_db_move_xy_from_certain_move(ord_dir, certain_word):
+    move_maps = get_dir_certain_move(ord_dir, certain_word)
+    return get_max_db_move_xy_from_numpy(move_maps)
+
+
+def get_max_db_move_xy(db_dir="datasets", db_name="1_unet_page_h=384,w=256"):
+    move_map_train_path = db_dir + "/" + db_name + "/" + "train/move_maps" 
+    move_map_test_path  = db_dir + "/" + db_name + "/" + "test/move_maps" 
+    train_move_maps = get_dir_move(move_map_train_path) # (1800, 384, 256, 2)
+    test_move_maps  = get_dir_move(move_map_test_path)  # (200, 384, 256, 2)
+    db_move_maps = np.concatenate((train_move_maps, test_move_maps), axis=0) # (2000, 384, 256, 2)
+
+    max_move_x = db_move_maps[:,:,:,0].max()
+    max_move_y = db_move_maps[:,:,:,1].max()
+    return max_move_x, max_move_y
+
+#######################################################
+### 複刻 step6_data_pipline.py 寫的 get_train_test_move_map_db 
+def get_maxmin_train_move_from_path(move_map_train_path):
+    train_move_maps = get_dir_move(move_map_train_path)
+    max_train_move = train_move_maps.max() ###  236.52951204508076
+    min_train_move = train_move_maps.min() ### -227.09562801056995
+    return max_train_move, min_train_move
+
+def get_maxmin_train_move(db_dir="datasets", db_name="1_unet_page_h=384,w=256"):
+    move_map_train_path = db_dir + "/" + db_name + "/" + "train/move_maps" 
+    train_move_maps = get_dir_move(move_map_train_path)
+    max_train_move = train_move_maps.max() ###  236.52951204508076
+    min_train_move = train_move_maps.min() ### -227.09562801056995
+    return max_train_move, min_train_move
 
 #######################################################
 ### 用來給視覺化參考的顏色map
@@ -177,9 +196,11 @@ def time_util(cost_time):
 #######################################################
 
 if(__name__=="__main__"):
-    in_imgs = get_dir_img(access_path+"datasets/wei_book/in_imgs")
-    gt_imgs = get_dir_img(access_path+"datasets/wei_book/gt_imgs")
+    # in_imgs = get_dir_img(access_path+"datasets/wei_book/in_imgs")
+    # gt_imgs = get_dir_img(access_path+"datasets/wei_book/gt_imgs")
     
-    db = zip(in_imgs, gt_imgs)
-    for imgs in db:
-        print(type(imgs))
+    # db = zip(in_imgs, gt_imgs)
+    # for imgs in db:
+    #     print(type(imgs))
+
+    get_max_db_move_xy(db_dir=access_path+"datasets", db_name="1_unet_page_h=384,w=256")
