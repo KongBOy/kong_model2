@@ -1,5 +1,5 @@
 from step0_access_path import access_path
-from util import get_dir_move, get_max_move_xy_from_numpy, get_dir_certain_move, get_dir_certain_img, method2, get_max_move_xy_from_certain_move
+from util import get_dir_move, get_max_db_move_xy_from_numpy, get_dir_certain_move, get_dir_certain_img, method2, get_max_db_move_xy_from_certain_move
 import numpy as np 
 import cv2
 from util import get_xy_map
@@ -33,6 +33,21 @@ def apply_move_to_rec2(dis_img, move_map, max_db_move_x, max_db_move_y):
     proc_move_map[...,1] += go_y+max_db_move_y
     proc_move_map = proc_move_map.astype(np.int32)
     
+
+    over_bound_msk = np.zeros(shape=(row,col), dtype=np.uint8)
+    over_bound_msk[ proc_move_map[...,0]>=dis_col    ] = 1
+    over_bound_msk[ proc_move_map[...,0]<dis_col*-1  ] = 1
+    over_bound_msk[ proc_move_map[...,1]>=dis_row    ] = 1
+    over_bound_msk[ proc_move_map[...,1]<dis_col*-1  ] = 1
+    
+    proc_move_map[ proc_move_map[...,0]>=dis_col   ,0 ] = dis_col-1
+    proc_move_map[ proc_move_map[...,0]<dis_col*-1 ,0 ] = 0
+    proc_move_map[ proc_move_map[...,1]>=dis_row   ,1 ] = dis_row-1
+    proc_move_map[ proc_move_map[...,1]<dis_col*-1 ,1 ] = 0
+    # np.save("proc_move_map_clip",proc_move_map)
+    # cv2.imwrite("dis_img.bmp",dis_img)
+
+
     rec_img = dis_img[proc_move_map[...,1],proc_move_map[...,0],:]
 
 
@@ -40,10 +55,12 @@ def apply_move_to_rec2(dis_img, move_map, max_db_move_x, max_db_move_y):
     # 所以 rec_img的每個pixel 只有一個相應的 move_map pixel，
     # 代表rec_img的每個pixel只會有一個來源，不會同時有 兩個來源，
     # 所以不會有一個合法一個不合法，然後不合法蓋過原本合法值的問題！
-    rec_img[ proc_move_map[...,0]<0 ] = 0
-    rec_img[ proc_move_map[...,0]>dis_col ] = 0
-    rec_img[ proc_move_map[...,1]<0 ] = 0
-    rec_img[ proc_move_map[...,1]>dis_row ] = 0
+    
+    rec_img[ over_bound_msk==1 ] = 0
+    # rec_img[ proc_move_map[...,0]<0 ] = 0
+    # rec_img[ proc_move_map[...,0]>dis_col ] = 0
+    # rec_img[ proc_move_map[...,1]<0 ] = 0
+    # rec_img[ proc_move_map[...,1]>dis_row ] = 0
     
     # print("cost time:",time.time()-start_time)
     return rec_img
@@ -121,6 +138,7 @@ if(__name__=="__main__"):
 
     proc_move_map = move_map.copy()
 
+    rec_img = apply_move_to_rec2(dis_img, proc_move_map, max_db_move_x, max_db_move_y)
 
     # rec_img = apply_move_to_rec_tf(dis_img, proc_move_map, max_db_move_x, max_db_move_y)
 
@@ -131,15 +149,15 @@ if(__name__=="__main__"):
     #     rec_img = apply_move_to_rec(dis_img, proc_move_map, max_db_move_x, max_db_move_y)
     # print("apply_move_to_rec1 cost_time:",time.time()-start_time)
 
-    start_time = time.time()
-    for i in range(1000):
-        rec_img = apply_move_to_rec2(dis_img, proc_move_map, max_db_move_x, max_db_move_y)
-    print("apply_move_to_rec2 cost_time:",time.time()-start_time)
+    # start_time = time.time()
+    # for i in range(1000):
+    #     rec_img = apply_move_to_rec2(dis_img, proc_move_map, max_db_move_x, max_db_move_y)
+    # print("apply_move_to_rec2 cost_time:",time.time()-start_time)
 
-    start_time = time.time()
-    for i in range(1000):
-        rec_img = apply_move_to_rec_tf(dis_img, proc_move_map, max_db_move_x, max_db_move_y)
-    print("apply_move_to_rec_tf cost_time:",time.time()-start_time)
+    # start_time = time.time()
+    # for i in range(1000):
+    #     rec_img = apply_move_to_rec_tf(dis_img, proc_move_map, max_db_move_x, max_db_move_y)
+    # print("apply_move_to_rec_tf cost_time:",time.time()-start_time)
 
 
 
