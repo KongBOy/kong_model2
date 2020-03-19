@@ -1,5 +1,5 @@
 from step0_access_path import access_path
-from util import get_dir_move, get_max_move_xy_from_numpy, get_dir_certain_move, get_dir_certain_img, method2, get_max_move_xy_from_certain_move
+from util import get_dir_move, get_max_db_move_xy_from_numpy, get_dir_certain_move, get_dir_certain_img, method2, get_max_db_move_xy_from_certain_move
 import numpy as np 
 from numba import cuda
 import math
@@ -35,7 +35,7 @@ def kong(dis_img, move_map, rec_img):
 
 
 import time
-def apply_move_to_rec2(dis_img, move_map, max_move_x, max_move_y):
+def apply_move_to_rec2(dis_img, move_map, max_db_move_x, max_db_move_y):
 
     dis_row, dis_col = dis_img.shape[:2] ### 原始的 5xx, 5xx，不是5125, 512喔！
     row, col = move_map.shape[:2] ### 256, 256
@@ -43,8 +43,8 @@ def apply_move_to_rec2(dis_img, move_map, max_move_x, max_move_y):
     rec_img = np.zeros(shape=(row,col,3),dtype=np.uint8) ### 建立存恢復影像的畫布，256,256
     go_x, go_y = get_xy_map(row,col)
     move_map2 = move_map.copy()
-    move_map2[...,0] += go_x+max_move_x
-    move_map2[...,1] += go_y+max_move_y
+    move_map2[...,0] += go_x+max_db_move_x
+    move_map2[...,1] += go_y+max_db_move_y
     move_map2 = move_map2.astype(np.int32)
 
 
@@ -94,6 +94,6 @@ if(__name__=="__main__"):
     moves = get_dir_certain_move(access_path+"step3_apply_flow_result","2-q")
     move_map = moves[0]
     ### 拿到 當初建 dis_img_db時 用的 move_map max/min 的移動量
-    max_move_x, max_move_y = get_max_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q")
+    max_db_move_x, max_db_move_y = get_max_db_move_xy_from_certain_move(access_path+"step3_apply_flow_result","2-q")
 
-    rec_img = apply_move_to_rec2(dis_img, move_map, max_move_x, max_move_y)
+    rec_img = apply_move_to_rec2(dis_img, move_map, max_db_move_x, max_db_move_y)
