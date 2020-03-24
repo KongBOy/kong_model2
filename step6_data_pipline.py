@@ -236,7 +236,7 @@ def get_3_unet_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_
 
 ############################################################
 ### 這應該算通用型抓test_db，如果沒有gt， test_gt_dir 就丟None就行囉！
-def get_test_indecate_db(test_in_dir, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1, img_resize=(512,512)):#, move_resize=(256,256)):
+def get_test_indicate_db(test_in_dir, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1, img_resize=(512,512)):#, move_resize=(256,256)):
     
     
     data_dict = {}
