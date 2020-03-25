@@ -49,7 +49,7 @@ vert_x_sl = Slider(vert_x_ax , 'vert_x', 0  , col  , valinit=0, valstep=0.1)
 move_x_sl = Slider(move_x_ax , 'move_x', -28.80, 28.80, valinit=0, valstep=0.1)
 move_y_sl = Slider(move_y_ax , 'move_y', -28.80, 28.80, valinit=0, valstep=0.1)
 alpha_c_sl  = Slider(alpha_c_ax  , 'alpha_c' , 0.85, 1.70*2 , valinit=0.85, valstep=0.01)
-alpha_f_sl  = Slider(alpha_f_ax  , 'alpha_f' , 0, 100 , valinit=0, valstep=0.1)
+alpha_f_sl  = Slider(alpha_f_ax  , 'alpha_f' , 0.2   , 100 , valinit=0, valstep=0.1)
 
 ### 3.Slide功能
 ### 初始化 一些 等等要用到的東西
@@ -68,8 +68,8 @@ def apply_move():
     if  (curve_type == "curl"):alpha = alpha_c_sl.val
     elif(curve_type == "fold"):alpha = alpha_f_sl.val
     # global row, col, vert_x, vert_y, move_x, move_y, curve_type, alpha
-    if  (curve_type=="curl"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha_curl=alpha)
-    elif(curve_type=="fold"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha_fold=alpha)
+    if  (curve_type=="curl"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
+    elif(curve_type=="fold"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
     proc_xy_f = xy_f+move
     ax_img.set_offsets(proc_xy_f) 
     print("move_x_max = ",abs(move[:,0]).max(),", move_y_max = ",abs(move[:,1]).max(),", curve_type=",curve_type,", alpha=",alpha)
@@ -115,8 +115,8 @@ stick_ax = plt.axes([0.6, 0.01, 0.2, 0.03], facecolor=axcolor) ### 1.畫圖出�
 stick_btn = Button(stick_ax,"Stick") ### 1. -> 2. 圖和button做連結
 def Stick(event): ### 3.定義功能
     global row, col, vert_x, vert_y, move_x, move_y, curve_type, alpha
-    if  (curve_type=="curl"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha_curl=alpha)
-    elif(curve_type=="fold"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha_fold=alpha)
+    if  (curve_type=="curl"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
+    elif(curve_type=="fold"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
     global xy_f
     xy_f = xy_f+move
 
