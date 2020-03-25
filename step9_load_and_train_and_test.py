@@ -59,8 +59,8 @@ def step1_build_model_and_optimizer(model_name="model1_UNet"):
         model_dict["discriminator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
     elif(model_name == "model6_mrf_rect2"):
-        from step8_kong_model5_Rect2 import Rect2, generate_images, train_step
-        model_dict["mrf_rect2"] = Rect2()
+        from step8_kong_model5_Rect2 import MRF_Rect2, generate_images, train_step
+        model_dict["mrf_rect2"] = MRF_Rect2()
         model_dict["generator"] = model_dict["mrf_rect2"].generator
         model_dict["generator_optimizer"]     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         model_dict["discriminator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
@@ -110,7 +110,8 @@ def step6_data_pipline(phase, db_dir, db_name, model_name, test_in_dir=None, tes
         elif(db_name== "1_pure_unet_page_h=384,w=256"): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數 
         elif(db_name== "wei_book_h=384,w=256"):         img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
 
-    elif(model_name == "model5_rect2" or model_name== "model6_mrf_rect2"):
+    elif(model_name == "model5_rect2" or 
+         model_name == "model6_mrf_rect2"):
         if  (db_name== "2_pure_rect2_page_h=256,w=256" ):    img_resize = (512,512) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "2_pure_rect2_page_h=384,w=256" ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "wei_book_h=384,w=256"     ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
@@ -160,8 +161,8 @@ if(__name__=="__main__"):
 
 
     # model_name="model2_UNet_512to256"
-    model_name="model5_rect2"
-    # model_name="model6_mrf_rect2"
+    # model_name="model5_rect2"
+    model_name="model6_mrf_rect2"
 
 
 
@@ -197,7 +198,8 @@ if(__name__=="__main__"):
     ###    把source code存起來
     if  (phase=="train" or phase=="train_reload"): ### 如果是訓練或重新訓練的話，把source_code存一份起來，reload的話就蓋過去
         if  (model_name == "model2_UNet_512to256"): step0_save_rect1_train_code(result_dir)
-        elif(model_name=="model5_rect2")          : step0_save_rect2_train_code(result_dir)
+        elif(model_name=="model5_rect2" or 
+             model_name=="model6_mrf_rect2")          : step0_save_rect2_train_code(result_dir)
 
     ################################################################################################################################################
     ### 第一階段：1.,2.模型、3.tensorboard、4.checkpoint、5.看需不需要reload model
@@ -245,23 +247,20 @@ if(__name__=="__main__"):
 
             lr = 0.0002 if epoch < epoch_down_step else 0.0002*(epochs-epoch)/(epochs-epoch_down_step)
             model_dict["generator_optimizer"].lr = lr
-
-            ###     用來看目前訓練的狀況 
-            for test_input, test_gt in zip(data_dict["test_in_db_pre"].take(1), data_dict["test_gt_db_pre"].take(1)): 
-                if  (model_name == "model2_UNet_512to256"):generate_images( model_dict["generator"], test_input, test_gt, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-                elif(model_name == "model5_rect2"):        generate_images( model_dict["rect2"]    .generator, test_input, test_gt, epoch, result_dir) 
-                elif(model_name == "model6_mrf_rect2"):    generate_images( model_dict["mrf_rect2"].generator, test_input, test_gt, epoch, result_dir) 
-
             ###     訓練
             for n, (input_image, target) in enumerate( zip(data_dict["train_in_db_pre"], data_dict["train_gt_db_pre"]) ):
-                print("input_image",input_image.shape)
-                print("target",target.shape)
                 print('.', end='')
                 if (n+1) % 100 == 0: print()
                 if  (model_name == "model2_UNet_512to256"):train_step(model_dict["generator"], model_dict["generator_optimizer"], summary_writer, input_image, target, epoch)
-                elif(model_name == "model5_rect2")        :
-                    train_step(model_dict["rect2"]    , input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
-                # elif(model_name == "model6_rect2")        :train_step(model_dict["mrf_rect2"], input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
+                elif(model_name == "model5_rect2")        :train_step(model_dict["rect2"]    , input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
+                elif(model_name == "model6_mrf_rect2")    :train_step(model_dict["mrf_rect2"], input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
+
+            ###     用來看目前訓練的狀況 
+            for test_input, test_gt in zip(data_dict["test_in_db_pre"].take(1), data_dict["test_gt_db_pre"].take(1)): 
+                if  (model_name == "model2_UNet_512to256" ):generate_images( model_dict["generator"], test_input, test_gt, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                elif(model_name == "model5_rect2" ):        generate_images( model_dict["rect2"]    .generator, test_input, test_gt, epoch, result_dir) 
+                elif(model_name == "model6_mrf_rect2" ):    generate_images( model_dict["mrf_rect2"].generator, test_input, test_gt, epoch, result_dir) 
+
 
             ###     儲存模型 (checkpoint) the model every 20 epochs
             if (epoch + 1) % epoch_save_freq == 0:
