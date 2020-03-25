@@ -219,6 +219,8 @@ def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_typ
     data_dict["test_gt_db"]     = test_gt_db.img_db
     data_dict["test_gt_db_pre"] = test_gt_db.pre_db
 
+    data_dict["train_amount"]    = get_db_amount(train_in_img_db_path)
+    data_dict["test_amount" ]    = get_db_amount(test_in_img_db_path )
     data_dict["in_type"] = "img"
     data_dict["gt_type"] = "img"
     return data_dict 
