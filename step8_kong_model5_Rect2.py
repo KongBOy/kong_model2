@@ -5,18 +5,18 @@ import tensorflow as tf
 # from tensorflow_addons.layers import InstanceNormalization
 tf.keras.backend.set_floatx('float32') ### 這步非常非常重要！用了才可以加速！
 
-def instance_norm(in_x, name="instance_norm"):    
-    depth = in_x.get_shape()[3]
-    scale = tf.Variable(tf.random.normal(shape=[depth],mean=1.0, stddev=0.02), dtype=tf.float32)
-    #print(scale)
-    offset = tf.Variable(tf.zeros(shape=[depth]))
-    mean, variance = tf.nn.moments(in_x, axes=[1,2], keepdims=True)
-    # print("mean",mean)
-    # print("variance",variance)
-    epsilon = 1e-5
-    inv = tf.math.rsqrt(variance + epsilon)
-    normalized = (in_x-mean)*inv
-    return scale*normalized + offset
+# def instance_norm(in_x, name="instance_norm"):    
+#     depth = in_x.get_shape()[3]
+#     scale = tf.Variable(tf.random.normal(shape=[depth],mean=1.0, stddev=0.02), dtype=tf.float32)
+#     #print(scale)
+#     offset = tf.Variable(tf.zeros(shape=[depth]))
+#     mean, variance = tf.nn.moments(in_x, axes=[1,2], keepdims=True)
+#     # print("mean",mean)
+#     # print("variance",variance)
+#     epsilon = 1e-5
+#     inv = tf.math.rsqrt(variance + epsilon)
+#     normalized = (in_x-mean)*inv
+#     return scale*normalized + offset
 
 
 class InstanceNorm_kong(tf.keras.layers.Layer):
@@ -38,7 +38,7 @@ class InstanceNorm_kong(tf.keras.layers.Layer):
         # return tf.matmul(input, self.kernel)
 
 class ResBlock(tf.keras.layers.Layer):
-    def __init__(self, c_num, ks=3, s=1):
+    def __init__(self, c_num, ks=3, s=1,**kwargs):
         super(ResBlock, self).__init__()
         self.ks = ks
         self.conv_1 = Conv2D( c_num, kernel_size=ks, strides=s, padding="valid")
@@ -60,7 +60,7 @@ class ResBlock(tf.keras.layers.Layer):
 class Discriminator(tf.keras.models.Model):
     def __init__(self,**kwargs):
         super(Discriminator, self).__init__(**kwargs)
-        self.concat = Concatenate(name = "D_concat")
+        self.concat = Concatenate()
 
         self.conv_1 = Conv2D(64  ,   kernel_size=4, strides=2, padding="same")
         self.leaky_lr1 = LeakyReLU(alpha=0.2)
@@ -104,12 +104,14 @@ class Discriminator(tf.keras.models.Model):
         x = self.in_c4(x)
         x = self.leaky_lr4(x)
         # x = tf.nn.leaky_relu(x, alpha=0.2)
-
         return self.conv_map(x)
 
 class Generator(tf.keras.models.Model):
-    def __init__(self,**kwargs):
+    def __init__(self, use_mrfb=False, **kwargs):
         super(Generator, self).__init__(**kwargs)
+        if(use_mrfb):
+            self.mrfb = MRFBlock(c_num=64)
+        self.use_mrfb = use_mrfb
         self.conv1   = Conv2D(64  ,   kernel_size=7, strides=1, padding="valid")
         self.in_c1   = InstanceNorm_kong()
         self.conv2   = Conv2D(64*2,   kernel_size=3, strides=2, padding="same")
@@ -134,7 +136,11 @@ class Generator(tf.keras.models.Model):
         self.convRGB = Conv2D(3  ,   kernel_size=7, strides=1, padding="valid")
 
     def call(self, input_tensor):
-        x = tf.pad(input_tensor, [[0,0], [3,3], [3,3], [0,0]], "REFLECT")
+        if(self.use_mrfb):
+            x = self.mrfb(input_tensor)
+            x = tf.pad(x , [[0,0], [3,3], [3,3], [0,0]], "REFLECT")
+        else:
+            x = tf.pad(input_tensor, [[0,0], [3,3], [3,3], [0,0]], "REFLECT")
 
         ### c1
         x = self.conv1(x)
@@ -174,7 +180,7 @@ class Generator(tf.keras.models.Model):
 
 
 class MRFBlock(tf.keras.layers.Layer):
-    def __init__(self, c_num):
+    def __init__(self, c_num,**kwargs):
         super(MRFBlock, self).__init__()
         self.conv_11 = Conv2D( c_num, kernel_size=1, strides=1, padding="same")
         self.in_c11  = InstanceNorm_kong()
@@ -201,85 +207,61 @@ class MRFBlock(tf.keras.layers.Layer):
         self.conv_92 = Conv2D( c_num, kernel_size=9, strides=1, padding="same")
         self.in_c92  = InstanceNorm_kong()
 
-        self.concat = Concatenate(name="concat_MRF")
+        self.concat = Concatenate()
         
     def call(self, input_tensor):
         x1 = self.conv_11(input_tensor)
-        return x1
-        # x1 = self.in_c11(x1)
-        # x1 = tf.nn.relu(x1)
-        # x1 = self.conv_12(x1)
-        # x1 = self.in_c12(x1)
-        # x1 = tf.nn.relu(x1)
+        x1 = self.in_c11(x1)
+        x1 = tf.nn.relu(x1)
+        x1 = self.conv_12(x1)
+        x1 = self.in_c12(x1)
+        x1 = tf.nn.relu(x1)
 
-        # x3 = self.conv_31(input_tensor)
-        # x3 = self.in_c31(x3)
-        # x3 = tf.nn.relu(x3)
-        # x3 = self.conv_32(x3)
-        # x3 = self.in_c32(x3)
-        # x3 = tf.nn.relu(x3)
+        x3 = self.conv_31(input_tensor)
+        x3 = self.in_c31(x3)
+        x3 = tf.nn.relu(x3)
+        x3 = self.conv_32(x3)
+        x3 = self.in_c32(x3)
+        x3 = tf.nn.relu(x3)
         
-        # x5 = self.conv_51(input_tensor)
-        # x5 = self.in_c51(x5)
-        # x5 = tf.nn.relu(x5)
-        # x5 = self.conv_52(x5)
-        # x5 = self.in_c52(x5)
-        # x5 = tf.nn.relu(x5)
+        x5 = self.conv_51(input_tensor)
+        x5 = self.in_c51(x5)
+        x5 = tf.nn.relu(x5)
+        x5 = self.conv_52(x5)
+        x5 = self.in_c52(x5)
+        x5 = tf.nn.relu(x5)
 
-        # x7 = self.conv_71(input_tensor)
-        # x7 = self.in_c71(x7)
-        # x7 = tf.nn.relu(x7)
-        # x7 = self.conv_72(x7)
-        # x7 = self.in_c72(x7)
-        # x7 = tf.nn.relu(x7)
+        x7 = self.conv_71(input_tensor)
+        x7 = self.in_c71(x7)
+        x7 = tf.nn.relu(x7)
+        x7 = self.conv_72(x7)
+        x7 = self.in_c72(x7)
+        x7 = tf.nn.relu(x7)
 
-        # x9 = self.conv_91(input_tensor)
-        # x9 = self.in_c91(x9)
-        # x9 = tf.nn.relu(x9)
-        # x9 = self.conv_92(x9)
-        # x9 = self.in_c92(x9)
-        # x9 = tf.nn.relu(x9)
+        x9 = self.conv_91(input_tensor)
+        x9 = self.in_c91(x9)
+        x9 = tf.nn.relu(x9)
+        x9 = self.conv_92(x9)
+        x9 = self.in_c92(x9)
+        x9 = tf.nn.relu(x9)
 
-        # x_concat = self.concat([x1, x3, x5, x7, x9])
-        # return x_concat
+        x_concat = self.concat([x1, x3, x5, x7, x9])
+        return x_concat
 
 
 
 
 class Rect2(tf.keras.models.Model):
-    def __init__(self):
+    def __init__(self, use_mrfb=False, **kwargs):
         super(Rect2, self).__init__()
-        self.mrfb = MRFBlock(c_num=64)
-        self.generator = Generator()
+        self.generator = Generator(use_mrfb)
         self.discriminator = Discriminator()
     def call(self, dis_img, gt_img):
-        mrfb_result = self.mrfb(dis_img)
-        g_rec_img = self.generator(mrfb_result)
-        # g_rec_img = self.generator(dis_img)
-        # print("dis_img   before D", dis_img.shape)
-        # print("g_rec_img before D", g_rec_img.shape)
-        # print("gt_img    before D", gt_img.shape)
+        g_rec_img = self.generator(dis_img)
         fake_score = self.discriminator(dis_img, g_rec_img)
         real_score = self.discriminator(dis_img, gt_img)
         return g_rec_img, fake_score, real_score
 
-
-
-class MRF_Rect2(tf.keras.models.Model):
-    def __init__(self):
-        super(MRF_Rect2, self).__init__()
-        self.mrfb = MRFBlock(c_num=64)
-        self.generator = Generator()
-        self.discriminator = Discriminator()
-
-    def call(self, dis_img, gt_img):
-        mrfb_result = self.mrfb(dis_img)
-        g_rec_img = self.generator(mrfb_result)
-        
-        # g_rec_img = self.generator(dis_img)
-        fake_score = self.discriminator(dis_img, g_rec_img)
-        real_score = self.discriminator(dis_img, gt_img)
-        return g_rec_img, fake_score, real_score
 
 
 
@@ -296,27 +278,19 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1.,tf.float32)):
 @tf.function
 def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, epoch ):
     with tf.GradientTape(persistent=True) as tape:
-        print("here~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ in train_step1")
-        print("dis_img",dis_img.shape)
-        print("gt_img",gt_img.shape)
         g_rec_img, fake_score, real_score = rect2(dis_img, gt_img)
-        print("here~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ in train_step2")
-
         loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(40.,tf.float32))
         loss_g2d = mse_kong(fake_score, tf.ones_like(fake_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32))
         g_total_loss = loss_rec + loss_g2d
-        print("here~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ in train_step3")
 
         loss_d_fake = mse_kong( fake_score, tf.zeros_like(fake_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
         loss_d_real = mse_kong( real_score, tf.ones_like (real_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
         d_total_loss = (loss_d_real+loss_d_fake)/2
-        print("here~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ in train_step4")
         
     grad_D = tape.gradient(d_total_loss, rect2.discriminator.trainable_weights)
     grad_G = tape.gradient(g_total_loss, rect2.generator.    trainable_weights)
     optimizer_D.apply_gradients( zip(grad_D, rect2.discriminator.trainable_weights )  )
     optimizer_G.apply_gradients( zip(grad_G, rect2.generator.    trainable_weights )  )
-    print("here~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ in train_step5")
     with summary_writer.as_default():
         tf.summary.scalar('1_loss_rec', loss_rec, step=epoch)
         tf.summary.scalar('2_loss_g2d', loss_g2d, step=epoch)
