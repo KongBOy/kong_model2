@@ -1,6 +1,6 @@
 from step0_access_path import access_path
 from build_dataset_combine import Check_dir_exist_and_build
-from util import get_dir_move, get_dir_img, method2, get_xy_map, get_max_move_xy_from_numpy, time_util
+from util import get_dir_move, get_dir_img, method2, get_xy_map, get_max_db_move_xy_from_numpy, time_util
 import numpy as np 
 import cv2
 
