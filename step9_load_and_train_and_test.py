@@ -34,7 +34,6 @@ def step0_save_rect2_train_code(result_dir):
     shutil.copy("step6_data_pipline.py"            ,code_dir + "/" + "step6_data_pipline.py")
     shutil.copy("step8_kong_model5_Rect2.py"       ,code_dir + "/" + "step8_kong_model5_Rect2.py")
     shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
-    shutil.copy("step11_unet_rec_img.py"           ,code_dir + "/" + "step11_unet_rec_img.py")
     shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
 
 
@@ -59,6 +58,12 @@ def step1_build_model_and_optimizer(model_name="model1_UNet"):
         model_dict["generator_optimizer"]     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         model_dict["discriminator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
+    elif(model_name == "model6_mrf_rect2"):
+        from step8_kong_model5_Rect2 import Rect2, generate_images, train_step
+        model_dict["mrf_rect2"] = Rect2()
+        model_dict["generator"] = model_dict["mrf_rect2"].generator
+        model_dict["generator_optimizer"]     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        model_dict["discriminator_optimizer"] = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
     print("build model cost time:", time.time()-start_time)
     return model_dict, generate_images, train_step 
 
@@ -105,16 +110,16 @@ def step6_data_pipline(phase, db_dir, db_name, model_name, test_in_dir=None, tes
         elif(db_name== "1_pure_unet_page_h=384,w=256"): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數 
         elif(db_name== "wei_book_h=384,w=256"):         img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
 
-    elif(model_name == "model5_rect2"):
-        if  (db_name== "2_pure_rect2_h=256,w=256" ):    img_resize = (512,512) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "2_pure_rect2_h=384,w=256" ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+    elif(model_name == "model5_rect2" or model_name== "model6_mrf_rect2"):
+        if  (db_name== "2_pure_rect2_page_h=256,w=256" ):    img_resize = (512,512) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "2_pure_rect2_page_h=384,w=256" ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "wei_book_h=384,w=256"     ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
         
 
-        elif(db_name== "3_unet_rect2_h=256,w=256" ):    img_resize = (256,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "3_unet_rect2_h=384,w=256" ):    img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "3_unet_rect2_page_h=256,w=256" ):    img_resize = (256,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "3_unet_rect2_page_h=384,w=256" ):    img_resize = (384,256) ### ord_img(in_img的大小)的大小
         elif(db_name== "wei_book_h=384,w=256"     ):    img_resize = (384,256) ### ord_img(in_img的大小)的大小
-
+    
 
     ### 第二部分：根據 db_name 去相應的 dir結構抓出所有data
     # ( 然後我覺得不要管什麼 test就只抓test、train就全抓，這些什麼model抓什麼資料這種邏輯判斷應該要寫再外面，這裡專心抓資料就好！要不然會不好擴增！
@@ -122,27 +127,14 @@ def step6_data_pipline(phase, db_dir, db_name, model_name, test_in_dir=None, tes
     data_dict = {}
     if  (db_name == "1_pure_unet2000-512to256"    ): data_dict = get_1_pure_unet_db(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
     elif(db_name == "1_pure_unet_page_h=384,w=256"): data_dict = get_1_pure_unet_db(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-    elif(db_name == "2_pure_rect2_h=256,w=256"    ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-    elif(db_name == "2_pure_rect2_h=384,w=256"    ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-    elif(db_name == "3_unet_rect2_h=256,w=256"    ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-    elif(db_name == "3_unet_rect2_h=384,w=256"    ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+    elif(db_name == "2_pure_rect2_page_h=256,w=256"    ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+    elif(db_name == "2_pure_rect2_page_h=384,w=256"    ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+    elif(db_name == "3_unet_rect2_page_h=256,w=256"    ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+    elif(db_name == "3_unet_rect2_page_h=384,w=256"    ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
     elif(db_name == "wei_book_h=384,w=256"        ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
 
     return data_dict
 
-
-
-# def get_test_ingt_dir(db_name):
-#     if  ("pure_unet" in db_name):
-#         test_in_dir = db_dir + "/" + db_name + "/" + "test" + "/" + "dis_imgs"
-#         test_gt_dir = db_dir + "/" + db_name + "/" + "test" + "/" + "move_maps"
-#     elif("pure_rect2" in db_name):
-#         test_in_dir = db_dir + "/" + db_name + "/" + "test" + "/" + "dis_img_db"
-#         test_gt_dir = db_dir + "/" + db_name + "/" + "test" + "/" + "gt_ord_pad_img_db"
-#     elif("unet_rect2" in db_name):
-#         test_in_dir = db_dir + "/" + db_name + "/" + "test" + "/" + "unet_rec_img_db"
-#         test_gt_dir = db_dir + "/" + db_name + "/" + "test" + "/" + "gt_ord_img_db"
-#     return test_in_dir, test_gt_dir
 
 
 
@@ -154,7 +146,7 @@ if(__name__=="__main__"):
 
     phase = "train"
     # phase = "train_reload"
-    # phase = "test"  
+    # phase = "test"  ### test是用固定 train/test 資料夾架構的讀法
 
     # phase = "test_indicate" ###用自己決定的db來做test
     # test_in_dir = access_path+"datasets/1_pure_unet_page_h=384,w=256/train+test/dis_imgs"
@@ -167,14 +159,15 @@ if(__name__=="__main__"):
     test_gt_dir = access_path+"datasets/wei_book_h=384,w=256/gt_imgs"
 
 
-    model_name="model2_UNet_512to256"
-    # model_name="model5_rect2"
+    # model_name="model2_UNet_512to256"
+    model_name="model5_rect2"
+    # model_name="model6_mrf_rect2"
 
 
 
-    db_name = "1_pure_unet_page_h=384,w=256"
-    # db_name = "2_pure_rect2_h=384,w=256" 
-    # db_name = "3_unet_rect2_h=384,w=256" 
+    # db_name = "1_pure_unet_page_h=384,w=256"
+    db_name = "2_pure_rect2_page_h=384,w=256" 
+    # db_name = "3_unet_rect2_page_h=384,w=256" 
     # db_name = "wei_book_h=384,w=256" 
 
 
@@ -256,14 +249,19 @@ if(__name__=="__main__"):
             ###     用來看目前訓練的狀況 
             for test_input, test_gt in zip(data_dict["test_in_db_pre"].take(1), data_dict["test_gt_db_pre"].take(1)): 
                 if  (model_name == "model2_UNet_512to256"):generate_images( model_dict["generator"], test_input, test_gt, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-                elif(model_name == "model5_rect2"):        generate_images( model_dict["rect2"].generator, test_input, test_gt, epoch, result_dir) 
+                elif(model_name == "model5_rect2"):        generate_images( model_dict["rect2"]    .generator, test_input, test_gt, epoch, result_dir) 
+                elif(model_name == "model6_mrf_rect2"):    generate_images( model_dict["mrf_rect2"].generator, test_input, test_gt, epoch, result_dir) 
 
             ###     訓練
             for n, (input_image, target) in enumerate( zip(data_dict["train_in_db_pre"], data_dict["train_gt_db_pre"]) ):
+                print("input_image",input_image.shape)
+                print("target",target.shape)
                 print('.', end='')
                 if (n+1) % 100 == 0: print()
                 if  (model_name == "model2_UNet_512to256"):train_step(model_dict["generator"], model_dict["generator_optimizer"], summary_writer, input_image, target, epoch)
-                elif(model_name == "model5_rect2")        :train_step(model_dict["rect2"], input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
+                elif(model_name == "model5_rect2")        :
+                    train_step(model_dict["rect2"]    , input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
+                # elif(model_name == "model6_rect2")        :train_step(model_dict["mrf_rect2"], input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
 
             ###     儲存模型 (checkpoint) the model every 20 epochs
             if (epoch + 1) % epoch_save_freq == 0:
@@ -340,6 +338,6 @@ if(__name__=="__main__"):
         if  (model_name == "model2_UNet_512to256"):
             from step7_kong_model2_UNet_512to256 import test_visual
             test_visual( test_dir_name=test_dir_name, model_dict=model_dict, data_dict=data_dict, start_index=0)
-        elif(model_name == "model5_rect2"):
+        elif(model_name == "model5_rect2" or model_name == "model6_mrf_rect2"):
             from step8_kong_model5_Rect2 import test_visual
-            test_visual( test_dir_name=test_dir_name, model_dict=model_dict, data_dict=data_dict, start_index=0)
+            test_visual( test_dir_name=test_dir_name, data_dict=data_dict, start_index=0)
