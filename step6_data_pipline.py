@@ -239,8 +239,9 @@ def get_3_unet_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_
 ############################################################
 ### 這應該算通用型抓test_db，如果沒有gt， test_gt_dir 就丟None就行囉！
 def get_test_indicate_db(test_in_dir, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1, img_resize=(512,512)):#, move_resize=(256,256)):
-    
-    
+    ### 我目前的寫法是：
+    # img_type：同時指定 train/test 的 in/gt 的(就是所有的意思啦) 附檔名為"bmp"或".jpg"
+    # gt_type ：指定train/test 的 gt部分，是用 "img" 或 "move_map"
     data_dict = {}
     test_in_db = img_db(test_in_dir, img_type, img_resize, 1)
     data_dict["test_in_db"    ] = test_in_db.img_db  
