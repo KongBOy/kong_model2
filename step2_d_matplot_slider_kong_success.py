@@ -18,8 +18,10 @@ bar_y_start = 0.02 ### bar左上角的y
 
 ### 我想要看的參數
 curve_type = "curl"
-row = 400
-col = 300
+# row = 400
+# col = 300
+row = 256
+col = 256
 vert_x = 0
 vert_y = 0
 move_x = 0

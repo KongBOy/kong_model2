@@ -144,11 +144,12 @@ if(__name__=="__main__"):
     ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
     BATCH_SIZE = 1
     # db_dir  = access_path+"datasets"
-    db_dir  = access_path+"datasets/h=256,w=256,complex"
+    # db_dir  = access_path+"datasets/h=256,w=256,complex"
+    db_dir  = access_path+"datasets/h=384,w=256,page"
 
-    phase = "train"
-    # phase = "train_reload"
-    # phase = "test"  ### test是用固定 train/test 資料夾架構的讀法
+    # phase = "train"
+    # phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
+    phase = "test"  ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_result_dir 喔！
 
     # phase = "test_indicate" ###用自己決定的db來做test
     # test_in_dir = access_path+"datasets/1_pure_unet_page_h=384,w=256/train+test/dis_imgs"
@@ -167,11 +168,11 @@ if(__name__=="__main__"):
 
 
 
-    db_name = "1_pure_unet2000_complex-512to256"
+    # db_name = "1_pure_unet2000_complex-512to256"
     # db_name = "2_pure_rect2_complex_h=256,w=256" 
     # db_name = "3_unet_rect2_complex_page_h=384,w=256" 
 
-    # db_name = "1_pure_unet_page_h=384,w=256"
+    db_name = "1_pure_unet_page_h=384,w=256"
     # db_name = "2_pure_rect2_page_h=384,w=256" 
     # db_name = "3_unet_rect2_page_h=384,w=256" 
     # db_name = "wei_book_h=384,w=256" 
@@ -185,9 +186,11 @@ if(__name__=="__main__"):
 
     ### train_reload 和 test 參數
     # restore_result_dir = access_path+ "result" + "/" + "20200316-114012_1_page_h=384,w=256_model2_UNet_512to256_127.28_finish" ### 1.pure_unet
+    restore_result_dir = access_path+ "result" + "/" + "20200319-215202_1_pure_unet_page_h=384,w=256_model2_UNet_512to256_finish_have_addition_info" ### 1.pure_unet
     # restore_result_dir = access_path+ "result" + "/" + "20200316-151806_2_pure_rect2_h=384,w=256_model5_rect2_finish"          ### 2.pure_rect2
     # restore_result_dir = access_path+ "result" + "/" + "20200318-003957_3_unet_rect2_h=384,w=256_model5_rect2_finish"          ### 3.unet_rect2
-    restore_result_dir = access_path+ "result" + "/" + "20200325-104044_3_unet_rect2_page_h=384,w=256_model6_mrf_rect2"          ### 3.unet_rect2
+
+    # restore_result_dir = access_path+ "result" + "/" + "20200328-130601_1_pure_unet2000_complex-512to256_model2_UNet_512to256"   
     
     ### 參數設定結束
     ################################################################################################################################################
@@ -292,12 +295,12 @@ if(__name__=="__main__"):
         from util import get_dir_img
         
         ### 決定 test_dir_name
-        if(phase=="test"):          test_dir_name = result_dir + "/" + "test_" + db_name ### db_name 目前應該就 page 或 wei_book 巴~~
-        if(phase=="test_indicate"): test_dir_name = result_dir + "/" + "test_indicate_" + db_name ### db_name 目前應該就 page 或 wei_book 巴~~
+        if(phase=="test"):          test_dir_name = result_dir + "/" + "test_"          + db_name 
+        if(phase=="test_indicate"): test_dir_name = result_dir + "/" + "test_indicate_" + db_name 
         Check_dir_exist_and_build(test_dir_name)
 
 
-        ### 如果是用unet，會需要一些額外處理move_map的東西，再這邊從model裡load出來喔！
+        ### 如果是用unet，會需要一些額外處理move_map的東西，在這邊從model裡load出來喔！
         if  (model_name=="model2_UNet_512to256"):
             max_train_move = ckpt.max_train_move.numpy() ### g生成的結果 值-1~1 還原用
             min_train_move = ckpt.min_train_move.numpy() ### g生成的結果 值-1~1 還原用
@@ -329,6 +332,7 @@ if(__name__=="__main__"):
                 from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
                 g_rec_img = apply_move_to_rec2(dis_img, g_move_map, max_db_move_x, max_db_move_y) ### 生成的move_map 來 還原 test_input
                 g_rec_img = g_rec_img.astype(np.uint8)
+                g_rec_img = g_rec_img[...,::-1]
                 cv2.imwrite(test_dir_name+"/%06i_g_rec_img.bmp"%i, g_rec_img) ### 存起來
 
             ### rect2 predict出來的是img
