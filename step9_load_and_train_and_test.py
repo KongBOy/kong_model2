@@ -106,7 +106,7 @@ def step6_data_pipline(phase, db_dir, db_name, model_name, test_in_dir=None, tes
     ### 注意img_resize用tf的resize，h放前面喔！
     img_resize  = None
     if  (model_name == "model2_UNet_512to256"): 
-        if  (db_name== "1_pure_unet2000_complex-512to256"): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
+        if  (db_name== "1_pure_unet_complex_h=256,w=256"): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
         elif(db_name== "1_pure_unet_page_h=384,w=256"    ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數 
         elif(db_name== "wei_book_h=384,w=256"            ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
 
@@ -126,7 +126,7 @@ def step6_data_pipline(phase, db_dir, db_name, model_name, test_in_dir=None, tes
     # ( 然後我覺得不要管什麼 test就只抓test、train就全抓，這些什麼model抓什麼資料這種邏輯判斷應該要寫再外面，這裡專心抓資料就好！要不然會不好擴增！
     #   我現在已經改成從file_name讀所以不占記憶體不用弄這麼麻煩，也不好擴增，所以現在就改成抓該db的全部囉！)
     data_dict = {}
-    if  (db_name == "1_pure_unet2000_complex-512to256" ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
+    if  (db_name == "1_pure_unet_complex_h=256,w=256" ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
     elif(db_name == "2_pure_rect2_complex_h=256,w=256" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
     elif(db_name == "3_unet_rect2_complex_h=256,w=256" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
     elif(db_name == "1_pure_unet_page_h=384,w=256"     ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
@@ -144,12 +144,12 @@ if(__name__=="__main__"):
     ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
     BATCH_SIZE = 1
     # db_dir  = access_path+"datasets"
-    # db_dir  = access_path+"datasets/h=256,w=256,complex"
-    db_dir  = access_path+"datasets/h=384,w=256,page"
+    db_dir  = access_path+"datasets/h=256,w=256,complex"
+    # db_dir  = access_path+"datasets/h=384,w=256,page"
 
-    # phase = "train"
+    phase = "train"
     # phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
-    phase = "test"  ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_result_dir 喔！
+    # phase = "test"  ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_result_dir 喔！
 
     # phase = "test_indicate" ###用自己決定的db來做test
     # test_in_dir = access_path+"datasets/1_pure_unet_page_h=384,w=256/train+test/dis_imgs"
@@ -168,11 +168,11 @@ if(__name__=="__main__"):
 
 
 
-    # db_name = "1_pure_unet2000_complex-512to256"
+    db_name = "1_pure_unet_complex_h=256,w=256"
     # db_name = "2_pure_rect2_complex_h=256,w=256" 
     # db_name = "3_unet_rect2_complex_page_h=384,w=256" 
 
-    db_name = "1_pure_unet_page_h=384,w=256"
+    # db_name = "1_pure_unet_page_h=384,w=256"
     # db_name = "2_pure_rect2_page_h=384,w=256" 
     # db_name = "3_unet_rect2_page_h=384,w=256" 
     # db_name = "wei_book_h=384,w=256" 
@@ -185,12 +185,13 @@ if(__name__=="__main__"):
     start_epoch = 0
 
     ### train_reload 和 test 參數
-    # restore_result_dir = access_path+ "result" + "/" + "20200316-114012_1_page_h=384,w=256_model2_UNet_512to256_127.28_finish" ### 1.pure_unet
     restore_result_dir = access_path+ "result" + "/" + "20200319-215202_1_pure_unet_page_h=384,w=256_model2_UNet_512to256_finish_have_addition_info" ### 1.pure_unet
+
+    # restore_result_dir = access_path+ "result" + "/" + "20200316-114012_1_page_h=384,w=256_model2_UNet_512to256_127.28_finish" ### 1.pure_unet
     # restore_result_dir = access_path+ "result" + "/" + "20200316-151806_2_pure_rect2_h=384,w=256_model5_rect2_finish"          ### 2.pure_rect2
     # restore_result_dir = access_path+ "result" + "/" + "20200318-003957_3_unet_rect2_h=384,w=256_model5_rect2_finish"          ### 3.unet_rect2
 
-    # restore_result_dir = access_path+ "result" + "/" + "20200328-130601_1_pure_unet2000_complex-512to256_model2_UNet_512to256"   
+    # restore_result_dir = access_path+ "result" + "/" + "20200328-130601_1_pure_unet_complex_h=256,w=256_model2_UNet_512to256"   
     
     ### 參數設定結束
     ################################################################################################################################################

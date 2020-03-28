@@ -71,10 +71,19 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 # build_datasets(build_dir_name="1_pure_unet_page_h=384,w=256",
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
-#                in_src_dir    = access_path+"step3_apply_flow_result",
+#                in_src_dir    = access_path+"step3_apply_flow_result_page",
 #                in_src_word   = "3a1-I1-patch.bmp",
-#                gt_src_dir    = access_path+"step2_flow_build/move_maps",
+#                gt_src_dir    = access_path+"step2_flow_build_page/move_maps",
 #                gt_src_word   = ".npy" )
+
+
+build_datasets(build_dir_name="1_pure_unet_complex_h=256,w=256",
+               in_dir_name   = "dis_imgs",
+               gt_dir_name   = "move_maps",
+               in_src_dir    = access_path+"step3_apply_flow_result_complex",
+               in_src_word   = "3a1-I1-patch.bmp",
+               gt_src_dir    = access_path+"step2_flow_build_complex/move_maps",
+               gt_src_word   = ".npy" )
 
 
 ### 2.建立給 rect2 用的 pure_rect2
