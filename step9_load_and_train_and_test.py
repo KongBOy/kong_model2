@@ -106,33 +106,33 @@ def step6_data_pipline(phase, db_dir, db_name, model_name, test_in_dir=None, tes
     ### 注意img_resize用tf的resize，h放前面喔！
     img_resize  = None
     if  (model_name == "model2_UNet_512to256"): 
-        if  (db_name== "1_pure_unet2000-512to256"):     img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
-        elif(db_name== "1_pure_unet_page_h=384,w=256"): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數 
-        elif(db_name== "wei_book_h=384,w=256"):         img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
+        if  (db_name== "1_pure_unet2000_complex-512to256"): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
+        elif(db_name== "1_pure_unet_page_h=384,w=256"    ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數 
+        elif(db_name== "wei_book_h=384,w=256"            ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
 
     elif(model_name == "model5_rect2" or 
          model_name == "model6_mrf_rect2"):
-        if  (db_name== "2_pure_rect2_page_h=256,w=256" ):    img_resize = (512,512) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "2_pure_rect2_page_h=384,w=256" ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "wei_book_h=384,w=256"     ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        if  (db_name== "2_pure_rect2_complex_h=256,w=256" ):    img_resize = (512  ,512) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "2_pure_rect2_page_h=384,w=256"    ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_h=384,w=256"             ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
         
 
-        elif(db_name== "3_unet_rect2_page_h=256,w=256" ):    img_resize = (256,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "3_unet_rect2_page_h=384,w=256" ):    img_resize = (384,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "wei_book_h=384,w=256"     ):    img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "3_unet_rect2_complex_h=256,w=256" ):    img_resize = (256,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "3_unet_rect2_page_h=384,w=256"    ):    img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "wei_book_h=384,w=256"             ):    img_resize = (384,256) ### ord_img(in_img的大小)的大小
     
 
     ### 第二部分：根據 db_name 去相應的 dir結構抓出所有data
     # ( 然後我覺得不要管什麼 test就只抓test、train就全抓，這些什麼model抓什麼資料這種邏輯判斷應該要寫再外面，這裡專心抓資料就好！要不然會不好擴增！
     #   我現在已經改成從file_name讀所以不占記憶體不用弄這麼麻煩，也不好擴增，所以現在就改成抓該db的全部囉！)
     data_dict = {}
-    if  (db_name == "1_pure_unet2000-512to256"    ): data_dict = get_1_pure_unet_db(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-    elif(db_name == "1_pure_unet_page_h=384,w=256"): data_dict = get_1_pure_unet_db(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-    elif(db_name == "2_pure_rect2_page_h=256,w=256"    ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+    if  (db_name == "1_pure_unet2000_complex-512to256" ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
+    elif(db_name == "2_pure_rect2_complex_h=256,w=256" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+    elif(db_name == "3_unet_rect2_complex_h=256,w=256" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+    elif(db_name == "1_pure_unet_page_h=384,w=256"     ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
     elif(db_name == "2_pure_rect2_page_h=384,w=256"    ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-    elif(db_name == "3_unet_rect2_page_h=256,w=256"    ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
     elif(db_name == "3_unet_rect2_page_h=384,w=256"    ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-    elif(db_name == "wei_book_h=384,w=256"        ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
+    elif(db_name == "wei_book_h=384,w=256"             ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
 
     return data_dict
 
@@ -143,7 +143,8 @@ if(__name__=="__main__"):
     ##############################################################################################################################
     ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
     BATCH_SIZE = 1
-    db_dir  = access_path+"datasets"
+    # db_dir  = access_path+"datasets"
+    db_dir  = access_path+"datasets/h=256,w=256,complex"
 
     phase = "train"
     # phase = "train_reload"
@@ -160,14 +161,18 @@ if(__name__=="__main__"):
     test_gt_dir = access_path+"datasets/wei_book_h=384,w=256/gt_imgs"
 
 
-    # model_name="model2_UNet_512to256"
+    model_name="model2_UNet_512to256"
     # model_name="model5_rect2"
-    model_name="model6_mrf_rect2"
+    # model_name="model6_mrf_rect2"
 
 
+
+    db_name = "1_pure_unet2000_complex-512to256"
+    # db_name = "2_pure_rect2_complex_h=256,w=256" 
+    # db_name = "3_unet_rect2_complex_page_h=384,w=256" 
 
     # db_name = "1_pure_unet_page_h=384,w=256"
-    db_name = "2_pure_rect2_page_h=384,w=256" 
+    # db_name = "2_pure_rect2_page_h=384,w=256" 
     # db_name = "3_unet_rect2_page_h=384,w=256" 
     # db_name = "wei_book_h=384,w=256" 
 
@@ -175,13 +180,14 @@ if(__name__=="__main__"):
     ### train, train_reload 參數
     epochs = 160
     epoch_down_step = 100 ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
-    epoch_save_freq = 2   ### 訓練 epoch_save_freq 個 epoch 存一次模型
+    epoch_save_freq = 1   ### 訓練 epoch_save_freq 個 epoch 存一次模型
     start_epoch = 0
 
     ### train_reload 和 test 參數
     # restore_result_dir = access_path+ "result" + "/" + "20200316-114012_1_page_h=384,w=256_model2_UNet_512to256_127.28_finish" ### 1.pure_unet
     # restore_result_dir = access_path+ "result" + "/" + "20200316-151806_2_pure_rect2_h=384,w=256_model5_rect2_finish"          ### 2.pure_rect2
-    restore_result_dir = access_path+ "result" + "/" + "20200318-003957_3_unet_rect2_h=384,w=256_model5_rect2_finish"          ### 3.unet_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "20200318-003957_3_unet_rect2_h=384,w=256_model5_rect2_finish"          ### 3.unet_rect2
+    restore_result_dir = access_path+ "result" + "/" + "20200325-104044_3_unet_rect2_page_h=384,w=256_model6_mrf_rect2"          ### 3.unet_rect2
     
     ### 參數設定結束
     ################################################################################################################################################
