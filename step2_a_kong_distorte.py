@@ -99,7 +99,7 @@ def get_rand_para(row, col, curl_probability):
     return vert_x, vert_y, move_x, move_y, dis_type, alpha
 
 ### 只有 參數隨機產生， funciton 重複使用 上面寫好的function喔！
-def distort_rand(start_index=0, amount=2000, row=40, col=30, distort_time=None, curl_probability=0.3, move_x_thresh=40, move_y_thresh=55):
+def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distort_time=None, curl_probability=0.3, move_x_thresh=40, move_y_thresh=55):
     start_time = time.time()
     for index in range(start_index, start_index+amount):
         dis_start_time = time.time()
@@ -118,20 +118,20 @@ def distort_rand(start_index=0, amount=2000, row=40, col=30, distort_time=None, 
             result_move_f = result_move_f + move_f ### 走到這就取到 在我覺得合理範圍的 move_f 囉，把我要的move_f加進去容器內～
 
             ### 紀錄扭曲參數
-            if (dis_type == "fold"):distrore_info_log(access_path+"step2_flow_build/distorte_infos", index, row, col, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
-            elif dis_type == "curl":distrore_info_log(access_path+"step2_flow_build/distorte_infos", index, row, col, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
+            if (dis_type == "fold"):distrore_info_log(access_path + dst_dir + "/" + "distorte_infos", index, row, col, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
+            elif dis_type == "curl":distrore_info_log(access_path + dst_dir + "/" + "distorte_infos", index, row, col, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
 
 
         ## 紀錄扭曲視覺化的結果
         # save_distorted_mesh_visual(result_move_f, index)
 
         result_move_map = result_move_f.reshape(row,col,2) ### (..., 2)→(row, col, 2)
-        np.save(access_path+"step2_flow_build/move_maps/%06i"%index,result_move_map.astype(np.float32)) ### 把move_map存起來，記得要轉成float32！
+        np.save(access_path + dst_dir + "/" + "move_maps/%06i"%index,result_move_map.astype(np.float32)) ### 把move_map存起來，記得要轉成float32！
         print("%06i process 1 mesh cost time:"%index, "%.3f"%(time.time()-dis_start_time), "total_time:", time_util(time.time()-start_time) )
 
 
 ### 用 step2_d去試 我想要的參數喔！
-def distort_like_page(start_index, row, col):
+def distort_like_page(dst_dir, start_index, row, col):
     start_time = time.time()
     
     ### 可以用step2_d去試 我想要的參數喔！
@@ -148,10 +148,10 @@ def distort_like_page(start_index, row, col):
             result_move_f = np.zeros(shape=(row*col,2), dtype=np.float64) ### 初始化 move容器
             move_f = distorte( row, col, go_vert_x, vert_y, move_x, go_move_y , dis_type, alpha, debug=False ) ### 用參數去得到 扭曲move_f
             result_move_f = result_move_f + move_f ### 把我要的move_f加進去容器內～
-            distrore_info_log(access_path+"step2_flow_build/distorte_infos", index, row, col, distort_time, go_vert_x, vert_y, move_x, go_move_y, dis_type, alpha ) ### 紀錄扭曲參數
+            distrore_info_log(access_path + dst_dir + "/" + "distorte_infos", index, row, col, distort_time, go_vert_x, vert_y, move_x, go_move_y, dis_type, alpha ) ### 紀錄扭曲參數
             result_move_map = result_move_f.reshape(row,col,2) ### (..., 2)→(row, col, 2)
             # save_distorted_mesh_visual(result_move_f, index)   ### 紀錄扭曲視覺化的結果
-            np.save(access_path+"step2_flow_build/move_maps/%06i"%index, result_move_map.astype(np.float32)) ### 把move_map存起來，記得要轉成float32！
+            np.save(access_path + dst_dir + "/" + "move_maps/%06i"%index, result_move_map.astype(np.float32)) ### 把move_map存起來，記得要轉成float32！
             print("%06i process 1 mesh cost time:"%index, "%.3f"%(time.time()-dis_start_time), "total_time:", time_util(time.time()-start_time) )
             index += 1
 
@@ -194,14 +194,6 @@ def show_move_map_visual(move_map, ax):
     plt.show()
 
 if(__name__=="__main__"):
-    # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
-    # start_index = 60*26
-    # amount = 2000
-    start_index = 0
-    amount = 60*26
-    row = 384#400#256#40*10#472 #40*10
-    col = 256#300#256#30*10#304 #30*10
-
     ### 理解用，手動慢慢扭曲
 #    move_f =          distorte( row, col, x=col/2, y=row/2, move_x= col/2, move_y= row/2, dis_type="fold", alpha=2, debug=True )  ### alpha:2~4
 #    move_f = move_f + distorte( row, col, x= 0, y=10, move_x=3.5, move_y= 2.5, dis_type="fold", alpha=200, debug=True )
@@ -212,11 +204,23 @@ if(__name__=="__main__"):
 #    plt.show()
     ##############################################################################################
     ### 隨機生成
-    Check_dir_exist_and_build_new_dir(access_path+"step2_flow_build/distorted_mesh_visuals")
-    Check_dir_exist_and_build_new_dir(access_path+"step2_flow_build/move_maps")
-    Check_dir_exist_and_build_new_dir(access_path+"step2_flow_build/distorte_infos")
+    Check_dir_exist_and_build_new_dir(access_path + dst_dir + "/"+"distorted_mesh_visuals")
+    Check_dir_exist_and_build_new_dir(access_path + dst_dir + "/"+"move_maps")
+    Check_dir_exist_and_build_new_dir(access_path + dst_dir + "/"+"distorte_infos")
 
-    distort_like_page(start_index=0, row=row, col=col)
-    distort_rand(start_index=60*26, amount=2000-60*26, row=row, col=col,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )
 
-    
+    ### 隨機生成2000張
+    dst_dir = "step2_flow_build_complex"
+    row=256
+    col=256
+    distort_rand(dst_dir=dst_dir, start_index=0, amount=2000, row=256, col=256,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )
+
+
+    ### 有生成像page的60*26張，剩下用隨機補滿2000張
+    # start_index = 0
+    # amount = 60*26
+    # row = 384#400#256#40*10#472 #40*10
+    # col = 256#300#256#30*10#304 #30*10
+    # dst_dir = "step2_flow_build_page"
+    # distort_like_page(dst_dir=dst_dir, start_index=0    , row=row, col=col) ### 目前寫死，固定生成60*26個 move_maps喔！
+    # distort_rand     (dst_dir=dst_dir, start_index=60*26, amount=2000-60*26, row=row, col=col,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )

@@ -48,8 +48,8 @@ def search_mask_have_hole(dis_msk, hole_size=1,debug=False):
     print("around_have_hole_amount",around_have_hole_amount )
 
     if(debug):
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-3a-hole_around_visual.bmp"%(name),hole_around_visual*70)
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-3a-foreground_visual.bmp"%(name),foreground_visual*70)
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a-hole_around_visual.bmp"%(name),hole_around_visual*70)
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a-foreground_visual.bmp"%(name),foreground_visual*70)
     
     return around_have_hole_amount
 
@@ -115,17 +115,17 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
     ### 視覺化
     if(write_to_step3):
         move_map_visual = method2(move_map[...,0], move_map[...,1],color_shift=1)
-        np.save(access_path+"step3_apply_flow_result/%s-2-q"%(name), move_map)
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-1-I.bmp"%(name), img)
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-2-q.jpg"%(name), move_map_visual)
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-3a2-I1.jpg"%(name),dis_img)
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-3a3-Mask.bmp"%(name),dis_msk*70)
-        np.save    (access_path+"step3_apply_flow_result/%s-3a3-Mask"%(name),dis_msk)
+        np.save(access_path + dst_dir + "/" + "%s-2-q"%(name), move_map)
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-1-I.bmp"%(name), img)
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-2-q.jpg"%(name), move_map_visual)
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a2-I1.jpg"%(name),dis_img)
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a3-Mask.bmp"%(name),dis_msk*70)
+        np.save    (access_path + dst_dir + "/" + "%s-3a3-Mask"%(name),dis_msk)
 
         gt_pad_img = np.zeros(shape=(dis_h,dis_w,3), dtype=np.float64)
         left, top  = get_dis_img_start_left_top(move_map, max_db_move_x, max_db_move_y)
         gt_pad_img[top:top+row, left:left+col] = img
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-4-gt_ord_pad.bmp"%(name), gt_pad_img)
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-4-gt_ord_pad.bmp"%(name), gt_pad_img)
                 
     ####################################################################################################################
     #### 扭曲影像 空洞的地方補起來
@@ -151,13 +151,13 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
                     dis_msk[go_row,go_col] += 1
         search_mask_have_hole_count += 1
     if(write_to_step3):
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-3a1-I1-patch.bmp"%(name), dis_img.astype(np.uint8))
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-3a4-Mask-patch.bmp"%(name), dis_msk*70)
-        np.save(access_path+"step3_apply_flow_result/%s-3a4-Mask-patch"%(name),dis_msk)
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a1-I1-patch.bmp"%(name), dis_img.astype(np.uint8))
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a4-Mask-patch.bmp"%(name), dis_msk*70)
+        np.save(access_path + dst_dir + "/" + "%s-3a4-Mask-patch"%(name),dis_msk)
         
-        np.save(access_path+"step3_apply_flow_result/%s-3b-rec_mov_map"%(name),rec_mov.astype(np.float32))
+        np.save(access_path + dst_dir + "/" + "%s-3b-rec_mov_map"%(name),rec_mov.astype(np.float32))
         rec_mov_visual = method2(rec_mov[:,:,0],rec_mov[:,:,1],1)
-        cv2.imwrite(access_path+"step3_apply_flow_result/%s-3b-rec_mov_visual.jpg"%(name), rec_mov_visual)
+        cv2.imwrite(access_path + dst_dir + "/" + "%s-3b-rec_mov_visual.jpg"%(name), rec_mov_visual)
         print("dis_msk.max()",dis_msk.max())
     
     if(return_base_xy):
@@ -166,21 +166,24 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
     return dis_img.copy(), rec_mov.copy()
 
 if(__name__=="__main__"):
-    # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
+    ord_imgs_dir  = "step1_page"
+    move_maps_dir = "step2_flow_build_complex/move_maps"
+    dst_dir       = "step3_apply_flow_result_complex"
+
 
     import time
     start_time = time.time()
-    # img = cv2.imread("step1_pabe/book.jpg")
-    img_list  = get_dir_img(access_path+"step1_page")
-    img_amount = len(img_list)
-    db_move_maps = get_dir_move(access_path+"step2_flow_build/move_maps")
-    max_db_move_x, max_db_move_y = get_max_move_xy_from_numpy(db_move_maps)
+
+    ord_imgs  = get_dir_img(access_path + ord_imgs_dir)
+    ord_imgs_amount = len(ord_imgs)
+    move_maps = get_dir_move(access_path + move_maps_dir)
+    max_db_move_x, max_db_move_y = get_max_db_move_xy_from_numpy(move_maps)
     print("max_db_move_x",max_db_move_x,", max_db_move_y",max_db_move_y)
-    Check_dir_exist_and_build(access_path+"step3_apply_flow_result")
-    start_index = 1999#250*7 ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
-    amount = 1#250
-    for i, move_map in enumerate(db_move_maps[start_index:start_index+amount]):
-        img = img_list[np.random.randint(img_amount)]
+    Check_dir_exist_and_build(access_path + dst_dir)
+    start_index = 0#250*7 ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
+    amount = 2000#250
+    for i, move_map in enumerate(move_maps[start_index:start_index+amount]):
+        img = ord_imgs[np.random.randint(ord_imgs_amount)]
         apply_start_time = time.time()
         name = "%06i"%(i+start_index)
         dis_img, rec_mov = apply_move(img, move_map, max_db_move_x=max_db_move_x, max_db_move_y=max_db_move_y, name=name, write_to_step3=True)
