@@ -296,7 +296,8 @@ if(__name__=="__main__"):
     import numpy as np 
 
     generator = Generator512to256()  ### 建G
-    img = np.ones(shape=(1,384,256,3), dtype= np.float32) ### 建 假資料
+    in_img = np.ones(shape=(1,384,384,3), dtype= np.float32) ### 建 假資料
+    gt_img = np.ones(shape=(1,192,192,3), dtype= np.float32) ### 建 假資料
     start_time = time.time() ### 看資料跑一次花多少時間
     y= generator(img)
     print(y)
