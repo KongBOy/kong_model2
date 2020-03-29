@@ -205,9 +205,9 @@ def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_typ
     test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test"+"/" +gt_dir_name
     
     data_dict = {}
-    train_in_db = img_db(train_in_img_db_path   , img_type, img_resize, 1)
+    train_in_db = img_db(train_in_img_db_path, img_type, img_resize, 1)
     train_gt_db = img_db(train_gt_img_db_path, img_type, img_resize, 1)
-    test_in_db  = img_db(test_in_img_db_path    , img_type, img_resize, 1)
+    test_in_db  = img_db(test_in_img_db_path , img_type, img_resize, 1)
     test_gt_db  = img_db(test_gt_img_db_path , img_type, img_resize, 1)
 
     data_dict["train_in_db"]     = train_in_db.img_db
