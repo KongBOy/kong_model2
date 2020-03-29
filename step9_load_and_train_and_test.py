@@ -106,13 +106,13 @@ def step6_data_pipline(phase, db_dir, db_name, model_name, test_in_dir=None, tes
     ### 注意img_resize用tf的resize，h放前面喔！
     img_resize  = None
     if  (model_name == "model2_UNet_512to256"): 
-        if  (db_name== "1_pure_unet_complex_h=256,w=256"): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
-        elif(db_name== "1_pure_unet_page_h=384,w=256"    ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數 
-        elif(db_name== "wei_book_h=384,w=256"            ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數
+        if  (db_name== "1_pure_unet_complex_h=256,w=256" ): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "1_pure_unet_page_h=384,w=256"    ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "wei_book_h=384,w=256"            ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
 
     elif(model_name == "model5_rect2" or 
          model_name == "model6_mrf_rect2"):
-        if  (db_name== "2_pure_rect2_complex_h=256,w=256" ):    img_resize = (512  ,512) ### dis_img(in_img的大小)的大小且要是4的倍數
+        if  (db_name== "2_pure_rect2_complex_h=256,w=256" ):    img_resize = (365+3,336) ### dis_img(in_img的大小)的大小且要是4的倍數 ###(512, 512)
         elif(db_name== "2_pure_rect2_page_h=384,w=256"    ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "wei_book_h=384,w=256"             ):    img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
         
@@ -145,15 +145,50 @@ def step6_data_pipline(phase, db_dir, db_name, model_name, test_in_dir=None, tes
 if(__name__=="__main__"):
     ##############################################################################################################################
     ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
-    BATCH_SIZE = 1
-    # db_dir  = access_path+"datasets"
-    db_dir  = access_path+"datasets/h=256,w=256,complex"
-    # db_dir  = access_path+"datasets/h=384,w=256,page"
 
+    ### train, train_reload 參數
+    BATCH_SIZE = 1
+    epochs = 160
+    epoch_down_step = 100 ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
+    epoch_save_freq = 1   ### 訓練 epoch_save_freq 個 epoch 存一次模型
+    start_epoch = 0
+
+    
     phase = "train"
     # phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
     # phase = "test"  ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_result_dir 喔！
 
+    ####################################################################################################################
+    ### model_name/db_name 決定如何resize
+    model_name="model2_UNet_512to256"
+    # model_name="model5_rect2"
+    # model_name="model6_mrf_rect2"
+
+    ### 讀取網路weight，在phase==train_reload、test、test_indicate 時需要
+    restore_result_dir = access_path+ "result" + "/" + "complex1_20200328-170738_1_pure_unet_complex_h=256,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
+    # restore_result_dir = access_path+ "result" + "/" + "complex2_20200329-001847_2_pure_rect2_complex_h=256,w=256_model5_rect2_finish"        ### 2.pure_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "complex3_20200328-215330_3_unet_rect2_complex_h=256,w=256_model5_rect2"             ### 3.unet_rect2
+
+    # restore_result_dir = access_path+ "result" + "/" + "page1_20200319-215202_1_pure_unet_page_h=384,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
+    # restore_result_dir = access_path+ "result" + "/" + "page2_20200316-151806_2_pure_rect2_h=384,w=256_model5_rect2_finish"          ### 2.pure_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "page3_20200318-003957_3_unet_rect2_h=384,w=256_model5_rect2_finish"          ### 3.unet_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "page4_20200325-104044_3_unet_rect2_page_h=384,w=256_model6_mrf_rect2"   
+    
+    ####################################################################################################################
+    ### 看要讀取 哪個特定的in/gt資料集，在phase== train、train_load、test 時需要
+    db_dir  = access_path+"datasets/h=256,w=256,complex"
+    db_name = "1_pure_unet_complex_h=256,w=256"
+    # db_name = "2_pure_rect2_complex_h=256,w=256" 
+    # db_name = "3_unet_rect2_complex_h=256,w=256" 
+
+    # db_dir  = access_path+"datasets/h=384,w=256,page"
+    # db_name = "1_pure_unet_page_h=384,w=256"
+    # db_name = "2_pure_rect2_page_h=384,w=256" 
+    # db_name = "3_unet_rect2_page_h=384,w=256" 
+    # db_name = "wei_book_h=384,w=256" 
+
+
+    ### 讀取自訂的 in/gt 資料集，在phase== test_indicate 決定
     # phase = "test_indicate" ###用自己決定的db來做test
     # test_in_dir = access_path+"datasets/h=256,w=256,complex/1_pure_unet_complex_h=256,w=256/train+test/dis_imgs"
     # test_gt_dir = access_path+"datasets/h=256,w=256,complex/1_pure_unet_complex_h=256,w=256/train+test/move_maps"
@@ -166,38 +201,6 @@ if(__name__=="__main__"):
     # test_in_dir = access_path+"datasets/wei_book_h=384,w=256/in_imgs"
     # test_gt_dir = access_path+"datasets/wei_book_h=384,w=256/gt_imgs"
 
-
-    ### model_name/db_name 決定如何resize
-    # model_name="model2_UNet_512to256"
-    model_name="model5_rect2"
-    # model_name="model6_mrf_rect2"
-
-    # db_name = "1_pure_unet_complex_h=256,w=256"
-    db_name = "2_pure_rect2_complex_h=256,w=256" 
-    # db_name = "3_unet_rect2_complex_h=256,w=256" 
-
-    # db_name = "1_pure_unet_page_h=384,w=256"
-    # db_name = "2_pure_rect2_page_h=384,w=256" 
-    # db_name = "3_unet_rect2_page_h=384,w=256" 
-    # db_name = "wei_book_h=384,w=256" 
-
-
-    ### train, train_reload 參數
-    epochs = 160
-    epoch_down_step = 100 ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
-    epoch_save_freq = 1   ### 訓練 epoch_save_freq 個 epoch 存一次模型
-    start_epoch = 0
-
-    ### train_reload 和 test 參數
-    restore_result_dir = access_path+ "result" + "/" + "20200328-170738_1_pure_unet_complex_h=256,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + "20200319-215202_1_pure_unet_page_h=384,w=256_model2_UNet_512to256_finish_have_addition_info" ### 1.pure_unet
-
-    # restore_result_dir = access_path+ "result" + "/" + "20200316-114012_1_page_h=384,w=256_model2_UNet_512to256_127.28_finish" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + "20200316-151806_2_pure_rect2_h=384,w=256_model5_rect2_finish"          ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "20200318-003957_3_unet_rect2_h=384,w=256_model5_rect2_finish"          ### 3.unet_rect2
-
-    # restore_result_dir = access_path+ "result" + "/" + "20200328-130601_1_pure_unet_complex_h=256,w=256_model2_UNet_512to256"   
-    
     ### 參數設定結束
     ################################################################################################################################################
     ### 第零階段：決定result, logs, ckpt 存哪裡 並 把source code存起來
