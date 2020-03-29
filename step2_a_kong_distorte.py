@@ -209,8 +209,8 @@ if(__name__=="__main__"):
 #    fig.set_size_inches(4, 5)
 #    show_distorted_mesh_visual(row,col,move_f,fig, ax)
 #    plt.show()
-    ##############################################################################################
 
+    #############################################################################################################################################
     ### 隨機生成 256*256_2000張
     # dst_dir = "step2_flow_build_complex"
     # row=256
@@ -218,16 +218,23 @@ if(__name__=="__main__"):
     # amount=2000
     # distort_rand(dst_dir=dst_dir, start_index=0, amount=2000, row=row, col=col,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )
 
+    
+    #############################################################################################################################################
     ### 隨機生成 384*256_2000張
     dst_dir = "step2_flow_build_complex_h=384,w=256"
     row=384
     col=256
     amount=2000
     distort_rand(dst_dir=dst_dir, start_index=0, amount=amount, row=row, col=col,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )
+    ################################################
+    #### 接續生成 頁面 扭曲影像，分開生成的原因是要 complex和complex+page 用的是相同的complex，所以page獨立生成，再把上面生成的結果複製一份，改名成complex+page，再把這裡生成的結果加進去
+    dst_dir = "step2_flow_build_page_h=384,w=256"
+    row=384
+    col=256
+    distort_like_page(dst_dir=dst_dir, start_index=2000    , row=row, col=col) ### 目前寫死，固定生成60*26個 move_maps喔！
 
-
-
-    ### 有生成像page的60*26張，剩下用隨機補滿2000張
+    #############################################################################################################################################
+    ### old應該要拿掉，有生成像page的60*26張，剩下用隨機補滿2000張
     # start_index = 0
     # amount = 60*26
     # row = 384#400#256#40*10#472 #40*10

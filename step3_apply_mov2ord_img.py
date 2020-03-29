@@ -167,30 +167,34 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
 
 if(__name__=="__main__"):
     ord_imgs_dir  = "step1_page"
-    move_maps_dir = "step2_flow_build_complex_h=384,w=256/move_maps"
-    dst_dir       = "step3_apply_flow_result_complex_h=384,w=256"
+    # move_maps_dir = "step2_build_flow_complex_h=384,w=256/move_maps"
+    # dst_dir       = "step3_apply_flow_complex_h=384,w=256"
+    move_maps_dir = "step2_build_flow_complex+page_h=384,w=256/move_maps"
+    dst_dir       = "step3_apply_flow_complex+page_h=384,w=256"
 
 
     import time
     start_time = time.time()
 
-    ord_imgs  = get_dir_img(access_path + ord_imgs_dir)
-    ord_imgs_amount = len(ord_imgs)
-    move_maps = get_dir_move(access_path + move_maps_dir)
-    max_db_move_x, max_db_move_y = get_max_db_move_xy_from_numpy(move_maps)
-    print("max_db_move_x",max_db_move_x,", max_db_move_y",max_db_move_y)
-    Check_dir_exist_and_build(access_path + dst_dir)
-    start_index = 0#250*7 ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
-    amount = 2000#250
+    ord_imgs        = get_dir_img(access_path + ord_imgs_dir)                ### 取得ord_imgs
+    ord_imgs_amount = len(ord_imgs)                                          ### 取得ord_imgs個數，等等取隨機時用的到
+    move_maps       = get_dir_move(access_path + move_maps_dir)              ### 取得move_maps
+    max_db_move_x, max_db_move_y = get_max_db_move_xy_from_numpy(move_maps)  ### 取得move_maps 的整體最大移動量 max_db_move_xy
+    print("max_db_move_x",max_db_move_x,", max_db_move_y",max_db_move_y)     ### 看一下 max_db_move_xy 是多少
+    Check_dir_exist_and_build(access_path + dst_dir)                         ### 建立放結果的資料夾
+
+    ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
+    # start_index = 0    
+    # amount      = 2000 
+    
+    ### 也可以用來切給多個python平行處理
+    start_index = 250 * 14
+    amount      = 250
+    
     for i, move_map in enumerate(move_maps[start_index:start_index+amount]):
-        img = ord_imgs[np.random.randint(ord_imgs_amount)]
-        apply_start_time = time.time()
-        name = "%06i"%(i+start_index)
-        dis_img, rec_mov = apply_move(img, move_map, max_db_move_x=max_db_move_x, max_db_move_y=max_db_move_y, name=name, write_to_step3=True)
+        apply_start_time = time.time()                     ### 計算處理一張花的時間
+        img = ord_imgs[np.random.randint(ord_imgs_amount)] ### 從 ord_img裡隨便挑一張
+        name = "%06i"%(i+start_index)                      ### 設定 流水號的檔名
+        dis_img, rec_mov = apply_move(img, move_map, max_db_move_x=max_db_move_x, max_db_move_y=max_db_move_y, name=name, write_to_step3=True) ### ord_img 去apply扭曲
         print("%06i process 1 mesh cost time:"%(i+start_index), "%.3f"%(time.time()-apply_start_time), "total_time:", time_util(time.time()-start_time))
         print("")
-
-# rec_img, dis_mov = apply_move(dis_img, rec_mov, name="rec")
-
-#cv2.waitKey()
-#cv2.destroyAllWindows()
