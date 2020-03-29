@@ -167,8 +167,8 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
 
 if(__name__=="__main__"):
     ord_imgs_dir  = "step1_page"
-    move_maps_dir = "step2_flow_build_complex/move_maps"
-    dst_dir       = "step3_apply_flow_result_complex"
+    move_maps_dir = "step2_flow_build_complex_h=384,w=256/move_maps"
+    dst_dir       = "step3_apply_flow_result_complex_h=384,w=256"
 
 
     import time

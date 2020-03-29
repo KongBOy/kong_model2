@@ -101,6 +101,10 @@ def get_rand_para(row, col, curl_probability):
 ### 只有 參數隨機產生， funciton 重複使用 上面寫好的function喔！
 def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distort_time=None, curl_probability=0.3, move_x_thresh=40, move_y_thresh=55):
     start_time = time.time()
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorted_mesh_visuals")
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"move_maps")
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorte_infos")
+
     for index in range(start_index, start_index+amount):
         dis_start_time = time.time()
 
@@ -133,7 +137,10 @@ def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distor
 ### 用 step2_d去試 我想要的參數喔！
 def distort_like_page(dst_dir, start_index, row, col):
     start_time = time.time()
-    
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorted_mesh_visuals")
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"move_maps")
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorte_infos")
+
     ### 可以用step2_d去試 我想要的參數喔！
     distort_time = 1
     vert_y = 0
@@ -203,17 +210,21 @@ if(__name__=="__main__"):
 #    show_distorted_mesh_visual(row,col,move_f,fig, ax)
 #    plt.show()
     ##############################################################################################
-    ### 隨機生成
-    Check_dir_exist_and_build_new_dir(access_path + dst_dir + "/"+"distorted_mesh_visuals")
-    Check_dir_exist_and_build_new_dir(access_path + dst_dir + "/"+"move_maps")
-    Check_dir_exist_and_build_new_dir(access_path + dst_dir + "/"+"distorte_infos")
 
+    ### 隨機生成 256*256_2000張
+    # dst_dir = "step2_flow_build_complex"
+    # row=256
+    # col=256
+    # amount=2000
+    # distort_rand(dst_dir=dst_dir, start_index=0, amount=2000, row=row, col=col,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )
 
-    ### 隨機生成2000張
-    dst_dir = "step2_flow_build_complex"
-    row=256
+    ### 隨機生成 384*256_2000張
+    dst_dir = "step2_flow_build_complex_h=384,w=256"
+    row=384
     col=256
-    distort_rand(dst_dir=dst_dir, start_index=0, amount=2000, row=256, col=256,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )
+    amount=2000
+    distort_rand(dst_dir=dst_dir, start_index=0, amount=amount, row=row, col=col,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )
+
 
 
     ### 有生成像page的60*26張，剩下用隨機補滿2000張
