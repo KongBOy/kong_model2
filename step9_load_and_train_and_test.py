@@ -171,14 +171,14 @@ if(__name__=="__main__"):
 
     
     # phase = "train"
-    # phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
+    phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
     # phase = "test"  ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_result_dir 喔！
 
     ####################################################################################################################
 
     ### model_name/db_name 決定如何resize
-    model_name="model2_UNet_512to256"
-    # model_name="model5_rect2"
+    # model_name="model2_UNet_512to256"
+    model_name="model5_rect2"
     # model_name="model6_mrf_rect2"
 
     ### 讀取網路weight，在phase==train_reload、test、test_indicate 時需要
@@ -192,7 +192,7 @@ if(__name__=="__main__"):
 
     ### h=384,w=256_complex
     # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex1_20200329-215628_1_pure_unet_complex_h=384,w=256_model2_UNet_512to256" ### 1.pure_unet
-    restore_result_dir = access_path+ "result" + "/" + "20200329-213756_2_pure_rect2_complex_h=384,w=256_model5_rect2"  ### 2.pure_rect2 ### 還在train所以先不加前綴 h=384,w=256_
+    restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex2_20200329-213756_2_pure_rect2_complex_h=384,w=256_model5_rect2"  ### 2.pure_rect2 ### 還在train所以先不加前綴 h=384,w=256_
     # restore_result_dir = access_path+ "result" + "/" + "" ### 3.unet_rect2
 
 
@@ -216,13 +216,13 @@ if(__name__=="__main__"):
     # db_name = "2_pure_rect2_complex_h=256,w=256" 
     # db_name = "3_unet_rect2_complex_h=256,w=256" 
     
-    # db_dir  = access_path+"datasets/2_h=384,w=256_complex"
+    db_dir  = access_path+"datasets/2_h=384,w=256_complex"
     # db_name = "1_pure_unet_complex_h=384,w=256"
-    # db_name = "2_pure_rect2_complex_h=384,w=256" 
+    db_name = "2_pure_rect2_complex_h=384,w=256" 
     # db_name = "3_unet_rect2_complex_h=384,w=256" 
     
-    db_dir  = access_path+"datasets/2_h=384,w=256_complex"
-    db_name = "1_pure_unet_complex+page_h=384,w=256"
+    # db_dir  = access_path+"datasets/2_h=384,w=256_complex+page"
+    # db_name = "1_pure_unet_complex+page_h=384,w=256"
     # db_name = "2_pure_rect2_complex+page_h=384,w=256" 
     # db_name = "3_unet_rect2_complex+page_h=384,w=256" 
 
@@ -234,11 +234,11 @@ if(__name__=="__main__"):
 
 
     ### 讀取自訂的 in/gt 資料集，在phase== test_indicate 決定
-    phase = "test_indicate" ###用自己決定的db來做test
+    # phase = "test_indicate" ###用自己決定的db來做test
     # test_in_dir = access_path+"datasets/h=256,w=256,complex/1_pure_unet_complex_h=256,w=256/train+test/dis_imgs"
     # test_gt_dir = access_path+"datasets/h=256,w=256,complex/1_pure_unet_complex_h=256,w=256/train+test/move_maps"
-    test_in_dir = access_path+"datasets/2_h=384,w=256_complex/1_pure_unet_complex_h=384,w=256/train+test/dis_imgs"
-    test_gt_dir = access_path+"datasets/2_h=384,w=256_complex/1_pure_unet_complex_h=384,w=256/train+test/move_maps"
+    # test_in_dir = access_path+"datasets/2_h=384,w=256_complex/1_pure_unet_complex_h=384,w=256/train+test/dis_imgs"
+    # test_gt_dir = access_path+"datasets/2_h=384,w=256_complex/1_pure_unet_complex_h=384,w=256/train+test/move_maps"
     # test_in_dir = access_path+"datasets/1_pure_unet_page_h=384,w=256/train+test/dis_imgs"
     # test_gt_dir = access_path+"datasets/1_pure_unet_page_h=384,w=256/train+test/move_maps"
     # test_in_dir = access_path+"datasets/2_pure_rect2_h=384,w=256/train+test/dis_img_db"
