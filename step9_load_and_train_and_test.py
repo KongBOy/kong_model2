@@ -185,22 +185,19 @@ if(__name__=="__main__"):
     # restore_result_dir = ""
     
     ### h=256,w=256_complex
-    # restore_result_dir = access_path+ "result" + "/" + "complex1_20200328-170738_1_pure_unet_complex_h=256,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + "complex2_20200329-001847_2_pure_rect2_complex_h=256,w=256_model5_rect2_finish"        ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "complex3_20200328-215330_3_unet_rect2_complex_h=256,w=256_model5_rect2"             ### 3.unet_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "h=256,w=256_complex1_20200328-170738_1_pure_unet_complex_h=256,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
+    # restore_result_dir = access_path+ "result" + "/" + "h=256,w=256_complex2_20200329-001847_2_pure_rect2_complex_h=256,w=256_model5_rect2_finish"        ### 2.pure_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "h=256,w=256_complex3_20200328-215330_3_unet_rect2_complex_h=256,w=256_model5_rect2"             ### 3.unet_rect2
     
     
-    # restore_result_dir = access_path+ "result" + "/" + "" ### 1.pure_unet
-    restore_result_dir = access_path+ "result" + "/" + "20200329-213756_2_pure_rect2_complex_h=384,w=256_model5_rect2"        ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + ""             ### 3.unet_rect2
-
     ### h=384,w=256_complex
-    # restore_result_dir = access_path+ "result" + "/" + "" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + ""             ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + ""             ### 3.unet_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex1_20200329-215628_1_pure_unet_complex_h=384,w=256_model2_UNet_512to256" ### 1.pure_unet
+    restore_result_dir = access_path+ "result" + "/" + "20200329-213756_2_pure_rect2_complex_h=384,w=256_model5_rect2"  ### 2.pure_rect2 ### 還在train所以先不加前綴 h=384,w=256_
+    # restore_result_dir = access_path+ "result" + "/" + "" ### 3.unet_rect2
+
 
     ### h=384,w=256_complex+page
-    restore_result_dir = access_path+ "result" + "/" + "20200329-232144_1_pure_unet_complex+page_h=384,w=256_model2_UNet_512to256" ### 1.pure_unet
+    # restore_result_dir = access_path+ "result" + "/" + "20200329-232144_1_pure_unet_complex+page_h=384,w=256_model2_UNet_512to256" ### 1.pure_unet
     # restore_result_dir = access_path+ "result" + "/" + ""             ### 2.pure_rect2
     # restore_result_dir = access_path+ "result" + "/" + ""             ### 3.unet_rect2
 
