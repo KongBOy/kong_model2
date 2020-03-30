@@ -163,8 +163,8 @@ if(__name__=="__main__"):
     start_epoch = 0
 
     
-    phase = "train"
-    # phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
+    # phase = "train"
+    phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
     # phase = "test"  ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_result_dir 喔！
 
     ####################################################################################################################
@@ -180,6 +180,11 @@ if(__name__=="__main__"):
     # restore_result_dir = access_path+ "result" + "/" + "complex1_20200328-170738_1_pure_unet_complex_h=256,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
     # restore_result_dir = access_path+ "result" + "/" + "complex2_20200329-001847_2_pure_rect2_complex_h=256,w=256_model5_rect2_finish"        ### 2.pure_rect2
     # restore_result_dir = access_path+ "result" + "/" + "complex3_20200328-215330_3_unet_rect2_complex_h=256,w=256_model5_rect2"             ### 3.unet_rect2
+    
+    
+    # restore_result_dir = access_path+ "result" + "/" + "" ### 1.pure_unet
+    restore_result_dir = access_path+ "result" + "/" + "20200329-213756_2_pure_rect2_complex_h=384,w=256_model5_rect2"        ### 2.pure_rect2
+    # restore_result_dir = access_path+ "result" + "/" + ""             ### 3.unet_rect2
 
     # restore_result_dir = access_path+ "result" + "/" + "page1_20200319-215202_1_pure_unet_page_h=384,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
     # restore_result_dir = access_path+ "result" + "/" + "page2_20200316-151806_2_pure_rect2_h=384,w=256_model5_rect2_finish"          ### 2.pure_rect2

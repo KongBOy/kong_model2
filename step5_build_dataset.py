@@ -68,12 +68,22 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                gt_src_word   = ".npy" )
 
 
-build_datasets(build_dir_name="1_pure_unet_complex_h=384,w=256",
+# build_datasets(build_dir_name="1_pure_unet_complex_h=384,w=256",
+#                in_dir_name   = "dis_imgs",
+#                gt_dir_name   = "move_maps",
+#                in_src_dir    = access_path+"step3_apply_flow_complex_h=384,w=256",
+#                in_src_word   = "3a1-I1-patch.bmp",
+#                gt_src_dir    = access_path+"step2_build_flow_complex_h=384,w=256/move_maps",
+#                gt_src_word   = ".npy" )
+
+
+### 記得 complex+page做完需要手動去 挑 complex：0~1799 和 page：2000~3499 當train， complex：1800~1999 和 page：3500~3559
+build_datasets(build_dir_name="1_pure_unet_complex+page_h=384,w=256",
                in_dir_name   = "dis_imgs",
                gt_dir_name   = "move_maps",
-               in_src_dir    = access_path+"step3_apply_flow_complex_h=384,w=256",
+               in_src_dir    = access_path+"step3_apply_flow_complex+page_h=384,w=256",
                in_src_word   = "3a1-I1-patch.bmp",
-               gt_src_dir    = access_path+"step2_build_flow_complex_h=384,w=256/move_maps",
+               gt_src_dir    = access_path+"step2_build_flow_complex+page_h=384,w=256/move_maps",
                gt_src_word   = ".npy" )
 
 
@@ -98,11 +108,20 @@ build_datasets(build_dir_name="1_pure_unet_complex_h=384,w=256",
 #                gt_src_word   = "4-gt_ord_pad.bmp" )
 
 
-build_datasets(build_dir_name= "2_pure_rect2_complex_h=256,w=256",
+# build_datasets(build_dir_name= "2_pure_rect2_complex_h=384,w=256",
+#                in_dir_name   = "dis_img_db",
+#                gt_dir_name   = "gt_ord_pad_img_db",
+#                in_src_dir    = access_path+"step3_apply_flow_complex_h=384,w=256",
+#                gt_src_dir    = access_path+"step3_apply_flow_complex_h=384,w=256",
+#                in_src_word   = "3a1-I1-patch.bmp",
+#                gt_src_word   = "4-gt_ord_pad.bmp" )
+
+
+build_datasets(build_dir_name= "2_pure_rect2_complex+page_h=256,w=256",
                in_dir_name   = "dis_img_db",
                gt_dir_name   = "gt_ord_pad_img_db",
-               in_src_dir    = access_path+"step3_apply_flow_complex_h=384,w=256",
-               gt_src_dir    = access_path+"step3_apply_flow_complex_h=384,w=256",
+               in_src_dir    = access_path+"step3_apply_flow_complex+page_h=384,w=256",
+               gt_src_dir    = access_path+"step3_apply_flow_complex+page_h=384,w=256",
                in_src_word   = "3a1-I1-patch.bmp",
                gt_src_word   = "4-gt_ord_pad.bmp" )
 

@@ -188,7 +188,7 @@ if(__name__=="__main__"):
     # amount      = 2000 
     
     ### 也可以用來切給多個python平行處理
-    start_index = 250 * 14
+    start_index = 2760#250 * 14
     amount      = 250
     
     for i, move_map in enumerate(move_maps[start_index:start_index+amount]):
