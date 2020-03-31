@@ -65,7 +65,7 @@ def get_dis_img_start_left_top(move_map, max_db_move_x, max_db_move_y):
     top  = int(move_map[0,0,1]-int(move_map[0,0,1]) + max_db_move_y) ### 我們在乎的是 小數點的部分 相加後有沒有進位，所以用 move_map-int(move_map)喔！
     return left, top
     
-
+### 這步沒有辦法用整張array一起處理，因為msk要統計相同的點被重複家幾次，這就需要一個個pixel去跑才行??思考一下好像可以解決喔！
 def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", write_to_step3=False, return_base_xy=False):
     row, col = move_map.shape[:2] ### row, col 由 step2產生的flow 決定
     img = cv2.resize(img, (col, row), interpolation=cv2.INTER_NEAREST) 
