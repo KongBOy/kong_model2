@@ -34,7 +34,7 @@ def step0_save_rect2_train_code(result_dir):
     shutil.copy("step6_data_pipline.py"            ,code_dir + "/" + "step6_data_pipline.py")
     shutil.copy("step8_kong_model5_Rect2.py"       ,code_dir + "/" + "step8_kong_model5_Rect2.py")
     shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
-    shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
+    # shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
 
 
 def step1_build_model_and_optimizer(model_name="model1_UNet"):
@@ -99,7 +99,7 @@ def step4_get_datetime_default_result_logs_ckpt_dir_name(db_name, model_name):
 
 
 
-def step6_data_pipline(phase, db_dir, db_name, model_name, test_in_dir=None, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1):
+def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=None, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1):
     from step6_data_pipline import get_1_pure_unet_db  , \
                                get_2_pure_rect2_dataset, \
                                get_3_unet_rect2_dataset, \
@@ -173,18 +173,18 @@ if(__name__=="__main__"):
     start_epoch = 0
 
     
-    # phase = "train"
+    phase = "train"
     # restore_result_dir = ""
 
-    test_in_dir = ""
-    test_gt_dir = ""
-    phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
+    # test_in_dir = ""
+    # test_gt_dir = ""
+    # phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_result_dir 喔！
     ####################################################################################################################
 
     ### model_name/db_name 決定如何resize
-    model_name="model2_UNet_512to256"
-    # model_name="model5_rect2"
+    # model_name="model2_UNet_512to256"
+    model_name="model5_rect2"
     # model_name="model6_mrf_rect2"
 
     ### 讀取網路weight，在phase==train_reload、test、test_indicate 時需要
@@ -205,7 +205,7 @@ if(__name__=="__main__"):
 
 
     ### h=384,w=256_complex+page
-    restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_1_pure_unet_20200329-232144_model2_UNet_512to256" ### 1.pure_unet
+    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_1_pure_unet_20200329-232144_model2_UNet_512to256_finish" ### 1.pure_unet
     # restore_result_dir = access_path+ "result" + "/" + ""             ### 2.pure_rect2
     # restore_result_dir = access_path+ "result" + "/" + ""             ### 3.unet_rect2
 
@@ -230,9 +230,9 @@ if(__name__=="__main__"):
     # db_name = "h=384,w=256_complex_3_unet_rect2" 
     
     db_dir  = access_path+"datasets/type3_h=384,w=256_complex+page"
-    db_name = "h=384,w=256_complex+page_1_pure_unet"
+    # db_name = "h=384,w=256_complex+page_1_pure_unet"
     # db_name = "h=384,w=256_complex+page_2_pure_rect2" 
-    # db_name = "h=384,w=256_complex+page_3_unet_rect2" 
+    db_name = "h=384,w=256_complex+page_3_unet_rect2" 
 
     # db_dir  = access_path+"datasets/type0_h=384,w=256,old_page"
     # db_name = "h=384,w=256_old_page_1_pure_unet"
@@ -243,7 +243,9 @@ if(__name__=="__main__"):
 
     ### 讀取自訂的 in/gt 資料集，在phase== test_indicate 決定
     # phase = "test_indicate" ###用自己決定的db來做test
-    # test_in_dir = access_path+"datasets/h=256,w=256,complex/h=256,w=256_complex_1_pure_unet/train+test/dis_imgs"
+    # test_in_dir = access_path+"datasets/type3_h=384,w=256_complex+page/h=384,w=256_complex+page_1_pure_unet/train+test/dis_imgs"
+    # test_gt_dir = access_path+"datasets/type3_h=384,w=256_complex+page/h=384,w=256_complex+page_1_pure_unet/train+test/move_maps"
+    # # test_in_dir = access_path+"datasets/h=256,w=256,complex/h=256,w=256_complex_1_pure_unet/train+test/dis_imgs"
     # test_gt_dir = access_path+"datasets/h=256,w=256,complex/h=256,w=256_complex_1_pure_unet/train+test/move_maps"
     # test_in_dir = access_path+"datasets/2_h=384,w=256_complex/h=384,w=256_complex_1_pure_unet/train+test/dis_imgs"
     # test_gt_dir = access_path+"datasets/2_h=384,w=256_complex/h=384,w=256_complex_1_pure_unet/train+test/move_maps"
