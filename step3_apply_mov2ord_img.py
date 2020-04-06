@@ -1,4 +1,5 @@
-from step0_access_path import access_path
+import sys
+sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build
 from util import get_dir_move, get_dir_img, method2, get_xy_map, get_max_db_move_xy_from_numpy, time_util
 import numpy as np 
@@ -48,6 +49,7 @@ def search_mask_have_hole(dis_msk, hole_size=1,debug=False):
     print("around_have_hole_amount",around_have_hole_amount )
 
     if(debug):
+        from step0_access_path import access_path
         cv2.imwrite(access_path + dst_dir + "/" + "%s-3a-hole_around_visual.bmp"%(name),hole_around_visual*70)
         cv2.imwrite(access_path + dst_dir + "/" + "%s-3a-foreground_visual.bmp"%(name),foreground_visual*70)
     
@@ -114,6 +116,7 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
 
     ### 視覺化
     if(write_to_step3):
+        from step0_access_path import access_path
         move_map_visual = method2(move_map[...,0], move_map[...,1],color_shift=1)
         np.save(access_path + dst_dir + "/" + "%s-2-q"%(name), move_map)
         cv2.imwrite(access_path + dst_dir + "/" + "%s-1-I.bmp"%(name), img)
@@ -151,6 +154,7 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
                     dis_msk[go_row,go_col] += 1
         search_mask_have_hole_count += 1
     if(write_to_step3):
+        from step0_access_path import access_path
         cv2.imwrite(access_path + dst_dir + "/" + "%s-3a1-I1-patch.bmp"%(name), dis_img.astype(np.uint8))
         cv2.imwrite(access_path + dst_dir + "/" + "%s-3a4-Mask-patch.bmp"%(name), dis_msk*70)
         np.save(access_path + dst_dir + "/" + "%s-3a4-Mask-patch"%(name),dis_msk)
@@ -160,6 +164,8 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
         cv2.imwrite(access_path + dst_dir + "/" + "%s-3b-rec_mov_visual.jpg"%(name), rec_mov_visual)
         print("dis_msk.max()",dis_msk.max())
     
+    dis_img = dis_img.astype(np.uint8) ### float64運算完記得 轉回 uint8 才能正常顯示喔！
+
     if(return_base_xy):
         return dis_img.copy(), rec_mov.copy(), max_db_move_x, max_db_move_y
         
@@ -167,13 +173,17 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
 
 if(__name__=="__main__"):
     ord_imgs_dir  = "step1_page"
-    # move_maps_dir = "step2_build_flow_complex_h=384,w=256/move_maps"
-    # dst_dir       = "step3_apply_flow_complex_h=384,w=256"
-    move_maps_dir = "step2_build_flow_complex+page_h=384,w=256/move_maps"
-    dst_dir       = "step3_apply_flow_complex+page_h=384,w=256"
+    # move_maps_dir = "step2_build_flow_h=384,w=256_complex/move_maps"
+    # dst_dir       = "step3_apply_flow_h=384,w=256_complex"
+    # move_maps_dir = "step2_build_flow_h=384,w=256_complex+page/move_maps"
+    # dst_dir       = "step3_apply_flow_h=384,w=256_complex+page"
+    move_maps_dir = "step2_build_flow_h=384,w=256_complex+page_more_like/move_maps"
+    dst_dir       = "step3_apply_flow_h=384,w=256_complex+page_more_like"
 
 
     import time
+    from step0_access_path import access_path
+
     start_time = time.time()
 
     ord_imgs        = get_dir_img(access_path + ord_imgs_dir)                ### 取得ord_imgs
@@ -188,7 +198,7 @@ if(__name__=="__main__"):
     # amount      = 2000 
     
     ### 也可以用來切給多個python平行處理
-    start_index = 2760#250 * 14
+    start_index = 250 * 8
     amount      = 250
     
     for i, move_map in enumerate(move_maps[start_index:start_index+amount]):

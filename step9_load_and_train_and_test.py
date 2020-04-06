@@ -1,3 +1,5 @@
+import sys
+sys.path.append("kong_util")
 from step0_access_path import access_path
 import os 
 import tensorflow as tf
@@ -25,7 +27,6 @@ def step0_save_rect1_train_code(result_dir):
     elif(model_name == "model4_UNet_and_D"):    shutil.copy("step7_kong_model4_UNet_and_D.py"    ,code_dir + "/" + "step7_kong_model4_UNet_and_D.py")
     
     shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
-    shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
 
 def step0_save_rect2_train_code(result_dir):
     code_dir = result_dir+"/"+"train_code"
@@ -109,25 +110,28 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
     ### 注意img_resize用tf的resize，h放前面喔！
     img_resize  = None
     if  (model_name == "model2_UNet_512to256"): 
-        if  (db_name== "h=256,w=256_complex_1_pure_unet"      ): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "h=384,w=256_complex_1_pure_unet"      ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "h=384,w=256_complex+page_1_pure_unet" ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "1_pure_unet_h=384,w=256_old_page"     ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        if  (db_name== "h=384,w=256_old_page_1_pure_unet"               ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "h=256,w=256_complex_1_pure_unet"                ): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "h=384,w=256_complex_1_pure_unet"                ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "h=384,w=256_complex+page_1_pure_unet"           ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "h=384,w=256_complex+page_more_like_1_pure_unet" ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         elif(db_name== "wei_book_h=384,w=256"                 ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
 
     elif(model_name == "model5_rect2" or 
          model_name == "model6_mrf_rect2"):
-        if  (db_name== "h=256,w=256_complex_2_pure_rect2"      ): img_resize = (365+3,336) ### dis_img(in_img的大小)的大小且要是4的倍數 ###(512, 512)
-        elif(db_name== "h=384,w=256_complex_2_pure_rect2"      ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "h=384,w=256_complex+page_2_pure_rect2" ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "2_pure_rect2_h=384,w=256_old_page"     ): img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        if  (db_name== "h=384,w=256_old_page_2_pure_rect2"               ): img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "h=256,w=256_complex_2_pure_rect2"                ): img_resize = (365+3,336) ### dis_img(in_img的大小)的大小且要是4的倍數 ###(512, 512)
+        elif(db_name== "h=384,w=256_complex_2_pure_rect2"                ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "h=384,w=256_complex+page_2_pure_rect2"           ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "h=384,w=256_complex+page_more_like_2_pure_rect2" ): img_resize = (492+0,384) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "wei_book_h=384,w=256"                  ): img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
         
 
-        elif(db_name== "h=256,w=256_complex_3_unet_rect2"      ): img_resize = (256,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "h=384,w=256_complex_3_unet_rect2"      ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "h=384,w=256_complex+page_3_unet_rect2" ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "3_unet_rect2_h=384,w=256_old_page"     ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=384,w=256_old_page_3_unet_rect2"               ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=256,w=256_complex_3_unet_rect2"                ): img_resize = (256,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=384,w=256_complex_3_unet_rect2"                ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=384,w=256_complex+page_3_unet_rect2"           ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=384,w=256_complex+page_more_like_3_unet_rect2" ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
         elif(db_name== "wei_book_h=384,w=256"                  ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
     
 
@@ -137,7 +141,11 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
     data_dict = {}
 
     if(phase=="train" or phase=="train_reload" or phase=="test"):
-        if  (db_name == "h=256,w=256_complex_1_pure_unet"       ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
+        if  (db_name == "h=384,w=256_old_page_1_pure_unet"      ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
+        elif(db_name == "h=384,w=256_old_page_2_pure_rect2"     ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "h=384,w=256_old_page_3_unet_rect2"     ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+
+        elif  (db_name == "h=256,w=256_complex_1_pure_unet"       ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
         elif(db_name == "h=256,w=256_complex_2_pure_rect2"      ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         elif(db_name == "h=256,w=256_complex_3_unet_rect2"      ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         
@@ -149,9 +157,10 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name == "h=384,w=256_complex+page_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         elif(db_name == "h=384,w=256_complex+page_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         
-        elif(db_name == "h=384,w=256_old_page_1_pure_unet"      ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-        elif(db_name == "h=384,w=256_old_page_2_pure_rect2"     ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "h=384,w=256_old_page_3_unet_rect2"     ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "h=384,w=256_complex+page_more_like_1_pure_unet"  ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
+        elif(db_name == "h=384,w=256_complex+page_more_like_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "h=384,w=256_complex+page_more_like_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        
         elif(db_name == "wei_book_h=384,w=256"                  ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
     elif(phase=="test_indicate"):
         data_dict = get_test_indicate_db(test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="move_map", img_type="bmp", img_resize=img_resize)
@@ -174,7 +183,7 @@ if(__name__=="__main__"):
 
     
     phase = "train"
-    # restore_result_dir = ""
+    restore_result_dir = ""
 
     # test_in_dir = ""
     # test_gt_dir = ""
@@ -183,11 +192,17 @@ if(__name__=="__main__"):
     ####################################################################################################################
 
     ### model_name/db_name 決定如何resize
-    # model_name="model2_UNet_512to256"
-    model_name="model5_rect2"
+    model_name="model2_UNet_512to256"
+    # model_name="model5_rect2"
     # model_name="model6_mrf_rect2"
 
-    ### 讀取網路weight，在phase==train_reload、test、test_indicate 時需要
+    ### 設定 restore_result_dir 來讀取網路weight，在phase==train_reload、test、test_indicate 時需要
+    ### h=384,w=256_old_page
+    # restore_result_dir = access_path+ "result" + "/" + "page1_20200319-215202_1_pure_unet_page_h=384,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
+    # restore_result_dir = access_path+ "result" + "/" + "page2_20200316-151806_2_pure_rect2_h=384,w=256_model5_rect2_finish"          ### 2.pure_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "page3_20200318-003957_3_unet_rect2_h=384,w=256_model5_rect2_finish"          ### 3.unet_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "page4_20200325-104044_3_unet_rect2_page_h=384,w=256_model6_mrf_rect2"   
+    
     
     
     ### h=256,w=256_complex
@@ -206,39 +221,41 @@ if(__name__=="__main__"):
 
     ### h=384,w=256_complex+page
     # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_1_pure_unet_20200329-232144_model2_UNet_512to256_finish" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + ""             ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + ""             ### 3.unet_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_2_pure_rect2_20200331-084031_model5_rect2 finish"        ### 2.pure_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_3_unet_rect2_20200330-231953_model5_rect2_finish"        ### 3.unet_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_4_3_unet_rect2_20200401-030348_model6_mrf_rect2"         ### 4.unet_mrf_rect2
+    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_5_2_pure_rect2_20200401-085744_model6_mrf_rect2"         ### 5.pure_mrf_rect2
 
 
-    ### h=384,w=256_old_page
-    # restore_result_dir = access_path+ "result" + "/" + "page1_20200319-215202_1_pure_unet_page_h=384,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + "page2_20200316-151806_2_pure_rect2_h=384,w=256_model5_rect2_finish"          ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "page3_20200318-003957_3_unet_rect2_h=384,w=256_model5_rect2_finish"          ### 3.unet_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "page4_20200325-104044_3_unet_rect2_page_h=384,w=256_model6_mrf_rect2"   
-    
     ####################################################################################################################
     ### 看要讀取 哪個特定的in/gt資料集，在phase== train、train_load、test 時需要
+    # db_dir  = access_path+"datasets/type0_h=384,w=256,old_page"
+    # db_name = "h=384,w=256_old_page_1_pure_unet"
+    # db_name = "h=384,w=256_old_page_2_pure_rect2" 
+    # db_name = "h=384,w=256_old_page_3_unet_rect2" 
+
     # db_dir  = access_path+"datasets/type1_h=256,w=256_complex"
     # db_name = "h=256,w=256_complex_1_pure_unet"
     # db_name = "h=256,w=256_complex_2_pure_rect2" 
     # db_name = "h=256,w=256_complex_3_unet_rect2" 
-    
 
     # db_dir  = access_path+"datasets/type2_h=384,w=256_complex"
     # db_name = "h=384,w=256_complex_1_pure_unet"
     # db_name = "h=384,w=256_complex_2_pure_rect2" 
     # db_name = "h=384,w=256_complex_3_unet_rect2" 
     
-    db_dir  = access_path+"datasets/type3_h=384,w=256_complex+page"
+    # db_dir  = access_path+"datasets/type3_h=384,w=256_complex+page"
     # db_name = "h=384,w=256_complex+page_1_pure_unet"
     # db_name = "h=384,w=256_complex+page_2_pure_rect2" 
-    db_name = "h=384,w=256_complex+page_3_unet_rect2" 
+    # db_name = "h=384,w=256_complex+page_3_unet_rect2" 
+    
+    db_dir  = access_path+"datasets/type4_h=384,w=256_complex+page_more_like"
+    db_name = "h=384,w=256_complex+page_more_like_1_pure_unet"
+    # db_name = "h=384,w=256_complex+page_more_like_2_pure_rect2" 
+    # db_name = "h=384,w=256_complex+page_more_like_3_unet_rect2" 
 
-    # db_dir  = access_path+"datasets/type0_h=384,w=256,old_page"
-    # db_name = "h=384,w=256_old_page_1_pure_unet"
-    # db_name = "h=384,w=256_old_page_2_pure_rect2" 
-    # db_name = "h=384,w=256_old_page_3_unet_rect2" 
     # db_name = "wei_book_h=384,w=256" 
+
 
 
     ### 讀取自訂的 in/gt 資料集，在phase== test_indicate 決定

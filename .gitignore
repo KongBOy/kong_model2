@@ -2,6 +2,10 @@
 __*
 *.rar
 
+kong_util/.*
+kong_util/__*
+
+
 test*
 
 datasets*
