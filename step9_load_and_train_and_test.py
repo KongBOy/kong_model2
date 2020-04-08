@@ -110,29 +110,52 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
     ### 注意img_resize用tf的resize，h放前面喔！
     img_resize  = None
     if  (model_name == "model2_UNet_512to256"): 
-        if  (db_name== "h=384,w=256_old_page_1_pure_unet"               ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "h=256,w=256_complex_1_pure_unet"                ): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "h=384,w=256_complex_1_pure_unet"                ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "h=384,w=256_complex+page_1_pure_unet"           ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "h=384,w=256_complex+page_more_like_1_pure_unet" ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "wei_book_h=384,w=256"                 ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        if  (db_name== "h=384,w=256_old_page_1_pure_unet"                  ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "h=256,w=256_complex_1_pure_unet"                   ): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "h=384,w=256_complex_1_pure_unet"                   ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "h=384,w=256_complex+page_1_pure_unet"              ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "h=384,w=256_complex+page_more_like_1_pure_unet"    ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "wei_book_type1_h=256,w=256_complex"                ): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "wei_book_type2_h=384,w=256_complex"                ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "wei_book_type3_h=384,w=256_complex+page"           ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "wei_book_type4_h=384,w=256_complex+page_more_like" ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "wei_book_pad_type1_h=256,w=256_complex"                ): img_resize =(256*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "wei_book_pad_type2_h=384,w=256_complex"                ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "wei_book_pad_type3_h=384,w=256_complex+page"           ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
 
     elif(model_name == "model5_rect2" or 
          model_name == "model6_mrf_rect2"):
-        if  (db_name== "h=384,w=256_old_page_2_pure_rect2"               ): img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "h=256,w=256_complex_2_pure_rect2"                ): img_resize = (365+3,336) ### dis_img(in_img的大小)的大小且要是4的倍數 ###(512, 512)
-        elif(db_name== "h=384,w=256_complex_2_pure_rect2"                ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "h=384,w=256_complex+page_2_pure_rect2"           ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "h=384,w=256_complex+page_more_like_2_pure_rect2" ): img_resize = (492+0,384) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "wei_book_h=384,w=256"                  ): img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        if  (db_name== "h=384,w=256_old_page_2_pure_rect2"                 ): img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "h=256,w=256_complex_2_pure_rect2"                  ): img_resize = (365+3,336) ### dis_img(in_img的大小)的大小且要是4的倍數 ###(512, 512)
+        elif(db_name== "h=384,w=256_complex_2_pure_rect2"                  ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "h=384,w=256_complex+page_2_pure_rect2"             ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "h=384,w=256_complex+page_more_like_2_pure_rect2"   ): img_resize = (492+0,384) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_type1_h=256,w=256_complex"                ): img_resize = (356+3,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_type2_h=384,w=256_complex"                ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_type3_h=384,w=256_complex+page"           ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_type4_h=384,w=256_complex+page_more_like" ): img_resize = (492+0,384) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_pad_type1_h=256,w=256_complex"                ): img_resize = (356+3,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_pad_type2_h=384,w=256_complex"                ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_pad_type3_h=384,w=256_complex+page"           ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize = (492+0,384) ### dis_img(in_img的大小)的大小且要是4的倍數
+        
+        elif(db_name== "wei_book_tf1_db"                                       ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         
 
-        elif(db_name== "h=384,w=256_old_page_3_unet_rect2"               ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "h=256,w=256_complex_3_unet_rect2"                ): img_resize = (256,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "h=384,w=256_complex_3_unet_rect2"                ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "h=384,w=256_complex+page_3_unet_rect2"           ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "h=384,w=256_complex+page_more_like_3_unet_rect2" ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "wei_book_h=384,w=256"                  ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=384,w=256_old_page_3_unet_rect2"                 ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=256,w=256_complex_3_unet_rect2"                  ): img_resize = (256,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=384,w=256_complex_3_unet_rect2"                  ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=384,w=256_complex+page_3_unet_rect2"             ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "h=384,w=256_complex+page_more_like_3_unet_rect2"   ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "wei_book_type1_h=256,w=256_complex"                ): img_resize = (256,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "wei_book_type2_h=384,w=256_complex"                ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "wei_book_type3_h=384,w=256_complex+page"           ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "wei_book_type4_h=384,w=256_complex+page_more_like" ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "wei_book_pad_type1_h=256,w=256_complex"                ): img_resize = (256,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "wei_book_pad_type2_h=384,w=256_complex"                ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "wei_book_pad_type3_h=384,w=256_complex+page"           ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
     
 
     ### 第二部分：根據 db_name 去相應的 dir結構抓出所有data
@@ -145,7 +168,7 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name == "h=384,w=256_old_page_2_pure_rect2"     ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         elif(db_name == "h=384,w=256_old_page_3_unet_rect2"     ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
 
-        elif  (db_name == "h=256,w=256_complex_1_pure_unet"       ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
+        elif(db_name == "h=256,w=256_complex_1_pure_unet"       ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
         elif(db_name == "h=256,w=256_complex_2_pure_rect2"      ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         elif(db_name == "h=256,w=256_complex_3_unet_rect2"      ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         
@@ -161,10 +184,47 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name == "h=384,w=256_complex+page_more_like_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         elif(db_name == "h=384,w=256_complex+page_more_like_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         
+        elif(db_name == "wei_book_tf1_db"                                 ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+
         elif(db_name == "wei_book_h=384,w=256"                  ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
     elif(phase=="test_indicate"):
-        data_dict = get_test_indicate_db(test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="move_map", img_type="bmp", img_resize=img_resize)
+        indicate_args = {}
+        indicate_args["img_resize"] = img_resize
+        indicate_args["test_in_dir"] = test_in_dir
+        indicate_args["test_gt_dir"] = test_gt_dir
 
+        ### 根據 model_name 決定 gt_type
+        if  (model_name == "model2_UNet_512to256"): indicate_args["gt_type"] = "move_map"
+        elif(model_name == "model5_rect2" or 
+             model_name == "model6_mrf_rect2"    ): indicate_args["gt_type"] = "img"
+
+
+        ### 根據 db_name 決定 gt_img 是用 jpg 或 bmp 或是 其他種類喔，覺得有點多餘，先統一用bmp拉！
+        # if  (db_name== "h=256,w=256_complex_1_pure_unet"       or
+        #      db_name== "h=256,w=256_complex_2_pure_rect2"      or
+        #      db_name== "h=256,w=256_complex_3_unet_rect2"      or
+
+        #      db_name== "h=384,w=256_complex_1_pure_unet"       or
+        #      db_name== "h=384,w=256_complex_2_pure_rect2"      or
+        #      db_name== "h=384,w=256_complex_3_unet_rect2"      or
+
+        #      db_name== "h=384,w=256_complex+page_1_pure_unet"  or
+        #      db_name== "h=384,w=256_complex+page_2_pure_rect2" or
+        #      db_name== "h=384,w=256_complex+page_3_unet_rect2" or
+
+        #      db_name== "h=384,w=256_complex+page_more_like_1_pure_unet"  or
+        #      db_name== "h=384,w=256_complex+page_more_like_2_pure_rect2" or
+        #      db_name== "h=384,w=256_complex+page_more_like_3_unet_rect2" ):  indicate_args["img_type"] = "bmp"
+        # elif(db_name== "wei_book_type1_h=256,w=256_complex"       or
+        #      db_name== "wei_book_type2_h=384,w=256_complex"       or
+        #      db_name== "wei_book_type3_h=384,w=256_complex+page"  or
+        #      db_name== "wei_book_type4_h=384,w=256_complex+page_more_like"): indicate_args["img_type"] = "jpg"
+        indicate_args["img_type"] = "bmp"
+
+        data_dict = get_test_indicate_db(**indicate_args)
+        # if  (model_name == "model2_UNet_512to256"): data_dict = get_test_indicate_db(test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="move_map", img_type="bmp", img_resize=img_resize)
+        # elif(model_name == "model5_rect2" or 
+        #      model_name == "model6_mrf_rect2"    ): data_dict = get_test_indicate_db(test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img"     , img_type="bmp", img_resize=img_resize)
     return data_dict
 
 
@@ -187,52 +247,46 @@ if(__name__=="__main__"):
 
     # test_in_dir = ""
     # test_gt_dir = ""
-    # phase = "train_reload" ### 要記得去決定 restore_result_dir 喔！
-    # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_result_dir 喔！
+    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
     ### model_name/db_name 決定如何resize
-    model_name="model2_UNet_512to256"
-    # model_name="model5_rect2"
+    # model_name="model2_UNet_512to256"
+    model_name="model5_rect2"
     # model_name="model6_mrf_rect2"
 
-    ### 設定 restore_result_dir 來讀取網路weight，在phase==train_reload、test、test_indicate 時需要
-    ### h=384,w=256_old_page
-    # restore_result_dir = access_path+ "result" + "/" + "page1_20200319-215202_1_pure_unet_page_h=384,w=256_model2_UNet_512to256_finish" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + "page2_20200316-151806_2_pure_rect2_h=384,w=256_model5_rect2_finish"          ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "page3_20200318-003957_3_unet_rect2_h=384,w=256_model5_rect2_finish"          ### 3.unet_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "page4_20200325-104044_3_unet_rect2_page_h=384,w=256_model6_mrf_rect2"   
-    
-    
-    
+    ### 設定 restore_model_name 來讀取網路weight，在phase==train_reload、test、test_indicate 時需要
     ### h=256,w=256_complex
-    # restore_result_dir = access_path+ "result" + "/" + "h=256,w=256_complex_1_pure_unet_20200328-170738_model2_UNet_512to256_finish" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + "h=256,w=256_complex_2_pure_rect2_20200329-001847_model5_rect2_finish"        ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "h=256,w=256_complex_3_unet_rect2_20200328-215330_model5_rect2_finish"        ### 3.unet_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "128.243"        ### 4.unet_mrf-rect2
-    # restore_result_dir = access_path+ "result" + "/" + "127.48"        ### 5.pure_mrf-rect2
-    
+    # restore_model_name = "h=256,w=256_complex_1_pure_unet_20200328-170738_model2_UNet_512to256_finish" ### 1.pure_unet
+    # restore_model_name = "h=256,w=256_complex_2_pure_rect2_20200329-001847_model5_rect2_finish"        ### 2.pure_rect2
+    # restore_model_name = "h=256,w=256_complex_3_unet_rect2_20200328-215330_model5_rect2_finish"        ### 3.unet_rect2
+    # restore_model_name = "h=256,w=256_complex_4_3_unet_rect2_20200329-135446_model6_mrf_rect2_finish"  ### 4.unet_mrf-rect2
+    # restore_model_name = "h=256,w=256_complex_5_2_pure_rect2_20200330-111543_model6_mrf_rect2_finish"  ### 5.pure_mrf-rect2
 
     ### h=384,w=256_complex
-    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex_1_pure_unet_20200329-215628_model2_UNet_512to256" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex_2_pure_rect2_20200329-213756_model5_rect2"             ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "127.40"             ### 3.unet_rect2
-
+    # restore_model_name = "h=384,w=256_complex_1_pure_unet_20200329-215628_model2_UNet_512to256_finish" ### 1.pure_unet
+    # restore_model_name = "h=384,w=256_complex_2_pure_rect2_20200329-213756_model5_rect2_finish"        ### 2.pure_rect2
+    # restore_model_name = "h=384,w=256_complex_3_unet_rect2_20200330-095524_model5_rect2_finish"        ### 3.unet_rect2
+    # restore_model_name = "h=384,w=256_complex_4_3_unet_rect2_20200331-090143_model6_mrf_rect2_finish"  ### 4.unet_mrf-rect2
+    # restore_model_name = "h=384,w=256_complex_5_3_unet_rect2_20200402-120915_model6_mrf_rect2_finish"  ### 5.pure_mrf-rect2
 
     ### h=384,w=256_complex+page
-    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_1_pure_unet_20200329-232144_model2_UNet_512to256_finish" ### 1.pure_unet
-    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_2_pure_rect2_20200331-084031_model5_rect2 finish"        ### 2.pure_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_3_unet_rect2_20200330-231953_model5_rect2_finish"        ### 3.unet_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_4_3_unet_rect2_20200401-030348_model6_mrf_rect2"         ### 4.unet_mrf_rect2
-    # restore_result_dir = access_path+ "result" + "/" + "h=384,w=256_complex+page_5_2_pure_rect2_20200401-085744_model6_mrf_rect2"         ### 5.pure_mrf_rect2
+    # restore_model_name = "h=384,w=256_complex+page_1_pure_unet_20200329-232144_model2_UNet_512to256_finish" ### 1.pure_unet
+    # restore_model_name = "h=384,w=256_complex+page_2_pure_rect2_20200331-084031_model5_rect2 finish"        ### 2.pure_rect2
+    # restore_model_name = "h=384,w=256_complex+page_3_unet_rect2_20200330-231953_model5_rect2_finish"        ### 3.unet_rect2
+    # restore_model_name = "h=384,w=256_complex+page_4_3_unet_rect2_20200401-030348_model6_mrf_rect2_finish"  ### 4.unet_mrf-rect2
+    # restore_model_name = "h=384,w=256_complex+page_5_2_pure_rect2_20200401-085744_model6_mrf_rect2_finish"  ### 5.pure_mrf-rect2
 
+    ### h=384,w=256_complex+page_more_like
+    # restore_model_name = "h=384,w=256_complex+page_more_like_1_pure_unet_20200406-214854_model2_UNet_512to256_finish" ### 1.pure_unet
+    # restore_model_name = "h=384,w=256_complex+page_more_like_2_pure_rect2_20200406-215120_model5_rect2_finish"        ### 2.pure_rect2
+    # restore_model_name = "h=384,w=256_complex+page_more_like_3_unet_rect2_20200407-093115_model5_rect2_finish"        ### 3.unet_rect2
+    # restore_model_name = "h=384,w=256_complex+page_more_like_4_3_unet_rect2_20200407-110250_model6_mrf_rect2_finish"    ### 4.unet_mrf_rect2
+    # restore_model_name =  ### 5.pure_mrf_rect2
 
     ####################################################################################################################
     ### 看要讀取 哪個特定的in/gt資料集，在phase== train、train_load、test 時需要
-    # db_dir  = access_path+"datasets/type0_h=384,w=256,old_page"
-    # db_name = "h=384,w=256_old_page_1_pure_unet"
-    # db_name = "h=384,w=256_old_page_2_pure_rect2" 
-    # db_name = "h=384,w=256_old_page_3_unet_rect2" 
 
     # db_dir  = access_path+"datasets/type1_h=256,w=256_complex"
     # db_name = "h=256,w=256_complex_1_pure_unet"
@@ -249,43 +303,105 @@ if(__name__=="__main__"):
     # db_name = "h=384,w=256_complex+page_2_pure_rect2" 
     # db_name = "h=384,w=256_complex+page_3_unet_rect2" 
     
-    db_dir  = access_path+"datasets/type4_h=384,w=256_complex+page_more_like"
-    db_name = "h=384,w=256_complex+page_more_like_1_pure_unet"
+    # db_dir  = access_path+"datasets/type4_h=384,w=256_complex+page_more_like"
+    # db_name = "h=384,w=256_complex+page_more_like_1_pure_unet"
     # db_name = "h=384,w=256_complex+page_more_like_2_pure_rect2" 
     # db_name = "h=384,w=256_complex+page_more_like_3_unet_rect2" 
 
-    # db_name = "wei_book_h=384,w=256" 
+
+    db_dir  = access_path+"datasets"
+    db_name = "wei_book_tf1_db" 
 
 
 
+    ####################################################################################################################
     ### 讀取自訂的 in/gt 資料集，在phase== test_indicate 決定
     # phase = "test_indicate" ###用自己決定的db來做test
+
+
+    ### wei_book系列 ###
+    # db_name = "wei_book_type1_h=256,w=256_complex"
+    # db_name = "wei_book_pad_type1_h=256,w=256_complex"
+    ### 1.pure_unet
+    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = None
+    ### 2.pure_rect2 和 5.pure_mrf-rect2
+    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = access_path+"datasets"+"/"+db_name+"/"+"gt_imgs"
+    ### 3.unet+rect2 和 4.unet_mrf-rect2
+    # test_in_dir = access_path + "result"  + "/" + "h=256,w=256_complex_1_pure_unet_20200328-170738_model2_UNet_512to256_finish" + "/" + "test_indicate" + "_" + db_name
+    # test_gt_dir = access_path + "datasets"+ "/" + db_name + "/" + "gt_imgs"
+
+
+    # db_name = "wei_book_type2_h=384,w=256_complex"
+    # db_name = "wei_book_pad_type2_h=384,w=256_complex"
+    ### 1.pure_unet
+    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = None
+    ### 2.pure_rect2 和 5.pure_mrf-rect2
+    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = access_path+"datasets"+"/"+db_name+"/"+"gt_imgs"
+    ### 3.unet+rect2 和 4.unet_mrf-rect2
+    # test_in_dir = access_path + "result"  + "/" + "h=384,w=256_complex_1_pure_unet_20200329-215628_model2_UNet_512to256_finish" + "/" + "test_indicate" + "_" + db_name
+    # test_gt_dir = access_path + "datasets"+ "/" + db_name + "/" + "gt_imgs"
+
+    
+    # db_name = "wei_book_type3_h=384,w=256_complex+page" 
+    # db_name = "wei_book_pad_type3_h=384,w=256_complex+page" 
+    ### 1.pure_unet
+    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = None
+    ### 2.pure_rect2 和 5.pure_mrf-rect2
+    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = access_path+"datasets"+"/"+db_name+"/"+"gt_imgs"
+    ### 3.unet+rect2 和 4.unet_mrf-rect2
+    # test_in_dir = access_path + "result"  + "/" + "h=384,w=256_complex+page_1_pure_unet_20200329-232144_model2_UNet_512to256_finish" + "/" + "test_indicate" + "_" + db_name
+    # test_gt_dir = access_path + "datasets"+ "/" + db_name + "/" + "gt_imgs"
+
+
+
+    # db_name = "wei_book_type4_h=384,w=256_complex+page_more_like"
+    # db_name = "wei_book_pad_type4_h=384,w=256_complex+page_more_like"
+    ### 1.pure_unet
+    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = None
+    ### 2.pure_rect2 和 5.pure_mrf-rect2
+    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = access_path+"datasets"+"/"+db_name+"/"+"gt_imgs"
+    ### 3.unet+rect2 和 4.unet_mrf-rect2
+    # test_in_dir = access_path + "result"  + "/" + "h=384,w=256_complex+page_more_like_1_pure_unet_20200406-214854_model2_UNet_512to256_finish" + "/" + "test_indicate" + "_" + db_name
+    # test_gt_dir = access_path + "datasets"+ "/" + db_name + "/" + "gt_imgs"
+
+    
+
+    ### 訓練時 生成 3_unet_rect2系列
+    # db_name = "h=384,w=256_complex+page_more_like_1_pure_unet"
+    # test_in_dir = access_path+"datasets/type4_h=384,w=256_complex+page_more_like/h=384,w=256_complex+page_more_like_1_pure_unet/train+test/dis_imgs"
+    # test_gt_dir = access_path+"datasets/type4_h=384,w=256_complex+page_more_like/h=384,w=256_complex+page_more_like_1_pure_unet/train+test/move_maps"
+    
+    # db_name = "h=384,w=256_complex+page_1_pure_unet"
     # test_in_dir = access_path+"datasets/type3_h=384,w=256_complex+page/h=384,w=256_complex+page_1_pure_unet/train+test/dis_imgs"
     # test_gt_dir = access_path+"datasets/type3_h=384,w=256_complex+page/h=384,w=256_complex+page_1_pure_unet/train+test/move_maps"
-    # # test_in_dir = access_path+"datasets/h=256,w=256,complex/h=256,w=256_complex_1_pure_unet/train+test/dis_imgs"
+    
+    # db_name = "h=256,w=256_complex_1_pure_unet"
+    # test_in_dir = access_path+"datasets/h=256,w=256,complex/h=256,w=256_complex_1_pure_unet/train+test/dis_imgs"
     # test_gt_dir = access_path+"datasets/h=256,w=256,complex/h=256,w=256_complex_1_pure_unet/train+test/move_maps"
+
+    # db_name = "h=384,w=256_complex_1_pure_unet"
     # test_in_dir = access_path+"datasets/2_h=384,w=256_complex/h=384,w=256_complex_1_pure_unet/train+test/dis_imgs"
     # test_gt_dir = access_path+"datasets/2_h=384,w=256_complex/h=384,w=256_complex_1_pure_unet/train+test/move_maps"
-    # test_in_dir = access_path+"datasets/1_pure_unet_page_h=384,w=256/train+test/dis_imgs"
-    # test_gt_dir = access_path+"datasets/1_pure_unet_page_h=384,w=256/train+test/move_maps"
-    # test_in_dir = access_path+"datasets/2_pure_rect2_h=384,w=256/train+test/dis_img_db"
-    # test_gt_dir = access_path+"datasets/2_pure_rect2_h=384,w=256/train+test/gt_ord_pad_img_db"
-    # test_in_dir = access_path+"datasets/3_unet_rect2_h=384,w=256/train+test/unet_rec_img_db"
-    # test_gt_dir = access_path+"datasets/3_unet_rect2_h=384,w=256/train+test/gt_ord_img_db"
-    # test_in_dir = access_path+"datasets/wei_book_h=384,w=256/in_imgs"
-    # test_gt_dir = access_path+"datasets/wei_book_h=384,w=256/gt_imgs"
 
-
+    
     ### 參數設定結束
     ################################################################################################################################################
     ### 第零階段：決定result, logs, ckpt 存哪裡 並 把source code存起來
-    ###  決定result, logs, ckpt 存哪裡
+    ###  決定result, logs, ckpt 存哪裡 
     ###     train的話跟據 "現在時間"
     if  (phase=="train"):  
         result_dir, logs_dir, ckpt_dir = step4_get_datetime_default_result_logs_ckpt_dir_name(db_name=db_name, model_name=model_name)
     ###     train_reload和test 根據 "restore_result_dir"
     elif(phase=="train_reload" or phase=="test" or phase=="test_indicate"): 
-        result_dir = restore_result_dir
+        result_dir = access_path+ "result" + "/" + restore_model_name
         logs_dir, ckpt_dir = step4_get_result_dir_default_logs_ckpt_dir_name(result_dir)
 
     ###    把source code存起來
@@ -316,8 +432,7 @@ if(__name__=="__main__"):
     if  (phase in ["train", "train_reload", "test"]):
         data_dict  = step6_data_pipline(phase=phase, db_dir=db_dir, db_name=db_name, model_name=model_name, batch_size=BATCH_SIZE)
     elif(phase == "test_indicate"):
-        data_dict  = step6_data_pipline(phase=phase, db_dir=db_dir, db_name=db_name, model_name=model_name, test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, batch_size=BATCH_SIZE)
-
+        data_dict  = step6_data_pipline(phase=phase,                db_name=db_name, model_name=model_name, test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, batch_size=BATCH_SIZE)
     ################################################################################################################################################
     ### 第三階段：train 和 test
     ###  training 的部分 ###################################################################################################
@@ -401,15 +516,15 @@ if(__name__=="__main__"):
             max_db_move_x  = ckpt.max_db_move_x.numpy()  ### g生成的結果 做 apply_rec_move用
             max_db_move_y  = ckpt.max_db_move_y.numpy()  ### g生成的結果 做 apply_rec_move用
 
+            Check_dir_exist_and_build(test_dir_name+"/"+"move_map_visual")  ### g生成的結果視覺化存的地方，一定要這個喔，因為它存的是bmp，我在test_indicate回來讀的時候會讀到他，所以要多個資料夾存裡面，才不會被讀到這樣子 ~
         
         ##################################################################################################################################
         ### test部分
         for i, (test_input, test_input_pre) in enumerate(zip(data_dict["test_in_db"], data_dict["test_in_db_pre"])):
-            print("testing %06i"%i)
             ### 把 preprocess過的test_input丟進去generator生成prediction
             prediction = model_dict["generator"](test_input_pre, training=True)  ### prediction 的shape是 BWHC 喔！
             prediction = prediction[0].numpy()
-
+            print("testing %06i"%i, "predict success~~")
             ### unet predict出來的是move_map
             if  (model_name=="model2_UNet_512to256"):
                 ###  G 生成 的 move_map 轉回對的值域 並 存起來
@@ -419,7 +534,7 @@ if(__name__=="__main__"):
 
                 ### 生成的move_map視覺化 並 存起來
                 g_move_map_bgr =  method2(g_move_map[...,0], g_move_map[...,1],1) ### method2回傳的是 uint8的array喔！
-                cv2.imwrite(test_dir_name+"/%06i_g_move_map_visual.bmp"%i, g_move_map_bgr) ### 存起來
+                cv2.imwrite(test_dir_name+"/move_map_visual/%06i_g_move_map_visual.bmp"%i, g_move_map_bgr) ### 存起來，記得存到 move_map_visual 資料夾裡喔！
 
                 ### 用生成的move_map 來 還原 test_input 並 存起來
                 dis_img   = test_input.numpy()[0] ### 這是沒有resize過的！recover是要用這個來做喔！不是用test_input_pre resize過的dis_img來做！[0]是因為建tf.dataset時有用batch        
