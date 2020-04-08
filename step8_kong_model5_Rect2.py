@@ -343,8 +343,8 @@ def test_visual(test_dir_name,  data_dict,  start_index=0):
 
     col_img_num = 3
     ax_bigger = 2
-    for i, (in_img, gt_img) in enumerate( zip(data_dict["test_in_db"],data_dict["test_gt_db"]) )  :
     # for i in range(data_amount):
+    for i, (in_img, gt_img) in enumerate( zip(data_dict["test_in_db"],data_dict["test_gt_db"]) )  :
         if(i < start_index): continue ### 可以用這個控制從哪個test開始做
         print("test_visual %06i"%i)
         

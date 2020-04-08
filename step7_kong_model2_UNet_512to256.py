@@ -212,7 +212,7 @@ def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
 
 
     ### 建立放結果的資料夾
-    test_plot_dir = test_dir_name + "/" + "/plot_result"
+    test_plot_dir = test_dir_name + "/" + "plot_result"
     Check_dir_exist_and_build(test_plot_dir)
 
     ### test已經做好的資料
@@ -233,7 +233,11 @@ def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
 
     print("col_img_num", col_img_num)
 
-    for i, (test_input, test_gt) in enumerate( zip( data_dict["test_in_db"], data_dict["test_gt_db"] ) ):
+    # for i, (test_input, test_gt) in enumerate( zip( data_dict["test_in_db"], data_dict["test_gt_db"] ) ):
+    for i, test_input in enumerate( data_dict["test_in_db"] ) :
+        if("test_gt_db" in data_dict.keys()):
+            test_gt = data_dict["test_gt_db"][i]
+
         if(i < start_index): continue ### 可以用這個控制從哪個test開始做
         print("test_visual %06i"%i)
     
