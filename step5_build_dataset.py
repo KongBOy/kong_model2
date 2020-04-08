@@ -97,14 +97,14 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_complex+page/move_maps",
 #                gt_src_word   = ".npy" )
 
-### 記得 complex+page_more_like做完需要手動去 挑 complex：0~1799 和 page：2000~3499 當train， complex：1800~1999 和 page：3500~3559
-build_datasets(build_dir_name="h=384,w=256_complex+page_more_like_1_pure_unet",
-               in_dir_name   = "dis_imgs",
-               gt_dir_name   = "move_maps",
-               in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
-               in_src_word   = "3a1-I1-patch.bmp",
-               gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_complex+page_more_like/move_maps",
-               gt_src_word   = ".npy" )
+### 記得 complex+page_more_like做完需要手動去 挑 complex：0~1799 和 page：2000~2179 當train， complex：1800~1999 和 page：2180~2199
+# build_datasets(build_dir_name="h=384,w=256_complex+page_more_like_1_pure_unet",
+#                in_dir_name   = "dis_imgs",
+#                gt_dir_name   = "move_maps",
+#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
+#                in_src_word   = "3a1-I1-patch.bmp",
+#                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_complex+page_more_like/move_maps",
+#                gt_src_word   = ".npy" )
 
 
 
@@ -137,7 +137,7 @@ build_datasets(build_dir_name="h=384,w=256_complex+page_more_like_1_pure_unet",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = "4-gt_ord_pad.bmp" )
 
-
+### 記得 complex+page做完需要手動去 挑 complex：0~1799 和 page：2000~3499 當train， complex：1800~1999 和 page：3500~3559
 # build_datasets(build_dir_name= "h=384,w=256_complex+page_2_pure_rect2",
 #                in_dir_name   = "dis_img_db",
 #                gt_dir_name   = "gt_ord_pad_img_db",
@@ -146,14 +146,14 @@ build_datasets(build_dir_name="h=384,w=256_complex+page_more_like_1_pure_unet",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = "4-gt_ord_pad.bmp" )
 
-
-build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_2_pure_rect2",
-               in_dir_name   = "dis_img_db",
-               gt_dir_name   = "gt_ord_pad_img_db",
-               in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
-               gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
-               in_src_word   = "3a1-I1-patch.bmp",
-               gt_src_word   = "4-gt_ord_pad.bmp" )
+### 記得 complex+page_more_like做完需要手動去 挑 complex：0~1799 和 page：2000~2179 當train， complex：1800~1999 和 page：2180~2199
+# build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_2_pure_rect2",
+#                in_dir_name   = "dis_img_db",
+#                gt_dir_name   = "gt_ord_pad_img_db",
+#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
+#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
+#                in_src_word   = "3a1-I1-patch.bmp",
+#                gt_src_word   = "4-gt_ord_pad.bmp" )
 
 
 
@@ -187,6 +187,7 @@ build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_2_pure_rect2"
 #                gt_src_word   = "1-I.bmp" )
 
 
+### 記得 complex+page做完需要手動去 挑 complex：0~1799 和 page：2000~3499 當train， complex：1800~1999 和 page：3500~3559
 # build_datasets(build_dir_name= "h=384,w=256_complex+page_3_unet_rect2",
 #                in_dir_name   = "unet_rec_img_db",
 #                gt_dir_name   = "gt_ord_img_db",
@@ -196,13 +197,14 @@ build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_2_pure_rect2"
 #                gt_src_word   = "1-I.bmp" )
 
 
-# build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_3_unet_rect2",
-#                in_dir_name   = "unet_rec_img_db",
-#                gt_dir_name   = "gt_ord_img_db",
-#                in_src_dir    = access_path+"result/待訓練",
-#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
-#                in_src_word   = "g_rec_img.bmp",
-#                gt_src_word   = "1-I.bmp" )
+### 記得 complex+page_more_like做完需要手動去 挑 complex：0~1799 和 page：2000~2179 當train， complex：1800~1999 和 page：2180~2199
+build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_3_unet_rect2",
+               in_dir_name   = "unet_rec_img_db",
+               gt_dir_name   = "gt_ord_img_db",
+               in_src_dir    = access_path+"result/h=384,w=256_complex+page_more_like_1_pure_unet_20200406-214854_model2_UNet_512to256/test_indicate_h=384,w=256_complex+page_more_like_1_pure_unet",
+               gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
+               in_src_word   = "g_rec_img.bmp",
+               gt_src_word   = "1-I.bmp" )
 
 
 
