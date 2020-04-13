@@ -141,6 +141,7 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize = (492+0,384) ### dis_img(in_img的大小)的大小且要是4的倍數
         
         elif(db_name== "wei_book_tf1_db"                                       ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_tf1_db+type4_complex+page_more_like"          ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         
 
         elif(db_name== "h=384,w=256_old_page_3_unet_rect2"                 ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
@@ -185,6 +186,7 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name == "h=384,w=256_complex+page_more_like_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         
         elif(db_name == "wei_book_tf1_db"                                 ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "wei_book_tf1_db+type4_complex+page_more_like"    ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
 
         elif(db_name == "wei_book_h=384,w=256"                  ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
     elif(phase=="test_indicate"):
@@ -236,18 +238,18 @@ if(__name__=="__main__"):
 
     ### train, train_reload 參數
     BATCH_SIZE = 1
-    epochs = 1600
+    epochs = 1300  ### 看opencv合成的video覺得1300左右就沒變了
     epoch_down_step = 100 ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
     epoch_save_freq = 1   ### 訓練 epoch_save_freq 個 epoch 存一次模型
     start_epoch = 0
 
     
-    # phase = "train"
-    # restore_result_dir = ""
+    phase = "train"
+    restore_model_name = ""
 
-    test_in_dir = ""
-    test_gt_dir = ""
-    phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    # test_in_dir = ""
+    # test_gt_dir = ""
+    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
@@ -286,8 +288,8 @@ if(__name__=="__main__"):
     # restore_model_name =  ### 5.pure_mrf_rect2
 
 
-
-    restore_model_name = "wei_book_tf1_db_20200408-225902_model5_rect2" ### 
+    ### 真實影像
+    # restore_model_name = "wei_book_tf1_db_20200408-225902_model5_rect2" ### 
 
     ####################################################################################################################
     ### 看要讀取 哪個特定的in/gt資料集，在phase== train、train_load、test 時需要
@@ -314,7 +316,8 @@ if(__name__=="__main__"):
 
 
     db_dir  = access_path+"datasets"
-    db_name = "wei_book_tf1_db" 
+    # db_name = "wei_book_tf1_db"  ### 真實影像
+    db_name = "wei_book_tf1_db+type4_complex+page_more_like"   ### 真實影像+合成影像
 
 
 
