@@ -230,6 +230,11 @@ def get_2_pure_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_
     gt_dir_name="gt_ord_pad_img_db"
     return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize)
 
+def get_2_pure_rect2_v2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512)): 
+    in_dir_name="dis_img_db"
+    gt_dir_name="gt_ord_img_db"
+    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize)
+
 ############################################################
 def get_3_unet_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512)): 
     in_dir_name="unet_rec_img_db"

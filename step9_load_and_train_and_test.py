@@ -103,6 +103,7 @@ def step4_get_datetime_default_result_logs_ckpt_dir_name(db_name, model_name):
 def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=None, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1):
     from step6_data_pipline import get_1_pure_unet_db  , \
                                get_2_pure_rect2_dataset, \
+                               get_2_pure_rect2_v2_dataset, \
                                get_3_unet_rect2_dataset, \
                                get_test_indicate_db 
 
@@ -140,8 +141,9 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_pad_type3_h=384,w=256_complex+page"           ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize = (492+0,384) ### dis_img(in_img的大小)的大小且要是4的倍數
         
-        elif(db_name== "wei_book_tf1_db"                                       ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "wei_book_tf1_db+type4_complex+page_more_like"          ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_1_type4_complex+page_more_like"                 ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_2_tf1_db"                                       ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_3_tf1_db+type4_complex+page_more_like"          ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         
 
         elif(db_name== "h=384,w=256_old_page_3_unet_rect2"                 ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
@@ -185,8 +187,9 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name == "h=384,w=256_complex+page_more_like_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         elif(db_name == "h=384,w=256_complex+page_more_like_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         
-        elif(db_name == "wei_book_tf1_db"                                 ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "wei_book_tf1_db+type4_complex+page_more_like"    ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "wei_book_1_type4_complex+page_more_like"           ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "wei_book_2_tf1_db"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "wei_book_3_tf1_db+type4_complex+page_more_like"    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
 
         elif(db_name == "wei_book_h=384,w=256"                  ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
     elif(phase=="test_indicate"):
@@ -244,12 +247,12 @@ if(__name__=="__main__"):
     start_epoch = 0
 
     
-    phase = "train"
-    restore_model_name = ""
+    # phase = "train"
+    # restore_model_name = ""
 
-    # test_in_dir = ""
-    # test_gt_dir = ""
-    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    test_in_dir = ""
+    test_gt_dir = ""
+    phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
@@ -288,8 +291,13 @@ if(__name__=="__main__"):
     # restore_model_name =  ### 5.pure_mrf_rect2
 
 
-    ### 真實影像
-    # restore_model_name = "wei_book_tf1_db_20200408-225902_model5_rect2" ### 
+    ### 合成影像/真實影像/兩者混和
+    # restore_model_name = ""  ### 合成影像 的     rect2 
+    # restore_model_name = ""  ### 合成影像 的 mrf-rect2 
+    # restore_model_name = "wei_book_2_tf1_db_20200408-225902_model5_rect2"                               ### 真實影像 的     rect2 
+    # restore_model_name = "wei_book_2_tf1_db_20200410-025655_model6_mrf_rect2"                           ### 真實影像 的 mrf-rect2 
+    restore_model_name = "wei_book_3_tf1_db+type4_complex+page_more_like_20200413-220059_model5_rect2"  ### 兩者混和 的     rect2 
+    # restore_model_name = "127.28"  ### 兩者混和 的 mrf-rect2 
 
     ####################################################################################################################
     ### 看要讀取 哪個特定的in/gt資料集，在phase== train、train_load、test 時需要
@@ -315,9 +323,10 @@ if(__name__=="__main__"):
     # db_name = "h=384,w=256_complex+page_more_like_3_unet_rect2" 
 
 
-    db_dir  = access_path+"datasets"
-    # db_name = "wei_book_tf1_db"  ### 真實影像
-    db_name = "wei_book_tf1_db+type4_complex+page_more_like"   ### 真實影像+合成影像
+    db_dir  = access_path+"datasets/type5_wei_book_try_real_or_sync"
+    # db_name = "wei_book_1_type4_complex+page_more_like"  ### 真實影像
+    # db_name = "wei_book_2_tf1_db"  ### 真實影像
+    db_name = "wei_book_3_tf1_db+type4_complex+page_more_like"   ### 真實影像+合成影像
 
 
 
@@ -330,55 +339,55 @@ if(__name__=="__main__"):
     # db_name = "wei_book_type1_h=256,w=256_complex"
     # db_name = "wei_book_pad_type1_h=256,w=256_complex"
     ### 1.pure_unet
-    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_in_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"in_imgs"
     # test_gt_dir = None
     ### 2.pure_rect2 和 5.pure_mrf-rect2
-    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
-    # test_gt_dir = access_path+"datasets"+"/"+db_name+"/"+"gt_imgs"
+    # test_in_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"gt_imgs"
     ### 3.unet+rect2 和 4.unet_mrf-rect2
     # test_in_dir = access_path + "result"  + "/" + "h=256,w=256_complex_1_pure_unet_20200328-170738_model2_UNet_512to256_finish" + "/" + "test_indicate" + "_" + db_name
-    # test_gt_dir = access_path + "datasets"+ "/" + db_name + "/" + "gt_imgs"
+    # test_gt_dir = access_path + "datasets/test_indicate"+ "/" + db_name + "/" + "gt_imgs"
 
 
     # db_name = "wei_book_type2_h=384,w=256_complex"
     # db_name = "wei_book_pad_type2_h=384,w=256_complex"
     ### 1.pure_unet
-    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_in_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"in_imgs"
     # test_gt_dir = None
     ### 2.pure_rect2 和 5.pure_mrf-rect2
-    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
-    # test_gt_dir = access_path+"datasets"+"/"+db_name+"/"+"gt_imgs"
+    # test_in_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"gt_imgs"
     ### 3.unet+rect2 和 4.unet_mrf-rect2
     # test_in_dir = access_path + "result"  + "/" + "h=384,w=256_complex_1_pure_unet_20200329-215628_model2_UNet_512to256_finish" + "/" + "test_indicate" + "_" + db_name
-    # test_gt_dir = access_path + "datasets"+ "/" + db_name + "/" + "gt_imgs"
+    # test_gt_dir = access_path + "datasets/test_indicate"+ "/" + db_name + "/" + "gt_imgs"
 
     
     # db_name = "wei_book_type3_h=384,w=256_complex+page" 
     # db_name = "wei_book_pad_type3_h=384,w=256_complex+page" 
     ### 1.pure_unet
-    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_in_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"in_imgs"
     # test_gt_dir = None
     ### 2.pure_rect2 和 5.pure_mrf-rect2
-    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
-    # test_gt_dir = access_path+"datasets"+"/"+db_name+"/"+"gt_imgs"
+    # test_in_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"gt_imgs"
     ### 3.unet+rect2 和 4.unet_mrf-rect2
     # test_in_dir = access_path + "result"  + "/" + "h=384,w=256_complex+page_1_pure_unet_20200329-232144_model2_UNet_512to256_finish" + "/" + "test_indicate" + "_" + db_name
-    # test_gt_dir = access_path + "datasets"+ "/" + db_name + "/" + "gt_imgs"
+    # test_gt_dir = access_path + "datasets/test_indicate"+ "/" + db_name + "/" + "gt_imgs"
 
 
 
     # db_name = "wei_book_type4_h=384,w=256_complex+page_more_like"
     # db_name = "wei_book_pad_type4_h=384,w=256_complex+page_more_like"
     ### 1.pure_unet
-    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
+    # test_in_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"in_imgs"
     # test_gt_dir = None
     ### 2.pure_rect2 和 5.pure_mrf-rect2
-    # test_in_dir = access_path+"datasets"+"/"+db_name+"/"+"in_imgs"
-    # test_gt_dir = access_path+"datasets"+"/"+db_name+"/"+"gt_imgs"
+    # test_in_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"in_imgs"
+    # test_gt_dir = access_path+"datasets/test_indicate"+"/"+db_name+"/"+"gt_imgs"
     ### 3.unet+rect2 和 4.unet_mrf-rect2
     # test_in_dir = access_path + "result"  + "/" + "h=384,w=256_complex+page_more_like_1_pure_unet_20200406-214854_model2_UNet_512to256_finish" + "/" + "test_indicate" + "_" + db_name
-    # test_gt_dir = access_path + "datasets"+ "/" + db_name + "/" + "gt_imgs"
-
+    # test_gt_dir = access_path + "datasets/test_indicate"+ "/" + db_name + "/" + "gt_imgs"
+    ####################################################################################################################
     
 
     ### 訓練時 生成 3_unet_rect2系列
