@@ -302,6 +302,7 @@ def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer,
 
 import time
 import matplotlib.pyplot as plt
+import cv2
 def generate_images( model, dis_img, gt_img,  epoch=0, result_dir="."):
     sample_start_time = time.time()
     rect2 = model(dis_img, training=True)
@@ -318,7 +319,7 @@ def generate_images( model, dis_img, gt_img,  epoch=0, result_dir="."):
     
         plt.axis('off')
     # plt.show()
-    plt.savefig(result_dir + "/" + "epoch_%02i-result.png"%epoch)
+    plt.savefig(result_dir + "/" + "epoch_%04i-result.png"%epoch)
     plt.close()
     print("sample image cost time:", time.time()-sample_start_time)
 

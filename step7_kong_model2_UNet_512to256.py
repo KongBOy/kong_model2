@@ -192,7 +192,7 @@ def generate_images( model, test_input, test_gt, max_train_move, min_train_move,
             plt.imshow(back_bgr)
         plt.axis('off')
     # plt.show()
-    plt.savefig(result_dir + "/" + "epoch_%02i-result.png"%epoch)
+    plt.savefig(result_dir + "/" + "epoch_%04i-result.png"%epoch)
     plt.close()
     print("sample image cost time:", time.time()-sample_start_time)
 
