@@ -236,18 +236,18 @@ if(__name__=="__main__"):
 
     ### train, train_reload 參數
     BATCH_SIZE = 1
-    epochs = 160
+    epochs = 1600
     epoch_down_step = 100 ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
     epoch_save_freq = 1   ### 訓練 epoch_save_freq 個 epoch 存一次模型
     start_epoch = 0
 
     
-    phase = "train"
-    restore_result_dir = ""
+    # phase = "train"
+    # restore_result_dir = ""
 
-    # test_in_dir = ""
-    # test_gt_dir = ""
-    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    test_in_dir = ""
+    test_gt_dir = ""
+    phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
@@ -284,6 +284,10 @@ if(__name__=="__main__"):
     # restore_model_name = "h=384,w=256_complex+page_more_like_3_unet_rect2_20200407-093115_model5_rect2_finish"        ### 3.unet_rect2
     # restore_model_name = "h=384,w=256_complex+page_more_like_4_3_unet_rect2_20200407-110250_model6_mrf_rect2_finish"    ### 4.unet_mrf_rect2
     # restore_model_name =  ### 5.pure_mrf_rect2
+
+
+
+    restore_model_name = "wei_book_tf1_db_20200408-225902_model5_rect2" ### 
 
     ####################################################################################################################
     ### 看要讀取 哪個特定的in/gt資料集，在phase== train、train_load、test 時需要
