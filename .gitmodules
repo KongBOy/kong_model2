@@ -1,0 +1,3 @@
+[submodule "kong_util"]
+	path = kong_util
+	url = https://github.com/KongBOy/kong_util.git
