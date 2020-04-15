@@ -1,3 +1,5 @@
+import sys
+sys.path.append("kong_util")
 import tensorflow as tf 
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, BatchNormalization, Concatenate
 from util import method2
@@ -303,6 +305,6 @@ if(__name__=="__main__"):
     in_img = np.ones(shape=(1,384,384,3), dtype= np.float32) ### 建 假資料
     gt_img = np.ones(shape=(1,192,192,3), dtype= np.float32) ### 建 假資料
     start_time = time.time() ### 看資料跑一次花多少時間
-    y= generator(img)
+    y= generator(in_img)
     print(y)
     print("cost time", time.time()- start_time)
