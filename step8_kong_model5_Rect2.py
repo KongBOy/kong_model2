@@ -279,7 +279,7 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1.,tf.float32)):
 def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, epoch ):
     with tf.GradientTape(persistent=True) as tape:
         g_rec_img, fake_score, real_score = rect2(dis_img, gt_img)
-        loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(40.,tf.float32))
+        loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(3.,tf.float32)) ### 40 調回 3
         loss_g2d = mse_kong(fake_score, tf.ones_like(fake_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32))
         g_total_loss = loss_rec + loss_g2d
 
@@ -328,6 +328,8 @@ def generate_images( model, dis_img, gt_img,  epoch=0, result_dir="."):
 #######################################################################################################################
 ### testing 的部分 ####################################################################################################
 def test_visual(test_dir_name,  data_dict,  start_index=0):
+    import sys
+    sys.path.append("kong_util")
     from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec
     import matplotlib.pyplot as plt
     from util import get_dir_img
