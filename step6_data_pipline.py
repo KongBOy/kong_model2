@@ -1,9 +1,12 @@
+import sys 
+sys.path.append("kong_util")
+from util import get_dir_img, get_dir_move, use_plt_show_move, get_db_amount
+
 from step0_access_path import access_path
 import tensorflow as tf
 import os
 import numpy as np
 import cv2
-from util import get_dir_img, get_dir_move, use_plt_show_move, get_db_amount
 
 import matplotlib.pyplot as plt
 tf.keras.backend.set_floatx('float32') ### 這步非常非常重要！用了才可以加速！
@@ -100,7 +103,7 @@ class img_db():
 #     print("get_move_map_db_and_resize cost time", time.time()-start_time)
 #     return move_map_resize_list
 
-def use_maxmin_train_move_to_normto_norm(move_maps): ### 給 train用
+def use_maxmin_train_move_to_norm_to_norm(move_maps): ### 給 train用
     max_train_move = move_maps.max() ###  236.52951204508076
     min_train_move = move_maps.min() ### -227.09562801056995
     move_maps = ((move_maps-min_train_move)/(max_train_move-min_train_move))*2-1
@@ -115,7 +118,7 @@ def get_train_test_move_map_db(db_dir, db_name, batch_size):
     move_map_train_path = db_dir + "/" + db_name + "/" + "train/move_maps" 
     train_move_map_db_ord = get_dir_move(move_map_train_path) #get_move_map_db_and_resize(move_map_train_path, resize_shape=resize_shape)
     train_move_map_db_norm, \
-        max_train_move, min_train_move = use_maxmin_train_move_to_normto_norm(train_move_map_db_ord) ### 這裡會得到 max/min_train_move
+        max_train_move, min_train_move = use_maxmin_train_move_to_norm_to_norm(train_move_map_db_ord) ### 這裡會得到 max/min_train_move
     train_move_map_db_norm = tf.data.Dataset.from_tensor_slices(train_move_map_db_norm)
     train_move_map_db_norm = train_move_map_db_norm.batch(batch_size)
     # train_move_map_db = train_move_map_db.prefetch(tf.data.experimental.AUTOTUNE)
@@ -133,14 +136,14 @@ def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize
     ### 建db的順序：input, input, output(gt), output(gt)，跟 get_rect2_dataset不一樣喔別混亂了！
     ### 拿到 dis_imgs_db 的 train dataset，從 檔名 → tensor
     data_dict = {}
-    train_in_img_db_path = db_dir + "/" + db_name + "/" + "train/dis_imgs" 
-    train_in_db = img_db(train_in_img_db_path, img_type, img_resize, 1)
+    train_in_img_db_dir = db_dir + "/" + db_name + "/" + "train/dis_imgs" 
+    train_in_db = img_db(train_in_img_db_dir, img_type, img_resize, 1)
     data_dict["train_in_db"]     = train_in_db.img_db
     data_dict["train_in_db_pre"] = train_in_db.pre_db
     
     ### 拿到 dis_imgs_db 的 test dataset，從 檔名 → tensor
-    test_in_img_db_path = db_dir + "/" + db_name + "/" + "test/dis_imgs" 
-    test_in_db = img_db(test_in_img_db_path, img_type, img_resize, 1)
+    test_in_img_db_dir = db_dir + "/" + db_name + "/" + "test/dis_imgs" 
+    test_in_db = img_db(test_in_img_db_dir, img_type, img_resize, 1)
     data_dict["test_in_db"]      = test_in_db.img_db
     data_dict["test_in_db_pre"]  = test_in_db.pre_db
 
@@ -160,12 +163,18 @@ def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize
     data_dict["max_train_move"]  = max_train_move
     data_dict["min_train_move"]  = min_train_move
 
-    data_dict["train_amount"]    = get_db_amount(train_in_img_db_path)
-    data_dict["test_amount" ]    = get_db_amount(test_in_img_db_path )
+    data_dict["train_amount"]    = get_db_amount(train_in_img_db_dir)
+    data_dict["test_amount" ]    = get_db_amount(test_in_img_db_dir )
 
     data_dict["in_type"] = "img"
     data_dict["gt_type"] = "move_map"
 
+    ##########################################################################################################################################
+    # data_dict["db_combine"] = tf.data.Dataset.zip( (data_dict["train_in_db"], data_dict["train_gt_db"]))#, data_dict["train_gt_db"]))#, data_dict["train_gt_db_pre"]) )
+    # print('data_dict["train_in_db"]',data_dict["train_in_db"])
+    # print('data_dict["train_in_db_pre"]',data_dict["train_in_db_pre"])
+    # print('data_dict["train_gt_db"]',data_dict["train_gt_db"])
+    # print('data_dict["train_gt_db_pre"]',data_dict["train_gt_db_pre"])
 
     ##########################################################################################################################################
     ### 勿刪！用來測試寫得對不對！
@@ -199,16 +208,16 @@ def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize
 
 def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_type="bmp", batch_size=1, img_resize=(512,512)):
     ### 建db的順序：input, output(gt), input , output(gt)，跟 get_1_pure_unet_db不一樣喔別混亂了！
-    train_in_img_db_path = db_dir + "/" + db_name + "/" + "train"+"/"+in_dir_name
-    train_gt_img_db_path = db_dir + "/" + db_name + "/" + "train"+"/"+gt_dir_name
-    test_in_img_db_path  = db_dir + "/" + db_name + "/" + "test"+"/" +in_dir_name
-    test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "test"+"/" +gt_dir_name
+    train_in_img_db_dir = db_dir + "/" + db_name + "/" + "train"+"/"+in_dir_name
+    train_gt_img_db_dir = db_dir + "/" + db_name + "/" + "train"+"/"+gt_dir_name
+    test_in_img_db_dir  = db_dir + "/" + db_name + "/" + "test"+"/" +in_dir_name
+    test_gt_img_db_dir  = db_dir + "/" + db_name + "/" + "test"+"/" +gt_dir_name
     
     data_dict = {}
-    train_in_db = img_db(train_in_img_db_path, img_type, img_resize, 1)
-    train_gt_db = img_db(train_gt_img_db_path, img_type, img_resize, 1)
-    test_in_db  = img_db(test_in_img_db_path , img_type, img_resize, 1)
-    test_gt_db  = img_db(test_gt_img_db_path , img_type, img_resize, 1)
+    train_in_db = img_db(train_in_img_db_dir, img_type, img_resize, 1)
+    train_gt_db = img_db(train_gt_img_db_dir, img_type, img_resize, 1)
+    test_in_db  = img_db(test_in_img_db_dir , img_type, img_resize, 1)
+    test_gt_db  = img_db(test_gt_img_db_dir , img_type, img_resize, 1)
 
     data_dict["train_in_db"]     = train_in_db.img_db
     data_dict["train_in_db_pre"] = train_in_db.pre_db
@@ -219,10 +228,32 @@ def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_typ
     data_dict["test_gt_db"]     = test_gt_db.img_db
     data_dict["test_gt_db_pre"] = test_gt_db.pre_db
 
-    data_dict["train_amount"]    = get_db_amount(train_in_img_db_path)
-    data_dict["test_amount" ]    = get_db_amount(test_in_img_db_path )
+    data_dict["train_amount"]    = get_db_amount(train_in_img_db_dir)
+    data_dict["test_amount" ]    = get_db_amount(test_in_img_db_dir )
     data_dict["in_type"] = "img"
     data_dict["gt_type"] = "img"
+
+    data_dict["train_db_combine"] = tf.data.Dataset.zip( (data_dict["train_in_db"], data_dict["train_in_db_pre"], 
+                                                          data_dict["train_gt_db"], data_dict["train_gt_db_pre"]) )\
+                                             .shuffle( int(data_dict["train_amount"]/2) ) ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
+    #########################################################
+    ### 勿刪！用來測試寫得對不對！
+    # import matplotlib.pyplot as plt 
+    # for i, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate(data_dict["train_db_combine"]):
+    #     train_in     = train_in[0]     ### 值 0  ~ 255
+    #     train_in_pre = train_in_pre[0] ### 值 0. ~ 1.
+    #     train_gt     = train_gt[0]     ### 值 0  ~ 255
+    #     train_gt_pre = train_gt_pre[0] ### 值 0. ~ 1.
+
+    #     fig, ax = plt.subplots(1,4)
+    #     fig.set_size_inches(15,5)
+    #     ax[0].imshow(train_in)
+    #     ax[1].imshow(train_in_pre)
+    #     ax[2].imshow(train_gt)
+    #     ax[3].imshow(train_gt_pre)
+    #     plt.show()
+    #########################################################
+        
     return data_dict 
 ############################################################
 def get_2_pure_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512)): 
@@ -242,7 +273,7 @@ def get_3_unet_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_
     return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize)
 
 ############################################################
-### 這應該算通用型抓test_db，如果沒有gt， test_gt_dir 就丟None就行囉！
+### 這應該算通用型抓test_db；如果沒有gt， test_gt_dir 就丟None就行囉！
 def get_test_indicate_db(test_in_dir, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1, img_resize=(512,512)):#, move_resize=(256,256)):
     ### 我目前的寫法是：
     # img_type：同時指定 train/test 的 in/gt 的(就是所有的意思啦) 附檔名為"bmp"或".jpg"
@@ -280,32 +311,6 @@ def get_test_move_map_db(move_map_test_path, batch_size=1):
     return test_move_map_db_ord, test_move_map_db_norm
 
 
-# def get_test_indecate_dataset(db_dir="datasets", db_name="wei_book", img_type="jpg", batch_size=1, img_resize=(512,512)):     
-#     test_in_img_db_path     = db_dir + "/" + db_name + "/" + "in_imgs"  
-#     test_gt_img_db_path  = db_dir + "/" + db_name + "/" + "gt_imgs" 
-    
-#     test_img_db     = img_db(test_in_img_db_path,    img_type, img_resize, 1).img_db
-#     test_gt_img_db  = img_db(test_gt_img_db_path, img_type, img_resize, 1).img_db
-    
-#     data_dict = {}
-#     data_dict["test_in_db_pre"]=test_img_db
-#     data_dict["test_gt_db_pre"]=test_gt_img_db
-#     return test_img_db, test_gt_img_db
-
-
-# def get_test_indecate_dataset_unet(db_dir="datasets", db_name="wei_book", img_type="jpg",  batch_size=1, img_resize=(512,512)):     
-#     test_in_img_db_path     = db_dir + "/" + db_name + "/" + "in_imgs"  
-#     test_img_db     = img_db(test_in_img_db_path, img_type, img_resize, 1).img_db
-
-#     move_map_train_path = access_path+"datasets" + "/" + "pad2000-512to256" + "/" + "train/move_maps" 
-#     train_move_map_db = get_move_map_db_and_resize(move_map_train_path, resize_shape=(512,512))
-#     train_move_map_db, max_train_move, min_train_move = use_maxmin_train_move_to_normto_norm(train_move_map_db) ### 這裡會得到 max/min_train_move
-    
-#     data_dict = {}
-#     data_dict["test_in_db_pre"]         = test_img_db
-#     data_dict["max_train_move"] = max_train_move
-#     data_dict["min_train_move"] = min_train_move
-#     return test_img_db ,max_train_move ,min_train_move
 
 
 if(__name__ == "__main__"):
@@ -314,13 +319,16 @@ if(__name__ == "__main__"):
     import time
     start_time = time.time()
 
-    db_dir  = access_path+"datasets"
-    db_name = "1_pure_unet_page_h=384,w=256"
-    _ = get_1_pure_unet_db (db_dir=db_dir, db_name=db_name)
+    # db_dir  = access_path+"datasets/type4_h=384,w=256_complex+page_more_like"
+    # db_name = "h=384,w=256_complex+page_more_like_1_pure_unet"
+    # _ = get_1_pure_unet_db (db_dir=db_dir, db_name=db_name)
+    
+    
+    db_dir  = access_path+"datasets/type4_h=384,w=256_complex+page_more_like"
+    db_name = "h=384,w=256_complex+page_more_like_2_pure_rect2"
+    _ = get_2_pure_rect2_dataset (db_dir=db_dir, db_name=db_name)
 
-    # db_dir  = access_path+"datasets"
-    # db_name = "2_pure_rect2_h=384,w=256"
-    # _ = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name)
+
 
     print(time.time()- start_time)
     print("finish")

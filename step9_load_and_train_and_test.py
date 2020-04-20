@@ -250,12 +250,12 @@ if(__name__=="__main__"):
     start_epoch = 0
 
     
-    # phase = "train"
-    # restore_model_name = ""
+    phase = "train"
+    restore_model_name = ""
 
-    test_in_dir = ""
-    test_gt_dir = ""
-    phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    # test_in_dir = ""
+    # test_gt_dir = ""
+    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
@@ -305,7 +305,7 @@ if(__name__=="__main__"):
     ### 合成影像/真實影像/兩者混和 loss正確
     # restore_model_name = ""  ### 合成影像 的     rect2 
     # restore_model_name = ""  ### 合成影像 的 mrf-rect2 
-    restore_model_name = "wei_book_2_tf1_db_20200415-160605_model5_rect2"                               ### 真實影像 的     rect2 
+    # restore_model_name = "wei_book_2_tf1_db_20200415-160605_model5_rect2"                               ### 真實影像 的     rect2 
     # restore_model_name = ""                           ### 真實影像 的 mrf-rect2 
     # restore_model_name = ""  ### 兩者混和 的     rect2 
     # restore_model_name = ""  ### 兩者混和 的 mrf-rect2 
@@ -489,19 +489,19 @@ if(__name__=="__main__"):
             lr = 0.0002 if epoch < epoch_down_step else 0.0002*(epochs-epoch)/(epochs-epoch_down_step)
             model_dict["generator_optimizer"].lr = lr
             ###     用來看目前訓練的狀況 
-            for test_input, test_gt in zip(data_dict["test_in_db_pre"].take(1), data_dict["test_gt_db_pre"].take(1)): 
+            for test_in_pre, test_gt_pre in zip(data_dict["test_in_db_pre"].take(1), data_dict["test_gt_db_pre"].take(1)): 
                 if(epoch==0):print("Initializing Model~~~") 
-                if  (model_name == "model2_UNet_512to256" ):generate_images( model_dict["generator"], test_input, test_gt, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-                elif(model_name == "model5_rect2" ):        generate_images( model_dict["rect2"]    .generator, test_input, test_gt, epoch, result_dir) 
-                elif(model_name == "model6_mrf_rect2" ):    generate_images( model_dict["mrf_rect2"].generator, test_input, test_gt, epoch, result_dir) 
+                if  (model_name == "model2_UNet_512to256" ):generate_images( model_dict["generator"]          , test_in_pre, test_gt_pre, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                elif(model_name == "model5_rect2" ):        generate_images( model_dict["rect2"]    .generator, test_in_pre, test_gt_pre, epoch, result_dir) 
+                elif(model_name == "model6_mrf_rect2" ):    generate_images( model_dict["mrf_rect2"].generator, test_in_pre, test_gt_pre, epoch, result_dir) 
 
             ###     訓練
-            for n, (input_image, target) in enumerate( zip(data_dict["train_in_db_pre"], data_dict["train_gt_db_pre"]) ):
+            for n, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate( data_dict["train_db_combine"] ):
                 print('.', end='')
                 if (n+1) % 100 == 0: print()
-                if  (model_name == "model2_UNet_512to256"):train_step(model_dict["generator"], model_dict["generator_optimizer"], summary_writer, input_image, target, epoch)
-                elif(model_name == "model5_rect2")        :train_step(model_dict["rect2"]    , input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
-                elif(model_name == "model6_mrf_rect2")    :train_step(model_dict["mrf_rect2"], input_image, target, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
+                if  (model_name == "model2_UNet_512to256"):train_step(model_dict["generator"], model_dict["generator_optimizer"], summary_writer, train_in_pre, train_gt_pre, epoch)
+                elif(model_name == "model5_rect2")        :train_step(model_dict["rect2"]    , train_in_pre, train_gt_pre, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
+                elif(model_name == "model6_mrf_rect2")    :train_step(model_dict["mrf_rect2"], train_in_pre, train_gt_pre, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
 
 
             ###     儲存模型 (checkpoint) the model every 20 epochs
