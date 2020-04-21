@@ -130,6 +130,11 @@ def get_train_test_move_map_db(db_dir, db_name, batch_size):
     test_move_map_db_norm = test_move_map_db_norm.batch(batch_size)
     # test_move_map_db = test_move_map_db.prefetch(tf.data.experimental.AUTOTUNE)
 
+    train_move_map_db_ord = tf.data.Dataset.from_tensor_slices(train_move_map_db_ord)
+    train_move_map_db_ord = train_move_map_db_ord.batch(batch_size)
+    test_move_map_db_ord = tf.data.Dataset.from_tensor_slices(test_move_map_db_ord)
+    test_move_map_db_ord = test_move_map_db_ord.batch(batch_size)
+
     return train_move_map_db_norm, max_train_move, min_train_move, test_move_map_db_norm, train_move_map_db_ord, test_move_map_db_ord
 
 def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512)):#, move_resize=(256,256)): 
@@ -170,7 +175,9 @@ def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize
     data_dict["gt_type"] = "move_map"
 
     ##########################################################################################################################################
-    # data_dict["db_combine"] = tf.data.Dataset.zip( (data_dict["train_in_db"], data_dict["train_gt_db"]))#, data_dict["train_gt_db"]))#, data_dict["train_gt_db_pre"]) )
+    data_dict["train_db_combine"] = tf.data.Dataset.zip( (data_dict["train_in_db"], data_dict["train_in_db_pre"], 
+                                                          data_dict["train_gt_db"], data_dict["train_gt_db_pre"]) )\
+                                                     .shuffle( int(data_dict["train_amount"]/2) ) ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
     # print('data_dict["train_in_db"]',data_dict["train_in_db"])
     # print('data_dict["train_in_db_pre"]',data_dict["train_in_db_pre"])
     # print('data_dict["train_gt_db"]',data_dict["train_gt_db"])
@@ -183,12 +190,14 @@ def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize
 
     # take_num = 5
     
-    # for i, (img, img_pre, move) in enumerate(zip(data_dict["train_in_db"].take(take_num), data_dict["train_in_db_pre"].take(take_num), data_dict["train_gt_db_pre"].take(take_num))):     ### 想看test 的部分用這行 且 註解掉上行
+    # for i, (img, img_pre, move, move_pre) in enumerate(data_dict["db_combine"].take(take_num)):     ### 想看test 的部分用這行 且 註解掉上行
     #     print("i",i)
-    #     fig, ax = plt.subplots(1,3)
+    #     fig, ax = plt.subplots(1,4)
+    #     fig.set_size_inches(15,5)
     #     ax_i = 0
     #     img = tf.cast(img[0], tf.uint8)
     #     ax[ax_i].imshow(img)
+
     #     print(img.numpy().dtype)
     #     ax_i += 1
 
@@ -197,10 +206,14 @@ def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize
     #     ax[ax_i].imshow(img_pre_back)
     #     ax_i += 1
 
-    #     # move_back = (move[0]+1)/2 * (max_train_move-min_train_move) + min_train_move  ### 想看train的部分用這行 且 註解掉下行
-    #     move_back = (move[0]+1)/2 * (max_train_move-min_train_move) + min_train_move       ### 想看test 的部分用這行 且 註解掉上行
-    #     move_bgr = method2(move_back[...,0], move_back[...,1],1)
+    #     move_bgr = method2(move[0,...,0], move[0,...,1])
     #     ax[ax_i].imshow(move_bgr)
+    #     ax_i += 1
+
+    #     # move_back = (move[0]+1)/2 * (max_train_move-min_train_move) + min_train_move  ### 想看train的部分用這行 且 註解掉下行
+    #     move_back = (move_pre[0]+1)/2 * (max_train_move-min_train_move) + min_train_move    ### 想看test 的部分用這行 且 註解掉上行
+    #     move_back_bgr = method2(move_back[...,0], move_back[...,1],1)
+    #     ax[ax_i].imshow(move_back_bgr)
     #     plt.show()
     #     plt.close()
     ##########################################################################################################################################
@@ -319,14 +332,14 @@ if(__name__ == "__main__"):
     import time
     start_time = time.time()
 
-    # db_dir  = access_path+"datasets/type4_h=384,w=256_complex+page_more_like"
-    # db_name = "h=384,w=256_complex+page_more_like_1_pure_unet"
-    # _ = get_1_pure_unet_db (db_dir=db_dir, db_name=db_name)
-    
-    
     db_dir  = access_path+"datasets/type4_h=384,w=256_complex+page_more_like"
-    db_name = "h=384,w=256_complex+page_more_like_2_pure_rect2"
-    _ = get_2_pure_rect2_dataset (db_dir=db_dir, db_name=db_name)
+    db_name = "h=384,w=256_complex+page_more_like_1_pure_unet"
+    _ = get_1_pure_unet_db (db_dir=db_dir, db_name=db_name)
+    
+    
+    # db_dir  = access_path+"datasets/type4_h=384,w=256_complex+page_more_like"
+    # db_name = "h=384,w=256_complex+page_more_like_2_pure_rect2"
+    # _ = get_2_pure_rect2_dataset (db_dir=db_dir, db_name=db_name)
 
 
 
