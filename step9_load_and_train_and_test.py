@@ -295,20 +295,20 @@ if(__name__=="__main__"):
 
 
     ### 合成影像/真實影像/兩者混和 loss太大
-    # restore_model_name = "wei_book_1_type4_complex+page_more_like_20200413-230418_model5_rect2_127.40-epoch-392"  ### 合成影像 的     rect2 
-    # restore_model_name = "wei_book_1_type4_complex+page_more_like_20200413-230835_model6_mrf_rect2_128.242-epoch=203"  ### 合成影像 的 mrf-rect2 
-    # restore_model_name = "wei_book_2_tf1_db_20200408-225902_model5_rect2"                               ### 真實影像 的     rect2 
-    # restore_model_name = "wei_book_2_tf1_db_20200410-025655_model6_mrf_rect2"                           ### 真實影像 的 mrf-rect2 
-    # restore_model_name = "wei_book_3_tf1_db+type4_complex+page_more_like_20200413-220059_model5_rect2"  ### 兩者混和 的     rect2 
-    # restore_model_name = "wei_book_3_tf1_db+type4_complex+page_more_like_20200413-220341_model6_mrf_rect2_128.243-epoch=183"  ### 兩者混和 的 mrf-rect2 
+    # restore_model_name = "pure_rect2_wrong-loss_no-shuffle/" + "wei_book_1_type4_complex+page_more_like_20200413-230418_model5_rect2_127.40-epoch-392"  ### 合成影像 的     rect2 
+    # restore_model_name = "pure_rect2_wrong-loss_no-shuffle/" + "wei_book_1_type4_complex+page_more_like_20200413-230835_model6_mrf_rect2_128.242-epoch=203"  ### 合成影像 的 mrf-rect2 
+    # restore_model_name = "pure_rect2_wrong-loss_no-shuffle/" + "wei_book_2_tf1_db_20200408-225902_model5_rect2"                               ### 真實影像 的     rect2 
+    # restore_model_name = "pure_rect2_wrong-loss_no-shuffle/" + "wei_book_2_tf1_db_20200410-025655_model6_mrf_rect2"                           ### 真實影像 的 mrf-rect2 
+    # restore_model_name = "pure_rect2_wrong-loss_no-shuffle/" + "wei_book_3_tf1_db+type4_complex+page_more_like_20200413-220059_model5_rect2"  ### 兩者混和 的     rect2 
+    # restore_model_name = "pure_rect2_wrong-loss_no-shuffle/" + "wei_book_3_tf1_db+type4_complex+page_more_like_20200413-220341_model6_mrf_rect2_128.243-epoch=183"  ### 兩者混和 的 mrf-rect2 
 
     ### 合成影像/真實影像/兩者混和 loss正確
-    # restore_model_name = ""  ### 合成影像 的     rect2 
-    # restore_model_name = ""  ### 合成影像 的 mrf-rect2 
-    # restore_model_name = "wei_book_2_tf1_db_20200415-160605_model5_rect2"                               ### 真實影像 的     rect2 
-    # restore_model_name = ""                           ### 真實影像 的 mrf-rect2 
-    # restore_model_name = ""  ### 兩者混和 的     rect2 
-    # restore_model_name = ""  ### 兩者混和 的 mrf-rect2 
+    # restore_model_name = "pure_rect2_right-loss/" + "wei_book_1_type4_complex+page_more_like_20200416-104901_model5_rect2_127.40-epoch=935"  ### 合成影像 的     rect2 
+    # restore_model_name = "pure_rect2_right-loss/" + "wei_book_1_type4_complex+page_more_like_20200416-105102_model6_mrf_rect2_128.243-epoch=548"  ### 合成影像 的 mrf-rect2 
+    # restore_model_name = "pure_rect2_right-loss/" + "wei_book_2_tf1_db_20200415-160605_model5_rect2"                               ### 真實影像 的     rect2 
+    # restore_model_name = "pure_rect2_right-loss/" + "wei_book_2_tf1_db_20200416-005448_model6_mrf_rect2_right-loss_no-shuffle"                           ### 真實影像 的 mrf-rect2 
+    # restore_model_name = "pure_rect2_right-loss/" + "wei_book_3_tf1_db+type4_complex+page_more_like_20200421-003943_model5_rect2"  ### 兩者混和 的     rect2 
+    # restore_model_name = "pure_rect2_right-loss/" + "還沒train"  ### 兩者混和 的 mrf-rect2 
 
 
     ####################################################################################################################
@@ -337,8 +337,8 @@ if(__name__=="__main__"):
 
     db_dir  = access_path+"datasets/type5_wei_book_try_real_or_sync"
     # db_name = "wei_book_1_type4_complex+page_more_like"  ### 合成影像
-    db_name = "wei_book_2_tf1_db"  ### 真實影像
-    # db_name = "wei_book_3_tf1_db+type4_complex+page_more_like"   ### 真實影像+合成影像
+    # db_name = "wei_book_2_tf1_db"  ### 真實影像
+    db_name = "wei_book_3_tf1_db+type4_complex+page_more_like"   ### 真實影像+合成影像
 
 
 
