@@ -1,3 +1,6 @@
+import sys 
+sys.path.append("kong_util")
+
 from step0_access_path import access_path
 import numpy as np 
 import matplotlib.pyplot as plt 
@@ -80,7 +83,7 @@ def distorte(row, col, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50
 #######################################################################################################################################
 #######################################################################################################################################
 ### 以下都是用取得參數以後，呼叫上面的本體做扭曲喔！
-def get_rand_para(row, col, curl_probability):
+def get_rand_para(row, col, curl_probability, smooth=False):
     ratio = row/4
     vert_x = np.random.randint(col)
     vert_y = np.random.randint(row)
@@ -90,16 +93,20 @@ def get_rand_para(row, col, curl_probability):
     if(dis_type > curl_probability):
         dis_type="fold"
         alpha = np.random.rand(1) * 50 + 50 ### 結果發現web上的還不錯
+        if(smooth): alpha += 50   ### 老師想smooth一點，用step2_d嘗試 h=384,w=256時 fold的alpha +50還不錯
     #    alpha = (np.random.rand(1)*2.25 + 2.25)*ratio
     else:
         dis_type="curl"
         alpha = (np.random.rand(1)/2 + 0.5)*1.7 ### ### 結果發現web上的還不錯，只有多rand部分除2
+        if(smooth): 
+            alpha += 0.65 ### 老師想smooth一點，用step2_d嘗試 h=384,w=256時 curl的alpha 0.65還不錯，但別超過1.7
+            if(alpha > 1.7):alpha=1.7
     #    alpha = (np.random.rand(1)*0.045 + 0.045)*ratio
 
     return vert_x, vert_y, move_x, move_y, dis_type, alpha
 
 ### 只有 參數隨機產生， funciton 重複使用 上面寫好的function喔！
-def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distort_time=None, curl_probability=0.3, move_x_thresh=40, move_y_thresh=55):
+def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distort_time=None, curl_probability=0.3, move_x_thresh=40, move_y_thresh=55, smooth=False):
     start_time = time.time()
     Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorted_mesh_visuals")
     Check_dir_exist_and_build(access_path + dst_dir + "/"+"move_maps")
@@ -113,7 +120,8 @@ def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distor
 
         for _ in range(distort_time): ### 扭曲幾次
             while(True): ### 如果扭曲太大的話，就重新取參數做扭曲，這樣就可以控制取到我想要的合理範圍
-                vert_x, vert_y, move_x, move_y, dis_type, alpha = get_rand_para(row, col, curl_probability)  ### 隨機取得 扭曲參數
+                vert_x, vert_y, move_x, move_y, dis_type, alpha = get_rand_para(row, col, curl_probability, smooth)  ### 隨機取得 扭曲參數
+                # print("curl_probability",curl_probability, "dis_type",dis_type)
                 move_f = distorte( row, col, vert_x, vert_y, move_x, move_y , dis_type, alpha, debug=False ) ### 用參數去得到 扭曲move_f
                 max_move_x = abs(move_f[:,0]).max()
                 max_move_y = abs(move_f[:,1]).max()
@@ -202,17 +210,17 @@ def show_move_map_visual(move_map, ax):
 
 if(__name__=="__main__"):
     ### 理解用，手動慢慢扭曲
-#    move_f =          distorte( row, col, x=col/2, y=row/2, move_x= col/2, move_y= row/2, dis_type="fold", alpha=2, debug=True )  ### alpha:2~4
-#    move_f = move_f + distorte( row, col, x= 0, y=10, move_x=3.5, move_y= 2.5, dis_type="fold", alpha=200, debug=True )
+    # move_f =          distorte( row, col, x=col/2, y=row/2, move_x= col/2, move_y= row/2, dis_type="fold", alpha=2, debug=True )  ### alpha:2~4
+    # move_f = move_f + distorte( row, col, x= 0, y=10, move_x=3.5, move_y= 2.5, dis_type="fold", alpha=200, debug=True )
 
-#    fig, ax = plt.subplots(1,1)
-#    fig.set_size_inches(4, 5)
-#    show_distorted_mesh_visual(row,col,move_f,fig, ax)
-#    plt.show()
+    # fig, ax = plt.subplots(1,1)
+    # fig.set_size_inches(4, 5)
+    # show_distorted_mesh_visual(row,col,move_f,fig, ax)
+    # plt.show()
 
     #############################################################################################################################################
     ### 隨機生成 256*256_2000張
-    # dst_dir = "step2_flow_build_complex"
+    # dst_dir = "step2_build_flow_h=256,w=256_complex"
     # row=256
     # col=256
     # amount=2000
@@ -221,17 +229,25 @@ if(__name__=="__main__"):
     
     #############################################################################################################################################
     ### 隨機生成 384*256_2000張
-    dst_dir = "step2_flow_build_complex_h=384,w=256"
-    row=384
-    col=256
-    amount=2000
-    distort_rand(dst_dir=dst_dir, start_index=0, amount=amount, row=row, col=col,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )
+    # dst_dir = "step2_build_flow_h=384,w=256_complex"
+    # row=384
+    # col=256
+    # amount=2000
+    # distort_rand(dst_dir=dst_dir, start_index=0, amount=amount, row=row, col=col,distort_time=1, curl_probability=0.5, move_x_thresh=40, move_y_thresh=55 )
     ################################################
     #### 接續生成 頁面 扭曲影像，分開生成的原因是要 complex和complex+page 用的是相同的complex，所以page獨立生成，再把上面生成的結果複製一份，改名成complex+page，再把這裡生成的結果加進去
-    dst_dir = "step2_flow_build_page_h=384,w=256"
+    # dst_dir = "step2_build_flow_h=384,w=256_page"
+    # row=384
+    # col=256
+    # distort_like_page(dst_dir=dst_dir, start_index=2000    , row=row, col=col) ### 目前寫死，固定生成60*26個 move_maps喔！
+    #############################################################################################################################################
+    ### 平滑多一點 384*256_1500張
+    dst_dir = "step2_build_flow_h=384,w=256_smooth_curl+fold"
     row=384
     col=256
-    distort_like_page(dst_dir=dst_dir, start_index=2000    , row=row, col=col) ### 目前寫死，固定生成60*26個 move_maps喔！
+    amount=450
+    distort_rand(dst_dir=dst_dir, start_index=amount*0, amount=amount, row=row, col=col,distort_time=1, curl_probability=1.0, move_x_thresh=40, move_y_thresh=55, smooth=True )
+    distort_rand(dst_dir=dst_dir, start_index=amount*1, amount=amount, row=row, col=col,distort_time=1, curl_probability=0.0, move_x_thresh=40, move_y_thresh=55, smooth=True )
 
     #############################################################################################################################################
     ### old應該要拿掉，有生成像page的60*26張，剩下用隨機補滿2000張
