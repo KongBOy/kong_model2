@@ -8,7 +8,7 @@ from build_dataset_combine import Check_dir_exist_and_build_new_dir
 from util import get_dir_certain_file_name, get_maxmin_train_move_from_path, get_max_db_move_xy
 # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
-def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_word, gt_src_dir, gt_src_word):
+def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_word, gt_src_dir, gt_src_word, train_amount=None):
     dir_name = build_dir_name #"padding2000"
 
     train_dir    = access_path+"datasets"+"/"+dir_name+"/"+"train"
@@ -35,7 +35,7 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
     gt_list    = get_dir_certain_file_name(  gt_src_dir, certain_word=gt_src_word )
 
     data_amount = len(in_list)
-    train_amount = int(data_amount*0.9)
+    if(train_amount is None):train_amount = int(data_amount*0.9)
     # test_amount = data_amount - train_amount
 
     ### train部分
@@ -65,8 +65,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
 #                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_old_page",            ### 好像已經刪掉了
-#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_old_page/move_maps",  ### 好像已經刪掉了
+#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
 
@@ -74,8 +74,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
 #                in_src_dir    = access_path+"step3_apply_flow_h=256,w=256_complex",
-#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_dir    = access_path+"step2_build_flow_h=256,w=256_complex/move_maps",
+#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
 
@@ -83,8 +83,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
 #                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex",
-#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_complex/move_maps",
+#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
 
@@ -93,8 +93,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
 #                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page",
-#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_complex+page/move_maps",
+#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
 ### 記得 complex+page_more_like做完需要手動去 挑 complex：0~1799 和 page：2000~2179 當train， complex：1800~1999 和 page：2180~2199
@@ -102,11 +102,19 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
 #                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
-#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_complex+page_more_like/move_maps",
+#                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
 
+build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_1_pure_unet",
+               in_dir_name   = "dis_imgs",
+               gt_dir_name   = "move_maps",
+               in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
+               gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_smooth-curl+fold_and_page/move_maps",
+               in_src_word   = "3a1-I1-patch.bmp",
+               gt_src_word   = ".npy" ,
+               train_amount  = 1350)
 
 
 
@@ -156,6 +164,15 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 #                gt_src_word   = "4-gt_ord_pad.bmp" )
 
 
+build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_2_pure_rect2",
+               in_dir_name   = "dis_img_db",
+               gt_dir_name   = "gt_ord_pad_img_db",
+               in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
+               gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
+               in_src_word   = "3a1-I1-patch.bmp",
+               gt_src_word   = "4-gt_ord_pad.bmp" ,
+               train_amount  = 1350)
+
 
 #####################################################################################################################################################
 ### 3.建立給 unet+rect2 用的 rect2_2000
@@ -198,13 +215,13 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name, in_src_dir, in_src_
 
 
 ### 記得 complex+page_more_like做完需要手動去 挑 complex：0~1799 和 page：2000~2179 當train， complex：1800~1999 和 page：2180~2199
-build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_3_unet_rect2",
-               in_dir_name   = "unet_rec_img_db",
-               gt_dir_name   = "gt_ord_img_db",
-               in_src_dir    = access_path+"result/h=384,w=256_complex+page_more_like_1_pure_unet_20200406-214854_model2_UNet_512to256/test_indicate_h=384,w=256_complex+page_more_like_1_pure_unet",
-               gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
-               in_src_word   = "g_rec_img.bmp",
-               gt_src_word   = "1-I.bmp" )
+# build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_3_unet_rect2",
+#                in_dir_name   = "unet_rec_img_db",
+#                gt_dir_name   = "gt_ord_img_db",
+#                in_src_dir    = access_path+"result/h=384,w=256_complex+page_more_like_1_pure_unet_20200406-214854_model2_UNet_512to256/test_indicate_h=384,w=256_complex+page_more_like_1_pure_unet",
+#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
+#                in_src_word   = "g_rec_img.bmp",
+#                gt_src_word   = "1-I.bmp" )
 
 
 

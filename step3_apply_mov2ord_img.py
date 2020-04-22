@@ -195,7 +195,7 @@ def load_data_and_apply_move(ord_imgs_dir, move_maps_dir, dst_dir, start_index, 
     Check_dir_exist_and_build(access_path + dst_dir)                         ### 建立放結果的資料夾
 
     
-    core_amount = 10
+    core_amount = 8
     amount = len(move_maps)
     split_amount = int(amount //core_amount)
     fract_amount = int(amount % core_amount)
@@ -221,7 +221,8 @@ if(__name__=="__main__"):
     # src_dir     = "step2_build_flow_h=384,w=256_complex+page_more_like"
     # src_dir       = "step2_build_flow_h=384,w=256_smooth_curl+fold"
     # src_dir       = "step2_build_flow_h=384,w=256_page"
-    src_dir       = "step2_build_flow_h=384,w=256_prep"
+    # src_dir       = "step2_build_flow_h=384,w=256_prep"
+    src_dir       = "step2_build_flow_h=384,w=256_smooth-curl+fold_and_page"
     ord_imgs_dir  = "step1_page"
 
     ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
@@ -233,5 +234,5 @@ if(__name__=="__main__"):
 
     ################################################################################
     move_maps_dir = src_dir + "/" + "move_maps"
-    dst_dir       = src_dir.replace("step2", "step3")
+    dst_dir       = src_dir.replace("step2_build_flow", "step3_apply_flow")
     load_data_and_apply_move(ord_imgs_dir, move_maps_dir, dst_dir, start_index, write_to_step3=True)
