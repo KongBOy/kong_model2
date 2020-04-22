@@ -4,6 +4,7 @@ from build_dataset_combine import Check_dir_exist_and_build
 from util import get_dir_move, get_dir_img, method2, get_xy_map, get_max_db_move_xy_from_numpy, time_util
 import numpy as np 
 import cv2
+import time
 
 def get_l_r_t_d(kernel_size):
     l = t = (kernel_size+1)//2 -1
@@ -68,7 +69,7 @@ def get_dis_img_start_left_top(move_map, max_db_move_x, max_db_move_y):
     return left, top
     
 ### 這步沒有辦法用整張array一起處理，因為msk要統計相同的點被重複家幾次，這就需要一個個pixel去跑才行??思考一下好像可以解決喔！
-def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", write_to_step3=False, return_base_xy=False):
+def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", write_to_step3=False, return_base_xy=False, dst_dir="."):
     row, col = move_map.shape[:2] ### row, col 由 step2產生的flow 決定
     img = cv2.resize(img, (col, row), interpolation=cv2.INTER_NEAREST) 
 
@@ -92,14 +93,12 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
     ### 把原始影像扭曲，並取得 rec_mov
     for go_row in range(row):
         for go_col in range(col):
-            ### 我已經設定成如果不是背景的話，都會有小小的移動量來跟背景做區別，所以.sum!=0就代表前景囉！前景才需做移動！
-            if(move_map[go_row,go_col].sum() != 0):
-                dst_x = go_col + int(move_map[go_row,go_col,0] + max_db_move_x) ### 現在的起點是(max_db_move_x, max_db_move_y)，所以要位移一下
-                dst_y = go_row + int(move_map[go_row,go_col,1] + max_db_move_y) ### 現在的起點是(max_db_move_x, max_db_move_y)，所以要位移一下
+            dst_x = go_col + int(move_map[go_row,go_col,0] + max_db_move_x) ### 現在的起點是(max_db_move_x, max_db_move_y)，所以要位移一下
+            dst_y = go_row + int(move_map[go_row,go_col,1] + max_db_move_y) ### 現在的起點是(max_db_move_x, max_db_move_y)，所以要位移一下
 
-                dis_img[dst_y,dst_x,:] += img[go_row,go_col,:]
-                rec_mov[dst_y,dst_x,:] += move_map[go_row,go_col,:]*-1
-                dis_msk[dst_y,dst_x]   += 1
+            dis_img[dst_y,dst_x,:] += img[go_row,go_col,:]
+            rec_mov[dst_y,dst_x,:] += move_map[go_row,go_col,:]*-1
+            dis_msk[dst_y,dst_x]   += 1
 
             # print(dst_y,dst_x)
             # cv2.imshow("img",img)
@@ -171,17 +170,19 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
         
     return dis_img.copy(), rec_mov.copy()
 
-if(__name__=="__main__"):
-    ord_imgs_dir  = "step1_page"
-    # move_maps_dir = "step2_build_flow_h=384,w=256_complex/move_maps"
-    # dst_dir       = "step3_apply_flow_h=384,w=256_complex"
-    # move_maps_dir = "step2_build_flow_h=384,w=256_complex+page/move_maps"
-    # dst_dir       = "step3_apply_flow_h=384,w=256_complex+page"
-    move_maps_dir = "step2_build_flow_h=384,w=256_complex+page_more_like/move_maps"
-    dst_dir       = "step3_apply_flow_h=384,w=256_complex+page_more_like"
+
+def apply_move_at_lots_process(start_index, amount, ord_imgs, ord_imgs_amount, move_maps, max_db_move_x, max_db_move_y, write_to_step3, dst_dir):
+    start_time = time.time()
+    for i, move_map in enumerate(move_maps[start_index:start_index+amount]):
+        apply_start_time = time.time()                     ### 計算處理一張花的時間
+        img = ord_imgs[np.random.randint(ord_imgs_amount)] ### 從 ord_img裡隨便挑一張
+        name = "%06i"%(i+start_index)                      ### 設定 流水號的檔名
+        dis_img, rec_mov = apply_move(img, move_map, max_db_move_x=max_db_move_x, max_db_move_y=max_db_move_y, name=name, write_to_step3=write_to_step3, dst_dir=dst_dir) ### ord_img 去apply扭曲
+        print("%06i process 1 mesh cost time:"%(i+start_index), "%.3f"%(time.time()-apply_start_time), "total_time:", time_util(time.time()-start_time))
+        print("")
 
 
-    import time
+def load_data_and_apply_move(ord_imgs_dir, move_maps_dir, dst_dir, start_index, write_to_step3=True ):
     from step0_access_path import access_path
 
     start_time = time.time()
@@ -193,18 +194,44 @@ if(__name__=="__main__"):
     print("max_db_move_x",max_db_move_x,", max_db_move_y",max_db_move_y)     ### 看一下 max_db_move_xy 是多少
     Check_dir_exist_and_build(access_path + dst_dir)                         ### 建立放結果的資料夾
 
+    
+    core_amount = 10
+    amount = len(move_maps)
+    split_amount = int(amount //core_amount)
+    fract_amount = int(amount % core_amount)
+
+    from multiprocessing import Process
+    processes = []
+
+    for i in range(core_amount):
+        process_amount = split_amount 
+        if( i==(core_amount-1) and (fract_amount!=0) ): process_amount += fract_amount
+        processes.append(Process(target=apply_move_at_lots_process, args=(split_amount*i, process_amount, ord_imgs, ord_imgs_amount, move_maps, max_db_move_x, max_db_move_y, write_to_step3, dst_dir)))
+        print("registering process %02i dealing %04i data"% (i,process_amount) )
+
+    for process in processes:
+        process.start()
+    
+    
+    
+
+if(__name__=="__main__"):
+    # src_dir     = "step2_build_flow_h=384,w=256_complex"
+    # src_dir     = "step2_build_flow_h=384,w=256_complex+page"
+    # src_dir     = "step2_build_flow_h=384,w=256_complex+page_more_like"
+    # src_dir       = "step2_build_flow_h=384,w=256_smooth_curl+fold"
+    # src_dir       = "step2_build_flow_h=384,w=256_page"
+    src_dir       = "step2_build_flow_h=384,w=256_prep"
+    ord_imgs_dir  = "step1_page"
+
     ### 這是用在 如果不小心中斷，可以用這設定從哪裡開始
     # start_index = 0    
     # amount      = 2000 
     
     ### 也可以用來切給多個python平行處理
-    start_index = 250 * 8
-    amount      = 250
-    
-    for i, move_map in enumerate(move_maps[start_index:start_index+amount]):
-        apply_start_time = time.time()                     ### 計算處理一張花的時間
-        img = ord_imgs[np.random.randint(ord_imgs_amount)] ### 從 ord_img裡隨便挑一張
-        name = "%06i"%(i+start_index)                      ### 設定 流水號的檔名
-        dis_img, rec_mov = apply_move(img, move_map, max_db_move_x=max_db_move_x, max_db_move_y=max_db_move_y, name=name, write_to_step3=True) ### ord_img 去apply扭曲
-        print("%06i process 1 mesh cost time:"%(i+start_index), "%.3f"%(time.time()-apply_start_time), "total_time:", time_util(time.time()-start_time))
-        print("")
+    start_index = 0
+
+    ################################################################################
+    move_maps_dir = src_dir + "/" + "move_maps"
+    dst_dir       = src_dir.replace("step2", "step3")
+    load_data_and_apply_move(ord_imgs_dir, move_maps_dir, dst_dir, start_index, write_to_step3=True)
