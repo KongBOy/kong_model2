@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons, TextBox
 
-from step2_a_kong_distorte import get_xy_f, distorte
+from step2_a_distort_curl_and_fold import get_xy_f, distorte
 
 fig, ax = plt.subplots()
 fig.set_size_inches(6, 8)

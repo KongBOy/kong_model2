@@ -250,12 +250,12 @@ if(__name__=="__main__"):
     start_epoch = 0
 
     
-    phase = "train"
-    restore_model_name = ""
+    # phase = "train"
+    # restore_model_name = ""
 
-    # test_in_dir = ""
-    # test_gt_dir = ""
-    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    test_in_dir = ""
+    test_gt_dir = ""
+    phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
@@ -307,7 +307,7 @@ if(__name__=="__main__"):
     # restore_model_name = "pure_rect2_right-loss/" + "wei_book_1_type4_complex+page_more_like_20200416-105102_model6_mrf_rect2_128.243-epoch=548"  ### 合成影像 的 mrf-rect2 
     # restore_model_name = "pure_rect2_right-loss/" + "wei_book_2_tf1_db_20200415-160605_model5_rect2"                               ### 真實影像 的     rect2 
     # restore_model_name = "pure_rect2_right-loss/" + "wei_book_2_tf1_db_20200416-005448_model6_mrf_rect2_right-loss_no-shuffle"                           ### 真實影像 的 mrf-rect2 
-    # restore_model_name = "pure_rect2_right-loss/" + "wei_book_3_tf1_db+type4_complex+page_more_like_20200421-003943_model5_rect2"  ### 兩者混和 的     rect2 
+    restore_model_name =    "wei_book_3_tf1_db+type4_complex+page_more_like_20200422-011813_model5_rect2"  ### 兩者混和 的     rect2 
     # restore_model_name = "pure_rect2_right-loss/" + "還沒train"  ### 兩者混和 的 mrf-rect2 
 
 
