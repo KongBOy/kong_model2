@@ -5,9 +5,9 @@ from matplotlib.widgets import Slider, Button, RadioButtons, TextBox
 from step2_a_kong_distorte import get_xy_f, distorte
 
 fig, ax = plt.subplots()
-fig.set_size_inches(5, 8)
+fig.set_size_inches(6, 8)
 plt.subplots_adjust(left=0.13, bottom=0.20)
-plt.xlim(-100,500)
+plt.xlim(-100,400)
 plt.ylim(-100,500)
 
 axcolor = 'lightgoldenrodyellow' ### slide bar 的背景顏色：金黃淡亮色
@@ -20,7 +20,9 @@ bar_y_start = 0.02 ### bar左上角的y
 curve_type = "curl"
 # row = 400
 # col = 300
-row = 256
+# row = 256
+# col = 256
+row = 384
 col = 256
 vert_x = 0
 vert_y = 0
@@ -51,7 +53,7 @@ vert_x_sl = Slider(vert_x_ax , 'vert_x', 0  , col  , valinit=0, valstep=0.1)
 move_x_sl = Slider(move_x_ax , 'move_x', -28.80, 28.80, valinit=0, valstep=0.1)
 move_y_sl = Slider(move_y_ax , 'move_y', -28.80, 28.80, valinit=0, valstep=0.1)
 alpha_c_sl  = Slider(alpha_c_ax  , 'alpha_c' , 0.85, 1.70*2 , valinit=0.85, valstep=0.01)
-alpha_f_sl  = Slider(alpha_f_ax  , 'alpha_f' , 0.2   , 100 , valinit=0, valstep=0.1)
+alpha_f_sl  = Slider(alpha_f_ax  , 'alpha_f' , 0.2   , 150 , valinit=0, valstep=0.1)
 
 ### 3.Slide功能
 ### 初始化 一些 等等要用到的東西
@@ -73,7 +75,7 @@ def apply_move():
     if  (curve_type=="curl"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
     elif(curve_type=="fold"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
     proc_xy_f = xy_f+move
-    ax_img.set_offsets(proc_xy_f) 
+    ax_img.set_offsets(proc_xy_f)  ### 限定要放 flatten的形式喔！ [..., 2]
     print("move_x_max = ",abs(move[:,0]).max(),", move_y_max = ",abs(move[:,1]).max(),", curve_type=",curve_type,", alpha=",alpha)
 
 def update(val):
