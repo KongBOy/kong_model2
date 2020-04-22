@@ -22,7 +22,7 @@ def get_xy_f(row,col): ### get_xy_flatten，拿到的map的shape：(..., 2)
     return xy_f.T
 
 ### 整個function都是用 image的方式來看(左上角(0,0)，x往右邊走增加，y往上面走增加)
-def distorte(row, col, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50, debug=False):
+def distort(row, col, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50, debug=False):
     xy_f = get_xy_f(row, col) ### 拿到map的shape：(..., 2)
 
     ### step1.選一個點當扭曲點
@@ -66,7 +66,7 @@ def distorte(row, col, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50
     
 
     if(debug):
-    ###########################################################################################
+        ###########################################################################################
         fig, ax = plt.subplots(1,2)
         d_map = d.reshape(row,col)
         ax[0].set_title("d_map")
@@ -76,9 +76,9 @@ def distorte(row, col, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50
         fig.colorbar(ax0_img, ax=ax[0])
         fig.set_size_inches(8,4)
         ### 第二張子圖 plt是用scatter(左下角(0,0))，所以畫完圖後 y軸要上下顛倒一下，才會符合imaged看的方式(左上角(0,0))
-        show_distorted_mesh_visual(row, col, mesh_move,fig, ax[1])
+        show_distort_mesh_visual(row, col, mesh_move,fig, ax[1])
         plt.show()
-    ###########################################################################################
+        ###########################################################################################
     return mesh_move ### shape：(..., 2)
 #######################################################################################################################################
 #######################################################################################################################################
@@ -106,12 +106,13 @@ def get_rand_para(row, col, curl_probability, smooth=False):
     return vert_x, vert_y, move_x, move_y, dis_type, alpha
 
 ### 只有 參數隨機產生， funciton 重複使用 上面寫好的function喔！
-def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distort_time=None, curl_probability=0.3, move_x_thresh=40, move_y_thresh=55, smooth=False):
+def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distort_time=None, curl_probability=0.3, move_x_thresh=40, move_y_thresh=55, smooth=False, write_npy=True):
     start_time = time.time()
-    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorted_mesh_visuals")
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distort_mesh_visuals")
     Check_dir_exist_and_build(access_path + dst_dir + "/"+"move_maps")
-    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorte_infos")
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distort_infos")
 
+    move_maps = []
     for index in range(start_index, start_index+amount):
         dis_start_time = time.time()
 
@@ -122,7 +123,7 @@ def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distor
             while(True): ### 如果扭曲太大的話，就重新取參數做扭曲，這樣就可以控制取到我想要的合理範圍
                 vert_x, vert_y, move_x, move_y, dis_type, alpha = get_rand_para(row, col, curl_probability, smooth)  ### 隨機取得 扭曲參數
                 # print("curl_probability",curl_probability, "dis_type",dis_type)
-                move_f = distorte( row, col, vert_x, vert_y, move_x, move_y , dis_type, alpha, debug=False ) ### 用參數去得到 扭曲move_f
+                move_f = distort( row, col, vert_x, vert_y, move_x, move_y , dis_type, alpha, debug=False ) ### 用參數去得到 扭曲move_f
                 max_move_x = abs(move_f[:,0]).max()
                 max_move_y = abs(move_f[:,1]).max()
                 if(max_move_x < move_x_thresh and max_move_y < move_y_thresh):break
@@ -130,24 +131,27 @@ def distort_rand(dst_dir=".", start_index=0, amount=2000, row=40, col=30, distor
             result_move_f = result_move_f + move_f ### 走到這就取到 在我覺得合理範圍的 move_f 囉，把我要的move_f加進去容器內～
 
             ### 紀錄扭曲參數
-            if (dis_type == "fold"):distrore_info_log(access_path + dst_dir + "/" + "distorte_infos", index, row, col, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
-            elif dis_type == "curl":distrore_info_log(access_path + dst_dir + "/" + "distorte_infos", index, row, col, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
+            if  (dis_type == "fold"):distrore_info_log(access_path + dst_dir + "/" + "distort_infos", index, row, col, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
+            elif(dis_type == "curl"):distrore_info_log(access_path + dst_dir + "/" + "distort_infos", index, row, col, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
 
 
         ## 紀錄扭曲視覺化的結果
-        # save_distorted_mesh_visual(result_move_f, index)
+        # save_distort_mesh_visual(result_move_f, index)
 
         result_move_map = result_move_f.reshape(row,col,2) ### (..., 2)→(row, col, 2)
-        np.save(access_path + dst_dir + "/" + "move_maps/%06i"%index,result_move_map.astype(np.float32)) ### 把move_map存起來，記得要轉成float32！
+        result_move_map = result_move_map.astype(np.float32)
+        if(write_npy) : np.save(access_path + dst_dir + "/" + "move_maps/%06i"%index,result_move_map) ### 把move_map存起來，記得要轉成float32！
         print("%06i process 1 mesh cost time:"%index, "%.3f"%(time.time()-dis_start_time), "total_time:", time_util(time.time()-start_time) )
+        move_maps.append(result_move_map)
+    return np.array(move_maps, dtype=np.float32)
 
-
-### 用 step2_d去試 我想要的參數喔！
-def distort_like_page(dst_dir, start_index, row, col):
+### 用 step2_d去試 我想要的參數喔！ 測試結果還是不大像喔，要用step2_a_distort_page_and_pers.py 的 distort_more_like_page 才更像
+def distort_like_page(dst_dir, start_index, row, col, write_npy=True):
+    move_maps = []
     start_time = time.time()
-    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorted_mesh_visuals")
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distort_mesh_visuals")
     Check_dir_exist_and_build(access_path + dst_dir + "/"+"move_maps")
-    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorte_infos")
+    Check_dir_exist_and_build(access_path + dst_dir + "/"+"distort_infos")
 
     ### 可以用step2_d去試 我想要的參數喔！
     distort_time = 1
@@ -161,19 +165,22 @@ def distort_like_page(dst_dir, start_index, row, col):
         for go_vert_x in range(120,180): ### 可以用step2_d去試 我想要的參數喔！
             dis_start_time = time.time()
             result_move_f = np.zeros(shape=(row*col,2), dtype=np.float64) ### 初始化 move容器
-            move_f = distorte( row, col, go_vert_x, vert_y, move_x, go_move_y , dis_type, alpha, debug=False ) ### 用參數去得到 扭曲move_f
+            move_f = distort( row, col, go_vert_x, vert_y, move_x, go_move_y , dis_type, alpha, debug=False ) ### 用參數去得到 扭曲move_f
             result_move_f = result_move_f + move_f ### 把我要的move_f加進去容器內～
-            distrore_info_log(access_path + dst_dir + "/" + "distorte_infos", index, row, col, distort_time, go_vert_x, vert_y, move_x, go_move_y, dis_type, alpha ) ### 紀錄扭曲參數
+            distrore_info_log(access_path + dst_dir + "/" + "distort_infos", index, row, col, distort_time, go_vert_x, vert_y, move_x, go_move_y, dis_type, alpha ) ### 紀錄扭曲參數
             result_move_map = result_move_f.reshape(row,col,2) ### (..., 2)→(row, col, 2)
-            # save_distorted_mesh_visual(result_move_f, index)   ### 紀錄扭曲視覺化的結果
-            np.save(access_path + dst_dir + "/" + "move_maps/%06i"%index, result_move_map.astype(np.float32)) ### 把move_map存起來，記得要轉成float32！
+            result_move_map = result_move_map.astype(np.float32)
+            # save_distort_mesh_visual(result_move_f, index)   ### 紀錄扭曲視覺化的結果
+            np.save(access_path + dst_dir + "/" + "move_maps/%06i"%index, result_move_map) ### 把move_map存起來，記得要轉成float32！
             print("%06i process 1 mesh cost time:"%index, "%.3f"%(time.time()-dis_start_time), "total_time:", time_util(time.time()-start_time) )
             index += 1
+            move_maps.append(result_move_map)
+    return np.array(move_maps.astype(np.float32))
 
 #######################################################################################################################################
 #######################################################################################################################################
 ### 以下跟 紀錄、視覺化相關
-def distrore_info_log(log_dir, index, row, col, distorte_times, vert_x, vert_y, move_x, move_y, dis_type, alpha ):
+def distrore_info_log(log_dir, index, row, col, distort_times, vert_x, vert_y, move_x, move_y, dis_type, alpha ):
     str_template = \
 "\
 vert_x=%i\n\
@@ -184,22 +191,22 @@ dis_type=%s\n\
 alpha=%i\n\
 \n\
 "
-    with open(log_dir + "/" + "%06i-row=%i,col=%i,distorte_times=%i.txt"%(index,row,col,distorte_times),"a") as file_log:
+    with open(log_dir + "/" + "%06i-row=%i,col=%i,distort_times=%i.txt"%(index,row,col,distort_times),"a") as file_log:
         file_log.write(str_template%(vert_x, vert_y, move_x, move_y, dis_type, alpha))
 
-def show_distorted_mesh_visual(row,col, move_f,fig, ax):
+def show_distort_mesh_visual(row,col, move_f,fig, ax):
     xy_f = get_xy_f(row,col)
     xy_f = xy_f + move_f
-    ax.set_title("distorted_mesh_visual")
+    ax.set_title("distort_mesh_visual")
     ax_img = ax.scatter(xy_f[:,0],xy_f[:,1],c = np.arange(row*col),cmap="brg")
     fig.colorbar(ax_img,ax=ax)
     ax = ax.invert_yaxis() ### 整張圖上下顛倒
 
-def save_distorted_mesh_visual(result_move_f, index):
+def save_distort_mesh_visual(result_move_f, index):
     fig, ax = plt.subplots(1,1)
     fig.set_size_inches(4, 5)
-    show_distorted_mesh_visual(row,col, result_move_f, fig, ax)
-    plt.savefig(access_path+"step2_flow_build/distorted_mesh_visuals/%06i.png"%index)
+    show_distort_mesh_visual(row,col, result_move_f, fig, ax)
+    plt.savefig(access_path+"step2_flow_build/distort_mesh_visuals/%06i.png"%index)
     plt.close()
 
 def show_move_map_visual(move_map, ax):
@@ -210,12 +217,12 @@ def show_move_map_visual(move_map, ax):
 
 if(__name__=="__main__"):
     ### 理解用，手動慢慢扭曲
-    # move_f =          distorte( row, col, x=col/2, y=row/2, move_x= col/2, move_y= row/2, dis_type="fold", alpha=2, debug=True )  ### alpha:2~4
-    # move_f = move_f + distorte( row, col, x= 0, y=10, move_x=3.5, move_y= 2.5, dis_type="fold", alpha=200, debug=True )
+    # move_f =          distort( row, col, x=col/2, y=row/2, move_x= col/2, move_y= row/2, dis_type="fold", alpha=2, debug=True )  ### alpha:2~4
+    # move_f = move_f + distort( row, col, x= 0, y=10, move_x=3.5, move_y= 2.5, dis_type="fold", alpha=200, debug=True )
 
     # fig, ax = plt.subplots(1,1)
     # fig.set_size_inches(4, 5)
-    # show_distorted_mesh_visual(row,col,move_f,fig, ax)
+    # show_distort_mesh_visual(row,col,move_f,fig, ax)
     # plt.show()
 
     #############################################################################################################################################
