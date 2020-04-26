@@ -125,6 +125,8 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_pad_type2_h=384,w=256_complex"                ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         elif(db_name== "wei_book_pad_type3_h=384,w=256_complex+page"           ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "no-bg_gt_color"                                           ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "no-bg_gt_gray"                                            ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         
         elif(db_name== "apple_shoot_1_pure_unet"                               ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
 
@@ -148,6 +150,8 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_1_type4_complex+page_more_like"                 ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "wei_book_2_tf1_db"                                       ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "wei_book_3_tf1_db+type4_complex+page_more_like"          ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "no-bg_gt_color"                                             ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "no-bg_gt_gray"                                              ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         
         
 
@@ -200,6 +204,8 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name == "wei_book_1_type4_complex+page_more_like"           ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         elif(db_name == "wei_book_2_tf1_db"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         elif(db_name == "wei_book_3_tf1_db+type4_complex+page_more_like"    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "no-bg_gt_color"                                       ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "no-bg_gt_gray"                                        ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
 
         elif(db_name == "wei_book_h=384,w=256"                  ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
     elif(phase=="test_indicate"):
@@ -257,12 +263,12 @@ if(__name__=="__main__"):
     start_epoch = 0
 
     
-    # phase = "train"
+    phase = "train"
     # restore_model_name = ""
 
-    test_in_dir = ""
-    test_gt_dir = ""
-    phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    # test_in_dir = ""
+    # test_gt_dir = ""
+    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
@@ -314,7 +320,7 @@ if(__name__=="__main__"):
     # restore_model_name = "pure_rect2_right-loss/" + "wei_book_1_type4_complex+page_more_like_20200416-105102_model6_mrf_rect2_128.243-epoch=548"  ### 合成影像 的 mrf-rect2 
     # restore_model_name = "pure_rect2_right-loss/" + "wei_book_2_tf1_db_20200415-160605_model5_rect2"                               ### 真實影像 的     rect2 
     # restore_model_name = "pure_rect2_right-loss/" + "wei_book_2_tf1_db_20200416-005448_model6_mrf_rect2_right-loss_no-shuffle"                           ### 真實影像 的 mrf-rect2 
-    restore_model_name =    "wei_book_3_tf1_db+type4_complex+page_more_like_20200422-011813_model5_rect2"  ### 兩者混和 的     rect2 
+    # restore_model_name =    "wei_book_3_tf1_db+type4_complex+page_more_like_20200422-011813_model5_rect2"  ### 兩者混和 的     rect2 
     # restore_model_name = "pure_rect2_right-loss/" + "還沒train"  ### 兩者混和 的 mrf-rect2 
 
 
@@ -342,10 +348,16 @@ if(__name__=="__main__"):
     # db_name = "h=384,w=256_complex+page_more_like_3_unet_rect2" 
 
 
-    db_dir  = access_path+"datasets/type5_wei_book_try_real_or_sync"
+    # db_dir  = access_path+"datasets/type5_wei_book_try_real_or_sync"
     # db_name = "wei_book_1_type4_complex+page_more_like"  ### 合成影像
     # db_name = "wei_book_2_tf1_db"  ### 真實影像
-    db_name = "wei_book_3_tf1_db+type4_complex+page_more_like"   ### 真實影像+合成影像
+    # db_name = "wei_book_3_tf1_db+type4_complex+page_more_like"   ### 真實影像+合成影像
+
+    ### type5b
+    db_dir  = access_path+"datasets/type5b_rect2_no-bg_gt-color-gray"
+    db_name = "no-bg_gt_color"  ### 去背，gt彩色
+    # db_name = "no-bg_gt_gray"  ### 去背，gt灰階
+    
 
 
     # db_dir  = access_path+"datasets/type6_h=384,w=256_smooth-curl+fold_and_page"
