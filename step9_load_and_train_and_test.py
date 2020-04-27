@@ -12,6 +12,14 @@ import time
 from build_dataset_combine import Check_dir_exist_and_build
 import os
 
+from enum import Enum 
+import numpy as np 
+
+class MODEL_NAME(Enum):
+    Unet      = 1
+    Rect2     = 2
+    Mrf_rect2 = 3
+
 # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
 ### 第零階段：決定result, logs, ckpt 存哪裡 並 把source code存起來
@@ -82,6 +90,19 @@ def step1_2_build_model_opti_ckpt(model_name): ### 我覺得這兩步是需要�
     ckpt       = step2_build_checkpoint (model_name, model_dict)
     return  model_dict, generate_images, train_step, ckpt
 
+def step3_build_tensorboard(model_name, logs_dir):
+    summary_writer = tf.summary.create_file_writer( logs_dir ) ### 建tensorboard，這會自動建資料夾喔！
+    board_dict = {}
+    if  (model_name == MODEL_NAME.Unet):
+        board_dict["gen_l1_loss"]    = tf.keras.metrics.Mean('gen_l1_loss', dtype=tf.float32)
+    elif(model_name == MODEL_NAME.Rect2):
+        board_dict["1_loss_rec"]     = tf.keras.metrics.Mean('1_loss_rec'    , dtype=tf.float32)
+        board_dict["2_loss_g2d"]     = tf.keras.metrics.Mean('2_loss_g2d'    , dtype=tf.float32)
+        board_dict["3_g_total_loss"] = tf.keras.metrics.Mean('3_g_total_loss', dtype=tf.float32)
+        board_dict["4_loss_d_fake"]  = tf.keras.metrics.Mean('4_loss_d_fake' , dtype=tf.float32)
+        board_dict["5_loss_d_real"]  = tf.keras.metrics.Mean('5_loss_d_real' , dtype=tf.float32)
+        board_dict["6_d_total_loss"] = tf.keras.metrics.Mean('6_d_total_loss', dtype=tf.float32)
+    return summary_writer, board_dict
 
 def step4_get_result_dir_default_logs_ckpt_dir_name(result_dir):
     logs_dir = result_dir + "/" + "logs"
@@ -263,18 +284,19 @@ if(__name__=="__main__"):
     start_epoch = 0
 
     
-    # phase = "train"
+    phase = "train"
     # restore_model_name = ""
 
-    test_in_dir = ""
-    test_gt_dir = ""
-    phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    # test_in_dir = ""
+    # test_gt_dir = ""
+    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
     ### model_name/db_name 決定如何resize
     # model_name="model2_UNet_512to256"
     model_name="model5_rect2"
+    model_name_enum = MODEL_NAME.Rect2
     # model_name="model6_mrf_rect2"
 
     ### 設定 restore_model_name 來讀取網路weight，在phase==train_reload、test、test_indicate 時需要
@@ -480,7 +502,8 @@ if(__name__=="__main__"):
 
     ###    step3 建立tensorboard，只有train 和 train_reload需要
     if  (phase=="train" or phase=="train_reload"):
-        summary_writer = tf.summary.create_file_writer( logs_dir ) ### 建tensorboard，這會自動建資料夾喔！
+        # summary_writer = tf.summary.create_file_writer( logs_dir ) ### 建tensorboard，這會自動建資料夾喔！
+        summary_writer, board_dict = step3_build_tensorboard( model_name_enum, logs_dir)
 
     ###    step4 建立checkpoint manager，三者都需要
     manager = tf.train.CheckpointManager (checkpoint=ckpt, directory=ckpt_dir, max_to_keep=2) ### checkpoint管理器，設定最多存2份
@@ -530,10 +553,25 @@ if(__name__=="__main__"):
             for n, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate( data_dict["train_db_combine"] ):
                 print('.', end='')
                 if (n+1) % 100 == 0: print()
-                if  (model_name == "model2_UNet_512to256"):train_step(model_dict["generator"], model_dict["generator_optimizer"], summary_writer, train_in_pre, train_gt_pre, epoch)
-                elif(model_name == "model5_rect2")        :train_step(model_dict["rect2"]    , train_in_pre, train_gt_pre, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
-                elif(model_name == "model6_mrf_rect2")    :train_step(model_dict["mrf_rect2"], train_in_pre, train_gt_pre, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], summary_writer, epoch)
+                if  (model_name == "model2_UNet_512to256"):train_step(model_dict["generator"], model_dict["generator_optimizer"], train_in_pre, train_gt_pre, board_dict)
+                elif(model_name == "model5_rect2")        :train_step(model_dict["rect2"]    , train_in_pre, train_gt_pre, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], board_dict)
+                elif(model_name == "model6_mrf_rect2")    :train_step(model_dict["mrf_rect2"], train_in_pre, train_gt_pre, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], board_dict)
 
+            ###     整個epoch 的 loss 算平均，存進tensorboard
+            with summary_writer.as_default():
+                for loss_name, loss_containor in board_dict.items():
+                    tf.summary.scalar(loss_name, loss_containor.result(), step=epoch)
+                    loss_value = loss_containor.result().numpy()
+                    if(epoch == 0): ### 第一次 直接把值存成np.array
+                        np.save(logs_dir + "/" + loss_name, np.array(loss_value))
+                    else: ### 第二次後，先把np.array先讀出來append值後 再存進去
+                        loss_array = np.load(logs_dir + "/" + loss_name + ".npy")
+                        loss_array = np.append(loss_array, loss_value)
+                        np.save(logs_dir + "/" + loss_name, np.array(loss_array))
+                        print(loss_array)
+            ###    reset tensorboard 的 loss紀錄容器
+            for loss_containor in board_dict.values():
+                loss_containor.reset_states()
 
             ###     儲存模型 (checkpoint) the model every 20 epochs
             if (epoch + 1) % epoch_save_freq == 0:

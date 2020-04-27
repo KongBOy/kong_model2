@@ -276,7 +276,7 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1.,tf.float32)):
     return loss * lamb
 
 @tf.function
-def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, epoch ):
+def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, board_dict ):
     with tf.GradientTape(persistent=True) as tape:
         g_rec_img, fake_score, real_score = rect2(dis_img, gt_img)
         loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(3.,tf.float32)) ### 40 調回 3
@@ -291,13 +291,20 @@ def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer,
     grad_G = tape.gradient(g_total_loss, rect2.generator.    trainable_weights)
     optimizer_D.apply_gradients( zip(grad_D, rect2.discriminator.trainable_weights )  )
     optimizer_G.apply_gradients( zip(grad_G, rect2.generator.    trainable_weights )  )
-    with summary_writer.as_default():
-        tf.summary.scalar('1_loss_rec', loss_rec, step=epoch)
-        tf.summary.scalar('2_loss_g2d', loss_g2d, step=epoch)
-        tf.summary.scalar('3_g_total_loss', g_total_loss, step=epoch)
-        tf.summary.scalar('4_loss_d_fake' , loss_d_fake,  step=epoch)
-        tf.summary.scalar('5_loss_d_real' , loss_d_real,  step=epoch)
-        tf.summary.scalar('6_d_total_loss', d_total_loss, step=epoch)
+
+    board_dict["1_loss_rec"](loss_rec)
+    board_dict["2_loss_g2d"](loss_g2d)
+    board_dict["3_g_total_loss"](g_total_loss)
+    board_dict["4_loss_d_fake"](loss_d_fake)
+    board_dict["5_loss_d_real"](loss_d_real)
+    board_dict["6_d_total_loss"](d_total_loss)
+    # with summary_writer.as_default():
+    #     tf.summary.scalar('1_loss_rec', loss_rec, step=epoch)
+    #     tf.summary.scalar('2_loss_g2d', loss_g2d, step=epoch)
+    #     tf.summary.scalar('3_g_total_loss', g_total_loss, step=epoch)
+    #     tf.summary.scalar('4_loss_d_fake' , loss_d_fake,  step=epoch)
+    #     tf.summary.scalar('5_loss_d_real' , loss_d_real,  step=epoch)
+    #     tf.summary.scalar('6_d_total_loss', d_total_loss, step=epoch)
     
 
 import time
