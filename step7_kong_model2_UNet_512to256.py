@@ -162,7 +162,7 @@ def generator_loss(gen_output, target):
 
 #######################################################################################################################################
 @tf.function()
-def train_step(generator,generator_optimizer, summary_writer, input_image, target, epoch):
+def train_step(generator,generator_optimizer, input_image, target, board_dict):
     with tf.GradientTape() as gen_tape:
         gen_output = generator(input_image, training=True)
         gen_l1_loss  = generator_loss( gen_output, target)
@@ -170,8 +170,9 @@ def train_step(generator,generator_optimizer, summary_writer, input_image, targe
     generator_gradients     = gen_tape.gradient(gen_l1_loss, generator.trainable_variables)
     generator_optimizer.apply_gradients(zip(generator_gradients, generator.trainable_variables))
 
-    with summary_writer.as_default():
-        tf.summary.scalar('gen_l1_loss', gen_l1_loss, step=epoch)
+    board_dict["gen_l1_loss"](gen_l1_loss)
+    # with summary_writer.as_default():
+    #     tf.summary.scalar('gen_l1_loss', gen_l1_loss, step=epoch)
 
 #######################################################################################################################################
 def generate_images( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_dir="."):
