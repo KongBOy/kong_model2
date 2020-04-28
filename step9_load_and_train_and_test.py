@@ -167,9 +167,10 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_pad_type2_h=384,w=256_complex"                ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         elif(db_name== "wei_book_pad_type3_h=384,w=256_complex+page"           ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "no-bg_gt_color"                                           ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "no-bg_gt_gray_3ch"                                        ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
-        elif(db_name== "type5c-real_have_see-no_bg-gt-gray3ch"                                   ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "no-bg_gt_color"                                        ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "no-bg_gt_gray_3ch"                                     ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "type5c-real_have_see-no_bg-gt-gray3ch"                 ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "type5c-real_have_see-no_bg-gt-color"                   ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         
         elif(db_name== "apple_shoot_1_pure_unet"                               ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
 
@@ -190,12 +191,13 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_pad_type3_h=384,w=256_complex+page"           ): img_resize = (492+0,336) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize = (492+0,384) ### dis_img(in_img的大小)的大小且要是4的倍數
         
-        elif(db_name== "wei_book_1_type4_complex+page_more_like"                 ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "wei_book_2_tf1_db"                                       ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "wei_book_3_tf1_db+type4_complex+page_more_like"          ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "no-bg_gt_color"                                          ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "no-bg_gt_gray_3ch"                                       ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
-        elif(db_name== "type5c-real_have_see-no_bg-gt-gray3ch"                                  ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_1_type4_complex+page_more_like"               ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_2_tf1_db"                                     ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "wei_book_3_tf1_db+type4_complex+page_more_like"        ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "no-bg_gt_color"                                        ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "no-bg_gt_gray_3ch"                                     ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "type5c-real_have_see-no_bg-gt-gray3ch"                 ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "type5c-real_have_see-no_bg-gt-color"                   ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         
         
 
@@ -213,7 +215,8 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_pad_type2_h=384,w=256_complex"                ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
         elif(db_name== "wei_book_pad_type3_h=384,w=256_complex+page"           ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
         elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
-        elif(db_name== "type5c-real_have_see-no_bg-gt-gray3ch"                                ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "type5c-real_have_see-no_bg-gt-gray3ch"                 ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "type5c-real_have_see-no_bg-gt-color"                   ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
     
 
     ### 第二部分：根據 db_name 去相應的 dir結構抓出所有data
@@ -251,7 +254,8 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name == "wei_book_3_tf1_db+type4_complex+page_more_like"    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         elif(db_name == "no-bg_gt_color"                                    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
         elif(db_name == "no-bg_gt_gray_3ch"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
-        elif(db_name == "type5c-real_have_see-no_bg-gt-gray3ch"                            ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
+        elif(db_name == "type5c-real_have_see-no_bg-gt-gray3ch"             ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
+        elif(db_name == "type5c-real_have_see-no_bg-gt-color"               ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
 
         elif(db_name == "wei_book_h=384,w=256"                  ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
     elif(phase=="test_indicate"):
@@ -413,8 +417,8 @@ if(__name__=="__main__"):
 
     ### type5c
     db_dir  = access_path+"datasets/type5c-real_have_see-no_bg-gt-color&gray3ch"
-    # db_name = "type5c-real_have_see-no_bg-gt-color"  ### 去背，gt彩色 有see的概念
     db_name = "type5c-real_have_see-no_bg-gt-gray3ch"  ### 去背，gt灰階 有see的概念
+    # db_name = "type5c-real_have_see-no_bg-gt-color"  ### 去背，gt彩色 有see的概念
     
 
 
