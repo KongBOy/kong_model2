@@ -91,6 +91,25 @@ def step1_2_build_model_opti_ckpt(model_name): ### 我覺得這兩步是需要�
     return  model_dict, generate_images, train_step, ckpt
 
 def step3_build_tensorboard(model_name, logs_dir):
+
+    def see_loss(result_dir, baord_dict, epochs):
+        loss_dir = result_dir + "/" + "logs"
+        for loss_name in baord_dict.keys():
+            plt.figure(figsize=(20,6))                              ### 建立畫布
+            plt.ylim(0,1.3)
+            plt.ylabel(loss_name)
+            y_loss_array = np.load(loss_dir + "/" + loss_name + ".npy")
+            
+            plt.xlim(0,epochs)
+            plt.xlabel("epoch_num")
+            x_epoch = np.arange(len(y_loss_array))
+
+            plt.plot(x_epoch, y_loss_array)
+            plt.savefig(loss_dir + "/" + loss_name + ".png")
+            plt.close()
+            # print("plot %s loss ok~"%loss_name )
+        print("plot loss ok~" )
+
     summary_writer = tf.summary.create_file_writer( logs_dir ) ### 建tensorboard，這會自動建資料夾喔！
     board_dict = {}
     if  (model_name == MODEL_NAME.Unet):
@@ -102,7 +121,7 @@ def step3_build_tensorboard(model_name, logs_dir):
         board_dict["4_loss_d_fake"]  = tf.keras.metrics.Mean('4_loss_d_fake' , dtype=tf.float32)
         board_dict["5_loss_d_real"]  = tf.keras.metrics.Mean('5_loss_d_real' , dtype=tf.float32)
         board_dict["6_d_total_loss"] = tf.keras.metrics.Mean('6_d_total_loss', dtype=tf.float32)
-    return summary_writer, board_dict
+    return summary_writer, board_dict, see_loss
 
 def step4_get_result_dir_default_logs_ckpt_dir_name(result_dir):
     logs_dir = result_dir + "/" + "logs"
@@ -121,7 +140,7 @@ def step4_get_datetime_default_result_logs_ckpt_dir_name(db_name, model_name):
 
 
 
-def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=None, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1):
+def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=None, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1, have_see=False):
     from step6_data_pipline import get_1_pure_unet_db  , \
                                get_2_pure_rect2_dataset, \
                                get_2_pure_rect2_v2_dataset, \
@@ -148,6 +167,7 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         elif(db_name== "no-bg_gt_color"                                           ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         elif(db_name== "no-bg_gt_gray_3ch"                                        ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
+        elif(db_name== "type5c-real-no_bg_gray"                                   ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
         
         elif(db_name== "apple_shoot_1_pure_unet"                               ): img_resize =(384*2, 256*2) ### 比dis_img(in_img的大小) 大一點且接近的 128的倍數，且要是gt_img的兩倍大喔！
 
@@ -173,6 +193,7 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_3_tf1_db+type4_complex+page_more_like"          ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "no-bg_gt_color"                                          ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         elif(db_name== "no-bg_gt_gray_3ch"                                       ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
+        elif(db_name== "type5c-real-no_bg_gray"                                  ): img_resize = (472+0,304) ### dis_img(in_img的大小)的大小且要是4的倍數
         
         
 
@@ -190,6 +211,7 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name== "wei_book_pad_type2_h=384,w=256_complex"                ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
         elif(db_name== "wei_book_pad_type3_h=384,w=256_complex+page"           ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
         elif(db_name== "wei_book_pad_type4_h=384,w=256_complex+page_more_like" ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
+        elif(db_name== "type5c-real-no_bg_gray"                                ): img_resize = (384,256) ### ord_img(in_img的大小)的大小
     
 
     ### 第二部分：根據 db_name 去相應的 dir結構抓出所有data
@@ -223,10 +245,11 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
         elif(db_name == "h=384,w=256_smooth-curl+fold_and_page_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
         
         elif(db_name == "wei_book_1_type4_complex+page_more_like"           ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "wei_book_2_tf1_db"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "wei_book_2_tf1_db"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
         elif(db_name == "wei_book_3_tf1_db+type4_complex+page_more_like"    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "no-bg_gt_color"                                    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "no-bg_gt_gray_3ch"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "no-bg_gt_color"                                    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
+        elif(db_name == "no-bg_gt_gray_3ch"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
+        elif(db_name == "type5c-real-no_bg_gray"                            ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
 
         elif(db_name == "wei_book_h=384,w=256"                  ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
     elif(phase=="test_indicate"):
@@ -283,7 +306,7 @@ if(__name__=="__main__"):
     epoch_save_freq = 1   ### 訓練 epoch_save_freq 個 epoch 存一次模型
     start_epoch = 0
 
-    
+    have_see = True
     phase = "train"
     # restore_model_name = ""
 
@@ -347,7 +370,7 @@ if(__name__=="__main__"):
     
     
     
-    restore_model_name = "no-bg_gt_color_20200427-004020_model5_rect2" 
+    # restore_model_name = "no-bg_gt_color_20200427-004020_model5_rect2" 
 
 
     ####################################################################################################################
@@ -381,8 +404,11 @@ if(__name__=="__main__"):
 
     ### type5b
     db_dir  = access_path+"datasets/type5b_rect2_no-bg_gt-color-gray"
-    db_name = "no-bg_gt_color"  ### 去背，gt彩色
+    # db_name = "no-bg_gt_color"  ### 去背，gt彩色
     # db_name = "no-bg_gt_gray_3ch"  ### 去背，gt灰階
+
+    db_dir  = access_path+"datasets"
+    db_name = "type5c-real-no_bg_gray"  ### 去背，gt灰階 有see的概念
     
 
 
@@ -503,7 +529,7 @@ if(__name__=="__main__"):
     ###    step3 建立tensorboard，只有train 和 train_reload需要
     if  (phase=="train" or phase=="train_reload"):
         # summary_writer = tf.summary.create_file_writer( logs_dir ) ### 建tensorboard，這會自動建資料夾喔！
-        summary_writer, board_dict = step3_build_tensorboard( model_name_enum, logs_dir)
+        summary_writer, board_dict, see_loss = step3_build_tensorboard( model_name_enum, logs_dir)
 
     ###    step4 建立checkpoint manager，三者都需要
     manager = tf.train.CheckpointManager (checkpoint=ckpt, directory=ckpt_dir, max_to_keep=2) ### checkpoint管理器，設定最多存2份
@@ -517,7 +543,7 @@ if(__name__=="__main__"):
     ################################################################################################################################################
     ### 第二階段：抓資料
     if  (phase in ["train", "train_reload", "test"]):
-        data_dict  = step6_data_pipline(phase=phase, db_dir=db_dir, db_name=db_name, model_name=model_name, batch_size=BATCH_SIZE)
+        data_dict  = step6_data_pipline(phase=phase, db_dir=db_dir, db_name=db_name, model_name=model_name, batch_size=BATCH_SIZE, have_see=have_see)
     elif(phase == "test_indicate"):
         data_dict  = step6_data_pipline(phase=phase,                db_name=db_name, model_name=model_name, test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, batch_size=BATCH_SIZE)
     ################################################################################################################################################
@@ -542,13 +568,25 @@ if(__name__=="__main__"):
 
             lr = 0.0002 if epoch < epoch_down_step else 0.0002*(epochs-epoch)/(epochs-epoch_down_step)
             model_dict["generator_optimizer"].lr = lr
-            ###     用來看目前訓練的狀況 
-            for test_in_pre, test_gt_pre in zip(data_dict["test_in_db_pre"].take(1), data_dict["test_gt_db_pre"].take(1)): 
-                if(epoch==0):print("Initializing Model~~~") 
-                if  (model_name == "model2_UNet_512to256" ):generate_images( model_dict["generator"]          , test_in_pre, test_gt_pre, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-                elif(model_name == "model5_rect2" ):        generate_images( model_dict["rect2"]    .generator, test_in_pre, test_gt_pre, epoch, result_dir) 
-                elif(model_name == "model6_mrf_rect2" ):    generate_images( model_dict["mrf_rect2"].generator, test_in_pre, test_gt_pre, epoch, result_dir) 
 
+
+            ###############################################################################################################################
+            ###     用來看目前訓練的狀況 
+            sample_start_time = time.time()
+            see_in = "test_in_db_pre"
+            see_gt = "test_gt_db_pre"
+            see_amount = 1
+            if(epoch==0):print("Initializing Model~~~") ### sample的時候就會initial model喔！
+            if(have_see):
+                see_in = "see_in_db_pre"
+                see_gt = "see_gt_db_pre"
+                see_amount = data_dict["see_amount"]
+            for see_index, (test_in_pre, test_gt_pre) in enumerate(zip(data_dict[see_in].take(see_amount), data_dict[see_gt].take(see_amount))): 
+                if  (model_name == "model2_UNet_512to256" ): generate_images( model_dict["generator"]          ,see_index, test_in_pre, test_gt_pre, data_dict["max_train_move"], data_dict["min_train_move"],  epoch, result_dir) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                elif(model_name == "model5_rect2" ):         generate_images( model_dict["rect2"]    .generator,see_index, test_in_pre, test_gt_pre, epoch, result_dir) 
+                elif(model_name == "model6_mrf_rect2" ):     generate_images( model_dict["mrf_rect2"].generator,see_index, test_in_pre, test_gt_pre, epoch, result_dir) 
+            print("sample all see time:", time.time()-sample_start_time)
+            ###############################################################################################################################
             ###     訓練
             for n, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate( data_dict["train_db_combine"] ):
                 print('.', end='')
@@ -557,22 +595,25 @@ if(__name__=="__main__"):
                 elif(model_name == "model5_rect2")        :train_step(model_dict["rect2"]    , train_in_pre, train_gt_pre, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], board_dict)
                 elif(model_name == "model6_mrf_rect2")    :train_step(model_dict["mrf_rect2"], train_in_pre, train_gt_pre, model_dict["generator_optimizer"], model_dict["discriminator_optimizer"], board_dict)
 
+            ###############################################################
             ###     整個epoch 的 loss 算平均，存進tensorboard
             with summary_writer.as_default():
                 for loss_name, loss_containor in board_dict.items():
                     tf.summary.scalar(loss_name, loss_containor.result(), step=epoch)
                     loss_value = loss_containor.result().numpy()
                     if(epoch == 0): ### 第一次 直接把值存成np.array
-                        np.save(logs_dir + "/" + loss_name, np.array(loss_value))
+                        np.save(logs_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
                     else: ### 第二次後，先把np.array先讀出來append值後 再存進去
                         loss_array = np.load(logs_dir + "/" + loss_name + ".npy")
                         loss_array = np.append(loss_array, loss_value)
                         np.save(logs_dir + "/" + loss_name, np.array(loss_array))
-                        print(loss_array)
+                        # print(loss_array)
+            see_loss(result_dir, board_dict, epochs)
+            ###############################################################
             ###    reset tensorboard 的 loss紀錄容器
             for loss_containor in board_dict.values():
                 loss_containor.reset_states()
-
+            ###############################################################################################################################
             ###     儲存模型 (checkpoint) the model every 20 epochs
             if (epoch + 1) % epoch_save_freq == 0:
                 ckpt.epoch_log.assign(epoch+1) ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！

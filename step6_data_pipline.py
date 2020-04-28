@@ -219,7 +219,7 @@ def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize
     ##########################################################################################################################################
     return data_dict 
 
-def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_type="bmp", batch_size=1, img_resize=(512,512)):
+def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_type="bmp", batch_size=1, img_resize=(512,512), have_see=False):
     ### 建db的順序：input, output(gt), input , output(gt)，跟 get_1_pure_unet_db不一樣喔別混亂了！
     train_in_img_db_dir = db_dir + "/" + db_name + "/" + "train"+"/"+in_dir_name
     train_gt_img_db_dir = db_dir + "/" + db_name + "/" + "train"+"/"+gt_dir_name
@@ -266,24 +266,36 @@ def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_typ
     #     ax[3].imshow(train_gt_pre)
     #     plt.show()
     #########################################################
-        
+    
+    if(have_see):
+        see_in_img_db_dir  = db_dir + "/" + db_name + "/" + "see"+"/" +in_dir_name
+        see_gt_img_db_dir  = db_dir + "/" + db_name + "/" + "see"+"/" +gt_dir_name
+        see_in_db  = img_db(see_in_img_db_dir , img_type, img_resize, 1)
+        see_gt_db  = img_db(see_gt_img_db_dir , img_type, img_resize, 1)
+        data_dict["see_in_db"]     = see_in_db.img_db
+        data_dict["see_in_db_pre"] = see_in_db.pre_db
+        data_dict["see_gt_db"]     = see_gt_db.img_db
+        data_dict["see_gt_db_pre"] = see_gt_db.pre_db
+        data_dict["see_amount" ]    = get_db_amount(see_in_img_db_dir )
+        data_dict["see_type"] = "img"
+
     return data_dict 
 ############################################################
-def get_2_pure_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512)): 
+def get_2_pure_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), have_see=False): 
     in_dir_name="dis_img_db"
     gt_dir_name="gt_ord_pad_img_db"
-    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize)
+    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize, have_see=have_see)
 
-def get_2_pure_rect2_v2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512)): 
+def get_2_pure_rect2_v2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), have_see=False): 
     in_dir_name="dis_img_db"
     gt_dir_name="gt_ord_img_db"
-    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize)
+    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize, have_see=have_see)
 
 ############################################################
-def get_3_unet_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512)): 
+def get_3_unet_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), have_see=False): 
     in_dir_name="unet_rec_img_db"
     gt_dir_name="gt_ord_img_db"
-    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize)
+    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize, have_see=have_see)
 
 ############################################################
 ### 這應該算通用型抓test_db；如果沒有gt， test_gt_dir 就丟None就行囉！
