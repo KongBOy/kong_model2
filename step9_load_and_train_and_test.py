@@ -110,6 +110,7 @@ def step3_build_tensorboard(model_name, logs_dir):
             # print("plot %s loss ok~"%loss_name )
         print("plot loss ok~" )
 
+
     summary_writer = tf.summary.create_file_writer( logs_dir ) ### 建tensorboard，這會自動建資料夾喔！
     board_dict = {}
     if  (model_name == MODEL_NAME.Unet):
@@ -122,6 +123,7 @@ def step3_build_tensorboard(model_name, logs_dir):
         board_dict["5_loss_d_real"]  = tf.keras.metrics.Mean('5_loss_d_real' , dtype=tf.float32)
         board_dict["6_d_total_loss"] = tf.keras.metrics.Mean('6_d_total_loss', dtype=tf.float32)
     return summary_writer, board_dict, see_loss
+
 
 def step4_get_result_dir_default_logs_ckpt_dir_name(result_dir):
     logs_dir = result_dir + "/" + "logs"
@@ -308,11 +310,12 @@ if(__name__=="__main__"):
 
     have_see = True
     # phase = "train"
+
     # restore_model_name = ""
 
-    test_in_dir = ""
-    test_gt_dir = ""
-    phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    # test_in_dir = ""
+    # test_gt_dir = ""
+    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
@@ -534,6 +537,7 @@ if(__name__=="__main__"):
         # summary_writer = tf.summary.create_file_writer( logs_dir ) ### 建tensorboard，這會自動建資料夾喔！
         summary_writer, board_dict, see_loss = step3_build_tensorboard( model_name_enum, logs_dir)
 
+
     ###    step4 建立checkpoint manager，三者都需要
     manager = tf.train.CheckpointManager (checkpoint=ckpt, directory=ckpt_dir, max_to_keep=2) ### checkpoint管理器，設定最多存2份
 
@@ -606,6 +610,7 @@ if(__name__=="__main__"):
                     loss_value = loss_containor.result().numpy()
                     if(epoch == 0): ### 第一次 直接把值存成np.array
                         np.save(logs_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
+
                     else: ### 第二次後，先把np.array先讀出來append值後 再存進去
                         loss_array = np.load(logs_dir + "/" + loss_name + ".npy")
                         loss_array = np.append(loss_array, loss_value)
