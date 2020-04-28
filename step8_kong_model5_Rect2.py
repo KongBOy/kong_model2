@@ -306,11 +306,14 @@ def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, board_dict ):
     #     tf.summary.scalar('5_loss_d_real' , loss_d_real,  step=epoch)
     #     tf.summary.scalar('6_d_total_loss', d_total_loss, step=epoch)
     
+import sys
+sys.path.append("kong_util")
 
 import time
 import matplotlib.pyplot as plt
 import cv2
-from build_dataset_combine import Check_dir_exist_and_build
+from build_dataset_combine import Check_dir_exist_and_build,Save_as_jpg
+from util import matplot_visual_one_row_imgs
 import numpy as np 
 def generate_images( model, see_index, dis_img, gt_img,  epoch=0, result_dir="."):
     sample_start_time = time.time()
@@ -334,16 +337,19 @@ def generate_images( model, see_index, dis_img, gt_img,  epoch=0, result_dir="."
     
 
     ### matplot_visual的部分
-    plt.figure(figsize=(20,6))                              ### 建立畫布
     display_list = [dis_img_back[...,::-1], rect2_back[...,::-1], gt_img_back[...,::-1]]  ### 把 dis_img_back, rect2_back, gt_img_back 包成list，記得因為用 matplot 所以要 bgr轉rgb
     title = ['Input Image', 'rect2 Image', 'Ground Truth']  ### 設定 title要顯示的字
-    for i in range(3):
-        plt.subplot(1, 3, i+1)      ### 切子圖
-        plt.title(title[i])         ### 畫標題
-        plt.imshow(display_list[i]) ### 畫圖
-        plt.axis('off')             ### 不畫軸
-    plt.savefig(plot_dir + "/" + "epoch_%04i-result.png"%epoch)  ### 寫進資料夾
-    plt.close() ### 一定要記得關喔！要不然圖開太多會當掉！
+    matplot_visual_one_row_imgs(titles=title, imgs=display_list, text="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch_%04i-result.png"%epoch)
+    Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)
+
+    # plt.figure(figsize=(20,6))                              ### 建立畫布
+    # for i in range(3):
+    #     plt.subplot(1, 3, i+1)      ### 切子圖
+    #     plt.title(title[i])         ### 畫標題
+    #     plt.imshow(display_list[i]) ### 畫圖
+    #     plt.axis('off')             ### 不畫軸
+    # plt.savefig(plot_dir + "/" + "epoch_%04i-result.png"%epoch)  ### 寫進資料夾
+    # plt.close() ### 一定要記得關喔！要不然圖開太多會當掉！
     # print("sample image cost time:", time.time()-sample_start_time)
 
 
@@ -354,8 +360,7 @@ def generate_images( model, see_index, dis_img, gt_img,  epoch=0, result_dir="."
 #######################################################################################################################
 ### testing 的部分 ####################################################################################################
 def test_visual(test_dir_name,  data_dict,  start_index=0):
-    import sys
-    sys.path.append("kong_util")
+
     from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec
     import matplotlib.pyplot as plt
     from util import get_dir_img
