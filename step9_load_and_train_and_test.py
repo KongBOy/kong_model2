@@ -325,17 +325,17 @@ if(__name__=="__main__"):
 
     # restore_model_name = ""
 
-    # test_in_dir = ""
-    # test_gt_dir = ""
-    # phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
+    test_in_dir = ""
+    test_gt_dir = ""
+    phase = "train_reload" ### 要記得去決定 restore_model_name 喔！
     # phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 restore_model_name 喔！
     ####################################################################################################################
 
     ### model_name/db_name 決定如何resize
     # model_name="model2_UNet_512to256"
-    model_name="model5_rect2"
+    # model_name="model5_rect2"
     model_name_enum = MODEL_NAME.Rect2
-    # model_name="model6_mrf_rect2"
+    model_name="model6_mrf_rect2"
 
     ### 設定 restore_model_name 來讀取網路weight，在phase==train_reload、test、test_indicate 時需要
     ### h=256,w=256_complex
@@ -386,7 +386,9 @@ if(__name__=="__main__"):
     
     
     # restore_model_name = "no-bg_gt_color_20200427-004020_model5_rect2" 
-    restore_model_name = "type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2" 
+    # restore_model_name = "type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2" 
+    # restore_model_name = "type5c-real_have_see-no_bg-gt-gray3ch_20200429-002734_model6_mrf_rect2" ### 用成 13579了！ 
+    restore_model_name = "type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2" ### 這才對喔！
 
 
     ####################################################################################################################

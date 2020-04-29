@@ -182,20 +182,20 @@ class Generator(tf.keras.models.Model):
 class MRFBlock(tf.keras.layers.Layer):
     def __init__(self, c_num,**kwargs):
         super(MRFBlock, self).__init__()
-        self.conv_11 = Conv2D( c_num, kernel_size=1, strides=1, padding="same")
-        self.in_c11  = InstanceNorm_kong()
-        self.conv_12 = Conv2D( c_num, kernel_size=1, strides=1, padding="same")
-        self.in_c12  = InstanceNorm_kong()
+        # self.conv_11 = Conv2D( c_num, kernel_size=1, strides=1, padding="same")
+        # self.in_c11  = InstanceNorm_kong()
+        # self.conv_12 = Conv2D( c_num, kernel_size=1, strides=1, padding="same")
+        # self.in_c12  = InstanceNorm_kong()
 
-        self.conv_31 = Conv2D( c_num, kernel_size=3, strides=1, padding="same")
-        self.in_c31  = InstanceNorm_kong()
-        self.conv_32 = Conv2D( c_num, kernel_size=3, strides=1, padding="same")
-        self.in_c32  = InstanceNorm_kong()
+        # self.conv_31 = Conv2D( c_num, kernel_size=3, strides=1, padding="same")
+        # self.in_c31  = InstanceNorm_kong()
+        # self.conv_32 = Conv2D( c_num, kernel_size=3, strides=1, padding="same")
+        # self.in_c32  = InstanceNorm_kong()
 
-        self.conv_51 = Conv2D( c_num, kernel_size=5, strides=1, padding="same")
-        self.in_c51  = InstanceNorm_kong()
-        self.conv_52 = Conv2D( c_num, kernel_size=5, strides=1, padding="same")
-        self.in_c52  = InstanceNorm_kong()
+        # self.conv_51 = Conv2D( c_num, kernel_size=5, strides=1, padding="same")
+        # self.in_c51  = InstanceNorm_kong()
+        # self.conv_52 = Conv2D( c_num, kernel_size=5, strides=1, padding="same")
+        # self.in_c52  = InstanceNorm_kong()
 
         self.conv_71 = Conv2D( c_num, kernel_size=7, strides=1, padding="same")
         self.in_c71  = InstanceNorm_kong()
@@ -210,26 +210,26 @@ class MRFBlock(tf.keras.layers.Layer):
         self.concat = Concatenate()
         
     def call(self, input_tensor):
-        x1 = self.conv_11(input_tensor)
-        x1 = self.in_c11(x1)
-        x1 = tf.nn.relu(x1)
-        x1 = self.conv_12(x1)
-        x1 = self.in_c12(x1)
-        x1 = tf.nn.relu(x1)
+        # x1 = self.conv_11(input_tensor)
+        # x1 = self.in_c11(x1)
+        # x1 = tf.nn.relu(x1)
+        # x1 = self.conv_12(x1)
+        # x1 = self.in_c12(x1)
+        # x1 = tf.nn.relu(x1)
 
-        x3 = self.conv_31(input_tensor)
-        x3 = self.in_c31(x3)
-        x3 = tf.nn.relu(x3)
-        x3 = self.conv_32(x3)
-        x3 = self.in_c32(x3)
-        x3 = tf.nn.relu(x3)
+        # x3 = self.conv_31(input_tensor)
+        # x3 = self.in_c31(x3)
+        # x3 = tf.nn.relu(x3)
+        # x3 = self.conv_32(x3)
+        # x3 = self.in_c32(x3)
+        # x3 = tf.nn.relu(x3)
         
-        x5 = self.conv_51(input_tensor)
-        x5 = self.in_c51(x5)
-        x5 = tf.nn.relu(x5)
-        x5 = self.conv_52(x5)
-        x5 = self.in_c52(x5)
-        x5 = tf.nn.relu(x5)
+        # x5 = self.conv_51(input_tensor)
+        # x5 = self.in_c51(x5)
+        # x5 = tf.nn.relu(x5)
+        # x5 = self.conv_52(x5)
+        # x5 = self.in_c52(x5)
+        # x5 = tf.nn.relu(x5)
 
         x7 = self.conv_71(input_tensor)
         x7 = self.in_c71(x7)
@@ -245,7 +245,8 @@ class MRFBlock(tf.keras.layers.Layer):
         x9 = self.in_c92(x9)
         x9 = tf.nn.relu(x9)
 
-        x_concat = self.concat([x1, x3, x5, x7, x9])
+        # x_concat = self.concat([x1, x3, x5, x7, x9])
+        x_concat = self.concat([x7, x9])
         return x_concat
 
 
@@ -339,7 +340,7 @@ def generate_images( model, see_index, dis_img, gt_img,  epoch=0, result_dir="."
     ### matplot_visual的部分
     display_list = [dis_img_back[...,::-1], rect2_back[...,::-1], gt_img_back[...,::-1]]  ### 把 dis_img_back, rect2_back, gt_img_back 包成list，記得因為用 matplot 所以要 bgr轉rgb
     title = ['Input Image', 'rect2 Image', 'Ground Truth']  ### 設定 title要顯示的字
-    matplot_visual_one_row_imgs(titles=title, imgs=display_list, text="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch_%04i-result.png"%epoch)
+    matplot_visual_one_row_imgs(img_titles=title, imgs=display_list, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch_%04i-result.png"%epoch)
     Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)
 
     # plt.figure(figsize=(20,6))                              ### 建立畫布
