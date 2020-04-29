@@ -17,6 +17,7 @@ step4_apply_rec_flow*
 step9_model_result*
 rect*
 dont track
+analyze_dir
 
 training_checkpoints*
 
