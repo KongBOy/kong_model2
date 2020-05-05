@@ -139,6 +139,8 @@ class Result_analyzer:
 
     ### 這是很general的寫法，如果沒辦法直接看懂先去看 analyze_2_result_certain_see，我是從那裡改成general的！
     def analyze_results_all_see(self, results,  start_see = 0):
+        # start_see = 2
+        # for go_see in range(start_see, 8):
         for go_see in range(start_see, 32):
             self.analyze_results_certain_see(results, go_see)
 
@@ -148,6 +150,25 @@ result2 = Result("type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5
 result3 = Result("type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"    , describe="no_bg-gt_color")
 result4 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , describe="no_bg-gt_gray")
 analyze1 = Result_analyzer(describe="pure_rect2-bg_effect")
+
+result10 = Result("type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", describe="have_bg-gt_gray")
+result11 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , describe="no_bg-gt_gray")
+analyze2 = Result_analyzer(describe="pure_rect2-bg_effect_just_gt_gray")
+analyze2.analyze_results_all_see( [result10, result11] )
+
+result10 = Result("type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2", describe="have_bg-gt_color")
+result11 = Result("type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"  , describe="no_bg-gt_color")
+analyze2 = Result_analyzer(describe="pure_rect2-bg_effect_just_gt_color")
+# analyze2.analyze_results_all_see( [result10, result11] )
+
+result5 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"                   , describe="no_mrf")
+result6 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2-127.35_7_9"    , describe="mrf_7_9")
+result7 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2-127.28_7_11"   , describe="mrf_7_11")
+result8 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2-128.242_9_11"  , describe="mrf_9_11")
+result9 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2-128.246_13579" , describe="mrf_13579")
+analyze3 = Result_analyzer(describe="pure_rect2-mrf_effect")
+# analyze3.analyze_results_all_see( [result5, result6, result7, result8, result9] )
+
 # analyze1.analyze_2_result_certain_see(result1, result2, 0)
 # analyze1.analyze_2_result_all_see(result1, result2)
 # analyze1.analyze_results_certain_see([result1, result2, result3, result4], 0)
@@ -155,7 +176,7 @@ analyze1 = Result_analyzer(describe="pure_rect2-bg_effect")
 
 # result1.save_see_as_avi(see_num=0)
 # result1.save_see_as_matplot_visual(see_num=0)
-result1.save_all_see_as_matplot_visual()
+# result1.save_all_see_as_matplot_visual()
 # result1.save_all_see_as_avi()
 ### 把 see 000~031 都做成影片
 # from video_from_img import Video_combine_from_imgs, Video_combine_from_dir
