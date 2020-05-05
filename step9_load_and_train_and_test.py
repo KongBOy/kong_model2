@@ -589,7 +589,11 @@ if(__name__=="__main__"):
             print("save ok ~~~~~~~~~~~~~~~~~")
 
         for epoch in range(start_epoch, epochs):
-            print("Epoch: ", epoch)
+            epoch_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
+            print("Epoch: ", epoch, "start at", epoch_start_timestamp)
+            
+            
+            
             e_start = time.time()
 
             lr = 0.0002 if epoch < epoch_down_step else 0.0002*(epochs-epoch)/(epochs-epoch_down_step)
@@ -657,7 +661,8 @@ if(__name__=="__main__"):
             print("")
             with open(result_dir + "/" +"cost_time.txt","a") as f:
                 f.write( phase )                                                                         ;f.write("\n") 
-                f.write('epoch %i cost time:%.2f'      %(epoch , epoch_cost_time     ))                  ;f.write("\n")
+                f.write('epoch %i start at:%s'         %(epoch, epoch_start_timestamp ))                 ;f.write("\n")
+                f.write('epoch cost time:%.2f'         %(epoch_cost_time             ))                  ;f.write("\n")
                 f.write("batch cost time:%.2f average" %(epoch_cost_time/data_dict["train_amount"] ))    ;f.write("\n")
                 f.write("total cost time:%s"           %(time_util(total_cost_time)  ))                  ;f.write("\n")
                 f.write("esti total time:%s"           %(time_util(epoch_cost_time*epochs)))             ;f.write("\n")
