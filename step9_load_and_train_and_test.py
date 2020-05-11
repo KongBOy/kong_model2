@@ -142,7 +142,7 @@ def step4_get_datetime_default_result_logs_ckpt_dir_name(db_name, model_name):
 
 
 
-def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=None, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1, have_see=False):
+def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=None, test_gt_dir=None, gt_type="img", img_type="bmp", batch_size=1, train_shuffle=True, have_see=False):
     from step6_data_pipline import get_1_pure_unet_db  , \
                                get_2_pure_rect2_dataset, \
                                get_2_pure_rect2_v2_dataset, \
@@ -231,39 +231,39 @@ def step6_data_pipline(phase, db_dir="", db_name="", model_name="", test_in_dir=
     data_dict = {}
 
     if(phase=="train" or phase=="train_reload" or phase=="test"):
-        if  (db_name == "h=384,w=256_old_page_1_pure_unet"      ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-        elif(db_name == "h=384,w=256_old_page_2_pure_rect2"     ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "h=384,w=256_old_page_3_unet_rect2"     ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        if  (db_name == "h=384,w=256_old_page_1_pure_unet"      ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=384,w=256_old_page_2_pure_rect2"     ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=384,w=256_old_page_3_unet_rect2"     ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
 
-        elif(db_name == "h=256,w=256_complex_1_pure_unet"       ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-        elif(db_name == "h=256,w=256_complex_2_pure_rect2"      ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "h=256,w=256_complex_3_unet_rect2"      ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "h=256,w=256_complex_1_pure_unet"       ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=256,w=256_complex_2_pure_rect2"      ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=256,w=256_complex_3_unet_rect2"      ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
         
-        elif(db_name == "h=384,w=256_complex_1_pure_unet"       ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-        elif(db_name == "h=384,w=256_complex_2_pure_rect2"      ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "h=384,w=256_complex_3_unet_rect2"      ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "h=384,w=256_complex_1_pure_unet"       ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=384,w=256_complex_2_pure_rect2"      ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=384,w=256_complex_3_unet_rect2"      ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
         
-        elif(db_name == "h=384,w=256_complex+page_1_pure_unet"  ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-        elif(db_name == "h=384,w=256_complex+page_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "h=384,w=256_complex+page_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "h=384,w=256_complex+page_1_pure_unet"  ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=384,w=256_complex+page_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=384,w=256_complex+page_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
         
-        elif(db_name == "h=384,w=256_complex+page_more_like_1_pure_unet"  ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-        elif(db_name == "h=384,w=256_complex+page_more_like_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "h=384,w=256_complex+page_more_like_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "h=384,w=256_complex+page_more_like_1_pure_unet"  ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True)
+        elif(db_name == "h=384,w=256_complex+page_more_like_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=384,w=256_complex+page_more_like_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
         
-        elif(db_name == "h=384,w=256_smooth-curl+fold_and_page_1_pure_unet"  ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-        elif(db_name == "h=384,w=256_smooth-curl+fold_and_page_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "h=384,w=256_smooth-curl+fold_and_page_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
+        elif(db_name == "h=384,w=256_smooth-curl+fold_and_page_1_pure_unet"  ): data_dict = get_1_pure_unet_db      (db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True)
+        elif(db_name == "h=384,w=256_smooth-curl+fold_and_page_2_pure_rect2" ): data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "h=384,w=256_smooth-curl+fold_and_page_3_unet_rect2" ): data_dict = get_3_unet_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
         
-        elif(db_name == "wei_book_1_type4_complex+page_more_like"           ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "wei_book_2_tf1_db"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
-        elif(db_name == "wei_book_3_tf1_db+type4_complex+page_more_like"    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize )
-        elif(db_name == "no-bg_gt_color"                                    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
-        elif(db_name == "no-bg_gt_gray_3ch"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
-        elif(db_name == "type5c-real_have_see-no_bg-gt-gray3ch"             ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
-        elif(db_name == "type5c-real_have_see-no_bg-gt-color"               ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
-        elif(db_name == "type5d-real_have_see-have_bg-gt_gray3ch"           ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
-        elif(db_name == "type5d-real_have_see-have_bg-gt_color"             ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, have_see=have_see )
+        elif(db_name == "wei_book_1_type4_complex+page_more_like"           ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True, )
+        elif(db_name == "wei_book_2_tf1_db"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True, have_see=have_see )
+        elif(db_name == "wei_book_3_tf1_db+type4_complex+page_more_like"    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True )
+        elif(db_name == "no-bg_gt_color"                                    ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True, have_see=have_see )
+        elif(db_name == "no-bg_gt_gray_3ch"                                 ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True, have_see=have_see )
+        elif(db_name == "type5c-real_have_see-no_bg-gt-gray3ch"             ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True, have_see=have_see )
+        elif(db_name == "type5c-real_have_see-no_bg-gt-color"               ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True, have_see=have_see )
+        elif(db_name == "type5d-real_have_see-have_bg-gt_gray3ch"           ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True, have_see=have_see )
+        elif(db_name == "type5d-real_have_see-have_bg-gt_color"             ): data_dict = get_2_pure_rect2_v2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize, train_shuffle=True, have_see=have_see )
 
         elif(db_name == "wei_book_h=384,w=256"                  ): data_dict = get_test_indicate_db  (test_in_dir=test_in_dir, test_gt_dir=test_gt_dir, gt_type="img", img_type="jpg", img_resize=img_resize)
     elif(phase=="test_indicate"):

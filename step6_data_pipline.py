@@ -137,7 +137,7 @@ def get_train_test_move_map_db(db_dir, db_name, batch_size):
 
     return train_move_map_db_norm, max_train_move, min_train_move, test_move_map_db_norm, train_move_map_db_ord, test_move_map_db_ord
 
-def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512)):#, move_resize=(256,256)): 
+def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), train_shuffle=True):#, move_resize=(256,256)): 
     ### 建db的順序：input, input, output(gt), output(gt)，跟 get_rect2_dataset不一樣喔別混亂了！
     ### 拿到 dis_imgs_db 的 train dataset，從 檔名 → tensor
     data_dict = {}
@@ -176,8 +176,9 @@ def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize
 
     ##########################################################################################################################################
     data_dict["train_db_combine"] = tf.data.Dataset.zip( (data_dict["train_in_db"], data_dict["train_in_db_pre"], 
-                                                          data_dict["train_gt_db"], data_dict["train_gt_db_pre"]) )\
-                                                     .shuffle( int(data_dict["train_amount"]/2) ) ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
+                                                          data_dict["train_gt_db"], data_dict["train_gt_db_pre"]) )
+    if(train_shuffle):
+        data_dict["train_db_combine"]=data_dict["train_db_combine"].shuffle( int(data_dict["train_amount"]/2) ) ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
     # print('data_dict["train_in_db"]',data_dict["train_in_db"])
     # print('data_dict["train_in_db_pre"]',data_dict["train_in_db_pre"])
     # print('data_dict["train_gt_db"]',data_dict["train_gt_db"])
@@ -219,7 +220,7 @@ def get_1_pure_unet_db(db_dir, db_name, img_type="bmp", batch_size=1, img_resize
     ##########################################################################################################################################
     return data_dict 
 
-def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_type="bmp", batch_size=1, img_resize=(512,512), have_see=False):
+def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_type="bmp", batch_size=1, img_resize=(512,512), train_shuffle=True, have_see=False):
     ### 建db的順序：input, output(gt), input , output(gt)，跟 get_1_pure_unet_db不一樣喔別混亂了！
     train_in_img_db_dir = db_dir + "/" + db_name + "/" + "train"+"/"+in_dir_name
     train_gt_img_db_dir = db_dir + "/" + db_name + "/" + "train"+"/"+gt_dir_name
@@ -247,8 +248,10 @@ def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_typ
     data_dict["gt_type"] = "img"
 
     data_dict["train_db_combine"] = tf.data.Dataset.zip( (data_dict["train_in_db"], data_dict["train_in_db_pre"], 
-                                                          data_dict["train_gt_db"], data_dict["train_gt_db_pre"]) )\
-                                             .shuffle( int(data_dict["train_amount"]/2) ) ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
+                                                          data_dict["train_gt_db"], data_dict["train_gt_db_pre"]) )
+                                             
+    if(train_shuffle): 
+        data_dict["train_db_combine"] = data_dict["train_db_combine"].shuffle( int(data_dict["train_amount"]/2) ) ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
     #########################################################
     ### 勿刪！用來測試寫得對不對！
     # import matplotlib.pyplot as plt 
@@ -281,21 +284,21 @@ def get_in_img_and_gt_img_db(db_dir, db_name, in_dir_name, gt_dir_name,  img_typ
 
     return data_dict 
 ############################################################
-def get_2_pure_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), have_see=False): 
+def get_2_pure_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), train_shuffle=True, have_see=False): 
     in_dir_name="dis_img_db"
     gt_dir_name="gt_ord_pad_img_db"
-    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize, have_see=have_see)
+    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize, train_shuffle=train_shuffle, have_see=have_see)
 
-def get_2_pure_rect2_v2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), have_see=False): 
+def get_2_pure_rect2_v2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), train_shuffle=True, have_see=False): 
     in_dir_name="dis_img_db"
     gt_dir_name="gt_ord_img_db"
-    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize, have_see=have_see)
+    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize, train_shuffle=train_shuffle, have_see=have_see)
 
 ############################################################
-def get_3_unet_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), have_see=False): 
+def get_3_unet_rect2_dataset(db_dir, db_name, img_type="bmp", batch_size=1, img_resize=(512,512), train_shuffle=True, have_see=False): 
     in_dir_name="unet_rec_img_db"
     gt_dir_name="gt_ord_img_db"
-    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize, have_see=have_see)
+    return get_in_img_and_gt_img_db(db_dir=db_dir, db_name=db_name, in_dir_name=in_dir_name, gt_dir_name=gt_dir_name, img_type=img_type, batch_size=batch_size, img_resize=img_resize, train_shuffle=train_shuffle, have_see=have_see)
 
 ############################################################
 ### 這應該算通用型抓test_db；如果沒有gt， test_gt_dir 就丟None就行囉！
