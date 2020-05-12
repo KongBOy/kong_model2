@@ -324,14 +324,14 @@ def generate_images( model, see_index, in_img_pre, gt_img_pre,  epoch=0, result_
     if(epoch==0): ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
         Check_dir_exist_and_build(plot_dir)  ### 建立 see資料夾/matplot_visual資料夾
-        cv2.imwrite(see_dir+"/"+"0-in_img.jpg", in_img_back) ### 寫一張 in圖進去，進去資料夾時比較好看
+        cv2.imwrite(see_dir+"/"+"0-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看
         cv2.imwrite(see_dir+"/"+"0-gt_img.jpg",  gt_img_back)  ### 寫一張 gt圖進去，進去資料夾時比較好看
     cv2.imwrite(see_dir+"/"+"epoch_%04i.jpg"%epoch, rect2_back.astype(np.uint8)) ### 把 生成影像存進相對應的資料夾
 
     ### matplot_visual的部分
     display_list = [in_img_back[...,::-1], rect2_back[...,::-1], gt_img_back[...,::-1]]  ### 把 in_img_back, rect2_back, gt_img_back 包成list，記得因為用 matplot 所以要 bgr轉rgb
     title = ['Input Image', 'rect2 Image', 'Ground Truth']  ### 設定 title要顯示的字
-    matplot_visual_one_row_imgs(img_titles=title, imgs=display_list, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch_%04i-result.png"%epoch)
+    matplot_visual_one_row_imgs(img_titles=title, imgs=display_list, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch=%04i"%epoch)
     Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
 
 #######################################################################################################################
