@@ -7,6 +7,7 @@ from step0_access_path import access_path
 import cv2
 import time 
 import os
+from tqdm import tqdm
 
 class See:
     def __init__(self, result_dir, see_name):
@@ -14,6 +15,7 @@ class See:
         self.see_name=see_name
 
         self.see_dir = self.result_dir + "/" + self.see_name
+        self.see_file_names = self.get_see_file_names()
 
     def get_see_file_names(self):
         return get_dir_certain_file_name(self.see_dir, ".jpg")
@@ -33,7 +35,7 @@ class See:
         print("processing %s"%self.see_name)
         in_img = cv2.imread(self.see_dir + "/" + certain_see_file_names[0]) ### 要記得see的第一張存的是 輸入的in影像
         gt_img = cv2.imread(self.see_dir + "/" + certain_see_file_names[1]) ### 要記得see的第二張存的是 輸出的gt影像
-        for go_img, certain_see_file_name in enumerate(certain_see_file_names):
+        for go_img, certain_see_file_name in enumerate(tqdm(certain_see_file_names)):
             if(go_img>=2): ### 第三張 才開始存 epoch影像喔！
                 print(".",end="")                 ### 顯示進度用
                 if(go_img+1) % 100 == 0: print()  ### 顯示進度用
@@ -57,8 +59,8 @@ class Result:
         self.result_dir = access_path + "result/" + result_dir_name
         self.describe = describe
         self.see_dirs = [self.result_dir + "/" + "see-%03i"%see_num for see_num in range(32) ]
-        self.sees1 = [ See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
-        self.sees2 = [ See(self.result_dir, "see_000-test_emp"), 
+        # self.sees1 = [ See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
+        self.sees2 = [  See(self.result_dir, "see_000-test_emp"), 
                         See(self.result_dir, "see_001-test_img"),
                         See(self.result_dir, "see_002-test_img"),
                         See(self.result_dir, "see_003-test_img"),
@@ -143,7 +145,7 @@ class Result:
             print("rename_dst:", self.sees2[0].see_dir)
             if(os.path.isdir(self.sees1[go_see].see_dir)):os.rename(self.sees1[go_see].see_dir, self.sees2[go_see].see_dir)
             
-    def save_all_see_as_matplot_visual(self, start_index, amount, task_args=None):
+    def save_all_see_as_matplot_visual(self, start_index, amount):
         print("start_index", start_index)
         for see in self.sees2[start_index: start_index+amount]:
             see.save_as_matplot_visual()
@@ -252,45 +254,85 @@ class Result_analyzer:
             self.analyze_results_certain_see(results, go_see)
 
 
-
-    def analyze_row_col_results_certain_see(self, r_c_results, see_num):
+    ########################################################################################################################################
+    ### 同col同result，同row同see
+    def analyze_col_results_multi_see(self, c_results, see_nums):
         start_time = time.time()
-        analyze_see_dir = self.analyze_dir + "/" + "%03i"%see_num ### 分析結果存哪裡定位出來
-        Check_dir_exist_and_build(analyze_see_dir)                ### 建立 存結果的資料夾
-
-        r_c_results_certain_see_file_names = []
-        for r_results in r_c_results:
-            c_results_certain_see_file_names = [] ### result1, result2, ... 各個resultX的 certain_see_file_names都存起來
-            for result in r_results:
-                c_results_certain_see_file_names.append( result.get_certain_see_file_names(see_num))
-            r_c_results_certain_see_file_names.append(c_results_certain_see_file_names)
+        analyze_see_dir = self.analyze_dir + "/" + "analyze_col_results_multi_see"  ### (可以再想想好名字！)分析結果存哪裡定位出來
+        Check_dir_exist_and_build(analyze_see_dir)                                  ### 建立 存結果的資料夾
         
-        print("processing see_num:", see_num)
+        ### 抓 各row的in/gt imgs
+        in_imgs = []
+        gt_imgs = []
+        for see_num in see_nums:
+            in_imgs.append(cv2.imread(c_results[0].sees2[see_num].see_dir + "/" + c_results[0].sees2[see_num].see_file_names[0]))
+            gt_imgs.append(cv2.imread(c_results[0].sees2[see_num].see_dir + "/" + c_results[0].sees2[see_num].see_file_names[1]))
 
-        # for go_img in range(len( r_c_results_certain_see_file_names[0][0] )):
-        for go_img in range(600):
+        ### 抓 第一row的 要顯示的 titles
+        c_titles = ["in_img"]
+        for result in c_results:
+            c_titles.append(result.describe)
+        c_titles += ["gt_img"]
+        r_c_titles = [c_titles] ### 還是包成r_c_titles的形式喔！
+
+        ### 抓 row/col 要顯示的imgs
+        for go_img in tqdm(range(600)):
             if(go_img >=2):
                 epoch = go_img-2
-                print("see_num=", see_num, "go_img=", go_img)
-                r_c_imgs = []
-                for go_row, row_results_certain_see_file_name in enumerate(r_c_results_certain_see_file_names):
-                    c_imgs = []
-                    in_img = cv2.imread(r_c_results[go_row][0].see_dirs[see_num] + "/" + row_results_certain_see_file_name[0][0] )  ### 要記得see的第一張存的是 輸入的in影像，補充一下這裡用results[x]都沒差，因為go_see是一樣的，代表各result輸入都一樣，只是要注意results_certain_see_file_names[x][0]的第一個[]數字要對應到就是了！
-                    gt_img = cv2.imread(r_c_results[go_row][0].see_dirs[see_num] + "/" + row_results_certain_see_file_name[0][1] )  ### 要記得see的第二張存的是 輸出的gt影像，補充一下這裡用results[x]都沒差，因為go_see是一樣的，代表各result輸入都一樣，只是要注意results_certain_see_file_names[x][0]的第一個[]數字要對應到就是了！
-                    c_imgs += [in_img]
-                    for go_col, result_certain_see_file_name in enumerate(row_results_certain_see_file_name):
-                        c_imgs.append( cv2.imread( r_c_results[go_row][go_col].see_dirs[see_num] + "/" + result_certain_see_file_name[go_img] ))
-                    c_imgs += [gt_img]
-                    r_c_imgs.append(c_imgs)
-                
-                img_titles = [ result.describe for result in r_c_results[0] ]      ### 把每張圖要顯示的字包成list 
-                matplot_visual_multi_row_imgs(img_titles     = ["in_img", *img_titles, "gt_img"], 
-                                              rows_cols_imgs = r_c_imgs,
-                                              fig_title      ="epoch=%04i"%epoch,   ### 圖上的大標題
-                                              dst_dir        = analyze_see_dir, 
-                                              file_name      ="epoch=%04i"%epoch )
 
-        Save_as_jpg(analyze_see_dir,analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
+                r_c_imgs = []
+                for go_see_num, see_num in enumerate(see_nums):
+                    c_imgs   = [in_imgs[go_see_num]]
+                    for result in c_results:
+                        c_imgs.append(cv2.imread(result.sees2[see_num].see_dir + "/" + result.sees2[see_num].see_file_names[go_img]))
+                    c_imgs += [gt_imgs[go_see_num]]
+                    r_c_imgs.append(c_imgs)
+                matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
+                                              rows_cols_imgs   = r_c_imgs,
+                                              fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
+                                              dst_dir          = analyze_see_dir, 
+                                              file_name        ="epoch=%04i"%epoch )
+        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
+        Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+        print("cost_time:", time.time() - start_time)
+
+
+    ########################################################################################################################################
+    ### 各row各col 皆 不同result，但全部都看相同某個see
+    def analyze_row_col_results_certain_see(self, r_c_results, see_num):
+        start_time = time.time()
+        analyze_see_dir = self.analyze_dir + "/" + r_c_results[0][0].sees2[see_num].see_name ### 分析結果存哪裡定位出來
+        Check_dir_exist_and_build(analyze_see_dir)                                          ### 建立 存結果的資料夾
+        
+        print("processing see_num:", see_num)
+        ### 要記得see的第一張存的是 輸入的in影像，第二張存的是 輸出的gt影像
+        ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
+        in_img = cv2.imread(r_c_results[0][0].sees2[see_num].see_dir + "/" + r_c_results[0][0].sees2[see_num].see_file_names[0] )  ### 第一張：in_img
+        gt_img = cv2.imread(r_c_results[0][0].sees2[see_num].see_dir + "/" + r_c_results[0][0].sees2[see_num].see_file_names[1] )  ### 第二張：gt_img
+        for go_img in tqdm(range(600)):
+            if(go_img >=2):
+                epoch = go_img-2
+                # print("see_num=", see_num, "go_img=", go_img)
+                r_c_imgs   = [] ### r_c_imgs   抓出所要要顯示的圖   ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
+                r_c_titles = [] ### r_c_titles 抓出所有要顯示的標題 ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
+                for row_results in r_c_results:
+                    c_imgs   = [in_img]   ### 每個row的第一張要放in_img
+                    c_titles = ["in_img"] ### 每個row的第一張要放in_img
+                    for result in row_results: ### 抓出一個row的 img 和 title
+                        c_imgs.append( cv2.imread( result.sees2[see_num].see_dir + "/" + result.sees2[see_num].see_file_names[go_img] ))
+                        c_titles.append(result.describe)
+                    c_imgs += [gt_img]      ### 每個row的最後一張要放gt_img
+                    c_titles += ["gt_img"]  ### 每個row的最後一張要放gt_img
+                    r_c_imgs.append(c_imgs)
+                    r_c_titles.append(c_titles)
+                ###########################################################################################################
+                matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
+                                              rows_cols_imgs   = r_c_imgs,
+                                              fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
+                                              dst_dir          = analyze_see_dir, 
+                                              file_name        ="epoch=%04i"%epoch )
+
+        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
@@ -300,18 +342,11 @@ class Result_analyzer:
     
     def analyze_row_col_results_all_sees_multiprocess(self, r_c_results):
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=2 ,task_amount=2, task=self.analyze_row_col_results_sees, task_args=r_c_results)
+        multi_processing_interface(core_amount=4 ,task_amount=4, task=self.analyze_row_col_results_sees, task_args=r_c_results)
         
 if(__name__=="__main__"):
-    try_see_class = Result("type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2_copy", describe="try_see_class")
-    # try_see_class.sees1[0].save_as_avi()
     # try_see_class.rename_see1_to_see2()
-    # try_see_class.sees2[0].save_as_matplot_visual()
-    # try_see_class.save_all_see_as_matplot_visual(start_index=0, amount=1)
-    # try_see_class.save_all_see_as_matplot_visual(start_index=1, amount=1)
-    # try_see_class.save_all_see_as_matplot_visual(start_index=2, amount=1)
-    # try_see_class.save_all_see_as_matplot_visual(start_index=3, amount=1)
-    try_see_class.save_all_see_as_matplot_visual_multiprocess()
+    # try_see_class.save_all_see_as_matplot_visual_multiprocess()
 
 
     # result1 = Result("type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"  , describe="have_bg-gt_color")
@@ -358,75 +393,65 @@ if(__name__=="__main__"):
     # result1.save_all_see_as_avi()
 
 
-    # mrf_3       = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"                   , describe="no_mrf")
-    # mrf_7_9_1   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-190344_model6_mrf_rect2_127.35_7_9_mae1"    , describe="mrf_7_9_1")
-    # mrf_7_9_3   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2-127.35_7_9_mae3"    , describe="mrf_7_9_3")
-    # mrf_7_9_6   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231036_model6_mrf_rect2_127.35_7_9_mae6"    , describe="mrf_7_9_6")
-    # mrf_7_11_1  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-190955_model6_mrf_rect2_127.28_7_11mae1"   , describe="mrf_7_11_1")
-    # mrf_7_11_3  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2-127.28_7_11_mae3"   , describe="mrf_7_11_3")
-    # mrf_7_11_6  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231336_model6_mrf_rect2_127.28_7_11_mae6"   , describe="mrf_7_11_6")
-    # mrf_9_11_1  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-190837_model6_mrf_rect2_128.242_9_11_mae1"  , describe="mrf_9_11_1")
-    # mrf_9_11_3  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2-128.242_9_11_mae3"  , describe="mrf_9_11_3")
-    # mrf_9_11_6  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231249_model6_mrf_rect2_128.242_9_11_mae6"  , describe="mrf_9_11_6")
-    # mrf_13579_1 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-191110_model6_mrf_rect2_128.246_13579_mae1" , describe="mrf_13579_1")
-    # mrf_13579_3 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2-128.246_13579_mae3" , describe="mrf_13579_3")
-    # mrf_13579_6 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231530_model6_mrf_rect2_128.246_13579_mae6" , describe="mrf_13579_6")
+    have_bg_no_mrf_gray_mae3  = Result("type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2"        , describe="no_mrf_mae3")
+    have_bg_no_mrf_color_mae3 = Result("type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"          , describe="no_mrf_mae3")
+    no_bg_no_mrf_color_mae3   = Result("type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"            , describe="no_mrf_mae3")
 
+    no_mrf_mae1 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200506-064552_model5_rect2_127.35_mae1"            , describe="no_mrf_mae1")
+
+    no_mrf_mae3 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"                        , describe="no_mrf_mae3")
+    
+    mrf_7_9_1   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-190344_model6_mrf_rect2_127.35_7_9_mae1"    , describe="mrf_7_9_mae1")
+    mrf_7_9_3   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2-127.35_7_9_mae3"    , describe="mrf_7_9_mae3")
+    mrf_7_9_6   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231036_model6_mrf_rect2_127.35_7_9_mae6"    , describe="mrf_7_9_mae6")
+    mrf_7_11_1  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-190955_model6_mrf_rect2_127.28_7_11mae1"    , describe="mrf_7_11_mae1")
+    mrf_7_11_3  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2-127.28_7_11_mae3"   , describe="mrf_7_11_mae3")
+    mrf_7_11_6  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231336_model6_mrf_rect2_127.28_7_11_mae6"   , describe="mrf_7_11_mae6")
+    mrf_9_11_1  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-190837_model6_mrf_rect2_128.242_9_11_mae1"  , describe="mrf_9_11_mae1")
+    mrf_9_11_3  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2-128.242_9_11_mae3"  , describe="mrf_9_11_mae3")
+    mrf_9_11_6  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231249_model6_mrf_rect2_128.242_9_11_mae6"  , describe="mrf_9_11_mae6")
+    mrf_13579_1 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-191110_model6_mrf_rect2_128.246_13579_mae1" , describe="mrf_13579_mae1")
+    mrf_13579_3 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2-128.246_13579_mae3" , describe="mrf_13579_mae3")
+    mrf_13579_6 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231530_model6_mrf_rect2_128.246_13579_mae6" , describe="mrf_13579_mae6")
+
+
+    ### 把 matplot_visual 壓小
+    # mrf_results = [ 
+                    # have_bg_no_mrf_gray_mae3, 
+                    # have_bg_no_mrf_color_mae3, 
+                    # no_bg_no_mrf_color_mae3, 
+                    # no_mrf_mae1, 
+                    # no_mrf_mae3, 
+                    # mrf_7_9_1,
+                    # mrf_7_9_3,
+                    # mrf_7_9_6,
+                    # mrf_7_11_1,
+                    # mrf_7_11_3,
+                    # mrf_7_11_6,
+                    # mrf_9_11_1,
+                    # mrf_9_11_3,
+                    # mrf_9_11_6,
+                    # mrf_13579_1,
+                    # mrf_13579_3,
+                    # mrf_13579_6,
+                    # ]
+    # for result in mrf_results:
+    #     print("now_doing", result.describe)
+    #     result.rename_see1_to_see2()
+    #     result.save_all_see_as_matplot_visual_multiprocess()
+
+
+    #########################################################################################################
     # mrf_r_c_results = [   
     #                       [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1],
     #                       [mrf_7_9_3, mrf_7_11_3, mrf_9_11_3, mrf_13579_3],
     #                       [mrf_7_9_6, mrf_7_11_6, mrf_9_11_6, mrf_13579_6]
-    #                       ]
+    #                   ]
 
-    # mrf_loss_analyze = Result_analyzer(describe="mrf_loss_analyze")
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*0,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*1,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*2,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*3,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*4,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*5,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*6,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*7,4,mrf_r_c_results)
+    # mrf_loss_analyze = Result_analyzer(describe="mrf_loss_analyze_use_see_class")
+    # mrf_loss_analyze.analyze_row_col_results_all_sees_multiprocess(mrf_r_c_results)
 
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*0+2,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*1+2,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*2+2,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*3+2,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*4+2,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*5+2,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*6+2,4,mrf_r_c_results)
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*7+2,4,mrf_r_c_results)
-
-    # mrf_loss_analyze.analyze_row_col_results_sees(4*0+2,4,mrf_r_c_results)
-
-
-
-
-    ### 把 see 000~031 都做成影片
-    # from video_from_img import Video_combine_from_imgs, Video_combine_from_dir
-    # from build_dataset_combine import Save_as_jpg
-    # for i in range(32):
-    #     ord_dir = r"F:\Users\Lin_server\Desktop\0 data_dir\result\type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2\see-%03i\matplot_visual"%i
-    #     Save_as_jpg(ord_dir, ord_dir,delete_ord_file=True)
-    #     Video_combine_from_dir(ord_dir, ord_dir, "combine_jpg.avi")
-
-
-
-    # import numpy as np 
-    # from util import matplot_visual_one_row_imgs
-    # import cv2
-
-    # ord_dir = r"F:\Users\Lin_server\Desktop\0 data_dir\result\type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2\see-%03i"%(0)
-    # from util import get_dir_img
-    # imgs = get_dir_img(ord_dir, float_return=False)
-
-    # img1 = np.ones(shape=(500,404,3), dtype = np.uint8)
-    # img2 = np.ones(shape=(472,304,3), dtype = np.uint8)*125
-    # img3 = np.ones(shape=(384,256,3), dtype = np.uint8)*125
-    # titles = ["distorted_img","distorted_img"]
-    # imgs = [imgs[0],imgs[1],imgs[2]]
-
-    # # cv2.imshow("123", img1)
-    # # cv2.imshow("456", img2)
-    # matplot_visual_one_row_imgs(titles, imgs)
-    # cv2.waitKey()
+    #########################################################################################################
+    mrf_c_results = [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1]
+    try_c_result_multi_see = Result_analyzer(describe="try_c_result_multi_see")
+    try_c_result_multi_see.analyze_col_results_multi_see(mrf_c_results, [1,3,5])
