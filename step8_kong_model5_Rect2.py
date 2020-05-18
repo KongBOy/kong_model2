@@ -308,9 +308,9 @@ import time
 import matplotlib.pyplot as plt
 import cv2
 from build_dataset_combine import Check_dir_exist_and_build,Save_as_jpg
-from util import matplot_visual_one_row_imgs
+from util import matplot_visual_single_row_imgs
 import numpy as np 
-def generate_images( model, see_index, in_img_pre, gt_img_pre,  epoch=0, result_dir="."):
+def generate_images( model, see_index, in_img_pre, gt_img_pre,  epoch=0, result_dir=".", kong_result=None):
     sample_start_time = time.time()
     
     rect2 = model(in_img_pre, training=True) ### 把影像丟進去model生成還原影像
@@ -318,7 +318,8 @@ def generate_images( model, see_index, in_img_pre, gt_img_pre,  epoch=0, result_
     in_img_back = ((in_img_pre[0].numpy() +1)*125).astype(np.uint8) ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
     gt_img_back = ((gt_img_pre[0].numpy() +1)*125).astype(np.uint8) ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
 
-    see_dir = result_dir + "/" + "see-%03i"%see_index  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    # see_dir = result_dir + "/" + "see-%03i"%see_index  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    see_dir  = kong_result.sees2[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect2, gt_img 併起來好看的結果
 
     if(epoch==0): ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
@@ -331,7 +332,7 @@ def generate_images( model, see_index, in_img_pre, gt_img_pre,  epoch=0, result_
     ### matplot_visual的部分
     display_list = [in_img_back[...,::-1], rect2_back[...,::-1], gt_img_back[...,::-1]]  ### 把 in_img_back, rect2_back, gt_img_back 包成list，記得因為用 matplot 所以要 bgr轉rgb
     title = ['Input Image', 'rect2 Image', 'Ground Truth']  ### 設定 title要顯示的字
-    matplot_visual_one_row_imgs(img_titles=title, imgs=display_list, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch=%04i"%epoch)
+    matplot_visual_single_row_imgs(img_titles=title, imgs=display_list, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch=%04i"%epoch)
     Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
 
 #######################################################################################################################

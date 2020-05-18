@@ -1,13 +1,14 @@
-import sys 
-sys.path.append("kong_util")
-from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matplot_visual_multi_row_imgs
-from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Find_ltrd_and_crop
-from video_from_img import Video_combine_from_dir
-from step0_access_path import access_path
 import cv2
 import time 
 import os
 from tqdm import tqdm
+
+import sys 
+sys.path.append("kong_util")
+from step0_access_path import access_path
+from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matplot_visual_multi_row_imgs
+from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Find_ltrd_and_crop
+from video_from_img import Video_combine_from_dir
 
 class See:
     def __init__(self, result_dir, see_name):
@@ -18,7 +19,7 @@ class See:
         # self.see_file_names = self.get_see_file_names()
 
     def get_see_file_names(self):
-        return get_dir_certain_file_name(self.see_dir, ".jpg")
+        self.see_file_names = get_dir_certain_file_name(self.see_dir, ".jpg")
 
     def save_as_jpg(self):
         Save_as_jpg(self.see_dir, self.see_dir, delete_ord_file=True)
@@ -31,11 +32,11 @@ class See:
         matplot_visual_dir = self.see_dir + "/" + "matplot_visual" ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build(matplot_visual_dir)               ### 建立 存結果的資料夾
 
-        certain_see_file_names = self.get_see_file_names() ### 取得 結果內的 某個see資料夾 內的所有影像 檔名
+        self.get_see_file_names() ### 取得 結果內的 某個see資料夾 內的所有影像 檔名
         print("processing %s"%self.see_name)
-        in_img = cv2.imread(self.see_dir + "/" + certain_see_file_names[0]) ### 要記得see的第一張存的是 輸入的in影像
-        gt_img = cv2.imread(self.see_dir + "/" + certain_see_file_names[1]) ### 要記得see的第二張存的是 輸出的gt影像
-        for go_img, certain_see_file_name in enumerate(tqdm(certain_see_file_names)):
+        in_img = cv2.imread(self.see_dir + "/" + self.see_file_names[0]) ### 要記得see的第一張存的是 輸入的in影像
+        gt_img = cv2.imread(self.see_dir + "/" + self.see_file_names[1]) ### 要記得see的第二張存的是 輸出的gt影像
+        for go_img, certain_see_file_name in enumerate(tqdm(self.see_file_names)):
             if(go_img>=2): ### 第三張 才開始存 epoch影像喔！
                 print(".",end="")                 ### 顯示進度用
                 if(go_img+1) % 100 == 0: print()  ### 顯示進度用
@@ -56,11 +57,15 @@ class See:
 
 
 class Result:
-    def __init__(self, result_dir_name, describe):
-        self.result_dir = access_path + "result/" + result_dir_name
+    def __init__(self, result_name, describe=""):
+        if(describe==""):self.result_dir = access_path + "result/" + result_name
+        else:            self.result_dir = access_path + "result/" + result_name + "-" + describe
+        self.ckpt_dir = self.result_dir + "/ckpt"
+        self.logs_dir = self.result_dir + "/logs"
+        
         self.describe = describe
         self.see_dirs = [self.result_dir + "/" + "see-%03i"%see_num for see_num in range(32) ]
-        self.sees1 = [ See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
+        self.sees1 = [  See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
         self.sees2 = [  See(self.result_dir, "see_000-test_emp"), 
                         See(self.result_dir, "see_001-test_img"),
                         See(self.result_dir, "see_002-test_img"),
@@ -94,15 +99,14 @@ class Result:
                         See(self.result_dir, "see_030-train_str"),
                         See(self.result_dir, "see_031-train_str")]
         self.see_amount = len(self.sees2)
-        self.ckpt_dir = self.result_dir + "/ckpt"
-        self.logs_dir = self.result_dir + "/logs"
         
 
     def rename_see1_to_see2(self):
         for go_see in range(self.see_amount):
-            print("rename_ord:", self.sees1[0].see_dir)
-            print("rename_dst:", self.sees2[0].see_dir)
-            if(os.path.isdir(self.sees1[go_see].see_dir)):os.rename(self.sees1[go_see].see_dir, self.sees2[go_see].see_dir)
+            if(os.path.isdir(self.sees1[go_see].see_dir)):
+                print("rename_ord:", self.sees1[go_see].see_dir)
+                print("rename_dst:", self.sees2[go_see].see_dir)
+                os.rename(self.sees1[go_see].see_dir, self.sees2[go_see].see_dir)
             
     def save_all_see_as_matplot_visual(self, start_index, amount):
         print("start_index", start_index)
@@ -112,35 +116,36 @@ class Result:
     def save_all_see_as_matplot_visual_multiprocess(self):
         from util import multi_processing_interface
         multi_processing_interface(core_amount=8 ,task_amount=self.see_amount, task=self.save_all_see_as_matplot_visual)
-        # multi_processing_interface(core_amount=2 ,task_amount=4, task=self.save_all_see_as_matplot_visual)
-
-        # from multiprocessing import Process
-        # processes = []
-        # processes.append( Process(target=self.save_all_see_as_matplot_visual, args=(0,2) ) )
-        # processes.append( Process(target=self.save_all_see_as_matplot_visual, args=(2,2) ) )
-
-        # for process in processes:
-        #     process.start()
-
-        # for process in processes:
-        #     process.join()
 
     
-
-
-
 class Result_analyzer:
     def __init__(self, describe=""):
         self.describe = describe
         self.analyze_dir = access_path + "analyze_dir"+"/"+self.describe ### 例如 .../data_dir/analyze_dir/testtest
         Check_dir_exist_and_build(self.analyze_dir)
+    
+    ########################################################################################################################################
+    def _temp_c_results_see1_update_to_see2_and_get_see_file_names(self, c_results):
+        ### 暫時的update see1~see2
+        for result in c_results:
+            result.rename_see1_to_see2()
+            for see in result.sees2:
+                see.get_see_file_names()
+
+    
+    def _temp_r_c_results_update_see1_to_see2_and_get_see_file_names(self, r_c_results):
+        for c_results in r_c_results:
+            self._temp_c_results_see1_update_to_see2_and_get_see_file_names(c_results)
 
     ########################################################################################################################################
-    ### 同col同result，同row同see
+    ### 單一row，同see
     def analyze_col_results_single_see(self, c_results, see_num):
         start_time = time.time()
         analyze_see_dir = self.analyze_dir + "/" + c_results[0].sees2[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
-        Check_dir_exist_and_build(analyze_see_dir)                                                 ### 建立 存結果的資料夾
+        Check_dir_exist_and_build(analyze_see_dir)                                       ### 建立 存結果的資料夾
+
+        ### 暫時的update see1~see2
+        self._temp_r_c_results_update_see1_to_see2_and_get_see_file_names(c_results)
         
         ### 抓 in/gt imgs
         in_imgs = cv2.imread(c_results[0].sees2[see_num].see_dir + "/" + c_results[0].sees2[see_num].see_file_names[0])
@@ -170,12 +175,46 @@ class Result_analyzer:
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
+    def analyze_col_results_all_single_see(self,start_see, see_amount, c_results):
+        for go_see in range(start_see, start_see + see_amount):
+            self.analyze_col_results_single_see(c_results, go_see)
+
+    def analyze_col_results_all_single_see_multiprocess(self, c_results, core_amount=8, task_amount=32):
+        from util import multi_processing_interface
+        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self.analyze_col_results_all_single_see, task_args=[c_results])
+
     ########################################################################################################################################
     ### 同col同result，同row同see
+    def _draw_col_results_multi_see(self, start_img, img_amount, c_results, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir ):
+        print("doing analyze_col_results_multi_see")
+        for go_img in tqdm(range(start_img, start_img+img_amount)):
+            if(go_img >=2):
+                epoch = go_img-2
+
+                r_c_imgs = []
+                for go_see_num, see_num in enumerate(see_nums):
+                    c_imgs   = [in_imgs[go_see_num]]
+                    for result in c_results: c_imgs.append(cv2.imread(result.sees2[see_num].see_dir + "/" + result.sees2[see_num].see_file_names[go_img]))
+                    c_imgs += [gt_imgs[go_see_num]]
+                    r_c_imgs.append(c_imgs)
+                matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
+                                              rows_cols_imgs   = r_c_imgs,
+                                              fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
+                                              dst_dir          = analyze_see_dir, 
+                                              file_name        ="epoch=%04i"%epoch )
+
+    def _draw_col_results_multi_see_multiprocess(self, c_results, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=8, task_amount=600):
+        from util import multi_processing_interface
+        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self._draw_col_results_multi_see, task_args=( c_results, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir))
+
     def analyze_col_results_multi_see(self, c_results, see_nums, save_name):
         start_time = time.time()
         analyze_see_dir = self.analyze_dir + "/" + save_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build(analyze_see_dir)                                  ### 建立 存結果的資料夾
+        
+        ### 暫時的update see1~see2
+        self._temp_c_results_see1_update_to_see2_and_get_see_file_names(c_results)
+        
         
         ### 抓 各row的in/gt imgs
         in_imgs = []
@@ -192,21 +231,9 @@ class Result_analyzer:
 
         ### 抓 row/col 要顯示的imgs
         print("doing analyze_col_results_multi_see")
-        for go_img in tqdm(range(600)):
-            if(go_img >=2):
-                epoch = go_img-2
+        self._draw_col_results_multi_see_multiprocess(c_results, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=8, task_amount=600)
 
-                r_c_imgs = []
-                for go_see_num, see_num in enumerate(see_nums):
-                    c_imgs   = [in_imgs[go_see_num]]
-                    for result in c_results: c_imgs.append(cv2.imread(result.sees2[see_num].see_dir + "/" + result.sees2[see_num].see_file_names[go_img]))
-                    c_imgs += [gt_imgs[go_see_num]]
-                    r_c_imgs.append(c_imgs)
-                matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
-                                              rows_cols_imgs   = r_c_imgs,
-                                              fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
-                                              dst_dir          = analyze_see_dir, 
-                                              file_name        ="epoch=%04i"%epoch )
+        ### 後處理，讓資料變得 好看 且 更小 並 串成影片
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
@@ -220,6 +247,9 @@ class Result_analyzer:
         analyze_see_dir = self.analyze_dir + "/" + r_c_results[0][0].sees2[see_num].see_name ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build(analyze_see_dir)                                          ### 建立 存結果的資料夾
         
+        ### 暫時的update see1~see2
+        self._temp_r_c_results_update_see1_to_see2_and_get_see_file_names(r_c_results)
+
         print("processing see_num:", see_num)
         ### 要記得see的第一張存的是 輸入的in影像，第二張存的是 輸出的gt影像
         ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
@@ -257,93 +287,49 @@ class Result_analyzer:
         for go_see in range(start_see, start_see + see_amount):
             self.analyze_row_col_results_certain_see(r_c_results, go_see)
     
-    def analyze_row_col_results_all_sees_multiprocess(self, r_c_results):
+    def analyze_row_col_results_all_sees_multiprocess(self, r_c_results, core_amount=8, task_amount=32):
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=4 ,task_amount=4, task=self.analyze_row_col_results_sees, task_args=r_c_results)
+        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self.analyze_row_col_results_sees, task_args=(r_c_results))
         
+
 if(__name__=="__main__"):
-    # try_see_class.rename_see1_to_see2()
-    # try_see_class.save_all_see_as_matplot_visual_multiprocess()
+    have_bg_gt_gray_mae3  = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", describe="have_bg_gt_gray")
+    have_bg_gt_color_mae3 = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"  , describe="have_bg_gt_color")
+    no_bg_gt_color_mae3   = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"    , describe="no_bg_gt_color")
+    no_bg_gt_gray_mae3    = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , describe="no_bg_gt_gray")
 
-
-    # result1 = Result("type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"  , describe="have_bg-gt_color")
-    # result2 = Result("type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", describe="have_bg-gt_gray")
-    # result3 = Result("type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"    , describe="no_bg-gt_color")
-    # result4 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , describe="no_bg-gt_gray")
-
-    # analyze_m = Result_analyzer(describe="test_r_c_and_jpg_quality")
-    # analyze_m.analyze_row_col_results_certain_see( [ [result1, result2, result3,result4], [result3, result4, result2,result1] ], 0 )
-    # analyze_m.analyze_row_col_results_certain_see( [ [result1, result2, result3], [result4, result2,result1] ], 0 )
-    # analyze_m.analyze_row_col_results_certain_see( [ [result1, result2], [result4, result3] ], 0 )
-    # analyze_m.analyze_row_col_results_certain_see( [ [result1], [result4] ], 31)
-    # analyze_m.analyze_row_col_results_sees(start_see=1, see_amount=3, r_c_results=[ [result1], [result4] ] )
-    # analyze_m.analyze_row_col_results_all_sees_multiprocess(r_c_results=[ [result1], [result4] ])
-
-    # analyze1 = Result_analyzer(describe="pure_rect2-bg_effect")
-
-    # result10 = Result("type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", describe="have_bg-gt_gray")
-    # result11 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , describe="no_bg-gt_gray")
-    # analyze2 = Result_analyzer(describe="pure_rect2-bg_effect_just_gt_gray")
-    # analyze2.analyze_results_all_see( [result10, result11] )
-
-    # result10 = Result("type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2", describe="have_bg-gt_color")
-    # result11 = Result("type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"  , describe="no_bg-gt_color")
-    # analyze2 = Result_analyzer(describe="pure_rect2-bg_effect_just_gt_color")
-    # analyze2.analyze_results_all_see( [result10, result11] )
-
-    # result5 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"                   , describe="no_mrf")
-    # result6 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2-127.35_7_9"    , describe="mrf_7_9")
-    # result7 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2-127.28_7_11"   , describe="mrf_7_11")
-    # result8 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2-128.242_9_11"  , describe="mrf_9_11")
-    # result9 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2-128.246_13579" , describe="mrf_13579")
-    # analyze3 = Result_analyzer(describe="pure_rect2-mrf_effect")
-    # analyze3.analyze_results_all_see( [result5, result6, result7, result8, result9] )
-
-    # analyze1.analyze_2_result_certain_see(result1, result2, 0)
-    # analyze1.analyze_2_result_all_see(result1, result2)
-    # analyze1.analyze_results_certain_see([result1, result2, result3, result4], 0)
-    # analyze1.analyze_results_all_see([result1, result2, result3, result4],start_see=1)
-
-    # result1.save_see_as_avi(see_num=0)
-    # result1.save_see_as_matplot_visual(see_num=0)
-    # result1.save_all_see_as_matplot_visual()
-    # result1.save_all_see_as_avi()
-
-
-    # have_bg_no_mrf_gray_mae3  = Result("type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2"        , describe="no_mrf_mae3")
-    # have_bg_no_mrf_color_mae3 = Result("type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"          , describe="no_mrf_mae3")
-    # no_bg_no_mrf_color_mae3   = Result("type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"            , describe="no_mrf_mae3")
-
-    # no_mrf_mae1 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200506-064552_model5_rect2_127.35_mae1"            , describe="no_mrf_mae1")
-
-    # no_mrf_mae3 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"                        , describe="no_mrf_mae3")
+    no_mrf_mae1 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-064552_model5_rect2" , describe="no_mrf_mae1")
+    no_mrf_mae3 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2" , describe="no_mrf_mae3")
+    no_mrf_mae6 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-065346_model5_rect2" , describe="no_mrf_mae6")
     
-    mrf_7_9_1   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-190344_model6_mrf_rect2_127.35_7_9_mae1"    , describe="mrf_7_9_mae1")
-    mrf_7_9_3   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2-127.35_7_9_mae3"    , describe="mrf_7_9_mae3")
-    mrf_7_9_6   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231036_model6_mrf_rect2_127.35_7_9_mae6"    , describe="mrf_7_9_mae6")
-    mrf_7_11_1  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-190955_model6_mrf_rect2_127.28_7_11mae1"    , describe="mrf_7_11_mae1")
-    mrf_7_11_3  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2-127.28_7_11_mae3"   , describe="mrf_7_11_mae3")
-    mrf_7_11_6  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231336_model6_mrf_rect2_127.28_7_11_mae6"   , describe="mrf_7_11_mae6")
-    mrf_9_11_1  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-190837_model6_mrf_rect2_128.242_9_11_mae1"  , describe="mrf_9_11_mae1")
-    mrf_9_11_3  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2-128.242_9_11_mae3"  , describe="mrf_9_11_mae3")
-    mrf_9_11_6  = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231249_model6_mrf_rect2_128.242_9_11_mae6"  , describe="mrf_9_11_mae6")
-    mrf_13579_1 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200504-191110_model6_mrf_rect2_128.246_13579_mae1" , describe="mrf_13579_mae1")
-    mrf_13579_3 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2-128.246_13579_mae3" , describe="mrf_13579_mae3")
-    mrf_13579_6 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200501-231530_model6_mrf_rect2_128.246_13579_mae6" , describe="mrf_13579_mae6")
+    mrf_7_9_1   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190344_model6_mrf_rect2" , describe="mrf_7_9_mae1")
+    mrf_7_9_3   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2" , describe="mrf_7_9_mae3")
+    mrf_7_9_6   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231036_model6_mrf_rect2" , describe="mrf_7_9_mae6")
+    mrf_7_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190955_model6_mrf_rect2" , describe="mrf_7_11_mae1")
+    mrf_7_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2" , describe="mrf_7_11_mae3")
+    mrf_7_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231336_model6_mrf_rect2" , describe="mrf_7_11_mae6")
+    mrf_9_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190837_model6_mrf_rect2" , describe="mrf_9_11_mae1")
+    mrf_9_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2" , describe="mrf_9_11_mae3")
+    mrf_9_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231249_model6_mrf_rect2" , describe="mrf_9_11_mae6")
+    mrf_13579_1 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-191110_model6_mrf_rect2" , describe="mrf_13579_mae1")
+    mrf_13579_3 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2" , describe="mrf_13579_mae3")
+    mrf_13579_6 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231530_model6_mrf_rect2" , describe="mrf_13579_mae6")
 
 
-    mrf_replace7_use7   = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200507-105001_model6_mrf_rect2_replace7_use7" , describe="mrf_replace7_use7")
-    mrf_replace7_use5_7 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200507-105739_model6_mrf_rect2_replace7_use5+7" , describe="mrf_replace7_use5+7")
-    mrf_replace7_use7_9 = Result("type5c-real_have_see-no_bg-gt-gray3ch_20200507-110022_model6_mrf_rect2_replace7_use7+9" , describe="mrf_replace7_use7+9")
+    mrf_replace7_use7   = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105001_model6_mrf_rect2" , describe="replace7_use7")
+    mrf_replace7_use5_7 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105739_model6_mrf_rect2" , describe="replace7_use5+7")
+    mrf_replace7_use7_9 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-110022_model6_mrf_rect2" , describe="replace7_use7+9")
 
 
-    ### 把 matplot_visual 壓小
-    mrf_results = [ 
-                    # have_bg_no_mrf_gray_mae3, 
-                    # have_bg_no_mrf_color_mae3, 
-                    # no_bg_no_mrf_color_mae3, 
+    ### 把 result內的 matplot_visual 壓小
+    compress_results = [ 
+                    # have_bg_gt_gray_mae3, 
+                    # have_bg_gt_color_mae3, 
+                    # no_bg_gt_color_mae3, 
+                    # no_bg_gt_gray_mae3,
                     # no_mrf_mae1, 
                     # no_mrf_mae3, 
+                    # no_mrf_mae6,
                     # mrf_7_9_1,
                     # mrf_7_9_3,
                     # mrf_7_9_6,
@@ -361,28 +347,66 @@ if(__name__=="__main__"):
                     mrf_replace7_use7_9
                     ]
 
-    for result in mrf_results:
-        print("now_doing", result.describe)
-        result.rename_see1_to_see2()
-        result.save_all_see_as_matplot_visual_multiprocess()
+    # for result in compress_results:
+    #     print("now_doing", result.describe)
+    #     result.rename_see1_to_see2()
+    #     result.save_all_see_as_matplot_visual_multiprocess()
+    #################################################################################################################################
+    ### 分析 bg 和 gt_color
+    # bg_and_gt_color_results = [have_bg_gt_gray_mae3, have_bg_gt_color_mae3, no_bg_gt_color_mae3, no_bg_gt_gray_mae3]
+    # bg_and_gt_color_analyze = Result_analyzer("bg_and_gt_color_analyze")
+
+    ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ 不過single還是有好處：可以放很大喔！覺得有空再生成好了～
+    # # bg_and_gt_color_analyze.analyze_col_results_all_single_see_multiprocess(bg_and_gt_color_results)  ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ
+
+    ### 這裡是在測試 col_results_multi_see 一次看多少row比較好，結論是4
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [14,15],          "test_str_2img")  
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [12,14,15],       "test_str_3img") ### 覺得3不錯！
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [11,12,14,15],    "test_str_4img") ### 覺得4不錯！且可看lt,rt,ld,rd
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [11,12,13,14,15], "test_str_5img")
+    
+    ### 一次看多see
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [ 1, 2, 4, 5], "test_img")
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [ 6, 7, 9,10], "test_lin")
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [11,12,14,15], "test_str")
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [17,18,19,20], "train_img")
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [22,23,24,25], "train_lin")
+    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [28,29,30,31], "train_str")
+
+
+    #################################################################################################################################
+    ### 分析 mrf loss mae的比例
+    mrf_r_c_results = [   
+                          [no_mrf_mae1, mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1],
+                          [no_mrf_mae3, mrf_7_9_3, mrf_7_11_3, mrf_9_11_3, mrf_13579_3],
+                          [no_mrf_mae6, mrf_7_9_6, mrf_7_11_6, mrf_9_11_6, mrf_13579_6]
+                      ]
+    mrf_loss_analyze = Result_analyzer(describe="mrf_loss_analyze")
+    mrf_loss_analyze.analyze_row_col_results_all_sees_multiprocess(mrf_r_c_results)
+    
+    #################################################################################################################################
+    ### 分析 mrf 取代 第一層7
+    # mrf_replace7_results = [no_mrf_mae3, mrf_replace7_use7, mrf_replace7_use5_7, mrf_replace7_use7_9]
+    # mrf_replace7_analyze = Result_analyzer("mrf_replace7_analyze")
+    
+    # ## 覺得好像可以省，因為看multi的比較方便ˊ口ˋ 不過single還是有好處：可以放很大喔！覺得有空再生成好了～
+    # # mrf_replace7_analyze.analyze_col_results_all_single_see_multiprocess(mrf_replace7_results)
+    
+    # ## 一次看多see
+    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [ 1, 2, 4, 5], "test_img")
+    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [ 6, 7, 9,10], "test_lin")
+    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [11,12,14,15], "test_str")
+    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [17,18,19,20], "train_img")
+    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [22,23,24,25], "train_lin")
+    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [28,29,30,31], "train_str")
 
 
     #########################################################################################################
-    # mrf_r_c_results = [   
-    #                       [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1],
-    #                       [mrf_7_9_3, mrf_7_11_3, mrf_9_11_3, mrf_13579_3],
-    #                       [mrf_7_9_6, mrf_7_11_6, mrf_9_11_6, mrf_13579_6]
-    #                   ]
-
-    # mrf_loss_analyze = Result_analyzer(describe="mrf_loss_analyze_use_see_class")
-    # mrf_loss_analyze.analyze_row_col_results_all_sees_multiprocess(mrf_r_c_results)
-
-    #########################################################################################################
-    mrf_c_results = [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1]
-    try_c_result_multi_see = Result_analyzer(describe="try_c_result_multi_see")
+    # mrf_c_results = [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1]
+    # try_c_result_multi_see = Result_analyzer(describe="try_c_result_multi_see")
     # try_c_result_multi_see.analyze_col_results_multi_see(mrf_c_results, [1,3,5], "see_1_3_5_jpg_then_crop")
     # try_c_result_multi_see.analyze_col_results_multi_see(mrf_c_results, [1,3,5], "see_1_3_5_jpg")
-    try_c_result_multi_see.analyze_col_results_single_see(mrf_c_results, 1)
+    # try_c_result_multi_see.analyze_col_results_single_see(mrf_c_results, 1)
     
 
     # l,t,r,d = Find_db_left_top_right_down(try_c_result_multi_see.analyze_dir + "/" +"analyze_col_results_multi_see")
