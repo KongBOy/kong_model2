@@ -199,6 +199,8 @@ def generate_images( model, test_input, test_gt, max_train_move, min_train_move,
     plt.close()
     print("sample image cost time:", time.time()-sample_start_time)
 
+def generate_sees():
+    pass
 
     
 

@@ -57,13 +57,13 @@ class See:
 
 
 class Result:
-    def __init__(self, result_name, describe=""):
-        if(describe==""):self.result_dir = access_path + "result/" + result_name
-        else:            self.result_dir = access_path + "result/" + result_name + "-" + describe
+    def __init__(self, result_name, r_describe=None):
+        if(r_describe is None):self.result_dir = access_path + "result/" + result_name
+        else                  :self.result_dir = access_path + "result/" + result_name + "-" + r_describe
         self.ckpt_dir = self.result_dir + "/ckpt"
         self.logs_dir = self.result_dir + "/logs"
         
-        self.describe = describe
+        self.r_describe = r_describe
         self.see_dirs = [self.result_dir + "/" + "see-%03i"%see_num for see_num in range(32) ]
         self.sees1 = [  See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
         self.sees2 = [  See(self.result_dir, "see_000-test_emp"), 
@@ -100,6 +100,25 @@ class Result:
                         See(self.result_dir, "see_031-train_str")]
         self.see_amount = len(self.sees2)
         
+    @staticmethod
+    def new_from_result_name(result_name):
+        ### 第零階段：決定result, logs, ckpt 存哪裡 並 把source code存起來s
+        ###    train_reload和test 根據 "result_name"，直接去放result的資料夾複製囉！
+        return Result(result_name=result_name)
+
+    @staticmethod
+    def new_from_experiment(exp):
+        import datetime
+        ### 大概長這樣 type1_h=256,w=256_complex_"describe_mid"_20200328-215330_model5_rect2_"describe_end"
+        result_name_element = [exp.db_obj.category.value]
+        if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
+        result_name_element += [datetime.datetime.now().strftime("%Y%m%d-%H%M%S"), exp.model_obj.model_name.value]
+        if(exp.describe_end is not None): result_name_element += [exp.describe_end]
+
+        result_name = "_".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
+        return Result(result_name=result_name)
+    
+
 
     def rename_see1_to_see2(self):
         for go_see in range(self.see_amount):
@@ -119,9 +138,9 @@ class Result:
 
     
 class Result_analyzer:
-    def __init__(self, describe=""):
-        self.describe = describe
-        self.analyze_dir = access_path + "analyze_dir"+"/"+self.describe ### 例如 .../data_dir/analyze_dir/testtest
+    def __init__(self, r_describe=""):
+        self.r_describe = r_describe
+        self.analyze_dir = access_path + "analyze_dir"+"/"+self.r_describe ### 例如 .../data_dir/analyze_dir/testtest
         Check_dir_exist_and_build(self.analyze_dir)
     
     ########################################################################################################################################
@@ -153,7 +172,7 @@ class Result_analyzer:
 
         ### 抓 要顯示的 titles
         c_titles = ["in_img"]
-        for result in c_results: c_titles.append(result.describe)
+        for result in c_results: c_titles.append(result.r_describe)
         c_titles += ["gt_img"]
 
         ### 抓  要顯示的imgs
@@ -169,7 +188,8 @@ class Result_analyzer:
                                                imgs=c_imgs, 
                                                fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
                                                dst_dir          = analyze_see_dir, 
-                                               file_name        ="epoch=%04i"%epoch )
+                                               file_name        ="epoch=%04i"%epoch,
+                                               bgr2rgb          = True)
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
@@ -201,7 +221,8 @@ class Result_analyzer:
                                               rows_cols_imgs   = r_c_imgs,
                                               fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
                                               dst_dir          = analyze_see_dir, 
-                                              file_name        ="epoch=%04i"%epoch )
+                                              file_name        ="epoch=%04i"%epoch,
+                                              bgr2rgb          =True)
 
     def _draw_col_results_multi_see_multiprocess(self, c_results, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=8, task_amount=600):
         from util import multi_processing_interface
@@ -225,7 +246,7 @@ class Result_analyzer:
 
         ### 抓 第一row的 要顯示的 titles
         c_titles = ["in_img"]
-        for result in c_results: c_titles.append(result.describe)
+        for result in c_results: c_titles.append(result.r_describe)
         c_titles += ["gt_img"]
         r_c_titles = [c_titles] ### 還是包成r_c_titles的形式喔！
 
@@ -266,7 +287,7 @@ class Result_analyzer:
                     c_titles = ["in_img"] ### 每個row的第一張要放in_img
                     for result in row_results: ### 抓出一個row的 img 和 title
                         c_imgs.append( cv2.imread( result.sees2[see_num].see_dir + "/" + result.sees2[see_num].see_file_names[go_img] ))
-                        c_titles.append(result.describe)
+                        c_titles.append(result.r_describe)
                     c_imgs += [gt_img]      ### 每個row的最後一張要放gt_img
                     c_titles += ["gt_img"]  ### 每個row的最後一張要放gt_img
                     r_c_imgs.append(c_imgs)
@@ -276,7 +297,8 @@ class Result_analyzer:
                                               rows_cols_imgs   = r_c_imgs,
                                               fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
                                               dst_dir          = analyze_see_dir, 
-                                              file_name        ="epoch=%04i"%epoch )
+                                              file_name        ="epoch=%04i"%epoch,
+                                              bgr2rgb          = True )
 
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
@@ -293,32 +315,32 @@ class Result_analyzer:
         
 
 if(__name__=="__main__"):
-    have_bg_gt_gray_mae3  = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", describe="have_bg_gt_gray")
-    have_bg_gt_color_mae3 = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"  , describe="have_bg_gt_color")
-    no_bg_gt_color_mae3   = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"    , describe="no_bg_gt_color")
-    no_bg_gt_gray_mae3    = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , describe="no_bg_gt_gray")
+    have_bg_gt_gray_mae3  = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", r_describe="have_bg_gt_gray")
+    have_bg_gt_color_mae3 = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"  , r_describe="have_bg_gt_color")
+    no_bg_gt_color_mae3   = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"    , r_describe="no_bg_gt_color")
+    no_bg_gt_gray_mae3    = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , r_describe="no_bg_gt_gray")
 
-    no_mrf_mae1 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-064552_model5_rect2" , describe="no_mrf_mae1")
-    no_mrf_mae3 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2" , describe="no_mrf_mae3")
-    no_mrf_mae6 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-065346_model5_rect2" , describe="no_mrf_mae6")
+    no_mrf_mae1 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-064552_model5_rect2" , r_describe="no_mrf_mae1")
+    no_mrf_mae3 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2" , r_describe="no_mrf_mae3")
+    no_mrf_mae6 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-065346_model5_rect2" , r_describe="no_mrf_mae6")
     
-    mrf_7_9_1   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190344_model6_mrf_rect2" , describe="mrf_7_9_mae1")
-    mrf_7_9_3   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2" , describe="mrf_7_9_mae3")
-    mrf_7_9_6   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231036_model6_mrf_rect2" , describe="mrf_7_9_mae6")
-    mrf_7_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190955_model6_mrf_rect2" , describe="mrf_7_11_mae1")
-    mrf_7_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2" , describe="mrf_7_11_mae3")
-    mrf_7_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231336_model6_mrf_rect2" , describe="mrf_7_11_mae6")
-    mrf_9_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190837_model6_mrf_rect2" , describe="mrf_9_11_mae1")
-    mrf_9_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2" , describe="mrf_9_11_mae3")
-    mrf_9_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231249_model6_mrf_rect2" , describe="mrf_9_11_mae6")
-    mrf_13579_1 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-191110_model6_mrf_rect2" , describe="mrf_13579_mae1")
-    mrf_13579_3 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2" , describe="mrf_13579_mae3")
-    mrf_13579_6 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231530_model6_mrf_rect2" , describe="mrf_13579_mae6")
+    mrf_7_9_1   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190344_model6_mrf_rect2" , r_describe="mrf_7_9_mae1")
+    mrf_7_9_3   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2" , r_describe="mrf_7_9_mae3")
+    mrf_7_9_6   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231036_model6_mrf_rect2" , r_describe="mrf_7_9_mae6")
+    mrf_7_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190955_model6_mrf_rect2" , r_describe="mrf_7_11_mae1")
+    mrf_7_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2" , r_describe="mrf_7_11_mae3")
+    mrf_7_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231336_model6_mrf_rect2" , r_describe="mrf_7_11_mae6")
+    mrf_9_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190837_model6_mrf_rect2" , r_describe="mrf_9_11_mae1")
+    mrf_9_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2" , r_describe="mrf_9_11_mae3")
+    mrf_9_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231249_model6_mrf_rect2" , r_describe="mrf_9_11_mae6")
+    mrf_13579_1 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-191110_model6_mrf_rect2" , r_describe="mrf_13579_mae1")
+    mrf_13579_3 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2" , r_describe="mrf_13579_mae3")
+    mrf_13579_6 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231530_model6_mrf_rect2" , r_describe="mrf_13579_mae6")
 
 
-    mrf_replace7_use7   = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105001_model6_mrf_rect2" , describe="replace7_use7")
-    mrf_replace7_use5_7 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105739_model6_mrf_rect2" , describe="replace7_use5+7")
-    mrf_replace7_use7_9 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-110022_model6_mrf_rect2" , describe="replace7_use7+9")
+    mrf_replace7_use7   = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105001_model6_mrf_rect2" , r_describe="replace7_use7")
+    mrf_replace7_use5_7 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105739_model6_mrf_rect2" , r_describe="replace7_use5+7")
+    mrf_replace7_use7_9 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-110022_model6_mrf_rect2" , r_describe="replace7_use7+9")
 
 
     ### 把 result內的 matplot_visual 壓小
@@ -348,7 +370,7 @@ if(__name__=="__main__"):
                     ]
 
     # for result in compress_results:
-    #     print("now_doing", result.describe)
+    #     print("now_doing", result.r_describe)
     #     result.rename_see1_to_see2()
     #     result.save_all_see_as_matplot_visual_multiprocess()
     #################################################################################################################################
@@ -381,7 +403,7 @@ if(__name__=="__main__"):
                           [no_mrf_mae3, mrf_7_9_3, mrf_7_11_3, mrf_9_11_3, mrf_13579_3],
                           [no_mrf_mae6, mrf_7_9_6, mrf_7_11_6, mrf_9_11_6, mrf_13579_6]
                       ]
-    mrf_loss_analyze = Result_analyzer(describe="mrf_loss_analyze")
+    mrf_loss_analyze = Result_analyzer(r_describe="mrf_loss_analyze")
     mrf_loss_analyze.analyze_row_col_results_all_sees_multiprocess(mrf_r_c_results)
     
     #################################################################################################################################
@@ -403,7 +425,7 @@ if(__name__=="__main__"):
 
     #########################################################################################################
     # mrf_c_results = [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1]
-    # try_c_result_multi_see = Result_analyzer(describe="try_c_result_multi_see")
+    # try_c_result_multi_see = Result_analyzer(r_describe="try_c_result_multi_see")
     # try_c_result_multi_see.analyze_col_results_multi_see(mrf_c_results, [1,3,5], "see_1_3_5_jpg_then_crop")
     # try_c_result_multi_see.analyze_col_results_multi_see(mrf_c_results, [1,3,5], "see_1_3_5_jpg")
     # try_c_result_multi_see.analyze_col_results_single_see(mrf_c_results, 1)

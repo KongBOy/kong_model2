@@ -263,6 +263,9 @@ class Rect2(tf.keras.models.Model):
         real_score = self.discriminator(dis_img, gt_img)
         return g_rec_img, fake_score, real_score
 
+    def model(self, dis_img, gt_img):
+        return tf.keras.models.Model(inputs=[dis_img, gt_img], outputs=self.call(dis_img, gt_img) )
+    
 
 
 
@@ -277,9 +280,10 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1.,tf.float32)):
     return loss * lamb
 
 @tf.function
-def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, board_dict ):
+# def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, board_dict ):
+def train_step(model_obj, dis_img, gt_img, board_obj ):
     with tf.GradientTape(persistent=True) as tape:
-        g_rec_img, fake_score, real_score = rect2(dis_img, gt_img)
+        g_rec_img, fake_score, real_score = model_obj.rect(dis_img, gt_img)
         loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(1.,tf.float32)) ### 40 調回 3
         loss_g2d = mse_kong(fake_score, tf.ones_like(fake_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32))
         g_total_loss = loss_rec + loss_g2d
@@ -288,17 +292,17 @@ def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, board_dict ):
         loss_d_real = mse_kong( real_score, tf.ones_like (real_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
         d_total_loss = (loss_d_real+loss_d_fake)/2
         
-    grad_D = tape.gradient(d_total_loss, rect2.discriminator.trainable_weights)
-    grad_G = tape.gradient(g_total_loss, rect2.generator.    trainable_weights)
-    optimizer_D.apply_gradients( zip(grad_D, rect2.discriminator.trainable_weights )  )
-    optimizer_G.apply_gradients( zip(grad_G, rect2.generator.    trainable_weights )  )
+    grad_D = tape.gradient(d_total_loss, model_obj.rect.discriminator.trainable_weights)
+    grad_G = tape.gradient(g_total_loss, model_obj.rect.generator.    trainable_weights)
+    model_obj.optimizer_D.apply_gradients( zip(grad_D, model_obj.rect.discriminator.trainable_weights )  )
+    model_obj.optimizer_G.apply_gradients( zip(grad_G, model_obj.rect.generator.    trainable_weights )  )
 
-    board_dict["1_loss_rec"](loss_rec)
-    board_dict["2_loss_g2d"](loss_g2d)
-    board_dict["3_g_total_loss"](g_total_loss)
-    board_dict["4_loss_d_fake"](loss_d_fake)
-    board_dict["5_loss_d_real"](loss_d_real)
-    board_dict["6_d_total_loss"](d_total_loss)
+    board_obj.losses["1_loss_rec"](loss_rec)
+    board_obj.losses["2_loss_g2d"](loss_g2d)
+    board_obj.losses["3_g_total_loss"](g_total_loss)
+    board_obj.losses["4_loss_d_fake"](loss_d_fake)
+    board_obj.losses["5_loss_d_real"](loss_d_real)
+    board_obj.losses["6_d_total_loss"](d_total_loss)
 
     
 import sys
@@ -310,28 +314,33 @@ import cv2
 from build_dataset_combine import Check_dir_exist_and_build,Save_as_jpg
 from util import matplot_visual_single_row_imgs
 import numpy as np 
-def generate_images( model, see_index, in_img_pre, gt_img_pre,  epoch=0, result_dir=".", kong_result=None):
+
+### 用 網路 生成 影像
+def generate_images( model, in_img_pre, gt_img_pre):
     sample_start_time = time.time()
     
-    rect2 = model(in_img_pre, training=True) ### 把影像丟進去model生成還原影像
-    rect2_back  = ((rect2[0].numpy()+1)*125).astype(np.uint8)       ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
+    rect       = model(in_img_pre, training=True) ### 把影像丟進去model生成還原影像
+    rect_back  = ((rect[0].numpy()+1)*125).astype(np.uint8)       ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
     in_img_back = ((in_img_pre[0].numpy() +1)*125).astype(np.uint8) ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
     gt_img_back = ((gt_img_pre[0].numpy() +1)*125).astype(np.uint8) ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
+    return rect_back, in_img_back, gt_img_back ### 注意先不用bgr轉rgb喔！因為後續也可能會用到cv2 存
 
-    # see_dir = result_dir + "/" + "see-%03i"%see_index  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    see_dir  = kong_result.sees2[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect2, gt_img 併起來好看的結果
+### 
+def generate_sees( model, see_index, in_img_pre, gt_img_pre,  epoch=0, result_obj=None):
+    rect_back, in_img_back, gt_img_back = generate_images( model, in_img_pre, gt_img_pre)
+    see_dir  = result_obj.sees2[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
 
     if(epoch==0): ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
         Check_dir_exist_and_build(plot_dir)  ### 建立 see資料夾/matplot_visual資料夾
         cv2.imwrite(see_dir+"/"+"0-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看
         cv2.imwrite(see_dir+"/"+"0-gt_img.jpg",  gt_img_back)  ### 寫一張 gt圖進去，進去資料夾時比較好看
-    cv2.imwrite(see_dir+"/"+"epoch_%04i.jpg"%epoch, rect2_back.astype(np.uint8)) ### 把 生成影像存進相對應的資料夾
+    cv2.imwrite(see_dir+"/"+"epoch_%04i.jpg"%epoch, rect_back) ### 把 生成影像存進相對應的資料夾
 
-    ### matplot_visual的部分
-    display_list = [in_img_back[...,::-1], rect2_back[...,::-1], gt_img_back[...,::-1]]  ### 把 in_img_back, rect2_back, gt_img_back 包成list，記得因為用 matplot 所以要 bgr轉rgb
-    title = ['Input Image', 'rect2 Image', 'Ground Truth']  ### 設定 title要顯示的字
+    ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
+    display_list = [in_img_back, rect_back, gt_img_back]  ### 把 in_img_back, rect_back, gt_img_back 包成list
+    title = ['Input Image', 'rect Image', 'Ground Truth']  ### 設定 title要顯示的字
     matplot_visual_single_row_imgs(img_titles=title, imgs=display_list, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch=%04i"%epoch)
     Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
 
@@ -368,10 +377,10 @@ def test_visual(test_dir_name,  data_dict,  start_index=0):
         ax[0].imshow(in_img[0])
         ax[0].set_title("in_img")
 
-        ### 圖. rect2恢復unet_rec_img的結果
+        ### 圖. rect恢復unet_rec_img的結果
         g_img = g_imgs[i,:,:,::-1]
         ax[1].imshow(g_img)
-        ax[1].set_title("rect2_rec_img")
+        ax[1].set_title("rect_rec_img")
 
         ### 圖. gt影像
         ax[2].imshow(gt_img[0])
@@ -402,14 +411,14 @@ if(__name__ == "__main__"):
     # plt.show()
     # print("out_d.numpy()",out_d.numpy())
 
-    rect2 = Rect2()
+    rect = Rect2()
     dis_img = np.ones( shape=(1,496,336,3), dtype=np.float32)
     gt_img  = np.ones( shape=(1,496,336,3), dtype=np.float32)
     optimizer_G = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
     optimizer_D = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
     summary_writer = tf.summary.create_file_writer( "temp_logs_dir" ) ### 建tensorboard，這會自動建資料夾喔！
-    train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, 0)
-    # train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, 0)
+    train_step(rect, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, 0)
+    # train_step(rect, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, 0)
 
 
     img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
