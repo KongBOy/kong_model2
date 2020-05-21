@@ -10,6 +10,7 @@ class DB_CATEGORY(Enum):
     type5c_real_have_see_no_bg_gt_color_gray3ch   = "type5c-real_have_see-no_bg-gt-color&gray3ch"
     type5d_real_have_see_have_bg_gt_color_gray3ch = "type5d-real_have_see-have_bg-gt_color&gray3ch"
     type6_h_384_w_256_smooth_curl_fold_and_page   = "type6_h=384,w=256_smooth-curl+fold_and_page"
+    type7_h472_w304_real_os_book                  = "type7_h472_w304_real_os_book"
 
 class DB_NAME(Enum):
     complex_move_map       = "complex_move_map"
@@ -37,6 +38,7 @@ class DB_NAME(Enum):
     have_bg_gt_color   = "have_bg-gt_color"
     have_bg_gt_gray3ch = "have_bg-gt_gray3ch"
 
+    os_book_400_train = "os_book_400_train"
 
 class DB_GET_METHOD(Enum):
     no_detail = ""
@@ -89,8 +91,9 @@ class Datasets():
         print("test_gt_dir:%s,"%self.test_gt_dir)
         print("see_in_dir:%s,"%self.see_in_dir)
         print("see_gt_dir:%s,"%self.see_gt_dir)
-        print("in_type:%s, gt_type:%s"%(self.in_type, self.gt_type))
+        print("in_type:%s, gt_type:%s, see_type:%s"%(self.in_type, self.gt_type, self.see_type))
         return ""
+
 class Dataset_init_builder:
     def __init__(self, db=None):
         if(db is None): self.db = Datasets()
@@ -165,10 +168,11 @@ DB_N = DB_NAME
 DB_GM = DB_GET_METHOD
 ### 直接先建好 obj 給外面import囉！
 type5c_real_have_see_no_bg_gt_color   = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_color  , DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="bmp", see_type="bmp").set_detail(have_train=True, have_see=True).build()
-type5c_real_have_see_no_bg_gt_gray3ch = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="bmp", see_type="bmp").set_detail(have_train=True, have_see=True).build()
+type7_h472_w304_real_os_book_400_train = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book, DB_N.os_book_400_train, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
 if(__name__=="__main__"):
 
     db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="bmp", see_type="bmp").set_detail(have_train=True, have_see=True).build()
+    db = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book, DB_N.os_book_400_train, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
     print(db)
     # db_complex_1_pure_unet = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_move_map   , h=256, w=256 )
     # db_complex_2_pure_rect = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_ord_pad_img, h=256, w=256 )
