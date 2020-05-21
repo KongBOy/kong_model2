@@ -65,8 +65,8 @@ class KModel_rect_builder(KModel_Unet_builder):
 class KModel_mrf_rect_builder(KModel_rect_builder):
     def build_mrf_rect(self):
         from step8_kong_model5_Rect2 import Rect2, generate_sees, generate_images, train_step
-        self.kong_model.mrf_rect = Rect2(use_mrfb=True) ### 只有這行跟rect不一樣，剩下都一樣喔！
-        self.kong_model.generator = self.kong_model.mrf_rect.generator
+        self.kong_model.rect = Rect2(use_mrfb=True) ### 只有這行跟rect不一樣，剩下都一樣喔！
+        self.kong_model.generator = self.kong_model.rect.generator
         self.kong_model.optimizer_G     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.kong_model.optimizer_D = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.kong_model.generate_images = generate_images
