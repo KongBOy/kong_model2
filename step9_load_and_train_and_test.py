@@ -235,11 +235,14 @@ class Exp_builder():
 
 if(__name__=="__main__"):
     from step10_db_obj import type5c_real_have_see_no_bg_gt_color,\
-                              type7_h472_w304_real_os_book_400_train
+                              type7_h472_w304_real_os_book_400data,\
+                              type7b_h500_w332_real_os_book_1532data
+                              
     from step10_model_obj import unet, rect, mrf_rect
 
 
     # using_db_obj = type5c_real_have_see_no_bg_gt_color
-    using_db_obj = type7_h472_w304_real_os_book_400_train
-    using_model_obj = mrf_rect
-    exp = Exp_builder().set_basic("train", using_db_obj, using_model_obj, describe_end="try_all_class").build().train()
+    # using_db_obj = type7_h472_w304_real_os_book_400data
+    using_db_obj = type7b_h500_w332_real_os_book_1532data
+    using_model_obj = rect
+    exp = Exp_builder().set_basic("train", using_db_obj, using_model_obj, describe_end="1532data").set_train(epochs=700).build().train()

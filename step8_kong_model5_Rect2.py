@@ -284,7 +284,7 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1.,tf.float32)):
 def train_step(model_obj, dis_img, gt_img, board_obj ):
     with tf.GradientTape(persistent=True) as tape:
         g_rec_img, fake_score, real_score = model_obj.rect(dis_img, gt_img)
-        loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(1.,tf.float32)) ### 40 調回 3
+        loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(3.,tf.float32)) ### 40 調回 3
         loss_g2d = mse_kong(fake_score, tf.ones_like(fake_score,dtype=tf.float32), lamb=tf.constant(1.,tf.float32))
         g_total_loss = loss_rec + loss_g2d
 
