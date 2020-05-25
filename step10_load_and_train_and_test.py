@@ -236,7 +236,7 @@ class Exp_builder():
         return self.exp
 
 if(__name__=="__main__"):
-    from step10_db_obj import type5c_real_have_see_no_bg_gt_color,\
+    from step06_db_obj import type5c_real_have_see_no_bg_gt_color,\
                               type7_h472_w304_real_os_book_400data,\
                               type7b_h500_w332_real_os_book_1532data
                               
