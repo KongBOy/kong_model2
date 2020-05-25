@@ -325,7 +325,7 @@ def generate_images( model_G, in_img_pre, gt_img_pre):
 ### 
 def generate_sees( model_G, see_index, in_img_pre, gt_img_pre,  epoch=0, result_obj=None):
     rect_back, in_img_back, gt_img_back = generate_images( model_G, in_img_pre, gt_img_pre)
-    see_dir  = result_obj.sees2[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
 
     if(epoch==0): ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
