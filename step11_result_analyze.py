@@ -96,7 +96,6 @@ class Result_sees_builder(Result_init_builder):
 class Result_builder(Result_sees_builder):
     def _use_result_name_find_sees_ver(self):
         db_c = self.result.result_name.split("-")[0]
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~db_c = ", db_c)
         sees_ver = ""
         if  (db_c in [DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch.value, 
                       DB_C.type5d_real_have_see_have_bg_gt_color_gray3ch.value,
