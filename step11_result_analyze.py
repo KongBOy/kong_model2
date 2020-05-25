@@ -6,6 +6,7 @@ from tqdm import tqdm
 import sys 
 sys.path.append("kong_util")
 from step0_access_path import access_path
+from step06_datas_obj import DB_C
 from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matplot_visual_multi_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Find_ltrd_and_crop
 from video_from_img import Video_combine_from_dir
@@ -16,7 +17,7 @@ class See:
         self.see_name=see_name
 
         self.see_dir = self.result_dir + "/" + self.see_name
-        # self.see_file_names = self.get_see_file_names()
+        # self.see_file_names = self.get_see_file_names()  ### 先不要比較好，要不然在train得時候容易出問題
 
     def get_see_file_names(self):
         self.see_file_names = get_dir_certain_file_name(self.see_dir, ".jpg")
@@ -27,7 +28,7 @@ class See:
     def save_as_avi(self):
         Video_combine_from_dir(self.see_dir, self.see_dir, "0-combine_jpg_tail_long.avi", tail_long=True)
 
-    def save_as_matplot_visual(self):
+    def save_as_matplot_visual_after_train(self):
         start_time = time.time()
         matplot_visual_dir = self.see_dir + "/" + "matplot_visual" ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build(matplot_visual_dir)               ### 建立 存結果的資料夾
@@ -56,113 +57,127 @@ class See:
 
 
 
-class Result:
-    def __init__(self, result_name, r_describe=None):
-        if(r_describe is None):self.result_dir = access_path + "result/" + result_name
-        else                  :self.result_dir = access_path + "result/" + result_name + "-" + r_describe
-        self.ckpt_dir = self.result_dir + "/ckpt"
-        self.logs_dir = self.result_dir + "/logs"
+class Result_init_builder:
+    def __init__(self, result=None):
+        if(result is None):
+            self.result = Result()
+        else:
+            self.result = result 
         
-        self.r_describe = r_describe
-        self.see_dirs = [self.result_dir + "/" + "see-%03i"%see_num for see_num in range(32) ]
-        # self.sees1 = [  See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
-        # self.sees2 = [  See(self.result_dir, "see_000-test_emp"), 
-        #                 See(self.result_dir, "see_001-test_img"),
-        #                 See(self.result_dir, "see_002-test_img"),
-        #                 See(self.result_dir, "see_003-test_img"),
-        #                 See(self.result_dir, "see_004-test_img"),
-        #                 See(self.result_dir, "see_005-test_img"),
-        #                 See(self.result_dir, "see_006-test_lin"),
-        #                 See(self.result_dir, "see_007-test_lin"),
-        #                 See(self.result_dir, "see_008-test_lin"),
-        #                 See(self.result_dir, "see_009-test_lin"),
-        #                 See(self.result_dir, "see_010-test_lin"),
-        #                 See(self.result_dir, "see_011-test_str"),
-        #                 See(self.result_dir, "see_012-test_str"),
-        #                 See(self.result_dir, "see_013-test_str"),
-        #                 See(self.result_dir, "see_014-test_str"),
-        #                 See(self.result_dir, "see_015-test_str"),
-        #                 See(self.result_dir, "see_016-train_emp"),
-        #                 See(self.result_dir, "see_017-train_img"),
-        #                 See(self.result_dir, "see_018-train_img"),
-        #                 See(self.result_dir, "see_019-train_img"),
-        #                 See(self.result_dir, "see_020-train_img"),
-        #                 See(self.result_dir, "see_021-train_img"),
-        #                 See(self.result_dir, "see_022-train_lin"),
-        #                 See(self.result_dir, "see_023-train_lin"),
-        #                 See(self.result_dir, "see_024-train_lin"),
-        #                 See(self.result_dir, "see_025-train_lin"),
-        #                 See(self.result_dir, "see_026-train_lin"),
-        #                 See(self.result_dir, "see_027-train_str"),
-        #                 See(self.result_dir, "see_028-train_str"),
-        #                 See(self.result_dir, "see_029-train_str"),
-        #                 See(self.result_dir, "see_030-train_str"),
-        #                 See(self.result_dir, "see_031-train_str")]
-        self.sees2 = [  See(self.result_dir, "see_000-test_lt1"), 
-                        See(self.result_dir, "see_001-test_lt2"),
-                        See(self.result_dir, "see_002-test_lt3"),
-                        See(self.result_dir, "see_003-test_lt4"),
-                        See(self.result_dir, "see_004-test_rt1"),
-                        See(self.result_dir, "see_005-test_rt2"),
-                        See(self.result_dir, "see_006-test_rt3"),
-                        See(self.result_dir, "see_007-test_rt4"),
-                        See(self.result_dir, "see_008-test_ld1"),
-                        See(self.result_dir, "see_009-test_ld2"),
-                        See(self.result_dir, "see_010-test_ld3"),
-                        See(self.result_dir, "see_011-test_ld4"),
-                        See(self.result_dir, "see_012-test_rd1"),
-                        See(self.result_dir, "see_013-test_rd2"),
-                        See(self.result_dir, "see_014-test_rd3"),
-                        See(self.result_dir, "see_015-test_rd4"),
-                        See(self.result_dir, "see_016-train_lt1"),
-                        See(self.result_dir, "see_017-train_lt2"),
-                        See(self.result_dir, "see_018-train_lt3"),
-                        See(self.result_dir, "see_019-train_lt4"),
-                        See(self.result_dir, "see_020-train_rt1"),
-                        See(self.result_dir, "see_021-train_rt2"),
-                        See(self.result_dir, "see_022-train_rt3"),
-                        See(self.result_dir, "see_023-train_rt4"),
-                        See(self.result_dir, "see_024-train_ld1"),
-                        See(self.result_dir, "see_025-train_ld2"),
-                        See(self.result_dir, "see_026-train_ld3"),
-                        See(self.result_dir, "see_027-train_ld4"),
-                        See(self.result_dir, "see_028-train_rd1"),
-                        See(self.result_dir, "see_029-train_rd2"),
-                        See(self.result_dir, "see_030-train_rd3"),
-                        See(self.result_dir, "see_031-train_rd4")]
-        self.see_amount = len(self.sees2)
-        
-    @staticmethod
-    def new_from_result_name(result_name):
-        ### 第零階段：決定result, logs, ckpt 存哪裡 並 把source code存起來s
-        ###    train_reload和test 根據 "result_name"，直接去放result的資料夾複製囉！
-        return Result(result_name=result_name)
+    def build(self):
+        return self.result
 
-    @staticmethod
-    def new_from_experiment(exp):
+class Result_sees_builder(Result_init_builder):
+    def _build_sees(self, sees_ver):
+        if  (sees_ver == "sees_ver1"):
+            self.result.sees = [  See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
+        elif(sees_ver == "sees_ver2"):
+            self.result.sees = [  See(self.result_dir, "see_000-test_emp"), 
+                           See(self.result_dir, "see_001-test_img"),See(self.result_dir, "see_002-test_img"),See(self.result_dir, "see_003-test_img"),See(self.result_dir, "see_004-test_img"),See(self.result_dir, "see_005-test_img"),
+                           See(self.result_dir, "see_006-test_lin"),See(self.result_dir, "see_007-test_lin"),See(self.result_dir, "see_008-test_lin"),See(self.result_dir, "see_009-test_lin"),See(self.result_dir, "see_010-test_lin"),
+                           See(self.result_dir, "see_011-test_str"),See(self.result_dir, "see_012-test_str"),See(self.result_dir, "see_013-test_str"),See(self.result_dir, "see_014-test_str"),See(self.result_dir, "see_015-test_str"),
+                           See(self.result_dir, "see_016-train_emp"),
+                           See(self.result_dir, "see_017-train_img"),See(self.result_dir, "see_018-train_img"),See(self.result_dir, "see_019-train_img"),See(self.result_dir, "see_020-train_img"),See(self.result_dir, "see_021-train_img"),
+                           See(self.result_dir, "see_022-train_lin"),See(self.result_dir, "see_023-train_lin"),See(self.result_dir, "see_024-train_lin"),See(self.result_dir, "see_025-train_lin"),See(self.result_dir, "see_026-train_lin"),
+                           See(self.result_dir, "see_027-train_str"),See(self.result_dir, "see_028-train_str"),See(self.result_dir, "see_029-train_str"),See(self.result_dir, "see_030-train_str"),See(self.result_dir, "see_031-train_str")]
+        elif(sees_ver == "sees_ver3"):
+            self.result.sees = [  See(self.result_dir, "see_000-test_lt1"),See(self.result_dir, "see_001-test_lt2"),See(self.result_dir, "see_002-test_lt3"),See(self.result_dir, "see_003-test_lt4"),
+                            See(self.result_dir, "see_004-test_rt1"),See(self.result_dir, "see_005-test_rt2"),See(self.result_dir, "see_006-test_rt3"),See(self.result_dir, "see_007-test_rt4"),
+                            See(self.result_dir, "see_008-test_ld1"),See(self.result_dir, "see_009-test_ld2"),See(self.result_dir, "see_010-test_ld3"),See(self.result_dir, "see_011-test_ld4"),
+                            See(self.result_dir, "see_012-test_rd1"),See(self.result_dir, "see_013-test_rd2"),See(self.result_dir, "see_014-test_rd3"),See(self.result_dir, "see_015-test_rd4"),
+                            See(self.result_dir, "see_016-train_lt1"),See(self.result_dir, "see_017-train_lt2"),See(self.result_dir, "see_018-train_lt3"),See(self.result_dir, "see_019-train_lt4"),
+                            See(self.result_dir, "see_020-train_rt1"),See(self.result_dir, "see_021-train_rt2"),See(self.result_dir, "see_022-train_rt3"),See(self.result_dir, "see_023-train_rt4"),
+                            See(self.result_dir, "see_024-train_ld1"),See(self.result_dir, "see_025-train_ld2"),See(self.result_dir, "see_026-train_ld3"),See(self.result_dir, "see_027-train_ld4"),
+                            See(self.result_dir, "see_028-train_rd1"),See(self.result_dir, "see_029-train_rd2"),See(self.result_dir, "see_030-train_rd3"),See(self.result_dir, "see_031-train_rd4")]
+
+class Result_builder(Result_sees_builder):
+    def _use_result_name_find_sees_ver(self):
+        db_c = self.result_name.split("-")[0]
+
+        sees_ver = ""
+        if  (db_c in [DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, 
+                      DB_C.type5d_real_have_see_have_bg_gt_color_gray3ch,
+                      DB_C.type6_h_384_w_256_smooth_curl_fold_and_page  ]): sees_ver="sees_ver2"
+        elif(db_c in [DB_C.type7_h472_w304_real_os_book, 
+                      DB_C.type7b_h500_w332_real_os_book]): sees_ver="sees_ver3"
+        else: sees_ver = "sees_ver1"
+        return sees_ver
+
+
+    def set_result_by_result_name(self, result_name):
+        ### 用result_name 來設定ckpt, logs 的資料夾
+        self.result.result_name = result_name
+        self.result.result_dir  = access_path + "result/" + result_name
+        self.result.ckpt_dir = self.result_dir + "/ckpt"
+        self.result.logs_dir = self.result_dir + "/logs"
+
+        ### 用result_name 來決定sees_ver，之後再去建立sees
+        self.result.sees_ver = self._use_result_name_find_sees_ver()
+        self._build_sees(self.sees_ver)
+        return self
+
+    def _get_result_name_by_exp(self, exp):
         import datetime
+        ### 自動決定 result_name，再去做進一步設定
         ### 大概長這樣 type1_h=256,w=256_complex_"describe_mid"_20200328-215330_model5_rect2_"describe_end"
         result_name_element = [exp.db_obj.category.value]
         if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
-        result_name_element += [datetime.datetime.now().strftime("%Y%m%d-%H%M%S"), exp.model_obj.model_name.value]
+        result_name_element += [datetime.datetime.now().strftime("%Y%m%d_%H%M%S"), exp.model_obj.model_name.value]
         if(exp.describe_end is not None): result_name_element += [exp.describe_end]
+        return "-".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
 
-        result_name = "-".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
-        return Result(result_name=result_name)
+    def set_result_by_exp(self, exp):
+        self.result.result_name = self._get_result_name_by_exp(exp)
+
+        self.result.set_by_result_name(self.result.result_name)
+        return self
+
+class Result:
+    # def __init__(self, result_name=None, r_describe=None):
+    def __init__(self):
+        self.result_name = None
+        self.result_dir  = None
+        # if(r_describe is None):self.result_dir = access_path + "result/" + result_name
+        # else                  :self.result_dir = access_path + "result/" + result_name + "-" + r_describe
+        self.ckpt_dir = self.result_dir + "/ckpt"
+        self.logs_dir = self.result_dir + "/logs"
+        
+        # self.r_describe = r_describe  ### 我覺得拿掉好了，因為現在統一好命名方式後，資訊都應該濃縮進 result_name囉！ 應該不用再describe了～
+        self.sees_ver = None
+        self.sees = None
+        self.see_amount = len(self.sees)
+        
+    # @staticmethod
+    # def new_from_result_name(result_name):
+    #     ### 第零階段：決定result, logs, ckpt 存哪裡 並 把source code存起來s
+    #     ###    train_reload和test 根據 "result_name"，直接去放result的資料夾複製囉！
+    #     return Result(result_name=result_name)
+
+    # @staticmethod
+    # def new_from_experiment(exp):
+    #     import datetime
+    #     ### 大概長這樣 type1_h=256,w=256_complex_"describe_mid"_20200328-215330_model5_rect2_"describe_end"
+    #     result_name_element = [exp.db_obj.category.value]
+    #     if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
+    #     result_name_element += [datetime.datetime.now().strftime("%Y%m%d-%H%M%S"), exp.model_obj.model_name.value]
+    #     if(exp.describe_end is not None): result_name_element += [exp.describe_end]
+
+    #     result_name = "-".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
+    #     return Result(result_name=result_name)
     
 
 
-    def rename_see1_to_see2(self):
-        for go_see in range(self.see_amount):
-            if(os.path.isdir(self.sees1[go_see].see_dir)):
-                print("rename_ord:", self.sees1[go_see].see_dir)
-                print("rename_dst:", self.sees2[go_see].see_dir)
-                os.rename(self.sees1[go_see].see_dir, self.sees2[go_see].see_dir)
+    # def rename_see1_to_see2(self):
+    #     for go_see in range(self.see_amount):
+    #         if(os.path.isdir(self.sees1[go_see].see_dir)):
+    #             print("rename_ord:", self.sees1[go_see].see_dir)
+    #             print("rename_dst:", self.sees2[go_see].see_dir)
+    #             os.rename(self.sees1[go_see].see_dir, self.sees2[go_see].see_dir)
             
     def save_all_see_as_matplot_visual(self, start_index, amount):
         print("start_index", start_index)
-        for see in self.sees2[start_index: start_index+amount]:
-            see.save_as_matplot_visual()
+        for see in self.sees[start_index: start_index+amount]:
+            see.save_as_matplot_visual_after_train()
 
     def save_all_see_as_matplot_visual_multiprocess(self):
         from util import multi_processing_interface
@@ -180,7 +195,7 @@ class Result_analyzer:
         ### 暫時的update see1~see2
         for result in c_results:
             result.rename_see1_to_see2()
-            for see in result.sees2:
+            for see in result.sees:
                 see.get_see_file_names()
 
     
@@ -192,15 +207,15 @@ class Result_analyzer:
     ### 單一row，同see
     def analyze_col_results_single_see(self, c_results, see_num):
         start_time = time.time()
-        analyze_see_dir = self.analyze_dir + "/" + c_results[0].sees2[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
+        analyze_see_dir = self.analyze_dir + "/" + c_results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build(analyze_see_dir)                                       ### 建立 存結果的資料夾
 
         ### 暫時的update see1~see2
         self._temp_r_c_results_update_see1_to_see2_and_get_see_file_names(c_results)
         
         ### 抓 in/gt imgs
-        in_imgs = cv2.imread(c_results[0].sees2[see_num].see_dir + "/" + c_results[0].sees2[see_num].see_file_names[0])
-        gt_imgs = cv2.imread(c_results[0].sees2[see_num].see_dir + "/" + c_results[0].sees2[see_num].see_file_names[1])
+        in_imgs = cv2.imread(c_results[0].sees[see_num].see_dir + "/" + c_results[0].sees[see_num].see_file_names[0])
+        gt_imgs = cv2.imread(c_results[0].sees[see_num].see_dir + "/" + c_results[0].sees[see_num].see_file_names[1])
 
         ### 抓 要顯示的 titles
         c_titles = ["in_img"]
@@ -214,7 +229,7 @@ class Result_analyzer:
                 epoch = go_img-2
                 
                 c_imgs   = [in_imgs]
-                for result in c_results: c_imgs.append(cv2.imread(result.sees2[see_num].see_dir + "/" + result.sees2[see_num].see_file_names[go_img]))
+                for result in c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img]))
                 c_imgs += [gt_imgs]
                 matplot_visual_single_row_imgs(img_titles=c_titles,
                                                imgs=c_imgs, 
@@ -226,7 +241,7 @@ class Result_analyzer:
         Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
-
+              
     def analyze_col_results_all_single_see(self,start_see, see_amount, c_results):
         for go_see in range(start_see, start_see + see_amount):
             self.analyze_col_results_single_see(c_results, go_see)
@@ -246,7 +261,7 @@ class Result_analyzer:
                 r_c_imgs = []
                 for go_see_num, see_num in enumerate(see_nums):
                     c_imgs   = [in_imgs[go_see_num]]
-                    for result in c_results: c_imgs.append(cv2.imread(result.sees2[see_num].see_dir + "/" + result.sees2[see_num].see_file_names[go_img]))
+                    for result in c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img]))
                     c_imgs += [gt_imgs[go_see_num]]
                     r_c_imgs.append(c_imgs)
                 matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
@@ -273,8 +288,8 @@ class Result_analyzer:
         in_imgs = []
         gt_imgs = []
         for see_num in see_nums:
-            in_imgs.append(cv2.imread(c_results[0].sees2[see_num].see_dir + "/" + c_results[0].sees2[see_num].see_file_names[0]))
-            gt_imgs.append(cv2.imread(c_results[0].sees2[see_num].see_dir + "/" + c_results[0].sees2[see_num].see_file_names[1]))
+            in_imgs.append(cv2.imread(c_results[0].sees[see_num].see_dir + "/" + c_results[0].sees[see_num].see_file_names[0]))
+            gt_imgs.append(cv2.imread(c_results[0].sees[see_num].see_dir + "/" + c_results[0].sees[see_num].see_file_names[1]))
 
         ### 抓 第一row的 要顯示的 titles
         c_titles = ["in_img"]
@@ -297,7 +312,7 @@ class Result_analyzer:
     ### 各row各col 皆 不同result，但全部都看相同某個see
     def analyze_row_col_results_certain_see(self, r_c_results, see_num):
         start_time = time.time()
-        analyze_see_dir = self.analyze_dir + "/" + r_c_results[0][0].sees2[see_num].see_name ### 分析結果存哪裡定位出來
+        analyze_see_dir = self.analyze_dir + "/" + r_c_results[0][0].sees[see_num].see_name ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build(analyze_see_dir)                                          ### 建立 存結果的資料夾
         
         ### 暫時的update see1~see2
@@ -306,8 +321,8 @@ class Result_analyzer:
         print("processing see_num:", see_num)
         ### 要記得see的第一張存的是 輸入的in影像，第二張存的是 輸出的gt影像
         ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
-        in_img = cv2.imread(r_c_results[0][0].sees2[see_num].see_dir + "/" + r_c_results[0][0].sees2[see_num].see_file_names[0] )  ### 第一張：in_img
-        gt_img = cv2.imread(r_c_results[0][0].sees2[see_num].see_dir + "/" + r_c_results[0][0].sees2[see_num].see_file_names[1] )  ### 第二張：gt_img
+        in_img = cv2.imread(r_c_results[0][0].sees[see_num].see_dir + "/" + r_c_results[0][0].sees[see_num].see_file_names[0] )  ### 第一張：in_img
+        gt_img = cv2.imread(r_c_results[0][0].sees[see_num].see_dir + "/" + r_c_results[0][0].sees[see_num].see_file_names[1] )  ### 第二張：gt_img
         for go_img in tqdm(range(600)):
             if(go_img >=2):
                 epoch = go_img-2
@@ -318,7 +333,7 @@ class Result_analyzer:
                     c_imgs   = [in_img]   ### 每個row的第一張要放in_img
                     c_titles = ["in_img"] ### 每個row的第一張要放in_img
                     for result in row_results: ### 抓出一個row的 img 和 title
-                        c_imgs.append( cv2.imread( result.sees2[see_num].see_dir + "/" + result.sees2[see_num].see_file_names[go_img] ))
+                        c_imgs.append( cv2.imread( result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img] ))
                         c_titles.append(result.r_describe)
                     c_imgs += [gt_img]      ### 每個row的最後一張要放gt_img
                     c_titles += ["gt_img"]  ### 每個row的最後一張要放gt_img
