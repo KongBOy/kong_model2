@@ -2,10 +2,10 @@ import tensorflow as tf
 import numpy as np 
 from enum import Enum 
 import time
-from result_analyze import Result
-from step10_model_obj import MODEL_NAME
-from step10_board_obj import Board_builder
-from step6_data_pipline import tf_Data_builder
+from step11_result_analyze import Result
+from step08_model_obj import MODEL_NAME
+from step09_board_obj import Board_builder
+from step06_data_pipline import tf_Data_builder
 import sys
 sys.path.append("kong_util")
 from util import time_util
@@ -18,9 +18,9 @@ class Experiment():
         code_dir = self.result_obj.result_dir+"/"+"train_code"
         Check_dir_exist_and_build(code_dir)
         shutil.copy("step5_build_dataset.py" ,code_dir + "/" + "step5_build_dataset.py")
-        shutil.copy("step6_data_pipline.py"  ,code_dir + "/" + "step6_data_pipline.py")
+        shutil.copy("step06_data_pipline.py"  ,code_dir + "/" + "step06_data_pipline.py")
         if  (self.model_obj.model_name == "model1_UNet"):          shutil.copy("step7_kong_model1_UNet.py"          ,code_dir + "/" + "step7_kong_model1_UNet.py")
-        elif(self.model_obj.model_name == "model2_UNet_512to256"): shutil.copy("step7_kong_model2_UNet_512to256.py" ,code_dir + "/" + "step7_kong_model2_UNet_512to256.py")
+        elif(self.model_obj.model_name == "model2_UNet_512to256"): shutil.copy("step07_1_UNet_512to256.py" ,code_dir + "/" + "step07_1_UNet_512to256.py")
         elif(self.model_obj.model_name == "model3_UNet_stack"):    shutil.copy("step7_kong_model3_UNet_stack.py"    ,code_dir + "/" + "step7_kong_model3_UNet_stack.py")
         elif(self.model_obj.model_name == "model4_UNet_and_D"):    shutil.copy("step7_kong_model4_UNet_and_D.py"    ,code_dir + "/" + "step7_kong_model4_UNet_and_D.py")        
         shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
@@ -31,8 +31,8 @@ class Experiment():
         code_dir = self.result_obj.result_dir+"/"+"train_code"
         Check_dir_exist_and_build(code_dir)
         shutil.copy("step5_build_dataset.py"           ,code_dir + "/" + "step5_build_dataset.py")
-        shutil.copy("step6_data_pipline.py"            ,code_dir + "/" + "step6_data_pipline.py")
-        shutil.copy("step8_kong_model5_Rect2.py"       ,code_dir + "/" + "step8_kong_model5_Rect2.py")
+        shutil.copy("step06_data_pipline.py"            ,code_dir + "/" + "step06_data_pipline.py")
+        shutil.copy("step07_2_Rect2.py"       ,code_dir + "/" + "step07_2_Rect2.py")
         shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
         # shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
 
@@ -69,20 +69,21 @@ class Experiment():
         self.ckpt_manager = None
 ################################################################################################################################################
 ################################################################################################################################################
-    def exp_init(self):
-        ### db_obj 和 model_obj 改成從外面先建立好再輸入近來build
-        ### result_obj 決定result, logs, ckpt 存哪裡 
-        if  (self.phase=="train"        ): self.result_obj = Result.new_from_experiment(self) ### 需要 db_obj 和 exp本身的describe_mid/end
-        elif(self.phase=="train_reload" or
-             self.phase=="test"         ): self.result_obj = Result.new_from_result_name(self.result_name) ### 直接用 自己指定好的 result_name
 
-        self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
-        self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
-        ####################################################################################################################
-        ### 看需不需要reload model，只有train_reload 和 test需要
-        if  (self.phase == "train_reload" or self.phase=="test" ):
-            self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
-            self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
+    # def exp_init(self):
+    #     ### db_obj 和 model_obj 改成從外面先建立好再輸入近來build
+    #     ### result_obj 決定result, logs, ckpt 存哪裡 
+    #     if  (self.phase=="train"        ): self.result_obj = Result.new_from_experiment(self) ### 需要 db_obj 和 exp本身的describe_mid/end
+    #     elif(self.phase=="train_reload" or
+    #          self.phase=="test"         ): self.result_obj = Result.new_from_result_name(self.result_name) ### 直接用 自己指定好的 result_name
+
+    #     self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
+    #     self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
+    #     ####################################################################################################################
+    #     ### 看需不需要reload model，只有train_reload 和 test需要
+    #     if  (self.phase == "train_reload" or self.phase=="test" ):
+    #         self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
+    #         self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
 
     def train_step1_see_current_img(self, epoch):
         sample_start_time = time.time()
@@ -142,10 +143,29 @@ class Experiment():
             f.write("\n")
 
 
-    def train(self):
-        self.step0_save_code() ###    把source code存起來
+    def train_init(self, train_reload=False):
+        if(train_reload):self.result_obj = Result.new_from_result_name(self.result_name) ### 直接用 自己指定好的 result_name
+        else:            self.result_obj = Result.new_from_experiment(self) ### 需要 db_obj 和 exp本身的describe_mid/end
+        
+        self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
+        self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
+        
         self.board_obj = Board_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build() ###step3 建立tensorboard，只有train 和 train_reload需要
+        self.step0_save_code() ###    把source code存起來
 
+        ####################################################################################################################
+        ### 看需不需要reload model，只有train_reload 和 test需要
+        if(train_reload):
+            self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
+            self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
+
+
+    def train_reload(self,result_name):
+        self.result_name = result_name
+        self.train(train_reload=True )
+
+    def train(self, train_reload=False):
+        self.train_init(train_reload)
         ################################################################################################################################################
         ### 第三階段：train 和 test
         ###  training 的部分 ###################################################################################################
@@ -198,6 +218,22 @@ class Experiment():
             ###    step5 紀錄、顯示 訓練相關的時間
             self.train_step5_show_time(epoch, e_start, total_start, epoch_start_timestamp)
 
+
+    def test(self, result_name):
+        self.result_name = result_name
+        self.result_obj = Result.new_from_result_name(self.result_name) ### 直接用 自己指定好的 result_name
+        self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
+        self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
+        self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
+        self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
+
+    def run(self, result_name=None):
+        if  (self.phase == "train"):          self.train()
+        elif(self.phase == "train_reload"):   self.train_reload(result_name)
+        elif(self.phase == "test"):           self.test(result_name)
+        elif(self.phase == "train_indicate"): pass
+
+
 class Exp_builder():
     def __init__(self, exp=None):
         if(exp is None):
@@ -236,11 +272,11 @@ class Exp_builder():
         return self.exp
 
 if(__name__=="__main__"):
-    from step06_db_obj import type5c_real_have_see_no_bg_gt_color,\
+    from step06_datas_obj import type5c_real_have_see_no_bg_gt_color,\
                               type7_h472_w304_real_os_book_400data,\
                               type7b_h500_w332_real_os_book_1532data
                               
-    from step10_model_obj import unet, rect, mrf_rect, just_G
+    from step08_model_obj import unet, rect, mrf_rect, just_G
 
 
     # using_db_obj = type5c_real_have_see_no_bg_gt_color
@@ -249,4 +285,6 @@ if(__name__=="__main__"):
 
     # using_model_obj = rect
     using_model_obj = just_G
-    exp = Exp_builder().set_basic("train", using_db_obj, using_model_obj, describe_end="1532data").set_train(epochs=700).build().train()
+    exp = Exp_builder().set_basic("train", using_db_obj, using_model_obj, describe_end="1532data").set_train(epochs=700).build().run(result_name="type7b_h500_w332_real_os_book-20200524-181909-just_G-1532data")
+
+    exp = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1").set_train(epochs=700).build().run("type7b_h500_w332_real_os_book_20200524-013834_rect_1532data_mae1")
