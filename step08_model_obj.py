@@ -36,7 +36,7 @@ class KModel_init_builder:
 
 class KModel_Unet_builder(KModel_init_builder):
     def build_unet(self):
-        from step7_kong_model2_UNet_512to256 import Generator512to256, generate_sees, generate_images, train_step
+        from step07_1_UNet_512to256 import Generator512to256, generate_sees, generate_images, train_step
         self.kong_model.generator           = Generator512to256(out_channel=2)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.kong_model.max_train_move = tf.Variable(1) ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
@@ -53,7 +53,7 @@ class KModel_Unet_builder(KModel_init_builder):
 
 class KModel_rect_builder(KModel_Unet_builder):
     def build_rect(self):
-        from step8_kong_model5_Rect2 import Rect2, generate_sees, generate_images, train_step
+        from step07_2_Rect2 import Rect2, generate_sees, generate_images, train_step
         self.kong_model.rect = Rect2() ### 只有這行跟mrf_rect不一樣，剩下都一樣喔！
         self.kong_model.generator       = self.kong_model.rect.generator
         self.kong_model.optimizer_G     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
@@ -65,7 +65,7 @@ class KModel_rect_builder(KModel_Unet_builder):
 
 class KModel_mrf_rect_builder(KModel_rect_builder):
     def build_mrf_rect(self):
-        from step8_kong_model5_Rect2 import Rect2, generate_sees, generate_images, train_step
+        from step07_2_Rect2 import Rect2, generate_sees, generate_images, train_step
         self.kong_model.rect = Rect2(use_mrfb=True) ### 只有這行跟rect不一樣，剩下都一樣喔！
         self.kong_model.generator = self.kong_model.rect.generator
         self.kong_model.optimizer_G     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
@@ -77,7 +77,7 @@ class KModel_mrf_rect_builder(KModel_rect_builder):
 
 class KModel_just_G_builder(KModel_mrf_rect_builder):
     def build_just_G(self):
-        from step8_kong_model5_just_G import Generator, generate_sees, generate_images, train_step
+        from step07_3_just_G import Generator, generate_sees, generate_images, train_step
         self.kong_model.generator           = Generator()
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.kong_model.generate_images = generate_images ### 不能checkpoint

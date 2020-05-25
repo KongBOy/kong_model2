@@ -151,7 +151,7 @@ class Experiment():
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
         
         self.board_obj = Board_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build() ###step3 建立tensorboard，只有train 和 train_reload需要
-        self.step0_save_code() ###    把source code存起來
+        # self.step0_save_code() ###    把source code存起來
 
         ####################################################################################################################
         ### 看需不需要reload model，只有train_reload 和 test需要
@@ -248,8 +248,8 @@ class Exp_builder():
         self.exp.describe_end = describe_end
         return self 
 
-    def set_train(self, batch_size=1, train_shuffle=True, epochs=700, epoch_down_step=100):
-        self.exp.phase = "train"
+    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=700, epoch_down_step=100):
+        # self.exp.phase = "train"
         self.exp.batch_size = batch_size
         self.exp.train_shuffle = train_shuffle
         self.exp.epochs = epochs
@@ -257,7 +257,7 @@ class Exp_builder():
         self.exp.start_epoch=0
         return self
     
-    def set_train_reload(self, result_name):
+    def set_train_args_reload(self, result_name):
         self.exp.phase = "train_reload"
         self.result_name = result_name
         return self
@@ -268,7 +268,7 @@ class Exp_builder():
         return self
 
     def build(self):
-        self.exp.exp_init()
+        # self.exp.exp_init()
         return self.exp
 
 if(__name__=="__main__"):
@@ -285,6 +285,6 @@ if(__name__=="__main__"):
 
     # using_model_obj = rect
     using_model_obj = just_G
-    exp = Exp_builder().set_basic("train", using_db_obj, using_model_obj, describe_end="1532data").set_train(epochs=700).build().run(result_name="type7b_h500_w332_real_os_book-20200524-181909-just_G-1532data")
+    # exp = Exp_builder().set_basic("train", using_db_obj, using_model_obj, describe_end="1532data").set_train_args(epochs=700).build().run(result_name="type7b_h500_w332_real_os_book-20200524-181909-just_G-1532data")
 
-    exp = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1").set_train(epochs=700).build().run("type7b_h500_w332_real_os_book_20200524-013834_rect_1532data_mae1")
+    exp = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1").set_train_args(epochs=700).build().run("type7b_h500_w332_real_os_book_20200524-013834_rect_1532data_mae1")

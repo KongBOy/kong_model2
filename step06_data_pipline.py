@@ -3,7 +3,7 @@ sys.path.append("kong_util")
 from util import get_dir_img, get_dir_move, use_plt_show_move, get_db_amount
 
 from step0_access_path import access_path
-from step10_model_obj import MODEL_NAME, KModel_builder
+from step08_model_obj import MODEL_NAME, KModel_builder
 from step10_db_obj import DB_C, DB_N, DB_GM, Dataset_builder
 import tensorflow as tf
 import os

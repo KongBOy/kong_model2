@@ -1,5 +1,5 @@
 import tensorflow as tf
-from step8_kong_model5_Rect2 import Generator, mae_kong, generate_images, generate_sees
+from step07_2_Rect2 import Generator, mae_kong, generate_images, generate_sees
 
 @tf.function
 def train_step(model_obj, dis_img, gt_img, board_obj=None ):
