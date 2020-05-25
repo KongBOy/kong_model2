@@ -6,40 +6,29 @@ from step11_result_analyze import Result
 from step08_model_obj import MODEL_NAME
 from step09_board_obj import Board_builder
 from step06_data_pipline import tf_Data_builder
+from step11_result_analyze import Result_builder
 import sys
 sys.path.append("kong_util")
 from util import time_util
 
 
 class Experiment():
-    def _step0_save_rect1_train_code(self):
-        import shutil
-        from build_dataset_combine import Check_dir_exist_and_build
-        code_dir = self.result_obj.result_dir+"/"+"train_code"
-        Check_dir_exist_and_build(code_dir)
-        shutil.copy("step5_build_dataset.py" ,code_dir + "/" + "step5_build_dataset.py")
-        shutil.copy("step06_data_pipline.py"  ,code_dir + "/" + "step06_data_pipline.py")
-        if  (self.model_obj.model_name == "model1_UNet"):          shutil.copy("step7_kong_model1_UNet.py"          ,code_dir + "/" + "step7_kong_model1_UNet.py")
-        elif(self.model_obj.model_name == "model2_UNet_512to256"): shutil.copy("step07_1_UNet_512to256.py" ,code_dir + "/" + "step07_1_UNet_512to256.py")
-        elif(self.model_obj.model_name == "model3_UNet_stack"):    shutil.copy("step7_kong_model3_UNet_stack.py"    ,code_dir + "/" + "step7_kong_model3_UNet_stack.py")
-        elif(self.model_obj.model_name == "model4_UNet_and_D"):    shutil.copy("step7_kong_model4_UNet_and_D.py"    ,code_dir + "/" + "step7_kong_model4_UNet_and_D.py")        
-        shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
-
-    def _step0_save_rect2_train_code(self):
-        import shutil
-        from build_dataset_combine import Check_dir_exist_and_build
-        code_dir = self.result_obj.result_dir+"/"+"train_code"
-        Check_dir_exist_and_build(code_dir)
-        shutil.copy("step5_build_dataset.py"           ,code_dir + "/" + "step5_build_dataset.py")
-        shutil.copy("step06_data_pipline.py"            ,code_dir + "/" + "step06_data_pipline.py")
-        shutil.copy("step07_2_Rect2.py"       ,code_dir + "/" + "step07_2_Rect2.py")
-        shutil.copy("step9_load_and_train_and_test.py" ,code_dir + "/" + "step9_load_and_train_and_test.py")
-        # shutil.copy("util.py"                          ,code_dir + "/" + "util.py")
-
     def step0_save_code(self):
-        if  (self.model_obj.model_name == MODEL_NAME.unet)     : self._step0_save_rect1_train_code()
-        elif(self.model_obj.model_name == MODEL_NAME.rect   or 
-             self.model_obj.model_name == MODEL_NAME.mrf_rect ): self._step0_save_rect2_train_code()
+        import shutil
+        from build_dataset_combine import Check_dir_exist_and_build
+        code_dir = self.result_obj.result_dir+"/"+"train_code"
+        Check_dir_exist_and_build(code_dir)
+        shutil.copy("step06_data_pipline.py" ,code_dir + "/" + "step06_data_pipline.py")
+        shutil.copy("step06_datas_obj.py"    ,code_dir + "/" + "step06_datas_obj.py")
+        shutil.copy("step07_1_UNet_512to256.py",code_dir + "/" + "step7_kong_model1_UNet.py")
+        shutil.copy("step07_2_Rect2.py",code_dir + "/" + "step07_2_Rect2.py")
+        shutil.copy("step07_2_Rect2.py",code_dir + "/" + "step07_2_Rect2.py")
+        shutil.copy("step07_3_just_G.py",code_dir + "/" + "step07_3_just_G.py")
+        shutil.copy("step08_model_obj.py" ,code_dir + "/" + "step08_model_obj.py")
+        shutil.copy("step09_board_obj.py" ,code_dir + "/" + "step09_board_obj.py")
+        shutil.copy("step10_load_and_train_and_test.py" ,code_dir + "/" + "step10_load_and_train_and_test.py")
+        shutil.copy("step11_result_analyze.py" ,code_dir + "/" + "step11_result_analyze.py")
+
 ################################################################################################################################################
 ################################################################################################################################################
     def __init__(self):
@@ -69,22 +58,84 @@ class Experiment():
         self.ckpt_manager = None
 ################################################################################################################################################
 ################################################################################################################################################
+    def train_init(self, train_reload=False):### 1.result, 2.data, 3.model(reload), 4.board, 5.save_code 
+        ### 1.result
+        if(train_reload):self.result_obj = Result.new_from_result_name(self.result_name) ### 直接用 自己指定好的 result_name
+        else:            self.result_obj = Result.new_from_experiment(self) ### 需要 db_obj 和 exp本身的describe_mid/end
+        ### 2.data
+        self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
+        ### 3.model
+        self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
+        if(train_reload): ### 看需不需要reload model
+            self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
+            self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
 
-    # def exp_init(self):
-    #     ### db_obj 和 model_obj 改成從外面先建立好再輸入近來build
-    #     ### result_obj 決定result, logs, ckpt 存哪裡 
-    #     if  (self.phase=="train"        ): self.result_obj = Result.new_from_experiment(self) ### 需要 db_obj 和 exp本身的describe_mid/end
-    #     elif(self.phase=="train_reload" or
-    #          self.phase=="test"         ): self.result_obj = Result.new_from_result_name(self.result_name) ### 直接用 自己指定好的 result_name
+        ####################################################################################################################
+        ### 4.board, 5.save_code；train時才需要 board_obj 和 把code存起來喔！test時不用～
+        self.board_obj = Board_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build() ###step3 建立tensorboard，只有train 和 train_reload需要
+        self.step0_save_code() ###    把source code存起來
 
-    #     self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
-    #     self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
-    #     ####################################################################################################################
-    #     ### 看需不需要reload model，只有train_reload 和 test需要
-    #     if  (self.phase == "train_reload" or self.phase=="test" ):
-    #         self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
-    #         self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
+    def train_reload(self,result_name):
+        self.result_name = result_name
+        self.train(train_reload=True )
 
+    def train(self, train_reload=False):
+        self.train_init(train_reload)
+        ################################################################################################################################################
+        ### 第三階段：train 和 test
+        ###  training 的部分 ###################################################################################################
+        ###     以下的概念就是，每個模型都有自己的 generate_images 和 train_step，根據model_name 去各別import 各自的 function過來用喔！
+        total_start = time.time()
+
+        ### 多這 這段if 是因為 unet 有move_map的部分，所以要多做以下操作 把 move_map相關會用到的東西存起來
+        if(self.model_obj.model_name == MODEL_NAME.unet ):
+            from util import get_max_db_move_xy
+            self.model_obj.ckpt.max_train_move.assign(self.tf_data.max_train_move)  ### 在test時 把move_map值弄到-1~1需要，所以要存起來
+            self.model_obj.ckpt.min_train_move.assign(self.tf_data.min_train_move)  ### 在test時 把move_map值弄到-1~1需要，所以要存起來
+            max_db_move_x, max_db_move_y = get_max_db_move_xy(db_dir=self.db_obj.category, db_name=self.db_obj.db_name) ### g生成的結果 做 apply_rec_move用
+            self.model_obj.ckpt.max_db_move_x.assign(max_db_move_x)  ### 在test時 rec_img需要，所以要存起來
+            self.model_obj.ckpt.max_db_move_y.assign(max_db_move_y)  ### 在test時 rec_img需要，所以要存起來
+            self.ckpt_manager.save()
+            print("save ok ~~~~~~~~~~~~~~~~~")
+
+        for epoch in range(self.start_epoch, self.epochs):
+            ###############################################################################################################################
+            ###    step0 紀錄epoch開始訓練的時間
+            epoch_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
+            print("Epoch: ", epoch, "start at", epoch_start_timestamp)
+            e_start = time.time()
+            ###############################################################################################################################
+            ###    step0 設定learning rate
+            lr = 0.0002 if epoch < self.epoch_down_step else 0.0002*(self.epochs-epoch)/(self.epochs-self.epoch_down_step)
+            self.model_obj.optimizer_G.lr = lr
+            ###############################################################################################################################
+            if(epoch==0):print("Initializing Model~~~") ### sample的時候就會initial model喔！
+            ###############################################################################################################################
+            ###     step1 用來看目前訓練的狀況 
+            self.train_step1_see_current_img(epoch)
+            ###############################################################################################################################
+            ###     step2 訓練
+            for n, (_, train_in_pre, _, train_gt_pre) in enumerate( self.tf_data.train_db_combine ):
+                print('.', end='')
+                if (n+1) % 100 == 0: print()
+                if  (self.model_obj.model_name == MODEL_NAME.unet)    :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
+                elif(self.model_obj.model_name == MODEL_NAME.rect)    :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
+                elif(self.model_obj.model_name == MODEL_NAME.mrf_rect):self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
+                elif(self.model_obj.model_name == MODEL_NAME.just_G)  :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
+
+            ###############################################################
+            ###     step3 整個epoch 的 loss 算平均，存進tensorboard
+            self.train_step3_board_save_loss(epoch)
+            ###############################################################################################################################
+            ###     step4 儲存模型 (checkpoint) the model every "epoch_save_freq" epochs
+            if (epoch + 1) % self.epoch_save_freq == 0:
+                self.model_obj.ckpt.epoch_log.assign(epoch+1) ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
+                self.ckpt_manager.save()
+                print("save ok ~~~~~~~~~~~~~~~~~")
+            ###############################################################################################################################
+            ###    step5 紀錄、顯示 訓練相關的時間
+            self.train_step5_show_time(epoch, e_start, total_start, epoch_start_timestamp)
+            
     def train_step1_see_current_img(self, epoch):
         sample_start_time = time.time()
         see_in_pre = self.tf_data.test_in_db_pre
@@ -116,11 +167,13 @@ class Experiment():
                     loss_array = np.append(loss_array, loss_value)
                     np.save(self.result_obj.logs_dir + "/" + loss_name, np.array(loss_array))
                     # print(loss_array)
-        self.board_obj.see_loss(self.epochs)
-        ###############################################################
+
         ###    reset tensorboard 的 loss紀錄容器
         for loss_containor in self.board_obj.losses.values():
             loss_containor.reset_states()
+        ###############################################################
+        ### 把 loss資訊 用 matplot畫出來
+        self.board_obj.see_loss(self.epochs)
 
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
         epoch_cost_time = time.time()-e_start
@@ -143,95 +196,24 @@ class Experiment():
             f.write("\n")
 
 
-    def train_init(self, train_reload=False):
-        if(train_reload):self.result_obj = Result.new_from_result_name(self.result_name) ### 直接用 自己指定好的 result_name
-        else:            self.result_obj = Result.new_from_experiment(self) ### 需要 db_obj 和 exp本身的describe_mid/end
-        
-        self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
+
+    def test(self, result_name): ### 1.result, 2.data, 3.model且reload
+        ### 1.result 
+        self.result_name  = result_name
+        self.result_obj   = Result_builder().build_by_result_name(result_name)
+        ### 2.data
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
-        
-        self.board_obj = Board_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build() ###step3 建立tensorboard，只有train 和 train_reload需要
-        # self.step0_save_code() ###    把source code存起來
-
-        ####################################################################################################################
-        ### 看需不需要reload model，只有train_reload 和 test需要
-        if(train_reload):
-            self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
-            self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
-
-
-    def train_reload(self,result_name):
-        self.result_name = result_name
-        self.train(train_reload=True )
-
-    def train(self, train_reload=False):
-        self.train_init(train_reload)
-        ################################################################################################################################################
-        ### 第三階段：train 和 test
-        ###  training 的部分 ###################################################################################################
-        ###     以下的概念就是，每個模型都有自己的 generate_images 和 train_step，根據model_name 去各別import 各自的 function過來用喔！
-        total_start = time.time()
-
-        ### 多這 這段if 是因為 unet 有move_map的部分，所以要多做以下操作 把 move_map相關會用到的東西存起來
-        if(self.model_obj.model_name == MODEL_NAME.unet ):
-            from util import get_max_db_move_xy
-            self.model_obj.ckpt.max_train_move.assign(self.tf_data.max_train_move)  ### 在test時 把move_map值弄到-1~1需要，所以要存起來
-            self.model_obj.ckpt.min_train_move.assign(self.tf_data.min_train_move)  ### 在test時 把move_map值弄到-1~1需要，所以要存起來
-            max_db_move_x, max_db_move_y = get_max_db_move_xy(db_dir=self.db_obj.category, db_name=self.db_obj.db_name) ### g生成的結果 做 apply_rec_move用
-            self.model_obj.ckpt.max_db_move_x.assign(max_db_move_x)  ### 在test時 rec_img需要，所以要存起來
-            self.model_obj.ckpt.max_db_move_y.assign(max_db_move_y)  ### 在test時 rec_img需要，所以要存起來
-            self.ckpt_manager.save()
-            print("save ok ~~~~~~~~~~~~~~~~~")
-
-        for epoch in range(self.start_epoch, self.epochs):
-            epoch_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
-            print("Epoch: ", epoch, "start at", epoch_start_timestamp)
-            e_start = time.time()
-
-            lr = 0.0002 if epoch < self.epoch_down_step else 0.0002*(self.epochs-epoch)/(self.epochs-self.epoch_down_step)
-            self.model_obj.optimizer_G.lr = lr
-            ###############################################################################################################################
-            if(epoch==0):print("Initializing Model~~~") ### sample的時候就會initial model喔！
-            ###############################################################################################################################
-            ###     step1 用來看目前訓練的狀況 
-            self.train_step1_see_current_img(epoch)
-            ###############################################################################################################################
-            ###     step2 訓練
-            for n, (_, train_in_pre, _, train_gt_pre) in enumerate( self.tf_data.train_db_combine ):
-                print('.', end='')
-                if (n+1) % 100 == 0: print()
-                if  (self.model_obj.model_name == MODEL_NAME.unet)    :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
-                elif(self.model_obj.model_name == MODEL_NAME.rect)    :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
-                elif(self.model_obj.model_name == MODEL_NAME.mrf_rect):self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
-                elif(self.model_obj.model_name == MODEL_NAME.just_G)  :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
-
-            ###############################################################
-            ###     step3 整個epoch 的 loss 算平均，存進tensorboard
-            self.train_step3_board_save_loss(epoch)
-            ###############################################################################################################################
-            ###     step4 儲存模型 (checkpoint) the model every 20 epochs
-            if (epoch + 1) % self.epoch_save_freq == 0:
-                self.model_obj.ckpt.epoch_log.assign(epoch+1) ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
-                self.ckpt_manager.save()
-                print("save ok ~~~~~~~~~~~~~~~~~")
-            ###############################################################################################################################
-            ###    step5 紀錄、顯示 訓練相關的時間
-            self.train_step5_show_time(epoch, e_start, total_start, epoch_start_timestamp)
-
-
-    def test(self, result_name):
-        self.result_name = result_name
-        self.result_obj = Result.new_from_result_name(self.result_name) ### 直接用 自己指定好的 result_name
+        ### 3.model且reload
         self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
-        self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
         self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
         self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
+        ### 待完成
 
     def run(self, result_name=None):
         if  (self.phase == "train"):          self.train()
         elif(self.phase == "train_reload"):   self.train_reload(result_name)
         elif(self.phase == "test"):           self.test(result_name)
-        elif(self.phase == "train_indicate"): pass
+        elif(self.phase == "train_indicate"): pass ### 待完成
 
 
 class Exp_builder():
@@ -268,7 +250,6 @@ class Exp_builder():
         return self
 
     def build(self):
-        # self.exp.exp_init()
         return self.exp
 
 if(__name__=="__main__"):
