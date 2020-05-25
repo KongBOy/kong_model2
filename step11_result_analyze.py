@@ -70,50 +70,53 @@ class Result_init_builder:
 class Result_sees_builder(Result_init_builder):
     def _build_sees(self, sees_ver):
         if  (sees_ver == "sees_ver1"):
-            self.result.sees = [  See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
+            self.result.sees = [  See(self.result.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
         elif(sees_ver == "sees_ver2"):
-            self.result.sees = [  See(self.result_dir, "see_000-test_emp"), 
-                           See(self.result_dir, "see_001-test_img"),See(self.result_dir, "see_002-test_img"),See(self.result_dir, "see_003-test_img"),See(self.result_dir, "see_004-test_img"),See(self.result_dir, "see_005-test_img"),
-                           See(self.result_dir, "see_006-test_lin"),See(self.result_dir, "see_007-test_lin"),See(self.result_dir, "see_008-test_lin"),See(self.result_dir, "see_009-test_lin"),See(self.result_dir, "see_010-test_lin"),
-                           See(self.result_dir, "see_011-test_str"),See(self.result_dir, "see_012-test_str"),See(self.result_dir, "see_013-test_str"),See(self.result_dir, "see_014-test_str"),See(self.result_dir, "see_015-test_str"),
-                           See(self.result_dir, "see_016-train_emp"),
-                           See(self.result_dir, "see_017-train_img"),See(self.result_dir, "see_018-train_img"),See(self.result_dir, "see_019-train_img"),See(self.result_dir, "see_020-train_img"),See(self.result_dir, "see_021-train_img"),
-                           See(self.result_dir, "see_022-train_lin"),See(self.result_dir, "see_023-train_lin"),See(self.result_dir, "see_024-train_lin"),See(self.result_dir, "see_025-train_lin"),See(self.result_dir, "see_026-train_lin"),
-                           See(self.result_dir, "see_027-train_str"),See(self.result_dir, "see_028-train_str"),See(self.result_dir, "see_029-train_str"),See(self.result_dir, "see_030-train_str"),See(self.result_dir, "see_031-train_str")]
+            self.result.sees = [  See(self.result.result_dir, "see_000-test_emp"), 
+                           See(self.result.result_dir, "see_001-test_img"),See(self.result.result_dir, "see_002-test_img"),See(self.result.result_dir, "see_003-test_img"),See(self.result.result_dir, "see_004-test_img"),See(self.result.result_dir, "see_005-test_img"),
+                           See(self.result.result_dir, "see_006-test_lin"),See(self.result.result_dir, "see_007-test_lin"),See(self.result.result_dir, "see_008-test_lin"),See(self.result.result_dir, "see_009-test_lin"),See(self.result.result_dir, "see_010-test_lin"),
+                           See(self.result.result_dir, "see_011-test_str"),See(self.result.result_dir, "see_012-test_str"),See(self.result.result_dir, "see_013-test_str"),See(self.result.result_dir, "see_014-test_str"),See(self.result.result_dir, "see_015-test_str"),
+                           See(self.result.result_dir, "see_016-train_emp"),
+                           See(self.result.result_dir, "see_017-train_img"),See(self.result.result_dir, "see_018-train_img"),See(self.result.result_dir, "see_019-train_img"),See(self.result.result_dir, "see_020-train_img"),See(self.result.result_dir, "see_021-train_img"),
+                           See(self.result.result_dir, "see_022-train_lin"),See(self.result.result_dir, "see_023-train_lin"),See(self.result.result_dir, "see_024-train_lin"),See(self.result.result_dir, "see_025-train_lin"),See(self.result.result_dir, "see_026-train_lin"),
+                           See(self.result.result_dir, "see_027-train_str"),See(self.result.result_dir, "see_028-train_str"),See(self.result.result_dir, "see_029-train_str"),See(self.result.result_dir, "see_030-train_str"),See(self.result.result_dir, "see_031-train_str")]
         elif(sees_ver == "sees_ver3"):
-            self.result.sees = [  See(self.result_dir, "see_000-test_lt1"),See(self.result_dir, "see_001-test_lt2"),See(self.result_dir, "see_002-test_lt3"),See(self.result_dir, "see_003-test_lt4"),
-                            See(self.result_dir, "see_004-test_rt1"),See(self.result_dir, "see_005-test_rt2"),See(self.result_dir, "see_006-test_rt3"),See(self.result_dir, "see_007-test_rt4"),
-                            See(self.result_dir, "see_008-test_ld1"),See(self.result_dir, "see_009-test_ld2"),See(self.result_dir, "see_010-test_ld3"),See(self.result_dir, "see_011-test_ld4"),
-                            See(self.result_dir, "see_012-test_rd1"),See(self.result_dir, "see_013-test_rd2"),See(self.result_dir, "see_014-test_rd3"),See(self.result_dir, "see_015-test_rd4"),
-                            See(self.result_dir, "see_016-train_lt1"),See(self.result_dir, "see_017-train_lt2"),See(self.result_dir, "see_018-train_lt3"),See(self.result_dir, "see_019-train_lt4"),
-                            See(self.result_dir, "see_020-train_rt1"),See(self.result_dir, "see_021-train_rt2"),See(self.result_dir, "see_022-train_rt3"),See(self.result_dir, "see_023-train_rt4"),
-                            See(self.result_dir, "see_024-train_ld1"),See(self.result_dir, "see_025-train_ld2"),See(self.result_dir, "see_026-train_ld3"),See(self.result_dir, "see_027-train_ld4"),
-                            See(self.result_dir, "see_028-train_rd1"),See(self.result_dir, "see_029-train_rd2"),See(self.result_dir, "see_030-train_rd3"),See(self.result_dir, "see_031-train_rd4")]
+            self.result.sees = [  See(self.result.result_dir, "see_000-test_lt1"),See(self.result.result_dir, "see_001-test_lt2"),See(self.result.result_dir, "see_002-test_lt3"),See(self.result.result_dir, "see_003-test_lt4"),
+                            See(self.result.result_dir, "see_004-test_rt1"),See(self.result.result_dir, "see_005-test_rt2"),See(self.result.result_dir, "see_006-test_rt3"),See(self.result.result_dir, "see_007-test_rt4"),
+                            See(self.result.result_dir, "see_008-test_ld1"),See(self.result.result_dir, "see_009-test_ld2"),See(self.result.result_dir, "see_010-test_ld3"),See(self.result.result_dir, "see_011-test_ld4"),
+                            See(self.result.result_dir, "see_012-test_rd1"),See(self.result.result_dir, "see_013-test_rd2"),See(self.result.result_dir, "see_014-test_rd3"),See(self.result.result_dir, "see_015-test_rd4"),
+                            See(self.result.result_dir, "see_016-train_lt1"),See(self.result.result_dir, "see_017-train_lt2"),See(self.result.result_dir, "see_018-train_lt3"),See(self.result.result_dir, "see_019-train_lt4"),
+                            See(self.result.result_dir, "see_020-train_rt1"),See(self.result.result_dir, "see_021-train_rt2"),See(self.result.result_dir, "see_022-train_rt3"),See(self.result.result_dir, "see_023-train_rt4"),
+                            See(self.result.result_dir, "see_024-train_ld1"),See(self.result.result_dir, "see_025-train_ld2"),See(self.result.result_dir, "see_026-train_ld3"),See(self.result.result_dir, "see_027-train_ld4"),
+                            See(self.result.result_dir, "see_028-train_rd1"),See(self.result.result_dir, "see_029-train_rd2"),See(self.result.result_dir, "see_030-train_rd3"),See(self.result.result_dir, "see_031-train_rd4")]
+    
+        self.result.see_amount = len(self.result.sees)
+
 
 class Result_builder(Result_sees_builder):
     def _use_result_name_find_sees_ver(self):
-        db_c = self.result_name.split("-")[0]
-
+        db_c = self.result.result_name.split("-")[0]
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~db_c = ", db_c)
         sees_ver = ""
-        if  (db_c in [DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, 
-                      DB_C.type5d_real_have_see_have_bg_gt_color_gray3ch,
-                      DB_C.type6_h_384_w_256_smooth_curl_fold_and_page  ]): sees_ver="sees_ver2"
-        elif(db_c in [DB_C.type7_h472_w304_real_os_book, 
-                      DB_C.type7b_h500_w332_real_os_book]): sees_ver="sees_ver3"
+        if  (db_c in [DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch.value, 
+                      DB_C.type5d_real_have_see_have_bg_gt_color_gray3ch.value,
+                      DB_C.type6_h_384_w_256_smooth_curl_fold_and_page.value  ]): sees_ver="sees_ver2"
+        elif(db_c in [DB_C.type7_h472_w304_real_os_book.value, 
+                      DB_C.type7b_h500_w332_real_os_book.value]): sees_ver="sees_ver3"
         else: sees_ver = "sees_ver1"
         return sees_ver
 
 
-    def set_result_by_result_name(self, result_name):
+    def set_by_result_name(self, result_name):
         ### 用result_name 來設定ckpt, logs 的資料夾
         self.result.result_name = result_name
         self.result.result_dir  = access_path + "result/" + result_name
-        self.result.ckpt_dir = self.result_dir + "/ckpt"
-        self.result.logs_dir = self.result_dir + "/logs"
+        self.result.ckpt_dir = self.result.result_dir + "/ckpt"
+        self.result.logs_dir = self.result.result_dir + "/logs"
 
         ### 用result_name 來決定sees_ver，之後再去建立sees
         self.result.sees_ver = self._use_result_name_find_sees_ver()
-        self._build_sees(self.sees_ver)
+        self._build_sees(self.result.sees_ver)
         return self
 
     def _get_result_name_by_exp(self, exp):
@@ -126,7 +129,7 @@ class Result_builder(Result_sees_builder):
         if(exp.describe_end is not None): result_name_element += [exp.describe_end]
         return "-".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
 
-    def set_result_by_exp(self, exp):
+    def set_by_exp(self, exp):
         self.result.result_name = self._get_result_name_by_exp(exp)
 
         self.result.set_by_result_name(self.result.result_name)
@@ -139,13 +142,13 @@ class Result:
         self.result_dir  = None
         # if(r_describe is None):self.result_dir = access_path + "result/" + result_name
         # else                  :self.result_dir = access_path + "result/" + result_name + "-" + r_describe
-        self.ckpt_dir = self.result_dir + "/ckpt"
-        self.logs_dir = self.result_dir + "/logs"
+        self.ckpt_dir = None
+        self.logs_dir = None
         
         # self.r_describe = r_describe  ### 我覺得拿掉好了，因為現在統一好命名方式後，資訊都應該濃縮進 result_name囉！ 應該不用再describe了～
         self.sees_ver = None
         self.sees = None
-        self.see_amount = len(self.sees)
+        self.see_amount = None
         
     # @staticmethod
     # def new_from_result_name(result_name):

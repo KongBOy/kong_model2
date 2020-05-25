@@ -60,8 +60,8 @@ class Experiment():
 ################################################################################################################################################
     def train_init(self, train_reload=False):### 1.result, 2.data, 3.model(reload), 4.board, 5.save_code 
         ### 1.result
-        if(train_reload):self.result_obj = Result.new_from_result_name(self.result_name) ### 直接用 自己指定好的 result_name
-        else:            self.result_obj = Result.new_from_experiment(self) ### 需要 db_obj 和 exp本身的describe_mid/end
+        if(train_reload):self.result_obj = Result_builder().set_by_result_name(self.result_name).build() ### 直接用 自己指定好的 result_name
+        else:            self.result_obj = Result_builder().set_by_exp(self).build() ### 需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
         ### 3.model
@@ -200,7 +200,7 @@ class Experiment():
     def test(self, result_name): ### 1.result, 2.data, 3.model且reload
         ### 1.result 
         self.result_name  = result_name
-        self.result_obj   = Result_builder().build_by_result_name(result_name)
+        self.result_obj   = Result_builder().set_by_result_name(result_name).build()
         ### 2.data
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build() ### tf_data 抓資料
         ### 3.model且reload
