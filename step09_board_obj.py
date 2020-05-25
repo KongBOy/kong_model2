@@ -1,5 +1,5 @@
 import tensorflow as tf
-from step10_model_obj import MODEL_NAME
+from step08_model_obj import MODEL_NAME
 import matplotlib.pyplot as plt 
 import numpy as np 
 class Board:
