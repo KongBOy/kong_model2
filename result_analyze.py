@@ -65,7 +65,7 @@ class Result:
         
         self.r_describe = r_describe
         self.see_dirs = [self.result_dir + "/" + "see-%03i"%see_num for see_num in range(32) ]
-        self.sees1 = [  See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
+        # self.sees1 = [  See(self.result_dir, "see-%03i"%see_num) for see_num in range(32) ]
         # self.sees2 = [  See(self.result_dir, "see_000-test_emp"), 
         #                 See(self.result_dir, "see_001-test_img"),
         #                 See(self.result_dir, "see_002-test_img"),
@@ -147,7 +147,7 @@ class Result:
         result_name_element += [datetime.datetime.now().strftime("%Y%m%d-%H%M%S"), exp.model_obj.model_name.value]
         if(exp.describe_end is not None): result_name_element += [exp.describe_end]
 
-        result_name = "_".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
+        result_name = "-".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
         return Result(result_name=result_name)
     
 
@@ -266,7 +266,7 @@ class Result_analyzer:
         Check_dir_exist_and_build(analyze_see_dir)                                  ### 建立 存結果的資料夾
         
         ### 暫時的update see1~see2
-        self._temp_c_results_see1_update_to_see2_and_get_see_file_names(c_results)
+        # self._temp_c_results_see1_update_to_see2_and_get_see_file_names(c_results)
         
         
         ### 抓 各row的in/gt imgs
@@ -347,32 +347,35 @@ class Result_analyzer:
         
 
 if(__name__=="__main__"):
-    have_bg_gt_gray_mae3  = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", r_describe="have_bg_gt_gray")
-    have_bg_gt_color_mae3 = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"  , r_describe="have_bg_gt_color")
-    no_bg_gt_color_mae3   = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"    , r_describe="no_bg_gt_color")
-    no_bg_gt_gray_mae3    = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , r_describe="no_bg_gt_gray")
+    # have_bg_gt_gray_mae3  = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", r_describe="have_bg_gt_gray")
+    # have_bg_gt_color_mae3 = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"  , r_describe="have_bg_gt_color")
+    # no_bg_gt_color_mae3   = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"    , r_describe="no_bg_gt_color")
+    # no_bg_gt_gray_mae3    = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , r_describe="no_bg_gt_gray")
 
-    no_mrf_mae1 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-064552_model5_rect2" , r_describe="no_mrf_mae1")
-    no_mrf_mae3 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2" , r_describe="no_mrf_mae3")
-    no_mrf_mae6 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-065346_model5_rect2" , r_describe="no_mrf_mae6")
+    # no_mrf_mae1 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-064552_model5_rect2" , r_describe="no_mrf_mae1")
+    # no_mrf_mae3 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2" , r_describe="no_mrf_mae3")
+    # no_mrf_mae6 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-065346_model5_rect2" , r_describe="no_mrf_mae6")
     
-    mrf_7_9_1   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190344_model6_mrf_rect2" , r_describe="mrf_7_9_mae1")
-    mrf_7_9_3   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2" , r_describe="mrf_7_9_mae3")
-    mrf_7_9_6   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231036_model6_mrf_rect2" , r_describe="mrf_7_9_mae6")
-    mrf_7_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190955_model6_mrf_rect2" , r_describe="mrf_7_11_mae1")
-    mrf_7_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2" , r_describe="mrf_7_11_mae3")
-    mrf_7_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231336_model6_mrf_rect2" , r_describe="mrf_7_11_mae6")
-    mrf_9_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190837_model6_mrf_rect2" , r_describe="mrf_9_11_mae1")
-    mrf_9_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2" , r_describe="mrf_9_11_mae3")
-    mrf_9_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231249_model6_mrf_rect2" , r_describe="mrf_9_11_mae6")
-    mrf_13579_1 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-191110_model6_mrf_rect2" , r_describe="mrf_13579_mae1")
-    mrf_13579_3 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2" , r_describe="mrf_13579_mae3")
-    mrf_13579_6 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231530_model6_mrf_rect2" , r_describe="mrf_13579_mae6")
+    # mrf_7_9_1   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190344_model6_mrf_rect2" , r_describe="mrf_7_9_mae1")
+    # mrf_7_9_3   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2" , r_describe="mrf_7_9_mae3")
+    # mrf_7_9_6   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231036_model6_mrf_rect2" , r_describe="mrf_7_9_mae6")
+    # mrf_7_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190955_model6_mrf_rect2" , r_describe="mrf_7_11_mae1")
+    # mrf_7_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2" , r_describe="mrf_7_11_mae3")
+    # mrf_7_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231336_model6_mrf_rect2" , r_describe="mrf_7_11_mae6")
+    # mrf_9_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190837_model6_mrf_rect2" , r_describe="mrf_9_11_mae1")
+    # mrf_9_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2" , r_describe="mrf_9_11_mae3")
+    # mrf_9_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231249_model6_mrf_rect2" , r_describe="mrf_9_11_mae6")
+    # mrf_13579_1 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-191110_model6_mrf_rect2" , r_describe="mrf_13579_mae1")
+    # mrf_13579_3 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2" , r_describe="mrf_13579_mae3")
+    # mrf_13579_6 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231530_model6_mrf_rect2" , r_describe="mrf_13579_mae6")
 
 
-    mrf_replace7_use7   = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105001_model6_mrf_rect2" , r_describe="replace7_use7")
-    mrf_replace7_use5_7 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105739_model6_mrf_rect2" , r_describe="replace7_use5+7")
-    mrf_replace7_use7_9 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-110022_model6_mrf_rect2" , r_describe="replace7_use7+9")
+    # mrf_replace7_use7   = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105001_model6_mrf_rect2" , r_describe="replace7_use7")
+    # mrf_replace7_use5_7 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105739_model6_mrf_rect2" , r_describe="replace7_use5+7")
+    # mrf_replace7_use7_9 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-110022_model6_mrf_rect2" , r_describe="replace7_use7+9")
+    
+    
+    os_book = Result("type7_h472_w304_real_os_book-20200521-115918-rect" , r_describe="127.28_epoch174")
 
 
     ### 把 result內的 matplot_visual 壓小
@@ -396,9 +399,10 @@ if(__name__=="__main__"):
                     # mrf_13579_1,
                     # mrf_13579_3,
                     # mrf_13579_6,
-                    mrf_replace7_use7,
-                    mrf_replace7_use5_7,
-                    mrf_replace7_use7_9
+                    # mrf_replace7_use7,
+                    # mrf_replace7_use5_7,
+                    # mrf_replace7_use7_9,
+                    os_book
                     ]
 
     # for result in compress_results:
@@ -430,13 +434,13 @@ if(__name__=="__main__"):
 
     #################################################################################################################################
     ### 分析 mrf loss mae的比例
-    mrf_r_c_results = [   
-                          [no_mrf_mae1, mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1],
-                          [no_mrf_mae3, mrf_7_9_3, mrf_7_11_3, mrf_9_11_3, mrf_13579_3],
-                          [no_mrf_mae6, mrf_7_9_6, mrf_7_11_6, mrf_9_11_6, mrf_13579_6]
-                      ]
-    mrf_loss_analyze = Result_analyzer(r_describe="mrf_loss_analyze")
-    mrf_loss_analyze.analyze_row_col_results_all_sees_multiprocess(mrf_r_c_results)
+    # mrf_r_c_results = [   
+    #                       [no_mrf_mae1, mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1],
+    #                       [no_mrf_mae3, mrf_7_9_3, mrf_7_11_3, mrf_9_11_3, mrf_13579_3],
+    #                       [no_mrf_mae6, mrf_7_9_6, mrf_7_11_6, mrf_9_11_6, mrf_13579_6]
+    #                   ]
+    # mrf_loss_analyze = Result_analyzer(r_describe="mrf_loss_analyze")
+    # mrf_loss_analyze.analyze_row_col_results_all_sees_multiprocess(mrf_r_c_results)
     
     #################################################################################################################################
     ### 分析 mrf 取代 第一層7
@@ -453,6 +457,22 @@ if(__name__=="__main__"):
     # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [17,18,19,20], "train_img")
     # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [22,23,24,25], "train_lin")
     # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [28,29,30,31], "train_str")
+    #################################################################################################################################
+    ### 分析 os_book
+    os_book_results = [os_book]
+    os_book_analyze = Result_analyzer("os_book")
+    
+    os_book.save_all_see_as_matplot_visual_multiprocess( )
+    
+    ## 一次看多see
+    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 0, 1, 2, 3], "test_lt")
+    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 4, 5, 6, 7], "test_rt")
+    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 4, 5, 6, 7], "test_rt")
+    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 6, 7, 9,10], "test_lin")
+    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [11,12,14,15], "test_str")
+    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [17,18,19,20], "train_img")
+    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [22,23,24,25], "train_lin")
+    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [28,29,30,31], "train_str")
 
 
     #########################################################################################################

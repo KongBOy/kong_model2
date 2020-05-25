@@ -5,6 +5,7 @@ class MODEL_NAME(Enum):
     unet     = "unet"
     rect     = "rect"
     mrf_rect = "mrf_rect"
+    just_G   = "just_G"
 
 class KModel:
     def __init__(self):### 共通有的 元件，其實這邊只留model_name好像也可以
@@ -74,11 +75,23 @@ class KModel_mrf_rect_builder(KModel_rect_builder):
         self.kong_model.train_step = train_step
         return self
 
-class KModel_builder(KModel_mrf_rect_builder): 
+class KModel_just_G_builder(KModel_mrf_rect_builder):
+    def build_just_G(self):
+        from step8_kong_model5_just_G import Generator, generate_sees, generate_images, train_step
+        self.kong_model.generator           = Generator()
+        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        self.kong_model.generate_images = generate_images ### 不能checkpoint
+        self.kong_model.generate_sees   = generate_sees
+        self.kong_model.train_step      = train_step
+        return self
+
+
+class KModel_builder(KModel_just_G_builder): 
     def build_by_model_name(self):
         if  (self.kong_model.model_name==MODEL_NAME.unet)    :self.build_unet()
         elif(self.kong_model.model_name==MODEL_NAME.rect)    :self.build_rect()
         elif(self.kong_model.model_name==MODEL_NAME.mrf_rect):self.build_mrf_rect()
+        elif(self.kong_model.model_name==MODEL_NAME.just_G)  :self.build_just_G()
 
         ### 不是 tf 的物件無法存進ckpt裡面！ 要先pop出來喔～
         temp = self.kong_model.__dict__.copy()
@@ -94,6 +107,7 @@ class KModel_builder(KModel_mrf_rect_builder):
 unet     = KModel_builder().set_model_name(MODEL_NAME.unet).build_by_model_name()
 rect     = KModel_builder().set_model_name(MODEL_NAME.rect).build_by_model_name()
 mrf_rect = KModel_builder().set_model_name(MODEL_NAME.mrf_rect).build_by_model_name()
+just_G   = KModel_builder().set_model_name(MODEL_NAME.just_G).build_by_model_name()
 if(__name__=="__main__"):
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.rect).build_by_model_name()
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.just_G).build_by_model_name()
     print(model_obj)

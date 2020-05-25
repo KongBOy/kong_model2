@@ -96,8 +96,9 @@ class Experiment():
         
         for see_index, (test_in_pre, test_gt_pre) in enumerate(zip(see_in_pre.take(see_amount), see_gt_pre.take(see_amount))): 
             if  (self.model_obj.model_name == MODEL_NAME.unet ):     self.model_obj.generate_sees( self.model_obj.generator         , see_index, test_in_pre, test_gt_pre, self.tf_data.max_train_move, self.tf_data.min_train_move,  epoch, result_obj.result_dir, result_obj) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif(self.model_obj.model_name == MODEL_NAME.rect ):     self.model_obj.generate_sees( self.model_obj.rect    .generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
+            elif(self.model_obj.model_name == MODEL_NAME.rect ):     self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
             elif(self.model_obj.model_name == MODEL_NAME.mrf_rect ): self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
+            elif(self.model_obj.model_name == MODEL_NAME.just_G   ): self.model_obj.generate_sees( self.model_obj.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
                                                                                 
         print("sample all see time:", time.time()-sample_start_time)
 
@@ -182,6 +183,7 @@ class Experiment():
                 if  (self.model_obj.model_name == MODEL_NAME.unet)    :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
                 elif(self.model_obj.model_name == MODEL_NAME.rect)    :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
                 elif(self.model_obj.model_name == MODEL_NAME.mrf_rect):self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
+                elif(self.model_obj.model_name == MODEL_NAME.just_G)  :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
 
             ###############################################################
             ###     step3 整個epoch 的 loss 算平均，存進tensorboard
@@ -238,11 +240,13 @@ if(__name__=="__main__"):
                               type7_h472_w304_real_os_book_400data,\
                               type7b_h500_w332_real_os_book_1532data
                               
-    from step10_model_obj import unet, rect, mrf_rect
+    from step10_model_obj import unet, rect, mrf_rect, just_G
 
 
     # using_db_obj = type5c_real_have_see_no_bg_gt_color
     # using_db_obj = type7_h472_w304_real_os_book_400data
     using_db_obj = type7b_h500_w332_real_os_book_1532data
-    using_model_obj = rect
+
+    # using_model_obj = rect
+    using_model_obj = just_G
     exp = Exp_builder().set_basic("train", using_db_obj, using_model_obj, describe_end="1532data").set_train(epochs=700).build().train()

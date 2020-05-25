@@ -268,7 +268,6 @@ class Rect2(tf.keras.models.Model):
     
 
 
-
 @tf.function
 def mse_kong(tensor1, tensor2, lamb=tf.constant(1.,tf.float32)):
     loss = tf.reduce_mean( tf.math.square( tensor1 - tensor2 ) )
@@ -316,18 +315,16 @@ from util import matplot_visual_single_row_imgs
 import numpy as np 
 
 ### 用 網路 生成 影像
-def generate_images( model, in_img_pre, gt_img_pre):
-    sample_start_time = time.time()
-    
-    rect       = model(in_img_pre, training=True) ### 把影像丟進去model生成還原影像
+def generate_images( model_G, in_img_pre, gt_img_pre):
+    rect       = model_G(in_img_pre, training=True) ### 把影像丟進去model生成還原影像
     rect_back  = ((rect[0].numpy()+1)*125).astype(np.uint8)       ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
     in_img_back = ((in_img_pre[0].numpy() +1)*125).astype(np.uint8) ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
     gt_img_back = ((gt_img_pre[0].numpy() +1)*125).astype(np.uint8) ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
     return rect_back, in_img_back, gt_img_back ### 注意訓練model時是用tf來讀img，為rgb的方式訓練，所以生成的是rgb的圖喔！
 
 ### 
-def generate_sees( model, see_index, in_img_pre, gt_img_pre,  epoch=0, result_obj=None):
-    rect_back, in_img_back, gt_img_back = generate_images( model, in_img_pre, gt_img_pre)
+def generate_sees( model_G, see_index, in_img_pre, gt_img_pre,  epoch=0, result_obj=None):
+    rect_back, in_img_back, gt_img_back = generate_images( model_G, in_img_pre, gt_img_pre)
     see_dir  = result_obj.sees2[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
 

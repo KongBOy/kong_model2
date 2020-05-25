@@ -159,7 +159,8 @@ class tf_Data_init_builder:
             self.tf_data.img_resize = (math.floor(self.tf_data.db_obj.h/128)*128 *2, math.floor(self.tf_data.db_obj.w/128)*128 *2) ### 128的倍數，且要是gt_img的兩倍大喔！
             
         elif(model_name == MODEL_NAME.rect or 
-             model_name == MODEL_NAME.mrf_rect ):
+             model_name == MODEL_NAME.mrf_rect or
+             model_name == MODEL_NAME.just_G ):
             self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h/4)*4, math.ceil(self.tf_data.db_obj.w/4)*4) ### dis_img(in_img的大小)的大小且要是4的倍數
         return self
     

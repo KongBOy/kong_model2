@@ -55,12 +55,19 @@ class Board_rect_builder(Board_unet_builder):
         self.board.losses["6_d_total_loss"]= tf.keras.metrics.Mean('6_d_total_loss', dtype=tf.float32)
         return self
 
+class Board_just_G_builder(Board_rect_builder):
+    def build_just_G_board(self):
+        self.board.losses["loss_rec"    ]= tf.keras.metrics.Mean('loss_rec'    , dtype=tf.float32)
+        return self
 
-class Board_builder(Board_rect_builder):
+
+class Board_builder(Board_just_G_builder):
     def build_by_model_name(self, model_name):
         if  (model_name==MODEL_NAME.unet)     : self.build_unet_board()
         elif(model_name==MODEL_NAME.rect or
              model_name==MODEL_NAME.mrf_rect ): self.build_rect_board()
+        elif(model_name==MODEL_NAME.just_G   ): self.build_just_G_board()
+        
         return self
 
 if(__name__=="__main__"):
