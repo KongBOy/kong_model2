@@ -2,11 +2,11 @@ import tensorflow as tf
 import numpy as np 
 from enum import Enum 
 import time
-from step11_result_analyze_after_train import Result
+
+from step06_data_pipline import tf_Data_builder
 from step08_model_obj import MODEL_NAME
 from step09_board_obj import Board_builder
-from step06_data_pipline import tf_Data_builder
-from step11_result_analyze_after_train import Result_builder
+from step11_result_obj import Result,Result_builder
 import sys
 sys.path.append("kong_util")
 from util import time_util
@@ -27,7 +27,8 @@ class Experiment():
         shutil.copy("step08_model_obj.py" ,code_dir + "/" + "step08_model_obj.py")
         shutil.copy("step09_board_obj.py" ,code_dir + "/" + "step09_board_obj.py")
         shutil.copy("step10_load_and_train_and_test.py" ,code_dir + "/" + "step10_load_and_train_and_test.py")
-        shutil.copy("step11_result_analyze_after_train.py" ,code_dir + "/" + "step11_result_analyze_after_train.py")
+        shutil.copy("step11_result_obj.py" ,code_dir + "/" + "step11_result_obj.py")
+        shutil.copy("step12_result_analyzer.py" ,code_dir + "/" + "step12_result_analyzer.py")
 
 ################################################################################################################################################
 ################################################################################################################################################

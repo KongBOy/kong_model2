@@ -8,7 +8,7 @@ sys.path.append("kong_util")
 from step0_access_path import access_path
 from step06_datas_obj import DB_C
 from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matplot_visual_multi_row_imgs
-from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Find_ltrd_and_crop
+from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from video_from_img import Video_combine_from_dir
 
 class See:
@@ -17,10 +17,16 @@ class See:
         self.see_name=see_name
 
         self.see_dir = self.result_dir + "/" + self.see_name
-        # self.see_file_names = self.get_see_file_names()  ### 先不要比較好，要不然在train得時候容易出問題
+        self.see_file_names = None
+        self.see_file_amount = None
+
+        ### 不確定要不要，因為在initial就做這麼多事情好嗎~~會不會容易出錯哩~~
+        Check_dir_exist_and_build(self.see_dir)
+        self.get_see_file_names()  
 
     def get_see_file_names(self):
         self.see_file_names = get_dir_certain_file_name(self.see_dir, ".jpg")
+        self.see_file_amount = len(self.see_file_names)
 
     def save_as_jpg(self):
         Save_as_jpg(self.see_dir, self.see_dir, delete_ord_file=True)
@@ -31,7 +37,7 @@ class See:
     def save_as_matplot_visual_after_train(self):
         start_time = time.time()
         matplot_visual_dir = self.see_dir + "/" + "matplot_visual" ### 分析結果存哪裡定位出來
-        Check_dir_exist_and_build(matplot_visual_dir)               ### 建立 存結果的資料夾
+        Check_dir_exist_and_build_new_dir(matplot_visual_dir)      ### 建立 存結果的資料夾
 
         self.get_see_file_names() ### 取得 結果內的 某個see資料夾 內的所有影像 檔名
         print("processing %s"%self.see_name)
@@ -39,13 +45,10 @@ class See:
         gt_img = cv2.imread(self.see_dir + "/" + self.see_file_names[1]) ### 要記得see的第二張存的是 輸出的gt影像
         for go_img, certain_see_file_name in enumerate(tqdm(self.see_file_names)):
             if(go_img>=2): ### 第三張 才開始存 epoch影像喔！
-                print(".",end="")                 ### 顯示進度用
-                if(go_img+1) % 100 == 0: print()  ### 顯示進度用
-
                 epoch = go_img-2  ### 第三張 才開始存 epoch影像喔！所以epoch的數字 是go_img-2
                 img = cv2.imread(self.see_dir + "/" + certain_see_file_name)        ### see資料夾 內的影像 讀出來                
                 matplot_visual_single_row_imgs(img_titles=["in_img", "out_img", "gt_img"],  ### 把每張圖要顯示的字包成list 
-                                               imgs      =[  in_img ,      img   , gt_img],      ### 把要顯示的每張圖包成list
+                                               imgs      =[ in_img ,   img    ,  gt_img],      ### 把要顯示的每張圖包成list
                                                fig_title ="epoch=%04i"%epoch,   ### 圖上的大標題
                                                dst_dir   =matplot_visual_dir,   ### 圖存哪
                                                file_name ="epoch=%04i"%epoch)   ### 檔名
@@ -91,11 +94,13 @@ class Result_sees_builder(Result_init_builder):
                             See(self.result.result_dir, "see_028-train_rd1"),See(self.result.result_dir, "see_029-train_rd2"),See(self.result.result_dir, "see_030-train_rd3"),See(self.result.result_dir, "see_031-train_rd4")]
     
         self.result.see_amount = len(self.result.sees)
+        self.result.see_file_amount = self.result.sees[0].see_file_amount ### 應該是每個see都一樣多檔案，所以就挑第一個拿他的see_file_amount就好囉～
 
 
-class Result_builder(Result_sees_builder):
+class Result_train_builder(Result_sees_builder):
+    ###     3b.用result_name 裡面的 DB_CATEGORY 來決定sees_ver
     def _use_result_name_find_sees_ver(self):
-        db_c = self.result.result_name.split("-")[0]
+        db_c = self.result.result_name.split("/")[-1].split("-")[0] ### "/"是為了抓底層資料夾，"-"是為了抓 DB_CATEGORY
         sees_ver = ""
         if  (db_c in [DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch.value, 
                       DB_C.type5d_real_have_see_have_bg_gt_color_gray3ch.value,
@@ -105,19 +110,20 @@ class Result_builder(Result_sees_builder):
         else: sees_ver = "sees_ver1"
         return sees_ver
 
-
+    ### 設定方式二：直接給 result_name來設定( result_name格式可以參考 _get_result_name_by_exp )
     def set_by_result_name(self, result_name):
-        ### 用result_name 來設定ckpt, logs 的資料夾
-        self.result.result_name = result_name
+        ### 3a.用result_name 來設定ckpt, logs 的資料夾
+        self.result.result_name = result_name ### 如果他被包在某個資料夾，該資料夾也算名字喔！ex：5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.35_copy
         self.result.result_dir  = access_path + "result/" + result_name
         self.result.ckpt_dir = self.result.result_dir + "/ckpt"
         self.result.logs_dir = self.result.result_dir + "/logs"
 
-        ### 用result_name 來決定sees_ver，之後再去建立sees
+        ### 3b.用result_name 來決定sees_ver，之後再去建立sees
         self.result.sees_ver = self._use_result_name_find_sees_ver()
         self._build_sees(self.result.sees_ver)
         return self
 
+    ###     1.用 exp 資訊來 決定 result_name
     def _get_result_name_by_exp(self, exp):
         import datetime
         ### 自動決定 result_name，再去做進一步設定
@@ -128,46 +134,37 @@ class Result_builder(Result_sees_builder):
         if(exp.describe_end is not None): result_name_element += [exp.describe_end]
         return "-".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
 
+    ### 設定方式一：用exp_obj來設定
     def set_by_exp(self, exp):
+        ### 1.用 exp 資訊來 決定 result_name
         self.result.result_name = self._get_result_name_by_exp(exp)
 
+        ### 2.決定好 result_name 後，用result_name來設定Result
         self.set_by_result_name(self.result.result_name)
         return self
+
+class Result_plot_builder(Result_train_builder):
+    def set_plot_title(self, plot_title):
+        self.result.plot_title = plot_title
+        return self
+
+class Result_builder(Result_plot_builder):pass
 
 class Result:
     # def __init__(self, result_name=None, r_describe=None):
     def __init__(self):
+        ### train的時候用的
         self.result_name = None
         self.result_dir  = None
-        # if(r_describe is None):self.result_dir = access_path + "result/" + result_name
-        # else                  :self.result_dir = access_path + "result/" + result_name + "-" + r_describe
         self.ckpt_dir = None
         self.logs_dir = None
-        
-        # self.r_describe = r_describe  ### 我覺得拿掉好了，因為現在統一好命名方式後，資訊都應該濃縮進 result_name囉！ 應該不用再describe了～
         self.sees_ver = None
         self.sees = None
         self.see_amount = None
+        self.see_file_amount = None 
         
-    # @staticmethod
-    # def new_from_result_name(result_name):
-    #     ### 第零階段：決定result, logs, ckpt 存哪裡 並 把source code存起來s
-    #     ###    train_reload和test 根據 "result_name"，直接去放result的資料夾複製囉！
-    #     return Result(result_name=result_name)
-
-    # @staticmethod
-    # def new_from_experiment(exp):
-    #     import datetime
-    #     ### 大概長這樣 type1_h=256,w=256_complex_"describe_mid"_20200328-215330_model5_rect2_"describe_end"
-    #     result_name_element = [exp.db_obj.category.value]
-    #     if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
-    #     result_name_element += [datetime.datetime.now().strftime("%Y%m%d-%H%M%S"), exp.model_obj.model_name.value]
-    #     if(exp.describe_end is not None): result_name_element += [exp.describe_end]
-
-    #     result_name = "-".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
-    #     return Result(result_name=result_name)
-    
-
+        ### after train的時候才用的
+        self.plot_title = None ### 這是給matplot用的title
 
     # def rename_see1_to_see2(self):
     #     for go_see in range(self.see_amount):
@@ -175,195 +172,82 @@ class Result:
     #             print("rename_ord:", self.sees1[go_see].see_dir)
     #             print("rename_dst:", self.sees2[go_see].see_dir)
     #             os.rename(self.sees1[go_see].see_dir, self.sees2[go_see].see_dir)
+    def save_single_see_as_matplot_visual(self, see_num):
+        self.sees[see_num].save_as_matplot_visual_after_train()
             
-    def save_all_see_as_matplot_visual(self, start_index, amount):
+    def save_all_single_see_as_matplot_visual(self, start_index, amount):
         print("start_index", start_index)
         for see in self.sees[start_index: start_index+amount]:
             see.save_as_matplot_visual_after_train()
 
-    def save_all_see_as_matplot_visual_multiprocess(self):
+    def save_all_single_see_as_matplot_visual_multiprocess(self):
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=8 ,task_amount=self.see_amount, task=self.save_all_see_as_matplot_visual)
+        multi_processing_interface(core_amount=8 ,task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_visual)
 
-    
-class Result_analyzer:
-    def __init__(self, r_describe=""):
-        self.r_describe = r_describe
-        self.analyze_dir = access_path + "analyze_dir"+"/"+self.r_describe ### 例如 .../data_dir/analyze_dir/testtest
-        Check_dir_exist_and_build(self.analyze_dir)
-    
-    ########################################################################################################################################
-    def _temp_c_results_see1_update_to_see2_and_get_see_file_names(self, c_results):
-        ### 暫時的update see1~see2
-        for result in c_results:
-            result.rename_see1_to_see2()
-            for see in result.sees:
-                see.get_see_file_names()
-
-    
-    def _temp_r_c_results_update_see1_to_see2_and_get_see_file_names(self, r_c_results):
-        for c_results in r_c_results:
-            self._temp_c_results_see1_update_to_see2_and_get_see_file_names(c_results)
-
-    ########################################################################################################################################
-    ### 單一row，同see
-    def analyze_col_results_single_see(self, c_results, see_num):
+    ##############################################################################################################################
+    def save_multi_see_as_matplot_visual(self, see_nums, save_name):
         start_time = time.time()
-        analyze_see_dir = self.analyze_dir + "/" + c_results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
-        Check_dir_exist_and_build(analyze_see_dir)                                       ### 建立 存結果的資料夾
+        matplot_multi_see_dir = self.result_dir + "/" + save_name ### 結果存哪裡定位出來
+        Check_dir_exist_and_build_new_dir(matplot_multi_see_dir)          ### 建立 存結果的資料夾
 
-        ### 暫時的update see1~see2
-        self._temp_r_c_results_update_see1_to_see2_and_get_see_file_names(c_results)
-        
-        ### 抓 in/gt imgs
-        in_imgs = cv2.imread(c_results[0].sees[see_num].see_dir + "/" + c_results[0].sees[see_num].see_file_names[0])
-        gt_imgs = cv2.imread(c_results[0].sees[see_num].see_dir + "/" + c_results[0].sees[see_num].see_file_names[1])
+        ### 抓 各row的in/gt imgs
+        in_imgs = []
+        gt_imgs = []
+        for see_num in see_nums:
+            in_imgs.append(cv2.imread(self.sees[see_num].see_dir + "/" + self.sees[see_num].see_file_names[0]))
+            gt_imgs.append(cv2.imread(self.sees[see_num].see_dir + "/" + self.sees[see_num].see_file_names[1]))
 
-        ### 抓 要顯示的 titles
-        c_titles = ["in_img"]
-        for result in c_results: c_titles.append(result.r_describe)
-        c_titles += ["gt_img"]
+        ### 抓 第一row的 要顯示的 titles
+        titles = ["in_img", self.plot_title, "gt_img"]
+        r_c_titles = [titles] ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
-        ### 抓  要顯示的imgs
-        print("doing analyze_col_results_multi_see")
-        for go_img in tqdm(range(600)):
-            if(go_img >=2):
-                epoch = go_img-2
-                
-                c_imgs   = [in_imgs]
-                for result in c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img]))
-                c_imgs += [gt_imgs]
-                matplot_visual_single_row_imgs(img_titles=c_titles,
-                                               imgs=c_imgs, 
-                                               fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
-                                               dst_dir          = analyze_see_dir, 
-                                               file_name        ="epoch=%04i"%epoch,
-                                               bgr2rgb          = True)
-        Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
-        Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+        ### 抓 row/col 要顯示的imgs
+        print("doing save_multi_see_as_matplot_visual")
+        self._draw_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, core_amount=8, task_amount=self.see_file_amount)
+
+        ### 後處理，讓資料變得 好看 且 更小 並 串成影片
+        Find_ltrd_and_crop(matplot_multi_see_dir, matplot_multi_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+        Save_as_jpg(matplot_multi_see_dir, matplot_multi_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
+        Video_combine_from_dir(matplot_multi_see_dir, matplot_multi_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
-              
-    def analyze_col_results_all_single_see(self,start_see, see_amount, c_results):
-        for go_see in range(start_see, start_see + see_amount):
-            self.analyze_col_results_single_see(c_results, go_see)
 
-    def analyze_col_results_all_single_see_multiprocess(self, c_results, core_amount=8, task_amount=32):
-        from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self.analyze_col_results_all_single_see, task_args=[c_results])
-
-    ########################################################################################################################################
-    ### 同col同result，同row同see
-    def _draw_col_results_multi_see(self, start_img, img_amount, c_results, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir ):
+    def _draw_multi_see(self, start_img, img_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir ):
         print("doing analyze_col_results_multi_see")
         for go_img in tqdm(range(start_img, start_img+img_amount)):
             if(go_img >=2):
                 epoch = go_img-2
-
                 r_c_imgs = []
                 for go_see_num, see_num in enumerate(see_nums):
-                    c_imgs   = [in_imgs[go_see_num]]
-                    for result in c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img]))
+                    c_imgs = [in_imgs[go_see_num]]
+                    c_imgs.append(cv2.imread(self.sees[see_num].see_dir + "/" + self.sees[see_num].see_file_names[go_img]))
                     c_imgs += [gt_imgs[go_see_num]]
                     r_c_imgs.append(c_imgs)
                 matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
                                               rows_cols_imgs   = r_c_imgs,
                                               fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
-                                              dst_dir          = analyze_see_dir, 
+                                              dst_dir          = matplot_multi_see_dir, 
                                               file_name        ="epoch=%04i"%epoch,
                                               bgr2rgb          =True)
 
-    def _draw_col_results_multi_see_multiprocess(self, c_results, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=8, task_amount=600):
+    def _draw_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, core_amount=8, task_amount=600):
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self._draw_col_results_multi_see, task_args=( c_results, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir))
+        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self._draw_multi_see, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir])
 
-    def analyze_col_results_multi_see(self, c_results, see_nums, save_name):
-        start_time = time.time()
-        analyze_see_dir = self.analyze_dir + "/" + save_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
-        Check_dir_exist_and_build(analyze_see_dir)                                  ### 建立 存結果的資料夾
-        
-        ### 暫時的update see1~see2
-        # self._temp_c_results_see1_update_to_see2_and_get_see_file_names(c_results)
-        
-        
-        ### 抓 各row的in/gt imgs
-        in_imgs = []
-        gt_imgs = []
-        for see_num in see_nums:
-            in_imgs.append(cv2.imread(c_results[0].sees[see_num].see_dir + "/" + c_results[0].sees[see_num].see_file_names[0]))
-            gt_imgs.append(cv2.imread(c_results[0].sees[see_num].see_dir + "/" + c_results[0].sees[see_num].see_file_names[1]))
-
-        ### 抓 第一row的 要顯示的 titles
-        c_titles = ["in_img"]
-        for result in c_results: c_titles.append(result.r_describe)
-        c_titles += ["gt_img"]
-        r_c_titles = [c_titles] ### 還是包成r_c_titles的形式喔！
-
-        ### 抓 row/col 要顯示的imgs
-        print("doing analyze_col_results_multi_see")
-        self._draw_col_results_multi_see_multiprocess(c_results, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=8, task_amount=600)
-
-        ### 後處理，讓資料變得 好看 且 更小 並 串成影片
-        Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
-        Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
-        print("cost_time:", time.time() - start_time)
-
-
-    ########################################################################################################################################
-    ### 各row各col 皆 不同result，但全部都看相同某個see
-    def analyze_row_col_results_certain_see(self, r_c_results, see_num):
-        start_time = time.time()
-        analyze_see_dir = self.analyze_dir + "/" + r_c_results[0][0].sees[see_num].see_name ### 分析結果存哪裡定位出來
-        Check_dir_exist_and_build(analyze_see_dir)                                          ### 建立 存結果的資料夾
-        
-        ### 暫時的update see1~see2
-        self._temp_r_c_results_update_see1_to_see2_and_get_see_file_names(r_c_results)
-
-        print("processing see_num:", see_num)
-        ### 要記得see的第一張存的是 輸入的in影像，第二張存的是 輸出的gt影像
-        ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
-        in_img = cv2.imread(r_c_results[0][0].sees[see_num].see_dir + "/" + r_c_results[0][0].sees[see_num].see_file_names[0] )  ### 第一張：in_img
-        gt_img = cv2.imread(r_c_results[0][0].sees[see_num].see_dir + "/" + r_c_results[0][0].sees[see_num].see_file_names[1] )  ### 第二張：gt_img
-        for go_img in tqdm(range(600)):
-            if(go_img >=2):
-                epoch = go_img-2
-                # print("see_num=", see_num, "go_img=", go_img)
-                r_c_imgs   = [] ### r_c_imgs   抓出所要要顯示的圖   ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
-                r_c_titles = [] ### r_c_titles 抓出所有要顯示的標題 ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
-                for row_results in r_c_results:
-                    c_imgs   = [in_img]   ### 每個row的第一張要放in_img
-                    c_titles = ["in_img"] ### 每個row的第一張要放in_img
-                    for result in row_results: ### 抓出一個row的 img 和 title
-                        c_imgs.append( cv2.imread( result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img] ))
-                        c_titles.append(result.r_describe)
-                    c_imgs += [gt_img]      ### 每個row的最後一張要放gt_img
-                    c_titles += ["gt_img"]  ### 每個row的最後一張要放gt_img
-                    r_c_imgs.append(c_imgs)
-                    r_c_titles.append(c_titles)
-                ###########################################################################################################
-                matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
-                                              rows_cols_imgs   = r_c_imgs,
-                                              fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
-                                              dst_dir          = analyze_see_dir, 
-                                              file_name        ="epoch=%04i"%epoch,
-                                              bgr2rgb          = True )
-
-        Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
-        Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
-        print("cost_time:", time.time() - start_time)
-
-    def analyze_row_col_results_sees(self,start_see, see_amount,  r_c_results):
-        for go_see in range(start_see, start_see + see_amount):
-            self.analyze_row_col_results_certain_see(r_c_results, go_see)
     
-    def analyze_row_col_results_all_sees_multiprocess(self, r_c_results, core_amount=8, task_amount=32):
-        from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self.analyze_row_col_results_sees, task_args=(r_c_results))
         
 
 if(__name__=="__main__"):
+    ### Result 的 各method測試：
+    # os_book = Result_builder().set_by_result_name("5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.35_copy").set_plot_title("mae9").build()
+    # os_book.save_multi_see_as_matplot_visual([29,30,31],"train_rd")
+    # os_book.save_single_see_as_matplot_visual(see_num=12)
+    # os_book.save_all_single_see_as_matplot_visual_
+
+    ### Result_analyzer 的 各method測試：
+    os_book = Result_builder().set_by_result_name("5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.35_copy").set_plot_title("mae9").build()
+    os_book_analyzer = Result_analyzer("test_test_test_test")
+    os_book_analyzer.analyze_col_results_single_see([os_book], 15)
+
     # have_bg_gt_gray_mae3  = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", r_describe="have_bg_gt_gray")
     # have_bg_gt_color_mae3 = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"  , r_describe="have_bg_gt_color")
     # no_bg_gt_color_mae3   = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"    , r_describe="no_bg_gt_color")
@@ -392,8 +276,7 @@ if(__name__=="__main__"):
     # mrf_replace7_use7_9 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-110022_model6_mrf_rect2" , r_describe="replace7_use7+9")
     
     
-    os_book = Result("type7_h472_w304_real_os_book-20200521-115918-rect" , r_describe="127.28_epoch174")
-
+    multiprocess()
 
     ### 把 result內的 matplot_visual 壓小
     compress_results = [ 
@@ -423,9 +306,9 @@ if(__name__=="__main__"):
                     ]
 
     # for result in compress_results:
-    #     print("now_doing", result.r_describe)
+    #     print("now_doing", result.plot_title)
     #     result.rename_see1_to_see2()
-    #     result.save_all_see_as_matplot_visual_multiprocess()
+    #     result.save_all_single_see_as_matplot_visual_multiprocess()
     #################################################################################################################################
     ### 分析 bg 和 gt_color
     # bg_and_gt_color_results = [have_bg_gt_gray_mae3, have_bg_gt_color_mae3, no_bg_gt_color_mae3, no_bg_gt_gray_mae3]
@@ -456,8 +339,8 @@ if(__name__=="__main__"):
     #                       [no_mrf_mae3, mrf_7_9_3, mrf_7_11_3, mrf_9_11_3, mrf_13579_3],
     #                       [no_mrf_mae6, mrf_7_9_6, mrf_7_11_6, mrf_9_11_6, mrf_13579_6]
     #                   ]
-    # mrf_loss_analyze = Result_analyzer(r_describe="mrf_loss_analyze")
-    # mrf_loss_analyze.analyze_row_col_results_all_sees_multiprocess(mrf_r_c_results)
+    # mrf_loss_analyze = Result_analyzer(ana_describe="mrf_loss_analyze")
+    # mrf_loss_analyze.analyze_row_col_results_all_single_see_multiprocess(mrf_r_c_results)
     
     #################################################################################################################################
     ### 分析 mrf 取代 第一層7
@@ -476,10 +359,10 @@ if(__name__=="__main__"):
     # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [28,29,30,31], "train_str")
     #################################################################################################################################
     ### 分析 os_book
-    os_book_results = [os_book]
-    os_book_analyze = Result_analyzer("os_book")
+    # os_book_results = [os_book]
+    # os_book_analyze = Result_analyzer("os_book")
     
-    os_book.save_all_see_as_matplot_visual_multiprocess( )
+    # os_book.save_all_single_see_as_matplot_visual_multiprocess( )
     
     ## 一次看多see
     # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 0, 1, 2, 3], "test_lt")
@@ -494,7 +377,7 @@ if(__name__=="__main__"):
 
     #########################################################################################################
     # mrf_c_results = [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1]
-    # try_c_result_multi_see = Result_analyzer(r_describe="try_c_result_multi_see")
+    # try_c_result_multi_see = Result_analyzer(ana_describe="try_c_result_multi_see")
     # try_c_result_multi_see.analyze_col_results_multi_see(mrf_c_results, [1,3,5], "see_1_3_5_jpg_then_crop")
     # try_c_result_multi_see.analyze_col_results_multi_see(mrf_c_results, [1,3,5], "see_1_3_5_jpg")
     # try_c_result_multi_see.analyze_col_results_single_see(mrf_c_results, 1)
