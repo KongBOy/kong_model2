@@ -322,7 +322,7 @@ def generate_images( model_G, in_img_pre, gt_img_pre):
     gt_img_back = ((gt_img_pre[0].numpy() +1)*125).astype(np.uint8) ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
     return rect_back, in_img_back, gt_img_back ### 注意訓練model時是用tf來讀img，為rgb的方式訓練，所以生成的是rgb的圖喔！
 
-### 
+### 這是一張一張進來的，沒有辦法跟 Result 裡面的 see 生成法合併，要的話就是把這裡matplot部分去除，用result裡的see生成matplot圖囉！
 def generate_sees( model_G, see_index, in_img_pre, gt_img_pre,  epoch=0, result_obj=None):
     rect_back, in_img_back, gt_img_back = generate_images( model_G, in_img_pre, gt_img_pre)
     see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
@@ -331,8 +331,8 @@ def generate_sees( model_G, see_index, in_img_pre, gt_img_pre,  epoch=0, result_
     if(epoch==0): ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
         Check_dir_exist_and_build(plot_dir)  ### 建立 see資料夾/matplot_visual資料夾
-        cv2.imwrite(see_dir+"/"+"0-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看
-        cv2.imwrite(see_dir+"/"+"0-gt_img.jpg",  gt_img_back)  ### 寫一張 gt圖進去，進去資料夾時比較好看
+        cv2.imwrite(see_dir+"/"+"0a-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_dir+"/"+"0b-gt_img.jpg",  gt_img_back)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
     cv2.imwrite(see_dir+"/"+"epoch_%04i.jpg"%epoch, rect_back[:,:,::-1]) ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
 
     ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
