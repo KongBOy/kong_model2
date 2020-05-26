@@ -71,14 +71,14 @@ class Experiment():
         if(train_reload): ### 看需不需要reload model
             self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
             self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
+            print("reload ok~~ start_epoch=", self.start_epoch)
 
         ####################################################################################################################
         ### 4.board, 5.save_code；train時才需要 board_obj 和 把code存起來喔！test時不用～
         self.board_obj = Board_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build() ###step3 建立tensorboard，只有train 和 train_reload需要
         self.step0_save_code() ###    把source code存起來
 
-    def train_reload(self,result_name):
-        self.result_name = result_name
+    def train_reload(self):
         self.train(train_reload=True )
 
     def train(self, train_reload=False):
