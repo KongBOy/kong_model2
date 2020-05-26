@@ -2,11 +2,11 @@ import tensorflow as tf
 import numpy as np 
 from enum import Enum 
 import time
-from step11_result_analyze import Result
+from step11_result_analyze_after_train import Result
 from step08_model_obj import MODEL_NAME
 from step09_board_obj import Board_builder
 from step06_data_pipline import tf_Data_builder
-from step11_result_analyze import Result_builder
+from step11_result_analyze_after_train import Result_builder
 import sys
 sys.path.append("kong_util")
 from util import time_util
@@ -27,7 +27,7 @@ class Experiment():
         shutil.copy("step08_model_obj.py" ,code_dir + "/" + "step08_model_obj.py")
         shutil.copy("step09_board_obj.py" ,code_dir + "/" + "step09_board_obj.py")
         shutil.copy("step10_load_and_train_and_test.py" ,code_dir + "/" + "step10_load_and_train_and_test.py")
-        shutil.copy("step11_result_analyze.py" ,code_dir + "/" + "step11_result_analyze.py")
+        shutil.copy("step11_result_analyze_after_train.py" ,code_dir + "/" + "step11_result_analyze_after_train.py")
 
 ################################################################################################################################################
 ################################################################################################################################################
@@ -37,7 +37,8 @@ class Experiment():
         self.model_obj    = None                
         self.describe_mid = None
         self.describe_end = "try_try_try_enum"
-        self.result_name  = ""
+        self.result_name  = None
+        self.result_obj   = None
         ##############################################################################################################################
         ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
         ### train, train_reload 參數
@@ -147,7 +148,7 @@ class Experiment():
             see_amount = self.tf_data.see_amount
         
         for see_index, (test_in_pre, test_gt_pre) in enumerate(zip(see_in_pre.take(see_amount), see_gt_pre.take(see_amount))): 
-            if  (self.model_obj.model_name == MODEL_NAME.unet ):     self.model_obj.generate_sees( self.model_obj.generator         , see_index, test_in_pre, test_gt_pre, self.tf_data.max_train_move, self.tf_data.min_train_move,  epoch, result_obj.result_dir, result_obj) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            if  (self.model_obj.model_name == MODEL_NAME.unet ):     self.model_obj.generate_sees( self.model_obj.generator, see_index, test_in_pre, test_gt_pre, self.tf_data.max_train_move, self.tf_data.min_train_move,  epoch, result_obj.result_dir, result_obj) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif(self.model_obj.model_name == MODEL_NAME.rect ):     self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
             elif(self.model_obj.model_name == MODEL_NAME.mrf_rect ): self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
             elif(self.model_obj.model_name == MODEL_NAME.just_G   ): self.model_obj.generate_sees( self.model_obj.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
@@ -209,10 +210,10 @@ class Experiment():
         self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
         ### 待完成
 
-    def run(self, result_name=None):
+    def run(self):
         if  (self.phase == "train"):          self.train()
-        elif(self.phase == "train_reload"):   self.train_reload(result_name)
-        elif(self.phase == "test"):           self.test(result_name)
+        elif(self.phase == "train_reload"):   self.train_reload()
+        elif(self.phase == "test"):           self.test()
         elif(self.phase == "train_indicate"): pass ### 待完成
 
 
@@ -249,7 +250,8 @@ class Exp_builder():
         self.result_name = result_name
         return self
 
-    def build(self):
+    def build(self, result_name=None):
+        if(result_name is not None):self.exp.result_name = result_name
         return self.exp
 
 if(__name__=="__main__"):
@@ -262,10 +264,20 @@ if(__name__=="__main__"):
 
     # using_db_obj = type5c_real_have_see_no_bg_gt_color
     # using_db_obj = type7_h472_w304_real_os_book_400data
-    using_db_obj = type7b_h500_w332_real_os_book_1532data
+    # using_db_obj = type7b_h500_w332_real_os_book_1532data
 
     # using_model_obj = rect
-    using_model_obj = just_G
+    # using_model_obj = just_G
     # exp = Exp_builder().set_basic("train", using_db_obj, using_model_obj, describe_end="1532data").set_train_args(epochs=700).build().run(result_name="type7b_h500_w332_real_os_book-20200524-181909-just_G-1532data")
+    
+    
+    os_book_1532_rect_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1_127.28").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_rect_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1_127.35").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_rect_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1_127.51").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_just_g_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae1_127.28").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_just_g_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae3_127.51").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_just_g_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae6_128.246").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_just_g_mae9 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae9_127.35").set_train_args(epochs=700).build(result_name="")
 
-    exp = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1").set_train_args(epochs=700).build().run("type7b_h500_w332_real_os_book_20200524-013834_rect_1532data_mae1")
+
+    os_book_1532_just_g_mae9.run()
