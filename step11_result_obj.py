@@ -34,6 +34,28 @@ class See:
     def save_as_avi(self):
         Video_combine_from_dir(self.see_dir, self.see_dir, "0-combine_jpg_tail_long.avi", tail_long=True)
 
+    def save_as_matplot_visual_during_train(self, epoch):
+        start_time = time.time()
+        matplot_visual_dir = self.see_dir + "/" + "matplot_visual" ### 分析結果存哪裡定位出來
+        if(epoch==0):Check_dir_exist_and_build_new_dir(matplot_visual_dir)      ### 建立 存結果的資料夾
+
+        self.get_see_file_names() ### 取得 結果內的 某個see資料夾 內的所有影像 檔名
+        print("processing %s"%self.see_name)
+        in_img = cv2.imread(self.see_dir + "/" + self.see_file_names[0]) ### 要記得see的第一張存的是 輸入的in影像
+        gt_img = cv2.imread(self.see_dir + "/" + self.see_file_names[1]) ### 要記得see的第二張存的是 輸出的gt影像
+        img = cv2.imread(self.see_dir + "/" + self.see_file_names[epoch+2]) ### see資料夾 內的影像 該epoch產生的影像 讀出來 
+
+        matplot_visual_single_row_imgs(img_titles=["in_img", "out_img", "gt_img"],  ### 把每張圖要顯示的字包成list 
+                                        imgs      =[ in_img ,   img    ,  gt_img],      ### 把要顯示的每張圖包成list
+                                        fig_title ="epoch=%04i"%epoch,   ### 圖上的大標題
+                                        dst_dir   =matplot_visual_dir,   ### 圖存哪
+                                        file_name ="epoch=%04i"%epoch)   ### 檔名
+
+        # Find_ltrd_and_crop(matplot_visual_dir, matplot_visual_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+        # Save_as_jpg(matplot_visual_dir,matplot_visual_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
+        # Video_combine_from_dir(matplot_visual_dir, matplot_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+        print("cost_time:", time.time() - start_time)
+
     def save_as_matplot_visual_after_train(self):
         start_time = time.time()
         matplot_visual_dir = self.see_dir + "/" + "matplot_visual" ### 分析結果存哪裡定位出來
@@ -186,6 +208,12 @@ class Result:
 
     ##############################################################################################################################
     def save_multi_see_as_matplot_visual(self, see_nums, save_name):
+        ### 防呆 ### 這很重要喔！因為 row 只有一個時，matplot的ax的維度只有一維，但我的操作都兩維 會出錯！所以要切去一維的method喔！
+        if(len(see_nums) == 1):
+            print("因為 see_nums 的數量只有一個，自動切換成 single 的 method 囉～")
+            self.save_single_see_as_matplot_visual(see_nums[0])
+            return  
+        ###############################################################################################
         start_time = time.time()
         matplot_multi_see_dir = self.result_dir + "/" + save_name ### 結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(matplot_multi_see_dir)          ### 建立 存結果的資料夾
@@ -238,151 +266,7 @@ class Result:
 
 if(__name__=="__main__"):
     ### Result 的 各method測試：
-    # os_book = Result_builder().set_by_result_name("5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.35_copy").set_plot_title("mae9").build()
-    # os_book.save_multi_see_as_matplot_visual([29,30,31],"train_rd")
+    os_book = Result_builder().set_by_result_name("5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.35_copy").set_plot_title("mae9").build()
+    os_book.save_multi_see_as_matplot_visual([29, 30, 31],"train_rd")
     # os_book.save_single_see_as_matplot_visual(see_num=12)
     # os_book.save_all_single_see_as_matplot_visual_
-
-    ### Result_analyzer 的 各method測試：
-    os_book = Result_builder().set_by_result_name("5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.35_copy").set_plot_title("mae9").build()
-    os_book_analyzer = Result_analyzer("test_test_test_test")
-    os_book_analyzer.analyze_col_results_single_see([os_book], 15)
-
-    # have_bg_gt_gray_mae3  = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", r_describe="have_bg_gt_gray")
-    # have_bg_gt_color_mae3 = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_color_20200428-153059_model5_rect2"  , r_describe="have_bg_gt_color")
-    # no_bg_gt_color_mae3   = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-color_20200428-132611_model5_rect2"    , r_describe="no_bg_gt_color")
-    # no_bg_gt_gray_mae3    = Result("1_bg_&_gt_color/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2"  , r_describe="no_bg_gt_gray")
-
-    # no_mrf_mae1 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-064552_model5_rect2" , r_describe="no_mrf_mae1")
-    # no_mrf_mae3 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-011344_model5_rect2" , r_describe="no_mrf_mae3")
-    # no_mrf_mae6 = Result("2_no_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200506-065346_model5_rect2" , r_describe="no_mrf_mae6")
-    
-    # mrf_7_9_1   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190344_model6_mrf_rect2" , r_describe="mrf_7_9_mae1")
-    # mrf_7_9_3   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145226_model6_mrf_rect2" , r_describe="mrf_7_9_mae3")
-    # mrf_7_9_6   = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231036_model6_mrf_rect2" , r_describe="mrf_7_9_mae6")
-    # mrf_7_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190955_model6_mrf_rect2" , r_describe="mrf_7_11_mae1")
-    # mrf_7_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-150505_model6_mrf_rect2" , r_describe="mrf_7_11_mae3")
-    # mrf_7_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231336_model6_mrf_rect2" , r_describe="mrf_7_11_mae6")
-    # mrf_9_11_1  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-190837_model6_mrf_rect2" , r_describe="mrf_9_11_mae1")
-    # mrf_9_11_3  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200429-145548_model6_mrf_rect2" , r_describe="mrf_9_11_mae3")
-    # mrf_9_11_6  = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231249_model6_mrf_rect2" , r_describe="mrf_9_11_mae6")
-    # mrf_13579_1 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200504-191110_model6_mrf_rect2" , r_describe="mrf_13579_mae1")
-    # mrf_13579_3 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200428-154149_model6_mrf_rect2" , r_describe="mrf_13579_mae3")
-    # mrf_13579_6 = Result("3_mrf_mae136/type5c-real_have_see-no_bg-gt-gray3ch_20200501-231530_model6_mrf_rect2" , r_describe="mrf_13579_mae6")
-
-
-    # mrf_replace7_use7   = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105001_model6_mrf_rect2" , r_describe="replace7_use7")
-    # mrf_replace7_use5_7 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-105739_model6_mrf_rect2" , r_describe="replace7_use5+7")
-    # mrf_replace7_use7_9 = Result("4_mrf_replace7/type5c-real_have_see-no_bg-gt-gray3ch_20200507-110022_model6_mrf_rect2" , r_describe="replace7_use7+9")
-    
-    
-    multiprocess()
-
-    ### 把 result內的 matplot_visual 壓小
-    compress_results = [ 
-                    # have_bg_gt_gray_mae3, 
-                    # have_bg_gt_color_mae3, 
-                    # no_bg_gt_color_mae3, 
-                    # no_bg_gt_gray_mae3,
-                    # no_mrf_mae1, 
-                    # no_mrf_mae3, 
-                    # no_mrf_mae6,
-                    # mrf_7_9_1,
-                    # mrf_7_9_3,
-                    # mrf_7_9_6,
-                    # mrf_7_11_1,
-                    # mrf_7_11_3,
-                    # mrf_7_11_6,
-                    # mrf_9_11_1,
-                    # mrf_9_11_3,
-                    # mrf_9_11_6,
-                    # mrf_13579_1,
-                    # mrf_13579_3,
-                    # mrf_13579_6,
-                    # mrf_replace7_use7,
-                    # mrf_replace7_use5_7,
-                    # mrf_replace7_use7_9,
-                    os_book
-                    ]
-
-    # for result in compress_results:
-    #     print("now_doing", result.plot_title)
-    #     result.rename_see1_to_see2()
-    #     result.save_all_single_see_as_matplot_visual_multiprocess()
-    #################################################################################################################################
-    ### 分析 bg 和 gt_color
-    # bg_and_gt_color_results = [have_bg_gt_gray_mae3, have_bg_gt_color_mae3, no_bg_gt_color_mae3, no_bg_gt_gray_mae3]
-    # bg_and_gt_color_analyze = Result_analyzer("bg_and_gt_color_analyze")
-
-    ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ 不過single還是有好處：可以放很大喔！覺得有空再生成好了～
-    # # bg_and_gt_color_analyze.analyze_col_results_all_single_see_multiprocess(bg_and_gt_color_results)  ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ
-
-    ### 這裡是在測試 col_results_multi_see 一次看多少row比較好，結論是4
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [14,15],          "test_str_2img")  
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [12,14,15],       "test_str_3img") ### 覺得3不錯！
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [11,12,14,15],    "test_str_4img") ### 覺得4不錯！且可看lt,rt,ld,rd
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [11,12,13,14,15], "test_str_5img")
-    
-    ### 一次看多see
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [ 1, 2, 4, 5], "test_img")
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [ 6, 7, 9,10], "test_lin")
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [11,12,14,15], "test_str")
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [17,18,19,20], "train_img")
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [22,23,24,25], "train_lin")
-    # bg_and_gt_color_analyze.analyze_col_results_multi_see(bg_and_gt_color_results, [28,29,30,31], "train_str")
-
-
-    #################################################################################################################################
-    ### 分析 mrf loss mae的比例
-    # mrf_r_c_results = [   
-    #                       [no_mrf_mae1, mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1],
-    #                       [no_mrf_mae3, mrf_7_9_3, mrf_7_11_3, mrf_9_11_3, mrf_13579_3],
-    #                       [no_mrf_mae6, mrf_7_9_6, mrf_7_11_6, mrf_9_11_6, mrf_13579_6]
-    #                   ]
-    # mrf_loss_analyze = Result_analyzer(ana_describe="mrf_loss_analyze")
-    # mrf_loss_analyze.analyze_row_col_results_all_single_see_multiprocess(mrf_r_c_results)
-    
-    #################################################################################################################################
-    ### 分析 mrf 取代 第一層7
-    # mrf_replace7_results = [no_mrf_mae3, mrf_replace7_use7, mrf_replace7_use5_7, mrf_replace7_use7_9]
-    # mrf_replace7_analyze = Result_analyzer("mrf_replace7_analyze")
-    
-    # ## 覺得好像可以省，因為看multi的比較方便ˊ口ˋ 不過single還是有好處：可以放很大喔！覺得有空再生成好了～
-    # # mrf_replace7_analyze.analyze_col_results_all_single_see_multiprocess(mrf_replace7_results)
-    
-    # ## 一次看多see
-    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [ 1, 2, 4, 5], "test_img")
-    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [ 6, 7, 9,10], "test_lin")
-    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [11,12,14,15], "test_str")
-    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [17,18,19,20], "train_img")
-    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [22,23,24,25], "train_lin")
-    # mrf_replace7_analyze.analyze_col_results_multi_see(mrf_replace7_results, [28,29,30,31], "train_str")
-    #################################################################################################################################
-    ### 分析 os_book
-    # os_book_results = [os_book]
-    # os_book_analyze = Result_analyzer("os_book")
-    
-    # os_book.save_all_single_see_as_matplot_visual_multiprocess( )
-    
-    ## 一次看多see
-    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 0, 1, 2, 3], "test_lt")
-    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 4, 5, 6, 7], "test_rt")
-    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 4, 5, 6, 7], "test_rt")
-    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 6, 7, 9,10], "test_lin")
-    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [11,12,14,15], "test_str")
-    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [17,18,19,20], "train_img")
-    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [22,23,24,25], "train_lin")
-    # os_book_analyze.analyze_col_results_multi_see(os_book_results, [28,29,30,31], "train_str")
-
-
-    #########################################################################################################
-    # mrf_c_results = [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1]
-    # try_c_result_multi_see = Result_analyzer(ana_describe="try_c_result_multi_see")
-    # try_c_result_multi_see.analyze_col_results_multi_see(mrf_c_results, [1,3,5], "see_1_3_5_jpg_then_crop")
-    # try_c_result_multi_see.analyze_col_results_multi_see(mrf_c_results, [1,3,5], "see_1_3_5_jpg")
-    # try_c_result_multi_see.analyze_col_results_single_see(mrf_c_results, 1)
-    
-
-    # l,t,r,d = Find_db_left_top_right_down(try_c_result_multi_see.analyze_dir + "/" +"analyze_col_results_multi_see")
-    # print(l,t,r,d)
-    # Find_ltrd_and_crop(try_c_result_multi_see.analyze_dir + "/" +"analyze_col_results_multi_see", try_c_result_multi_see.analyze_dir + "/" +"analyze_col_results_multi_see", 15, search_amount=10)
