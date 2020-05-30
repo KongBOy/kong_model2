@@ -261,12 +261,9 @@ class Result:
         from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self._draw_multi_see, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir])
 
-    
-        
 
 if(__name__=="__main__"):
-    ### Result 的 各method測試：
+    ## Result 的 各method測試：
     os_book = Result_builder().set_by_result_name("5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.35_copy").set_plot_title("mae9").build()
     os_book.save_multi_see_as_matplot_visual([29, 30, 31],"train_rd")
-    # os_book.save_single_see_as_matplot_visual(see_num=12)
-    # os_book.save_all_single_see_as_matplot_visual_
+    os_book.save_single_see_as_matplot_visual(see_num=12)

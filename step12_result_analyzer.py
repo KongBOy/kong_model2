@@ -10,6 +10,9 @@ from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matp
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from video_from_img import Video_combine_from_dir
 
+
+JPG_QUALITY = 80
+
 class Result_analyzer:
     def __init__(self, ana_describe):
         self.ana_describe = ana_describe
@@ -75,7 +78,7 @@ class Col_results_analyzer(Result_analyzer):
                                                file_name        ="epoch=%04i"%epoch,
                                                bgr2rgb          = True)
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
+        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY]) ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
               
@@ -109,6 +112,8 @@ class Col_results_analyzer(Result_analyzer):
         in_imgs = []
         gt_imgs = []
         for see_num in see_nums:
+            print("see_num", see_num)
+            print("self.c_results[0].sees[see_num].see_file_names", self.c_results[0].sees[see_num].see_file_names)
             in_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_dir + "/" + self.c_results[0].sees[see_num].see_file_names[0]))
             gt_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_dir + "/" + self.c_results[0].sees[see_num].see_file_names[1]))
 
@@ -124,7 +129,7 @@ class Col_results_analyzer(Result_analyzer):
 
         ### 後處理，讓資料變得 好看 且 更小 並 串成影片
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
+        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 50]) ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
@@ -199,7 +204,7 @@ class Row_col_results_analyzer(Result_analyzer):
                                               bgr2rgb          = True )
 
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
+        Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY]) ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
@@ -213,14 +218,65 @@ class Row_col_results_analyzer(Result_analyzer):
 
 
 if(__name__=="__main__"):
-    from step11_result_obj import Result_builder
+    from step11_a_result_obj import Result_builder
+    from step11_b_result_instance import *
+
+    # os_book_rect_1532_mae1 
+    # os_book_rect_1532_mae3 
+    # os_book_rect_1532_mae6 
+
+    # os_book_just_G_mae1 
+    # os_book_just_G_mae3 
+    # os_book_just_G_mae6 
+    # os_book_just_G_mae9 
+
+
+
     ### Result_analyzer 的 各method測試：
-    os_book = Result_builder().set_by_result_name("5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.35_copy").set_plot_title("mae9").build()
-    os_book_col_result_analyzer = Col_results_analyzer(ana_describe="test_test_test_test", col_results=[os_book])
+    os_book_col_result_analyzer = Col_results_analyzer(ana_describe="just_G", col_results=[os_book_just_G_mae1,os_book_just_G_mae3,os_book_just_G_mae6,os_book_just_G_mae9])
     # os_book_col_result_analyzer.analyze_col_results_single_see(13)
-    os_book_col_result_analyzer.analyze_col_results_all_single_see_multiprocess()
-    # os_book_col_result_analyzer.analyze_col_results_multi_see([13], "see_see_see")
-    # os_book_col_result_analyzer.analyze_col_results_multi_see([13,14,15], "see_see_see")
+    # os_book_col_result_analyzer.analyze_col_results_multi_see([16,19], "train_lt")
+    # os_book_col_result_analyzer.analyze_col_results_multi_see([20,23], "train_rt")
+    # os_book_col_result_analyzer.analyze_col_results_multi_see([24,25], "train_ld")
+    # os_book_col_result_analyzer.analyze_col_results_multi_see([30,31], "train_rd")
+    # os_book_col_result_analyzer.analyze_col_results_multi_see([2,3], "test_lt")
+    # os_book_col_result_analyzer.analyze_col_results_multi_see([6,7], "test_rt")
+    # os_book_col_result_analyzer.analyze_col_results_multi_see([10,11], "test_ld")
+    # os_book_col_result_analyzer.analyze_col_results_multi_see([12,13], "test_rd")
+
+
+    # os_book_G_D_vs_just_G = Col_results_analyzer(ana_describe="G+D_vs_just_G", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D00])
+    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([16,19], "train_lt")
+    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([20,23], "train_rt")
+    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([24,25], "train_ld")
+    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([30,31], "train_rd")
+    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([2,3], "test_lt")
+    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([6,7], "test_rt")
+    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([10,11], "test_ld")
+    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([12,13], "test_rd")
+
+    os_book_G_D_mae16 = Col_results_analyzer(ana_describe="G_D_mae1,6_epoch700", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae6])
+    os_book_G_D_mae16.analyze_col_results_multi_see([16,19], "train_lt")
+    os_book_G_D_mae16.analyze_col_results_multi_see([20,23], "train_rt")
+    os_book_G_D_mae16.analyze_col_results_multi_see([24,25], "train_ld")
+    os_book_G_D_mae16.analyze_col_results_multi_see([30,31], "train_rd")
+    os_book_G_D_mae16.analyze_col_results_multi_see([2,3], "test_lt")
+    os_book_G_D_mae16.analyze_col_results_multi_see([6,7], "test_rt")
+    os_book_G_D_mae16.analyze_col_results_multi_see([10,11], "test_ld")
+    os_book_G_D_mae16.analyze_col_results_multi_see([12,13], "test_rd")
+
+    # os_book_G_D_mae136 = Col_results_analyzer(ana_describe="G_D_mae1,3,6_epoch153", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae3, os_book_rect_1532_mae6])
+    # os_book_G_D_mae136.analyze_col_results_multi_see([16,19], "train_lt")
+    # os_book_G_D_mae136.analyze_col_results_multi_see([20,23], "train_rt")
+    # os_book_G_D_mae136.analyze_col_results_multi_see([24,25], "train_ld")
+    # os_book_G_D_mae136.analyze_col_results_multi_see([30,31], "train_rd")
+    # os_book_G_D_mae136.analyze_col_results_multi_see([2,3], "test_lt")
+    # os_book_G_D_mae136.analyze_col_results_multi_see([6,7], "test_rt")
+    # os_book_G_D_mae136.analyze_col_results_multi_see([10,11], "test_ld")
+    # os_book_G_D_mae136.analyze_col_results_multi_see([12,13], "test_rd")
+
+
+
 
 
     # have_bg_gt_gray_mae3  = Result("1_bg_&_gt_color/type5d-real_have_see-have_bg-gt_gray3ch_20200428-152656_model5_rect2", r_describe="have_bg_gt_gray")
@@ -275,7 +331,7 @@ if(__name__=="__main__"):
                     # mrf_replace7_use7,
                     # mrf_replace7_use5_7,
                     # mrf_replace7_use7_9,
-                    os_book
+                    os_book_just_G_mae9
                     ]
 
     # for result in compress_results:

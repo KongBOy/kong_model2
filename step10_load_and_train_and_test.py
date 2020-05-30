@@ -6,7 +6,7 @@ import time
 from step06_data_pipline import tf_Data_builder
 from step08_model_obj import MODEL_NAME
 from step09_board_obj import Board_builder
-from step11_result_obj import Result,Result_builder
+from step11_a_result_obj import Result,Result_builder
 import sys
 sys.path.append("kong_util")
 from util import time_util
@@ -27,7 +27,7 @@ class Experiment():
         shutil.copy("step08_model_obj.py" ,code_dir + "/" + "step08_model_obj.py")
         shutil.copy("step09_board_obj.py" ,code_dir + "/" + "step09_board_obj.py")
         shutil.copy("step10_load_and_train_and_test.py" ,code_dir + "/" + "step10_load_and_train_and_test.py")
-        shutil.copy("step11_result_obj.py" ,code_dir + "/" + "step11_result_obj.py")
+        shutil.copy("step11_a_result_obj.py" ,code_dir + "/" + "step11_a_result_obj.py")
         shutil.copy("step12_result_analyzer.py" ,code_dir + "/" + "step12_result_analyzer.py")
 
 ################################################################################################################################################
@@ -280,5 +280,6 @@ if(__name__=="__main__"):
     os_book_1532_just_g_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae6_128.246").set_train_args(epochs=700).build(result_name="")
     os_book_1532_just_g_mae9 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae9_127.35").set_train_args(epochs=700).build(result_name="")
 
-
+    os_book_1532_rect_D_05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.5_128.245").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_rect_D_01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.1_127.28").set_train_args(epochs=700).build(result_name="")
     os_book_1532_just_g_mae9.run()
