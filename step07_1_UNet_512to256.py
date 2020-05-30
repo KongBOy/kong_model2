@@ -152,15 +152,15 @@ class Generator512to256(tf.keras.models.Model):
         return tf.nn.tanh(x)
         
     
-    def model(self, x):
+    def model(self, x): ### 看summary用的
         return tf.keras.models.Model(inputs=[x], outputs=self.call(x) )
         
+#######################################################################################################################################
 def generator_loss(gen_output, target):
     target = tf.cast(target,tf.float32)
     l1_loss = tf.reduce_mean(tf.abs(target - gen_output))
     return l1_loss
 
-#######################################################################################################################################
 @tf.function()
 def train_step(generator,generator_optimizer, input_image, target, board_dict):
     with tf.GradientTape() as gen_tape:
