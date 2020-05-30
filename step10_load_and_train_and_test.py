@@ -3,13 +3,15 @@ import numpy as np
 from enum import Enum 
 import time
 
-from step06_data_pipline import tf_Data_builder
-from step08_model_obj import MODEL_NAME
+from step06_b_data_pipline import tf_Data_builder
+from step08_b_model_obj import MODEL_NAME
 from step09_board_obj import Board_builder
 from step11_a_result_obj import Result,Result_builder
 import sys
 sys.path.append("kong_util")
 from util import time_util
+
+from tqdm import tqdm
 
 
 class Experiment():
@@ -18,13 +20,13 @@ class Experiment():
         from build_dataset_combine import Check_dir_exist_and_build
         code_dir = self.result_obj.result_dir+"/"+"train_code"
         Check_dir_exist_and_build(code_dir)
-        shutil.copy("step06_data_pipline.py" ,code_dir + "/" + "step06_data_pipline.py")
-        shutil.copy("step06_datas_obj.py"    ,code_dir + "/" + "step06_datas_obj.py")
-        shutil.copy("step07_1_UNet_512to256.py",code_dir + "/" + "step7_kong_model1_UNet.py")
-        shutil.copy("step07_2_Rect2.py",code_dir + "/" + "step07_2_Rect2.py")
-        shutil.copy("step07_2_Rect2.py",code_dir + "/" + "step07_2_Rect2.py")
-        shutil.copy("step07_3_just_G.py",code_dir + "/" + "step07_3_just_G.py")
-        shutil.copy("step08_model_obj.py" ,code_dir + "/" + "step08_model_obj.py")
+        shutil.copy("step06_b_data_pipline.py" ,code_dir + "/" + "step06_b_data_pipline.py")
+        shutil.copy("step06_a_datas_obj.py"    ,code_dir + "/" + "step06_a_datas_obj.py")
+        shutil.copy("step08_a_1_UNet_512to256.py",code_dir + "/" + "step7_kong_model1_UNet.py")
+        shutil.copy("step08_a_2_Rect2.py",code_dir + "/" + "step08_a_2_Rect2.py")
+        shutil.copy("step08_a_2_Rect2.py",code_dir + "/" + "step08_a_2_Rect2.py")
+        shutil.copy("step08_a_3_just_G.py",code_dir + "/" + "step08_a_3_just_G.py")
+        shutil.copy("step08_b_model_obj.py" ,code_dir + "/" + "step08_b_model_obj.py")
         shutil.copy("step09_board_obj.py" ,code_dir + "/" + "step09_board_obj.py")
         shutil.copy("step10_load_and_train_and_test.py" ,code_dir + "/" + "step10_load_and_train_and_test.py")
         shutil.copy("step11_a_result_obj.py" ,code_dir + "/" + "step11_a_result_obj.py")
@@ -117,9 +119,9 @@ class Experiment():
             self.train_step1_see_current_img(epoch)
             ###############################################################################################################################
             ###     step2 訓練
-            for n, (_, train_in_pre, _, train_gt_pre) in enumerate( self.tf_data.train_db_combine ):
-                print('.', end='')
-                if (n+1) % 100 == 0: print()
+            for n, (_, train_in_pre, _, train_gt_pre) in enumerate( tqdm(self.tf_data.train_db_combine) ):
+                # print('.', end='')
+                # if (n+1) % 100 == 0: print()
                 if  (self.model_obj.model_name == MODEL_NAME.unet)    :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
                 elif(self.model_obj.model_name == MODEL_NAME.rect)    :self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
                 elif(self.model_obj.model_name == MODEL_NAME.mrf_rect):self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
@@ -148,7 +150,7 @@ class Experiment():
             see_gt_pre = self.tf_data.see_gt_db_pre
             see_amount = self.tf_data.see_amount
         
-        for see_index, (test_in_pre, test_gt_pre) in enumerate(zip(see_in_pre.take(see_amount), see_gt_pre.take(see_amount))): 
+        for see_index, (test_in_pre, test_gt_pre) in enumerate( tqdm( zip(see_in_pre.take(see_amount), see_gt_pre.take(see_amount)) )  ): 
             if  (self.model_obj.model_name == MODEL_NAME.unet ):     self.model_obj.generate_sees( self.model_obj.generator, see_index, test_in_pre, test_gt_pre, self.tf_data.max_train_move, self.tf_data.min_train_move,  epoch, result_obj.result_dir, result_obj) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif(self.model_obj.model_name == MODEL_NAME.rect ):     self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
             elif(self.model_obj.model_name == MODEL_NAME.mrf_rect ): self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
@@ -256,11 +258,11 @@ class Exp_builder():
         return self.exp
 
 if(__name__=="__main__"):
-    from step06_datas_obj import type5c_real_have_see_no_bg_gt_color,\
+    from step06_a_datas_obj import type5c_real_have_see_no_bg_gt_color,\
                               type7_h472_w304_real_os_book_400data,\
                               type7b_h500_w332_real_os_book_1532data
                               
-    from step08_model_obj import unet, rect, mrf_rect, just_G
+    from step08_b_model_obj import unet, rect, mrf_rect, just_G
 
 
     # using_db_obj = type5c_real_have_see_no_bg_gt_color

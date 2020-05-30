@@ -336,10 +336,12 @@ def generate_sees( model_G, see_index, in_img_pre, gt_img_pre,  epoch=0, result_
     cv2.imwrite(see_dir+"/"+"epoch_%04i.jpg"%epoch, rect_back[:,:,::-1]) ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
 
     ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
-    imgs = [in_img_back, rect_back, gt_img_back]  ### 把 in_img_back, rect_back, gt_img_back 包成list
-    titles = ['Input Image', 'rect Image', 'Ground Truth']  ### 設定 title要顯示的字
-    matplot_visual_single_row_imgs(img_titles=titles, imgs=imgs, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch=%04i"%epoch, bgr2rgb=False)
-    Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
+    result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch)
+    
+    # imgs = [in_img_back, rect_back, gt_img_back]  ### 把 in_img_back, rect_back, gt_img_back 包成list
+    # titles = ['Input Image', 'rect Image', 'Ground Truth']  ### 設定 title要顯示的字
+    # matplot_visual_single_row_imgs(img_titles=titles, imgs=imgs, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch=%04i"%epoch, bgr2rgb=False)
+    # Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
 
 #######################################################################################################################
 #######################################################################################################################
@@ -419,7 +421,7 @@ if(__name__ == "__main__"):
 
 
     img_resize = (494+2,336) ### dis_img(in_img的大小)的大小且要是4的倍數
-    from step06_data_pipline import get_1_pure_unet_db  , \
+    from step06_b_data_pipline import get_1_pure_unet_db  , \
                                get_2_pure_rect2_dataset
     access_path = "F:/Users/Lin_server/Desktop/0 db/"
     db_dir  = access_path+"datasets"

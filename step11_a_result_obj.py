@@ -6,7 +6,7 @@ from tqdm import tqdm
 import sys 
 sys.path.append("kong_util")
 from step0_access_path import access_path
-from step06_datas_obj import DB_C
+from step06_a_datas_obj import DB_C
 from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matplot_visual_multi_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from video_from_img import Video_combine_from_dir
@@ -34,13 +34,13 @@ class See:
     def save_as_avi(self):
         Video_combine_from_dir(self.see_dir, self.see_dir, "0-combine_jpg_tail_long.avi", tail_long=True)
 
-    def save_as_matplot_visual_during_train(self, epoch):
+    def save_as_matplot_visual_during_train(self, epoch, show_msg=False):
         start_time = time.time()
         matplot_visual_dir = self.see_dir + "/" + "matplot_visual" ### 分析結果存哪裡定位出來
         if(epoch==0):Check_dir_exist_and_build_new_dir(matplot_visual_dir)      ### 建立 存結果的資料夾
 
         self.get_see_file_names() ### 取得 結果內的 某個see資料夾 內的所有影像 檔名
-        print("processing %s"%self.see_name)
+        
         in_img = cv2.imread(self.see_dir + "/" + self.see_file_names[0]) ### 要記得see的第一張存的是 輸入的in影像
         gt_img = cv2.imread(self.see_dir + "/" + self.see_file_names[1]) ### 要記得see的第二張存的是 輸出的gt影像
         img = cv2.imread(self.see_dir + "/" + self.see_file_names[epoch+2]) ### see資料夾 內的影像 該epoch產生的影像 讀出來 
@@ -49,12 +49,13 @@ class See:
                                         imgs      =[ in_img ,   img    ,  gt_img],      ### 把要顯示的每張圖包成list
                                         fig_title ="epoch=%04i"%epoch,   ### 圖上的大標題
                                         dst_dir   =matplot_visual_dir,   ### 圖存哪
-                                        file_name ="epoch=%04i"%epoch)   ### 檔名
+                                        file_name ="epoch=%04i"%epoch,   ### 檔名
+                                        )
 
         # Find_ltrd_and_crop(matplot_visual_dir, matplot_visual_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         # Save_as_jpg(matplot_visual_dir,matplot_visual_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 40]) ### matplot圖存完是png，改存成jpg省空間
         # Video_combine_from_dir(matplot_visual_dir, matplot_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片
-        print("cost_time:", time.time() - start_time)
+        if(show_msg): print(f"processing {self.see_name}, cost_time:{time.time() - start_time}")
 
     def save_as_matplot_visual_after_train(self):
         start_time = time.time()
