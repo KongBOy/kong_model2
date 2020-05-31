@@ -6,7 +6,8 @@ import time
 from step06_b_data_pipline import tf_Data_builder
 from step08_b_model_obj import MODEL_NAME
 from step09_board_obj import Board_builder
-from step11_a_result_obj import Result,Result_builder
+from step11_a_result_obj import Result
+from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
 from util import time_util
@@ -141,7 +142,7 @@ class Experiment():
             self.train_step5_show_time(epoch, e_start, total_start, epoch_start_timestamp)
             
     def train_step1_see_current_img(self, epoch):
-        sample_start_time = time.time()
+        # sample_start_time = time.time()
         see_in_pre = self.tf_data.test_in_db_pre
         see_gt_pre = self.tf_data.test_gt_db_pre
         see_amount = 1
@@ -155,8 +156,9 @@ class Experiment():
             elif(self.model_obj.model_name == MODEL_NAME.rect ):     self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
             elif(self.model_obj.model_name == MODEL_NAME.mrf_rect ): self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
             elif(self.model_obj.model_name == MODEL_NAME.just_G   ): self.model_obj.generate_sees( self.model_obj.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
-                                                                                
-        print("sample all see time:", time.time()-sample_start_time)
+
+        # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
+        # print("sample all see time:", time.time()-sample_start_time)
 
     def train_step3_board_save_loss(self, epoch):
         with self.board_obj.summary_writer.as_default():
