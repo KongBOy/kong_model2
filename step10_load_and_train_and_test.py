@@ -178,8 +178,8 @@ class Experiment():
         for loss_containor in self.board_obj.losses.values():
             loss_containor.reset_states()
         ###############################################################
-        ### 把 loss資訊 用 matplot畫出來
-        self.board_obj.see_loss(self.epochs)
+        self.board_obj.see_loss(self.epochs) ### 把 loss資訊 用 matplot畫出來
+        self.result_obj.Draw_loss_during_train(epoch, self.epochs) ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
         epoch_cost_time = time.time()-e_start
@@ -262,7 +262,8 @@ class Exp_builder():
 if(__name__=="__main__"):
     from step06_a_datas_obj import type5c_real_have_see_no_bg_gt_color,\
                               type7_h472_w304_real_os_book_400data,\
-                              type7b_h500_w332_real_os_book_1532data
+                              type7b_h500_w332_real_os_book_1532data,\
+                              type7b_h500_w332_real_os_book_1532data_focus
                               
     from step08_b_model_obj import unet, rect, mrf_rect, just_G
 
@@ -276,14 +277,20 @@ if(__name__=="__main__"):
     # exp = Exp_builder().set_basic("train", using_db_obj, using_model_obj, describe_end="1532data").set_train_args(epochs=700).build().run(result_name="type7b_h500_w332_real_os_book-20200524-181909-just_G-1532data")
     
     
-    os_book_1532_rect_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1_127.28").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_rect_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1_127.35").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_rect_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1_127.51").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_just_g_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae1_127.28").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_just_g_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae3_127.51").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_just_g_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae6_128.246").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_just_g_mae9 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae9_127.35").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_rect_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1_127.28").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_rect_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1_127.35").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_rect_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_mae1_127.51").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_just_g_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae1_127.28").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_just_g_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae3_127.51").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_just_g_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae6_128.246").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_just_g_mae9 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae9_127.35").set_train_args(epochs=700).build(result_name="")
 
-    os_book_1532_rect_D_05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.5_128.245").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_rect_D_01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.1_127.28").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_just_g_mae9.run()
+    # os_book_1532_rect_D_05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.5_128.245").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_rect_D_01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.1_127.28").set_train_args(epochs=700).build(result_name="")
+    
+    # os_book_1532_rect_mae3_test_loss = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_rect_mae3 = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200601_224919-rect-1532data_mae3_focus_127.35")
+    
+    # os_book_1532_just_g_mae9.run()
+    # os_book_1532_rect_D_01.run()
+    os_book_1532_rect_mae3.run()
