@@ -287,10 +287,11 @@ if(__name__=="__main__"):
 
     # os_book_1532_rect_D_05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.5_128.245").set_train_args(epochs=700).build(result_name="")
     # os_book_1532_rect_D_01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.1_127.28").set_train_args(epochs=700).build(result_name="")
-
+    
     # os_book_1532_rect_mae3_test_loss = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="")
     os_book_1532_rect_mae3_focus = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200601_224919-rect-1532data_mae3_focus_127.35")
     
     # os_book_1532_just_g_mae9.run()
     # os_book_1532_rect_D_01.run()
     os_book_1532_rect_mae3_focus.run()
+
