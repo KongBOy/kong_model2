@@ -6,7 +6,7 @@ from tqdm import tqdm
 import sys 
 sys.path.append("kong_util")
 from step0_access_path import access_path, JPG_QUALITY
-from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matplot_visual_multi_row_imgs, draw_loss_util
+from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matplot_visual_multi_row_imgs, draw_loss_util, Matplot_single_row_imgs, Matplot_multi_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from video_from_img import Video_combine_from_dir
 
@@ -36,7 +36,8 @@ class Col_results_analyzer(Result_analyzer):
         super().__init__(ana_describe)
         self.c_results = col_results
         self.c_min_see_file_amount = self.get_c_min_see_file_amount()
-    
+        self.c_min_train_epochs = self.c_min_see_file_amount -2  ### 從see_file_name數量來推估 目前result被訓練幾個epoch，-2是減去 in_img, gt_img 兩個檔案
+
     def get_c_min_see_file_amount(self):
         see_file_amounts = []
         for result in self.c_results:
@@ -53,16 +54,18 @@ class Col_results_analyzer(Result_analyzer):
                 c_imgs   = [in_imgs]
                 for result in self.c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img]))
                 c_imgs += [gt_imgs]
-                fig, ax = matplot_visual_single_row_imgs(img_titles=c_titles,
-                                               imgs=c_imgs, 
-                                               fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
-                                               bgr2rgb          = True,
-                                               add_loss         = add_loss)
-                if(add_loss): 
+
+                single_row_imgs = Matplot_single_row_imgs(
+                                imgs      = c_imgs,      ### 把要顯示的每張圖包成list
+                                img_titles= c_titles,  ### 把每張圖要顯示的字包成list 
+                                fig_title = "epoch=%04i"%epoch,   ### 圖上的大標題
+                                add_loss  = add_loss)
+                single_row_imgs.Draw_img()
+                if(add_loss):
                     for go_result, result in enumerate(self.c_results):
-                        draw_loss_util(fig, ax[-1,go_result+1], result.logs_dir, epoch, self.c_min_see_file_amount-2)
-                plt.savefig(analyze_see_dir+"/"+"epoch=%04i"%epoch )
-                plt.close()  ### 一定要記得關喔！要不然圖開太多會當掉！
+                        single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result+1], logs_dir=result.logs_dir, cur_epoch=epoch, min_epochs=self.c_min_train_epochs)
+                single_row_imgs.Save_fig( dst_dir=analyze_see_dir, epoch=epoch)
+                
 
     def _draw_col_results_single_see_multiprocess(self, see_num, in_imgs, gt_imgs, c_titles, analyze_see_dir, add_loss=False, core_amount=8, task_amount=100):
         from util import multi_processing_interface
@@ -106,8 +109,7 @@ class Col_results_analyzer(Result_analyzer):
     ########################################################################################################################################
     ########################################################################################################################################
     ########################################################################################################################################
-    def _draw_col_results_multi_see(self, start_img, img_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss=False ):
-        print("doing analyze_col_results_multi_see")
+    def _Draw_col_results_multi_see(self, start_img, img_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss=False ):
         for go_img in tqdm(range(start_img, start_img+img_amount)):
             if(go_img >=2):
                 epoch = go_img-2
@@ -118,28 +120,43 @@ class Col_results_analyzer(Result_analyzer):
                     for result in self.c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img]))
                     c_imgs += [gt_imgs[go_see_num]]
                     r_c_imgs.append(c_imgs)
-                fig, ax = matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
+
+                multi_row_imgs = Matplot_multi_row_imgs(
                                               rows_cols_imgs   = r_c_imgs,
+                                              rows_cols_titles = r_c_titles, 
                                               fig_title        = "epoch=%04i"%epoch,   ### 圖上的大標題
                                               bgr2rgb          = True,
                                               add_loss         = add_loss)
+                multi_row_imgs.Draw_img()
                 if(add_loss): 
                     for go_result, result in enumerate(self.c_results):
-                        draw_loss_util(fig, ax[-1,go_result+1], result.logs_dir, epoch, self.c_min_see_file_amount-2)
-                plt.savefig(analyze_see_dir+"/"+"epoch=%04i"%epoch )
-                plt.close()  ### 一定要記得關喔！要不然圖開太多會當掉！
+                        multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_result+1], logs_dir=result.logs_dir, cur_epoch=epoch, min_epochs=self.c_min_train_epochs)
+                multi_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=epoch)
+        
+                # fig, ax = matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
+                #                               rows_cols_imgs   = r_c_imgs,
+                #                               fig_title        = "epoch=%04i"%epoch,   ### 圖上的大標題
+                #                               bgr2rgb          = True,
+                #                               add_loss         = add_loss)
+                # if(add_loss): 
+                #     for go_result, result in enumerate(self.c_results):
+                #         draw_loss_util(fig, ax[-1,go_result+1], result.logs_dir, epoch, self.c_min_see_file_amount-2)
+                # plt.savefig(analyze_see_dir+"/"+"epoch=%04i"%epoch )
+                # plt.close()  ### 一定要記得關喔！要不然圖開太多會當掉！
 
     def _draw_col_results_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss=False, core_amount=8, task_amount=100):
+        print("use multiprocess")
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self._draw_col_results_multi_see, task_args= [see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss] )
+        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self._Draw_col_results_multi_see, task_args= [see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss] )
 
 
     ### 同col同result，同row同see
-    def analyze_col_results_multi_see(self, see_nums, save_name, add_loss=False):
+    def analyze_col_results_multi_see(self, see_nums, save_name, add_loss=False, multiprocess=True):
+        print(f"doing analyze_col_results_multi_see, save_name={save_name}")
         ### 防呆 ### 這很重要喔！因為 row 只有一個時，matplot的ax的維度只有一維，但我的操作都兩維 會出錯！所以要切去一維的method喔！
         if(len(see_nums) == 1):
             print("因為 see_nums 的數量只有一個，自動切換成 single 的 method 囉～")
-            self.analyze_col_results_single_see(see_nums[0])
+            self.analyze_col_results_single_see(see_nums[0], add_loss)
             return  
         ###############################################################################################
         start_time = time.time()
@@ -164,8 +181,8 @@ class Col_results_analyzer(Result_analyzer):
         r_c_titles = [c_titles] ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
         ### 抓 row/col 要顯示的imgs 並且畫出來
-        print("doing analyze_col_results_multi_see")
-        self._draw_col_results_multi_see_multiprocess( see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss, core_amount=8, task_amount=self.c_min_see_file_amount)
+        if(multiprocess):     self._draw_col_results_multi_see_multiprocess( see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss, core_amount=8, task_amount=self.c_min_see_file_amount)
+        else:self._Draw_col_results_multi_see(0, self.c_min_see_file_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss)
 
         ### 後處理，讓資料變得 好看 且 更小 並 串成影片
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
@@ -265,34 +282,40 @@ if(__name__=="__main__"):
     ### Result_analyzer 的 各method測試：
     # try_c_result_analyzer = Col_results_analyzer( ana_describe="try_c_result_analyzer", col_results=[os_book_just_G_mae1, os_book_just_G_mae3, os_book_just_G_mae6, os_book_just_G_mae9, os_book_just_G_mae20 ])
     # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=False)
+    # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=True)
     # try_c_result_analyzer.analyze_col_results_all_single_see(start_see=0, see_amount=1, add_loss=True)
     # try_c_result_analyzer.analyze_col_results_all_single_see_multiprocess(add_loss=True)
+    # try_c_result_analyzer.analyze_col_results_multi_see([16], "train_lt", add_loss = False, multiprocess=False)
+    # try_c_result_analyzer.analyze_col_results_multi_see([16,19], "train_lt", add_loss = False, multiprocess=False)
+    # try_c_result_analyzer.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True, multiprocess=False)
+    # try_c_result_analyzer.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True, multiprocess=True)
     # try_c_result_analyzer.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
 
     
     ##################################################################################################################
-    os_book_1532data_mae136920 = Col_results_analyzer(
-                                        ana_describe="just_G_136920", 
-                                        col_results=[os_book_just_G_mae1,
-                                                    os_book_just_G_mae3,
-                                                    os_book_just_G_mae6,
-                                                    os_book_just_G_mae9,
-                                                    os_book_just_G_mae20
-                                                    ])
-    os_book_1532data_mae136920.analyze_col_results_all_single_see_multiprocess(add_loss=True)
+    # os_book_1532data_mae136920 = Col_results_analyzer(
+    #                                     ana_describe="just_G_136920", 
+    #                                     col_results=[os_book_just_G_mae1,
+    #                                                 os_book_just_G_mae3,
+    #                                                 os_book_just_G_mae6,
+    #                                                 os_book_just_G_mae9,
+    #                                                 os_book_just_G_mae20
+    #                                                 ])
+    # os_book_1532data_mae136920.analyze_col_results_all_single_see_multiprocess(add_loss=True)
 
-    os_book_1532data_mae136920.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    os_book_1532data_mae136920.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    os_book_1532data_mae136920.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    os_book_1532data_mae136920.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    os_book_1532data_mae136920.analyze_col_results_multi_see([ 2, 3], "test_lt" , add_loss = True)
-    os_book_1532data_mae136920.analyze_col_results_multi_see([ 6, 7], "test_rt" , add_loss = True)
-    os_book_1532data_mae136920.analyze_col_results_multi_see([10,11], "test_ld" , add_loss = True)
-    os_book_1532data_mae136920.analyze_col_results_multi_see([12,13], "test_rd" , add_loss = True)
+    # os_book_1532data_mae136920.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
+    # os_book_1532data_mae136920.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
+    # os_book_1532data_mae136920.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
+    # os_book_1532data_mae136920.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
+    # os_book_1532data_mae136920.analyze_col_results_multi_see([ 2, 3], "test_lt" , add_loss = True)
+    # os_book_1532data_mae136920.analyze_col_results_multi_see([ 6, 7], "test_rt" , add_loss = True)
+    # os_book_1532data_mae136920.analyze_col_results_multi_see([10,11], "test_ld" , add_loss = True)
+    # os_book_1532data_mae136920.analyze_col_results_multi_see([12,13], "test_rd" , add_loss = True)
 
 
-    # os_book_G_D_vs_just_G = Col_results_analyzer(ana_describe="GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D00])
-    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
+    os_book_G_D_vs_just_G = Col_results_analyzer(ana_describe="GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D00])
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([16], "train_lt", add_loss = True, multiprocess=False)
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True, multiprocess=False)
     # os_book_G_D_vs_just_G.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
     # os_book_G_D_vs_just_G.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
     # os_book_G_D_vs_just_G.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
