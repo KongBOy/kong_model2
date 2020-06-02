@@ -263,7 +263,9 @@ if(__name__=="__main__"):
     from step06_a_datas_obj import type5c_real_have_see_no_bg_gt_color,\
                               type7_h472_w304_real_os_book_400data,\
                               type7b_h500_w332_real_os_book_1532data,\
-                              type7b_h500_w332_real_os_book_1532data_focus
+                              type7b_h500_w332_real_os_book_1532data_focus,\
+                              type7b_h500_w332_real_os_book_800data,\
+                              type7b_h500_w332_real_os_book_400data
                               
     from step08_b_model_obj import unet, rect, mrf_rect, just_G
 
@@ -291,7 +293,9 @@ if(__name__=="__main__"):
     # os_book_1532_rect_mae3_test_loss = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="")
     os_book_1532_rect_mae3_focus = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200601_224919-rect-1532data_mae3_focus_127.35")
     
+    os_book_400_rect_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_400data, rect, describe_end="400data_mae3_127.35").set_train_args(epochs=2681).build(result_name="")
     # os_book_1532_just_g_mae9.run()
     # os_book_1532_rect_D_01.run()
-    os_book_1532_rect_mae3_focus.run()
+    # os_book_1532_rect_mae3_focus.run()
+    os_book_400_rect_mae3.run()
 

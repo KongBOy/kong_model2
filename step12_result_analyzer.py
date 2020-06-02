@@ -293,8 +293,31 @@ if(__name__=="__main__"):
 
     
     ##################################################################################################################
-    # os_book_1532data_mae136920 = Col_results_analyzer(
-    #                                     ana_describe="just_G_136920", 
+    # os_book_G_D_mae136 = Col_results_analyzer(ana_describe="5_1_GD_Gmae136_epoch700", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae3, os_book_rect_1532_mae6])
+    # os_book_G_D_mae136.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
+    # os_book_G_D_mae136.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
+    # os_book_G_D_mae136.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
+    # os_book_G_D_mae136.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
+    # os_book_G_D_mae136.analyze_col_results_multi_see([ 2, 3], "test_lt",  add_loss = True)
+    # os_book_G_D_mae136.analyze_col_results_multi_see([ 6, 7], "test_rt",  add_loss = True)
+    # os_book_G_D_mae136.analyze_col_results_multi_see([10,11], "test_ld",  add_loss = True)
+    # os_book_G_D_mae136.analyze_col_results_multi_see([12,13], "test_rd",  add_loss = True)
+
+
+    ##################################################################################################################
+    os_book_G_D_vs_just_G = Col_results_analyzer(ana_describe="5_2_GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D01, os_book_rect_D00, os_book_rect_D00_just_G])
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
+    os_book_G_D_vs_just_G.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
+
+
+    ##################################################################################################################
+    # os_book_1532data_mae136920 = Col_results_analyzer(ana_describe="5_3_just_G_136920", 
     #                                     col_results=[os_book_just_G_mae1,
     #                                                 os_book_just_G_mae3,
     #                                                 os_book_just_G_mae6,
@@ -302,7 +325,6 @@ if(__name__=="__main__"):
     #                                                 os_book_just_G_mae20
     #                                                 ])
     # os_book_1532data_mae136920.analyze_col_results_all_single_see_multiprocess(add_loss=True)
-
     # os_book_1532data_mae136920.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
     # os_book_1532data_mae136920.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
     # os_book_1532data_mae136920.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
@@ -313,36 +335,7 @@ if(__name__=="__main__"):
     # os_book_1532data_mae136920.analyze_col_results_multi_see([12,13], "test_rd" , add_loss = True)
 
 
-    os_book_G_D_vs_just_G = Col_results_analyzer(ana_describe="GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D00])
-    os_book_G_D_vs_just_G.analyze_col_results_multi_see([16], "train_lt", add_loss = True, multiprocess=False)
-    os_book_G_D_vs_just_G.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True, multiprocess=False)
-    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    # os_book_G_D_vs_just_G.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
 
-    # os_book_G_D_mae16 = Col_results_analyzer(ana_describe="G_D_mae1,6_epoch700", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae6])
-    # os_book_G_D_mae16.analyze_col_results_multi_see([16,19], "train_lt")
-    # os_book_G_D_mae16.analyze_col_results_multi_see([20,23], "train_rt")
-    # os_book_G_D_mae16.analyze_col_results_multi_see([24,25], "train_ld")
-    # os_book_G_D_mae16.analyze_col_results_multi_see([30,31], "train_rd")
-    # os_book_G_D_mae16.analyze_col_results_multi_see([2,3], "test_lt")
-    # os_book_G_D_mae16.analyze_col_results_multi_see([6,7], "test_rt")
-    # os_book_G_D_mae16.analyze_col_results_multi_see([10,11], "test_ld")
-    # os_book_G_D_mae16.analyze_col_results_multi_see([12,13], "test_rd")
-
-    # os_book_G_D_mae136 = Col_results_analyzer(ana_describe="G_D_mae1,3,6_epoch153", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae3, os_book_rect_1532_mae6])
-    # os_book_G_D_mae136.analyze_col_results_multi_see([16,19], "train_lt")
-    # os_book_G_D_mae136.analyze_col_results_multi_see([20,23], "train_rt")
-    # os_book_G_D_mae136.analyze_col_results_multi_see([24,25], "train_ld")
-    # os_book_G_D_mae136.analyze_col_results_multi_see([30,31], "train_rd")
-    # os_book_G_D_mae136.analyze_col_results_multi_see([2,3], "test_lt")
-    # os_book_G_D_mae136.analyze_col_results_multi_see([6,7], "test_rt")
-    # os_book_G_D_mae136.analyze_col_results_multi_see([10,11], "test_ld")
-    # os_book_G_D_mae136.analyze_col_results_multi_see([12,13], "test_rd")
 
 
 
