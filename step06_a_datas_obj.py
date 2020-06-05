@@ -9,7 +9,7 @@ class DB_CATEGORY(Enum):
     type4_h_384_w_256_complex_page_more_like      = "type4_h=384,w=256_complex+page_more_like"
     type5c_real_have_see_no_bg_gt_color_gray3ch   = "type5c-real_have_see-no_bg-gt-color&gray3ch"
     type5d_real_have_see_have_bg_gt_color_gray3ch = "type5d-real_have_see-have_bg-gt_color&gray3ch"
-    type6_h_384_w_256_smooth_curl_fold_and_page   = "type6_h=384,w=256_smooth-curl+fold_and_page"
+    type6_h_384_w_256_smooth_curl_fold_and_page   = "type6_h384_w256-smooth-curl_fold_page"
     type7_h472_w304_real_os_book                  = "type7_h472_w304_real_os_book"
     type7b_h500_w332_real_os_book                 = "type7b_h500_w332_real_os_book"
 
@@ -173,6 +173,7 @@ DB_N = DB_NAME
 DB_GM = DB_GET_METHOD
 ### 直接先建好 obj 給外面import囉！
 type5c_real_have_see_no_bg_gt_color          = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_color        , DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="bmp", see_type="bmp").set_detail(have_train=True, have_see=True).build()
+type6_h384_w256_smooth_curl_fold_page        = Dataset_builder().set_basic(DB_C.type6_h_384_w_256_smooth_curl_fold_and_page, DB_N.smooth_complex_page_more_like_move_map, DB_GM.in_dis_gt_move_map, h=384, w=256).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="npy", see_type="npy").set_detail(have_train=True, have_see=True).build()
 type7_h472_w304_real_os_book_400data         = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book               , DB_N.os_book_400data       , DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
 type7b_h500_w332_real_os_book_1532data       = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
 type7b_h500_w332_real_os_book_1532data_focus = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data_focus, DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()

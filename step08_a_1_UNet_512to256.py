@@ -5,6 +5,11 @@ from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, Ba
 from util import method2
 import matplotlib.pyplot as plt 
 import time
+from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg
+from util import matplot_visual_single_row_imgs
+import cv2 
+from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
+
 
 
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
@@ -162,45 +167,73 @@ def generator_loss(gen_output, target):
     return l1_loss
 
 @tf.function()
-def train_step(generator,generator_optimizer, input_image, target, board_dict):
+def train_step(model_obj, in_dis_img, gt_move_map, board_obj):
     with tf.GradientTape() as gen_tape:
-        gen_output = generator(input_image, training=True)
-        gen_l1_loss  = generator_loss( gen_output, target)
+        gen_output = model_obj.generator(in_dis_img, training=True)
+        gen_l1_loss  = generator_loss( gen_output, gt_move_map)
 
-    generator_gradients     = gen_tape.gradient(gen_l1_loss, generator.trainable_variables)
-    generator_optimizer.apply_gradients(zip(generator_gradients, generator.trainable_variables))
+    generator_gradients     = gen_tape.gradient(gen_l1_loss, model_obj.generator.trainable_variables)
+    model_obj.generator_optimizer.apply_gradients(zip(generator_gradients, model_obj.generator.trainable_variables))
 
-    board_dict["gen_l1_loss"](gen_l1_loss)
-    # with summary_writer.as_default():
-    #     tf.summary.scalar('gen_l1_loss', gen_l1_loss, step=epoch)
-
+    ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
+    board_obj.losses["gen_l1_loss"](gen_l1_loss)
+    
 #######################################################################################################################################
-def generate_images( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_dir="."):
-    sample_start_time = time.time()
-    prediction = model(test_input, training=True)
+# def generate_images( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_dir="."):
+def generate_images( model_G, in_img_pre, max_train_move, min_train_move):
+    move_map      = model_G(in_img_pre, training=True)
+    move_map_back = ((move_map-min_train_move)/(max_train_move-min_train_move))*2-1
+    in_img_back = ((in_img_pre[0].numpy() +1)*125).astype(np.uint8) ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
+    return move_map_back, in_img_back
 
-    plt.figure(figsize=(20,6))
-    display_list = [test_input[0], test_gt[0], prediction[0]]
-    title = ['Input Image', 'Ground Truth', 'Predicted Image']
 
-    for i in range(3):
-        plt.subplot(1, 3, i+1)
-        plt.title(title[i])
-        # getting the pixel values between [0, 1] to plot it.
-        if(i==0):
-            plt.imshow(display_list[i] * 0.5 + 0.5)
-        else:
-            back = (display_list[i]+1)/2 * (max_train_move-min_train_move) + min_train_move
-            back_bgr = method2(back[...,0], back[...,1],1)
-            plt.imshow(back_bgr)
-        plt.axis('off')
-    # plt.show()
-    plt.savefig(result_dir + "/" + "epoch_%04i-result.png"%epoch)
-    plt.close()
-    print("sample image cost time:", time.time()-sample_start_time)
+def generate_sees( model_G, see_index, in_img_pre, gt_move_map, max_train_move, min_train_move, max_db_move_x, max_db_move_y, epoch=0, result_obj=None):
+    move_map_back, in_img_back = generate_images(model_G, in_img_pre, max_train_move, min_train_move)
+    ### 我們不要存move_map_back.npy，存move_map_visual.jpg
+    move_map_back_visual = method2(move_map_back[...,0], move_map_back[...,1],1)
+    gt_move_map_visual = method2(gt_move_map[...,0], gt_move_map[...,1],1)
+    in_rec_img = apply_move_to_rec2(in_img_back, move_map_back, max_train_move, min_train_move)
+    gt_rec_img = apply_move_to_rec2(in_img_back, gt_move_map, max_train_move, min_train_move)
 
-def generate_sees():
-    pass
+    see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
+
+    if(epoch==0): ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
+        Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
+        Check_dir_exist_and_build(plot_dir)  ### 建立 see資料夾/matplot_visual資料夾
+        cv2.imwrite(see_dir+"/"+"0a-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_dir+"/"+"0b-gt_a_gt_move_map.jpg", gt_move_map_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_dir+"/"+"0b-gt_b_gt_rec_img.jpg", gt_rec_img)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+    cv2.imwrite(see_dir+"/"+"epoch_%04i_a_move_map_visual.jpg"%epoch, move_map_back_visual) ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
+    cv2.imwrite(see_dir+"/"+"epoch_%04i_b_in_rec_img.jpg"%epoch     , in_rec_img) ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
+
+    imgs = [in_img_back, move_map_back_visual, gt_move_map_visual, in_rec_img, gt_rec_img]  ### 把 in_img_back, rect_back, gt_img 包成list
+    titles = ['Input Image', 'gen_move_map', 'gt_move_map', 'gen_rec_img', 'gt_rec_img', 'Ground Truth']  ### 設定 title要顯示的字
+    matplot_visual_single_row_imgs(img_titles=titles, imgs=imgs, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch=%04i"%epoch, bgr2rgb=False)
+    Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
+
+    # result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch)
+
+    # plt.figure(figsize=(20,6))
+    # display_list = [test_input[0], test_gt[0], prediction[0]]
+    # title = ['Input Image', 'Ground Truth', 'Predicted Image']
+
+    # for i in range(3):
+    #     plt.subplot(1, 3, i+1)
+    #     plt.title(title[i])
+    #     # getting the pixel values between [0, 1] to plot it.
+    #     if(i==0):
+    #         plt.imshow(display_list[i] * 0.5 + 0.5)
+    #     else:
+    #         back = (display_list[i]+1)/2 * (max_train_move-min_train_move) + min_train_move
+    #         back_bgr = method2(back[...,0], back[...,1],1)
+    #         plt.imshow(back_bgr)
+    #     plt.axis('off')
+    # # plt.show()
+    # plt.savefig(result_dir + "/" + "epoch_%04i-result.png"%epoch)
+    # plt.close()
+    # print("sample image cost time:", time.time()-sample_start_time)
+
 
     
 
@@ -213,7 +246,6 @@ def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
     import matplotlib.pyplot as plt
     from util import  get_dir_move, get_dir_certain_img
     from step0_access_path import access_path
-    from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
 
 
     ### 建立放結果的資料夾

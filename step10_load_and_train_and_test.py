@@ -144,18 +144,18 @@ class Experiment():
     def train_step1_see_current_img(self, epoch):
         # sample_start_time = time.time()
         see_in_pre = self.tf_data.test_in_db_pre
-        see_gt_pre = self.tf_data.test_gt_db_pre
+        see_gt     = self.tf_data.test_gt_db
         see_amount = 1
         if(self.db_obj.have_see):
             see_in_pre = self.tf_data.see_in_db_pre
-            see_gt_pre = self.tf_data.see_gt_db_pre
+            see_gt     = self.tf_data.see_gt_db
             see_amount = self.tf_data.see_amount
         
-        for see_index, (test_in_pre, test_gt_pre) in enumerate( tqdm( zip(see_in_pre.take(see_amount), see_gt_pre.take(see_amount)) )  ): 
-            if  (self.model_obj.model_name == MODEL_NAME.unet ):     self.model_obj.generate_sees( self.model_obj.generator, see_index, test_in_pre, test_gt_pre, self.tf_data.max_train_move, self.tf_data.min_train_move,  epoch, result_obj.result_dir, result_obj) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif(self.model_obj.model_name == MODEL_NAME.rect ):     self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
-            elif(self.model_obj.model_name == MODEL_NAME.mrf_rect ): self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
-            elif(self.model_obj.model_name == MODEL_NAME.just_G   ): self.model_obj.generate_sees( self.model_obj.generator, see_index, test_in_pre, test_gt_pre, epoch, self.result_obj) 
+        for see_index, (test_in_pre, test_gt) in enumerate( tqdm( zip(see_in_pre.take(see_amount), see_gt.take(see_amount)) )  ): 
+            if  (self.model_obj.model_name == MODEL_NAME.unet ):     self.model_obj.generate_sees( self.model_obj.generator, see_index, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move,  epoch, result_obj.result_dir, result_obj) ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif(self.model_obj.model_name == MODEL_NAME.rect ):     self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt, epoch, self.result_obj) 
+            elif(self.model_obj.model_name == MODEL_NAME.mrf_rect ): self.model_obj.generate_sees( self.model_obj.rect.generator, see_index, test_in_pre, test_gt, epoch, self.result_obj) 
+            elif(self.model_obj.model_name == MODEL_NAME.just_G   ): self.model_obj.generate_sees( self.model_obj.generator, see_index, test_in_pre, test_gt, epoch, self.result_obj) 
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
@@ -288,17 +288,21 @@ if(__name__=="__main__"):
     # os_book_1532_just_g_mae9 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_mae9_127.35").set_train_args(epochs=700).build(result_name="")
 
     # os_book_1532_rect_D_05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.5_128.245").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_rect_D_025 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.25_127.35").set_train_args(epochs=700).build(result_name="")
     # os_book_1532_rect_D_01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_D_0.1_127.28").set_train_args(epochs=700).build(result_name="")
     
     # os_book_1532_rect_mae3_test_loss = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="")
     # os_book_1532_rect_mae3_focus = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200601_224919-rect-1532data_mae3_focus_127.35")
-    os_book_1532_just_g_mae3_focus = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, just_G, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_just_g_mae3_focus = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, just_G, describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="")
     
     # os_book_400_rect_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_400data, rect, describe_end="400data_mae3_127.35").set_train_args(epochs=2681).build(result_name="")
     # os_book_800_rect_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_800data, rect, describe_end="800data_mae3_127.35").set_train_args(epochs=1341).build(result_name="")
+
+    os_book_400_just_G_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_400data, just_G, describe_end="400data_just_G_mae3_127.28").set_train_args(epochs=2681).build(result_name="")
 
     # os_book_1532_just_g_mae9.run()
     # os_book_1532_rect_D_01.run()
     # os_book_1532_rect_mae3_focus.run()
     # os_book_400_rect_mae3.run()
-    os_book_1532_just_g_mae3_focus.run()
+    # os_book_1532_just_g_mae3_focus.run()
+    os_book_1532_rect_D_025.run()
