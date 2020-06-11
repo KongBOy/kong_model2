@@ -305,6 +305,36 @@ def train_step(model_obj, dis_img, gt_img, board_obj ):
     board_obj.losses["6_d_total_loss"](d_total_loss)
 
     
+@tf.function
+def train_step2(model_obj, dis_img, gt_img, board_obj ):
+    for _ in range(1):
+        with tf.GradientTape(persistent=True) as tape:
+            g_rec_img, fake_score, real_score = model_obj.rect(dis_img, gt_img)
+            loss_d_fake = mse_kong( fake_score, tf.zeros_like(fake_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
+            loss_d_real = mse_kong( real_score, tf.ones_like (real_score, dtype=tf.float32), lamb=tf.constant(1.,tf.float32) )
+            d_total_loss = (loss_d_real+loss_d_fake)/2
+        grad_D = tape.gradient(d_total_loss, model_obj.rect.discriminator.trainable_weights)
+        model_obj.optimizer_D.apply_gradients( zip(grad_D, model_obj.rect.discriminator.trainable_weights )  )
+
+        board_obj.losses["4_loss_d_fake"](loss_d_fake)
+        board_obj.losses["5_loss_d_real"](loss_d_real)
+        board_obj.losses["6_d_total_loss"](d_total_loss)
+
+
+    for _ in range(5):
+        with tf.GradientTape(persistent=True) as g_tape:
+            g_rec_img, fake_score, real_score = model_obj.rect(dis_img, gt_img)
+            loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(3.,tf.float32)) ### 40 調回 3
+            loss_g2d = mse_kong(fake_score, tf.ones_like(fake_score,dtype=tf.float32), lamb=tf.constant(0.1,tf.float32))
+            g_total_loss = loss_rec + loss_g2d
+        grad_G = g_tape.gradient(g_total_loss, model_obj.rect.generator.    trainable_weights)
+        model_obj.optimizer_G.apply_gradients( zip(grad_G, model_obj.rect.generator.    trainable_weights )  )
+        ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
+        board_obj.losses["1_loss_rec"](loss_rec)
+        board_obj.losses["2_loss_g2d"](loss_g2d)
+        board_obj.losses["3_g_total_loss"](g_total_loss)
+
+
 import sys
 sys.path.append("kong_util")
 
@@ -332,7 +362,7 @@ def generate_sees( model_G, see_index, in_img_pre, gt_img,  epoch=0, result_obj=
         Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
         Check_dir_exist_and_build(plot_dir)  ### 建立 see資料夾/matplot_visual資料夾
         cv2.imwrite(see_dir+"/"+"0a-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(see_dir+"/"+"0b-gt_img.jpg", gt_img)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_dir+"/"+"0b-gt_img.jpg", gt_img[0].numpy())  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
     cv2.imwrite(see_dir+"/"+"epoch_%04i.jpg"%epoch, rect_back[:,:,::-1]) ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
 
     ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
