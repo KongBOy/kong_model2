@@ -308,5 +308,5 @@ if(__name__=="__main__"):
     # os_book_1532_rect_D_025.run()
     # os_book_400_just_G_mae3.run()
 
-    os_book_1532_rect_mae3_focus_G10D1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_G10D1_127.35").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_rect_mae3_focus_G10D1.run()
+    os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_G05D01_127.35").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_rect_mae3_focus_G05D01.run()
