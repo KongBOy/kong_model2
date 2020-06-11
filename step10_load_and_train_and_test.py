@@ -117,7 +117,7 @@ class Experiment():
             if(epoch==0):print("Initializing Model~~~") ### sample的時候就會initial model喔！
             ###############################################################################################################################
             ###     step1 用來看目前訓練的狀況 
-            # self.train_step1_see_current_img(epoch)
+            self.train_step1_see_current_img(epoch)
             ###############################################################################################################################
             ###     step2 訓練
             for n, (_, train_in_pre, _, train_gt_pre) in enumerate( tqdm(self.tf_data.train_db_combine) ):
