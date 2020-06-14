@@ -34,9 +34,9 @@ os_book_justG_smaller2     = Result_builder().set_by_result_name(dir4+"/type7b_h
 
 dir5 = "5_5_focus"
 os_book_rect_nfocus        = copy.deepcopy(os_book_rect_1532_mae3); os_book_rect_nfocus.ana_plot_title = "no_focus_rect_mae3"
-os_book_rect_focus         = Result_builder().set_by_result_name(dir5+"/type7b_h500_w332_real_os_book-20200601_224919-rect-1532data_mae3_focus_127.35_epoch383"        ).set_ana_plot_title("focus_rect_mae3").build()
+os_book_rect_focus         = Result_builder().set_by_result_name(dir5+"/type7b_h500_w332_real_os_book-20200601_224919-rect-1532data_mae3_focus_127.35_finish"        ).set_ana_plot_title("focus_rect_mae3").build()
 os_book_justG_nfocus       = copy.deepcopy(os_book_just_G_mae3);os_book_justG_nfocus.ana_plot_title = "no_focus_justG_mae3"
-os_book_justG_focus        = Result_builder().set_by_result_name(dir5+"/type7b_h500_w332_real_os_book-20200602_222505-just_G-1532data_mae3_focus_128.246_epoch252"     ).set_ana_plot_title("focus_justG_mae3").build()
+os_book_justG_focus        = Result_builder().set_by_result_name(dir5+"/type7b_h500_w332_real_os_book-20200602_222505-just_G-1532data_mae3_focus_128.246_finish"     ).set_ana_plot_title("focus_justG_mae3").build()
 
 # compress_results.append(os_book_rect_1532_mae1)
 # compress_results.append(os_book_rect_1532_mae3)

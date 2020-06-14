@@ -43,6 +43,7 @@ class DB_NAME(Enum):
     os_book_400data        = "os_book_400data"
     os_book_1532data       = "os_book_1532data"
     os_book_1532data_focus = "os_book_1532data_focus"
+    os_book_1532data_big   = "os_book_1532data_big"
     os_book_800data        = "os_book_800data"
 
 class DB_GET_METHOD(Enum):
@@ -177,6 +178,7 @@ type6_h384_w256_smooth_curl_fold_page        = Dataset_builder().set_basic(DB_C.
 type7_h472_w304_real_os_book_400data         = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book               , DB_N.os_book_400data       , DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
 type7b_h500_w332_real_os_book_1532data       = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
 type7b_h500_w332_real_os_book_1532data_focus = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data_focus, DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
+type7b_h500_w332_real_os_book_1532data_big   = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data_big  , DB_GM.in_dis_gt_ord, h=600, w=396).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
 type7b_h500_w332_real_os_book_400data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_400data       , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
 type7b_h500_w332_real_os_book_800data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_800data       , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
 

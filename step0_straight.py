@@ -36,10 +36,12 @@ step07_dir = produce_curve_dir + "07_Pick_manually"
 step08_dir = produce_curve_dir + "08_Pick_page_num_ok-this_for_pdf"
 step09_dir = produce_curve_dir + "09_Crop_use_center"
 step10_dir = produce_curve_dir + "10_resize_w=332,h=500"
-step10b_dir = produce_curve_dir + "10b_Crop_focus"
-step11b_dir = produce_curve_dir + "11b_resize_w=332,h=500"
+step10focus_dir = produce_curve_dir + "10focus_Crop_focus"
+step11focus_dir = produce_curve_dir + "11focus_resize_w=332,h=500"
+step10big_dir = produce_curve_dir + "10big_resize_w=396,h=600"
 final_dir  = produce_curve_dir + "final_os_book_1532data"
-finalb_dir  = produce_curve_dir + "finalb_os_book_1532data_focus"
+final_focus_dir= produce_curve_dir + "final_os_book_1532data_focus"
+final_big_dir= produce_curve_dir + "final_os_book_1532data_big"
 final_800_dir  = produce_curve_dir + "final_os_book_800data"
 final_400_dir  = produce_curve_dir + "final_os_book_400data"
 ###################################################################################################################
@@ -96,25 +98,34 @@ final_400_dir  = produce_curve_dir + "final_os_book_400data"
 # Pick_manually      (step06_dir, step07_dir, pick_page_indexes = pick_manually)
 # Page_num           (step07_dir, step08_dir)
 # Crop_use_center    (step08_dir,step09_dir)     
-# Resize_hw          (step09_dir,step10_dir,width=332, height=500)
+
 
 ### 原始版本(1532data)
+# Resize_hw          (step09_dir,step10_dir,width=332, height=500)
 ## 這要和 curve的對應到喔！建議從curve直接複製過來～然後要記得改 "gt_ord_imgs"
-Select_lt_rt_ld_rd_train_test_see(step10_dir, final_dir,  result_dir_name="gt_ord_imgs", 
+# Select_lt_rt_ld_rd_train_test_see(step10_dir, final_dir,  result_dir_name="gt_ord_imgs", 
+#                            train_4page_index_list=range(387),test_4page_index_list=[101,102,103,104] ,see_train_4page_index_list=[1,2,4,6])
+
+
+### big版本(1532data)
+Resize_hw          (step09_dir,step10big_dir,width=396, height=600)   ### 註解拿掉就代表用big版
+## 這要和 curve的對應到喔！建議從curve直接複製過來～然後要記得改 "gt_ord_imgs"
+Select_lt_rt_ld_rd_train_test_see(step10big_dir, final_big_dir,  result_dir_name="gt_ord_imgs", 
                            train_4page_index_list=range(387),test_4page_index_list=[101,102,103,104] ,see_train_4page_index_list=[1,2,4,6])
 
+
 ### gt_focus版本(1532data)
-# Find_ltrd_and_crop (step09_dir , step10b_dir, padding=10)  ### 不要padding了，因為印表機會自動pad！在pad會太多！印表機左右pad:100px左右，上下pad:50px左右
-# Resize_hw          (step10b_dir, step11b_dir, width=332, height=500)
-Select_lt_rt_ld_rd_train_test_see(step10b_dir, finalb_dir,  result_dir_name="gt_ord_imgs", 
-                           train_4page_index_list=range(387), test_4page_index_list=[101,102,103,104] ,see_train_4page_index_list=[1,2,4,6])
+# Find_ltrd_and_crop (step09_dir , step10focus_dir, padding=10)  ### 不要padding了，因為印表機會自動pad！在pad會太多！印表機左右pad:100px左右，上下pad:50px左右
+# Resize_hw          (step10focus_dir, step11focus_dir, width=332, height=500)
+# Select_lt_rt_ld_rd_train_test_see(step10focus_dir, final_focus_dir,  result_dir_name="gt_ord_imgs", 
+#                            train_4page_index_list=range(387), test_4page_index_list=[101,102,103,104] ,see_train_4page_index_list=[1,2,4,6])
 
 ### 800data版本
-Select_lt_rt_ld_rd_train_test_see(step10_dir, final_800_dir,  result_dir_name="gt_ord_imgs", 
-                           train_4page_index_list=range(204), test_4page_index_list=[101,102,103,104] ,see_train_4page_index_list=[1,2,4,6])
+# Select_lt_rt_ld_rd_train_test_see(step10_dir, final_800_dir,  result_dir_name="gt_ord_imgs", 
+#                            train_4page_index_list=range(204), test_4page_index_list=[101,102,103,104] ,see_train_4page_index_list=[1,2,4,6])
 
 ### 400data版本
 ### 下面用的是共103個4page_train，剛好最後3個train跟test重複到會被刪掉就剛好100個4page_train囉！
-Select_lt_rt_ld_rd_train_test_see(step10_dir, final_400_dir,  result_dir_name="gt_ord_imgs",  
-                           train_4page_index_list=range(1,104), test_4page_index_list=[101,102,103,104] ,see_train_4page_index_list=[1,2,4,6])
+# Select_lt_rt_ld_rd_train_test_see(step10_dir, final_400_dir,  result_dir_name="gt_ord_imgs",  
+#                            train_4page_index_list=range(1,104), test_4page_index_list=[101,102,103,104] ,see_train_4page_index_list=[1,2,4,6])
 
