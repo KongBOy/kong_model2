@@ -170,6 +170,7 @@ class Experiment():
 
                 else: ### 第二次後，先把np.array先讀出來append值後 再存進去
                     loss_array = np.load(self.result_obj.logs_dir + "/" + loss_name + ".npy")
+                    loss_array = loss_array[:epoch]   ### 這是為了防止 如果程式在 step3,4之間中斷 這種 loss已經存完 但 model還沒存 的狀況，loss 會比想像中的多一步，所以加這行防止這種情況發生喔
                     loss_array = np.append(loss_array, loss_value)
                     np.save(self.result_obj.logs_dir + "/" + loss_name, np.array(loss_array))
                     # print(loss_array)
@@ -309,8 +310,11 @@ if(__name__=="__main__"):
     # os_book_1532_rect_D_025.run()
     # os_book_400_just_G_mae3.run()
 
-    os_book_1532_rect_mae3_big = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, rect, describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_rect_mae3_big.run()
+    # os_book_1532_rect_mae3_big = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, rect, describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_just_G_mae3_big = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data_big, just_G, describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200615_030658-just_G-1532data_mae3_big_127.35")
+    # os_book_1532_rect_mae3_big.run()
+    os_book_1532_just_G_mae3_big.run()
+    
     # os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_G03D01_127.35").set_train_args(epochs=700).build(result_name="")
     # os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_G05D01_127.35").set_train_args(epochs=700).build(result_name="")
 
