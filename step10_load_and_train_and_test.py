@@ -311,12 +311,14 @@ if(__name__=="__main__"):
     # os_book_400_just_G_mae3.run()
 
     # os_book_1532_rect_mae3_big = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, rect, describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_just_G_mae3_big = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data_big, just_G, describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200615_030658-just_G-1532data_mae3_big_127.35")
+    # os_book_1532_just_G_mae3_big = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data_big, just_G, describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200615_030658-just_G-1532data_mae3_big_127.35")
     # os_book_1532_rect_mae3_big.run()
-    os_book_1532_just_G_mae3_big.run()
+    # os_book_1532_just_G_mae3_big.run()
     
     # os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_G03D01_127.35").set_train_args(epochs=700).build(result_name="")
     # os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_end="1532data_mae3_focus_G05D01_127.35").set_train_args(epochs=700).build(result_name="")
 
     # os_book_1532_rect_mae3_focus_G05D01.run()
 
+    os_book_1532_mrf_replace_use7 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, mrf_rect, describe_end="1532data_mrf_replace7").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_mrf_replace_use7.run()

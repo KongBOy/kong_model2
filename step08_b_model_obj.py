@@ -54,7 +54,7 @@ class KModel_Unet_builder(KModel_init_builder):
 class KModel_rect_builder(KModel_Unet_builder):
     def build_rect(self):
         from step08_a_2_Rect2 import Rect2, generate_sees, generate_images
-        from step08_a_2_Rect2 import train_step  as train_step
+        from step08_a_2_Rect2 import train_step
         # from step08_a_2_Rect2 import train_step2 as train_step
         self.kong_model.rect = Rect2() ### 只有這行跟mrf_rect不一樣，剩下都一樣喔！
         self.kong_model.generator       = self.kong_model.rect.generator
@@ -68,7 +68,7 @@ class KModel_rect_builder(KModel_Unet_builder):
 class KModel_mrf_rect_builder(KModel_rect_builder):
     def build_mrf_rect(self):
         from step08_a_2_Rect2 import Rect2, generate_sees, generate_images
-        from step08_a_2_Rect2 import train_step as train_step
+        from step08_a_2_Rect2 import train_step 
         # from step08_a_2_Rect2 import train_step2 as train_step
         self.kong_model.rect = Rect2(use_mrfb=True) ### 只有這行跟rect不一樣，剩下都一樣喔！
         self.kong_model.generator = self.kong_model.rect.generator

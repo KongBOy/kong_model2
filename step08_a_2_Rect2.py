@@ -107,12 +107,15 @@ class Discriminator(tf.keras.models.Model):
         return self.conv_map(x)
 
 class Generator(tf.keras.models.Model):
-    def __init__(self, use_mrfb=False, **kwargs):
+    def __init__(self, use_mrfb=False, mrf_replace=True, **kwargs):
         super(Generator, self).__init__(**kwargs)
         if(use_mrfb):
             self.mrfb = MRFBlock(c_num=64)
         self.use_mrfb = use_mrfb
-        self.conv1   = Conv2D(64  ,   kernel_size=7, strides=1, padding="valid")
+        self.mrf_replace = mrf_replace
+
+        if(self.mrf_replace == False):
+            self.conv1   = Conv2D(64  ,   kernel_size=7, strides=1, padding="valid")
         self.in_c1   = InstanceNorm_kong()
         self.conv2   = Conv2D(64*2,   kernel_size=3, strides=2, padding="same")
         self.in_c2   = InstanceNorm_kong()
@@ -138,12 +141,14 @@ class Generator(tf.keras.models.Model):
     def call(self, input_tensor):
         if(self.use_mrfb):
             x = self.mrfb(input_tensor)
-            x = tf.pad(x , [[0,0], [3,3], [3,3], [0,0]], "REFLECT")
+            if(self.mrf_replace==False):
+                x = tf.pad(x , [[0,0], [3,3], [3,3], [0,0]], "REFLECT")
         else:
             x = tf.pad(input_tensor, [[0,0], [3,3], [3,3], [0,0]], "REFLECT")
 
         ### c1
-        x = self.conv1(x)
+        if(self.mrf_replace==False):
+            x = self.conv1(x)
         x = self.in_c1(x)
         x = tf.nn.relu(x)
         ### c2
@@ -178,76 +183,107 @@ class Generator(tf.keras.models.Model):
         return tf.nn.tanh(x_RGB)
 
 
-
 class MRFBlock(tf.keras.layers.Layer):
-    def __init__(self, c_num,**kwargs):
+    def __init__(self, c_num, use1=False, use3=False, use5=False, use7=True, use9=False,**kwargs):
         super(MRFBlock, self).__init__()
-        # self.conv_11 = Conv2D( c_num, kernel_size=1, strides=1, padding="same")
-        # self.in_c11  = InstanceNorm_kong()
-        # self.conv_12 = Conv2D( c_num, kernel_size=1, strides=1, padding="same")
-        # self.in_c12  = InstanceNorm_kong()
+        self.use1 = use1
+        self.use3 = use3
+        self.use5 = use5
+        self.use7 = use7
+        self.use9 = use9
+        self.branch_amount = 0
 
-        # self.conv_31 = Conv2D( c_num, kernel_size=3, strides=1, padding="same")
-        # self.in_c31  = InstanceNorm_kong()
-        # self.conv_32 = Conv2D( c_num, kernel_size=3, strides=1, padding="same")
-        # self.in_c32  = InstanceNorm_kong()
+        if(self.use1):
+            self.conv_11 = Conv2D( c_num, kernel_size=1, strides=1, padding="same")
+            self.in_c11  = InstanceNorm_kong()
+            self.conv_12 = Conv2D( c_num, kernel_size=1, strides=1, padding="same")
+            self.in_c12  = InstanceNorm_kong()
+            self.branch_amount += 1
 
-        # self.conv_51 = Conv2D( c_num, kernel_size=5, strides=1, padding="same")
-        # self.in_c51  = InstanceNorm_kong()
-        # self.conv_52 = Conv2D( c_num, kernel_size=5, strides=1, padding="same")
-        # self.in_c52  = InstanceNorm_kong()
+        if(self.use3):
+            self.conv_31 = Conv2D( c_num, kernel_size=3, strides=1, padding="same")
+            self.in_c31  = InstanceNorm_kong()
+            self.conv_32 = Conv2D( c_num, kernel_size=3, strides=1, padding="same")
+            self.in_c32  = InstanceNorm_kong()
+            self.branch_amount += 1
 
-        self.conv_71 = Conv2D( c_num, kernel_size=7, strides=1, padding="same")
-        self.in_c71  = InstanceNorm_kong()
-        self.conv_72 = Conv2D( c_num, kernel_size=7, strides=1, padding="same")
-        self.in_c72  = InstanceNorm_kong()
+        if(self.use5):
+            self.conv_51 = Conv2D( c_num, kernel_size=5, strides=1, padding="same")
+            self.in_c51  = InstanceNorm_kong()
+            self.conv_52 = Conv2D( c_num, kernel_size=5, strides=1, padding="same")
+            self.in_c52  = InstanceNorm_kong()
+            self.branch_amount += 1
 
-        self.conv_91 = Conv2D( c_num, kernel_size=9, strides=1, padding="same")
-        self.in_c91  = InstanceNorm_kong()
-        self.conv_92 = Conv2D( c_num, kernel_size=9, strides=1, padding="same")
-        self.in_c92  = InstanceNorm_kong()
+        if(self.use7):
+            self.conv_71 = Conv2D( c_num, kernel_size=7, strides=1, padding="same")
+            self.in_c71  = InstanceNorm_kong()
+            self.conv_72 = Conv2D( c_num, kernel_size=7, strides=1, padding="same")
+            self.in_c72  = InstanceNorm_kong()
+            self.branch_amount += 1
 
-        self.concat = Concatenate()
+        if(self.use9):
+            self.conv_91 = Conv2D( c_num, kernel_size=9, strides=1, padding="same")
+            self.in_c91  = InstanceNorm_kong()
+            self.conv_92 = Conv2D( c_num, kernel_size=9, strides=1, padding="same")
+            self.in_c92  = InstanceNorm_kong()
+            self.branch_amount += 1
+
+        if(self.branch_amount > 1):
+            self.concat = Concatenate()
         
     def call(self, input_tensor):
-        # x1 = self.conv_11(input_tensor)
-        # x1 = self.in_c11(x1)
-        # x1 = tf.nn.relu(x1)
-        # x1 = self.conv_12(x1)
-        # x1 = self.in_c12(x1)
-        # x1 = tf.nn.relu(x1)
+        concat_list = []
+        if(self.use1):
+            x1 = self.conv_11(input_tensor)
+            x1 = self.in_c11(x1)
+            x1 = tf.nn.relu(x1)
+            x1 = self.conv_12(x1)
+            x1 = self.in_c12(x1)
+            x1 = tf.nn.relu(x1)
+            concat_list.append(x1)
 
-        # x3 = self.conv_31(input_tensor)
-        # x3 = self.in_c31(x3)
-        # x3 = tf.nn.relu(x3)
-        # x3 = self.conv_32(x3)
-        # x3 = self.in_c32(x3)
-        # x3 = tf.nn.relu(x3)
+        if(self.use3):
+            x3 = self.conv_31(input_tensor)
+            x3 = self.in_c31(x3)
+            x3 = tf.nn.relu(x3)
+            x3 = self.conv_32(x3)
+            x3 = self.in_c32(x3)
+            x3 = tf.nn.relu(x3)
+            concat_list.append(x3)
         
-        # x5 = self.conv_51(input_tensor)
-        # x5 = self.in_c51(x5)
-        # x5 = tf.nn.relu(x5)
-        # x5 = self.conv_52(x5)
-        # x5 = self.in_c52(x5)
-        # x5 = tf.nn.relu(x5)
+        if(self.use5):
+            x5 = self.conv_51(input_tensor)
+            x5 = self.in_c51(x5)
+            x5 = tf.nn.relu(x5)
+            x5 = self.conv_52(x5)
+            x5 = self.in_c52(x5)
+            x5 = tf.nn.relu(x5)
+            concat_list.append(x5)
 
-        x7 = self.conv_71(input_tensor)
-        x7 = self.in_c71(x7)
-        x7 = tf.nn.relu(x7)
-        x7 = self.conv_72(x7)
-        x7 = self.in_c72(x7)
-        x7 = tf.nn.relu(x7)
+        if(self.use7):
+            x7 = self.conv_71(input_tensor)
+            x7 = self.in_c71(x7)
+            x7 = tf.nn.relu(x7)
+            x7 = self.conv_72(x7)
+            x7 = self.in_c72(x7)
+            x7 = tf.nn.relu(x7)
+            concat_list.append(x7)
 
-        x9 = self.conv_91(input_tensor)
-        x9 = self.in_c91(x9)
-        x9 = tf.nn.relu(x9)
-        x9 = self.conv_92(x9)
-        x9 = self.in_c92(x9)
-        x9 = tf.nn.relu(x9)
+        if(self.use9):
+            x9 = self.conv_91(input_tensor)
+            x9 = self.in_c91(x9)
+            x9 = tf.nn.relu(x9)
+            x9 = self.conv_92(x9)
+            x9 = self.in_c92(x9)
+            x9 = tf.nn.relu(x9)
+            concat_list.append(x9)
 
+        
         # x_concat = self.concat([x1, x3, x5, x7, x9])
-        x_concat = self.concat([x7, x9])
-        return x_concat
+        if  (self.branch_amount >  1): x_out = self.concat(concat_list)
+        elif(self.branch_amount == 1): x_out = concat_list[0]
+        return x_out
+
 
 
 
