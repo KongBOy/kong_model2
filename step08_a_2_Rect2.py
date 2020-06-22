@@ -107,7 +107,7 @@ class Discriminator(tf.keras.models.Model):
         return self.conv_map(x)
 
 class Generator(tf.keras.models.Model):
-    def __init__(self, first_k3=False, use_mrfb=False, mrf_replace=True, **kwargs):
+    def __init__(self, first_k3=False, use_mrfb=False, mrf_replace=False, **kwargs):
         super(Generator, self).__init__(**kwargs)
         if(use_mrfb):
             self.mrfb = MRFBlock(c_num=64)
@@ -115,7 +115,7 @@ class Generator(tf.keras.models.Model):
         self.mrf_replace = mrf_replace
         self.first_k3 = first_k3
         self.first_k = 7
-        if(self.first_k3): first_k = 3
+        if(self.first_k3): self.first_k = 3
 
         if(self.mrf_replace == False):
             self.conv1   = Conv2D(64  ,   kernel_size=self.first_k, strides=1, padding="valid")
@@ -182,7 +182,7 @@ class Generator(tf.keras.models.Model):
         x = self.in_cT2(x)
         x = tf.nn.relu(x)
 
-        x = tf.pad(x, [[0,0], [3,3], [3,3], [0,0]], "REFLECT")
+        x = tf.pad(x, [[0,0], [first_pad_size,first_pad_size], [first_pad_size,first_pad_size], [0,0]], "REFLECT")
         x_RGB = self.convRGB(x)
         return tf.nn.tanh(x_RGB)
 
