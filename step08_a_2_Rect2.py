@@ -107,15 +107,18 @@ class Discriminator(tf.keras.models.Model):
         return self.conv_map(x)
 
 class Generator(tf.keras.models.Model):
-    def __init__(self, use_mrfb=False, mrf_replace=True, **kwargs):
+    def __init__(self, first_k3=False, use_mrfb=False, mrf_replace=True, **kwargs):
         super(Generator, self).__init__(**kwargs)
         if(use_mrfb):
             self.mrfb = MRFBlock(c_num=64)
         self.use_mrfb = use_mrfb
         self.mrf_replace = mrf_replace
+        self.first_k3 = first_k3
+        self.first_k = 7
+        if(self.first_k3): first_k = 3
 
         if(self.mrf_replace == False):
-            self.conv1   = Conv2D(64  ,   kernel_size=7, strides=1, padding="valid")
+            self.conv1   = Conv2D(64  ,   kernel_size=self.first_k, strides=1, padding="valid")
         self.in_c1   = InstanceNorm_kong()
         self.conv2   = Conv2D(64*2,   kernel_size=3, strides=2, padding="same")
         self.in_c2   = InstanceNorm_kong()
@@ -136,15 +139,16 @@ class Generator(tf.keras.models.Model):
         self.in_cT1  = InstanceNorm_kong()
         self.convT2  = Conv2DTranspose(64  , kernel_size=3, strides=2, padding="same")
         self.in_cT2  = InstanceNorm_kong()
-        self.convRGB = Conv2D(3  ,   kernel_size=7, strides=1, padding="valid")
+        self.convRGB = Conv2D(3  ,   kernel_size=self.first_k, strides=1, padding="valid")
 
     def call(self, input_tensor):
+        first_pad_size = int( (self.first_k-1)/2 )
         if(self.use_mrfb):
             x = self.mrfb(input_tensor)
             if(self.mrf_replace==False):
-                x = tf.pad(x , [[0,0], [3,3], [3,3], [0,0]], "REFLECT")
+                x = tf.pad(x , [[0,0], [first_pad_size,first_pad_size], [first_pad_size,first_pad_size], [0,0]], "REFLECT")
         else:
-            x = tf.pad(input_tensor, [[0,0], [3,3], [3,3], [0,0]], "REFLECT")
+            x = tf.pad(input_tensor, [[0,0], [first_pad_size,first_pad_size], [first_pad_size,first_pad_size], [0,0]], "REFLECT")
 
         ### c1
         if(self.mrf_replace==False):
