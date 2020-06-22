@@ -107,7 +107,7 @@ class Discriminator(tf.keras.models.Model):
         return self.conv_map(x)
 
 class Generator(tf.keras.models.Model):
-    def __init__(self, first_k3=False, use_mrfb=False, mrf_replace=False, **kwargs):
+    def __init__(self, use_mrfb=False, mrf_replace=False, first_k3=False, **kwargs):
         super(Generator, self).__init__(**kwargs)
         if(use_mrfb):
             self.mrfb = MRFBlock(c_num=64)
