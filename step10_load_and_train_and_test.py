@@ -320,5 +320,19 @@ if(__name__=="__main__"):
 
     # os_book_1532_rect_mae3_focus_G05D01.run()
 
-    os_book_1532_mrf_replace_use7 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, mrf_rect, describe_end="1532data_mrf_replace7").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_mrf_replace_use7.run()
+
+    # os_book_1532_rect_firstk3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_end="1532data_rect_firstk3").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_justG_firstk3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_rect_firstk3").set_train_args(epochs=700).build(result_name="")
+
+    # os_book_1532_mrf_replace_use7 = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data, mrf_rect, describe_end="1532data_mrf_replace7").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200621_123201-mrf_rect-1532data_mrf_replace7_127.35")
+    # os_book_1532_mrf_replace_use7.run()
+    # os_book_1532_mrf_replace_use79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, mrf_rect, describe_end="1532data_mrf_replace79").set_train_args(epochs=700).build(result_name="") ###127.51
+    # os_book_1532_mrf_use7  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, mrf_rect, describe_end="1532data_mrf_7").set_train_args(epochs=700).build(result_name="")  ### 127.48
+    # os_book_1532_mrf_use79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, mrf_rect, describe_end="1532data_mrf_79").set_train_args(epochs=700).build(result_name="") ### 128.245
+
+    # os_book_1532_justG_mrf_replace_use7 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_justG_mrf_replace7").set_train_args(epochs=700).build(result_name="") ###127.40
+    # os_book_1532_justG_mrf_replace_use79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_justG_mrf_replace79").set_train_args(epochs=700).build(result_name="") ###127.55
+
+
+    os_book_1532_justG_mrf_use7 = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data, just_G, describe_end="1532data_justG_mrf_7_127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200623_191110-just_G-1532data_justG_mrf_7_127.35_to128.245") ###127.35_to128.245
+    os_book_1532_justG_mrf_use7.run()

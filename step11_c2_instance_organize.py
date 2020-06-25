@@ -27,7 +27,7 @@ os_book_just_G_mae20 = Result_builder().set_by_result_name(dir3+"/type7b_h500_w3
 
 
 dir4 = "5_4_bigger_smaller"
-os_book_justG_bigger       = Result_builder().set_by_result_name(dir4+"/type7b_h500_w332_real_os_book-20200601_022935-just_G-1532data_bigger"     ).set_ana_plot_title("justG_mae3_bigger").build()
+os_book_justG_bigger       = Result_builder().set_by_result_name(dir4+"/type7b_h500_w332_real_os_book-20200615_030658-just_G-1532data_mae3_SRbig_127.35"     ).set_ana_plot_title("justG_mae3_bigger").build()
 os_book_justG_normal       = copy.deepcopy(os_book_just_G_mae3); os_book_justG_normal.ana_plot_title = "justG_mae3_normal"
 os_book_justG_smaller      = Result_builder().set_by_result_name(dir4+"/type7b_h500_w332_real_os_book-20200601_081803-just_G-1532data_smaller_128.246").set_ana_plot_title("justG_mae3_smaller").build()
 os_book_justG_smaller2     = Result_builder().set_by_result_name(dir4+"/type7b_h500_w332_real_os_book-20200602_163853-just_G-1532data_mae3_127.48_smaller2_epoch425").set_ana_plot_title("justG_mae3_smaller2").build()
