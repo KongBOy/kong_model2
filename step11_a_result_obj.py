@@ -235,7 +235,7 @@ if(__name__=="__main__"):
 
     ## Result 的 各method測試：
     ### 單loss 的情況
-    os_book = Result_builder().set_by_result_name("5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.51").set_ana_plot_title("mae9").build()
+    os_book = Result_builder().set_by_result_name("5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51").set_ana_plot_title("mae9").build()
     # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=False, single_see_multiprocess=False)
     # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=False)
     # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=False, single_see_multiprocess=True)

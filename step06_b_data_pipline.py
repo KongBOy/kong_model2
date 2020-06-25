@@ -214,12 +214,9 @@ class tf_Data_init_builder:
         return self
 
     def set_img_resize(self, model_name):
-        if  (model_name == MODEL_NAME.unet): 
+        if  ("unet" in model_name.value ): 
             self.tf_data.img_resize = (math.floor(self.tf_data.db_obj.h/128)*128 *2, math.floor(self.tf_data.db_obj.w/128)*128 *2) ### 128的倍數，且要是gt_img的兩倍大喔！
-            
-        elif(model_name in [MODEL_NAME.rect , 
-                            MODEL_NAME.mrf_rect,
-                            MODEL_NAME.just_G] ):
+        elif("rect" in model_name.value or "justG" in model_name.value ):
             self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h/4)*4, math.ceil(self.tf_data.db_obj.w/4)*4) ### dis_img(in_img的大小)的大小且要是4的倍數
         return self
     
@@ -398,7 +395,7 @@ if(__name__ == "__main__"):
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size-1, train_shuffle=True).set_img_resize( model_obj.model_name).build_by_db_get_method().build()
     
     db_obj = Dataset_builder().set_basic(DB_C.type6_h_384_w_256_smooth_curl_fold_and_page, DB_N.smooth_complex_page_more_like_move_map, DB_GM.in_dis_gt_move_map, h=384, w=256).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="...", see_type="...").set_detail(have_train=True, have_see=True).build()
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_by_model_name()
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_unet()
     tf_data = tf_Data_builder().set_basic(db_obj,1 , train_shuffle=True).set_img_resize( model_obj.model_name).build_by_db_get_method().build()
     
 

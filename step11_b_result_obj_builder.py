@@ -55,7 +55,7 @@ class Result_train_builder(Result_sees_builder):
     ### 設定方式二：直接給 result_name來設定( result_name格式可以參考 _get_result_name_by_exp )
     def set_by_result_name(self, result_name):
         ### 3a.用result_name 來設定ckpt, logs 的資料夾
-        self.result.result_name = result_name ### 如果他被包在某個資料夾，該資料夾也算名字喔！ex：5_just_G_mae1369/type7b_h500_w332_real_os_book-20200525_225555-just_G-1532data_mae9_127.35_copy
+        self.result.result_name = result_name ### 如果他被包在某個資料夾，該資料夾也算名字喔！ex：5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.35_copy
         self.result.result_dir  = access_path + "result/" + result_name
         self.result.ckpt_dir = self.result.result_dir + "/ckpt"
         self.result.logs_dir = self.result.result_dir + "/logs"

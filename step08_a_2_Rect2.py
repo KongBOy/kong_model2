@@ -107,17 +107,22 @@ class Discriminator(tf.keras.models.Model):
         return self.conv_map(x)
 
 class Generator(tf.keras.models.Model):
-    def __init__(self, use_mrfb=False, mrf_replace=False, first_k3=False, **kwargs):
+    def __init__(self, first_k3=False, mrfb=None, mrf_replace=False, **kwargs):
         super(Generator, self).__init__(**kwargs)
-        if(use_mrfb):
-            self.mrfb = MRFBlock(c_num=64)
-        self.use_mrfb = use_mrfb
+        ############################################################################
+        ### 架構 mrfb(如果 mrfb 外面有傳mrfb進來的話)
+        self.mrfb = mrfb
         self.mrf_replace = mrf_replace
+        if(self.mrfb is None and self.mrf_replace==True): 
+            print("設定錯誤，沒有mrfb要怎麼 用mrfb取代第一層呢~")
+            return 
+        ########################################################################################################################################################
+        ### 架構本體網路囉！
         self.first_k3 = first_k3
         self.first_k = 7
         if(self.first_k3): self.first_k = 3
-
-        if(self.mrf_replace == False):
+        
+        if(self.mrf_replace == False):  ### 如果沒有用 mrf 來取代第一層，就用普通的conv
             self.conv1   = Conv2D(64  ,   kernel_size=self.first_k, strides=1, padding="valid")
         self.in_c1   = InstanceNorm_kong()
         self.conv2   = Conv2D(64*2,   kernel_size=3, strides=2, padding="same")
@@ -143,11 +148,11 @@ class Generator(tf.keras.models.Model):
 
     def call(self, input_tensor):
         first_pad_size = int( (self.first_k-1)/2 )
-        if(self.use_mrfb):
+        if(self.mrfb is not None):  ### 看有沒有用 mrf
             x = self.mrfb(input_tensor)
-            if(self.mrf_replace==False):
+            if(self.mrf_replace==False):  ### 看mrf要不要取代第一層，  如果沒有用 mrf取代第一層， 就用普通的conv然後手動鏡射padding
                 x = tf.pad(x , [[0,0], [first_pad_size,first_pad_size], [first_pad_size,first_pad_size], [0,0]], "REFLECT")
-        else:
+        else:  ### 沒有用mrf，第一層就用普通的conv然後手動鏡射padding
             x = tf.pad(input_tensor, [[0,0], [first_pad_size,first_pad_size], [first_pad_size,first_pad_size], [0,0]], "REFLECT")
 
         ### c1
@@ -188,7 +193,7 @@ class Generator(tf.keras.models.Model):
 
 
 class MRFBlock(tf.keras.layers.Layer):
-    def __init__(self, c_num, use1=False, use3=False, use5=False, use7=True, use9=False,**kwargs):
+    def __init__(self, c_num, use1=False, use3=False, use5=False, use7=False, use9=False,**kwargs):
         super(MRFBlock, self).__init__()
         self.use1 = use1
         self.use3 = use3
@@ -232,7 +237,10 @@ class MRFBlock(tf.keras.layers.Layer):
             self.in_c92  = InstanceNorm_kong()
             self.branch_amount += 1
 
-        if(self.branch_amount > 1):
+        if  (self.branch_amount ==0 ): 
+            print("設定錯誤！use13579至少一個要True喔！")
+            return 
+        elif(self.branch_amount > 1 ): 
             self.concat = Concatenate()
         
     def call(self, input_tensor):
@@ -293,9 +301,9 @@ class MRFBlock(tf.keras.layers.Layer):
 
 
 class Rect2(tf.keras.models.Model):
-    def __init__(self, use_mrfb=False, **kwargs):
+    def __init__(self, gen_obj=Generator(), **kwargs):
         super(Rect2, self).__init__()
-        self.generator = Generator(use_mrfb)
+        self.generator = gen_obj
         self.discriminator = Discriminator()
     def call(self, dis_img, gt_img):
         g_rec_img = self.generator(dis_img)
