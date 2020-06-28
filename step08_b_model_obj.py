@@ -173,9 +173,11 @@ justG_firstk3       = KModel_builder().set_model_name(MODEL_NAME.justG          
 justG_mrf7          = KModel_builder().set_model_name(MODEL_NAME.justG_mrf7         ).build_justG_mrf(first_k3=False, mrf_replace=False, use7=True)
 justG_mrf7_k3       = KModel_builder().set_model_name(MODEL_NAME.justG_mrf7_k3      ).build_justG_mrf(first_k3=True , mrf_replace=False, use7=True)
 justG_mrf5_k3       = KModel_builder().set_model_name(MODEL_NAME.justG_mrf5_k3      ).build_justG_mrf(first_k3=True , mrf_replace=False, use5=True)
+justG_mrf3_k3       = KModel_builder().set_model_name(MODEL_NAME.justG_mrf3_k3      ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True)
 ########################################################### 2
 justG_mrf79         = KModel_builder().set_model_name(MODEL_NAME.justG_mrf79        ).build_justG_mrf(first_k3=False, mrf_replace=False, use7=True, use9=True)
 justG_mrf79_k3      = KModel_builder().set_model_name(MODEL_NAME.justG_mrf79_k3     ).build_justG_mrf(first_k3=True , mrf_replace=False, use7=True, use9=True)
+justG_mrf57_k3      = KModel_builder().set_model_name(MODEL_NAME.justG_mrf57_k3     ).build_justG_mrf(first_k3=True , mrf_replace=False, use5=True, use7=True)
 ########################################################### 3
 justG_mrf_replace7  = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace7 ).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True)
 justG_mrf_replace5  = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace5 ).build_justG_mrf(first_k3=False, mrf_replace=True, use5=True)

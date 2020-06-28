@@ -319,10 +319,12 @@ if(__name__=="__main__"):
     os_book_1532_justG_mrf7          = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7         , describe_mid="5_8b_2" , describe_end="128.245").set_train_args(epochs=700).build(result_name="") ###127.35_to128.245
     os_book_1532_justG_mrf7_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7_k3      , describe_mid="5_8b_2b", describe_end="128.51" ).set_train_args(epochs=700).build(result_name="") 
     os_book_1532_justG_mrf5_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf5_k3      , describe_mid="5_8b_2c", describe_end="128.51" ).set_train_args(epochs=700).build(result_name="") 
+    os_book_1532_justG_mrf3_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf3_k3      , describe_mid="5_8b_2d", describe_end="128.48" ).set_train_args(epochs=700).build(result_name="") 
     
     ########################################################### 2
     os_book_1532_justG_mrf79         = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79        , describe_mid="5_8b_3" , describe_end="128.245").set_train_args(epochs=700).build(result_name="") ###127.35_to128.245
     os_book_1532_justG_mrf79_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79_k3     , describe_mid="5_8b_3b", describe_end="128.246").set_train_args(epochs=700).build(result_name="") 
+    os_book_1532_justG_mrf57_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf57_k3     , describe_mid="5_8b_3c", describe_end="128.246").set_train_args(epochs=700).build(result_name="") 
     
     ########################################################### 3
     os_book_1532_justG_mrf_replace7  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace7 , describe_mid="5_8b_4" , describe_end="127.40").set_train_args(epochs=700).build(result_name="") ###127.40
@@ -343,8 +345,10 @@ if(__name__=="__main__"):
     ########################################################### 1
     # os_book_1532_justG_mrf7_k3.run()   ### 128.51
     # os_book_1532_justG_mrf5_k3.run()   ### 128.51
+    # os_book_1532_justG_mrf3_k3.run()   ### 128.48
     ########################################################### 2
     # os_book_1532_justG_mrf79_k3.run()  ### 127.246
+    # os_book_1532_justG_mrf57_k3.run()  ### 127.246
     ########################################################### 3
     # os_book_1532_justG_mrf_replace5.run()  ### 127.35
     # os_book_1532_justG_mrf_replace3.run()  ### 127.48
