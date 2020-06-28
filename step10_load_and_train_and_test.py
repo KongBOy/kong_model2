@@ -315,22 +315,23 @@ if(__name__=="__main__"):
     # os_book_1532_rect_replace_mrf79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf79, describe_mid="5_8a_5", describe_end="127.51").set_train_args(epochs=700).build(result_name="") ###127.51
     
     ### 5_8b_G_mrf
-    ########################################################### 1
+    ########################################################### 2
     os_book_1532_justG_mrf7          = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7         , describe_mid="5_8b_2" , describe_end="128.245").set_train_args(epochs=700).build(result_name="") ###127.35_to128.245
     os_book_1532_justG_mrf7_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7_k3      , describe_mid="5_8b_2b", describe_end="128.51" ).set_train_args(epochs=700).build(result_name="") 
     os_book_1532_justG_mrf5_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf5_k3      , describe_mid="5_8b_2c", describe_end="128.51" ).set_train_args(epochs=700).build(result_name="") 
     os_book_1532_justG_mrf3_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf3_k3      , describe_mid="5_8b_2d", describe_end="128.48" ).set_train_args(epochs=700).build(result_name="") 
     
-    ########################################################### 2
+    ########################################################### 3
     os_book_1532_justG_mrf79         = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79        , describe_mid="5_8b_3" , describe_end="128.245").set_train_args(epochs=700).build(result_name="") ###127.35_to128.245
     os_book_1532_justG_mrf79_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79_k3     , describe_mid="5_8b_3b", describe_end="128.246").set_train_args(epochs=700).build(result_name="") 
     os_book_1532_justG_mrf57_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf57_k3     , describe_mid="5_8b_3c", describe_end="128.246").set_train_args(epochs=700).build(result_name="") 
+    os_book_1532_justG_mrf35_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf35_k3     , describe_mid="5_8b_3d", describe_end="127.35" ).set_train_args(epochs=700).build(result_name="") 
     
-    ########################################################### 3
+    ########################################################### 4
     os_book_1532_justG_mrf_replace7  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace7 , describe_mid="5_8b_4" , describe_end="127.40").set_train_args(epochs=700).build(result_name="") ###127.40
     os_book_1532_justG_mrf_replace5  = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace5 , describe_mid="5_8b_4b", describe_end="127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-5_8b_4b-20200626_052721-justG_mrf_replace5-127.35") 
     os_book_1532_justG_mrf_replace3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace3 , describe_mid="5_8b_4c", describe_end="127.48").set_train_args(epochs=700).build(result_name="") 
-    ########################################################### 4
+    ########################################################### 5
     os_book_1532_justG_mrf_replace79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace79, describe_mid="5_8b_5" , describe_end="128.55").set_train_args(epochs=700).build(result_name="") ###127.55
     os_book_1532_justG_mrf_replace75 = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace75, describe_mid="5_8b_5b", describe_end="128.55").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-5_8b_5b-20200626_084855-justG_mrf_replace79-128.55ep57_to127.28") 
     os_book_1532_justG_mrf_replace35 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace35, describe_mid="5_8b_5c", describe_end="128.28").set_train_args(epochs=700).build(result_name="") 
@@ -342,17 +343,18 @@ if(__name__=="__main__"):
     # os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_3", describe_end="1532data_mae3_focus_G05D01_127.35").set_train_args(epochs=700).build(result_name="")
 
 if(__name__=="__main__"):
-    ########################################################### 1
+    ########################################################### 2
     # os_book_1532_justG_mrf7_k3.run()   ### 128.51
     # os_book_1532_justG_mrf5_k3.run()   ### 128.51
     # os_book_1532_justG_mrf3_k3.run()   ### 128.48
-    ########################################################### 2
+    ########################################################### 3
     # os_book_1532_justG_mrf79_k3.run()  ### 127.246
     # os_book_1532_justG_mrf57_k3.run()  ### 127.246
-    ########################################################### 3
+    os_book_1532_justG_mrf35_k3.run()  ### 127.35
+    ########################################################### 4
     # os_book_1532_justG_mrf_replace5.run()  ### 127.35
     # os_book_1532_justG_mrf_replace3.run()  ### 127.48
-    ########################################################### 4
-    os_book_1532_justG_mrf_replace75.run()  ### 127.55_to127.28
+    ########################################################### 5
+    # os_book_1532_justG_mrf_replace75.run()  ### 127.55_to127.28
     # os_book_1532_justG_mrf_replace35.run()  ### 127.28
     pass

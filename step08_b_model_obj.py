@@ -131,21 +131,21 @@ class MODEL_NAME(Enum):
     #######################################################################################################################
     justG                 = "justG"
     justG_firstk3         = "justG_firstk3"
-    ########################################################### 1
+    ########################################################### 2
     justG_mrf7            = "justG_mrf7"     ### ord finish
     justG_mrf7_k3         = "justG_mrf7_k3"  ### 127.51
     justG_mrf5_k3         = "justG_mrf5_k3"  ### 沒機器
     justG_mrf3_k3         = "justG_mrf3_k3"  ### 沒機器  
-    ########################################################### 2
+    ########################################################### 3
     justG_mrf79           = "justG_mrf79"   ### ord finish
     justG_mrf79_k3        = "justG_mrf79"   ### 128.246
     justG_mrf57_k3        = "justG_mrf57"   ### 沒機器
     justG_mrf35_k3        = "justG_mrf35"   ### 沒機器
-    ########################################################### 3
+    ########################################################### 4
     justG_mrf_replace7    = "justG_mrf_replace7"   ### ord finish
     justG_mrf_replace5    = "justG_mrf_replace5"   ### 127.35
     justG_mrf_replace3    = "justG_mrf_replace3"   ### 127.48
-    ########################################################### 4
+    ########################################################### 5
     justG_mrf_replace79   = "justG_mrf_replace79"  ### ord finish
     justG_mrf_replace75   = "justG_mrf_replace75"  ### 127.55
     justG_mrf_replace35   = "justG_mrf_replace35"  ### 127.28
@@ -169,20 +169,21 @@ rect_replace_mrf79  = KModel_builder().set_model_name(MODEL_NAME.rect_mrf_replac
 #######################################################################################################################
 justG               = KModel_builder().set_model_name(MODEL_NAME.justG              ).build_justG(first_k3=False)
 justG_firstk3       = KModel_builder().set_model_name(MODEL_NAME.justG              ).build_justG(first_k3=True)
-########################################################### 1
+########################################################### 2
 justG_mrf7          = KModel_builder().set_model_name(MODEL_NAME.justG_mrf7         ).build_justG_mrf(first_k3=False, mrf_replace=False, use7=True)
 justG_mrf7_k3       = KModel_builder().set_model_name(MODEL_NAME.justG_mrf7_k3      ).build_justG_mrf(first_k3=True , mrf_replace=False, use7=True)
 justG_mrf5_k3       = KModel_builder().set_model_name(MODEL_NAME.justG_mrf5_k3      ).build_justG_mrf(first_k3=True , mrf_replace=False, use5=True)
 justG_mrf3_k3       = KModel_builder().set_model_name(MODEL_NAME.justG_mrf3_k3      ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True)
-########################################################### 2
+########################################################### 3
 justG_mrf79         = KModel_builder().set_model_name(MODEL_NAME.justG_mrf79        ).build_justG_mrf(first_k3=False, mrf_replace=False, use7=True, use9=True)
 justG_mrf79_k3      = KModel_builder().set_model_name(MODEL_NAME.justG_mrf79_k3     ).build_justG_mrf(first_k3=True , mrf_replace=False, use7=True, use9=True)
 justG_mrf57_k3      = KModel_builder().set_model_name(MODEL_NAME.justG_mrf57_k3     ).build_justG_mrf(first_k3=True , mrf_replace=False, use5=True, use7=True)
-########################################################### 3
+justG_mrf35_k3      = KModel_builder().set_model_name(MODEL_NAME.justG_mrf35_k3     ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True)
+########################################################### 4
 justG_mrf_replace7  = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace7 ).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True)
 justG_mrf_replace5  = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace5 ).build_justG_mrf(first_k3=False, mrf_replace=True, use5=True)
 justG_mrf_replace3  = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace3 ).build_justG_mrf(first_k3=False, mrf_replace=True, use3=True)
-########################################################### 4
+########################################################### 5
 justG_mrf_replace79 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace79).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use9=True)
 justG_mrf_replace75 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace75).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use5=True)
 justG_mrf_replace35 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace35).build_justG_mrf(first_k3=False, mrf_replace=True, use3=True, use5=True)
