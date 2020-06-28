@@ -330,7 +330,7 @@ if(__name__=="__main__"):
     os_book_1532_justG_mrf_replace3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace3 , describe_mid="5_8b_4c", describe_end="127.48").set_train_args(epochs=700).build(result_name="") 
     ########################################################### 4
     os_book_1532_justG_mrf_replace79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace79, describe_mid="5_8b_5" , describe_end="128.55").set_train_args(epochs=700).build(result_name="") ###127.55
-    os_book_1532_justG_mrf_replace75 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace75, describe_mid="5_8b_5b", describe_end="128.55").set_train_args(epochs=700).build(result_name="") 
+    os_book_1532_justG_mrf_replace75 = Exp_builder().set_basic("train_reload", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace75, describe_mid="5_8b_5b", describe_end="128.55").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-5_8b_5b-20200626_084855-justG_mrf_replace79-128.55ep57_to127.28") 
     os_book_1532_justG_mrf_replace35 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace35, describe_mid="5_8b_5c", describe_end="128.28").set_train_args(epochs=700).build(result_name="") 
 
     
@@ -342,13 +342,13 @@ if(__name__=="__main__"):
 if(__name__=="__main__"):
     ########################################################### 1
     # os_book_1532_justG_mrf7_k3.run()   ### 128.51
-    os_book_1532_justG_mrf5_k3.run()   ### 128.51
+    # os_book_1532_justG_mrf5_k3.run()   ### 128.51
     ########################################################### 2
     # os_book_1532_justG_mrf79_k3.run()  ### 127.246
     ########################################################### 3
     # os_book_1532_justG_mrf_replace5.run()  ### 127.35
     # os_book_1532_justG_mrf_replace3.run()  ### 127.48
     ########################################################### 4
-    # os_book_1532_justG_mrf_replace75.run()  ### 127.55
+    os_book_1532_justG_mrf_replace75.run()  ### 127.55_to127.28
     # os_book_1532_justG_mrf_replace35.run()  ### 127.28
     pass
