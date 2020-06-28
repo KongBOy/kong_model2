@@ -147,8 +147,8 @@ class MODEL_NAME(Enum):
     justG_mrf_replace3    = "justG_mrf_replace3"   ### 127.48
     ########################################################### 4
     justG_mrf_replace79   = "justG_mrf_replace79"  ### ord finish
-    justG_mrf_replace75   = "justG_mrf_replace79"  ### 127.55
-    justG_mrf_replace35   = "justG_mrf_replace79"  ### 127.28
+    justG_mrf_replace75   = "justG_mrf_replace75"  ### 127.55
+    justG_mrf_replace35   = "justG_mrf_replace35"  ### 127.28
 
 
     justG_g_train_many    = "justG_g_train_many"
