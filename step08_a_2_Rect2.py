@@ -95,7 +95,7 @@ class Discriminator(tf.keras.models.Model):
             # print("concat_img",concat_img.shape)
             x = self.conv_1(concat_img)
         else:
-            x = self.conv1(dis_img)
+            x = self.conv_1(dis_img)
         x = self.leaky_lr1(x)
         # x = tf.nn.leaky_relu(x, alpha=0.2)
 
