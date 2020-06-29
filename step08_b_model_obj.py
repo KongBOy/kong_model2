@@ -128,7 +128,6 @@ class MODEL_NAME(Enum):
     rect_mrf79         = "rect_mrf79"
     rect_mrf_replace7  = "rect_mrf_replace7"
     rect_mrf_replace79 = "rect_mrf_replace79"
-    rect_g_train_many  = "rect_g_train_many"
     #######################################################################################################################
     justG                 = "justG"
     justG_firstk3         = "justG_firstk3"
