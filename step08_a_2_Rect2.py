@@ -58,7 +58,7 @@ class ResBlock(tf.keras.layers.Layer):
         return x + input_tensor
 
 class Discriminator(tf.keras.models.Model):
-    def __init__(self, D_first_concat=True, D_kernel_size=4 **kwargs):
+    def __init__(self, D_first_concat=True, D_kernel_size=4, **kwargs):
         super(Discriminator, self).__init__(**kwargs)
 
         self.D_first_concat = D_first_concat
