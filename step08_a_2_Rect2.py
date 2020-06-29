@@ -58,35 +58,44 @@ class ResBlock(tf.keras.layers.Layer):
         return x + input_tensor
 
 class Discriminator(tf.keras.models.Model):
-    def __init__(self,**kwargs):
+    def __init__(self, D_first_concat=True, D_kernel_size=4 **kwargs):
         super(Discriminator, self).__init__(**kwargs)
-        self.concat = Concatenate()
 
-        self.conv_1 = Conv2D(64  ,   kernel_size=4, strides=2, padding="same")
+        self.D_first_concat = D_first_concat
+        if(self.D_first_concat):
+            self.concat = Concatenate()
+
+
+        self.D_kernel_size = D_kernel_size
+
+        self.conv_1 = Conv2D(64  ,   kernel_size=self.D_kernel_size, strides=2, padding="same")
         self.leaky_lr1 = LeakyReLU(alpha=0.2)
 
-        self.conv_2 = Conv2D(64*2,   kernel_size=4, strides=2, padding="same")
+        self.conv_2 = Conv2D(64*2,   kernel_size=self.D_kernel_size, strides=2, padding="same")
         self.in_c2   = InstanceNorm_kong()
         self.leaky_lr2 = LeakyReLU(alpha=0.2)
 
-        self.conv_3 = Conv2D(64*4,   kernel_size=4, strides=2, padding="same")
+        self.conv_3 = Conv2D(64*4,   kernel_size=self.D_kernel_size, strides=2, padding="same")
         self.in_c3   = InstanceNorm_kong()
         self.leaky_lr3 = LeakyReLU(alpha=0.2)
 
-        self.conv_4 = Conv2D(64*8,   kernel_size=4, strides=2, padding="same")
+        self.conv_4 = Conv2D(64*8,   kernel_size=self.D_kernel_size, strides=2, padding="same")
         self.in_c4   = InstanceNorm_kong()
         self.leaky_lr4 = LeakyReLU(alpha=0.2)
 
-        self.conv_map = Conv2D(1   ,   kernel_size=4, strides=1, padding="same")
+        self.conv_map = Conv2D(1   , kernel_size=self.D_kernel_size, strides=1, padding="same")
 
         
     def call(self, dis_img, gt_img):
         # print("dis_img",dis_img.shape)
         # print("gt_img",gt_img.shape)
-        concat_img = self.concat([dis_img, gt_img])
-        # print("concat_img",concat_img.shape)
-        x = self.conv_1(concat_img)
 
+        if(self.D_first_concat):
+            concat_img = self.concat([dis_img, gt_img])
+            # print("concat_img",concat_img.shape)
+            x = self.conv_1(concat_img)
+        else:
+            x = self.conv1(dis_img)
         x = self.leaky_lr1(x)
         # x = tf.nn.leaky_relu(x, alpha=0.2)
 
@@ -301,10 +310,10 @@ class MRFBlock(tf.keras.layers.Layer):
 
 
 class Rect2(tf.keras.models.Model):
-    def __init__(self, gen_obj=Generator(), **kwargs):
+    def __init__(self, gen_obj=Generator(), dis_obj=Discriminator(), **kwargs):
         super(Rect2, self).__init__()
-        self.generator = gen_obj
-        self.discriminator = Discriminator()
+        self.generator     = gen_obj
+        self.discriminator = dis_obj
     def call(self, dis_img, gt_img):
         g_rec_img = self.generator(dis_img)
         fake_score = self.discriminator(dis_img, g_rec_img)

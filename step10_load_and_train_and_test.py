@@ -337,10 +337,15 @@ if(__name__=="__main__"):
     os_book_1532_justG_mrf_replace35 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace35, describe_mid="5_8b_5c", describe_end="128.28").set_train_args(epochs=700).build(result_name="") 
 
     
-    ##########################################################################################################################################
+    ########################################################################################################################################## 9a
     ### 5_9_GD_D_train1_G_train_135 
     # os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_2", describe_end="1532data_mae3_focus_G03D01_127.35").set_train_args(epochs=700).build(result_name="")
     # os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_3", describe_end="1532data_mae3_focus_G05D01_127.35").set_train_args(epochs=700).build(result_name="")
+
+    ########################################################################################################################################## 9b
+    os_book_1532_rect_D_concat_k3    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_D_concat_k3   , describe_mid="5_9b_2", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_rect_D_no_concat_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_D_no_concat_k4, describe_mid="5_9b_3", describe_end="128.246").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_rect_D_no_concat_k3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_D_no_concat_k3, describe_mid="5_9b_4", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
 
 if(__name__=="__main__"):
     ########################################################### 2
@@ -350,11 +355,16 @@ if(__name__=="__main__"):
     ########################################################### 3
     # os_book_1532_justG_mrf79_k3.run()  ### 127.246
     # os_book_1532_justG_mrf57_k3.run()  ### 127.246
-    os_book_1532_justG_mrf35_k3.run()  ### 127.35
+    # os_book_1532_justG_mrf35_k3.run()  ### 127.35
     ########################################################### 4
     # os_book_1532_justG_mrf_replace5.run()  ### 127.35
     # os_book_1532_justG_mrf_replace3.run()  ### 127.48
     ########################################################### 5
     # os_book_1532_justG_mrf_replace75.run()  ### 127.55_to127.28
     # os_book_1532_justG_mrf_replace35.run()  ### 127.28
+
+    ########################################################### 9b
+    # os_book_1532_rect_D_concat_k3.run()    ### 127.51
+    # os_book_1532_rect_D_no_concat_k4.run() ### 128.246
+    # os_book_1532_rect_D_no_concat_k3.run() ### 127.28
     pass

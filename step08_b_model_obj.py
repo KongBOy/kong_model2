@@ -49,19 +49,20 @@ class KModel_Unet_builder(KModel_init_builder):
     
 
 class KModel_GD_and_mrfGD_builder(KModel_Unet_builder):                                                   
-    def build_rect2(self, first_k3=False, g_train_many=False):
-        from step08_a_2_Rect2 import Generator, Rect2
+    def build_rect2(self, first_k3=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
+        from step08_a_2_Rect2 import Generator, Discriminator, Rect2
         gen_obj = Generator(first_k3=first_k3)  ### 建立 Generator物件
-        self.kong_model.rect = Rect2(gen_obj)   ### 把 Generator物件 丟進 Rect建立 Rect物件
+        dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
+        self.kong_model.rect = Rect2(gen_obj, dis_obj)   ### 把 Generator物件 丟進 Rect建立 Rect物件
         self._kong_model_GD_setting(g_train_many=g_train_many) ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
         return self.kong_model
 
-    def build_rect2_mrf(self, first_k3=False, mrf_replace=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False):
-        from step08_a_2_Rect2 import MRFBlock, Generator, Rect2
+    def build_rect2_mrf(self, first_k3=False, mrf_replace=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
+        from step08_a_2_Rect2 import MRFBlock, Generator, Discriminator, Rect2
         mrfb = MRFBlock(c_num=64, use1=use1, use3=use3, use5=use5, use7=use7, use9=use9) ### 先建立 mrf物件
         gen_obj = Generator(first_k3=first_k3, mrfb=mrfb, mrf_replace=mrf_replace)   ### 把 mrf物件 丟進 Generator 建立 Generator物件
-
-        self.kong_model.rect = Rect2(gen_obj)   ### 再把 Generator物件 丟進 Rect建立 Rect物件 
+        dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
+        self.kong_model.rect = Rect2(gen_obj, dis_obj)   ### 再把 Generator物件 丟進 Rect建立 Rect物件 
         self._kong_model_GD_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
         return self.kong_model
     
@@ -151,7 +152,15 @@ class MODEL_NAME(Enum):
     justG_mrf_replace35   = "justG_mrf_replace35"  ### 127.28
 
 
-    justG_g_train_many    = "justG_g_train_many"
+    ########################################################### 9a
+    rect_g_train_many    = "rect_g_train_many"
+    ########################################################### 9b
+    # rect_D_concat_k4    = "rect_D_concat_k4" ### 原始版本
+    rect_D_concat_k3       = "rect_D_concat_k3"     ### 127.51
+    rect_D_no_concat_k4    = "rect_D_no_concat_k4"  ### 128.246
+    rect_D_no_concat_k3    = "rect_D_no_concat_k3"  ### 127.28
+
+
 
 
 ### 直接先建好 obj 給外面import囉！
@@ -187,6 +196,12 @@ justG_mrf_replace3  = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_repla
 justG_mrf_replace79 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace79).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use9=True)
 justG_mrf_replace75 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace75).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use5=True)
 justG_mrf_replace35 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace35).build_justG_mrf(first_k3=False, mrf_replace=True, use3=True, use5=True)
+
+########################################################### 9b
+# rect_D_concat_k4    = "rect_D_concat_k4" ### 原始版本
+rect_D_concat_k3       = KModel_builder().set_model_name(MODEL_NAME.rect_D_concat_k3).build_rect2   (D_first_concat=True , D_kernel_size=3)
+rect_D_no_concat_k4    = KModel_builder().set_model_name(MODEL_NAME.rect_D_no_concat_k4).build_rect2(D_first_concat=False, D_kernel_size=4)
+rect_D_no_concat_k3    = KModel_builder().set_model_name(MODEL_NAME.rect_D_no_concat_k3).build_rect2(D_first_concat=False, D_kernel_size=3)
 
 if(__name__=="__main__"):
     pass
