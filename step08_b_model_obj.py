@@ -141,6 +141,8 @@ class MODEL_NAME(Enum):
     justG_mrf79_k3        = "justG_mrf79"   ### 128.246
     justG_mrf57_k3        = "justG_mrf57"   ### 沒機器
     justG_mrf35_k3        = "justG_mrf35"   ### 沒機器
+    justG_mrf357_k3       = "justG_mrf357"   ### 沒機器
+    justG_mrf3579_k3       = "justG_mrf357"   ### 沒機器
     ########################################################### 4
     justG_mrf_replace7    = "justG_mrf_replace7"   ### ord finish
     justG_mrf_replace5    = "justG_mrf_replace5"   ### 127.35
@@ -195,6 +197,11 @@ justG_mrf_replace3  = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_repla
 justG_mrf_replace79 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace79).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use9=True)
 justG_mrf_replace75 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace75).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use5=True)
 justG_mrf_replace35 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_replace35).build_justG_mrf(first_k3=False, mrf_replace=True, use3=True, use5=True)
+
+########################################################### 2c
+justG_mrf135_k3     = KModel_builder().set_model_name(MODEL_NAME.justG_mrf357_k3    ).build_justG_mrf(first_k3=True , mrf_replace=False, use1=True, use3=True, use5=True)
+justG_mrf357_k3     = KModel_builder().set_model_name(MODEL_NAME.justG_mrf357_k3    ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True)
+justG_mrf3579_k3    = KModel_builder().set_model_name(MODEL_NAME.justG_mrf3579_k3   ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, use9=True)
 
 ########################################################### 9b
 # rect_D_concat_k4    = "rect_D_concat_k4" ### 原始版本
