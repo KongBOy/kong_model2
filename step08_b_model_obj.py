@@ -141,8 +141,6 @@ class MODEL_NAME(Enum):
     justG_mrf79_k3        = "justG_mrf79"   ### 128.246
     justG_mrf57_k3        = "justG_mrf57"   ### 沒機器
     justG_mrf35_k3        = "justG_mrf35"   ### 沒機器
-    justG_mrf357_k3       = "justG_mrf357"   ### 沒機器
-    justG_mrf3579_k3       = "justG_mrf357"   ### 沒機器
     ########################################################### 4
     justG_mrf_replace7    = "justG_mrf_replace7"   ### ord finish
     justG_mrf_replace5    = "justG_mrf_replace5"   ### 127.35
@@ -151,6 +149,15 @@ class MODEL_NAME(Enum):
     justG_mrf_replace79   = "justG_mrf_replace79"  ### ord finish
     justG_mrf_replace75   = "justG_mrf_replace75"  ### 127.55
     justG_mrf_replace35   = "justG_mrf_replace35"  ### 127.28
+
+    ########################################################### 2c
+    justG_mrf135_k3       = "justG_mrf135"   ### 128.246
+    justG_mrf357_k3       = "justG_mrf357"   ### 127.51
+    justG_mrf3579_k3      = "justG_mrf357"  ### 127.28
+
+    rect_mrf135_Gk3_DnoC_k4       = "rect_mrf135_Gk3_DnoC_k4"   ### 128.246
+    rect_mrf357_Gk3_DnoC_k4       = "rect_mrf135_Gk3_DnoC_k4"   ### 127.51
+    rect_mrf3579_Gk3_DnoC_k4      = "rect_mrf135_Gk3_DnoC_k4"  ### 127.28
 
 
     ########################################################### 9a
@@ -202,6 +209,10 @@ justG_mrf_replace35 = KModel_builder().set_model_name(MODEL_NAME.justG_mrf_repla
 justG_mrf135_k3     = KModel_builder().set_model_name(MODEL_NAME.justG_mrf357_k3    ).build_justG_mrf(first_k3=True , mrf_replace=False, use1=True, use3=True, use5=True)
 justG_mrf357_k3     = KModel_builder().set_model_name(MODEL_NAME.justG_mrf357_k3    ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True)
 justG_mrf3579_k3    = KModel_builder().set_model_name(MODEL_NAME.justG_mrf3579_k3   ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, use9=True)
+
+rect_mrf135_Gk3_DnoC_k4    = KModel_builder().set_model_name(MODEL_NAME.rect_mrf135_Gk3_DnoC_k4  ).build_rect2_mrf(first_k3=True , mrf_replace=False, use1=True, use3=True, use5=True, D_first_concat=False, D_kernel_size=4)
+rect_mrf357_Gk3_DnoC_k4    = KModel_builder().set_model_name(MODEL_NAME.rect_mrf357_Gk3_DnoC_k4  ).build_rect2_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, D_first_concat=False, D_kernel_size=4)
+rect_mrf3579_Gk3_DnoC_k4   = KModel_builder().set_model_name(MODEL_NAME.rect_mrf3579_Gk3_DnoC_k4 ).build_rect2_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, use9=True, D_first_concat=False, D_kernel_size=4)
 
 ########################################################### 9b
 # rect_D_concat_k4    = "rect_D_concat_k4" ### 原始版本

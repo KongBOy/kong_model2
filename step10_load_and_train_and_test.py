@@ -341,6 +341,9 @@ if(__name__=="__main__"):
     os_book_1532_justG_mrf357_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c2_Gmrf357" , describe_end="127.51" ).set_train_args(epochs=700).build(result_name="") 
     os_book_1532_justG_mrf3579_k3     = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c3_Gmrf3579", describe_end="127.28" ).set_train_args(epochs=700).build(result_name="") 
     
+    os_book_1532_rect_mrf135_Gk3_DnoC_k4  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf135_Gk3_DnoC_k4   , describe_mid="5_8c4_Gmrf135" , describe_end="128.246" ).set_train_args(epochs=700).build(result_name="") 
+    os_book_1532_rect_mrf357_Gk3_DnoC_k4  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf357_Gk3_DnoC_k4   , describe_mid="5_8c5_Gmrf357" , describe_end="127.51"  ).set_train_args(epochs=700).build(result_name="") 
+    os_book_1532_rect_mrf3579_Gk3_DnoC_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf3579_Gk3_DnoC_k4  , describe_mid="5_8c6_Gmrf3579", describe_end="127.28"  ).set_train_args(epochs=700).build(result_name="") 
     ########################################################################################################################################## 9a
     ### 5_9_GD_D_train1_G_train_135 
     # os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_2", describe_end="1532data_mae3_focus_G03D01_127.35").set_train_args(epochs=700).build(result_name="")
@@ -376,4 +379,9 @@ if(__name__=="__main__"):
     # os_book_1532_justG_mrf135_k3.run()  ### 128.246
     # os_book_1532_justG_mrf357_k3.run()  ### 127.51
     # os_book_1532_justG_mrf3579_k3.run() ### 127.28
+
+    # os_book_1532_rect_mrf135_Gk3_DnoC_k4.run() ### 128.246
+    # os_book_1532_rect_mrf357_Gk3_DnoC_k4.run() ### 127.51
+    # os_book_1532_rect_mrf3579_Gk3_DnoC_k4.run() ### 127.28
+    
     pass
