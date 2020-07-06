@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons, TextBox
 
-from step2_a_distort_curl_and_fold import get_xy_f, distorte
+from step2_a_distort_curl_and_fold import get_xy_f, distort
 
 fig, ax = plt.subplots()
 fig.set_size_inches(6, 8)
@@ -72,8 +72,8 @@ def apply_move():
     if  (curve_type == "curl"):alpha = alpha_c_sl.val
     elif(curve_type == "fold"):alpha = alpha_f_sl.val
     # global row, col, vert_x, vert_y, move_x, move_y, curve_type, alpha
-    if  (curve_type=="curl"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
-    elif(curve_type=="fold"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
+    if  (curve_type=="curl"):move = distort(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
+    elif(curve_type=="fold"):move = distort(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
     proc_xy_f = xy_f+move
     ax_img.set_offsets(proc_xy_f)  ### 限定要放 flatten的形式喔！ [..., 2]
     print("move_x_max = ",abs(move[:,0]).max(),", move_y_max = ",abs(move[:,1]).max(),", curve_type=",curve_type,", alpha=",alpha)
@@ -119,8 +119,8 @@ stick_ax = plt.axes([0.6, 0.01, 0.2, 0.03], facecolor=axcolor) ### 1.畫圖出�
 stick_btn = Button(stick_ax,"Stick") ### 1. -> 2. 圖和button做連結
 def Stick(event): ### 3.定義功能
     global row, col, vert_x, vert_y, move_x, move_y, curve_type, alpha
-    if  (curve_type=="curl"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
-    elif(curve_type=="fold"):move = distorte(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
+    if  (curve_type=="curl"):move = distort(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
+    elif(curve_type=="fold"):move = distort(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
     global xy_f
     xy_f = xy_f+move
 

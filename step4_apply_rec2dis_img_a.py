@@ -1,6 +1,8 @@
 from step0_access_path import access_path
 import cv2
 import numpy as np 
+import sys
+sys.path.append(r"C:\Users\TKU\Desktop\kong_model2\kong_util")
 from build_dataset_combine import Check_dir_exist_and_build
 from util import method2, get_dir_certain_img, get_dir_certain_move
 from step3_apply_mov2ord_img import apply_move
