@@ -38,9 +38,10 @@ class InstanceNorm_kong(tf.keras.layers.Layer):
         # return tf.matmul(input, self.kernel)
 
 class ResBlock(tf.keras.layers.Layer):
-    def __init__(self, c_num, ks=3, s=1,**kwargs):
+    def __init__(self, c_num, ks=3, s=1, use_res_learning=True, **kwargs):
         super(ResBlock, self).__init__()
         self.ks = ks
+        self.use_res_learning=use_res_learning
         self.conv_1 = Conv2D( c_num, kernel_size=ks, strides=s, padding="valid")
         self.in_c1   = InstanceNorm_kong()
         self.conv_2 = Conv2D( c_num, kernel_size=ks, strides=s, padding="valid")
@@ -55,7 +56,8 @@ class ResBlock(tf.keras.layers.Layer):
         x = tf.pad( x, [ [0,0], [p,p], [p,p], [0,0] ], "REFLECT" )
         x = self.conv_2(x)
         x = self.in_c2(x)
-        return x + input_tensor
+        if(self.use_res_learning): return x + input_tensor
+        else: return x
 
 class Discriminator(tf.keras.models.Model):
     def __init__(self, D_first_concat=True, D_kernel_size=4, **kwargs):
@@ -116,7 +118,7 @@ class Discriminator(tf.keras.models.Model):
         return self.conv_map(x)
 
 class Generator(tf.keras.models.Model):
-    def __init__(self, first_k3=False, mrfb=None, mrf_replace=False, **kwargs):
+    def __init__(self, first_k3=False, mrfb=None, mrf_replace=False, use_res_learning=True, resb_num=9, **kwargs):
         super(Generator, self).__init__(**kwargs)
         ############################################################################
         ### 架構 mrfb(如果 mrfb 外面有傳mrfb進來的話)
@@ -139,15 +141,18 @@ class Generator(tf.keras.models.Model):
         self.conv3   = Conv2D(64*4,   kernel_size=3, strides=2, padding="same")
         self.in_c3   = InstanceNorm_kong()
 
-        self.resb1   = ResBlock(c_num=64*4)
-        self.resb2   = ResBlock(c_num=64*4)
-        self.resb3   = ResBlock(c_num=64*4)
-        self.resb4   = ResBlock(c_num=64*4)
-        self.resb5   = ResBlock(c_num=64*4)
-        self.resb6   = ResBlock(c_num=64*4)
-        self.resb7   = ResBlock(c_num=64*4)
-        self.resb8   = ResBlock(c_num=64*4)
-        self.resb9   = ResBlock(c_num=64*4)
+        self.use_res_learning = use_res_learning
+        self.resb_num = 9
+        self.resbs   = [ResBlock(c_num=64*4, use_res_learning=self.use_res_learning)]*9
+        # self.resb1   = ResBlock(c_num=64*4)
+        # self.resb2   = ResBlock(c_num=64*4)
+        # self.resb3   = ResBlock(c_num=64*4)
+        # self.resb4   = ResBlock(c_num=64*4)
+        # self.resb5   = ResBlock(c_num=64*4)
+        # self.resb6   = ResBlock(c_num=64*4)
+        # self.resb7   = ResBlock(c_num=64*4)
+        # self.resb8   = ResBlock(c_num=64*4)
+        # self.resb9   = ResBlock(c_num=64*4)
 
         self.convT1  = Conv2DTranspose(64*2, kernel_size=3, strides=2, padding="same")
         self.in_cT1  = InstanceNorm_kong()
@@ -178,15 +183,17 @@ class Generator(tf.keras.models.Model):
         x = self.in_c3(x)
         x = tf.nn.relu(x)
 
-        x = self.resb1(x)
-        x = self.resb2(x)
-        x = self.resb3(x)
-        x = self.resb4(x)
-        x = self.resb5(x)
-        x = self.resb6(x)
-        x = self.resb7(x)
-        x = self.resb8(x)
-        x = self.resb9(x)
+        for go_r in range(self.resb_num):
+            x = self.resbs[go_r](x)
+        # x = self.resb1(x)
+        # x = self.resb2(x)
+        # x = self.resb3(x)
+        # x = self.resb4(x)
+        # x = self.resb5(x)
+        # x = self.resb6(x)
+        # x = self.resb7(x)
+        # x = self.resb8(x)
+        # x = self.resb9(x)
 
         x = self.convT1(x)
         x = self.in_cT1(x)
