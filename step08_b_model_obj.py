@@ -168,6 +168,12 @@ class MODEL_NAME(Enum):
     rect_D_no_concat_k4    = "rect_D_no_concat_k4"  ### 128.246
     rect_D_no_concat_k3    = "rect_D_no_concat_k3"  ### 127.28
 
+    ########################################################### 9b
+    rect_Gk3_D_concat_k4       = "rect_Gk3_D_concat_k4" ### 
+    rect_Gk3_D_concat_k3       = "rect_Gk3_D_concat_k3"     ### 127.51
+    rect_Gk3_D_no_concat_k4    = "rect_Gk3_D_no_concat_k4"  ### 128.246
+    rect_Gk3_D_no_concat_k3    = "rect_Gk3_D_no_concat_k3"  ### 127.28
+
     ########################################################### 10
     rect_g_train_many    = "rect_g_train_many"
 
@@ -225,6 +231,11 @@ rect_mrf35_Gk3_DnoC_k4     = KModel_builder().set_model_name(MODEL_NAME.rect_mrf
 rect_D_concat_k3       = KModel_builder().set_model_name(MODEL_NAME.rect_D_concat_k3).build_rect2   (D_first_concat=True , D_kernel_size=3)
 rect_D_no_concat_k4    = KModel_builder().set_model_name(MODEL_NAME.rect_D_no_concat_k4).build_rect2(D_first_concat=False, D_kernel_size=4)
 rect_D_no_concat_k3    = KModel_builder().set_model_name(MODEL_NAME.rect_D_no_concat_k3).build_rect2(D_first_concat=False, D_kernel_size=3)
+########################################################### 9a
+rect_Gk3_D_concat_k4       = KModel_builder().set_model_name(MODEL_NAME.rect_Gk3_D_concat_k4).build_rect2   (first_k3=True, D_first_concat=True , D_kernel_size=4)
+rect_Gk3_D_concat_k3       = KModel_builder().set_model_name(MODEL_NAME.rect_Gk3_D_concat_k3).build_rect2   (first_k3=True, D_first_concat=True , D_kernel_size=3)
+rect_Gk3_D_no_concat_k4    = KModel_builder().set_model_name(MODEL_NAME.rect_Gk3_D_no_concat_k4).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4)
+rect_Gk3_D_no_concat_k3    = KModel_builder().set_model_name(MODEL_NAME.rect_Gk3_D_no_concat_k3).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=3)
 
 ########################################################### 11
 Gk3_no_res             = KModel_builder().set_model_name(MODEL_NAME.Gk3_no_res)            .build_justG(first_k3=True, use_res_learning=False) ### 127.51
