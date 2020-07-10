@@ -72,6 +72,7 @@ class Col_results_analyzer(Result_analyzer):
         multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self._Draw_col_results_single_see, task_args= [see_num, in_imgs, gt_imgs, c_titles, analyze_see_dir, add_loss] )
     
     def analyze_col_results_single_see(self, see_num, add_loss=False, single_see_multiprocess=True, single_see_core_amount=8): ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
+        print( f"{self.ana_describe} doing analyze_col_results_single_see, see_num:{see_num}, multiprocess:{single_see_multiprocess}" )
         start_time = time.time()
         analyze_see_dir = self.analyze_dir + "/" + self.c_results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                       ### 建立 存結果的資料夾
@@ -100,7 +101,7 @@ class Col_results_analyzer(Result_analyzer):
               
     def analyze_col_results_all_single_see(self,start_see, see_amount, add_loss=False, single_see_multiprocess=False, single_see_core_amount=8):
         for go_see in range(start_see, start_see + see_amount):
-            self.analyze_col_results_single_see(go_see, add_loss, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount) ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
+            self.analyze_col_results_single_see(go_see, add_loss=add_loss, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount) ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
 
     def analyze_col_results_all_single_see_multiprocess(self, add_loss=False, core_amount=8, task_amount=32, single_see_multiprocess=False, single_see_core_amount=8):
         if(single_see_multiprocess==False):  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
@@ -135,17 +136,6 @@ class Col_results_analyzer(Result_analyzer):
                     for go_result, result in enumerate(self.c_results):
                         multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_result+1], logs_dir=result.logs_dir, cur_epoch=epoch, min_epochs=self.c_min_train_epochs)
                 multi_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=epoch)
-        
-                # fig, ax = matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
-                #                               rows_cols_imgs   = r_c_imgs,
-                #                               fig_title        = "epoch=%04i"%epoch,   ### 圖上的大標題
-                #                               bgr2rgb          = True,
-                #                               add_loss         = add_loss)
-                # if(add_loss): 
-                #     for go_result, result in enumerate(self.c_results):
-                #         draw_loss_util(fig, ax[-1,go_result+1], result.logs_dir, epoch, self.c_min_see_file_amount-2)
-                # plt.savefig(analyze_see_dir+"/"+"epoch=%04i"%epoch )
-                # plt.close()  ### 一定要記得關喔！要不然圖開太多會當掉！
 
     def _draw_col_results_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss=False, core_amount=8, task_amount=100):
         print("use multiprocess")
@@ -155,7 +145,7 @@ class Col_results_analyzer(Result_analyzer):
 
     ### 同col同result，同row同see
     def analyze_col_results_multi_see(self, see_nums, save_name, add_loss=False, multiprocess=True):
-        print(f"doing analyze_col_results_multi_see, save_name={save_name}")
+        print(f"{self.ana_describe} doing analyze_col_results_multi_see, save_name={save_name}, multiprocess:{multiprocess}")
         ### 防呆 ### 這很重要喔！因為 row 只有一個時，matplot的ax的維度只有一維，但我的操作都兩維 會出錯！所以要切去一維的method喔！
         if(len(see_nums) == 1):
             print("因為 see_nums 的數量只有一個，自動切換成 single 的 method 囉～")
@@ -229,19 +219,24 @@ class Row_col_results_analyzer(Result_analyzer):
                     c_imgs += [gt_img]      ### 每個row的最後一張要放gt_img
                     r_c_imgs.append(c_imgs)
                 ###########################################################################################################
-                matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles, 
+                # rows_cols_titles, rows_cols_imgs, fig_title="epoch=1005", bgr2rgb=True, add_loss=False
+
+                row_col_imgs = Matplot_multi_row_imgs(
                                               rows_cols_imgs   = r_c_imgs,
-                                              fig_title        ="epoch=%04i"%epoch,   ### 圖上的大標題
-                                              dst_dir          = analyze_see_dir, 
-                                              file_name        ="epoch=%04i"%epoch,
-                                              bgr2rgb          = True )
+                                              rows_cols_titles = r_c_titles, 
+                                              fig_title        = "epoch=%04i"%epoch,   ### 圖上的大標題
+                                              bgr2rgb          = True,
+                                              add_loss         = False)
+                row_col_imgs.Draw_img()
+                row_col_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=epoch)
 
     def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100):
         from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self._draw_row_col_results_single_see, task_args= [see_num, r_c_titles, analyze_see_dir] )
 
 
-    def analyze_row_col_results_single_see(self, see_num):
+    def analyze_row_col_results_single_see(self, see_num, single_see_multiprocess=False, single_see_core_amount=8):
+        print( f"{self.ana_describe} doing analyze_row_col_results_single_see, see_num:{see_num}, multiprocess:{single_see_multiprocess}")
         start_time = time.time()
         analyze_see_dir = self.analyze_dir + "/" + self.r_c_results[0][0].sees[see_num].see_name ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                          ### 建立 存結果的資料夾
@@ -262,26 +257,45 @@ class Row_col_results_analyzer(Result_analyzer):
         print("processing see_num:", see_num)
         ### 抓 每row 每col 各不同result的 要顯示的imgs 並且畫出來
         ### 注意，這analyzer不會有 multi_see 的method喔！因為row被拿去show不同的result了，就沒有空間給 multi_see拉，所以不用寫if/else 來 限制 multi_see時 single_see_multiprocess 要設False這樣子～
-        self._draw_row_col_results_single_see_multiprocess(see_num, r_c_titles, analyze_see_dir, core_amount=8, task_amount=self.r_c_min_see_file_amount)
+        if(single_see_multiprocess):self._draw_row_col_results_single_see_multiprocess(see_num, r_c_titles, analyze_see_dir, core_amount=single_see_core_amount, task_amount=self.r_c_min_see_file_amount)
+        else:self._draw_row_col_results_single_see(0, self.r_c_min_see_file_amount, see_num, r_c_titles, analyze_see_dir)
 
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10) ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(analyze_see_dir, analyze_see_dir,delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY]) ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
-    def analyze_row_col_results_all_single_see(self,start_see, see_amount):
+    def analyze_row_col_results_all_single_see(self,start_see, see_amount, single_see_multiprocess=False, single_see_core_amount=8):
         for go_see in range(start_see, start_see + see_amount):
-            self.analyze_row_col_results_single_see(go_see)
+            self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
     
-    def analyze_row_col_results_all_single_see_multiprocess(self, core_amount=8, task_amount=32):
+    def analyze_row_col_results_all_single_see_multiprocess(self, core_amount=8, task_amount=32, single_see_multiprocess=False, single_see_core_amount=8):
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self.analyze_row_col_results_all_single_see)
+        if(single_see_multiprocess):
+            self.analyze_row_col_results_all_single_see(16, int(task_amount/2), single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
+            self.analyze_row_col_results_all_single_see( 0, int(task_amount/2), single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
+        else:
+            multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self.analyze_row_col_results_all_single_see)
+
+def check_analyze(analyze_objs):
+    for analyze_obj in analyze_objs:
+        analyze_obj.analyze_col_results_single_see(see_num=31, add_loss=True, single_see_multiprocess=True, single_see_core_amount=12)
+
+def doing_analyze_2page(analyze_obj):
+    analyze_obj.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
+    analyze_obj.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
+    analyze_obj.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
+    analyze_obj.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
+    analyze_obj.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
+    analyze_obj.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
+    analyze_obj.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
+    analyze_obj.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
+    analyze_obj.analyze_col_results_all_single_see_multiprocess(add_loss=True,single_see_multiprocess=True, single_see_core_amount=10)
 
 
 if(__name__=="__main__"):
     from step11_b_result_obj_builder import Result_builder
-    from step11_c2_instance_organize import *
-
+    from step11_c_result_instance import *
     ### Result_analyzer 的 各method測試：
     # try_c_result_analyzer = Col_results_analyzer( ana_describe="try_c_result_analyzer", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20 ])
     # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=False)
@@ -296,171 +310,77 @@ if(__name__=="__main__"):
 
     
     ##################################################################################################################
-    # os_book_G_D_mae136 = Col_results_analyzer(ana_describe="5_1_GD_Gmae136_epoch700", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae3, os_book_rect_1532_mae6, os_book_rect_1532_mae6_noD])
-    # os_book_G_D_mae136.analyze_col_results_all_single_see_multiprocess(add_loss=True)
-    # os_book_G_D_mae136.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_G_D_mae136.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_G_D_mae136.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_G_D_mae136.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_G_D_mae136.analyze_col_results_multi_see([ 2, 3], "test_lt",  add_loss = True)
-    # os_book_G_D_mae136.analyze_col_results_multi_see([ 6, 7], "test_rt",  add_loss = True)
-    # os_book_G_D_mae136.analyze_col_results_multi_see([10,11], "test_ld",  add_loss = True)
-    # os_book_G_D_mae136.analyze_col_results_multi_see([12,13], "test_rd",  add_loss = True)
-
-
+    # os_book_G_D_mae136 = Col_results_analyzer(ana_describe="5_1_GD_Gmae136_epoch700", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae3, os_book_rect_1532_mae6, os_book_rect_1532_mae6_noD]); doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
     ##################################################################################################################
     # os_book_rect_D025目前太少，之後再加進去
-    # os_book_G_D_vs_justG = Col_results_analyzer(ana_describe="5_2_GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D01, os_book_rect_D00, os_book_rect_D00_justG])
-    # os_book_G_D_vs_justG.analyze_col_results_all_single_see_multiprocess(add_loss=True)
-    # os_book_G_D_vs_justG.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_G_D_vs_justG.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_G_D_vs_justG.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_G_D_vs_justG.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_G_D_vs_justG.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    # os_book_G_D_vs_justG.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    # os_book_G_D_vs_justG.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    # os_book_G_D_vs_justG.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
-
-
+    # os_book_G_D_vs_justG = Col_results_analyzer(ana_describe="5_2_GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D01, os_book_rect_D00, os_book_rect_D00_justG]); doing_analyze_2page(os_book_G_D_vs_justG)
     ##################################################################################################################
-    # os_book_1532data_mae136920 = Col_results_analyzer(ana_describe="5_3_justG_136920", 
-    #                                     col_results=[os_book_justG_mae1,
-    #                                                 os_book_justG_mae3,
-    #                                                 os_book_justG_mae6,
-    #                                                 os_book_justG_mae9,
-    #                                                 os_book_justG_mae20
-    #                                                 ])
-    # os_book_1532data_mae136920.analyze_col_results_all_single_see_multiprocess(add_loss=True)
-    # os_book_1532data_mae136920.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_1532data_mae136920.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_1532data_mae136920.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_1532data_mae136920.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_1532data_mae136920.analyze_col_results_multi_see([ 2, 3], "test_lt" , add_loss = True)
-    # os_book_1532data_mae136920.analyze_col_results_multi_see([ 6, 7], "test_rt" , add_loss = True)
-    # os_book_1532data_mae136920.analyze_col_results_multi_see([10,11], "test_ld" , add_loss = True)
-    # os_book_1532data_mae136920.analyze_col_results_multi_see([12,13], "test_rd" , add_loss = True)
-
-
+    # os_book_1532data_mae136920 = Col_results_analyzer(ana_describe="5_3_justG_136920", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20]); doing_analyze_2page(os_book_1532data_mae136920)
     ##################################################################################################################
     ### 4.放大縮小的比較 norm/ bigger
-    # os_book_justG_bigger = Col_results_analyzer(ana_describe="5_4_justG_a_bigger", col_results=[os_book_justG_normal, os_book_justG_bigger])
-    # os_book_justG_bigger.analyze_col_results_all_single_see_multiprocess(add_loss=True,single_see_multiprocess=True, single_see_core_amount=12)
-    # os_book_justG_bigger.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_justG_bigger.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_justG_bigger.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_justG_bigger.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_justG_bigger.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    # os_book_justG_bigger.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    # os_book_justG_bigger.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    # os_book_justG_bigger.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
-
+    # os_book_justG_bigger = Col_results_analyzer(ana_describe="5_4_justG_a_bigger", col_results=[os_book_justG_normal, os_book_justG_bigger]); doing_analyze_2page(os_book_justG_bigger)
     ##################################################################################################################
     ### 4.放大縮小的比較 bigger_wrong/norm/small/small2
-    # os_book_justG_big_small = Col_results_analyzer(ana_describe="5_4_justG_b_bigger_smaller", col_results=[os_book_justG_bigger, os_book_justG_normal, os_book_justG_smaller, os_book_justG_smaller2])
-    # os_book_justG_big_small.analyze_col_results_all_single_see_multiprocess(add_loss=True)
-    # os_book_justG_big_small.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_justG_big_small.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_justG_big_small.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_justG_big_small.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_justG_big_small.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    # os_book_justG_big_small.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    # os_book_justG_big_small.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    # os_book_justG_big_small.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
-
+    # os_book_justG_big_small = Col_results_analyzer(ana_describe="5_4_justG_b_bigger_smaller", col_results=[os_book_justG_bigger, os_book_justG_normal, os_book_justG_smaller, os_book_justG_smaller2]); doing_analyze_2page(os_book_justG_big_small)
     ##################################################################################################################
     ### 5.focus
-    # os_book_focus_GD_vs_G = Col_results_analyzer(ana_describe="5_5_focus_GD_vs_G", col_results=[os_book_rect_nfocus, os_book_rect_focus, os_book_justG_nfocus, os_book_justG_focus])
-    # os_book_focus_GD_vs_G.analyze_col_results_all_single_see_multiprocess(add_loss=True)
-    # os_book_focus_GD_vs_G.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_focus_GD_vs_G.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_focus_GD_vs_G.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_focus_GD_vs_G.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_focus_GD_vs_G.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    # os_book_focus_GD_vs_G.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    # os_book_focus_GD_vs_G.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    # os_book_focus_GD_vs_G.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
-
-
+    # os_book_focus_GD_vs_G = Col_results_analyzer(ana_describe="5_5_focus_GD_vs_G", col_results=[os_book_rect_nfocus, os_book_rect_focus, os_book_justG_nfocus, os_book_justG_focus]); doing_analyze_2page(os_book_focus_GD_vs_G)
     ##################################################################################################################
     ### 6.400 vs 1532
-    # os_book_400 = Col_results_analyzer(ana_describe="5_6_a_400_page", col_results=[os_book_400_rect, os_book_400_justG])
-    # os_book_400.analyze_col_results_all_single_see_multiprocess(add_loss=True, single_see_multiprocess=True, single_see_core_amount=10)
-    # os_book_400.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_400.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_400.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_400.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_400.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    # os_book_400.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    # os_book_400.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    # os_book_400.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
-
+    # os_book_400 = Col_results_analyzer(ana_describe="5_6_a_400_page", col_results=[os_book_400_rect, os_book_400_justG]); doing_analyze_2page(os_book_400)
     ##################################################################################################################
     ### 6.400 vs 1532
-    # os_book_400_vs_1532 = Col_results_analyzer(ana_describe="5_6_b_400_vs_1532_page", col_results=[os_book_400_rect, os_book_400_justG, os_book_1532_rect, os_book_1532_justG])
-    # os_book_400_vs_1532.analyze_col_results_all_single_see_multiprocess(add_loss=True, single_see_multiprocess=True, single_see_core_amount=10)
-    # os_book_400_vs_1532.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_400_vs_1532.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_400_vs_1532.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_400_vs_1532.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_400_vs_1532.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    # os_book_400_vs_1532.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    # os_book_400_vs_1532.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    # os_book_400_vs_1532.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
-
+    # os_book_400_vs_1532 = Col_results_analyzer(ana_describe="5_6_b_400_vs_1532_page", col_results=[os_book_400_rect, os_book_400_justG, os_book_1532_rect, os_book_1532_justG]); doing_analyze_2page(os_book_400_vs_1532)
     ##################################################################################################################
     ### 7.第一層 k7 vs k3
-    os_book_first_k7_vs_k3 = Col_results_analyzer(ana_describe="5_7_first_k7_vs_k3", col_results=[os_book_GD_first_k7, os_book_GD_first_k3, os_book_G_first_k7, os_book_G_first_k3 ])
-    os_book_first_k7_vs_k3.analyze_col_results_all_single_see_multiprocess(add_loss=True, single_see_multiprocess=True, single_see_core_amount=12)
-    os_book_first_k7_vs_k3.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    os_book_first_k7_vs_k3.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    os_book_first_k7_vs_k3.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    os_book_first_k7_vs_k3.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    os_book_first_k7_vs_k3.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    os_book_first_k7_vs_k3.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    os_book_first_k7_vs_k3.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    os_book_first_k7_vs_k3.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
-
+    # os_book_first_k7_vs_k3 = Col_results_analyzer(ana_describe="5_7_first_k7_vs_k3", col_results=[os_book_GD_first_k7, os_book_GD_first_k3, os_book_G_first_k7, os_book_G_first_k3 ]); doing_analyze_2page(os_book_first_k7_vs_k3)
     ##################################################################################################################
     ### 8a.GD + mrf比較
-    # os_book_GD_mrf = Col_results_analyzer(ana_describe="5_8a_GD_mrf", col_results=[os_book_GD_no_mrf, os_book_GD_mrf_79, os_book_GD_mrf_replace79])
-    # os_book_GD_mrf = Col_results_analyzer(ana_describe="5_8a_GD_mrf_all", col_results=[os_book_GD_no_mrf, os_book_GD_mrf_7, os_book_GD_mrf_79, os_book_GD_mrf_replace7, os_book_GD_mrf_replace79])
-    # os_book_GD_mrf.analyze_col_results_all_single_see_multiprocess(add_loss=True,single_see_multiprocess=True, single_see_core_amount=12)
-    # os_book_GD_mrf.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_GD_mrf.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_GD_mrf.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_GD_mrf.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_GD_mrf.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    # os_book_GD_mrf.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    # os_book_GD_mrf.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    # os_book_GD_mrf.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
+    # os_book_GD_mrf     = Col_results_analyzer(ana_describe="5_8a_GD_mrf"    , col_results=[os_book_GD_no_mrf, os_book_GD_mrf_79, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf)
+    # os_book_GD_mrf_all = Col_results_analyzer(ana_describe="5_8a_GD_mrf_all", col_results=[os_book_GD_no_mrf, os_book_GD_mrf_7 , os_book_GD_mrf_79, os_book_GD_mrf_replace7, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf_all)
+    ##################################################################################################################
+    ### 8b._1 G + mrf比較
+    # os_book_G_mrf                      = Col_results_analyzer(ana_describe="5_8b_1_G_mrf"                , col_results=[os_book_G_no_mrf, os_book_G_mrf_79, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf)
+    # os_book_G_mrf_all                  = Col_results_analyzer(ana_describe="5_8b_1_G_mrf_all"            , col_results=[os_book_G_no_mrf, os_book_G_mrf_7,  os_book_G_mrf_79, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf_all)
+    
+    # os_book_8c_Gmrf_3branch  = Col_results_analyzer(ana_describe="5_8c_Gmrf_3branch",  col_results=[os_book_G_mrf_135 ,  os_book_G_mrf_357 , os_book_G_mrf_3579 ]); doing_analyze_2page( os_book_8c_Gmrf_3branch  )
+    os_book_8d_GDmrf_3branch = Col_results_analyzer(ana_describe="5_8d_GDmrf_3branch", col_results=[os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]); doing_analyze_2page( os_book_8d_GDmrf_3branch )
+    # os_book_5_8cd = Row_col_results_analyzer(ana_describe="5_8cd", row_col_results=[[os_book_G_mrf_135,  os_book_G_mrf_357, os_book_G_mrf_3579],
+    #                                                                                 [os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]
+    #                                                                              ])
+    # os_book_5_8cd.analyze_row_col_results_all_single_see_multiprocess(single_see_multiprocess=True, single_see_core_amount=10)
+
+    # os_book_8b_2_G_mrf753_k3           = Col_results_analyzer(ana_describe="5_8b_2_G_mrf753_k3"          , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_7_firstk3,  os_book_G_mrf_5_firstk3,  os_book_G_mrf_3_firstk3 ]); doing_analyze_2page(os_book_8b_2_G_mrf753_k3)
+    # os_book_8b_3_G_mrf97_75_53         = Col_results_analyzer(ana_describe="5_8b_3_G_mrf97_75_53"        , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_79_firstk3, os_book_G_mrf_57_firstk3, os_book_G_mrf_35_firstk3]); doing_analyze_2page(os_book_8b_3_G_mrf97_75_53)
+    # os_book_8b_4_G_mrf_replace753      = Col_results_analyzer(ana_describe="5_8b_4_G_mrf_replace753"     , col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace7,  os_book_G_mrf_replace5,  os_book_G_mrf_replace3 ]); doing_analyze_2page(os_book_8b_4_G_mrf_replace753)
+    # os_book_8b_5_G_mrf_replace97_75_53 = Col_results_analyzer(ana_describe="5_8b_5_G_mrf_replace97_75_53", col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace79, os_book_G_mrf_replace57, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_5_G_mrf_replace97_75_53)
+    # os_book_8b_6a_Gmrf7_1_2branch_try_replace = Col_results_analyzer(ana_describe="5_8b_6a_Gmrf7_1_2branch_try_replace", col_results=[os_book_G_mrf_7_firstk3,  os_book_G_mrf_79_firstk3, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_8b_6a_Gmrf7_1_2branch_try_replace)
+    # os_book_8b_6b_Gmrf5_1_2branch_try_replace = Col_results_analyzer(ana_describe="5_8b_6b_Gmrf5_1_2branch_try_replace", col_results=[os_book_G_mrf_5_firstk3,  os_book_G_mrf_57_firstk3, os_book_G_mrf_replace5, os_book_G_mrf_replace57]); doing_analyze_2page(os_book_8b_6b_Gmrf5_1_2branch_try_replace)
+    # os_book_8b_6c_Gmrf3_1_2branch_try_replace = Col_results_analyzer(ana_describe="5_8b_6c_Gmrf3_1_2branch_try_replace", col_results=[os_book_G_mrf_3_firstk3,  os_book_G_mrf_35_firstk3, os_book_G_mrf_replace3, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_6c_Gmrf3_1_2branch_try_replace)
+    # os_book_5_8b_7_all = Row_col_results_analyzer(ana_describe="5_8b_7_all", row_col_results=[[os_book_G_mrf_7_firstk3,  os_book_G_mrf_79_firstk3, os_book_G_mrf_replace7, os_book_G_mrf_replace79],
+    #                                                                                          [os_book_G_mrf_5_firstk3,  os_book_G_mrf_57_firstk3, os_book_G_mrf_replace5, os_book_G_mrf_replace57],
+    #                                                                                          [os_book_G_mrf_3_firstk3,  os_book_G_mrf_35_firstk3, os_book_G_mrf_replace3, os_book_G_mrf_replace35]])
+    # os_book_5_8b_7_all.analyze_row_col_results_all_single_see_multiprocess(single_see_multiprocess=True, single_see_core_amount=8)
+    
+    # check_analyze([
+    #     os_book_8b_2_G_mrf753_k3, 
+    #     os_book_8b_3_G_mrf97_75_53, 
+    #     os_book_8b_4_G_mrf_replace753, 
+    #     os_book_8b_5_G_mrf_replace97_75_53,
+    #     os_book_8b_6a_Gmrf7_1_2branch_try_replace,
+    #     os_book_8b_6b_Gmrf5_1_2branch_try_replace,
+    #     os_book_8b_6c_Gmrf3_1_2branch_try_replace])
+    ##################################################################################################################
 
     ##################################################################################################################
-    ### 8b.G + mrf比較
-    # os_book_G_mrf = Col_results_analyzer(ana_describe="5_8b_G_mrf", col_results=[os_book_G_no_mrf,  os_book_G_mrf_79, os_book_G_mrf_replace79])
-    os_book_G_mrf = Col_results_analyzer(ana_describe="5_8b_G_mrf_all", col_results=[os_book_G_no_mrf, os_book_G_mrf_7,  os_book_G_mrf_79, os_book_G_mrf_replace7, os_book_G_mrf_replace79])
-    os_book_G_mrf.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    os_book_G_mrf.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    os_book_G_mrf.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    os_book_G_mrf.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    os_book_G_mrf.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    os_book_G_mrf.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    os_book_G_mrf.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    os_book_G_mrf.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
-    os_book_G_mrf.analyze_col_results_all_single_see_multiprocess(add_loss=True,single_see_multiprocess=True, single_see_core_amount=12)
+    ### 10.GD，D保持train 1次，G train 1,3,5次 比較 
+    # os_book_D1Gmany = Col_results_analyzer(ana_describe="5_10_GD_D", col_results=[os_book_D1G1, os_book_D1G3, os_book_D1G5])
+    # doing_analyze_2page(os_book_D1Gmany)
 
-
-    ##################################################################################################################
-    ### 9.GD，D保持train 1次，G train 1,3,5次 比較 
-    # os_book_mrf = Col_results_analyzer(ana_describe="5_9_GD_D", col_results=[os_book_D1G1, os_book_D1G3, os_book_D1G5])
-    # os_book_mrf.analyze_col_results_all_single_see_multiprocess(add_loss=True, core_amount=2)
-    # os_book_mrf.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    # os_book_mrf.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    # os_book_mrf.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    # os_book_mrf.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    # os_book_mrf.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    # os_book_mrf.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    # os_book_mrf.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    # os_book_mrf.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
+    
+    ### 9a.GD，D_concat_try and k3 or k4
+    # os_book_D_concat_try_and_k3_k4          = Col_results_analyzer(ana_describe="5_9a_GD_D_concat_try_and_k3,4"         , col_results=[os_book_D_concat_k4, os_book_D_concat_k3, os_book_D_no_concat_k4, os_book_D_no_concat_k3]); doing_analyze_2page(os_book_D_concat_try_and_k3_k4)
+    # os_book_D_concat_try_and_k3_k4_and_no_D = Col_results_analyzer(ana_describe="5_9a_GD_D_concat_try_and_k3,4_and_no_D", col_results=[os_book_D_concat_k4, os_book_D_concat_k3, os_book_D_no_concat_k4, os_book_D_no_concat_k3, os_book_no_D]); doing_analyze_2page(os_book_D_concat_try_and_k3_k4_and_no_D)
 
 
     # os_book_400.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
