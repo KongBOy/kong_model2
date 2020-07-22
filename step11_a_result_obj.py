@@ -22,19 +22,20 @@ class See:
         self.see_dir = self.result_dir + "/" + self.see_name
         self.see_file_names = None
         self.see_file_amount = None
-        self.matplot_visual_dir = None 
+        self.matplot_visual_dir = self.see_dir + "/matplot_visual" 
 
         ### 不確定要不要，因為在initial就做這麼多事情好嗎~~會不會容易出錯哩~~
-        Check_dir_exist_and_build(self.see_dir)
-        self.set_see_dir_info()  
+        ### 覺得還是不要比較好，要使用到的時候再建立，要不然有時候在analyze只是想要result_obj而已，結果又把see資料夾又重建了一次
+        # Check_dir_exist_and_build(self.see_dir)
+        # self.get_see_dir_info()   ### 好像只有在 analyze時會用到！所以用到的時候再抓就好囉！
 
         self.single_row_imgs_during_train = None ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
         
-    def set_see_dir_info(self):
+    def get_see_dir_info(self):
         self.see_file_names = get_dir_certain_file_name(self.see_dir, ".jpg")
         self.see_file_amount = len(self.see_file_names)
-        self.matplot_visual_dir = self.see_dir + "/matplot_visual"
-        Check_dir_exist_and_build(self.matplot_visual_dir)
+        # self.matplot_visual_dir = self.see_dir + "/matplot_visual"
+        # Check_dir_exist_and_build(self.matplot_visual_dir)
 
     def save_as_jpg(self):
         Save_as_jpg(self.see_dir, self.see_dir, delete_ord_file=True)
@@ -60,10 +61,11 @@ class See:
     ###############################################################################################
     ###############################################################################################
     def save_as_matplot_visual_during_train(self, epoch, show_msg=False): ### 訓練中，一張張 生成matplot_visual(這裡不能後處理，因為後處理需要全局的see_file，這裡都單張單張的會出問題)
+        Check_dir_exist_and_build(self.see_dir)
         start_time = time.time()
         # if(epoch==0):
         #     Check_dir_exist_and_build_new_dir(self.matplot_visual_dir)      ### 建立 存結果的資料夾
-        self.set_see_dir_info() ### 每次執行都要 update喔！ 取得result內的 某個see資料夾 內的所有影像 檔名 和 數量
+        self.get_see_dir_info() ### 每次執行都要 update喔！ 取得result內的 某個see資料夾 內的所有影像 檔名 和 數量
         self.single_row_imgs_during_train = self._Draw_matplot_visual(epoch, add_loss=True)  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
         if(show_msg): print(f"processing {self.see_name}, cost_time:{time.time() - start_time}")
     ###############################################################################################
@@ -81,7 +83,7 @@ class See:
         # matplot_visual_dir = self.see_dir + "/" + "matplot_visual" ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(self.matplot_visual_dir)      ### 建立 存結果的資料夾
 
-        self.set_see_dir_info() ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
+        self.get_see_dir_info() ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
         if(single_see_multiprocess):self._draw_matplot_visual_after_train_multiprocess( add_loss, core_amount=8, task_amount=self.see_file_amount)
         else:self._draw_matplot_visual_after_train(0, self.see_file_amount, add_loss)
 
@@ -97,6 +99,7 @@ class See:
         multi_processing_interface(core_amount=core_amount ,task_amount=task_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss])
 
     def _draw_matplot_visual_after_train(self, start_img, img_amount, add_loss):
+        Check_dir_exist_and_build(self.see_dir)
         for go_img in tqdm(range(start_img, start_img+img_amount)):
             if(go_img>=2): ### 第三張 才開始存 epoch影像喔！
                 epoch = go_img-2  ### 第三張 才開始存 epoch影像喔！所以epoch的數字 是go_img-2
