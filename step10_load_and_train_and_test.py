@@ -379,6 +379,7 @@ if(__name__=="__main__"):
     os_book_1532_Gk3_resb07 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , describe_mid="5_12_5", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
     # os_book_1532_Gk3_resb09 ### 原本已經訓練過了
     os_book_1532_Gk3_resb11 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , describe_mid="5_12_7", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb20 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , describe_mid="5_12_8", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
 
 
 if(__name__=="__main__"):
@@ -431,4 +432,5 @@ if(__name__=="__main__"):
     # os_book_1532_Gk3_resb05.run() ### 128.246
     # os_book_1532_Gk3_resb07.run() ### 127.28
     # os_book_1532_Gk3_resb11.run() ### 127.51
+    # os_book_1532_Gk3_resb20.run() ### 127.51
     pass
