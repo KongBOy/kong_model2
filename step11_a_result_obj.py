@@ -70,6 +70,7 @@ class See:
         if(show_msg): print(f"processing {self.see_name}, cost_time:{time.time() - start_time}")
     ###############################################################################################
     def draw_loss_at_see_during_train(self, epoch, epochs):
+        Check_dir_exist_and_build(self.matplot_visual_dir) ### 以防matplot_visual資料夾被刪掉，要生圖找不到資料夾
         self.single_row_imgs_during_train.Draw_ax_loss_during_train( self.single_row_imgs_during_train.ax[-1,1], self.see_dir+"/../logs", epoch, epochs )
         self.single_row_imgs_during_train.Save_fig(dst_dir=self.matplot_visual_dir, epoch=epoch)
 

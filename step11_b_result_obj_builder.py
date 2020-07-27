@@ -74,12 +74,13 @@ class Result_train_builder(Result_sees_builder):
         if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
         result_name_element += [datetime.datetime.now().strftime("%Y%m%d_%H%M%S"), exp.model_obj.model_name.value]
         if(exp.describe_end is not None): result_name_element += [exp.describe_end]
-        return "-".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
+        result_name = "-".join(result_name_element)### result資料夾，裡面放checkpoint和tensorboard資料夾
+        return exp.exp_dir + "/" + result_name
 
     ### 設定方式一：用exp_obj來設定
     def set_by_exp(self, exp):
         ### 1.用 exp 資訊來 決定 result_name
-        self.result.result_name = self._get_result_name_by_exp(exp)
+        self.result.result_name  = self._get_result_name_by_exp(exp)
 
         ### 2.決定好 result_name 後，用result_name來設定Result
         self.set_by_result_name(self.result.result_name)

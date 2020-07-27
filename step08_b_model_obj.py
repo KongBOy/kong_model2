@@ -175,7 +175,11 @@ class MODEL_NAME(Enum):
     rect_Gk3_D_no_concat_k3    = "rect_Gk3_D_no_concat_k3"  ### 127.28
 
     ########################################################### 10
-    rect_g_train_many    = "rect_g_train_many"
+    rect_Gk4_many_Dk4_concat    = "rect_Gk4_many_Dk4_concat"    ### 以前的
+
+    rect_Gk3_train3_Dk4_no_concat = "rect_Gk3_train3_Dk4_no_concat"  ### 
+    rect_Gk3_train5_Dk4_no_concat = "rect_Gk3_train5_Dk4_no_concat"  ### 
+
 
     ########################################################### 11
     Gk3_no_res             = "justGk3_no_res"
@@ -189,6 +193,7 @@ class MODEL_NAME(Enum):
     Gk3_resb05 = "justGk3_resb05" ### 128.246
     Gk3_resb07 = "justGk3_resb07" ### 127.28
     Gk3_resb11 = "justGk3_resb11" ### 127.51
+    Gk3_resb20 = "justGk3_resb20" ### 127.51
 
 
 ### 直接先建好 obj 給外面import囉！
@@ -196,7 +201,7 @@ unet                = KModel_builder().set_model_name(MODEL_NAME.unet           
 #######################################################################################################################
 rect                = KModel_builder().set_model_name(MODEL_NAME.rect               ).build_rect2(first_k3=False, g_train_many=False)
 rect_firstk3        = KModel_builder().set_model_name(MODEL_NAME.rect               ).build_rect2    (first_k3=True )
-rect_g_train_many   = KModel_builder().set_model_name(MODEL_NAME.rect               ).build_rect2    (first_k3=False, g_train_many=True) ### 目前G_train幾次要手動改喔！
+rect_Gk4_many_Dk4_concat   = KModel_builder().set_model_name(MODEL_NAME.rect               ).build_rect2    (first_k3=False, g_train_many=True) ### 目前G_train幾次要手動改喔！
 
 rect_mrfall         = KModel_builder().set_model_name(MODEL_NAME.rect_mrfall        ).build_rect2_mrf(first_k3=False, mrf_replace=False, use1=True, use3=True, use5=True, use7=True, use9=True, g_train_many=False)
 rect_mrf7           = KModel_builder().set_model_name(MODEL_NAME.rect_mrf7          ).build_rect2_mrf(first_k3=False, mrf_replace=False, use7=True)
@@ -246,6 +251,10 @@ rect_Gk3_D_concat_k3       = KModel_builder().set_model_name(MODEL_NAME.rect_Gk3
 rect_Gk3_D_no_concat_k4    = KModel_builder().set_model_name(MODEL_NAME.rect_Gk3_D_no_concat_k4).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4)
 rect_Gk3_D_no_concat_k3    = KModel_builder().set_model_name(MODEL_NAME.rect_Gk3_D_no_concat_k3).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=3)
 
+########################################################### 10
+rect_Gk3_train3_Dk4_no_concat    = KModel_builder().set_model_name(MODEL_NAME.rect_Gk3_train3_Dk4_no_concat).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4, g_train_many=True)
+rect_Gk3_train5_Dk4_no_concat    = KModel_builder().set_model_name(MODEL_NAME.rect_Gk3_train5_Dk4_no_concat).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4, g_train_many=True)
+
 ########################################################### 11
 Gk3_no_res             = KModel_builder().set_model_name(MODEL_NAME.Gk3_no_res)            .build_justG(first_k3=True, use_res_learning=False) ### 127.51
 Gk3_no_res_D_no_concat = KModel_builder().set_model_name(MODEL_NAME.Gk3_no_res_D_no_concat).build_rect2(first_k3=True, use_res_learning=False, D_first_concat=False, D_kernel_size=4) ### 127.28
@@ -259,6 +268,7 @@ Gk3_resb03  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb03).build_justG
 Gk3_resb05  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb05).build_justG(first_k3=True, use_res_learning= True,resb_num=5) ### 128.246
 Gk3_resb07  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb07).build_justG(first_k3=True, use_res_learning= True,resb_num=7) ### 127.28
 Gk3_resb11  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb11).build_justG(first_k3=True, use_res_learning= True,resb_num=11) ### 127.51
+Gk3_resb20  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb20).build_justG(first_k3=True, use_res_learning= True,resb_num=20) ### 127.51
 
 
 if(__name__=="__main__"):

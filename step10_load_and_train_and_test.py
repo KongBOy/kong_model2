@@ -255,7 +255,7 @@ class Exp_builder():
         return self
 
     def build(self, result_name=None):
-        if(result_name is not None):self.exp.result_name = self.exp_dir + "/" + result_name
+        if(result_name is not None):self.exp.result_name = self.exp.exp_dir + "/" + result_name
         return self.exp
 
 if(__name__=="__main__"):
@@ -365,9 +365,13 @@ if(__name__=="__main__"):
 
     ########################################################### 10
     ### 5_10_GD_D_train1_G_train_135 
+    ### 舊版，如果要重train記得改資料庫喔(拿掉focus)！
     # os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_2", describe_end="1532data_mae3_focus_G03D01_127.35").set_train_args(epochs=700).build(result_name="")
     # os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_3", describe_end="1532data_mae3_focus_G05D01_127.35").set_train_args(epochs=700).build(result_name="")
 
+    ### 新版
+    os_book_1532_rect_Gk3_train3_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train3_Dk4_no_concat, describe_mid="5_10_2", describe_end="127.246").set_train_args(epochs=700).build(result_name="")
+    os_book_1532_rect_Gk3_train5_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train5_Dk4_no_concat, describe_mid="5_10_3", describe_end="no_machine").set_train_args(epochs=700).build(result_name="")
     ########################################################### 11
     # os_book_1532_Gk3_no_res              =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_no_res            , describe_mid="5_11_1", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
     # os_book_1532_Gk3_no_res_D_no_concat  =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_no_res_D_no_concat, describe_mid="5_11_2", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
@@ -382,6 +386,7 @@ if(__name__=="__main__"):
     os_book_1532_Gk3_resb07 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
     # os_book_1532_Gk3_resb09 ### 原本已經訓練過了
     os_book_1532_Gk3_resb11 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb20 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
 
 
 if(__name__=="__main__"):
@@ -421,6 +426,10 @@ if(__name__=="__main__"):
     # os_book_1532_rect_Gk3_D_concat_k3.run()    ###
     # os_book_1532_rect_Gk3_D_no_concat_k4.run() ### 127.55
     # os_book_1532_rect_Gk3_D_no_concat_k3.run() ### 127.48
+    
+    ########################################################### 09b
+    # os_book_1532_rect_Gk3_train3_Dk4_no_concat.run() ### 128.246
+    # os_book_1532_rect_Gk3_train5_Dk4_no_concat.run() ### no machine
 
     ########################################################### 11
     # os_book_1532_Gk3_no_res.run()               ### 127.51
@@ -434,4 +443,5 @@ if(__name__=="__main__"):
     # os_book_1532_Gk3_resb05.run() ### 128.246
     # os_book_1532_Gk3_resb07.run() ### 127.28
     # os_book_1532_Gk3_resb11.run() ### 127.51
+    # os_book_1532_Gk3_resb20.run() ### 127.51
     pass
