@@ -158,26 +158,30 @@ class Generator(tf.keras.models.Model):
         if(self.coord_conv):
             height = input_tensor.shape[1]
             width  = input_tensor.shape[2]
-            x = tf.range(start=0, limit=width)
+            x = tf.range(start=0, limit=width, dtype=tf.float32)
             x = tf.reshape(x, [1,-1])
             x = tf.tile(x, [height, 1])
             x = tf.expand_dims(x,axis=-1)
+            x = x / (width-1)
+            x = x*2 -1
             # print(x)
 
-            y = tf.range(start=0, limit=height)
+            y = tf.range(start=0, limit=height, dtype=tf.float32)
             y = tf.reshape(y, [-1,1])
             y = tf.tile(y, [1, width])
             y = tf.expand_dims(y, axis=-1)
+            y = y / (height-1)
+            y = y*2 -1
+            
             # print(y)
 
             yx = tf.concat([y,x], axis=-1)
             yx = tf.expand_dims(yx, axis=0)
-            yx = tf.cast(yx, tf.float32)
             # print(yx)
 
             input_tensor = tf.concat( [input_tensor, yx], axis=-1 )
         # print("input_tensor.shape", input_tensor.shape)
-        
+
         first_pad_size = int( (self.first_k-1)/2 )
         if(self.mrfb is not None):  ### 看有沒有用 mrf
             x = self.mrfb(input_tensor)
