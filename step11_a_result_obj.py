@@ -27,7 +27,7 @@ class See:
         ### 不確定要不要，因為在initial就做這麼多事情好嗎~~會不會容易出錯哩~~
         ### 覺得還是不要比較好，要使用到的時候再建立，要不然有時候在analyze只是想要result_obj而已，結果又把see資料夾又重建了一次
         # Check_dir_exist_and_build(self.see_dir)
-        # self.get_see_dir_info()   ### 好像只有在 analyze時會用到！所以用到的時候再抓就好囉！
+        self.get_see_dir_info()   ### 好像只有在 analyze時會用到！所以用到的時候再抓就好囉！
 
         self.single_row_imgs_during_train = None ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
         
