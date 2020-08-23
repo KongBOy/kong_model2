@@ -388,6 +388,10 @@ if(__name__=="__main__"):
     os_book_1532_Gk3_resb11 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
     os_book_1532_Gk3_resb20 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
 
+    ########################################################### 12
+    exp_dir13 = "5_13_coord_conv"
+    os_book_1532_justGk3_coord_conv        =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_coord_conv        , exp_dir=exp_dir13, describe_mid="5_13_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_justGk3_mrf357_coord_conv =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_mrf357_coord_conv , exp_dir=exp_dir13, describe_mid="5_13_2", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
 
 if(__name__=="__main__"):
     ########################################################### 08b2
@@ -416,27 +420,27 @@ if(__name__=="__main__"):
     # os_book_1532_rect_mrf3579_Gk3_DnoC_k4.run() ### 127.28
     # os_book_1532_rect_mrf35_Gk3_DnoC_k4.run()   ### 127.48
 
-    ########################################################### 09a
+    ########################################################### 09a Gk4的情況下，D try concat 和 k_size
     # os_book_1532_rect_Gk4_D_concat_k3.run()    ### 127.51
     # os_book_1532_rect_Gk4_D_no_concat_k4.run() ### 128.246
     # os_book_1532_rect_Gk4_D_no_concat_k3.run() ### 127.28
 
-    ########################################################### 09b
+    ########################################################### 09b Gk3的情況下，D try concat 和 k_size
     # os_book_1532_rect_Gk3_D_concat_k4.run()    ###
     # os_book_1532_rect_Gk3_D_concat_k3.run()    ###
     # os_book_1532_rect_Gk3_D_no_concat_k4.run() ### 127.55
     # os_book_1532_rect_Gk3_D_no_concat_k3.run() ### 127.48
     
-    ########################################################### 10
+    ########################################################### 10 GAN裡的 G訓練多次有沒有用
     # os_book_1532_rect_Gk3_train3_Dk4_no_concat.run() ### 128.246
     # os_book_1532_rect_Gk3_train5_Dk4_no_concat.run() ### no machine
 
-    ########################################################### 11
+    ########################################################### 11 resblock的add有沒有用
     # os_book_1532_Gk3_no_res.run()               ### 127.51
     # os_book_1532_Gk3_no_res_D_no_concat.run()   ### 127.28
     # os_book_1532_Gk3_no_res_mrf357.run()        ### 128.246
 
-    ########################################################### 12
+    ########################################################### 12 resblock用多少個
     # os_book_1532_Gk3_resb00.run() ### 127.48
     # os_book_1532_Gk3_resb01.run() ### 127.35
     # os_book_1532_Gk3_resb03.run() ### 127.55
@@ -444,4 +448,9 @@ if(__name__=="__main__"):
     # os_book_1532_Gk3_resb07.run() ### 127.28
     # os_book_1532_Gk3_resb11.run() ### 127.51
     # os_book_1532_Gk3_resb20.run() ### 127.51
+
+    ########################################################### 13 加coord_conv試試看
+    os_book_1532_justGk3_coord_conv.run()        ### 127.35
+    # os_book_1532_justGk3_mrf357_coord_conv.run() ### 127.28
+
     pass

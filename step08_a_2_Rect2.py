@@ -118,7 +118,7 @@ class Discriminator(tf.keras.models.Model):
         return self.conv_map(x)
 
 class Generator(tf.keras.models.Model):
-    def __init__(self, first_k3=False, mrfb=None, mrf_replace=False, use_res_learning=True, resb_num=9, **kwargs):
+    def __init__(self, first_k3=False, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, **kwargs):
         super(Generator, self).__init__(**kwargs)
         ############################################################################
         ### 架構 mrfb(如果 mrfb 外面有傳mrfb進來的話)
@@ -142,17 +142,11 @@ class Generator(tf.keras.models.Model):
         self.in_c3   = InstanceNorm_kong()
 
         self.use_res_learning = use_res_learning
-        self.resb_num = 9
-        self.resbs   = [ResBlock(c_num=64*4, use_res_learning=self.use_res_learning)]*9
-        # self.resb1   = ResBlock(c_num=64*4)
-        # self.resb2   = ResBlock(c_num=64*4)
-        # self.resb3   = ResBlock(c_num=64*4)
-        # self.resb4   = ResBlock(c_num=64*4)
-        # self.resb5   = ResBlock(c_num=64*4)
-        # self.resb6   = ResBlock(c_num=64*4)
-        # self.resb7   = ResBlock(c_num=64*4)
-        # self.resb8   = ResBlock(c_num=64*4)
-        # self.resb9   = ResBlock(c_num=64*4)
+        self.resb_num = resb_num
+        self.resbs   = [ResBlock(c_num=64*4, use_res_learning=self.use_res_learning)]*self.resb_num
+
+        self.coord_conv = coord_conv
+
 
         self.convT1  = Conv2DTranspose(64*2, kernel_size=3, strides=2, padding="same")
         self.in_cT1  = InstanceNorm_kong()
@@ -161,6 +155,29 @@ class Generator(tf.keras.models.Model):
         self.convRGB = Conv2D(3  ,   kernel_size=self.first_k, strides=1, padding="valid")
 
     def call(self, input_tensor):
+        if(self.coord_conv):
+            height = input_tensor.shape[1]
+            width  = input_tensor.shape[2]
+            x = tf.range(start=0, limit=width)
+            x = tf.reshape(x, [1,-1])
+            x = tf.tile(x, [height, 1])
+            x = tf.expand_dims(x,axis=-1)
+            # print(x)
+
+            y = tf.range(start=0, limit=height)
+            y = tf.reshape(y, [-1,1])
+            y = tf.tile(y, [1, width])
+            y = tf.expand_dims(y, axis=-1)
+            # print(y)
+
+            yx = tf.concat([y,x], axis=-1)
+            yx = tf.expand_dims(yx, axis=0)
+            yx = tf.cast(yx, tf.float32)
+            # print(yx)
+
+            input_tensor = tf.concat( [input_tensor, yx], axis=-1 )
+        # print("input_tensor.shape", input_tensor.shape)
+        
         first_pad_size = int( (self.first_k-1)/2 )
         if(self.mrfb is not None):  ### 看有沒有用 mrf
             x = self.mrfb(input_tensor)
@@ -185,15 +202,6 @@ class Generator(tf.keras.models.Model):
 
         for go_r in range(self.resb_num):
             x = self.resbs[go_r](x)
-        # x = self.resb1(x)
-        # x = self.resb2(x)
-        # x = self.resb3(x)
-        # x = self.resb4(x)
-        # x = self.resb5(x)
-        # x = self.resb6(x)
-        # x = self.resb7(x)
-        # x = self.resb8(x)
-        # x = self.resb9(x)
 
         x = self.convT1(x)
         x = self.in_cT1(x)
