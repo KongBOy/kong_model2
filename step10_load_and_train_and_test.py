@@ -450,7 +450,7 @@ if(__name__=="__main__"):
     # os_book_1532_Gk3_resb20.run() ### 127.51
 
     ########################################################### 13 加coord_conv試試看
-    os_book_1532_justGk3_coord_conv.run()        ### 127.35
+    # os_book_1532_justGk3_coord_conv.run()        ### 127.35
     # os_book_1532_justGk3_mrf357_coord_conv.run() ### 127.28
 
     pass
