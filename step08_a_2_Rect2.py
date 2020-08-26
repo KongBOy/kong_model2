@@ -18,6 +18,35 @@ tf.keras.backend.set_floatx('float32') ### 這步非常非常重要！用了才�
 #     normalized = (in_x-mean)*inv
 #     return scale*normalized + offset
 
+class CoordConv(tf.keras.layers.Layer):
+    def __init__(self, **kwargs):
+        super(CoordConv, self).__init__(**kwargs)
+
+    def call(self, input_tensor):
+        height = input_tensor.shape[1]
+        width  = input_tensor.shape[2]
+        x = tf.range(start=0, limit=width, dtype=tf.float32)
+        x = tf.reshape(x, [1,-1])
+        x = tf.tile(x, [height, 1])
+        x = tf.expand_dims(x,axis=-1)
+        x = x / (width-1)
+        x = x*2 -1
+        # print(x)
+
+        y = tf.range(start=0, limit=height, dtype=tf.float32)
+        y = tf.reshape(y, [-1,1])
+        y = tf.tile(y, [1, width])
+        y = tf.expand_dims(y, axis=-1)
+        y = y / (height-1)
+        y = y*2 -1
+        
+        # print(y)
+
+        yx = tf.concat([y,x], axis=-1)
+        yx = tf.expand_dims(yx, axis=0)
+        # print(yx)
+
+        return tf.concat( [input_tensor, yx], axis=-1 )
 
 class InstanceNorm_kong(tf.keras.layers.Layer):
     def __init__(self,**kwargs):
@@ -38,25 +67,31 @@ class InstanceNorm_kong(tf.keras.layers.Layer):
         # return tf.matmul(input, self.kernel)
 
 class ResBlock(tf.keras.layers.Layer):
-    def __init__(self, c_num, ks=3, s=1, use_res_learning=True, **kwargs):
+    def __init__(self, c_num, ks=3, s=1, use_res_learning=True, coord_conv=False, **kwargs):
         super(ResBlock, self).__init__()
         self.ks = ks
         self.use_res_learning=use_res_learning
+        self.coord_conv = coord_conv
+        if(self.coord_conv): self.coord_conv_res_layer1 = CoordConv()
         self.conv_1 = Conv2D( c_num, kernel_size=ks, strides=s, padding="valid")
         self.in_c1   = InstanceNorm_kong()
+        if(self.coord_conv): self.coord_conv_res_layer2 = CoordConv()
         self.conv_2 = Conv2D( c_num, kernel_size=ks, strides=s, padding="valid")
         self.in_c2   = InstanceNorm_kong()
     
     def call(self, input_tensor):
         p = int( (self.ks-1)/2 )
+        if(self.coord_conv): input_tensor = self.coord_conv_res_layer1(input_tensor)
         x = tf.pad( input_tensor, [ [0,0], [p,p], [p,p], [0,0] ], "REFLECT" )
         x = self.conv_1(x)
         x = self.in_c1(x)
         x = tf.nn.relu(x)
+
+        if(self.coord_conv): x = self.coord_conv_res_layer2(x)
         x = tf.pad( x, [ [0,0], [p,p], [p,p], [0,0] ], "REFLECT" )
         x = self.conv_2(x)
         x = self.in_c2(x)
-        if(self.use_res_learning): return x + input_tensor
+        if(self.use_res_learning): return x + input_tensor[...,:256]
         else: return x
 
 class Discriminator(tf.keras.models.Model):
@@ -121,6 +156,9 @@ class Generator(tf.keras.models.Model):
     def __init__(self, first_k3=False, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, **kwargs):
         super(Generator, self).__init__(**kwargs)
         ############################################################################
+        self.coord_conv = coord_conv
+
+        ############################################################################
         ### 架構 mrfb(如果 mrfb 外面有傳mrfb進來的話)
         self.mrfb = mrfb
         self.mrf_replace = mrf_replace
@@ -133,53 +171,39 @@ class Generator(tf.keras.models.Model):
         self.first_k = 7
         if(self.first_k3): self.first_k = 3
         
+        
+        if(self.coord_conv): self.coord_conv_layer1= CoordConv()
         if(self.mrf_replace == False):  ### 如果沒有用 mrf 來取代第一層，就用普通的conv
             self.conv1   = Conv2D(64  ,   kernel_size=self.first_k, strides=1, padding="valid")
         self.in_c1   = InstanceNorm_kong()
+
+        if(self.coord_conv): self.coord_conv_layer2= CoordConv()
         self.conv2   = Conv2D(64*2,   kernel_size=3, strides=2, padding="same")
         self.in_c2   = InstanceNorm_kong()
+
+        if(self.coord_conv): self.coord_conv_layer3= CoordConv()
         self.conv3   = Conv2D(64*4,   kernel_size=3, strides=2, padding="same")
         self.in_c3   = InstanceNorm_kong()
 
         self.use_res_learning = use_res_learning
         self.resb_num = resb_num
-        self.resbs   = [ResBlock(c_num=64*4, use_res_learning=self.use_res_learning)]*self.resb_num
-
-        self.coord_conv = coord_conv
+        self.resbs   = [ResBlock(c_num=64*4, use_res_learning=self.use_res_learning, coord_conv=coord_conv)]*self.resb_num
 
 
+
+        if(self.coord_conv): self.coord_conv_layer4= CoordConv()
         self.convT1  = Conv2DTranspose(64*2, kernel_size=3, strides=2, padding="same")
         self.in_cT1  = InstanceNorm_kong()
+        if(self.coord_conv): self.coord_conv_layer5= CoordConv()
         self.convT2  = Conv2DTranspose(64  , kernel_size=3, strides=2, padding="same")
         self.in_cT2  = InstanceNorm_kong()
+        if(self.coord_conv): self.coord_conv_layer6= CoordConv()
         self.convRGB = Conv2D(3  ,   kernel_size=self.first_k, strides=1, padding="valid")
 
     def call(self, input_tensor):
         if(self.coord_conv):
-            height = input_tensor.shape[1]
-            width  = input_tensor.shape[2]
-            x = tf.range(start=0, limit=width, dtype=tf.float32)
-            x = tf.reshape(x, [1,-1])
-            x = tf.tile(x, [height, 1])
-            x = tf.expand_dims(x,axis=-1)
-            x = x / (width-1)
-            x = x*2 -1
-            # print(x)
-
-            y = tf.range(start=0, limit=height, dtype=tf.float32)
-            y = tf.reshape(y, [-1,1])
-            y = tf.tile(y, [1, width])
-            y = tf.expand_dims(y, axis=-1)
-            y = y / (height-1)
-            y = y*2 -1
+            input_tensor = self.coord_conv_layer1(input_tensor)
             
-            # print(y)
-
-            yx = tf.concat([y,x], axis=-1)
-            yx = tf.expand_dims(yx, axis=0)
-            # print(yx)
-
-            input_tensor = tf.concat( [input_tensor, yx], axis=-1 )
         # print("input_tensor.shape", input_tensor.shape)
 
         first_pad_size = int( (self.first_k-1)/2 )
@@ -196,10 +220,13 @@ class Generator(tf.keras.models.Model):
         x = self.in_c1(x)
         x = tf.nn.relu(x)
         ### c2
+
+        if(self.coord_conv): x = self.coord_conv_layer2(x)
         x = self.conv2(x)
         x = self.in_c2(x)
         x = tf.nn.relu(x)
         ### c1
+        if(self.coord_conv): x = self.coord_conv_layer3(x)
         x = self.conv3(x)
         x = self.in_c3(x)
         x = tf.nn.relu(x)
@@ -207,14 +234,17 @@ class Generator(tf.keras.models.Model):
         for go_r in range(self.resb_num):
             x = self.resbs[go_r](x)
 
+        if(self.coord_conv): x = self.coord_conv_layer4(x)
         x = self.convT1(x)
         x = self.in_cT1(x)
         x = tf.nn.relu(x)
 
+        if(self.coord_conv): x = self.coord_conv_layer5(x)
         x = self.convT2(x)
         x = self.in_cT2(x)
         x = tf.nn.relu(x)
 
+        if(self.coord_conv): x = self.coord_conv_layer6(x)
         x = tf.pad(x, [[0,0], [first_pad_size,first_pad_size], [first_pad_size,first_pad_size], [0,0]], "REFLECT")
         x_RGB = self.convRGB(x)
         return tf.nn.tanh(x_RGB)
