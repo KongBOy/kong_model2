@@ -274,6 +274,7 @@ Gk3_resb05  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb05).build_justG
 Gk3_resb07  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb07).build_justG(first_k3=True, use_res_learning= True,resb_num=7) ### 127.28
 Gk3_resb09  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb11).build_justG(first_k3=True, use_res_learning= True,resb_num=9) ### 127.51
 Gk3_resb11  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb11).build_justG(first_k3=True, use_res_learning= True,resb_num=11) ### 127.51
+Gk3_resb15  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb11).build_justG(first_k3=True, use_res_learning= True,resb_num=15) ### 127.28
 Gk3_resb20  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb20).build_justG(first_k3=True, use_res_learning= True,resb_num=20) ### 127.51
 
 ########################################################### 13 加coord_conv試試看
