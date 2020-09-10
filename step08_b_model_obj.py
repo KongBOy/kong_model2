@@ -192,6 +192,7 @@ class MODEL_NAME(Enum):
     Gk3_resb03 = "justGk3_resb03" ### 127.55
     Gk3_resb05 = "justGk3_resb05" ### 128.246
     Gk3_resb07 = "justGk3_resb07" ### 127.28
+    Gk3_resb09 = "justGk3_resb09" ### 127.51
     Gk3_resb11 = "justGk3_resb11" ### 127.51
     Gk3_resb20 = "justGk3_resb20" ### 127.51
 
@@ -271,6 +272,7 @@ Gk3_resb01  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb01).build_justG
 Gk3_resb03  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb03).build_justG(first_k3=True, use_res_learning= True,resb_num=3) ### 127.55
 Gk3_resb05  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb05).build_justG(first_k3=True, use_res_learning= True,resb_num=5) ### 128.246
 Gk3_resb07  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb07).build_justG(first_k3=True, use_res_learning= True,resb_num=7) ### 127.28
+Gk3_resb09  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb11).build_justG(first_k3=True, use_res_learning= True,resb_num=9) ### 127.51
 Gk3_resb11  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb11).build_justG(first_k3=True, use_res_learning= True,resb_num=11) ### 127.51
 Gk3_resb20  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb20).build_justG(first_k3=True, use_res_learning= True,resb_num=20) ### 127.51
 
