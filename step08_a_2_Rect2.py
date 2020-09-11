@@ -187,18 +187,9 @@ class Generator(tf.keras.models.Model):
 
         self.use_res_learning = use_res_learning
         self.resb_num = resb_num
-        # self.resbs   = [ResBlock(c_num=64*4, use_res_learning=self.use_res_learning, coord_conv=coord_conv)]*self.resb_num
         self.resbs = [ ]
         for go_r in range(resb_num): self.resbs.append(ResBlock(c_num=64*4, use_res_learning=self.use_res_learning, coord_conv=coord_conv))
-        self.resb1   = ResBlock(c_num=64*4)
-        self.resb2   = ResBlock(c_num=64*4)
-        self.resb3   = ResBlock(c_num=64*4)
-        self.resb4   = ResBlock(c_num=64*4)
-        self.resb5   = ResBlock(c_num=64*4)
-        self.resb6   = ResBlock(c_num=64*4)
-        self.resb7   = ResBlock(c_num=64*4)
-        self.resb8   = ResBlock(c_num=64*4)
-        self.resb9   = ResBlock(c_num=64*4)
+
 
         if(self.coord_conv): self.coord_conv_layer4= CoordConv()
         self.convT1  = Conv2DTranspose(64*2, kernel_size=3, strides=2, padding="same")
@@ -241,17 +232,8 @@ class Generator(tf.keras.models.Model):
         x = tf.nn.relu(x)
 
         for go_r in range(self.resb_num):
-            print("self.resbs[go_r]",go_r,self.resbs[go_r])
             x = self.resbs[go_r](x)
-        # x = self.resb1(x)
-        # x = self.resb2(x)
-        # x = self.resb3(x)
-        # x = self.resb4(x)
-        # x = self.resb5(x)
-        # x = self.resb6(x)
-        # x = self.resb7(x)
-        # x = self.resb8(x)
-        # x = self.resb9(x)
+
 
         if(self.coord_conv): x = self.coord_conv_layer4(x)
         x = self.convT1(x)
