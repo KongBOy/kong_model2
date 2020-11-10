@@ -1,5 +1,4 @@
 matplotlib
 opencv-python
 tqdm
-gast==0.2.2
-tensorflow-gpu==2.0.0rc2
+tensorflow
