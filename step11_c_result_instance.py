@@ -133,9 +133,9 @@ os_book_Gk3_no_D           = copy.deepcopy(os_book_G_first_k3); os_book_Gk3_no_D
 
 ##################################################################################################################################################################
 dir10 = "5_10_GD_D_train1_G_train_135"
-os_book_D1G1 = copy.deepcopy(os_book_rect_focus);  os_book_D1G1.ana_plot_title = "D1_G1"
-os_book_D1G3 = Result_builder().set_by_result_name( dir10 + "/type7b_h500_w332_real_os_book-20200611_222745-rect-1532data_mae3_focus_G03D01_finish" ).set_ana_plot_title("D1_G3").build()
-os_book_D1G5 = Result_builder().set_by_result_name( dir10 + "/type7b_h500_w332_real_os_book-20200611_223121-rect-1532data_mae3_focus_G05D01_finish" ).set_ana_plot_title("D1_G5").build()
+os_book_D1G1 = copy.deepcopy(os_book_Gk3_D_no_concat_k4);  os_book_D1G1.ana_plot_title = "D1_G1"
+os_book_D1G3 = Result_builder().set_by_result_name( dir10 + "/type7b_h500_w332_real_os_book-5_10_2-20200727_155142-rect_Gk3_train3_Dk4_no_concat" ).set_ana_plot_title("D1_G3").build()
+os_book_D1G5 = Result_builder().set_by_result_name( dir10 + "/type7b_h500_w332_real_os_book-5_10_3-20200729_153512-rect_Gk3_train5_Dk4_no_concat" ).set_ana_plot_title("D1_G5").build()
 
 ##################################################################################################################################################################
 dir11 = "5_11_no_res"
@@ -149,6 +149,27 @@ os_book_G_mrf_357_no_res = Result_builder().set_by_result_name( dir11 + "/type7b
 os_book_Gk3_Dk4_no_concat_res    = copy.deepcopy(os_book_Gk3_D_no_concat_k4);  os_book_Gk3_Dk4_no_concat_res.ana_plot_title = "Gk3_Dk4_no_concat_res"
 os_book_Gk3_Dk4_no_concat_no_res = Result_builder().set_by_result_name( dir11 + "/type7b_h500_w332_real_os_book-5_11_2-20200711_001122-rect_Gk3_no_res_D_no_concat-127.28finish" ).set_ana_plot_title("Gk3_Dk4_no_concat_no_res").build()
 ##################################################################################################################################################################
+dir12 = "5_12_resb_num"
+os_book_Gk3_resb0     = Result_builder().set_by_result_name( dir12 + "/type7b_h500_w332_real_os_book-5_12_1-20200903_102550-justGk3_resb00-127.48" ).set_ana_plot_title("Gk3_resb_0").build()
+os_book_Gk3_resb1     = Result_builder().set_by_result_name( dir12 + "/type7b_h500_w332_real_os_book-5_12_2-20200903_150017-justGk3_resb01-127.35" ).set_ana_plot_title("Gk3_resb_1").build()
+os_book_Gk3_resb3     = Result_builder().set_by_result_name( dir12 + "/type7b_h500_w332_real_os_book-5_12_3-20200908_230930-justGk3_resb03-127.55" ).set_ana_plot_title("Gk3_resb_3").build()
+os_book_Gk3_resb5     = Result_builder().set_by_result_name( dir12 + "/type7b_h500_w332_real_os_book-5_12_4-20200903_102828-justGk3_resb05-128.246").set_ana_plot_title("Gk3_resb_5").build()
+os_book_Gk3_resb7     = Result_builder().set_by_result_name( dir12 + "/type7b_h500_w332_real_os_book-5_12_5-20200908_104030-justGk3_resb07-127.28" ).set_ana_plot_title("Gk3_resb_7").build()
+os_book_Gk3_resb9     = copy.deepcopy(os_book_G_first_k3); os_book_Gk3_resb9.ana_plot_title = "Gk3_resb_9"
+os_book_Gk3_resb11    = Result_builder().set_by_result_name( dir12 + "/type7b_h500_w332_real_os_book-5_12_7-20200908_103946-justGk3_resb11-127.51-ep512" ).set_ana_plot_title("Gk3_resb_11").build()
+os_book_Gk3_resb20    = Result_builder().set_by_result_name( dir12 + "/type7b_h500_w332_real_os_book-5_12_8-20200903_102218-justGk3_resb20-127.51" ).set_ana_plot_title("Gk3_resb_20").build()
+
+##################################################################################################################################################################
+dir13 = "5_13_coord_conv"
+os_book_Gk3_no_coord_conv         = copy.deepcopy(os_book_G_first_k3);  os_book_Gk3_no_coord_conv.ana_plot_title = "Gk3_no_coord"
+os_book_Gk3_coord_conv_first      = Result_builder().set_by_result_name( dir13 + "/type7b_h500_w332_real_os_book-5_13_1-20200824_033322-justG-127.35_first" ).set_ana_plot_title("Gk3_first").build()
+os_book_Gk3_coord_conv_first_end  = Result_builder().set_by_result_name( dir13 + "/type7b_h500_w332_real_os_book-5_13_2-20200827_010445-justG-127.35_first_end" ).set_ana_plot_title("Gk3_first_end").build()
+os_book_Gk3_coord_conv_all        = Result_builder().set_by_result_name( dir13 + "/type7b_h500_w332_real_os_book-5_13_3-20200827_000519-justG-127.35_all" ).set_ana_plot_title("Gk3_all").build()
+
+os_book_Gk3_mrf_357_no_coord_conv       = copy.deepcopy(os_book_G_mrf_357);  os_book_Gk3_mrf_357_no_coord_conv.ana_plot_title = "Gk3_mrf357_no_coord"
+os_book_Gk3_mrf357_coord_conv_first     = Result_builder().set_by_result_name( dir13 + "/type7b_h500_w332_real_os_book-5_13_2-20200824_033403-justG_mrf357-127.28-first" ).set_ana_plot_title("Gk3_mrf357_first").build()
+# os_book_Gk3_mrf357_coord_conv_first_end = Result_builder().set_by_result_name( dir13 + "/待訓練" ).set_ana_plot_title("Gk3_Dk4_no_concat_no_res").build()
+os_book_Gk3_mrf357_coord_conv_all       = Result_builder().set_by_result_name( dir13 + "/type7b_h500_w332_real_os_book-5_13_2-20200827_000320-justG_mrf357-127.28_all_ep581" ).set_ana_plot_title("Gk3_mrf357_all").build()
 
 # compress_results.append(os_book_rect_1532_mae1)
 # compress_results.append(os_book_rect_1532_mae3)

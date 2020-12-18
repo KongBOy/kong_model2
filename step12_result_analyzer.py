@@ -282,14 +282,14 @@ def check_analyze(analyze_objs):
         analyze_obj.analyze_col_results_single_see(see_num=31, add_loss=True, single_see_multiprocess=True, single_see_core_amount=12)
 
 def doing_analyze_2page(analyze_obj):
-    analyze_obj.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
-    analyze_obj.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
-    analyze_obj.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
-    analyze_obj.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
-    analyze_obj.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
-    analyze_obj.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
-    analyze_obj.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
-    analyze_obj.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
+    # analyze_obj.analyze_col_results_multi_see([16,19], "train_lt", add_loss = True)
+    # analyze_obj.analyze_col_results_multi_see([20,23], "train_rt", add_loss = True)
+    # analyze_obj.analyze_col_results_multi_see([24,25], "train_ld", add_loss = True)
+    # analyze_obj.analyze_col_results_multi_see([30,31], "train_rd", add_loss = True)
+    # analyze_obj.analyze_col_results_multi_see([ 2, 3], "test_lt", add_loss = True)
+    # analyze_obj.analyze_col_results_multi_see([ 6, 7], "test_rt", add_loss = True)
+    # analyze_obj.analyze_col_results_multi_see([10,11], "test_ld", add_loss = True)
+    # analyze_obj.analyze_col_results_multi_see([12,13], "test_rd", add_loss = True)
     analyze_obj.analyze_col_results_all_single_see_multiprocess(add_loss=True,single_see_multiprocess=True, single_see_core_amount=10)
 
 
@@ -363,10 +363,18 @@ if(__name__=="__main__"):
     # os_book_5_8b_7_all.analyze_row_col_results_all_single_see_multiprocess(single_see_multiprocess=True, single_see_core_amount=8)
     
     ##################################################################################################################
+    # os_book_10_GD_D_train1_G_train_135       = Col_results_analyzer(ana_describe="5_10_GD_D_train1_G_train_135"  , col_results=[os_book_D1G1 , os_book_D1G3, os_book_D1G5 ]); doing_analyze_2page(os_book_10_GD_D_train1_G_train_135)
+    ##################################################################################################################
     # os_book_11a_G_res_try                  = Col_results_analyzer(ana_describe="5_11a_G_res_try"               , col_results=[os_book_Gk3_res              , os_book_Gk3_no_res               ]); doing_analyze_2page(os_book_11a_G_res_try)
-    os_book_11b_G_mrf357_res_try           = Col_results_analyzer(ana_describe="5_11b_G_mrf357_res_try"          , col_results=[os_book_G_mrf_357_res        , os_book_G_mrf_357_no_res         ]); doing_analyze_2page(os_book_11b_G_mrf357_res_try)
-    os_book_11c_Gk3_Dk4_no_concat_res_try  = Col_results_analyzer(ana_describe="5_11c_Gk3_Dk4_no_concat_res_try" , col_results=[os_book_Gk3_Dk4_no_concat_res, os_book_Gk3_Dk4_no_concat_no_res ]); doing_analyze_2page(os_book_11c_Gk3_Dk4_no_concat_res_try)
+    # os_book_11b_G_mrf357_res_try           = Col_results_analyzer(ana_describe="5_11b_G_mrf357_res_try"          , col_results=[os_book_G_mrf_357_res        , os_book_G_mrf_357_no_res         ]); doing_analyze_2page(os_book_11b_G_mrf357_res_try)
+    # os_book_11c_Gk3_Dk4_no_concat_res_try  = Col_results_analyzer(ana_describe="5_11c_Gk3_Dk4_no_concat_res_try" , col_results=[os_book_Gk3_Dk4_no_concat_res, os_book_Gk3_Dk4_no_concat_no_res ]); doing_analyze_2page(os_book_11c_Gk3_Dk4_no_concat_res_try)
+    ##################################################################################################################
+    os_book_12_Gk3_resb_num           = Col_results_analyzer(ana_describe="5_12_Gk3_resb_num"           , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb20 ]); doing_analyze_2page(os_book_12_Gk3_resb_num)
+    # os_book_12_Gk3_resb_num_11_512ep  = Col_results_analyzer(ana_describe="5_12_Gk3_resb_num_11_512ep"  , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb11,  os_book_Gk3_resb20 ]); doing_analyze_2page(os_book_12_Gk3_resb_num_11_512ep)
 
+    ##################################################################################################################
+    # os_book_13a_Gk3_coord_conv              = Col_results_analyzer(ana_describe="5_13a_Gk3_coord_conv"            , col_results=[os_book_Gk3_no_coord_conv           , os_book_Gk3_coord_conv_first, os_book_Gk3_coord_conv_first_end, os_book_Gk3_coord_conv_all]); doing_analyze_2page(os_book_13a_Gk3_coord_conv)
+    # os_book_13b_Gk3_mrf357_coord_conv       = Col_results_analyzer(ana_describe="5_13b_Gk3_mrf357_coord_conv"    , col_results=[os_book_Gk3_mrf_357_no_coord_conv   , os_book_Gk3_mrf357_coord_conv_first, os_book_Gk3_mrf357_coord_conv_all]); doing_analyze_2page(os_book_13b_Gk3_mrf357_coord_conv)
 
 
 

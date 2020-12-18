@@ -379,18 +379,18 @@ if(__name__=="__main__"):
 
     ########################################################### 12
     exp_dir12 = "5_12_resb_num"
-    os_book_1532_Gk3_resb00 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb00 , exp_dir=exp_dir12, describe_mid="5_12_1", describe_end="127.48" ) .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb01 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb01 , exp_dir=exp_dir12, describe_mid="5_12_2", describe_end="127.35" ) .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb03 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb03 , exp_dir=exp_dir12, describe_mid="5_12_3", describe_end="127.55" ) .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb05 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb05 , exp_dir=exp_dir12, describe_mid="5_12_4", describe_end="128.246") .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb07 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb00 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb00 , exp_dir=exp_dir12, describe_mid="5_12_1", describe_end="finish" ) .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb01 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb01 , exp_dir=exp_dir12, describe_mid="5_12_2", describe_end="127.48" ) .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb03 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb03 , exp_dir=exp_dir12, describe_mid="5_12_3", describe_end="127.35" ) .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb05 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb05 , exp_dir=exp_dir12, describe_mid="5_12_4", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb07 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
     # os_book_1532_Gk3_resb09 ### 原本已經訓練過了，但為了確保沒train錯，還是建了resb_09來train看看囉
-    os_book_1532_Gk3_resb09 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb09 , exp_dir=exp_dir12, describe_mid="5_12_6", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb11 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb09 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb09 , exp_dir=exp_dir12, describe_mid="5_12_6", describe_end="finish") .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb11 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7", describe_end="127.55") .set_train_args(epochs=700).build(result_name="")
     ### 13
     os_book_1532_Gk3_resb15 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb15 , exp_dir=exp_dir12, describe_mid="5_12_7_3", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
     ### 17
-    os_book_1532_Gk3_resb20 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
+    os_book_1532_Gk3_resb20 =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8", describe_end="128.244") .set_train_args(epochs=700).build(result_name="")
 
     ########################################################### 12
     exp_dir13 = "5_13_coord_conv"
@@ -445,15 +445,15 @@ if(__name__=="__main__"):
     # os_book_1532_Gk3_no_res_mrf357.run()        ### 128.246
     
     ########################################################### 12 resblock用多少個
-    # os_book_1532_Gk3_resb00.run() ### 127.48
-    # os_book_1532_Gk3_resb01.run() ### 127.35
-    # os_book_1532_Gk3_resb03.run() ### 127.55
-    # os_book_1532_Gk3_resb05.run() ### 128.246
-    # os_book_1532_Gk3_resb07.run() ### 127.28
-    # os_book_1532_Gk3_resb09.run() ### 127.51
-    # os_book_1532_Gk3_resb11.run() ### 127.51
+    # os_book_1532_Gk3_resb00.run() ### 127.48 ###完成
+    # os_book_1532_Gk3_resb01.run() ### 127.48 
+    os_book_1532_Gk3_resb03.run() ### 127.35
+    # os_book_1532_Gk3_resb05.run() ### no
+    # os_book_1532_Gk3_resb07.run() ### no
+    # os_book_1532_Gk3_resb09.run() ### finish
+    # os_book_1532_Gk3_resb11.run() ### 127.55
     # os_book_1532_Gk3_resb15.run() ### 127.28
-    # os_book_1532_Gk3_resb20.run() ### 127.51
+    # os_book_1532_Gk3_resb20.run() ### 128.244
 
     ########################################################### 13 加coord_conv試試看
     # os_book_1532_justGk3_coord_conv.run()        ### 127.35
