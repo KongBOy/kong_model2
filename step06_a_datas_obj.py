@@ -194,7 +194,7 @@ type7b_h500_w332_real_os_book_800data        = Dataset_builder().set_basic(DB_C.
 type8_blender_os_book                        = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw756      , DB_GM.in_dis_gt_flow, h=756, w=756).set_dir_by_basic().set_in_gt_type(in_type="png", gt_type="knpy", see_type=None).set_detail(have_train=True, have_see=False).build()
 
 
-if(__name__=="__main__"):
+if(__name__ == "__main__"):
     db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="bmp", see_type="bmp").set_detail(have_train=True, have_see=True).build()
     db = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book, DB_N.os_book_400data, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
     db = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book, DB_N.os_book_1532data, DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
@@ -202,5 +202,3 @@ if(__name__=="__main__"):
     # db_complex_1_pure_unet = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_move_map   , h=256, w=256 )
     # db_complex_2_pure_rect = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_ord_pad_img, h=256, w=256 )
     # db_complex_3_pure_rect = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_rec_gt_ord_img    , h=256, w=256 )
-
-
