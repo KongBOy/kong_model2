@@ -1,14 +1,12 @@
-import sys 
+import sys
 sys.path.append("kong_util")
-from util import get_dir_img, get_dir_move, use_plt_show_move, get_db_amount
+from util import get_dir_move, use_plt_show_move, get_db_amount
 
-from step0_access_path import access_path
 from step08_b_model_obj import MODEL_NAME, KModel_builder
 from step06_a_datas_obj import DB_C, DB_N, DB_GM, Dataset_builder
 import tensorflow as tf
 import os
 import numpy as np
-import cv2
 import math
 
 import matplotlib.pyplot as plt
