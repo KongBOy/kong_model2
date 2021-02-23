@@ -152,6 +152,7 @@ class Discriminator(tf.keras.models.Model):
         # x = tf.nn.leaky_relu(x, alpha=0.2)
         return self.conv_map(x)
 
+### 應該是參考 CycleGAN 的 Generator
 class Generator(tf.keras.models.Model):
     def __init__(self, first_k3=False, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, **kwargs):
         super(Generator, self).__init__(**kwargs)

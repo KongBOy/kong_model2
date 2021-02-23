@@ -11,7 +11,7 @@ import cv2
 from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
 
 
-
+### 參考 DewarpNet 的 train_wc 用的 UNet
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator512to256(tf.keras.models.Model):
@@ -235,7 +235,7 @@ def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, m
     # print("sample image cost time:", time.time()-sample_start_time)
 
 
-    
+
 
 ### test_g_in_db 還是要，因為要給generator生成還是需要他這樣子～
 ### db_dir 和 db_name 主要是為了拿 mac_db_move_xy 和 maxmin_train_move
@@ -317,7 +317,7 @@ def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
             ax[plot_i].imshow(gt_rec_img.astype(np.uint8))
             ax[plot_i].set_title("gt_rec")
             plot_i += 1
-            
+
         ### 原圖
         if("test_gt_db" in data_dict.keys() and data_dict["gt_type"] == "img"):
             ax[plot_i].imshow(test_gt[0])

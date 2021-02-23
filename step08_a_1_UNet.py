@@ -7,6 +7,7 @@ import time
 from step08_a_1_UNet_512to256 import train_step, generate_images, generate_sees
 
 
+### 參考 DewarpNet 的 train_wc 用的 UNet
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):

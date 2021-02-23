@@ -572,6 +572,8 @@ class tf_Data_builder(tf_Data_in_dis_gt_flow_builder):
             self.build_by_in_dis_gt_flow()
         return self
 
+### 因為我們還需要根據 使用的model(其實就是看model_name) 來決定如何resize，所以就不在這邊 先建構好 許多tf_data物件囉！
+
 
 if(__name__ == "__main__"):
     import os
