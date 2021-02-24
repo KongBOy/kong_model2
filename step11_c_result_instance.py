@@ -66,7 +66,7 @@ os_book_G_mrf_79        = Result_builder().set_by_result_name( dir08b + "/type7b
 os_book_G_mrf_replace7  = Result_builder().set_by_result_name( dir08b + "/type7b_h500_w332_real_os_book-5_8b_4-20200622_214400-justG-1532data_justG_mrf_replace7_127.48ep479"  ).set_ana_plot_title("G_mrf_replace7").build()
 os_book_G_mrf_replace79 = Result_builder().set_by_result_name( dir08b + "/type7b_h500_w332_real_os_book-5_8b_5-20200623_210009-justG-1532data_justG_mrf_replace79_127.51ep566" ).set_ana_plot_title("G_mrf_replace79").build()
 
-### 8b_2. G_no_mrf_firstk3 vs G + mrf  7 /5 /3 + first_k3 
+### 8b_2. G_no_mrf_firstk3 vs G + mrf  7 /5 /3 + first_k3
 dir08b_2 = "5_08b_2_G_mrf357_k3"
 os_book_G_no_mrf_firstk7 = copy.deepcopy(os_book_justG_mae3); os_book_G_no_mrf_firstk7.ana_plot_title = "G_no_mrf_firstk7"
 os_book_G_no_mrf_firstk3 = copy.deepcopy(os_book_G_first_k3); os_book_G_no_mrf_firstk3.ana_plot_title = "G_no_mrf_firstk3"
