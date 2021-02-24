@@ -1,46 +1,46 @@
 from step11_b_result_obj_builder import Result_builder
 import copy
 
-compress_results = [] 
+compress_results = []
 
 dir01 = "5_01_rect_mae136"
-os_book_rect_1532_mae1 = Result_builder().set_by_result_name(dir01+"/type7b_h500_w332_real_os_book-20200524-013834_rect_1532data_mae1_127.28" ).set_ana_plot_title("DGmae1").build()
-os_book_rect_1532_mae3 = Result_builder().set_by_result_name(dir01+"/type7b_h500_w332_real_os_book-20200524-012601-rect-1532data_mae3_127.35to28_finish" ).set_ana_plot_title("DGmae3").build()
-os_book_rect_1532_mae6 = Result_builder().set_by_result_name(dir01+"/type7b_h500_w332_real_os_book-20200524-014129_rect_1532data_mae6_128.242").set_ana_plot_title("DGmae6").build()
-os_book_rect_1532_mae6_noD = Result_builder().set_by_result_name(dir01+"/type7b_h500_w332_real_os_book-20200524-014129_rect_1532data_mae6_128.242").set_ana_plot_title("DGmae6").build()
+os_book_rect_1532_mae1 = Result_builder().set_by_result_name(dir01 + "/type7b_h500_w332_real_os_book-20200524-013834_rect_1532data_mae1_127.28" ).set_ana_plot_title("DGmae1").build()
+os_book_rect_1532_mae3 = Result_builder().set_by_result_name(dir01 + "/type7b_h500_w332_real_os_book-20200524-012601-rect-1532data_mae3_127.35to28_finish" ).set_ana_plot_title("DGmae3").build()
+os_book_rect_1532_mae6 = Result_builder().set_by_result_name(dir01 + "/type7b_h500_w332_real_os_book-20200524-014129_rect_1532data_mae6_128.242").set_ana_plot_title("DGmae6").build()
+os_book_rect_1532_mae6_noD = Result_builder().set_by_result_name(dir01 + "/type7b_h500_w332_real_os_book-20200524-014129_rect_1532data_mae6_128.242").set_ana_plot_title("DGmae6").build()
 
 dir03 = "5_03_justG_mae136920"
-os_book_justG_mae1 = Result_builder().set_by_result_name (dir03+"/type7b_h500_w332_real_os_book-20200525_222831-justG-1532data_mae1_127.28"  ).set_ana_plot_title("justG_mae1").build()
-os_book_justG_mae3 = Result_builder().set_by_result_name (dir03+"/type7b_h500_w332_real_os_book-20200524-181909-justG-1532data_mae3_128.242" ).set_ana_plot_title("justG_mae3").build()
-os_book_justG_mae6 = Result_builder().set_by_result_name (dir03+"/type7b_h500_w332_real_os_book-20200525_223733-justG-1532data_mae6_128.246" ).set_ana_plot_title("justG_mae6").build()
-os_book_justG_mae9 = Result_builder().set_by_result_name (dir03+"/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51"  ).set_ana_plot_title("justG_mae9").build()
-os_book_justG_mae20 = Result_builder().set_by_result_name(dir03+"/type7b_h500_w332_real_os_book-20200527_122823-justG-1532data_mae20_128.246").set_ana_plot_title("justG_mae20").build()
+os_book_justG_mae1 = Result_builder().set_by_result_name (dir03 + "/type7b_h500_w332_real_os_book-20200525_222831-justG-1532data_mae1_127.28"  ).set_ana_plot_title("justG_mae1").build()
+os_book_justG_mae3 = Result_builder().set_by_result_name (dir03 + "/type7b_h500_w332_real_os_book-20200524-181909-justG-1532data_mae3_128.242" ).set_ana_plot_title("justG_mae3").build()
+os_book_justG_mae6 = Result_builder().set_by_result_name (dir03 + "/type7b_h500_w332_real_os_book-20200525_223733-justG-1532data_mae6_128.246" ).set_ana_plot_title("justG_mae6").build()
+os_book_justG_mae9 = Result_builder().set_by_result_name (dir03 + "/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51"  ).set_ana_plot_title("justG_mae9").build()
+os_book_justG_mae20 = Result_builder().set_by_result_name(dir03 + "/type7b_h500_w332_real_os_book-20200527_122823-justG-1532data_mae20_128.246").set_ana_plot_title("justG_mae20").build()
 
 dir02 = "5_02_DG_vs_justG"
 os_book_rect_D10        = copy.deepcopy(os_book_rect_1532_mae3);   os_book_rect_D10.ana_plot_title = "rect_mae3_D1.0"
-os_book_rect_D05        = Result_builder().set_by_result_name(dir02+"/type7b_h500_w332_real_os_book-20200527_073801-rect-1532data_D_0.5_128.245").set_ana_plot_title("rect_mae3_D0.5").build()
-os_book_rect_D025       = Result_builder().set_by_result_name(dir02+"/type7b_h500_w332_real_os_book-20200602_233505-rect-1532data_D_0.25_128.245_epoch211").set_ana_plot_title("rect_mae3_D0.25").build()
-os_book_rect_D01        = Result_builder().set_by_result_name(dir02+"/type7b_h500_w332_real_os_book-20200527_120840-rect-1532data_D_0.1_127.28" ).set_ana_plot_title("rect_mae3_D0.1").build()
-os_book_rect_D00        = Result_builder().set_by_result_name(dir02+"/type7b_h500_w332_real_os_book-20200525-134838-rect-1532data_D_0.0"        ).set_ana_plot_title("rect_mae3_D0.0").build()
+os_book_rect_D05        = Result_builder().set_by_result_name(dir02 + "/type7b_h500_w332_real_os_book-20200527_073801-rect-1532data_D_0.5_128.245").set_ana_plot_title("rect_mae3_D0.5").build()
+os_book_rect_D025       = Result_builder().set_by_result_name(dir02 + "/type7b_h500_w332_real_os_book-20200602_233505-rect-1532data_D_0.25_128.245_epoch211").set_ana_plot_title("rect_mae3_D0.25").build()
+os_book_rect_D01        = Result_builder().set_by_result_name(dir02 + "/type7b_h500_w332_real_os_book-20200527_120840-rect-1532data_D_0.1_127.28" ).set_ana_plot_title("rect_mae3_D0.1").build()
+os_book_rect_D00        = Result_builder().set_by_result_name(dir02 + "/type7b_h500_w332_real_os_book-20200525-134838-rect-1532data_D_0.0"        ).set_ana_plot_title("rect_mae3_D0.0").build()
 os_book_rect_D00_justG = copy.deepcopy(os_book_justG_mae3);   os_book_rect_D00_justG.ana_plot_title = "rect_mae3_D0.0_justG"
 
 dir04 = "5_04_bigger_smaller"
-os_book_justG_bigger       = Result_builder().set_by_result_name(dir04+"/type7b_h500_w332_real_os_book-20200615_030658-justG-1532data_mae3_SRbig_127.35"     ).set_ana_plot_title("justG_mae3_bigger").build()
-os_book_justG_bigger_wrong = Result_builder().set_by_result_name(dir04+"/type7b_h500_w332_real_os_book-20200601_022935-justG-1532data_bigger_wrong"     ).set_ana_plot_title("justG_mae3_bigger_wrong").build()
+os_book_justG_bigger       = Result_builder().set_by_result_name(dir04 + "/type7b_h500_w332_real_os_book-20200615_030658-justG-1532data_mae3_SRbig_127.35"     ).set_ana_plot_title("justG_mae3_bigger").build()
+os_book_justG_bigger_wrong = Result_builder().set_by_result_name(dir04 + "/type7b_h500_w332_real_os_book-20200601_022935-justG-1532data_bigger_wrong"     ).set_ana_plot_title("justG_mae3_bigger_wrong").build()
 os_book_justG_normal       = copy.deepcopy(os_book_justG_mae3);   os_book_justG_normal.ana_plot_title = "justG_mae3_normal"
-os_book_justG_smaller      = Result_builder().set_by_result_name(dir04+"/type7b_h500_w332_real_os_book-20200601_081803-justG-1532data_smaller_128.246").set_ana_plot_title("justG_mae3_smaller").build()
-os_book_justG_smaller2     = Result_builder().set_by_result_name(dir04+"/type7b_h500_w332_real_os_book-20200602_163853-justG-1532data_mae3_127.48_smaller2_epoch425").set_ana_plot_title("justG_mae3_smaller2").build()
+os_book_justG_smaller      = Result_builder().set_by_result_name(dir04 + "/type7b_h500_w332_real_os_book-20200601_081803-justG-1532data_smaller_128.246").set_ana_plot_title("justG_mae3_smaller").build()
+os_book_justG_smaller2     = Result_builder().set_by_result_name(dir04 + "/type7b_h500_w332_real_os_book-20200602_163853-justG-1532data_mae3_127.48_smaller2_epoch425").set_ana_plot_title("justG_mae3_smaller2").build()
 
 dir05 = "5_05_focus"
 os_book_rect_nfocus        = copy.deepcopy(os_book_rect_1532_mae3);   os_book_rect_nfocus.ana_plot_title = "no_focus_rect_mae3"
-os_book_rect_focus         = Result_builder().set_by_result_name(dir05+"/type7b_h500_w332_real_os_book-20200601_224919-rect-1532data_mae3_focus_127.35_finish"        ).set_ana_plot_title("focus_rect_mae3").build()
+os_book_rect_focus         = Result_builder().set_by_result_name(dir05 + "/type7b_h500_w332_real_os_book-20200601_224919-rect-1532data_mae3_focus_127.35_finish"        ).set_ana_plot_title("focus_rect_mae3").build()
 os_book_justG_nfocus       = copy.deepcopy(os_book_justG_mae3);  os_book_justG_nfocus.ana_plot_title = "no_focus_justG_mae3"
-os_book_justG_focus        = Result_builder().set_by_result_name(dir05+"/type7b_h500_w332_real_os_book-20200602_222505-justG-1532data_mae3_focus_128.246_finish"     ).set_ana_plot_title("focus_justG_mae3").build()
+os_book_justG_focus        = Result_builder().set_by_result_name(dir05 + "/type7b_h500_w332_real_os_book-20200602_222505-justG-1532data_mae3_focus_128.246_finish"     ).set_ana_plot_title("focus_justG_mae3").build()
 
 
 dir06 = "5_06_400"
-os_book_400_rect         = Result_builder().set_by_result_name(dir06+"/type7b_h500_w332_real_os_book-20200602_201009-rect-400data_mae3_127.35to51_finish" ).set_ana_plot_title("400_rect").build()
-os_book_400_justG        = Result_builder().set_by_result_name(dir06+"/type7b_h500_w332_real_os_book-20200603_133217-justG-400data_justG_mae3_127.28"   ).set_ana_plot_title("400_justG").build()
+os_book_400_rect         = Result_builder().set_by_result_name(dir06 + "/type7b_h500_w332_real_os_book-20200602_201009-rect-400data_mae3_127.35to51_finish" ).set_ana_plot_title("400_rect").build()
+os_book_400_justG        = Result_builder().set_by_result_name(dir06 + "/type7b_h500_w332_real_os_book-20200603_133217-justG-400data_justG_mae3_127.28"   ).set_ana_plot_title("400_justG").build()
 os_book_1532_rect        = copy.deepcopy(os_book_rect_1532_mae3);  os_book_1532_rect.ana_plot_title = "1532_rect"
 os_book_1532_justG       = copy.deepcopy(os_book_justG_mae3);  os_book_1532_justG.ana_plot_title = "1532_justG"
 
@@ -86,8 +86,8 @@ os_book_G_mrf_35_firstk3 = Result_builder().set_by_result_name( dir08b_3 + "/typ
 
 ### 8b_4. G + mrf replace 7/5/3 
 dir08b_4 = "5_08b_4_G_mrf_replace357"
-os_book_G_no_mrf         = copy.deepcopy(os_book_justG_mae3);    os_book_G_no_mrf.ana_plot_title = "G_no_mrf"
-os_book_G_mrf_replace7   = copy.deepcopy(os_book_G_mrf_replace7);os_book_G_mrf_replace7.ana_plot_title="G_mrf_replace7"
+os_book_G_no_mrf         = copy.deepcopy(os_book_justG_mae3);     os_book_G_no_mrf.ana_plot_title = "G_no_mrf"
+os_book_G_mrf_replace7   = copy.deepcopy(os_book_G_mrf_replace7); os_book_G_mrf_replace7.ana_plot_title = "G_mrf_replace7"
 os_book_G_mrf_replace5   = Result_builder().set_by_result_name( dir08b_4 + "/type7b_h500_w332_real_os_book-5_8b_4b-20200626_052721-justG_mrf_replace5-127.35" ).set_ana_plot_title("G_mrf_replace5").build()
 os_book_G_mrf_replace3   = Result_builder().set_by_result_name( dir08b_4 + "/type7b_h500_w332_real_os_book-5_8b_4c-20200626_053735-justG_mrf_replace3-127.48" ).set_ana_plot_title("G_mrf_replace3").build()
 
@@ -107,7 +107,7 @@ os_book_G_mrf_3579 = Result_builder().set_by_result_name( dir08c + "/type7b_h500
 
 ### 8d_GD_mrf_3,4branch 135,357,3579
 dir08d = "5_08d_Gk3D_mrf_3,4branch"
-os_book_GD_mrf_35  =  Result_builder().set_by_result_name( dir08d + "/type7b_h500_w332_real_os_book-5_8d1_Gmrf35-20200707_175514-rect_mrf35_Gk3_DnoC_k4-127.55finish"     ).set_ana_plot_title("Gk3_mrf35").build()
+os_book_GD_mrf_35   = Result_builder().set_by_result_name( dir08d + "/type7b_h500_w332_real_os_book-5_8d1_Gmrf35-20200707_175514-rect_mrf35_Gk3_DnoC_k4-127.55finish"     ).set_ana_plot_title("Gk3_mrf35").build()
 os_book_GD_mrf_135  = Result_builder().set_by_result_name( dir08d + "/type7b_h500_w332_real_os_book-5_8d2_Gmrf135-20200705_040804-rect_mrf135_Gk3_DnoC_k4-128.246_finish" ).set_ana_plot_title("Gk3_DnoCK4_mrf135").build()
 os_book_GD_mrf_357  = Result_builder().set_by_result_name( dir08d + "/type7b_h500_w332_real_os_book-5_8d3_Gmrf357-20200705_040906-rect_mrf357_Gk3_DnoC_k4-127.51finish"   ).set_ana_plot_title("Gk3_DnoCK4_mrf357").build()
 os_book_GD_mrf_3579 = Result_builder().set_by_result_name( dir08d + "/type7b_h500_w332_real_os_book-5_8d4_Gmrf3579-20200705_040953-rect_mrf3579_Gk3_DnoC_k4-127.28finish" ).set_ana_plot_title("Gk3_DnoCK4_mrf3579").build()
