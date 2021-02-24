@@ -84,7 +84,7 @@ class img_mapping_util(mapping_util):
 
     def _step1_load_png_pre_map_resize_normalize(self, file_name):
         img = self._step0_load_one_png_img(file_name)  ### 根據檔名，把圖片讀進來
-        # img = self._resize(img)
+        img = self._resize(img)
         img = self._norm_img_to_01(img)
         return img
 

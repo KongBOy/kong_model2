@@ -180,7 +180,7 @@ class Experiment():
             loss_containor.reset_states()
         ###############################################################
         self.board_obj.see_loss(self.epochs)  ### 把 loss資訊 用 matplot畫出來
-        # self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
+        self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
         epoch_cost_time = time.time() - e_start

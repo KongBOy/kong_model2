@@ -475,6 +475,7 @@ def generate_sees(model_G, see_index, in_img_pre, gt_img,  epoch=0, result_obj=N
     cv2.imwrite(see_dir + "/" + "epoch_%04i.jpg" % epoch, rect_back[:, :, ::-1])  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
 
     ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
+    ### 這部分要記得做！在 train_step3 的 self.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
     result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch)
 
     # imgs = [in_img_back, rect_back, gt_img]  ### 把 in_img_back, rect_back, gt_img 包成list

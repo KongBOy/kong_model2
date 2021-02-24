@@ -34,6 +34,10 @@ class Result_sees_builder(Result_init_builder):
                             See(self.result.result_dir, "see_020-train_rt1"), See(self.result.result_dir, "see_021-train_rt2"), See(self.result.result_dir, "see_022-train_rt3"), See(self.result.result_dir, "see_023-train_rt4"),
                             See(self.result.result_dir, "see_024-train_ld1"), See(self.result.result_dir, "see_025-train_ld2"), See(self.result.result_dir, "see_026-train_ld3"), See(self.result.result_dir, "see_027-train_ld4"),
                             See(self.result.result_dir, "see_028-train_rd1"), See(self.result.result_dir, "see_029-train_rd2"), See(self.result.result_dir, "see_030-train_rd3"), See(self.result.result_dir, "see_031-train_rd4")]
+        elif(sees_ver == "sees_ver4_blender"):
+            self.result.sees = [ See(self.result.result_dir, "see_001-real") , See(self.result.result_dir, "see_002-real") , See(self.result.result_dir, "see_003-real"), See(self.result.result_dir , "see_004-real"),
+                                 See(self.result.result_dir, "see_005-train"), See(self.result.result_dir, "see_006-train"), See(self.result.result_dir, "see_007-train"), See(self.result.result_dir, "see_008-train"),
+                                 See(self.result.result_dir, "see_009-test") , See(self.result.result_dir, "see_010-test") , See(self.result.result_dir, "see_011-test") , See(self.result.result_dir, "see_012-test")]
 
         self.result.see_amount = len(self.result.sees)
         self.result.see_file_amount = self.result.sees[0].see_file_amount  ### 應該是每個see都一樣多檔案，所以就挑第一個拿他的see_file_amount就好囉～
@@ -47,8 +51,9 @@ class Result_train_builder(Result_sees_builder):
         if  (db_c in [DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch.value,
                       DB_C.type5d_real_have_see_have_bg_gt_color_gray3ch.value,
                       DB_C.type6_h_384_w_256_smooth_curl_fold_and_page.value  ]): sees_ver = "sees_ver2"
-        elif(db_c in [DB_C.type7_h472_w304_real_os_book.value, 
-                      DB_C.type7b_h500_w332_real_os_book.value]): sees_ver = "sees_ver3"
+        elif(db_c in [DB_C.type7_h472_w304_real_os_book.value,
+                      DB_C.type7b_h500_w332_real_os_book.value]):                 sees_ver = "sees_ver3"
+        elif(db_c in [DB_C.type8_blender_os_book.value]):                         sees_ver = "sees_ver4_blender"
         else: sees_ver = "sees_ver1"
         return sees_ver
 
@@ -69,7 +74,6 @@ class Result_train_builder(Result_sees_builder):
     def _get_result_name_by_exp(self, exp):
         import datetime
         ### 自動決定 result_name，再去做進一步設定
-        ### 大概長這樣 type1_h=256,w=256_complex_"describe_mid"_20200328-215330_model5_rect2_"describe_end"
         result_name_element = [exp.db_obj.category.value]
         if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
         result_name_element += [datetime.datetime.now().strftime("%Y%m%d_%H%M%S"), exp.model_obj.model_name.value]

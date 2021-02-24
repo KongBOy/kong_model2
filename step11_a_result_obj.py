@@ -45,7 +45,7 @@ class See:
 
     ###############################################################################################
     ###############################################################################################
-    def _Draw_matplot_visual(self, epoch, add_loss=False):
+    def _Draw_matplot_visual(self, epoch, add_loss=False, bgr2rgb=False):
         in_img = cv2.imread(self.see_dir + "/" + self.see_file_names[0])       ### 要記得see的第一張存的是 輸入的in影像
         gt_img = cv2.imread(self.see_dir + "/" + self.see_file_names[1])       ### 要記得see的第二張存的是 輸出的gt影像
         img = cv2.imread(self.see_dir + "/" + self.see_file_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
@@ -53,20 +53,21 @@ class See:
                                 imgs       = [ in_img ,   img ,      gt_img],    ### 把要顯示的每張圖包成list
                                 img_titles = ["in_img", "out_img", "gt_img"],    ### 把每張圖要顯示的字包成list
                                 fig_title  = "epoch=%04i" % epoch,   ### 圖上的大標題
-                                add_loss   = add_loss)
+                                add_loss   = add_loss,
+                                bgr2rgb    = bgr2rgb)
         single_row_imgs.Draw_img()
         return single_row_imgs
 
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
-    def save_as_matplot_visual_during_train(self, epoch, show_msg=False):  ### 訓練中，一張張 生成matplot_visual(這裡不能後處理，因為後處理需要全局的see_file，這裡都單張單張的會出問題)
+    def save_as_matplot_visual_during_train(self, epoch, show_msg=False, bgr2rgb=False):  ### 訓練中，一張張 生成matplot_visual(這裡不能後處理，因為後處理需要全局的see_file，這裡都單張單張的會出問題)
         Check_dir_exist_and_build(self.see_dir)
         start_time = time.time()
         # if(epoch==0):
         #     Check_dir_exist_and_build_new_dir(self.matplot_visual_dir)      ### 建立 存結果的資料夾
         self.get_see_dir_info()  ### 每次執行都要 update喔！ 取得result內的 某個see資料夾 內的所有影像 檔名 和 數量
-        self.single_row_imgs_during_train = self._Draw_matplot_visual(epoch, add_loss=True)  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
+        self.single_row_imgs_during_train = self._Draw_matplot_visual(epoch, add_loss=True, bgr2rgb=bgr2rgb)  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
         if(show_msg): print(f"processing {self.see_name}, cost_time:{time.time() - start_time}")
 
     ###############################################################################################
@@ -251,8 +252,12 @@ if(__name__ == "__main__"):
     # os_book.save_multi_see_as_matplot_visual([29],"train_rd", add_loss=True, multiprocess=False)    ### 看會不會自動跳轉
     # os_book.save_multi_see_as_matplot_visual([29, 30, 31], "train_rd", add_loss=False, multiprocess=False)
     # os_book.save_multi_see_as_matplot_visual([29, 30, 31], "train_rd", add_loss=True, multiprocess=False)
-    os_book.save_multi_see_as_matplot_visual([29, 30, 31], "train_rd", add_loss=True, multiprocess=True)
+    # os_book.save_multi_see_as_matplot_visual([29, 30, 31], "train_rd", add_loss=True, multiprocess=True)
 
     ### 看多 loss 的情況
     # os_book_lots_loss = Result_builder().set_by_result_name("5_rect_mae136/type7b_h500_w332_real_os_book-20200524-012601-rect-1532data_mae3_127.35").set_ana_plot_title("see_lots_loss").build()
     # os_book_lots_loss.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=True)
+
+    blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210224_051246-flow_unet-127.35").set_ana_plot_title("blender").build()
+    print(dir(blender_os_book.sees[0]))
+    print(blender_os_book.sees[0].matplot_visual_dir)

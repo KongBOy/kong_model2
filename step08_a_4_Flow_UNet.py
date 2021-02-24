@@ -40,7 +40,6 @@ def generate_results(model_G, in_img_pre):
 def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, result_obj=None):
     flow, in_img_back = generate_results(model_G, in_img_pre)
     gt_flow = gt_flow[0]
-    ### 我們不要存flow.npy，存flow_visual.jpg
     flow_visual = method1(flow[..., 2], flow[..., 1])[..., ::-1] * 255.
     gt_flow_visual = method1(gt_flow[..., 2], gt_flow[..., 1])[..., ::-1] * 255.
 
@@ -53,8 +52,13 @@ def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, 
         Check_dir_exist_and_build(plot_dir)  ### 建立 see資料夾/matplot_visual資料夾
         cv2.imwrite(see_dir + "/" + "0a-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_dir + "/" + "0b-gt_a_gt_flow.jpg", gt_flow_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+    np.save(    see_dir + "/" + "epoch_%04i_a_flow"            % epoch, gt_flow)      ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(see_dir + "/" + "epoch_%04i_a_flow_visual.jpg" % epoch, flow_visual)  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
     # cv2.imwrite(see_dir + "/" + "epoch_%04i_b_in_rec_img.jpg" % epoch     , in_rec_img)  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
+
+    ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
+    ### 這部分要記得做！在 train_step3 的 self.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
+    result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch, bgr2rgb=True)
 
     # imgs = [in_img_back, flow_visual, gt_flow_visual]  ### 把 in_img_back, rect_back, gt_img 包成list
     # titles = ['Input Image', 'gen_flow', 'gt_flow']         ### 設定 title要顯示的字
