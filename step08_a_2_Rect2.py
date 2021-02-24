@@ -455,15 +455,15 @@ from util import matplot_visual_single_row_imgs
 import numpy as np
 
 ### 用 網路 生成 影像
-def generate_images(model_G, in_img_pre):
+def generate_results(model_G, in_img_pre):
     rect       = model_G(in_img_pre, training=True)  ### 把影像丟進去model生成還原影像
-    rect_back  = ((rect[0].numpy() + 1) * 125).astype(np.uint8)       ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
+    rect_back  = ((rect[0].numpy() + 1) * 125).astype(np.uint8)         ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
     in_img_back = ((in_img_pre[0].numpy() + 1) * 125).astype(np.uint8)  ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
     return rect_back, in_img_back  ### 注意訓練model時是用tf來讀img，為rgb的方式訓練，所以生成的是rgb的圖喔！
 
 ### 這是一張一張進來的，沒有辦法跟 Result 裡面的 see 生成法合併，要的話就是把這裡matplot部分去除，用result裡的see生成matplot圖囉！
 def generate_sees(model_G, see_index, in_img_pre, gt_img,  epoch=0, result_obj=None):
-    rect_back, in_img_back = generate_images(model_G, in_img_pre)
+    rect_back, in_img_back = generate_results(model_G, in_img_pre)
     see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
 

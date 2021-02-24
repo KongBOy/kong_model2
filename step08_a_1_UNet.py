@@ -1,10 +1,12 @@
+import sys
+sys.path.append("kong_util")
 import tensorflow as tf
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, BatchNormalization, Concatenate
 from util import method2
 import matplotlib.pyplot as plt
 import time
 
-from step08_a_1_UNet_512to256 import train_step, generate_images, generate_sees
+from step08_a_1_UNet_512to256 import train_step, generate_results, generate_sees
 
 
 ### 參考 DewarpNet 的 train_wc 用的 UNet

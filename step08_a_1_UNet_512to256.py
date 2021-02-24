@@ -179,8 +179,8 @@ def train_step(model_obj, in_dis_img, gt_move_map, board_obj):
     board_obj.losses["gen_l1_loss"](gen_l1_loss)
 
 #######################################################################################################################################
-# def generate_images( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_dir="."):
-def generate_images(model_G, in_img_pre, max_train_move, min_train_move):
+# def generate_results( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_dir="."):
+def generate_results(model_G, in_img_pre, max_train_move, min_train_move):
     move_map      = model_G(in_img_pre, training=True)
     move_map_back = ((move_map - min_train_move) / (max_train_move - min_train_move)) * 2 - 1
     in_img_back = ((in_img_pre[0].numpy() + 1) * 125).astype(np.uint8)  ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
@@ -188,7 +188,7 @@ def generate_images(model_G, in_img_pre, max_train_move, min_train_move):
 
 
 def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, min_train_move, max_db_move_x, max_db_move_y, epoch=0, result_obj=None):
-    move_map_back, in_img_back = generate_images(model_G, in_img_pre, max_train_move, min_train_move)
+    move_map_back, in_img_back = generate_results(model_G, in_img_pre, max_train_move, min_train_move)
     ### 我們不要存move_map_back.npy，存move_map_visual.jpg
     move_map_back_visual = method2(move_map_back[..., 0], move_map_back[..., 1], 1)
     gt_move_map_visual = method2(gt_move_map[..., 0], gt_move_map[..., 1], 1)

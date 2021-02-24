@@ -94,11 +94,11 @@ class Experiment():
         ################################################################################################################################################
         ### 第三階段：train 和 test
         ###  training 的部分 ###################################################################################################
-        ###     以下的概念就是，每個模型都有自己的 generate_images 和 train_step，根據model_name 去各別import 各自的 function過來用喔！
+        ###     以下的概念就是，每個模型都有自己的 generate_results 和 train_step，根據model_name 去各別import 各自的 function過來用喔！
         total_start = time.time()
 
         ### 多這 這段if 是因為 unet 有move_map的部分，所以要多做以下操作 把 move_map相關會用到的東西存起來
-        if("unet" in self.model_obj.model_name.value  ):
+        if("unet" in self.model_obj.model_name.value and "flow" not in self.model_obj.model_name.value):
             from util import get_max_db_move_xy
             self.model_obj.ckpt.max_train_move.assign(self.tf_data.max_train_move)  ### 在test時 把move_map值弄到-1~1需要，所以要存起來
             self.model_obj.ckpt.min_train_move.assign(self.tf_data.min_train_move)  ### 在test時 把move_map值弄到-1~1需要，所以要存起來
@@ -151,9 +151,11 @@ class Experiment():
             see_amount = self.tf_data.see_amount
 
         for see_index, (test_in_pre, test_gt) in enumerate(tqdm(zip(see_in_pre.take(see_amount), see_gt.take(see_amount)))):
-            if  ("unet"  in self.model_obj.model_name.value ): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move,  epoch, result_obj.result_dir, result_obj)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            if  ("unet"  in self.model_obj.model_name.value and "flow" not in self.model_obj.model_name.value): 
+                self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move,  epoch, result_obj.result_dir, result_obj)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif("rect"  in self.model_obj.model_name.value ): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in_pre, test_gt, epoch, self.result_obj)
             elif("justG" in self.model_obj.model_name.value ): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj)
+            elif("flow"  in self.model_obj.model_name.value ): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
@@ -178,7 +180,7 @@ class Experiment():
             loss_containor.reset_states()
         ###############################################################
         self.board_obj.see_loss(self.epochs)  ### 把 loss資訊 用 matplot畫出來
-        self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
+        # self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
         epoch_cost_time = time.time() - e_start
@@ -267,7 +269,8 @@ if(__name__ == "__main__"):
                               type7b_h500_w332_real_os_book_1532data_focus,\
                               type7b_h500_w332_real_os_book_1532data_big,\
                               type7b_h500_w332_real_os_book_800data,\
-                              type7b_h500_w332_real_os_book_400data
+                              type7b_h500_w332_real_os_book_400data,\
+                              type8_blender_os_book_768
 
     from step08_b_model_obj import *
 
@@ -399,6 +402,9 @@ if(__name__ == "__main__"):
     os_book_1532_justGk3_coord_conv        = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_coord_conv        , exp_dir=exp_dir13, describe_mid="5_13_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
     os_book_1532_justGk3_mrf357_coord_conv = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_mrf357_coord_conv , exp_dir=exp_dir13, describe_mid="5_13_2", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
 
+    ########################################################### 14
+    exp_dir14 = "5_14_flow_unet"
+    blender_os_book_flow_unet = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
 if(__name__ == "__main__"):
     ########################################################### 08b2
     # os_book_1532_justG_mrf7_k3.run()   ### 128.51
@@ -449,7 +455,7 @@ if(__name__ == "__main__"):
     ########################################################### 12 resblock用多少個
     # os_book_1532_Gk3_resb00.run()  ### 127.48 ###完成
     # os_book_1532_Gk3_resb01.run()  ### 127.48
-    os_book_1532_Gk3_resb03.run()  ### 127.35
+    # os_book_1532_Gk3_resb03.run()  ### 127.35
     # os_book_1532_Gk3_resb05.run()  ### no
     # os_book_1532_Gk3_resb07.run()  ### no
     # os_book_1532_Gk3_resb09.run()  ### finish
@@ -460,5 +466,7 @@ if(__name__ == "__main__"):
     ########################################################### 13 加coord_conv試試看
     # os_book_1532_justGk3_coord_conv.run()         ### 127.35
     # os_book_1532_justGk3_mrf357_coord_conv.run()  ### 127.28
+    ########################################################### 13 加coord_conv試試看
+    blender_os_book_flow_unet.run()
 
     pass

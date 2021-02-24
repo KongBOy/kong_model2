@@ -2,7 +2,7 @@ import sys
 sys.path.append("kong_util")
 from util import get_dir_move, use_plt_show_move, get_db_amount
 
-from step08_b_model_obj import MODEL_NAME, KModel_builder
+
 from step06_a_datas_obj import DB_C, DB_N, DB_GM, Dataset_builder
 import tensorflow as tf
 import os
@@ -35,55 +35,55 @@ class mapping_util():
 class img_mapping_util(mapping_util):
     ### 以下是 bmp file_name -> tensor  成功！
     ### 這種寫法是 img 沒有用 self.img 來寫，有種先在上面組裝好的概念，比較 能夠顯現 img傳遞過程的概念，先用這個好了，想看上一種風格去git 6b63a99 調喔
-    def _step1_load_one_bmp_img(self, file_name):
+    def _step0_load_one_bmp_img(self, file_name):
         img = tf.io.read_file(file_name)
         img = tf.image.decode_bmp(img)
         img  = tf.cast(img, tf.float32)
         return img
 
-    def _step0_load_bmp_ord_map(self, file_name):
-        img = self._step1_load_one_bmp_img(file_name)  ### 根據檔名，把圖片讀進來
+    def _step1_load_bmp_ord_map(self, file_name):
+        img = self._step0_load_one_bmp_img(file_name)  ### 根據檔名，把圖片讀進來
         img  = tf.cast(img, tf.uint8)  ### 不會拿來訓練，是拿來顯示的，所以轉乘uint8
         return img
 
-    def _step0_load_bmp_pre_map_resize_normalize(self, file_name):
-        img = self._step1_load_one_bmp_img(file_name)  ### 根據檔名，把圖片讀進來
+    def _step1_load_bmp_pre_map_resize_normalize(self, file_name):
+        img = self._step0_load_one_bmp_img(file_name)  ### 根據檔名，把圖片讀進來
         img = self._resize(img)
-        img = self._norm_img_to_01(img)
+        img = self._norm_img_to_tanh(img)
         return img
 
     ####################################################################################################
-    def _step1_load_one_jpg_img(self, file_name):
+    def _step0_load_one_jpg_img(self, file_name):
         img = tf.io.read_file(file_name)
         img = tf.image.decode_jpeg(img)
         img  = tf.cast(img, tf.float32)
         return img
 
-    def _step0_load_jpg_map_ord(self, file_name):
-        img = self._step1_load_one_jpg_img(file_name)  ### 根據檔名，把圖片讀進來
+    def _step1_load_jpg_map_ord(self, file_name):
+        img = self._step0_load_one_jpg_img(file_name)  ### 根據檔名，把圖片讀進來
         img = tf.cast(img, tf.uint8)  ### 不會拿來訓練，是拿來顯示的，所以轉乘uint8
         return img
 
-    def _step0_load_jpg_pre_map_resize_normalize(self, file_name):
-        img = self._step1_load_one_jpg_img(file_name)  ### 根據檔名，把圖片讀進來
+    def _step1_load_jpg_pre_map_resize_normalize(self, file_name):
+        img = self._step0_load_one_jpg_img(file_name)  ### 根據檔名，把圖片讀進來
         img = self._resize(img)
-        img = self._norm_img_to_01(img)
+        img = self._norm_img_to_tanh(img)
         return img
 
     ####################################################################################################
-    def _step1_load_one_png_img(self, file_name):
+    def _step0_load_one_png_img(self, file_name):
         img = tf.io.read_file(file_name)
         img = tf.image.decode_png(img)
         img  = tf.cast(img, tf.float32)
         return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
 
-    def _step0_load_png_map_ord(self, file_name):
-        img = self._step1_load_one_png_img(file_name)  ### 根據檔名，把圖片讀進來
+    def _step1_load_png_map_ord(self, file_name):
+        img = self._step0_load_one_png_img(file_name)  ### 根據檔名，把圖片讀進來
         img = tf.cast(img, tf.uint8)  ### 不會拿來訓練，是拿來顯示的，所以轉乘uint8
         return img
 
-    def _step0_load_png_pre_map_resize_normalize(self, file_name):
-        img = self._step1_load_one_png_img(file_name)  ### 根據檔名，把圖片讀進來
+    def _step1_load_png_pre_map_resize_normalize(self, file_name):
+        img = self._step0_load_one_png_img(file_name)  ### 根據檔名，把圖片讀進來
         # img = self._resize(img)
         img = self._norm_img_to_01(img)
         return img
@@ -91,33 +91,33 @@ class img_mapping_util(mapping_util):
 ####################################################################################################
 ####################################################################################################
 class mov_mapping_util(mapping_util):
-    def _step1_load_one_move_map(self, file_name):
+    def _step0_load_one_move_map(self, file_name):
         mov = tf.io.read_file(file_name)
         mov = tf.io.decode_raw(mov , tf.float32)
         mov  = tf.cast(mov, tf.float32)
         return mov
 
-    def _step0_load_mov_ord_map(self, file_name):
-        mov = self._step1_load_one_move_map(file_name)  ### 根據檔名，把圖片讀進來
+    def _step1_load_mov_ord_map(self, file_name):
+        mov = self._step0_load_one_move_map(file_name)  ### 根據檔名，把圖片讀進來
         mov = tf.reshape(mov, [1, self.h, self.w, 2])
         mov = tf.cast(mov, tf.float32)  ### 不會拿來訓練，是拿來顯示的，所以轉乘uint8
         return mov
 
-    def _step0_load_mov_pre_map_normalize(self, file_name):
-        mov = self._step1_load_one_move_map(file_name)  ### 根據檔名，把圖片讀進來
+    def _step1_load_mov_pre_map_normalize(self, file_name):
+        mov = self._step0_load_one_move_map(file_name)  ### 根據檔名，把圖片讀進來
         mov = tf.reshape(mov, [1, self.h, self.w, 2])
         mov = self._norm_move_map_to_tanh_by_max_min_val(mov, self.max_train_move, self.min_train_move)           ### 因為用tanh，所以把值弄到 [-1, 1]
         return mov
 
     ####################################################################################################
-    def _step1_load_one_flow(self, file_name):
+    def _step0_load_one_flow(self, file_name):
         mov = tf.io.read_file(file_name)
         mov = tf.io.decode_raw(mov , tf.float32)
         mov  = tf.cast(mov, tf.float32)
         return mov
 
-    def _step0_load_flow_ord_map(self, file_name):
-        mov = self._step1_load_one_flow(file_name)  ### 根據檔名，把圖片讀進來
+    def _step1_load_flow_ord_map(self, file_name):
+        mov = self._step0_load_one_flow(file_name)  ### 根據檔名，把圖片讀進來
         mov = tf.reshape(mov, [1, self.h, self.w, 3])  ### ch1:mask, ch2:y, ch3:x
         mov = tf.cast(mov, tf.float32)
         return mov   ### 只拿 ch2:y, ch3:x 而已，msk目前用不到
@@ -206,14 +206,14 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
         self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_type, shuffle=False)
         self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_type, shuffle=False)
         if  (self.img_type == "bmp"):
-            self.ord_db = self.ord_db.map(self._step0_load_bmp_ord_map)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-            self.pre_db = self.pre_db.map(self._step0_load_bmp_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+            self.ord_db = self.ord_db.map(self._step1_load_bmp_ord_map)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+            self.pre_db = self.pre_db.map(self._step1_load_bmp_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
         elif(self.img_type == "jpg"):
-            self.ord_db = self.ord_db.map(self._step0_load_jpg_map_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-            self.pre_db = self.pre_db.map(self._step0_load_jpg_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+            self.ord_db = self.ord_db.map(self._step1_load_jpg_map_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+            self.pre_db = self.pre_db.map(self._step1_load_jpg_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
         elif(self.img_type == "png"):
-            self.ord_db = self.ord_db.map(self._step0_load_png_map_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-            self.pre_db = self.pre_db.map(self._step0_load_png_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+            self.ord_db = self.ord_db.map(self._step1_load_png_map_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+            self.pre_db = self.pre_db.map(self._step1_load_png_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
         self.ord_db = self.ord_db.batch(self.batch_size)
         self.pre_db = self.pre_db.batch(self.batch_size)
         # self.ord_db = self.ord_db.prefetch(tf.data.experimental.AUTOTUNE)
@@ -221,15 +221,15 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
     def get_mov_db_from_file_name(self):
         self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
         self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
-        self.ord_db = self.ord_db.map(self._step0_load_mov_ord_map)
-        self.pre_db = self.pre_db.map(self._step0_load_mov_pre_map_normalize)
+        self.ord_db = self.ord_db.map(self._step1_load_mov_ord_map)
+        self.pre_db = self.pre_db.map(self._step1_load_mov_pre_map_normalize)
 
 
     def get_flow_db_from_file_name(self):
         self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
         self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
-        self.ord_db = self.ord_db.map(self._step0_load_flow_ord_map)     ### resize
-        self.pre_db = self.pre_db.map(self._step0_load_flow_ord_map)     ### resize而已，值方面blender都幫我們弄好了：值在 0~1 之間，所以不用normalize囉！
+        self.ord_db = self.ord_db.map(self._step1_load_flow_ord_map)     ### resize
+        self.pre_db = self.pre_db.map(self._step1_load_flow_ord_map)     ### resize而已，值方面blender都幫我們弄好了：值在 0~1 之間，所以不用normalize囉！
 
 
 ########################################################################################################################################
@@ -283,12 +283,13 @@ class tf_Data_init_builder:
         return self
 
     def set_img_resize(self, model_name):
-        print("self.tf_data.db_obj.h", self.tf_data.db_obj.h)
-        print("self.tf_data.db_obj.w", self.tf_data.db_obj.w)
-        print("math.floor(self.tf_data.db_obj.h / 128) * 128 * 2", math.floor(self.tf_data.db_obj.h / 128) * 128 * 2)
-        print("math.floor(self.tf_data.db_obj.w / 128) * 128 * 2", math.floor(self.tf_data.db_obj.w / 128) * 128 * 2)
+        # print("doing tf_data resize according model_name")
+        # print("self.tf_data.db_obj.h = ", self.tf_data.db_obj.h)
+        # print("self.tf_data.db_obj.w = ", self.tf_data.db_obj.w)
+        # print("math.ceil(self.tf_data.db_obj.h / 128) * 128 = ", math.ceil(self.tf_data.db_obj.h / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
+        # print("math.ceil(self.tf_data.db_obj.w / 128) * 128 = ", math.ceil(self.tf_data.db_obj.w / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
         if  ("unet" in model_name.value):
-            self.tf_data.img_resize = (math.floor(self.tf_data.db_obj.h / 128) * 128 * 2, math.floor(self.tf_data.db_obj.w / 128) * 128 * 2)  ### 128的倍數，且要是gt_img的兩倍大喔！
+            self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h / 128) * 128 , math.ceil(self.tf_data.db_obj.w / 128) * 128 )  ### 128的倍數，且要是gt_img的兩倍大喔！
         elif("rect" in model_name.value or "justG" in model_name.value):
             self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h / 4) * 4, math.ceil(self.tf_data.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
         return self
@@ -486,77 +487,47 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
             see_in_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.see_in_dir , self.tf_data.db_obj.in_type, self.tf_data.img_resize, self.tf_data.batch_size)
             self.tf_data.see_in_db     = see_in_db.ord_db
             self.tf_data.see_in_db_pre = see_in_db.pre_db
-            see_gt_db  = tf_Datapipline_Factory.new_mov_pipline(self.tf_data.db_obj.see_gt_dir , self.tf_data.db_obj.h, self.tf_data.db_obj.w, self.tf_data.max_train_move, self.tf_data.min_train_move)
+            see_gt_db  = tf_Datapipline_Factory.new_flow_pipline(self.tf_data.db_obj.see_gt_dir , self.tf_data.db_obj.h, self.tf_data.db_obj.w)
             self.tf_data.see_gt_db     = see_gt_db.ord_db
             self.tf_data.see_gt_db_pre = see_gt_db.pre_db
             self.tf_data.see_amount    = get_db_amount(self.tf_data.db_obj.see_in_dir)
 
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
-        import matplotlib.pyplot as plt
-        from util import method1
+        # import matplotlib.pyplot as plt
+        # from util import method1
+        # for i, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate(self.tf_data.train_db_combine):
+        #     train_in     = train_in[0]          ### 值 0  ~ 255
+        #     train_in_pre = train_in_pre[0]      ### 值 0. ~ 1.
+        #     # print(train_in.numpy().dtype)       ### uint8
+        #     # print(train_in.numpy().shape)       ### (h, w, 3)
+        #     # print(train_in.numpy().min())       ### 0
+        #     # print(train_in.numpy().max())       ### 255
+        #     # print(train_in_pre.numpy().dtype)   ### float32
+        #     # print(train_in_pre.numpy().shape)   ### (h, w, 3)
+        #     # print(train_in_pre.numpy().min())   ### 0.0
+        #     # print(train_in_pre.numpy().max())   ### 1.0
 
+        #     train_gt     = train_gt[0]          ### 值 0. ~ 1.
+        #     train_gt_pre = train_gt_pre[0]      ### 值 0. ~ 1.
+        #     # print(train_gt.numpy().dtype)       ### float32
+        #     # print(train_gt.numpy().shape)       ### (h, w, 3) ### ch1:msk, ch2:y, ch3:x
+        #     # print(train_gt.numpy().min())       ### 0.0
+        #     # print(train_gt.numpy().max())       ### 1.0
+        #     # print(train_gt_pre.numpy().dtype)   ### float32
+        #     # print(train_gt_pre.numpy().min())   ### 0.0
+        #     # print(train_gt_pre.numpy().max())   ### 1.0
+        #     train_gt_visual     = method1(train_gt[..., 2]    , train_gt[..., 1])
+        #     train_gt_pre_visual = method1(train_gt_pre[..., 2], train_gt_pre[..., 1])
 
-        for i, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate(self.tf_data.train_db_combine):
-            train_in     = train_in[0]          ### 值 0  ~ 255
-            train_in_pre = train_in_pre[0]      ### 值 0. ~ 1.
-            # print(train_in.numpy().dtype)       ### uint8
-            # print(train_in.numpy().shape)       ### (h, w, 3)
-            # print(train_in.numpy().min())       ### 0
-            # print(train_in.numpy().max())       ### 255
-            # print(train_in_pre.numpy().dtype)   ### float32
-            # print(train_in_pre.numpy().shape)   ### (h, w, 3)
-            # print(train_in_pre.numpy().min())   ### 0.0
-            # print(train_in_pre.numpy().max())   ### 1.0
-
-            train_gt     = train_gt[0]          ### 值 0. ~ 1.
-            train_gt_pre = train_gt_pre[0]      ### 值 0. ~ 1.
-            # print(train_gt.numpy().dtype)       ### float32
-            # print(train_gt.numpy().shape)       ### (h, w, 3) ### ch1:msk, ch2:y, ch3:x
-            # print(train_gt.numpy().min())       ### 0.0
-            # print(train_gt.numpy().max())       ### 1.0
-            # print(train_gt_pre.numpy().dtype)   ### float32
-            # print(train_gt_pre.numpy().min())   ### 0.0
-            # print(train_gt_pre.numpy().max())   ### 1.0
-            train_gt_visual     = method1(train_gt[..., 2]    , train_gt[..., 1])
-            train_gt_pre_visual = method1(train_gt_pre[..., 2], train_gt_pre[..., 1])
-
-            fig, ax = plt.subplots(1, 4)
-            fig.set_size_inches(15, 5)
-            ax[0].imshow(train_in)
-            ax[1].imshow(train_in_pre)
-            ax[2].imshow(train_gt_visual)
-            ax[3].imshow(train_gt_pre_visual)
-            plt.show()
-        # take_num = 5
-        # print(self.tf_data.max_train_move)
-        # print(self.tf_data.min_train_move)
-        # for i, (img, img_pre, move, move_pre) in enumerate(self.tf_data.train_db_combine.take(take_num)):     ### 想看test 的部分用這行 且 註解掉上行
-        #     print("i",i)
-        #     fig, ax = plt.subplots(1,4)
-        #     fig.set_size_inches(15,5)
-        #     ax_i = 0
-        #     img = tf.cast(img[0], tf.uint8)
-        #     ax[ax_i].imshow(img)
-        #     print(img.numpy().dtype)
-
-        #     ax_i += 1
-        #     img_pre_back = (img_pre[0]+1.)*127.5
-        #     img_pre_back = tf.cast(img_pre_back, tf.int32)
-        #     ax[ax_i].imshow(img_pre_back)
-
-        #     ax_i += 1
-        #     move_bgr = method2(move[0,...,0], move[0,...,1])
-        #     ax[ax_i].imshow(move_bgr)
-
-        #     ax_i += 1
-        #     # move_back = (move[0]+1)/2 * (max_train_move-min_train_move) + min_train_move  ### 想看train的部分用這行 且 註解掉下行
-        #     move_back = (move_pre[0]+1)/2 * (self.tf_data.max_train_move-self.tf_data.min_train_move) + self.tf_data.min_train_move    ### 想看test 的部分用這行 且 註解掉上行
-        #     move_back_bgr = method2(move_back[...,0], move_back[...,1],1)
-        #     ax[ax_i].imshow(move_back_bgr)
+        #     fig, ax = plt.subplots(1, 4)
+        #     fig.set_size_inches(15, 5)
+        #     ax[0].imshow(train_in)
+        #     ax[1].imshow(train_in_pre)
+        #     ax[2].imshow(train_gt_visual)
+        #     ax[3].imshow(train_gt_pre_visual)
         #     plt.show()
-        #     plt.close()
-        #########################################################################################################################################
+        ##########################################################################################################################################
         return self
 
 
@@ -576,6 +547,7 @@ class tf_Data_builder(tf_Data_in_dis_gt_flow_builder):
 
 
 if(__name__ == "__main__"):
+    from step08_b_model_obj import MODEL_NAME, KModel_builder
     import os
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
     import time
@@ -589,8 +561,8 @@ if(__name__ == "__main__"):
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_unet()
     # tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=True).set_img_resize( model_obj.model_name).build_by_db_get_method().build()
 
-    db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw756      , DB_GM.in_dis_gt_flow, h=756, w=756).set_dir_by_basic().set_in_gt_type(in_type="png", gt_type="knpy", see_type=None).set_detail(have_train=True, have_see=False).build()
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_unet()
+    db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_type(in_type="png", gt_type="knpy", see_type=None).set_detail(have_train=True, have_see=True).build()
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet()
     tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
     print(time.time() - start_time)

@@ -25,7 +25,7 @@ class KModel_init_builder:
 
 class KModel_Unet_builder(KModel_init_builder):
     def build_unet(self):
-        from step08_a_1_UNet_512to256 import Generator512to256, generate_sees, generate_images, train_step
+        from step08_a_1_UNet_512to256 import Generator512to256, generate_sees, generate_results, train_step
         self.kong_model.generator           = Generator512to256(out_channel=2)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.kong_model.max_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
@@ -33,7 +33,7 @@ class KModel_Unet_builder(KModel_init_builder):
         self.kong_model.max_db_move_x  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
         self.kong_model.max_db_move_y  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
 
-        self.kong_model.generate_images = generate_images  ### 不能checkpoint
+        self.kong_model.generate_results = generate_results  ### 不能checkpoint
         self.kong_model.generate_sees   = generate_sees    ### 不能checkpoint
         self.kong_model.train_step      = train_step       ### 不能checkpoint
 
@@ -47,8 +47,26 @@ class KModel_Unet_builder(KModel_init_builder):
                                                    epoch_log=self.kong_model.epoch_log)
         return self.kong_model
 
+class KModel_Flow_Unet_builder(KModel_Unet_builder):
+    def build_flow_unet(self):
+        from step08_a_1_UNet      import Generator  #generate_sees, generate_results, train_step
+        from step08_a_4_Flow_UNet import train_step, generate_results, generate_sees_without_rec
+        self.kong_model.generator   = Generator(out_channel=3)
+        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-class KModel_GD_and_mrfGD_builder(KModel_Unet_builder):
+
+        self.kong_model.generate_results = generate_results             ### 不能checkpoint
+        self.kong_model.generate_sees    = generate_sees_without_rec    ### 不能checkpoint
+        self.kong_model.train_step       = train_step                   ### 不能checkpoint
+
+        ### 建立 tf 存模型 的物件： checkpoint物件
+        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
+                                                   optimizer_G=self.kong_model.optimizer_G,
+                                                   epoch_log=self.kong_model.epoch_log)
+        return self.kong_model
+
+
+class KModel_GD_and_mrfGD_builder(KModel_Flow_Unet_builder):
     def build_rect2(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
         from step08_a_2_Rect2 import Generator, Discriminator, Rect2
         gen_obj = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
@@ -71,8 +89,8 @@ class KModel_GD_and_mrfGD_builder(KModel_Unet_builder):
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.kong_model.optimizer_D = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-        from step08_a_2_Rect2 import generate_sees, generate_images
-        self.kong_model.generate_images = generate_images  ### 不能checkpoint
+        from step08_a_2_Rect2 import generate_sees, generate_results
+        self.kong_model.generate_results = generate_results  ### 不能checkpoint
         self.kong_model.generate_sees  = generate_sees     ### 不能checkpoint
         from step08_a_2_Rect2 import train_step, train_step2
         if  (g_train_many): self.kong_model.train_step = train_step2  ### 不能checkpoint
@@ -87,7 +105,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Unet_builder):
 
 class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
     def build_justG(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False):
-        from step08_a_3_justG import Generator, generate_sees, generate_images, train_step
+        from step08_a_3_justG import Generator, generate_sees, generate_results, train_step
         self.kong_model.generator   = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
         self._kong_model_G_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
         return self.kong_model
@@ -101,8 +119,8 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
 
     def _kong_model_G_setting(self, g_train_many=False):
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-        from step08_a_2_Rect2 import generate_sees, generate_images
-        self.kong_model.generate_images = generate_images  ### 不能checkpoint
+        from step08_a_2_Rect2 import generate_sees, generate_results
+        self.kong_model.generate_results = generate_results  ### 不能checkpoint
         self.kong_model.generate_sees  = generate_sees     ### 不能checkpoint
 
         from step08_a_3_justG import train_step
@@ -135,7 +153,7 @@ class MODEL_NAME(Enum):
     justG_mrf7            = "justG_mrf7"     ### ord finish
     justG_mrf7_k3         = "justG_mrf7_k3"  ### 127.51
     justG_mrf5_k3         = "justG_mrf5_k3"  ### 沒機器
-    justG_mrf3_k3         = "justG_mrf3_k3"  ### 沒機器   
+    justG_mrf3_k3         = "justG_mrf3_k3"  ### 沒機器
     ########################################################### 08b_3
     justG_mrf79           = "justG_mrf79"   ### ord finish
     justG_mrf79_k3        = "justG_mrf79"   ### 128.246
@@ -200,6 +218,9 @@ class MODEL_NAME(Enum):
     ########################################################### 13 加coord_conv試試看
     justGk3_coord_conv   = "justGk3_coord_conv"        ### 127.35
     justGk3_mrf357_coord_conv = "justGk3_mrf357_corrd_conv"  ### 127.28
+
+    ########################################################### 14
+    flow_unet = "flow_unet"
 
 
 ### 直接先建好 obj 給外面import囉！
@@ -282,5 +303,7 @@ Gk3_resb20  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb20).build_justG
 justGk3_coord_conv        = KModel_builder().set_model_name(MODEL_NAME.justG              ).build_justG    (first_k3=True, coord_conv=True)
 justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG_mrf357_k3    ).build_justG_mrf(first_k3=True, coord_conv=True, mrf_replace=False, use3=True, use5=True, use7=True)
 
+########################################################### 14
+flow_unet = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet()
 if(__name__ == "__main__"):
     pass
