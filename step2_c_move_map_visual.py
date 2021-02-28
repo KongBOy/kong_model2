@@ -1,11 +1,11 @@
-from step0_access_path import access_path
+from step0_access_path import data_access_path
 import numpy as np 
 import matplotlib.pyplot as plt
 import cv2
 from util import get_dir_move, get_reference_map, method1, method2
     
 if(__name__=="__main__"):
-    # access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
+    # data_access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
     ### rgb bgr 之類的細節還沒確認，先跳過快來不及趕meeting的東西了
     ord_dir = "step2_flow_build/move_map"
@@ -14,8 +14,8 @@ if(__name__=="__main__"):
 
     ### 以下是存 reference_map
     map1, map2, x, y = get_reference_map(ord_dir,color_shift=1)
-    cv2.imwrite(access_path+"step2_flow_build/map1.jpg",map1.astype(np.uint8))  ### cv2用方法一存完會變黑色的，因為方法一的顏色是plt自動填的！
-    cv2.imwrite(access_path+"step2_flow_build/map2.png",map2)                   ### cv2存沒問題！
+    cv2.imwrite(data_access_path+"step2_flow_build/map1.jpg",map1.astype(np.uint8))  ### cv2用方法一存完會變黑色的，因為方法一的顏色是plt自動填的！
+    cv2.imwrite(data_access_path+"step2_flow_build/map2.png",map2)                   ### cv2存沒問題！
     
     plt.imshow(map1) ### plt存沒問題
     plt.figure()

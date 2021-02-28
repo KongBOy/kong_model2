@@ -3,7 +3,7 @@ sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build
 import numpy as np 
 import time
-from step0_access_path import access_path
+from step0_access_path import data_access_path
 from step2_a_distort_curl_and_fold import distort_rand
 from step2_a_distort_page_and_pers import distort_just_perspect, distort_just_page
 
@@ -56,13 +56,13 @@ test_moves  = np.concatenate([curl_db.test_data,  fold_db.test_data,  page_db.te
 
 
 dst_dir = "step2_build_flow_h=384,w=256_smooth-curl+fold_and_page"
-Check_dir_exist_and_build(access_path + dst_dir + "/"+"move_maps")
+Check_dir_exist_and_build(data_access_path + dst_dir + "/"+"move_maps")
 
 index = 0
 for move in train_moves:
-    np.save(access_path + dst_dir + "/" + "move_maps/%06i_train"%(index), move) ### 把move_map存起來，記得要轉成float32！
+    np.save(data_access_path + dst_dir + "/" + "move_maps/%06i_train"%(index), move) ### 把move_map存起來，記得要轉成float32！
     index += 1
 
 for move in test_moves:
-    np.save(access_path + dst_dir + "/" + "move_maps/%06i_test"%(index), move) ### 把move_map存起來，記得要轉成float32！
+    np.save(data_access_path + dst_dir + "/" + "move_maps/%06i_test"%(index), move) ### 把move_map存起來，記得要轉成float32！
     index += 1

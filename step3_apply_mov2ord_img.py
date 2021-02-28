@@ -50,9 +50,9 @@ def search_mask_have_hole(dis_msk, hole_size=1,debug=False):
     print("around_have_hole_amount",around_have_hole_amount )
 
     if(debug):
-        from step0_access_path import access_path
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a-hole_around_visual.bmp"%(name),hole_around_visual*70)
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a-foreground_visual.bmp"%(name),foreground_visual*70)
+        from step0_access_path import data_access_path
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-3a-hole_around_visual.bmp"%(name),hole_around_visual*70)
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-3a-foreground_visual.bmp"%(name),foreground_visual*70)
     
     return around_have_hole_amount
 
@@ -115,19 +115,19 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
 
     ### 視覺化
     if(write_to_step3):
-        from step0_access_path import access_path
+        from step0_access_path import data_access_path
         move_map_visual = method2(move_map[...,0], move_map[...,1],color_shift=1)
-        np.save(access_path + dst_dir + "/" + "%s-2-q"%(name), move_map)
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-1-I.bmp"%(name), img)
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-2-q.jpg"%(name), move_map_visual)
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a2-I1.jpg"%(name),dis_img)
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a3-Mask.bmp"%(name),dis_msk*70)
-        np.save    (access_path + dst_dir + "/" + "%s-3a3-Mask"%(name),dis_msk)
+        np.save(data_access_path + dst_dir + "/" + "%s-2-q"%(name), move_map)
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-1-I.bmp"%(name), img)
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-2-q.jpg"%(name), move_map_visual)
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-3a2-I1.jpg"%(name),dis_img)
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-3a3-Mask.bmp"%(name),dis_msk*70)
+        np.save    (data_access_path + dst_dir + "/" + "%s-3a3-Mask"%(name),dis_msk)
 
         gt_pad_img = np.zeros(shape=(dis_h,dis_w,3), dtype=np.float64)
         left, top  = get_dis_img_start_left_top(move_map, max_db_move_x, max_db_move_y)
         gt_pad_img[top:top+row, left:left+col] = img
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-4-gt_ord_pad.bmp"%(name), gt_pad_img)
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-4-gt_ord_pad.bmp"%(name), gt_pad_img)
                 
     ####################################################################################################################
     #### 扭曲影像 空洞的地方補起來
@@ -153,14 +153,14 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
                     dis_msk[go_row,go_col] += 1
         search_mask_have_hole_count += 1
     if(write_to_step3):
-        from step0_access_path import access_path
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a1-I1-patch.bmp"%(name), dis_img.astype(np.uint8))
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-3a4-Mask-patch.bmp"%(name), dis_msk*70)
-        np.save(access_path + dst_dir + "/" + "%s-3a4-Mask-patch"%(name),dis_msk)
+        from step0_access_path import data_access_path
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-3a1-I1-patch.bmp"%(name), dis_img.astype(np.uint8))
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-3a4-Mask-patch.bmp"%(name), dis_msk*70)
+        np.save(data_access_path + dst_dir + "/" + "%s-3a4-Mask-patch"%(name),dis_msk)
         
-        np.save(access_path + dst_dir + "/" + "%s-3b-rec_mov_map"%(name),rec_mov.astype(np.float32))
+        np.save(data_access_path + dst_dir + "/" + "%s-3b-rec_mov_map"%(name),rec_mov.astype(np.float32))
         rec_mov_visual = method2(rec_mov[:,:,0],rec_mov[:,:,1],1)
-        cv2.imwrite(access_path + dst_dir + "/" + "%s-3b-rec_mov_visual.jpg"%(name), rec_mov_visual)
+        cv2.imwrite(data_access_path + dst_dir + "/" + "%s-3b-rec_mov_visual.jpg"%(name), rec_mov_visual)
         print("dis_msk.max()",dis_msk.max())
     
     dis_img = dis_img.astype(np.uint8) ### float64運算完記得 轉回 uint8 才能正常顯示喔！
@@ -183,16 +183,16 @@ def apply_move_at_lots_process(start_index, amount, ord_imgs, ord_imgs_amount, m
 
 
 def load_data_and_apply_move(ord_imgs_dir, move_maps_dir, dst_dir, start_index, write_to_step3=True ):
-    from step0_access_path import access_path
+    from step0_access_path import data_access_path
 
     start_time = time.time()
 
-    ord_imgs        = get_dir_img(access_path + ord_imgs_dir)                ### 取得ord_imgs
+    ord_imgs        = get_dir_img(data_access_path + ord_imgs_dir)                ### 取得ord_imgs
     ord_imgs_amount = len(ord_imgs)                                          ### 取得ord_imgs個數，等等取隨機時用的到
-    move_maps       = get_dir_move(access_path + move_maps_dir)              ### 取得move_maps
+    move_maps       = get_dir_move(data_access_path + move_maps_dir)              ### 取得move_maps
     max_db_move_x, max_db_move_y = get_max_db_move_xy_from_numpy(move_maps)  ### 取得move_maps 的整體最大移動量 max_db_move_xy
     print("max_db_move_x",max_db_move_x,", max_db_move_y",max_db_move_y)     ### 看一下 max_db_move_xy 是多少
-    Check_dir_exist_and_build(access_path + dst_dir)                         ### 建立放結果的資料夾
+    Check_dir_exist_and_build(data_access_path + dst_dir)                         ### 建立放結果的資料夾
 
     
     core_amount = 8

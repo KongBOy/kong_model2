@@ -1,4 +1,4 @@
-from step0_access_path import access_path
+from step0_access_path import data_access_path, result_access_path
 from step06_a_datas_obj import DB_C
 from step11_a_result_obj import See, Result
 
@@ -61,7 +61,7 @@ class Result_train_builder(Result_sees_builder):
     def set_by_result_name(self, result_name):
         ### 3a.用result_name 來設定ckpt, logs 的資料夾
         self.result.result_name = result_name  ### 如果他被包在某個資料夾，該資料夾也算名字喔！ex：5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.35_copy
-        self.result.result_dir  = access_path + "result/" + result_name
+        self.result.result_dir  = result_access_path + "result/" + result_name
         self.result.ckpt_dir = self.result.result_dir + "/ckpt"
         self.result.logs_dir = self.result.result_dir + "/logs"
 

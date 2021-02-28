@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 import sys
 sys.path.append("kong_util")
-from step0_access_path import access_path, JPG_QUALITY
+from step0_access_path import result_access_path, JPG_QUALITY
 from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matplot_visual_multi_row_imgs, draw_loss_util, Matplot_single_row_imgs, Matplot_multi_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from video_from_img import Video_combine_from_dir
@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 class Result_analyzer:
     def __init__(self, ana_describe):
         self.ana_describe = ana_describe
-        self.analyze_dir = access_path + "analyze_dir" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
+        self.analyze_dir = result_access_path + "analyze_dir" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
         Check_dir_exist_and_build(self.analyze_dir)
 
     ########################################################################################################################################

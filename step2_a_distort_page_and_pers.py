@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from util import get_xy_map, Show_3d_scatter_along_xy, method2, Show_move_map_apply, time_util
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
-from step0_access_path import access_path
+from step0_access_path import data_access_path
 from step3_apply_mov2ord_img import apply_move
 
 
@@ -120,10 +120,10 @@ def build_page_move_map(row, col, top_curl=27, down_curl=19, lr_shift=5):
 def distort_more_like_page(dst_dir, start_index, row, col, write_npy=True):
     move_maps = []
     start_time = time.time()
-    # Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorted_mesh_visuals")
-    Check_dir_exist_and_build(access_path + dst_dir + "/"+"move_maps")
-    print(access_path + dst_dir + "/"+"move_maps")
-    # Check_dir_exist_and_build(access_path + dst_dir + "/"+"distorte_infos")
+    # Check_dir_exist_and_build(data_access_path + dst_dir + "/"+"distorted_mesh_visuals")
+    Check_dir_exist_and_build(data_access_path + dst_dir + "/"+"move_maps")
+    print(data_access_path + dst_dir + "/"+"move_maps")
+    # Check_dir_exist_and_build(data_access_path + dst_dir + "/"+"distorte_infos")
 
     ### 固定的參數
     down_curl   = 19
@@ -142,7 +142,7 @@ def distort_more_like_page(dst_dir, start_index, row, col, write_npy=True):
             persp_move = build_perspective_move_map(row, col, ratio_col_t=go_ratio_col_t, ratio_row=ratio_row, ratio_col_d=ratio_col_d) ### 建立 perspective_move
             combine_move = page_move+ persp_move   ### 兩種 move 加起來
             combine_move = combine_move.astype(np.float32)
-            if(write_npy) : np.save(access_path + dst_dir + "/" + "move_maps/%06i"%index, combine_move) ### 把move_map存起來，記得要轉成float32！
+            if(write_npy) : np.save(data_access_path + dst_dir + "/" + "move_maps/%06i"%index, combine_move) ### 把move_map存起來，記得要轉成float32！
             print("%06i process 1 mesh cost time:"%index, "%.3f"%(time.time()-dis_start_time), "total_time:", time_util(time.time()-start_time) )
             index += 1
             move_maps.append(combine_move)
@@ -151,14 +151,14 @@ def distort_more_like_page(dst_dir, start_index, row, col, write_npy=True):
 def distort_just_page(dst_dir, start_index, row, col, repeat=5, write_npy=True):
     move_maps = []
     start_time = time.time()
-    Check_dir_exist_and_build(access_path + dst_dir + "/"+"move_maps")
+    Check_dir_exist_and_build(data_access_path + dst_dir + "/"+"move_maps")
     index = start_index
     for _ in range(repeat):
         for go_page_curl in range(1, 1+55):  ### go_page_curl 最小要1才行喔！
             dis_start_time = time.time()
             page_move = build_page_move_map(row, col, top_curl=go_page_curl, down_curl=go_page_curl, lr_shift=0) ### 建立 page_move
             page_move = page_move.astype(np.float32)
-            if(write_npy) : np.save(access_path + dst_dir + "/" + "move_maps/%06i"%(index), page_move) ### 把move_map存起來，記得要轉成float32！
+            if(write_npy) : np.save(data_access_path + dst_dir + "/" + "move_maps/%06i"%(index), page_move) ### 把move_map存起來，記得要轉成float32！
             print("%06i process 1 mesh cost time:"%index, "%.3f"%(time.time()-dis_start_time), "total_time:", time_util(time.time()-start_time) )
             index += 1
             move_maps.append(page_move)
@@ -167,7 +167,7 @@ def distort_just_page(dst_dir, start_index, row, col, repeat=5, write_npy=True):
 def distort_just_perspect(dst_dir, start_index, row, col, write_npy=True):
     move_maps = []
     start_time = time.time()
-    Check_dir_exist_and_build(access_path + dst_dir + "/"+"move_maps")
+    Check_dir_exist_and_build(data_access_path + dst_dir + "/"+"move_maps")
 
     step_amount = 9
     go_ratio_col_t  = np.linspace(0.7, 1, num=step_amount)
@@ -176,7 +176,7 @@ def distort_just_perspect(dst_dir, start_index, row, col, write_npy=True):
         dis_start_time = time.time()
         pers_move = build_perspective_move_map(row, col, ratio_col_t=go_ratio_col_t[go_step], ratio_row=go_ratio_row[go_step], ratio_col_d=1) ### 建立 perspective_move
         pers_move = pers_move.astype(np.float32)
-        if(write_npy) : np.save(access_path + dst_dir + "/" + "move_maps/%06i"%(start_index+go_step), pers_move) ### 把move_map存起來，記得要轉成float32！
+        if(write_npy) : np.save(data_access_path + dst_dir + "/" + "move_maps/%06i"%(start_index+go_step), pers_move) ### 把move_map存起來，記得要轉成float32！
         print("%06i process 1 mesh cost time:"%(start_index+go_step), "%.3f"%(time.time()-dis_start_time), "total_time:", time_util(time.time()-start_time) )
         move_maps.append(pers_move)
     return np.array(move_maps, dtype=np.float32)

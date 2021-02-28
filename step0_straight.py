@@ -1,4 +1,4 @@
-from step0_access_path import access_path
+from step0_access_path import data_access_path
 import sys 
 sys.path.append("kong_util")
 
@@ -23,7 +23,7 @@ thick_h = 100
 
 width  = 2481; height = 3590#3508
 
-produce_curve_dir = access_path + "/datasets/cut_os_book/produce_straight/" 
+produce_curve_dir = data_access_path + "/datasets/cut_os_book/produce_straight/" 
 
 step00_dir = produce_curve_dir + "00_c_jpg"
 step01_dir = produce_curve_dir + "01_page_num_ok"

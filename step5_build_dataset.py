@@ -1,25 +1,25 @@
 import sys 
 sys.path.append("kong_util")
-from step0_access_path import access_path
+from step0_access_path import data_access_path
 import os
 import shutil
 import numpy as np 
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
 from util import get_dir_certain_file_name, get_maxmin_train_move_from_path, get_max_db_move_xy
-# access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
+# data_access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
 def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
                    in_src_dir, in_src_word, 
                    gt_src_dir, gt_src_word, train_amount=None):
     dir_name = build_dir_name  #"padding2000"
 
-    train_dir    = access_path + "datasets" + "/" + dir_name + "/" + "train"
-    test_dir     = access_path + "datasets" + "/" + dir_name + "/" + "test"
+    train_dir    = data_access_path + "datasets" + "/" + dir_name + "/" + "train"
+    test_dir     = data_access_path + "datasets" + "/" + dir_name + "/" + "test"
 
-    train_in_dir = access_path + "datasets" + "/" + dir_name + "/" + "train/" + in_dir_name
-    train_gt_dir = access_path + "datasets" + "/" + dir_name + "/" + "train/" + gt_dir_name
-    test_in_dir  = access_path + "datasets" + "/" + dir_name + "/" + "test/"  + in_dir_name
-    test_gt_dir  = access_path + "datasets" + "/" + dir_name + "/" + "test/"  + gt_dir_name
+    train_in_dir = data_access_path + "datasets" + "/" + dir_name + "/" + "train/" + in_dir_name
+    train_gt_dir = data_access_path + "datasets" + "/" + dir_name + "/" + "train/" + gt_dir_name
+    test_in_dir  = data_access_path + "datasets" + "/" + dir_name + "/" + "test/"  + in_dir_name
+    test_gt_dir  = data_access_path + "datasets" + "/" + dir_name + "/" + "test/"  + gt_dir_name
 
     Check_dir_exist_and_build_new_dir( train_dir )
     Check_dir_exist_and_build_new_dir( train_in_dir )
@@ -29,9 +29,9 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
     Check_dir_exist_and_build_new_dir( test_gt_dir )
 
 
-    # in_dir  = access_path + "step3_apply_flow"
+    # in_dir  = data_access_path + "step3_apply_flow"
     # in_word = "3a1-I1-patch.bmp"
-    # gt_dir  = access_path + "step2_build_flow/move_map"
+    # gt_dir  = data_access_path + "step2_build_flow/move_map"
     # gt_word = ".npy"
     in_list    = get_dir_certain_file_name(  in_src_dir, certain_word=in_src_word)
     gt_list    = get_dir_certain_file_name(  gt_src_dir, certain_word=gt_src_word )
@@ -66,8 +66,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
 # build_datasets(build_dir_name="h=384,w=256_old_page_1_pure_unet",
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
-#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_old_page",            ### 好像已經刪掉了
-#                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_old_page/move_maps",  ### 好像已經刪掉了
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_old_page",            ### 好像已經刪掉了
+#                gt_src_dir    = data_access_path+"step2_build_flow_h=384,w=256_old_page/move_maps",  ### 好像已經刪掉了
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
@@ -75,8 +75,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
 # build_datasets(build_dir_name="h=256,w=256_complex_1_pure_unet",
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
-#                in_src_dir    = access_path+"step3_apply_flow_h=256,w=256_complex",
-#                gt_src_dir    = access_path+"step2_build_flow_h=256,w=256_complex/move_maps",
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=256,w=256_complex",
+#                gt_src_dir    = data_access_path+"step2_build_flow_h=256,w=256_complex/move_maps",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
@@ -84,8 +84,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
 # build_datasets(build_dir_name="h=384,w=256_complex_1_pure_unet",
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
-#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex",
-#                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_complex/move_maps",
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex",
+#                gt_src_dir    = data_access_path+"step2_build_flow_h=384,w=256_complex/move_maps",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
@@ -94,8 +94,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
 # build_datasets(build_dir_name="h=384,w=256_complex+page_1_pure_unet",
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
-#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page",
-#                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_complex+page/move_maps",
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex+page",
+#                gt_src_dir    = data_access_path+"step2_build_flow_h=384,w=256_complex+page/move_maps",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
@@ -103,8 +103,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
 # build_datasets(build_dir_name="h=384,w=256_complex+page_more_like_1_pure_unet",
 #                in_dir_name   = "dis_imgs",
 #                gt_dir_name   = "move_maps",
-#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
-#                gt_src_dir    = access_path+"step2_build_flow_h=384,w=256_complex+page_more_like/move_maps",
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
+#                gt_src_dir    = data_access_path+"step2_build_flow_h=384,w=256_complex+page_more_like/move_maps",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = ".npy" )
 
@@ -112,8 +112,8 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
 build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_1_pure_unet",
                in_dir_name   = "dis_imgs",
                gt_dir_name   = "move_maps",
-               in_src_dir    = access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
-               gt_src_dir    = access_path + "step2_build_flow_h=384,w=256_smooth-curl+fold_and_page/move_maps",
+               in_src_dir    = data_access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
+               gt_src_dir    = data_access_path + "step2_build_flow_h=384,w=256_smooth-curl+fold_and_page/move_maps",
                in_src_word   = "3a1-I1-patch.bmp",
                gt_src_word   = ".npy" ,
                train_amount  = 1350)
@@ -125,16 +125,16 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_1_pure_unet
 # build_datasets(build_dir_name= "h=384,w=256_old_page_2_pure_rect2",
 #                in_dir_name   = "dis_img_db",
 #                gt_dir_name   = "gt_ord_pad_img_db",
-#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_old_page",
-#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_old_page",
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_old_page",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_old_page",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = "4-gt_ord_pad.bmp" )
 
 # build_datasets(build_dir_name= "h=256,w=256_complex_2_pure_rect2",
 #                in_dir_name   = "dis_img_db",
 #                gt_dir_name   = "gt_ord_pad_img_db",
-#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex",
-#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex",
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = "4-gt_ord_pad.bmp" )
 
@@ -142,8 +142,8 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_1_pure_unet
 # build_datasets(build_dir_name= "h=384,w=256_complex_2_pure_rect2",
 #                in_dir_name   = "dis_img_db",
 #                gt_dir_name   = "gt_ord_pad_img_db",
-#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex",
-#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex",
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = "4-gt_ord_pad.bmp" )
 
@@ -151,8 +151,8 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_1_pure_unet
 # build_datasets(build_dir_name= "h=384,w=256_complex+page_2_pure_rect2",
 #                in_dir_name   = "dis_img_db",
 #                gt_dir_name   = "gt_ord_pad_img_db",
-#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page",
-#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page",
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex+page",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex+page",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = "4-gt_ord_pad.bmp" )
 
@@ -160,8 +160,8 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_1_pure_unet
 # build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_2_pure_rect2",
 #                in_dir_name   = "dis_img_db",
 #                gt_dir_name   = "gt_ord_pad_img_db",
-#                in_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
-#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
+#                in_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
 #                in_src_word   = "3a1-I1-patch.bmp",
 #                gt_src_word   = "4-gt_ord_pad.bmp" )
 
@@ -169,8 +169,8 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_1_pure_unet
 build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_2_pure_rect2",
                in_dir_name   = "dis_img_db",
                gt_dir_name   = "gt_ord_pad_img_db",
-               in_src_dir    = access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
-               gt_src_dir    = access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
+               in_src_dir    = data_access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
+               gt_src_dir    = data_access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
                in_src_word   = "3a1-I1-patch.bmp",
                gt_src_word   = "4-gt_ord_pad.bmp" ,
                train_amount  = 1350)
@@ -181,8 +181,8 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_2_pure_rect
 # build_datasets(build_dir_name= "h=384,w=256_old_page_3_unet_rect2",
 #                in_dir_name   = "unet_rec_img_db",
 #                gt_dir_name   = "gt_ord_img_db",
-#                in_src_dir    = access_path+"result/20200316-114012_1_page_h=384,w=256_model2_UNet_512to256_127.28_finish/test_1_unet_page_h=384,w=256",
-#                gt_src_dir    = access_path+"step3_apply_flow_page",
+#                in_src_dir    = data_access_path+"result/20200316-114012_1_page_h=384,w=256_model2_UNet_512to256_127.28_finish/test_1_unet_page_h=384,w=256",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_page",
 #                in_src_word   = "unet_rec_img.bmp",
 #                gt_src_word   = "1-I.bmp" )
 
@@ -190,8 +190,8 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_2_pure_rect
 # build_datasets(build_dir_name= "h=256,w=256_complex_3_unet_rect2",
 #                in_dir_name   = "unet_rec_img_db",
 #                gt_dir_name   = "gt_ord_img_db",
-#                in_src_dir    = access_path+"result/20200328-170738_1_pure_unet_complex_h=256,w=256_model2_UNet_512to256_finish/test_indicate_1_pure_unet_complex_h=256,w=256",
-#                gt_src_dir    = access_path+"step3_apply_flow_complex",
+#                in_src_dir    = data_access_path+"result/20200328-170738_1_pure_unet_complex_h=256,w=256_model2_UNet_512to256_finish/test_indicate_1_pure_unet_complex_h=256,w=256",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_complex",
 #                in_src_word   = "g_rec_img.bmp",
 #                gt_src_word   = "1-I.bmp" )
 
@@ -200,8 +200,8 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_2_pure_rect
 # build_datasets(build_dir_name= "h=384,w=256_complex_3_unet_rect2",
 #                in_dir_name   = "unet_rec_img_db",
 #                gt_dir_name   = "gt_ord_img_db",
-#                in_src_dir    = access_path+"result/h=384,w=256_20200329-215628_1_pure_unet_complex_h=384,w=256_model2_UNet_512to256/test_indicate_1_pure_unet_complex+page_h=384,w=256",
-#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex",
+#                in_src_dir    = data_access_path+"result/h=384,w=256_20200329-215628_1_pure_unet_complex_h=384,w=256_model2_UNet_512to256/test_indicate_1_pure_unet_complex+page_h=384,w=256",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex",
 #                in_src_word   = "g_rec_img.bmp",
 #                gt_src_word   = "1-I.bmp" )
 
@@ -210,8 +210,8 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_2_pure_rect
 # build_datasets(build_dir_name= "h=384,w=256_complex+page_3_unet_rect2",
 #                in_dir_name   = "unet_rec_img_db",
 #                gt_dir_name   = "gt_ord_img_db",
-#                in_src_dir    = access_path+"result/h=384,w=256_complex+page_1_pure_unet_20200329-232144_model2_UNet_512to256_finish/test_indicate_h=384,w=256_complex+page_1_pure_unet",
-#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page",
+#                in_src_dir    = data_access_path+"result/h=384,w=256_complex+page_1_pure_unet_20200329-232144_model2_UNet_512to256_finish/test_indicate_h=384,w=256_complex+page_1_pure_unet",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex+page",
 #                in_src_word   = "g_rec_img.bmp",
 #                gt_src_word   = "1-I.bmp" )
 
@@ -220,8 +220,8 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_2_pure_rect
 # build_datasets(build_dir_name= "h=384,w=256_complex+page_more_like_3_unet_rect2",
 #                in_dir_name   = "unet_rec_img_db",
 #                gt_dir_name   = "gt_ord_img_db",
-#                in_src_dir    = access_path+"result/h=384,w=256_complex+page_more_like_1_pure_unet_20200406-214854_model2_UNet_512to256/test_indicate_h=384,w=256_complex+page_more_like_1_pure_unet",
-#                gt_src_dir    = access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
+#                in_src_dir    = data_access_path+"result/h=384,w=256_complex+page_more_like_1_pure_unet_20200406-214854_model2_UNet_512to256/test_indicate_h=384,w=256_complex+page_more_like_1_pure_unet",
+#                gt_src_dir    = data_access_path+"step3_apply_flow_h=384,w=256_complex+page_more_like",
 #                in_src_word   = "g_rec_img.bmp",
 #                gt_src_word   = "1-I.bmp" )
 
@@ -232,11 +232,11 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_2_pure_rect
 
 
 # db_name = "1_pure_unet2000-512to256_index"
-# max_train_move, min_train_move = get_maxmin_train_move_from_path(access_path+"datasets"+"/"+db_name+"/"+"train"+"/"+"move_maps")
-# np.save(access_path+"datasets"+"/"+db_name+"/"+"max_train_move",max_train_move)
-# np.save(access_path+"datasets"+"/"+db_name+"/"+"min_train_move",min_train_move)
+# max_train_move, min_train_move = get_maxmin_train_move_from_path(data_access_path+"datasets"+"/"+db_name+"/"+"train"+"/"+"move_maps")
+# np.save(data_access_path+"datasets"+"/"+db_name+"/"+"max_train_move",max_train_move)
+# np.save(data_access_path+"datasets"+"/"+db_name+"/"+"min_train_move",min_train_move)
 
 # db_name = "1_pure_unet_page_h=384,w=256"
-# max_db_move_x, max_db_move_y = get_max_db_move_xy(db_dir=access_path+"datasets", db_name=db_name)
-# np.save(access_path+"datasets"+"/"+db_name+"/"+"max_db_move_x",max_db_move_x)
-# np.save(access_path+"datasets"+"/"+db_name+"/"+"max_db_move_y",max_db_move_y)
+# max_db_move_x, max_db_move_y = get_max_db_move_xy(db_dir=data_access_path+"datasets", db_name=db_name)
+# np.save(data_access_path+"datasets"+"/"+db_name+"/"+"max_db_move_x",max_db_move_x)
+# np.save(data_access_path+"datasets"+"/"+db_name+"/"+"max_db_move_y",max_db_move_y)

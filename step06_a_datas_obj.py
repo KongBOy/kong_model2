@@ -1,4 +1,4 @@
-from step0_access_path import access_path
+from step0_access_path import data_access_path
 from enum import Enum, auto
 
 class DB_CATEGORY(Enum):
@@ -122,7 +122,7 @@ class Dataset_basic_builder(Dataset_init_builder):
         self.db.get_method = get_method
         self.db.h          = h
         self.db.w          = w
-        self.db.db_dir     = access_path + "datasets/" + self.db.category.value + "/" + self.db.db_name.value
+        self.db.db_dir     = data_access_path + "datasets/" + self.db.category.value + "/" + self.db.db_name.value
         return self
 
 class Dataset_dir_builder(Dataset_basic_builder):
@@ -200,7 +200,7 @@ if(__name__ == "__main__"):
     db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="bmp", see_type="bmp").set_detail(have_train=True, have_see=True).build()
     db = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book, DB_N.os_book_400data, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
     db = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book, DB_N.os_book_1532data, DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
-    print(type8_blender_os_book)
+    print(type8_blender_os_book_768)
     # db_complex_1_pure_unet = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_move_map   , h=256, w=256 )
     # db_complex_2_pure_rect = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_ord_pad_img, h=256, w=256 )
     # db_complex_3_pure_rect = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_rec_gt_ord_img    , h=256, w=256 )
