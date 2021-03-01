@@ -48,10 +48,10 @@ class KModel_Unet_builder(KModel_init_builder):
         return self.kong_model
 
 class KModel_Flow_Unet_builder(KModel_Unet_builder):
-    def build_flow_unet(self):
+    def build_flow_unet(self, hid_ch=64, out_channel=3):
         from step08_a_1_UNet      import Generator  #generate_sees, generate_results, train_step
         from step08_a_4_Flow_UNet import train_step, generate_results, generate_sees_without_rec
-        self.kong_model.generator   = Generator(out_channel=3)
+        self.kong_model.generator   = Generator(hid_ch=hid_ch, out_channel=out_channel)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
 
@@ -220,7 +220,11 @@ class MODEL_NAME(Enum):
     justGk3_mrf357_coord_conv = "justGk3_mrf357_corrd_conv"  ### 127.28
 
     ########################################################### 14
-    flow_unet = "flow_unet"
+    flow_unet = "flow_unet"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
+    flow_unet_epoch2 = "flow_unet_epoch2"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
+    flow_unet_epoch3 = "flow_unet_epoch3"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
+    flow_unet_epoch4 = "flow_unet_epoch4"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
+
 
 
 ### 直接先建好 obj 給外面import囉！
@@ -304,6 +308,13 @@ justGk3_coord_conv        = KModel_builder().set_model_name(MODEL_NAME.justG    
 justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG_mrf357_k3    ).build_justG_mrf(first_k3=True, coord_conv=True, mrf_replace=False, use3=True, use5=True, use7=True)
 
 ########################################################### 14
-flow_unet = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet()
+flow_unet = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
+# flow_unet_b1_hid64_epoch100 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
+# flow_unet_b1_hid64_epoch200 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
+# flow_unet_b1_hid64_epoch300 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
+flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
+flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
+flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
+
 if(__name__ == "__main__"):
     pass
