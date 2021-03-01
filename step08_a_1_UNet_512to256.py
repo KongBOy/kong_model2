@@ -245,7 +245,6 @@ def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
     import cv2
     import matplotlib.pyplot as plt
     from util import  get_dir_move, get_dir_certain_img
-    from step0_access_path import access_path
 
 
     ### 建立放結果的資料夾
