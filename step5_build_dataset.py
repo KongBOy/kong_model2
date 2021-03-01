@@ -1,9 +1,9 @@
-import sys 
+import sys
 sys.path.append("kong_util")
 from step0_access_path import data_access_path
 import os
 import shutil
-import numpy as np 
+import numpy as np
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
 from util import get_dir_certain_file_name, get_maxmin_train_move_from_path, get_max_db_move_xy
 # data_access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！

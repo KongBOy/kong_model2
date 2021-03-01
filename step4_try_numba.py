@@ -1,6 +1,6 @@
 from step0_access_path import data_access_path
 from util import get_dir_move, get_max_db_move_xy_from_numpy, get_dir_certain_move, get_dir_certain_img, method2, get_max_db_move_xy_from_certain_move
-import numpy as np 
+import numpy as np
 from numba import cuda
 import math
 import argparse
