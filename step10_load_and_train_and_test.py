@@ -70,7 +70,10 @@ class Experiment():
 ################################################################################################################################################
     def train_init(self, train_reload=False):  ### 1.result, 2.data, 3.model(reload), 4.board, 5.save_code
         ### 1.result
-        if(train_reload): self.result_obj = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name).build()  ### 直接用 自己指定好的 result_name
+        if(train_reload):
+            print("self.exp_dir", self.exp_dir)
+            print("self.result_name", self.result_name)
+            self.result_obj = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name).build()  ### 直接用 自己指定好的 result_name
         else:             self.result_obj = Result_builder().set_by_exp(self).build()  ### 需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
@@ -133,6 +136,7 @@ class Experiment():
             ###############################################################################################################################
             ###     step4 儲存模型 (checkpoint) the model every "epoch_save_freq" epochs
             if (epoch + 1) % self.epoch_save_freq == 0:
+                # print("save epoch_log :", epoch + 1)
                 self.model_obj.ckpt.epoch_log.assign(epoch + 1)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
                 self.ckpt_manager.save()
                 print("save ok ~~~~~~~~~~~~~~~~~")
@@ -243,7 +247,7 @@ class Exp_builder():
         self.exp.batch_size = batch_size
         self.exp.train_shuffle = train_shuffle
         self.exp.epochs = epochs
-        self.exp.epoch_down_step = epoch_down_step
+        self.exp.epoch_down_step = epochs / 2
         self.exp.start_epoch = 0
         return self
 
@@ -258,7 +262,11 @@ class Exp_builder():
         return self
 
     def build(self, result_name=None):
-        if(result_name is not None): self.exp.result_name = self.exp.exp_dir + "/" + result_name
+        if(result_name is not None): 
+            print("build")
+            print("self.exp.exp_dir", self.exp.exp_dir)
+            print("result_name", result_name)
+            self.exp.result_name = result_name
         return self.exp
 
 
@@ -382,29 +390,37 @@ if(__name__ == "__main__"):
     # os_book_1532_Gk3_no_res_D_no_concat  =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_no_res_D_no_concat, describe_mid="5_11_2", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
     # os_book_1532_Gk3_no_res_mrf357       =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_mrf357_no_res     , describe_mid="5_11_3", describe_end="128.246").set_train_args(epochs=700).build(result_name="")
 
-    ########################################################### 12
-    exp_dir12 = "5_12_resb_num"
-    os_book_1532_Gk3_resb00 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb00 , exp_dir=exp_dir12, describe_mid="5_12_1", describe_end="finish" ) .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb01 , exp_dir=exp_dir12, describe_mid="5_12_2", describe_end="127.48" ) .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb03 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb03 , exp_dir=exp_dir12, describe_mid="5_12_3", describe_end="127.35" ) .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb05 , exp_dir=exp_dir12, describe_mid="5_12_4", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb07 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
-    # os_book_1532_Gk3_resb09 ### 原本已經訓練過了，但為了確保沒train錯，還是建了resb_09來train看看囉
-    os_book_1532_Gk3_resb09 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb09 , exp_dir=exp_dir12, describe_mid="5_12_6", describe_end="finish") .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_Gk3_resb11 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7", describe_end="127.55") .set_train_args(epochs=700).build(result_name="")
-    ### 13
-    os_book_1532_Gk3_resb15 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb15 , exp_dir=exp_dir12, describe_mid="5_12_7_3", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
-    ### 17
-    os_book_1532_Gk3_resb20 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8", describe_end="128.244") .set_train_args(epochs=700).build(result_name="")
+    # ########################################################### 12
+    # exp_dir12 = "5_12_resb_num"
+    # os_book_1532_Gk3_resb00 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb00 , exp_dir=exp_dir12, describe_mid="5_12_1", describe_end="finish" ) .set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_Gk3_resb01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb01 , exp_dir=exp_dir12, describe_mid="5_12_2", describe_end="127.48" ) .set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_Gk3_resb03 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb03 , exp_dir=exp_dir12, describe_mid="5_12_3", describe_end="127.35" ) .set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_Gk3_resb05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb05 , exp_dir=exp_dir12, describe_mid="5_12_4", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_Gk3_resb07 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
+    # # os_book_1532_Gk3_resb09 ### 原本已經訓練過了，但為了確保沒train錯，還是建了resb_09來train看看囉
+    # os_book_1532_Gk3_resb09 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb09 , exp_dir=exp_dir12, describe_mid="5_12_6", describe_end="finish") .set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_Gk3_resb11 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7", describe_end="127.55") .set_train_args(epochs=700).build(result_name="")
+    # ### 13
+    # os_book_1532_Gk3_resb15 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb15 , exp_dir=exp_dir12, describe_mid="5_12_7_3", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
+    # ### 17
+    # os_book_1532_Gk3_resb20 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8", describe_end="128.244") .set_train_args(epochs=700).build(result_name="")
 
-    ########################################################### 12
-    exp_dir13 = "5_13_coord_conv"
-    os_book_1532_justGk3_coord_conv        = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_coord_conv        , exp_dir=exp_dir13, describe_mid="5_13_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
-    os_book_1532_justGk3_mrf357_coord_conv = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_mrf357_coord_conv , exp_dir=exp_dir13, describe_mid="5_13_2", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
+    # ########################################################### 12
+    # exp_dir13 = "5_13_coord_conv"
+    # os_book_1532_justGk3_coord_conv        = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_coord_conv        , exp_dir=exp_dir13, describe_mid="5_13_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_justGk3_mrf357_coord_conv = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_mrf357_coord_conv , exp_dir=exp_dir13, describe_mid="5_13_2", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
 
     ########################################################### 14
     exp_dir14 = "5_14_flow_unet"
-    blender_os_book_flow_unet = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
+    # blender_os_book_flow_unet = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="type8_blender_os_book-5_14_1-20210225_204416-flow_unet-127.35")
+    # blender_os_book_flow_unet = Exp_builder().set_basic("train"       , type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
+    # blender_os_book_flow_unet_epoch050 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch050") .set_train_args(epochs= 50).build(result_name="")
+    blender_os_book_flow_unet_epoch100 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch100") .set_train_args(epochs=100).build(result_name="type8_blender_os_book-5_14_1-20210228_161403-flow_unet-epoch100")
+    blender_os_book_flow_unet_epoch200 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch200") .set_train_args(epochs=200).build(result_name="")
+    blender_os_book_flow_unet_epoch300 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch300") .set_train_args(epochs=300).build(result_name="")
+    blender_os_book_flow_unet_epoch002 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch2, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch002") .set_train_args(epochs=2).build(result_name="")
+    blender_os_book_flow_unet_epoch003 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch3, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch003") .set_train_args(epochs=3).build(result_name="")
+    blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).build(result_name="")
 if(__name__ == "__main__"):
     ########################################################### 08b2
     # os_book_1532_justG_mrf7_k3.run()   ### 128.51
@@ -467,6 +483,12 @@ if(__name__ == "__main__"):
     # os_book_1532_justGk3_coord_conv.run()         ### 127.35
     # os_book_1532_justGk3_mrf357_coord_conv.run()  ### 127.28
     ########################################################### 13 加coord_conv試試看
-    blender_os_book_flow_unet.run()
+    # blender_os_book_flow_unet.run()          ### 60.5 GB
+    # blender_os_book_flow_unet_epoch050.run()   ###
+
+    blender_os_book_flow_unet_epoch100.run()
+    # blender_os_book_flow_unet_epoch200.run()
+    # blender_os_book_flow_unet_epoch300.run()
+
 
     pass
