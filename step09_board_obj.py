@@ -23,7 +23,7 @@ class Board:
             plt.savefig(self.logs_dir + "/" + loss_name + ".png")
             plt.close()
             # print("plot %s loss ok~"%loss_name )
-        print("plot loss ok~" )
+        print("plot loss ok~")
 
 class Board_init_builder:
     def __init__(self, board=None):

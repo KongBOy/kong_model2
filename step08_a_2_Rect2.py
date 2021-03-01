@@ -105,18 +105,18 @@ class Discriminator(tf.keras.models.Model):
 
         self.D_kernel_size = D_kernel_size
 
-        self.conv_1 = Conv2D(64  ,   kernel_size=self.D_kernel_size, strides=2, padding="same")
+        self.conv_1 = Conv2D(64    , kernel_size=self.D_kernel_size, strides=2, padding="same")
         self.leaky_lr1 = LeakyReLU(alpha=0.2)
 
-        self.conv_2 = Conv2D(64 * 2,   kernel_size=self.D_kernel_size, strides=2, padding="same")
+        self.conv_2 = Conv2D(64 * 2, kernel_size=self.D_kernel_size, strides=2, padding="same")
         self.in_c2   = InstanceNorm_kong()
         self.leaky_lr2 = LeakyReLU(alpha=0.2)
 
-        self.conv_3 = Conv2D(64 * 4,   kernel_size=self.D_kernel_size, strides=2, padding="same")
+        self.conv_3 = Conv2D(64 * 4, kernel_size=self.D_kernel_size, strides=2, padding="same")
         self.in_c3   = InstanceNorm_kong()
         self.leaky_lr3 = LeakyReLU(alpha=0.2)
 
-        self.conv_4 = Conv2D(64 * 8,   kernel_size=self.D_kernel_size, strides=2, padding="same")
+        self.conv_4 = Conv2D(64 * 8, kernel_size=self.D_kernel_size, strides=2, padding="same")
         self.in_c4   = InstanceNorm_kong()
         self.leaky_lr4 = LeakyReLU(alpha=0.2)
 
@@ -175,15 +175,15 @@ class Generator(tf.keras.models.Model):
 
         if(self.coord_conv): self.coord_conv_layer1 = CoordConv()
         if(self.mrf_replace is False):  ### 如果沒有用 mrf 來取代第一層，就用普通的conv
-            self.conv1   = Conv2D(64  ,   kernel_size=self.first_k, strides=1, padding="valid")
+            self.conv1   = Conv2D(64  , kernel_size=self.first_k, strides=1, padding="valid")
         self.in_c1   = InstanceNorm_kong()
 
         if(self.coord_conv): self.coord_conv_layer2 = CoordConv()
-        self.conv2   = Conv2D(64 * 2,   kernel_size=3, strides=2, padding="same")
+        self.conv2   = Conv2D(64 * 2, kernel_size=3, strides=2, padding="same")
         self.in_c2   = InstanceNorm_kong()
 
         if(self.coord_conv): self.coord_conv_layer3 = CoordConv()
-        self.conv3   = Conv2D(64 * 4,   kernel_size=3, strides=2, padding="same")
+        self.conv3   = Conv2D(64 * 4, kernel_size=3, strides=2, padding="same")
         self.in_c3   = InstanceNorm_kong()
 
         self.use_res_learning = use_res_learning
@@ -199,7 +199,7 @@ class Generator(tf.keras.models.Model):
         self.convT2  = Conv2DTranspose(64  , kernel_size=3, strides=2, padding="same")
         self.in_cT2  = InstanceNorm_kong()
         if(self.coord_conv): self.coord_conv_layer6 = CoordConv()
-        self.convRGB = Conv2D(3  ,   kernel_size=self.first_k, strides=1, padding="valid")
+        self.convRGB = Conv2D(3  , kernel_size=self.first_k, strides=1, padding="valid")
 
     def call(self, input_tensor):
         if(self.coord_conv):
@@ -462,7 +462,7 @@ def generate_results(model_G, in_img_pre):
     return rect_back, in_img_back  ### 注意訓練model時是用tf來讀img，為rgb的方式訓練，所以生成的是rgb的圖喔！
 
 ### 這是一張一張進來的，沒有辦法跟 Result 裡面的 see 生成法合併，要的話就是把這裡matplot部分去除，用result裡的see生成matplot圖囉！
-def generate_sees(model_G, see_index, in_img_pre, gt_img,  epoch=0, result_obj=None):
+def generate_sees(model_G, see_index, in_img_pre, gt_img, epoch=0, result_obj=None):
     rect_back, in_img_back = generate_results(model_G, in_img_pre)
     see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
@@ -486,7 +486,7 @@ def generate_sees(model_G, see_index, in_img_pre, gt_img,  epoch=0, result_obj=N
 #######################################################################################################################
 #######################################################################################################################
 ### testing 的部分 ####################################################################################################
-def test_visual(test_dir_name,  data_dict,  start_index=0):
+def test_visual(test_dir_name, data_dict, start_index=0):
 
     from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec
     import matplotlib.pyplot as plt

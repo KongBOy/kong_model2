@@ -58,11 +58,11 @@ class See:
         gt_img = cv2.imread(self.see_dir + "/" + self.see_jpg_names[1])       ### 要記得see的第二張存的是 輸出的gt影像
         img = cv2.imread(self.see_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
         single_row_imgs = Matplot_single_row_imgs(
-                                imgs       = [ in_img ,   img ,      gt_img],    ### 把要顯示的每張圖包成list
-                                img_titles = ["in_img", "out_img", "gt_img"],    ### 把每張圖要顯示的字包成list
-                                fig_title  = "epoch=%04i" % epoch,   ### 圖上的大標題
-                                add_loss   = add_loss,
-                                bgr2rgb    = bgr2rgb)
+                                imgs      =[ in_img ,   img ,      gt_img],    ### 把要顯示的每張圖包成list
+                                img_titles=["in_img", "out_img", "gt_img"],    ### 把每張圖要顯示的字包成list
+                                fig_title ="epoch=%04i" % epoch,   ### 圖上的大標題
+                                add_loss  =add_loss,
+                                bgr2rgb   =bgr2rgb)
         single_row_imgs.Draw_img()
         return single_row_imgs
 
@@ -85,11 +85,11 @@ class See:
         # bm_visual  = method1(bm[...,0], bm[...,1]*-1)
         # gt_bm_visual = method1(gt_bm[...,0], gt_bm[...,1]*-1)
         single_row_imgs = Matplot_single_row_imgs(
-                                imgs       = [ in_img ,   flow_v ,   gt_flow_v, rec, gt_rec],    ### 把要顯示的每張圖包成list
-                                img_titles = ["in_img", "pred_flow_v", "gt_flow_v", "pred_rec", "gt_rec"],    ### 把每張圖要顯示的字包成list
-                                fig_title  = "epoch=%04i" % epoch,   ### 圖上的大標題
-                                add_loss   = add_loss,
-                                bgr2rgb    = bgr2rgb)
+                                imgs      =[ in_img ,   flow_v ,   gt_flow_v, rec, gt_rec],    ### 把要顯示的每張圖包成list
+                                img_titles=["in_img", "pred_flow_v", "gt_flow_v", "pred_rec", "gt_rec"],    ### 把每張圖要顯示的字包成list
+                                fig_title ="epoch=%04i" % epoch,   ### 圖上的大標題
+                                add_loss  =add_loss,
+                                bgr2rgb   =bgr2rgb)
         single_row_imgs.Draw_img()
         return single_row_imgs
 
@@ -108,14 +108,13 @@ class See:
     ###############################################################################################
     def draw_loss_at_see_during_train(self, epoch, epochs):
         Check_dir_exist_and_build(self.matplot_visual_dir)  ### 以防matplot_visual資料夾被刪掉，要生圖找不到資料夾
-        self.single_row_imgs_during_train.Draw_ax_loss_during_train( self.single_row_imgs_during_train.ax[-1, 1], self.see_dir + "/../logs", epoch, epochs )
+        self.single_row_imgs_during_train.Draw_ax_loss_during_train(self.single_row_imgs_during_train.ax[-1, 1], self.see_dir + "/../logs", epoch, epochs )
         self.single_row_imgs_during_train.Save_fig(dst_dir=self.matplot_visual_dir, epoch=epoch)
 
     ###############################################################################################
     ###############################################################################################
-    def save_as_matplot_visual_after_train(self,   ### 訓練後，可以走訪所有see_file 並重新產生 matplot_visual
-                                           add_loss = False,
-                                           single_see_multiprocess=True):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_visual_multiprocess)，傳參數時這要設為false喔！
+    ### 訓練後，可以走訪所有see_file 並重新產生 matplot_visual
+    def save_as_matplot_visual_after_train(self, add_loss=False, single_see_multiprocess=True):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_visual_multiprocess)，傳參數時這要設為false喔！
         print(f"doing {self.see_name} save_as_matplot_visual_after_train")
         start_time = time.time()
         # matplot_visual_dir = self.see_dir + "/" + "matplot_visual" ### 分析結果存哪裡定位出來
@@ -123,7 +122,7 @@ class See:
         Check_dir_exist_and_build_new_dir(self.matplot_visual_dir)      ### 建立 存結果的資料夾
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
-        if(single_see_multiprocess): self._draw_matplot_visual_after_train_multiprocess( add_loss, core_amount=8, task_amount=self.see_file_amount)
+        if(single_see_multiprocess): self._draw_matplot_visual_after_train_multiprocess(add_loss, core_amount=8, task_amount=self.see_file_amount)
         else: self._draw_matplot_visual_after_train(0, self.see_file_amount, add_loss)
 
         ### 後處理讓結果更小 但 又不失視覺品質
@@ -143,14 +142,14 @@ class See:
             if(go_img >= 2):  ### 第三張 才開始存 epoch影像喔！
                 epoch = go_img - 2  ### 第三張 才開始存 epoch影像喔！所以epoch的數字 是go_img-2
                 single_row_imgs = self._Draw_matplot_visual(epoch, add_loss)
-                if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train( single_row_imgs.ax[-1, 1], self.see_dir + "/../logs", epoch, self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫
-                single_row_imgs.Save_fig( dst_dir=self.matplot_visual_dir, epoch=epoch )  ### 如果沒有要接續畫loss，就可以存了喔！
+                if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_dir + "/../logs", epoch, self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫
+                single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     ###############################################################################################
     ###############################################################################################
     def save_as_matplot_bm_rec_visual_after_train(self,   ### 訓練後，可以走訪所有see_file 並重新產生 matplot_bm_rec_visual
-                                           add_loss = False,
-                                           bgr2rgb = False,
+                                           add_loss=False,
+                                           bgr2rgb =False,
                                            single_see_multiprocess=True):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_bm_rec_visual_multiprocess)，傳參數時這要設為false喔！
         print(f"doing {self.see_name} save_as_matplot_bm_rec_visual_after_train")
         start_time = time.time()
@@ -179,7 +178,7 @@ class See:
             if(go_img >= 3):        ### 第四張 才開始存 epoch影像喔！
                 epoch = go_img - 2  ### 第四張 才開始存 epoch影像喔！所以epoch的數字 是go_img-2
                 single_row_imgs = self._Draw_matplot_bm_rec_visual(epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
-                single_row_imgs.Save_fig( dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch )  ### 如果沒有要接續畫loss，就可以存了喔！
+                single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     ###############################################################################################
     ###############################################################################################
@@ -252,7 +251,7 @@ class Result:
     ##############################################################################################################################
     ##############################################################################################################################
     def save_multi_see_as_matplot_visual(self, see_nums, save_name, add_loss=False, multiprocess=True):
-        print( f"doing save_multi_see_as_matplot_visual, save_name is {save_name}")
+        print(f"doing save_multi_see_as_matplot_visual, save_name is {save_name}")
         ### 防呆 ### 這很重要喔！因為 row 只有一個時，matplot的ax的維度只有一維，但我的操作都兩維 會出錯！所以要切去一維的method喔！
         if(len(see_nums) == 1):
             print("因為 see_nums 的數量只有一個，自動切換成 single 的 method 囉～")
@@ -276,7 +275,7 @@ class Result:
 
         ### 抓 row/col 要顯示的imgs
         if(multiprocess): self._draw_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss, core_amount=8, task_amount=self.see_file_amount)
-        else: self._Draw_multi_see(0, self.see_file_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss )
+        else: self._Draw_multi_see(0, self.see_file_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss)
 
         ### 後處理，讓資料變得 好看 且 更小 並 串成影片
         Find_ltrd_and_crop(matplot_multi_see_dir, matplot_multi_see_dir, padding=15, search_amount=10)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
@@ -288,7 +287,7 @@ class Result:
         from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_multi_see, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss])
 
-    def _Draw_multi_see(self, start_img, img_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False ):
+    def _Draw_multi_see(self, start_img, img_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False):
         for go_img in tqdm(range(start_img, start_img + img_amount)):
             if(go_img >= 2):
                 epoch = go_img - 2
@@ -302,13 +301,13 @@ class Result:
                 multi_row_imgs = Matplot_multi_row_imgs(
                                     rows_cols_imgs=r_c_imgs,
                                     rows_cols_titles=r_c_titles,
-                                    fig_title = "epoch=%04i" % epoch,   ### 圖上的大標題,
-                                    bgr2rgb  = True,
-                                    add_loss = add_loss)
+                                    fig_title ="epoch=%04i" % epoch,   ### 圖上的大標題,
+                                    bgr2rgb   =True,
+                                    add_loss  =add_loss)
 
                 multi_row_imgs.Draw_img()
                 if(add_loss): multi_row_imgs.Draw_ax_loss_after_train(multi_row_imgs.ax[-1, 1], self.logs_dir, epoch, self.see_file_amount - 2)
-                multi_row_imgs.Save_fig( dst_dir=matplot_multi_see_dir, epoch=epoch)
+                multi_row_imgs.Save_fig(dst_dir=matplot_multi_see_dir, epoch=epoch)
 
                 # fig, ax = matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles,
                 #                               rows_cols_imgs   = r_c_imgs,

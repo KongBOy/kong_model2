@@ -282,7 +282,7 @@ def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
         plot_i = 0
 
         ### 圖. test_input
-        test_input = test_input[0].numpy()  ### 這是沒有resize過的！recover是要用這個來做喔！不是用test_in_db_pre resize過的test_input來做！[0]是因為建tf.dataset時有用batch        
+        test_input = test_input[0].numpy()  ### 這是沒有resize過的！recover是要用這個來做喔！不是用test_in_db_pre resize過的test_input來做！[0]是因為建tf.dataset時有用batch
         # ax[plot_i].imshow(test_input.astype(np.uint8))
         ax[plot_i].imshow(test_input)
         ax[plot_i].set_title("distorted_img")

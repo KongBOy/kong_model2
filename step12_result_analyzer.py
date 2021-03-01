@@ -57,23 +57,23 @@ class Col_results_analyzer(Result_analyzer):
                 c_imgs += [gt_imgs]
 
                 single_row_imgs = Matplot_single_row_imgs(
-                                imgs      = c_imgs,      ### 把要顯示的每張圖包成list
-                                img_titles= c_titles,    ### 把每張圖要顯示的字包成list
-                                fig_title = "epoch=%04i" % epoch,   ### 圖上的大標題
-                                add_loss  = add_loss)
+                                imgs      =c_imgs,      ### 把要顯示的每張圖包成list
+                                img_titles=c_titles,    ### 把每張圖要顯示的字包成list
+                                fig_title ="epoch=%04i" % epoch,   ### 圖上的大標題
+                                add_loss  =add_loss)
                 single_row_imgs.Draw_img()
                 if(add_loss):
                     for go_result, result in enumerate(self.c_results):
                         single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result + 1], logs_dir=result.logs_dir, cur_epoch=epoch, min_epochs=self.c_min_train_epochs)
-                single_row_imgs.Save_fig( dst_dir=analyze_see_dir, epoch=epoch)
+                single_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=epoch)
 
 
     def _draw_col_results_single_see_multiprocess(self, see_num, in_imgs, gt_imgs, c_titles, analyze_see_dir, add_loss=False, core_amount=8, task_amount=100):
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see, task_args= [see_num, in_imgs, gt_imgs, c_titles, analyze_see_dir, add_loss] )
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see, task_args=[see_num, in_imgs, gt_imgs, c_titles, analyze_see_dir, add_loss])
 
     def analyze_col_results_single_see(self, see_num, add_loss=False, single_see_multiprocess=True, single_see_core_amount=8):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
-        print( f"{self.ana_describe} doing analyze_col_results_single_see, see_num:{see_num}, multiprocess:{single_see_multiprocess}" )
+        print(f"{self.ana_describe} doing analyze_col_results_single_see, see_num:{see_num}, multiprocess:{single_see_multiprocess}")
         start_time = time.time()
         analyze_see_dir = self.analyze_dir + "/" + self.c_results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                       ### 建立 存結果的資料夾
@@ -114,7 +114,7 @@ class Col_results_analyzer(Result_analyzer):
     ########################################################################################################################################
     ########################################################################################################################################
     ########################################################################################################################################
-    def _Draw_col_results_multi_see(self, start_img, img_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss=False ):
+    def _Draw_col_results_multi_see(self, start_img, img_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss=False):
         for go_img in tqdm(range(start_img, start_img + img_amount)):
             if(go_img >= 2):
                 epoch = go_img - 2
@@ -141,7 +141,7 @@ class Col_results_analyzer(Result_analyzer):
     def _draw_col_results_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss=False, core_amount=8, task_amount=100):
         print("use multiprocess")
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_multi_see, task_args= [see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss] )
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_multi_see, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss])
 
     ### 同col同result，同row同see
     def analyze_col_results_multi_see(self, see_nums, save_name, add_loss=False, multiprocess=True):
@@ -174,7 +174,7 @@ class Col_results_analyzer(Result_analyzer):
         r_c_titles = [c_titles]  ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
         ### 抓 row/col 要顯示的imgs 並且畫出來
-        if(multiprocess):     self._draw_col_results_multi_see_multiprocess( see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss, core_amount=8, task_amount=self.c_min_see_file_amount)
+        if(multiprocess):       self._draw_col_results_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss, core_amount=8, task_amount=self.c_min_see_file_amount)
         else: self._Draw_col_results_multi_see(0, self.c_min_see_file_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss)
 
         ### 後處理，讓資料變得 好看 且 更小 並 串成影片
@@ -189,7 +189,7 @@ class Col_results_analyzer(Result_analyzer):
 ### 目前小任務還沒有切multiprocess喔！
 class Row_col_results_analyzer(Result_analyzer):
     def __init__(self, ana_describe, row_col_results):
-        super().__init__( ana_describe)
+        super().__init__(ana_describe)
         self.r_c_results = row_col_results
         self.r_c_min_see_file_amount = self.get_r_c_min_see_file_amount()
 
@@ -202,11 +202,11 @@ class Row_col_results_analyzer(Result_analyzer):
 
     ########################################################################################################################################
     ### 各row各col 皆 不同result，但全部都看相同某個see；這analyzer不會有 multi_see 的method喔！因為row被拿去show不同的result了，就沒有空間給multi_see拉，所以參數就不用 single_see_multiprocess囉！
-    def _draw_row_col_results_single_see(self, start_img, img_amount, see_num, r_c_titles, analyze_see_dir ):
+    def _draw_row_col_results_single_see(self, start_img, img_amount, see_num, r_c_titles, analyze_see_dir):
         ### 要記得see的第一張存的是 輸入的in影像，第二張存的是 輸出的gt影像
         ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
-        in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_dir + "/" + self.r_c_results[0][0].sees[see_num].see_file_names[0] )  ### 第一張：in_img
-        gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_dir + "/" + self.r_c_results[0][0].sees[see_num].see_file_names[1] )  ### 第二張：gt_img
+        in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_dir + "/" + self.r_c_results[0][0].sees[see_num].see_file_names[0])  ### 第一張：in_img
+        gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_dir + "/" + self.r_c_results[0][0].sees[see_num].see_file_names[1])  ### 第二張：gt_img
         # for go_img in tqdm(range(self.r_c_min_see_file_amount)):
         for go_img in tqdm(range(start_img, start_img + img_amount)):
             if(go_img >= 2):
@@ -216,7 +216,7 @@ class Row_col_results_analyzer(Result_analyzer):
                 for row_results in self.r_c_results:
                     c_imgs   = [in_img]   ### 每個row的第一張要放in_img
                     for result in row_results:  ### 抓出一個row的 img 和 title
-                        c_imgs.append( cv2.imread( result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img] ))
+                        c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_file_names[go_img]))
                     c_imgs += [gt_img]      ### 每個row的最後一張要放gt_img
                     r_c_imgs.append(c_imgs)
                 ###########################################################################################################
@@ -233,11 +233,11 @@ class Row_col_results_analyzer(Result_analyzer):
 
     def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100):
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_row_col_results_single_see, task_args= [see_num, r_c_titles, analyze_see_dir] )
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_row_col_results_single_see, task_args=[see_num, r_c_titles, analyze_see_dir])
 
 
     def analyze_row_col_results_single_see(self, see_num, single_see_multiprocess=False, single_see_core_amount=8):
-        print( f"{self.ana_describe} doing analyze_row_col_results_single_see, see_num:{see_num}, multiprocess:{single_see_multiprocess}")
+        print(f"{self.ana_describe} doing analyze_row_col_results_single_see, see_num:{see_num}, multiprocess:{single_see_multiprocess}")
         start_time = time.time()
         analyze_see_dir = self.analyze_dir + "/" + self.r_c_results[0][0].sees[see_num].see_name  ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                          ### 建立 存結果的資料夾
@@ -274,7 +274,7 @@ class Row_col_results_analyzer(Result_analyzer):
         from util import multi_processing_interface
         if(single_see_multiprocess):
             self.analyze_row_col_results_all_single_see(16, int(task_amount / 2), single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
-            self.analyze_row_col_results_all_single_see( 0, int(task_amount / 2), single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
+            self.analyze_row_col_results_all_single_see(0, int(task_amount / 2), single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
         else:
             multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self.analyze_row_col_results_all_single_see)
 
@@ -298,7 +298,7 @@ if(__name__ == "__main__"):
     from step11_b_result_obj_builder import Result_builder
     from step11_c_result_instance import *
     ### Result_analyzer 的 各method測試：
-    # try_c_result_analyzer = Col_results_analyzer( ana_describe="try_c_result_analyzer", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20 ])
+    # try_c_result_analyzer = Col_results_analyzer(ana_describe="try_c_result_analyzer", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20 ])
     # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=False)
     # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=True)
     # try_c_result_analyzer.analyze_col_results_all_single_see(start_see=0, see_amount=1, add_loss=True)
@@ -344,8 +344,8 @@ if(__name__ == "__main__"):
     # os_book_G_mrf                      = Col_results_analyzer(ana_describe="5_8b_1_G_mrf"                , col_results=[os_book_G_no_mrf, os_book_G_mrf_79, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf)
     # os_book_G_mrf_all                  = Col_results_analyzer(ana_describe="5_8b_1_G_mrf_all"            , col_results=[os_book_G_no_mrf, os_book_G_mrf_7,  os_book_G_mrf_79, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf_all)
 
-    # os_book_8c_Gmrf_3branch  = Col_results_analyzer(ana_describe="5_8c_Gmrf_3branch",  col_results=[os_book_G_mrf_135 ,  os_book_G_mrf_357 , os_book_G_mrf_3579 ]); doing_analyze_2page( os_book_8c_Gmrf_3branch  )
-    # os_book_8d_GDmrf_3branch = Col_results_analyzer(ana_describe="5_8d_GDmrf_3branch", col_results=[os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]); doing_analyze_2page( os_book_8d_GDmrf_3branch )
+    # os_book_8c_Gmrf_3branch  = Col_results_analyzer(ana_describe="5_8c_Gmrf_3branch",  col_results=[os_book_G_mrf_135 ,  os_book_G_mrf_357 , os_book_G_mrf_3579 ]); doing_analyze_2page(os_book_8c_Gmrf_3branch )
+    # os_book_8d_GDmrf_3branch = Col_results_analyzer(ana_describe="5_8d_GDmrf_3branch", col_results=[os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]); doing_analyze_2page(os_book_8d_GDmrf_3branch)
     # os_book_5_8cd = Row_col_results_analyzer(ana_describe="5_8cd", row_col_results=[[os_book_G_mrf_135,  os_book_G_mrf_357, os_book_G_mrf_3579],
     #                                                                                 [os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]
     #                                                                              ])
@@ -492,7 +492,7 @@ if(__name__ == "__main__"):
     # os_book_results = [os_book]
     # os_book_analyze = Result_analyzer("os_book")
 
-    # os_book.save_all_single_see_as_matplot_visual_multiprocess( )
+    # os_book.save_all_single_see_as_matplot_visual_multiprocess()
 
     ## 一次看多see
     # os_book_analyze.analyze_col_results_multi_see(os_book_results, [ 0, 1, 2, 3], "test_lt")

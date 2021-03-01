@@ -78,7 +78,7 @@ class Experiment():
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
         ### 3.model
-        self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
+        self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
         if(train_reload):  ### 看需不需要reload model
             self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
             self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
@@ -90,7 +90,7 @@ class Experiment():
         self.step0_save_code()  ### 把source code存起來
 
     def train_reload(self):
-        self.train(train_reload=True )
+        self.train(train_reload=True)
 
     def train(self, train_reload=False):
         self.train_init(train_reload)
@@ -128,7 +128,7 @@ class Experiment():
             self.train_step1_see_current_img(epoch)
             ###############################################################################################################################
             ###     step2 訓練
-            for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(self.tf_data.train_db_combine) ):
+            for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(self.tf_data.train_db_combine)):
                 self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
             ###############################################################
             ###     step3 整個epoch 的 loss 算平均，存進tensorboard
@@ -156,10 +156,10 @@ class Experiment():
 
         for see_index, (test_in_pre, test_gt) in enumerate(tqdm(zip(see_in_pre.take(see_amount), see_gt.take(see_amount)))):
             if  ("unet"  in self.model_obj.model_name.value and "flow" not in self.model_obj.model_name.value): 
-                self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move,  epoch, result_obj.result_dir, result_obj)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif("rect"  in self.model_obj.model_name.value ): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in_pre, test_gt, epoch, self.result_obj)
-            elif("justG" in self.model_obj.model_name.value ): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj)
-            elif("flow"  in self.model_obj.model_name.value ): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj)
+                self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, result_obj.result_dir, result_obj)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in_pre, test_gt, epoch, self.result_obj)
+            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj)
+            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
@@ -189,20 +189,20 @@ class Experiment():
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
         epoch_cost_time = time.time() - e_start
         total_cost_time = time.time() - total_start
-        print('epoch %i start at:%s'         % (epoch, epoch_start_timestamp ))
-        print('epoch %i cost time:%.2f'      % (epoch, epoch_cost_time     ))
-        print("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount ))
-        print("total cost time:%s"           % (time_util(total_cost_time)  ))
+        print('epoch %i start at:%s'         % (epoch, epoch_start_timestamp))
+        print('epoch %i cost time:%.2f'      % (epoch, epoch_cost_time))
+        print("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))
+        print("total cost time:%s"           % (time_util(total_cost_time)))
         print("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))
         print("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1)))))
         print("")
         with open(self.result_obj.result_dir + "/" + "cost_time.txt", "a") as f:
-            f.write(self.phase)                                                                       ; f.write("\n")
-            f.write('epoch %i start at:%s'         % (epoch, epoch_start_timestamp ))                 ; f.write("\n")
-            f.write('epoch cost time:%.2f'         % (epoch_cost_time             ))                  ; f.write("\n")
-            f.write("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount ))  ; f.write("\n")
-            f.write("total cost time:%s"           % (time_util(total_cost_time)  ))                  ; f.write("\n")
-            f.write("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))               ; f.write("\n")
+            f.write(self.phase)                                                                                  ; f.write("\n")
+            f.write('epoch %i start at:%s'         % (epoch, epoch_start_timestamp))                             ; f.write("\n")
+            f.write('epoch cost time:%.2f'         % (epoch_cost_time))                                          ; f.write("\n")
+            f.write("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))              ; f.write("\n")
+            f.write("total cost time:%s"           % (time_util(total_cost_time)))                               ; f.write("\n")
+            f.write("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))                 ; f.write("\n")
             f.write("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1))))) ; f.write("\n")
             f.write("\n")
 
@@ -215,7 +215,7 @@ class Experiment():
         ### 2.data
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
         ### 3.model且reload
-        self.ckpt_manager = tf.train.CheckpointManager (checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
+        self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
         self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
         self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
         ### 待完成

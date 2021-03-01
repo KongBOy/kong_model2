@@ -289,7 +289,7 @@ class tf_Data_init_builder:
         # print("math.ceil(self.tf_data.db_obj.h / 128) * 128 = ", math.ceil(self.tf_data.db_obj.h / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
         # print("math.ceil(self.tf_data.db_obj.w / 128) * 128 = ", math.ceil(self.tf_data.db_obj.w / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
         if  ("unet" in model_name.value):
-            self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h / 128) * 128 , math.ceil(self.tf_data.db_obj.w / 128) * 128 )  ### 128的倍數，且要是gt_img的兩倍大喔！
+            self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h / 128) * 128 , math.ceil(self.tf_data.db_obj.w / 128) * 128)  ### 128的倍數，且要是gt_img的兩倍大喔！
         elif("rect" in model_name.value or "justG" in model_name.value):
             self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h / 4) * 4, math.ceil(self.tf_data.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
         return self
@@ -331,7 +331,7 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
             return
 
         train_gt_db = tf_Datapipline_Factory.new_mov_pipline(self.tf_data.db_obj.train_gt_dir, self.tf_data.db_obj.h, self.tf_data.db_obj.w, self.tf_data.max_train_move, self.tf_data.min_train_move)
-        test_gt_db  = tf_Datapipline_Factory.new_mov_pipline(self.tf_data.db_obj.test_gt_dir,  self.tf_data.db_obj.h, self.tf_data.db_obj.w, self.tf_data.max_train_move, self.tf_data.min_train_move)
+        test_gt_db  = tf_Datapipline_Factory.new_mov_pipline(self.tf_data.db_obj.test_gt_dir , self.tf_data.db_obj.h, self.tf_data.db_obj.w, self.tf_data.max_train_move, self.tf_data.min_train_move)
         self.tf_data.train_gt_db     = train_gt_db.ord_db
         self.tf_data.train_gt_db_pre = train_gt_db.pre_db
         self.tf_data.test_gt_db      = test_gt_db.ord_db
@@ -467,7 +467,7 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
         self.tf_data.train_gt_db     = train_gt_db.ord_db
         self.tf_data.train_gt_db_pre = train_gt_db.pre_db
         ### 拿到 gt_flows_db 的 test dataset，從 檔名 → tensor
-        test_gt_db  = tf_Datapipline_Factory.new_flow_pipline(self.tf_data.db_obj.test_gt_dir,  self.tf_data.db_obj.h, self.tf_data.db_obj.w)
+        test_gt_db  = tf_Datapipline_Factory.new_flow_pipline(self.tf_data.db_obj.test_gt_dir , self.tf_data.db_obj.h, self.tf_data.db_obj.w)
         self.tf_data.test_gt_db      = test_gt_db.ord_db
         self.tf_data.test_gt_db_pre  = test_gt_db.pre_db
 

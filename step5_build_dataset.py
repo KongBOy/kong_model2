@@ -9,7 +9,7 @@ from util import get_dir_certain_file_name, get_maxmin_train_move_from_path, get
 # data_access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
 def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
-                   in_src_dir, in_src_word, 
+                   in_src_dir, in_src_word,
                    gt_src_dir, gt_src_word, train_amount=None):
     dir_name = build_dir_name  #"padding2000"
 
@@ -21,20 +21,20 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
     test_in_dir  = data_access_path + "datasets" + "/" + dir_name + "/" + "test/"  + in_dir_name
     test_gt_dir  = data_access_path + "datasets" + "/" + dir_name + "/" + "test/"  + gt_dir_name
 
-    Check_dir_exist_and_build_new_dir( train_dir )
-    Check_dir_exist_and_build_new_dir( train_in_dir )
-    Check_dir_exist_and_build_new_dir( train_gt_dir )
-    Check_dir_exist_and_build_new_dir( test_dir )
-    Check_dir_exist_and_build_new_dir( test_in_dir )
-    Check_dir_exist_and_build_new_dir( test_gt_dir )
+    Check_dir_exist_and_build_new_dir(train_dir)
+    Check_dir_exist_and_build_new_dir(train_in_dir)
+    Check_dir_exist_and_build_new_dir(train_gt_dir)
+    Check_dir_exist_and_build_new_dir(test_dir)
+    Check_dir_exist_and_build_new_dir(test_in_dir)
+    Check_dir_exist_and_build_new_dir(test_gt_dir)
 
 
     # in_dir  = data_access_path + "step3_apply_flow"
     # in_word = "3a1-I1-patch.bmp"
     # gt_dir  = data_access_path + "step2_build_flow/move_map"
     # gt_word = ".npy"
-    in_list    = get_dir_certain_file_name(  in_src_dir, certain_word=in_src_word)
-    gt_list    = get_dir_certain_file_name(  gt_src_dir, certain_word=gt_src_word )
+    in_list    = get_dir_certain_file_name(in_src_dir, certain_word=in_src_word)
+    gt_list    = get_dir_certain_file_name(gt_src_dir, certain_word=gt_src_word)
 
     data_amount = len(in_list)
     if(train_amount is None): train_amount = int(data_amount * 0.9)
@@ -110,13 +110,13 @@ def build_datasets(build_dir_name, in_dir_name, gt_dir_name,
 
 
 build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_1_pure_unet",
-               in_dir_name   = "dis_imgs",
-               gt_dir_name   = "move_maps",
-               in_src_dir    = data_access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
-               gt_src_dir    = data_access_path + "step2_build_flow_h=384,w=256_smooth-curl+fold_and_page/move_maps",
-               in_src_word   = "3a1-I1-patch.bmp",
-               gt_src_word   = ".npy" ,
-               train_amount  = 1350)
+               in_dir_name   ="dis_imgs",
+               gt_dir_name   ="move_maps",
+               in_src_dir    =data_access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
+               gt_src_dir    =data_access_path + "step2_build_flow_h=384,w=256_smooth-curl+fold_and_page/move_maps",
+               in_src_word   ="3a1-I1-patch.bmp",
+               gt_src_word   =".npy" ,
+               train_amount  =1350)
 
 
 
@@ -167,13 +167,13 @@ build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_1_pure_unet
 
 
 build_datasets(build_dir_name="h=384,w=256_smooth-curl+fold_and_page_2_pure_rect2",
-               in_dir_name   = "dis_img_db",
-               gt_dir_name   = "gt_ord_pad_img_db",
-               in_src_dir    = data_access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
-               gt_src_dir    = data_access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
-               in_src_word   = "3a1-I1-patch.bmp",
-               gt_src_word   = "4-gt_ord_pad.bmp" ,
-               train_amount  = 1350)
+               in_dir_name   ="dis_img_db",
+               gt_dir_name   ="gt_ord_pad_img_db",
+               in_src_dir    =data_access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
+               gt_src_dir    =data_access_path + "step3_apply_flow_h=384,w=256_smooth-curl+fold_and_page",
+               in_src_word   ="3a1-I1-patch.bmp",
+               gt_src_word   ="4-gt_ord_pad.bmp" ,
+               train_amount  =1350)
 
 
 #####################################################################################################################################################

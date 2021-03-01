@@ -85,7 +85,7 @@ if(__name__ == "__main__"):
 
     board_obj = Board_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_by_model_name(model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
     ###     step2 訓練
-    for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine) ):
+    for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
         model_obj.train_step(model_obj, train_in_pre, train_gt_pre, board_obj)
 
     # in_img = np.ones(shape=(1, 768, 768, 3), dtype=np.float32)  # 建 假資料
