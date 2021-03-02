@@ -26,12 +26,17 @@ class See:
         self.see_npy_names = None
         self.see_file_amount = None
         self.matplot_visual_dir = self.see_dir + "/matplot_visual"
+
         self.matplot_bm_rec_visual_dir = self.see_dir + "/matplot_bm_rec_visual"
+        self.bm_visual_dir             = self.see_dir + "/matplot_bm_rec_visual/bm_visual"
+        self.rec_visual_dir            = self.see_dir + "/matplot_bm_rec_visual/rec_visual"
+        self.see_bm_names  = None
+        self.see_rec_names = None
 
         ### 不確定要不要，因為在initial就做這麼多事情好嗎~~會不會容易出錯哩~~
         ### 覺得還是不要比較好，要使用到的時候再建立，要不然有時候在analyze只是想要result_obj而已，結果又把see資料夾又重建了一次
         # Check_dir_exist_and_build(self.see_dir)
-        self.get_see_dir_info()   ### 好像只有在 analyze時會用到！所以用到的時候再抓就好囉！
+        # self.get_see_dir_info()   ### 好像只有在 analyze時會用到！所以用到的時候再抓就好囉！
 
         self.single_row_imgs_during_train = None  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
 
@@ -67,16 +72,16 @@ class See:
         return single_row_imgs
 
     def _Draw_matplot_bm_rec_visual(self, epoch, add_loss=False, bgr2rgb=False):
-        in_img = cv2.imread(self.see_dir + "/" + self.see_jpg_names[0])       ### 要記得see的第一張存的是 輸入的in影像
-        gt_flow_v = cv2.imread(self.see_dir + "/" + self.see_jpg_names[1])       ### 要記得see的第二張存的是 輸出的gt影像
+        in_img    = cv2.imread(self.see_dir + "/" + self.see_jpg_names[0])          ### 要記得see的第一張存的是 輸入的in影像
+        gt_flow_v = cv2.imread(self.see_dir + "/" + self.see_jpg_names[1])          ### 要記得see的第二張存的是 輸出的gt影像
         flow_v    = cv2.imread(self.see_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
-        gt_flow = np.load(self.see_dir + "/" + self.see_npy_names[0])
-        flow    = np.load(self.see_dir + "/" + self.see_npy_names[epoch + 1])
+        gt_flow   = np.load(self.see_dir + "/" + self.see_npy_names[0])
+        flow      = np.load(self.see_dir + "/" + self.see_npy_names[epoch + 1])
         # breakpoint()
-        bm = use_flow_to_get_bm(flow, flow_scale=768)
+        bm  = use_flow_to_get_bm(flow, flow_scale=768)
         rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
         if(gt_flow.sum() > 0):
-            gt_bm = use_flow_to_get_bm(gt_flow, flow_scale=768)
+            gt_bm  = use_flow_to_get_bm(gt_flow, flow_scale=768)
             gt_rec = use_bm_to_rec_img(gt_bm, flow_scale=768, dis_img=in_img)
         else:
             gt_bm  = np.zeros(shape=(768, 768, 2))
@@ -91,6 +96,11 @@ class See:
                                 add_loss  =add_loss,
                                 bgr2rgb   =bgr2rgb)
         single_row_imgs.Draw_img()
+
+        ### 單獨存大張 bm，有空再弄
+        ### 單獨存大張 rec：
+        if(epoch <= 3): cv2.imwrite(self.rec_visual_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
+        cv2.imwrite(self.rec_visual_dir + "/" + "rec_epoch=%04i.jpg" % epoch, rec)     ### 存大張rec
         return single_row_imgs
 
     ###############################################################################################
@@ -114,6 +124,20 @@ class See:
     ###############################################################################################
     ###############################################################################################
     ### 訓練後，可以走訪所有see_file 並重新產生 matplot_visual
+    def _draw_matplot_visual_after_train(self, start_img, img_amount, add_loss):
+        for go_img in tqdm(range(start_img, start_img + img_amount)):
+            if(go_img >= 2):  ### 第三張 才開始存 epoch影像喔！
+                epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
+                single_row_imgs = self._Draw_matplot_visual(epoch, add_loss)
+                if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_dir + "/../logs", epoch, self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫
+                single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+
+    def _draw_matplot_visual_after_train_multiprocess(self, add_loss, core_amount=8, task_amount=600):
+        print("processing %s" % self.see_name)
+        from util import multi_processing_interface
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss])
+
+
     def save_as_matplot_visual_after_train(self, add_loss=False, single_see_multiprocess=True):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_visual_multiprocess)，傳參數時這要設為false喔！
         print(f"doing {self.see_name} save_as_matplot_visual_after_train")
         start_time = time.time()
@@ -131,22 +155,20 @@ class See:
         Video_combine_from_dir(self.matplot_visual_dir, self.matplot_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
-    def _draw_matplot_visual_after_train_multiprocess(self, add_loss, core_amount=8, task_amount=600):
+    ###############################################################################################
+    ###############################################################################################
+    def _draw_matplot_bm_rec_visual_after_train(self, start_img, img_amount, add_loss, bgr2rgb):
+        for go_img in tqdm(range(start_img, start_img + img_amount)):
+            if(go_img >= 3):        ### 第四張 才開始存 epoch影像喔！相當於epoch1才開始存，因為epoch0太差了沒寫防呆會出錯，目前乾脆先直接跳過有空再寫防呆。
+                epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
+                single_row_imgs = self._Draw_matplot_bm_rec_visual(epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
+                single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+
+    def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=8, task_amount=600):
         print("processing %s" % self.see_name)
         from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss])
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb])
 
-    def _draw_matplot_visual_after_train(self, start_img, img_amount, add_loss):
-        Check_dir_exist_and_build(self.see_dir)
-        for go_img in tqdm(range(start_img, start_img + img_amount)):
-            if(go_img >= 2):  ### 第三張 才開始存 epoch影像喔！
-                epoch = go_img - 2  ### 第三張 才開始存 epoch影像喔！所以epoch的數字 是go_img-2
-                single_row_imgs = self._Draw_matplot_visual(epoch, add_loss)
-                if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_dir + "/../logs", epoch, self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫
-                single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
-
-    ###############################################################################################
-    ###############################################################################################
     def save_as_matplot_bm_rec_visual_after_train(self,   ### 訓練後，可以走訪所有see_file 並重新產生 matplot_bm_rec_visual
                                            add_loss=False,
                                            bgr2rgb =False,
@@ -156,6 +178,8 @@ class See:
         # matplot_bm_rec_visual_dir = self.see_dir + "/" + "matplot_bm_rec_visual" ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build(self.see_dir)
         Check_dir_exist_and_build_new_dir(self.matplot_bm_rec_visual_dir)      ### 建立 存結果的資料夾
+        Check_dir_exist_and_build_new_dir(self.bm_visual_dir)      ### 建立 存結果的資料夾
+        Check_dir_exist_and_build_new_dir(self.rec_visual_dir)      ### 建立 存結果的資料夾
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
         if(single_see_multiprocess): self._draw_matplot_bm_rec_visual_after_train_multiprocess( add_loss, bgr2rgb, core_amount=8, task_amount=self.see_file_amount)
@@ -167,22 +191,15 @@ class See:
         Video_combine_from_dir(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
-    def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=8, task_amount=600):
-        print("processing %s" % self.see_name)
-        from util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb])
+    ###############################################################################################
+    ###############################################################################################
+    ###############################################################################################
 
-    def _draw_matplot_bm_rec_visual_after_train(self, start_img, img_amount, add_loss, bgr2rgb):
-        Check_dir_exist_and_build(self.see_dir)
-        for go_img in tqdm(range(start_img, start_img + img_amount)):
-            if(go_img >= 3):        ### 第四張 才開始存 epoch影像喔！
-                epoch = go_img - 2  ### 第四張 才開始存 epoch影像喔！所以epoch的數字 是go_img-2
-                single_row_imgs = self._Draw_matplot_bm_rec_visual(epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
-                single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-    ###############################################################################################
-    ###############################################################################################
-    ###############################################################################################
+class See_bm_rec(See):
+    def __init__(self):
+        super(See, self).__init__()
+
 
 
 
@@ -250,6 +267,7 @@ class Result:
     ##############################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
+    ### 好像比較少用到
     def save_multi_see_as_matplot_visual(self, see_nums, save_name, add_loss=False, multiprocess=True):
         print(f"doing save_multi_see_as_matplot_visual, save_name is {save_name}")
         ### 防呆 ### 這很重要喔！因為 row 只有一個時，matplot的ax的維度只有一維，但我的操作都兩維 會出錯！所以要切去一維的method喔！
@@ -329,7 +347,7 @@ if(__name__ == "__main__"):
 
     ## Result 的 各method測試：
     ### 單loss 的情況
-    os_book = Result_builder().set_by_result_name("5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51").set_ana_plot_title("mae9").build()
+    # os_book = Result_builder().set_by_result_name("5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51").set_ana_plot_title("mae9").build()
     # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=False, single_see_multiprocess=False)
     # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=False)
     # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=False, single_see_multiprocess=True)
@@ -346,12 +364,14 @@ if(__name__ == "__main__"):
     # os_book_lots_loss = Result_builder().set_by_result_name("5_rect_mae136/type7b_h500_w332_real_os_book-20200524-012601-rect-1532data_mae3_127.35").set_ana_plot_title("see_lots_loss").build()
     # os_book_lots_loss.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=True)
 
-    blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210225_204416-flow_unet-127.35").set_ana_plot_title("blender").build()
+
+
+    blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050").set_ana_plot_title("blender").build()
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
     # blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
-    # blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-    blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=5, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+    blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=5, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)   ### 如果失敗就單個跑吧~~
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=6, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=7, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=8, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)

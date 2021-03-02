@@ -182,3 +182,19 @@ os_book_Gk3_mrf357_coord_conv_all       = Result_builder().set_by_result_name(di
 # compress_results.append(os_book_rect_D10)
 # compress_results.append(os_book_rect_D05)
 # compress_results.append(os_book_rect_D00)
+
+
+dir14 = "5_14_flow_unet"
+blender_os_book_flow_unet_epoch050 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050").set_ana_plot_title("flow_unet_epoch=050").build()
+blender_os_book_flow_unet_epoch100 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_161403-flow_unet-epoch100").set_ana_plot_title("flow_unet_epoch=100").build()
+blender_os_book_flow_unet_epoch200 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210301_015045-flow_unet-epoch200").set_ana_plot_title("flow_unet_epoch=200").build()
+blender_os_book_flow_unet_epoch300 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_164701-flow_unet-epoch300").set_ana_plot_title("flow_unet_epoch=300").build()
+blender_os_book_flow_unet_epoch700 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210225_204416-flow_unet-127.35")  .set_ana_plot_title("flow_unet_epoch=700").build()
+
+rec_bm_results = [
+                # blender_os_book_flow_unet_epoch050,
+                # blender_os_book_flow_unet_epoch100,
+                # blender_os_book_flow_unet_epoch200,
+                blender_os_book_flow_unet_epoch300,
+                # blender_os_book_flow_unet_epoch700
+                ]
