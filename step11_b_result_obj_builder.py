@@ -1,6 +1,7 @@
-from step0_access_path import data_access_path, result_access_path
+from step0_access_path import result_access_path
 from step06_a_datas_obj import DB_C
-from step11_a_result_obj import See, Result
+from step11_a1_see_obj import See
+from step11_a2_result_obj import Result
 
 class Result_init_builder:
     def __init__(self, result=None):

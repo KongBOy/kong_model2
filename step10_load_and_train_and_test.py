@@ -6,7 +6,7 @@ import time
 from step06_b_data_pipline import tf_Data_builder
 from step08_b_model_obj import MODEL_NAME
 from step09_board_obj import Board_builder
-from step11_a_result_obj import Result
+from step11_a2_result_obj import Result
 from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
@@ -30,10 +30,11 @@ class Experiment():
         shutil.copy("step08_b_model_obj.py"             , code_dir + "/" + "step08_b_model_obj.py")
         shutil.copy("step09_board_obj.py"               , code_dir + "/" + "step09_board_obj.py")
         shutil.copy("step10_load_and_train_and_test.py" , code_dir + "/" + "step10_load_and_train_and_test.py")
-        shutil.copy("step11_a_result_obj.py"            , code_dir + "/" + "step11_a_result_obj.py")
+        shutil.copy("step11_a1_see_obj.py"              , code_dir + "/" + "step11_a1_see_obj.py")
+        shutil.copy("step11_a2_result_obj.py"           , code_dir + "/" + "step11_a2_result_obj.py")
         shutil.copy("step11_b_result_obj_builder.py"    , code_dir + "/" + "step11_b_result_obj_builder.py")
         shutil.copy("step11_c_result_instance.py"       , code_dir + "/" + "step11_c_result_instance.py")
-        shutil.copy("step11_d_result_compress.py"       , code_dir + "/" + "step11_d_result_compress.py")
+        shutil.copy("step11_d_result_do_something.py"   , code_dir + "/" + "step11_d_result_do_something.py")
         shutil.copy("step12_result_analyzer.py"         , code_dir + "/" + "step12_result_analyzer.py")
 
 ################################################################################################################################################
@@ -383,8 +384,8 @@ if(__name__ == "__main__"):
     # os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_3", describe_end="1532data_mae3_focus_G05D01_127.35").set_train_args(epochs=700).build(result_name="")
 
     ### 新版
-    os_book_1532_rect_Gk3_train3_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train3_Dk4_no_concat, describe_mid="5_10_2", describe_end="127.246").set_train_args(epochs=700).build(result_name="")
-    os_book_1532_rect_Gk3_train5_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train5_Dk4_no_concat, describe_mid="5_10_3", describe_end="no_machine").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_rect_Gk3_train3_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train3_Dk4_no_concat, describe_mid="5_10_2", describe_end="127.246").set_train_args(epochs=700).build(result_name="")
+    # os_book_1532_rect_Gk3_train5_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train5_Dk4_no_concat, describe_mid="5_10_3", describe_end="no_machine").set_train_args(epochs=700).build(result_name="")
     ########################################################### 11
     # os_book_1532_Gk3_no_res              =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_no_res            , describe_mid="5_11_1", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
     # os_book_1532_Gk3_no_res_D_no_concat  =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_no_res_D_no_concat, describe_mid="5_11_2", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
@@ -483,12 +484,11 @@ if(__name__ == "__main__"):
     # os_book_1532_justGk3_coord_conv.run()         ### 127.35
     # os_book_1532_justGk3_mrf357_coord_conv.run()  ### 127.28
     ########################################################### 13 加coord_conv試試看
-    # blender_os_book_flow_unet.run()          ### 60.5 GB
-    # blender_os_book_flow_unet_epoch050.run()   ###
-
-    blender_os_book_flow_unet_epoch100.run()
-    # blender_os_book_flow_unet_epoch200.run()
-    # blender_os_book_flow_unet_epoch300.run()
+    # blender_os_book_flow_unet.run()            ### 127.35  60.5  GB   最低loss:0.0000945
+    # blender_os_book_flow_unet_epoch050.run()   ### 127.35  05.38 GB   最低loss:0.00035705  total cost time:01:29:33
+    # blender_os_book_flow_unet_epoch100.run()   ### 127.35  09.72 GB   最低loss:0.00023004  total cost time:02:41:56
+    # blender_os_book_flow_unet_epoch200.run()   ### 127.35  18.30 GB   最低loss:0.00015143  total cost time:05:45:19
+    blender_os_book_flow_unet_epoch300.run()   ### 127.35  27.00 GB   最低loss:0.00012906  total cost time:08:51:23
 
 
     pass
