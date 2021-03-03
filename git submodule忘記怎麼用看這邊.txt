@@ -1,3 +1,16 @@
+記得要進去 kong_util 裡面 把 git commit 做完
+然後別忘記 kong_util 裡面 要 git push 把 kong_util 的新版 push 上github喔！
+
+回到kong_model
+git add kong_util 
+git commit -m "kong_util 更新"  ### 把目前記錄最新的版本號 更新成 修改後新版kong_util 的 版本號
+git push
+
+
+在別台機器上面
+git pull			   ### 更新 目前記錄最新的版本號
+git submodule update   ### kong_util會checkout 目前記錄最新的版本號
+		或
 git submodule init
 git submodule update
 這樣應該就可以囉
