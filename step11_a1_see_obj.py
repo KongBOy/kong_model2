@@ -1,4 +1,4 @@
-from step0_access_path import JPG_QUALITY
+from step0_access_path import JPG_QUALITY, CORE_AMOUNT
 
 import sys
 sys.path.append("kong_util")
@@ -107,7 +107,7 @@ class See_visual(See_info):
                 if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_dir + "/../logs", epoch, self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫
                 single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-    def _draw_matplot_visual_after_train_multiprocess(self, add_loss, core_amount=8, task_amount=600):
+    def _draw_matplot_visual_after_train_multiprocess(self, add_loss, core_amount=CORE_AMOUNT, task_amount=600):
         print("processing %s" % self.see_name)
         from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss])
@@ -121,13 +121,13 @@ class See_visual(See_info):
         Check_dir_exist_and_build_new_dir(self.matplot_visual_dir)      ### 建立 存結果的資料夾
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
-        if(single_see_multiprocess): self._draw_matplot_visual_after_train_multiprocess(add_loss, core_amount=8, task_amount=self.see_file_amount)
+        if(single_see_multiprocess): self._draw_matplot_visual_after_train_multiprocess(add_loss, core_amount=CORE_AMOUNT, task_amount=self.see_file_amount)
         else: self._draw_matplot_visual_after_train(0, self.see_file_amount, add_loss)
 
         ### 後處理讓結果更小 但 又不失視覺品質
         Find_ltrd_and_crop(self.matplot_visual_dir, self.matplot_visual_dir, padding=15, search_amount=10)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(self.matplot_visual_dir, self.matplot_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY])  ### matplot圖存完是png，改存成jpg省空間
-        Video_combine_from_dir(self.matplot_visual_dir, self.matplot_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+        # Video_combine_from_dir(self.matplot_visual_dir, self.matplot_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         print("cost_time:", time.time() - start_time)
     ###############################################################################################
     ###############################################################################################
@@ -148,8 +148,22 @@ class See_bm_rec(See_info):
         self.matplot_bm_rec_visual_dir = self.see_dir + "/matplot_bm_rec_visual"
         self.bm_visual_dir             = self.see_dir + "/matplot_bm_rec_visual/bm_visual"
         self.rec_visual_dir            = self.see_dir + "/matplot_bm_rec_visual/rec_visual"
-        self.see_bm_names  = None
-        self.see_rec_names = None
+        self.bm_names  = None
+        self.bm_paths  = None
+        self.rec_names = None
+        self.rec_paths = None
+
+    ###############################################################################################
+    ###############################################################################################
+    def get_bm_rec_info(self):
+        self.bm_names  = get_dir_certain_file_name(self.bm_visual_dir , ".jpg")
+        self.bm_paths  = [self.bm_visual_dir + "/" + name for name in self.bm_names]
+        self.rec_names = get_dir_certain_file_name(self.rec_visual_dir, ".jpg")
+        self.rec_paths = [self.rec_visual_dir + "/" + name for name in self.rec_names]
+
+        self.see_file_amount = len(self.rec_names)
+        # self.matplot_visual_dir = self.see_dir + "/matplot_visual"
+        # Check_dir_exist_and_build(self.matplot_visual_dir)
 
     ###############################################################################################
     ###############################################################################################
@@ -195,7 +209,7 @@ class See_bm_rec(See_info):
                 single_row_imgs = self._Draw_matplot_bm_rec_visual(epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
                 single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-    def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=8, task_amount=600):
+    def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=CORE_AMOUNT, task_amount=600):
         print("processing %s" % self.see_name)
         from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb])
@@ -213,13 +227,13 @@ class See_bm_rec(See_info):
         Check_dir_exist_and_build_new_dir(self.rec_visual_dir)      ### 建立 存結果的資料夾
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
-        if(single_see_multiprocess): self._draw_matplot_bm_rec_visual_after_train_multiprocess(add_loss, bgr2rgb, core_amount=8, task_amount=self.see_file_amount)
+        if(single_see_multiprocess): self._draw_matplot_bm_rec_visual_after_train_multiprocess(add_loss, bgr2rgb, core_amount=CORE_AMOUNT, task_amount=self.see_file_amount)
         else: self._draw_matplot_bm_rec_visual_after_train(0, self.see_file_amount, add_loss, bgr2rgb)
 
         ### 後處理讓結果更小 但 又不失視覺品質
         Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY])  ### matplot圖存完是png，改存成jpg省空間
-        Video_combine_from_dir(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+        # Video_combine_from_dir(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉 
         print("cost_time:", time.time() - start_time)
     ###############################################################################################
     ###############################################################################################

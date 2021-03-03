@@ -1,4 +1,4 @@
-from step0_access_path import JPG_QUALITY
+from step0_access_path import JPG_QUALITY, CORE_AMOUNT
 
 import sys
 sys.path.append("kong_util")
@@ -12,6 +12,7 @@ from tqdm import tqdm
 
 import matplotlib.pyplot as plt
 import pdb
+
 
 
 class Result:
@@ -57,7 +58,7 @@ class Result:
         print(f"doing {self.result_name}")
         from util import multi_processing_interface
         single_see_multiprocess = False  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
-        multi_processing_interface(core_amount=8, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_visual, task_args=[add_loss, single_see_multiprocess])
+        multi_processing_interface(core_amount=CORE_AMOUNT, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_visual, task_args=[add_loss, single_see_multiprocess])
 
     ##############################################################################################################################
     ##############################################################################################################################
@@ -73,7 +74,7 @@ class Result:
         print(f"doing {self.result_name}")
         from util import multi_processing_interface
         single_see_multiprocess = False  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
-        multi_processing_interface(core_amount=8, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_bm_rec_visual, task_args=[add_loss, bgr2rgb, single_see_multiprocess])
+        multi_processing_interface(core_amount=CORE_AMOUNT, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_bm_rec_visual, task_args=[add_loss, bgr2rgb, single_see_multiprocess])
 
     ##############################################################################################################################
     ##############################################################################################################################
@@ -103,7 +104,7 @@ class Result:
         r_c_titles = [titles]  ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
         ### 抓 row/col 要顯示的imgs
-        if(multiprocess): self._draw_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss, core_amount=8, task_amount=self.see_file_amount)
+        if(multiprocess): self._draw_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss, core_amount=CORE_AMOUNT, task_amount=self.see_file_amount)
         else: self._Draw_multi_see(0, self.see_file_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss)
 
         ### 後處理，讓資料變得 好看 且 更小 並 串成影片
@@ -112,7 +113,7 @@ class Result:
         Video_combine_from_dir(matplot_multi_see_dir, matplot_multi_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
-    def _draw_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False, core_amount=8, task_amount=600):
+    def _draw_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False, core_amount=CORE_AMOUNT, task_amount=600):
         from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_multi_see, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss])
 
