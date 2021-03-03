@@ -225,6 +225,9 @@ class MODEL_NAME(Enum):
     flow_unet_epoch3 = "flow_unet_epoch3"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
     flow_unet_epoch4 = "flow_unet_epoch4"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
 
+    flow_unet_hid_ch_32 = "flow_unet_hid_ch_32"   ### 包含這關鍵字就沒問題 ### hid_ch=32 
+    flow_unet_hid_ch_16 = "flow_unet_hid_ch_16"   ### 包含這關鍵字就沒問題 ### hid_ch=32 
+    flow_unet_hid_ch_08 = "flow_unet_hid_ch_08"   ### 包含這關鍵字就沒問題 ### hid_ch=32 
 
 
 ### 直接先建好 obj 給外面import囉！
@@ -309,6 +312,9 @@ justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG_mrf
 
 ########################################################### 14
 flow_unet = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
+flow_unet_hid_ch_32 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=32, out_channel=3)
+flow_unet_hid_ch_16 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=16, out_channel=3)
+flow_unet_hid_ch_08 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 8, out_channel=3)
 # flow_unet_b1_hid64_epoch100 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
 # flow_unet_b1_hid64_epoch200 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
 # flow_unet_b1_hid64_epoch300 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)

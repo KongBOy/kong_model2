@@ -185,7 +185,7 @@ class Experiment():
             loss_containor.reset_states()
         ###############################################################
         self.board_obj.see_loss(self.epochs)  ### 把 loss資訊 用 matplot畫出來
-        self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
+        ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了 # self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
         epoch_cost_time = time.time() - e_start
@@ -415,13 +415,20 @@ if(__name__ == "__main__"):
     exp_dir14 = "5_14_flow_unet"
     # blender_os_book_flow_unet = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="type8_blender_os_book-5_14_1-20210225_204416-flow_unet-127.35")
     # blender_os_book_flow_unet = Exp_builder().set_basic("train"       , type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
-    # blender_os_book_flow_unet_epoch050 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch050") .set_train_args(epochs= 50).build(result_name="")
+    blender_os_book_flow_unet_epoch050 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch050") .set_train_args(epochs= 50).build(result_name="")
     blender_os_book_flow_unet_epoch100 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch100") .set_train_args(epochs=100).build(result_name="type8_blender_os_book-5_14_1-20210228_161403-flow_unet-epoch100")
     blender_os_book_flow_unet_epoch200 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch200") .set_train_args(epochs=200).build(result_name="")
     blender_os_book_flow_unet_epoch300 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch300") .set_train_args(epochs=300).build(result_name="")
+    blender_os_book_flow_unet_epoch700 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch700") .set_train_args(epochs=700).build(result_name="")
+    
     blender_os_book_flow_unet_epoch002 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch2, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch002") .set_train_args(epochs=2).build(result_name="")
     blender_os_book_flow_unet_epoch003 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch3, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch003") .set_train_args(epochs=3).build(result_name="")
     blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).build(result_name="")
+
+    blender_os_book_flow_unet_hid_ch_32 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_32, exp_dir=exp_dir14, describe_mid="5_14_2_1", describe_end="hid_ch_32") .set_train_args(epochs=500).build(result_name="")
+    blender_os_book_flow_unet_hid_ch_16 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_hid_ch_16, exp_dir=exp_dir14, describe_mid="5_14_2_2", describe_end="hid_ch_16") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_2_2-20210303_083630-flow_unet-hid_ch_16")
+    blender_os_book_flow_unet_hid_ch_08 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_16, exp_dir=exp_dir14, describe_mid="5_14_2_3", describe_end="hid_ch_08") .set_train_args(epochs=500).build(result_name="")
+    
 if(__name__ == "__main__"):
     ########################################################### 08b2
     # os_book_1532_justG_mrf7_k3.run()   ### 128.51
@@ -483,12 +490,16 @@ if(__name__ == "__main__"):
     ########################################################### 13 加coord_conv試試看
     # os_book_1532_justGk3_coord_conv.run()         ### 127.35
     # os_book_1532_justGk3_mrf357_coord_conv.run()  ### 127.28
-    ########################################################### 13 加coord_conv試試看
+    ########################################################### 14
     # blender_os_book_flow_unet.run()            ### 127.35  60.5  GB   最低loss:0.0000945
     # blender_os_book_flow_unet_epoch050.run()   ### 127.35  05.38 GB   最低loss:0.00035705  total cost time:01:29:33
     # blender_os_book_flow_unet_epoch100.run()   ### 127.35  09.72 GB   最低loss:0.00023004  total cost time:02:41:56
     # blender_os_book_flow_unet_epoch200.run()   ### 127.35  18.30 GB   最低loss:0.00015143  total cost time:05:45:19
-    blender_os_book_flow_unet_epoch300.run()   ### 127.35  27.00 GB   最低loss:0.00012906  total cost time:08:51:23
+    # blender_os_book_flow_unet_epoch300.run()   ### 127.35  27.00 GB   最低loss:0.00012906  total cost time:08:51:23
+    # blender_os_book_flow_unet_epoch700.run()   ### 127.35  27.00 GB   最低loss:0.00012906  total cost time:08:51:23
 
-
+    ########################################################### 14
+    # blender_os_book_flow_unet_hid_ch_32.run()
+    blender_os_book_flow_unet_hid_ch_16.run()
+    # blender_os_book_flow_unet_hid_ch_08.run()
     pass
