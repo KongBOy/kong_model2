@@ -294,9 +294,44 @@ def doing_analyze_2page(analyze_obj):
     analyze_obj.analyze_col_results_all_single_see_multiprocess(add_loss=True, single_see_multiprocess=True, single_see_core_amount=10)
 
 
+
+class Rec_result_analyzer(Result_analyzer):
+    def __init__(self, ana_describe, results):
+        super().__init__(ana_describe)
+        self.results = results
+
+
+    def do(self, see_num):
+        analyze_see_dir = self.analyze_dir + "/" + self.results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來，上面是analyze_see_dir
+        analyze_see_bm_dir  = analyze_see_dir + "/" + "bm"
+        analyze_see_rec_dir = analyze_see_dir + "/" + "rec"
+        Check_dir_exist_and_build_new_dir(analyze_see_dir)       ### 建立 存結果的資料夾
+        Check_dir_exist_and_build_new_dir(analyze_see_bm_dir)    ### 建立 存結果的資料夾
+        Check_dir_exist_and_build_new_dir(analyze_see_rec_dir)   ### 建立 存結果的資料夾
+
+        for go_r, result in enumerate(self.results):
+            result.sees[see_num].get_bm_rec_info()  ### 抓 result/see_.../matplot_bm_rec_visual/bm_visual 和 rec_visual 的 nemas, paths
+            result_describe = result.sees[see_num].result_dir.split("-")[-1]   ### 抓result最後的describe，舉例：D:/0 data_dir/result/5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050
+            analyze_see_rec_final_path = analyze_see_rec_dir + "/" + result_describe + ".jpg"  ### 定出rec_final_path
+            analyze_see_rec_gt_path    = analyze_see_rec_dir + "/" + "rec_gt" + ".jpg"         ### 定出rec_gt_path
+            rec_gt    = cv2.imread(result.sees[see_num].rec_paths[-1])  ### 倒數第一張 是 gt
+            rec_final = cv2.imread(result.sees[see_num].rec_paths[-2])  ### 倒數第二張 是 最後一個epoch
+            cv2.imwrite(analyze_see_rec_final_path, rec_final)          ### 根據上面定出的位置存圖
+            cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
+
+
 if(__name__ == "__main__"):
     from step11_b_result_obj_builder import Result_builder
-    from step11_c_result_instance import *
+    from step11_c_result_instance import  *
+
+    rec_result_analyze = Rec_result_analyzer("5_14_rec_result_analyze", rec_bm_results)
+    for see_num in range(12):
+        rec_result_analyze.do(see_num=see_num)
+    # rec_result_analyze.do(see_num=9)
+    # rec_result_analyze.do(see_num=10)
+    # rec_result_analyze.do(see_num=11)
+
+    
     ### Result_analyzer 的 各method測試：
     # try_c_result_analyzer = Col_results_analyzer(ana_describe="try_c_result_analyzer", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20 ])
     # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=False)
@@ -370,7 +405,7 @@ if(__name__ == "__main__"):
     # os_book_11b_G_mrf357_res_try           = Col_results_analyzer(ana_describe="5_11b_G_mrf357_res_try"          , col_results=[os_book_G_mrf_357_res        , os_book_G_mrf_357_no_res         ]); doing_analyze_2page(os_book_11b_G_mrf357_res_try)
     # os_book_11c_Gk3_Dk4_no_concat_res_try  = Col_results_analyzer(ana_describe="5_11c_Gk3_Dk4_no_concat_res_try" , col_results=[os_book_Gk3_Dk4_no_concat_res, os_book_Gk3_Dk4_no_concat_no_res ]); doing_analyze_2page(os_book_11c_Gk3_Dk4_no_concat_res_try)
     ##################################################################################################################
-    os_book_12_Gk3_resb_num           = Col_results_analyzer(ana_describe="5_12_Gk3_resb_num"           , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb20]); doing_analyze_2page(os_book_12_Gk3_resb_num)
+    # os_book_12_Gk3_resb_num           = Col_results_analyzer(ana_describe="5_12_Gk3_resb_num"           , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb20]); doing_analyze_2page(os_book_12_Gk3_resb_num)
     # os_book_12_Gk3_resb_num_11_512ep  = Col_results_analyzer(ana_describe="5_12_Gk3_resb_num_11_512ep"  , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb11,  os_book_Gk3_resb20 ]); doing_analyze_2page(os_book_12_Gk3_resb_num_11_512ep)
 
     ##################################################################################################################
