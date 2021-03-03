@@ -122,6 +122,58 @@ class mov_mapping_util(mapping_util):
         mov = tf.cast(mov, tf.float32)
         return mov   ### 只拿 ch2:y, ch3:x 而已，msk目前用不到
 
+####################################################################################################
+####################################################################################################
+### 下面的 tf_Datapipline_builder/Factory 都是為了要建 tf_Datapipline 這個物件喔！
+### 把img_db 包成class 是因為 tf.data.Dataset().map(f)的這個f，沒有辦法丟參數壓！所以只好包成class，把要傳的參數當 data_member囉！ 另一方面是好管理、好閱讀～
+class tf_Datapipline(img_mapping_util, mov_mapping_util):
+    def __init__(self):  ### img_type 是 bmp/jpg喔！
+        self.ord_dir = None
+
+        ### img類型要存的
+        self.img_type = None
+        self.resize_shape = None
+        self.batch_size = None
+
+        ### move_map類型要存的
+        self.max_train_move = None
+        self.min_train_move = None
+
+        ### 以下兩個是最重要需要求得的
+        self.ord_db = None  ### 原始讀進來的影像db
+        self.pre_db = None  ### 進 generator 之前 做resize 和 值變-1~1的處理 後的db
+
+    ####################################################################################################
+    def get_img_db_from_file_name(self):
+        self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_type, shuffle=False)
+        self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_type, shuffle=False)
+        if  (self.img_type == "bmp"):
+            self.ord_db = self.ord_db.map(self._step1_load_bmp_ord_map)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+            self.pre_db = self.pre_db.map(self._step1_load_bmp_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+        elif(self.img_type == "jpg"):
+            self.ord_db = self.ord_db.map(self._step1_load_jpg_map_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+            self.pre_db = self.pre_db.map(self._step1_load_jpg_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+        elif(self.img_type == "png"):
+            self.ord_db = self.ord_db.map(self._step1_load_png_map_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+            self.pre_db = self.pre_db.map(self._step1_load_png_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+        self.ord_db = self.ord_db.batch(self.batch_size)
+        self.pre_db = self.pre_db.batch(self.batch_size)
+        # self.ord_db = self.ord_db.prefetch(tf.data.experimental.AUTOTUNE)
+
+    def get_mov_db_from_file_name(self):
+        self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
+        self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
+        self.ord_db = self.ord_db.map(self._step1_load_mov_ord_map)
+        self.pre_db = self.pre_db.map(self._step1_load_mov_pre_map_normalize)
+
+
+    def get_flow_db_from_file_name(self):
+        self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
+        self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
+        self.ord_db = self.ord_db.map(self._step1_load_flow_ord_map)     ### resize
+        self.pre_db = self.pre_db.map(self._step1_load_flow_ord_map)     ### resize而已，值方面blender都幫我們弄好了：值在 0~1 之間，所以不用normalize囉！
+
+
 
 ####################################################################################################
 ####################################################################################################
@@ -180,56 +232,6 @@ class tf_Datapipline_Factory:
         flow_pipline.get_flow_db_from_file_name()
         return flow_pipline
 
-
-####################################################################################################
-### tf_Datapipline_builder/Factory 都是為了要建 tf_Datapipline 這個物件喔！
-### 把img_db 包成class 是因為 tf.data.Dataset().map(f)的這個f，沒有辦法丟參數壓！所以只好包成class，把要傳的參數當 data_member囉！ 另一方面是好管理、好閱讀～
-class tf_Datapipline(img_mapping_util, mov_mapping_util):
-    def __init__(self):  ### img_type 是 bmp/jpg喔！
-        self.ord_dir = None
-
-        ### img類型要存的
-        self.img_type = None
-        self.resize_shape = None
-        self.batch_size = None
-
-        ### move_map類型要存的
-        self.max_train_move = None
-        self.min_train_move = None
-
-        ### 以下兩個是最重要需要求得的
-        self.ord_db = None  ### 原始讀進來的影像db
-        self.pre_db = None  ### 進 generator 之前 做resize 和 值變-1~1的處理 後的db
-
-    ####################################################################################################
-    def get_img_db_from_file_name(self):
-        self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_type, shuffle=False)
-        self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_type, shuffle=False)
-        if  (self.img_type == "bmp"):
-            self.ord_db = self.ord_db.map(self._step1_load_bmp_ord_map)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-            self.pre_db = self.pre_db.map(self._step1_load_bmp_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        elif(self.img_type == "jpg"):
-            self.ord_db = self.ord_db.map(self._step1_load_jpg_map_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-            self.pre_db = self.pre_db.map(self._step1_load_jpg_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        elif(self.img_type == "png"):
-            self.ord_db = self.ord_db.map(self._step1_load_png_map_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-            self.pre_db = self.pre_db.map(self._step1_load_png_pre_map_resize_normalize)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        self.ord_db = self.ord_db.batch(self.batch_size)
-        self.pre_db = self.pre_db.batch(self.batch_size)
-        # self.ord_db = self.ord_db.prefetch(tf.data.experimental.AUTOTUNE)
-
-    def get_mov_db_from_file_name(self):
-        self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
-        self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
-        self.ord_db = self.ord_db.map(self._step1_load_mov_ord_map)
-        self.pre_db = self.pre_db.map(self._step1_load_mov_pre_map_normalize)
-
-
-    def get_flow_db_from_file_name(self):
-        self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
-        self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
-        self.ord_db = self.ord_db.map(self._step1_load_flow_ord_map)     ### resize
-        self.pre_db = self.pre_db.map(self._step1_load_flow_ord_map)     ### resize而已，值方面blender都幫我們弄好了：值在 0~1 之間，所以不用normalize囉！
 
 
 ########################################################################################################################################
