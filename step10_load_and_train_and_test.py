@@ -69,13 +69,13 @@ class Experiment():
 
 ################################################################################################################################################
 ################################################################################################################################################
-    def train_init(self, train_reload=False):  ### 1.result, 2.data, 3.model(reload), 4.board, 5.save_code
+    def train_init(self, train_reload=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.board, 5.save_code
         ### 1.result
         if(train_reload):
             print("self.exp_dir", self.exp_dir)
             print("self.result_name", self.result_name)
-            self.result_obj = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name).build()  ### 直接用 自己指定好的 result_name
-        else:             self.result_obj = Result_builder().set_by_exp(self).build()  ### 需要 db_obj 和 exp本身的describe_mid/end
+            self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name).build()  ### 直接用 自己指定好的 result_name
+        else: self.result_obj = Result_builder().set_by_exp(self).build()  ### 需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
         ### 3.model
@@ -425,9 +425,9 @@ if(__name__ == "__main__"):
     blender_os_book_flow_unet_epoch003 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch3, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch003") .set_train_args(epochs=3).build(result_name="")
     blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).build(result_name="")
 
-    blender_os_book_flow_unet_hid_ch_32 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_32, exp_dir=exp_dir14, describe_mid="5_14_2_1", describe_end="hid_ch_32") .set_train_args(epochs=500).build(result_name="")
+    blender_os_book_flow_unet_hid_ch_32 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_hid_ch_32, exp_dir=exp_dir14, describe_mid="5_14_2_1", describe_end="hid_ch_32") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_2_1-20210302_234709-flow_unet-hid_ch_32")
     blender_os_book_flow_unet_hid_ch_16 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_hid_ch_16, exp_dir=exp_dir14, describe_mid="5_14_2_2", describe_end="hid_ch_16") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_2_2-20210303_083630-flow_unet-hid_ch_16")
-    blender_os_book_flow_unet_hid_ch_08 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_16, exp_dir=exp_dir14, describe_mid="5_14_2_3", describe_end="hid_ch_08") .set_train_args(epochs=500).build(result_name="")
+    blender_os_book_flow_unet_hid_ch_08 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_08, exp_dir=exp_dir14, describe_mid="5_14_2_3", describe_end="hid_ch_08") .set_train_args(epochs=500).build(result_name="")
     
 if(__name__ == "__main__"):
     ########################################################### 08b2
@@ -499,7 +499,7 @@ if(__name__ == "__main__"):
     # blender_os_book_flow_unet_epoch700.run()   ### 127.35  27.00 GB   最低loss:0.00012906  total cost time:08:51:23
 
     ########################################################### 14
-    # blender_os_book_flow_unet_hid_ch_32.run()
-    blender_os_book_flow_unet_hid_ch_16.run()
+    blender_os_book_flow_unet_hid_ch_32.run()
+    # blender_os_book_flow_unet_hid_ch_16.run()
     # blender_os_book_flow_unet_hid_ch_08.run()
     pass
