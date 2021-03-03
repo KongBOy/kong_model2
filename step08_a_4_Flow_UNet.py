@@ -59,12 +59,7 @@ def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, 
 
     ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
     ### 這部分要記得做！在 train_step3 的 self.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
-    result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch, bgr2rgb=True)
-
-    # imgs = [in_img_back, flow_visual, gt_flow_visual]  ### 把 in_img_back, rect_back, gt_img 包成list
-    # titles = ['Input Image', 'gen_flow', 'gt_flow']         ### 設定 title要顯示的字
-    # matplot_visual_single_row_imgs(img_titles=titles, imgs=imgs, fig_title="epoch_%04i" % epoch, dst_dir=plot_dir, file_name="epoch=%04i" % epoch, bgr2rgb=False)
-    # Save_as_jpg(plot_dir, plot_dir, delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
+    ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了 # result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch, bgr2rgb=True)
 
 
 #######################################################################################################################################
