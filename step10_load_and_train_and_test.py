@@ -425,10 +425,12 @@ if(__name__ == "__main__"):
     blender_os_book_flow_unet_epoch003 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch3, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch003") .set_train_args(epochs=3).build(result_name="")
     blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).build(result_name="")
 
-    blender_os_book_flow_unet_hid_ch_32 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_hid_ch_32, exp_dir=exp_dir14, describe_mid="5_14_2_1", describe_end="hid_ch_32") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_2_1-20210302_234709-flow_unet-hid_ch_32")
-    blender_os_book_flow_unet_hid_ch_16 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_hid_ch_16, exp_dir=exp_dir14, describe_mid="5_14_2_2", describe_end="hid_ch_16") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_2_2-20210303_083630-flow_unet-hid_ch_16")
-    blender_os_book_flow_unet_hid_ch_08 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_08, exp_dir=exp_dir14, describe_mid="5_14_2_3", describe_end="hid_ch_08") .set_train_args(epochs=500).build(result_name="")
+    blender_os_book_flow_unet_hid_ch_128 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_128, exp_dir=exp_dir14, describe_mid="5_14_2_1", describe_end="hid_ch_128") .set_train_args(epochs=500).build(result_name="")
+    blender_os_book_flow_unet_hid_ch_032 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_2_2", describe_end="hid_ch_032") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_2_1-20210302_234709-flow_unet-hid_ch_032")
+    blender_os_book_flow_unet_hid_ch_016 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_hid_ch_016, exp_dir=exp_dir14, describe_mid="5_14_2_3", describe_end="hid_ch_016") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_2_2-20210303_083630-flow_unet-hid_ch_016")
+    blender_os_book_flow_unet_hid_ch_008 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_008, exp_dir=exp_dir14, describe_mid="5_14_2_4", describe_end="hid_ch_008") .set_train_args(epochs=500).build(result_name="")
     
+    blender_os_book_flow_unet_bn04 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_3_3", describe_end="bn_04") .set_train_args(batch_size= 4, epochs=500).build(result_name="")
 if(__name__ == "__main__"):
     ########################################################### 08b2
     # os_book_1532_justG_mrf7_k3.run()   ### 128.51
@@ -499,7 +501,12 @@ if(__name__ == "__main__"):
     # blender_os_book_flow_unet_epoch700.run()   ### 127.35  27.00 GB   最低loss:0.00012906  total cost time:08:51:23
 
     ########################################################### 14
-    blender_os_book_flow_unet_hid_ch_32.run()
-    # blender_os_book_flow_unet_hid_ch_16.run()
-    # blender_os_book_flow_unet_hid_ch_08.run()
+    blender_os_book_flow_unet_hid_ch_128.run()
+    # blender_os_book_flow_unet_hid_ch_032.run()
+    # blender_os_book_flow_unet_hid_ch_016.run()
+    # blender_os_book_flow_unet_hid_ch_008.run()
+
+    ########################################################### 14
+    # blender_os_book_flow_unet_bn04.run()  ##bn4
+
     pass
