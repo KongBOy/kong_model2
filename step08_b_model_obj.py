@@ -317,12 +317,11 @@ flow_unet_hid_ch_128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).bui
 flow_unet_hid_ch_032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 32, out_channel=3)
 flow_unet_hid_ch_016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 16, out_channel=3)
 flow_unet_hid_ch_008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=  8, out_channel=3)
-# flow_unet_b1_hid64_epoch100 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
-# flow_unet_b1_hid64_epoch200 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
-# flow_unet_b1_hid64_epoch300 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
-flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
-flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
-flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
+
+
+flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=4, out_channel=3)
+flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=6, out_channel=3)
+flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=8, out_channel=3)
 
 if(__name__ == "__main__"):
     pass

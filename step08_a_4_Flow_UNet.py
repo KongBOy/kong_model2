@@ -45,11 +45,9 @@ def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, 
 
 
     see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
 
     if(epoch == 0):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
-        Check_dir_exist_and_build(plot_dir)  ### 建立 see資料夾/matplot_visual資料夾
         cv2.imwrite(see_dir + "/" + "0a-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_dir + "/" + "0b-gt_a_gt_flow.jpg", gt_flow_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         np.save(see_dir + "/" + "0b-gt_a_gt_flow", gt_flow)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
@@ -59,7 +57,8 @@ def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, 
 
     ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
     ### 這部分要記得做！在 train_step3 的 self.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
-    ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了 # result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch, bgr2rgb=True)
+    ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了
+    # result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch, bgr2rgb=True)
 
 
 #######################################################################################################################################

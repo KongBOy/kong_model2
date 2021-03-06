@@ -185,13 +185,21 @@ os_book_Gk3_mrf357_coord_conv_all       = Result_builder().set_by_result_name(di
 
 
 dir14 = "5_14_flow_unet"
-blender_os_book_flow_unet_epoch050  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050").set_ana_plot_title("flow_unet_epoch=050").build()
-blender_os_book_flow_unet_epoch100  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_161403-flow_unet-epoch100").set_ana_plot_title("flow_unet_epoch=100").build()
-blender_os_book_flow_unet_epoch200  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210301_015045-flow_unet-epoch200").set_ana_plot_title("flow_unet_epoch=200").build()
-blender_os_book_flow_unet_epoch300  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_164701-flow_unet-epoch300").set_ana_plot_title("flow_unet_epoch=300").build()
-blender_os_book_flow_unet_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210225_204416-flow_unet-epoch700").set_ana_plot_title("flow_unet_epoch=700").build()
-blender_os_book_flow_unet_hid_ch_32 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_2_1-20210302_234709-flow_unet-hid_ch_32").set_ana_plot_title("flow_unet_hid_ch32").build()
-blender_os_book_flow_unet_hid_ch_16 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_2_2-20210303_083630-flow_unet-hid_ch_16").set_ana_plot_title("flow_unet_hid_ch16").build()
+blender_os_book_flow_unet_epoch050  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050").set_ana_plot_title("flow_unet-epoch=050").build()
+blender_os_book_flow_unet_epoch100  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_161403-flow_unet-epoch100").set_ana_plot_title("flow_unet-epoch=100").build()
+blender_os_book_flow_unet_epoch200  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210301_015045-flow_unet-epoch200").set_ana_plot_title("flow_unet-epoch=200").build()
+blender_os_book_flow_unet_epoch300  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_164701-flow_unet-epoch300").set_ana_plot_title("flow_unet-epoch=300").build()
+blender_os_book_flow_unet_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210225_204416-flow_unet-epoch700").set_ana_plot_title("flow_unet-epoch=700").build()
+blender_os_book_flow_unet_hid_ch_064 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_2_2-20210302_234709-flow_unet-hid_ch_064").set_ana_plot_title("flow_unet-hid_ch064").build()
+blender_os_book_flow_unet_hid_ch_032 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_2_3-20210302_234709-flow_unet-hid_ch_032").set_ana_plot_title("flow_unet-hid_ch032").build()
+blender_os_book_flow_unet_hid_ch_016 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_2_4-20210303_083630-flow_unet-hid_ch_016").set_ana_plot_title("flow_unet-hid_ch016").build()
+blender_os_book_flow_unet_hid_ch_008 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_2_5-20210303_161150-flow_unet-hid_ch_008").set_ana_plot_title("flow_unet-hid_ch008").build()
+blender_os_book_flow_unet_bn4 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_3_3-20210304_102528-flow_unet-bn_04").set_ana_plot_title("flow_unet-bn4").build()
+blender_os_book_flow_unet_bn8 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_3_3-20210304_232248-flow_unet-bn_08").set_ana_plot_title("flow_unet-bn8").build()
+
+### copy的示範
+# blender_os_book_flow_unet_hid_ch_064_300 = copy.deepcopy(blender_os_book_flow_unet_epoch300); blender_os_book_flow_unet_hid_ch_064_300.ana_plot_title = "flow_unet-hid_ch64_300"
+# blender_os_book_flow_unet_hid_ch_064_700 = copy.deepcopy(blender_os_book_flow_unet_epoch700); blender_os_book_flow_unet_hid_ch_064_700.ana_plot_title = "flow_unet-hid_ch64_700"
 
 rec_bm_results = [
                 # blender_os_book_flow_unet_epoch050,
@@ -199,6 +207,12 @@ rec_bm_results = [
                 # blender_os_book_flow_unet_epoch200,
                 # blender_os_book_flow_unet_epoch300,
                 # blender_os_book_flow_unet_epoch700,
-                blender_os_book_flow_unet_hid_ch_32,
-                blender_os_book_flow_unet_hid_ch_16,
+
+                # blender_os_book_flow_unet_hid_ch_064,
+                # blender_os_book_flow_unet_hid_ch_032,
+                # blender_os_book_flow_unet_hid_ch_016,
+                # blender_os_book_flow_unet_hid_ch_008,
+
+                blender_os_book_flow_unet_bn4,
+                blender_os_book_flow_unet_bn8,
                 ]

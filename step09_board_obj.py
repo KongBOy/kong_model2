@@ -11,7 +11,7 @@ class Board:
     def see_loss(self, epochs):
         for loss_name in self.losses.keys():
             plt.figure(figsize=(20, 6))                              ### 建立畫布
-            plt.ylim(0, 0.05)
+            plt.ylim(0, 0.01)
             plt.ylabel(loss_name)
             y_loss_array = np.load(self.logs_dir + "/" + loss_name + ".npy")
 
