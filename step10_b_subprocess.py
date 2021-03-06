@@ -6,7 +6,15 @@ import subprocess
 # subprocess.run(["python", "step10_a_load_and_train_and_test.py", "blender_os_book_flow_unet_epoch004.run()"])
 
 # subprocess.run(["python", "step10_a_load_and_train_and_test.py", "blender_os_book_flow_unet_bn04.run()"])
-subprocess.run(["python", "step10_a_load_and_train_and_test.py", "blender_os_book_flow_unet_epoch500.run()"])
+# subprocess.run(["python", "step10_a_load_and_train_and_test.py", "blender_os_book_flow_unet_epoch500.run()"])   ### 127.35
+
+# subprocess.run(["python", "step10_a_load_and_train_and_test.py", "blender_os_book_flow_unet_bn04.run()"])   ### 127.28
+# subprocess.run(["python", "step10_a_load_and_train_and_test.py", "blender_os_book_flow_unet_bn08.run()"])   ### 127.28
+# subprocess.run(["python", "step10_a_load_and_train_and_test.py", "blender_os_book_flow_unet_bn16.run()"])   ### 127.28
+# subprocess.run(["python", "step10_a_load_and_train_and_test.py", "blender_os_book_flow_unet_bn32.run()"])   ### 127.28
+# subprocess.run(["python", "step10_a_load_and_train_and_test.py", "blender_os_book_flow_unet_bn64.run()"])   ### 127.28
+
+
 
 ########################################################### 08b2
 # os_book_1532_justG_mrf7_k3.run()   ### 128.51
