@@ -31,14 +31,14 @@ def train_step(model_obj, in_dis_img, gt_flow, board_obj):
 
 #######################################################################################################################################
 # def generate_results( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_dir="."):
-def generate_results(model_G, in_img_pre):
-    flow      = model_G(in_img_pre, training=True)
+def generate_results(model_G, in_img_pre, training=False):
+    flow      = model_G(in_img_pre, training=training)
     in_img_back = (in_img_pre[0].numpy() * 255).astype(np.uint8)  ### 把值從 0~1轉回0~255 且 dtype轉回np.uint8
     return flow[0], in_img_back
 
 
-def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, result_obj=None):
-    flow, in_img_back = generate_results(model_G, in_img_pre)
+def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, result_obj=None, training=False):
+    flow, in_img_back = generate_results(model_G, in_img_pre, training=training)
     gt_flow = gt_flow[0]
     flow_visual = method1(flow[..., 2], flow[..., 1])[..., ::-1] * 255.
     gt_flow_visual = method1(gt_flow[..., 2], gt_flow[..., 1])[..., ::-1] * 255.

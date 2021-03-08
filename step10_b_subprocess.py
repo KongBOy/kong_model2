@@ -26,6 +26,10 @@ sb.run(same_command + ["blender_os_book_flow_unet_hid_ch_128.run()"])   ### 127.
 # sb.run(same_command + ["blender_os_book_flow_unet_bn64.run()"])   ### 127.28  ### 失敗
 
 
+# sb.run(same_command + ["blender_os_book_flow_unet_bn04_set_arg_ok.run()"])   ### 127.35  ### 正在弄 new_shuf
+# sb.run(same_command + ["blender_os_book_flow_unet_bn08_set_arg_ok.run()"])   ### 127.35  ### 正在弄 new_shuf
+# sb.run(same_command + ["blender_os_book_flow_unet_bn16_set_arg_ok.run()"])   ### 127.35  ### 正在弄 new_shuf
+
 
 ########################################################### 08b2
 # os_book_1532_justG_mrf7_k3.run()   ### 128.51
