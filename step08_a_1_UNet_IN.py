@@ -48,28 +48,28 @@ class Generator(tf.keras.models.Model):
 
         self.relu6t  = ReLU(name="relu6t")
         self.conv6t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6t")  #,bias=False) ### in_channel:1024
-        self.in6t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform"),
+        self.in6t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
         self.concat6 = Concatenate(name="concat6")
 
         self.relu5t  = ReLU(name="relu5t")
         self.conv5t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv5t")  #,bias=False) ### in_channel:1024
-        self.in5t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform"),
+        self.in5t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
         self.concat5 = Concatenate(name="concat5")
 
         self.relu4t  = ReLU(name="relu4t")
         self.conv4t  = Conv2DTranspose(hid_ch * 4, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv4t")  #,bias=False) ### in_channel:1024
-        self.in4t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform"),
+        self.in4t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
         self.concat4 = Concatenate(name="concat4")
 
         self.relu3t  = ReLU(name="relu3t")
         self.conv3t  = Conv2DTranspose(hid_ch * 2, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv3t")  #,bias=False) ### in_channel:512
-        self.in3t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform"),
+        self.in3t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
         self.concat3 = Concatenate(name="concat3")
 
 
         self.relu2t  = ReLU(name="relu2t")
         self.conv2t  = Conv2DTranspose(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv2t")  #,bias=False) ### in_channel:256
-        self.in2t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform"),
+        self.in2t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
         self.concat2 = Concatenate(name="concat2")
 
 
@@ -83,27 +83,27 @@ class Generator(tf.keras.models.Model):
         skip2 = x
         x = self.lrelu2(skip2)
         x = self.conv2(x)
-        x = self.in2(x, training)
+        x = self.in2(x)
 
         skip3 = x
         x = self.lrelu3(skip3)
         x = self.conv3(x)
-        x = self.in3(x, training)
+        x = self.in3(x)
 
         skip4 = x
         x = self.lrelu4(skip4)
         x = self.conv4(x)
-        x = self.in4(x, training)
+        x = self.in4(x)
 
         skip5 = x
         x = self.lrelu5(skip5)
         x = self.conv5(x)
-        x = self.in5(x, training)
+        x = self.in5(x)
 
         skip6 = x
         x = self.lrelu6(skip6)
         x = self.conv6(x)
-        x = self.in6(x, training)
+        x = self.in6(x)
         ###############################
         skip7 = x
         x = self.lrelu7(skip7)
@@ -111,40 +111,40 @@ class Generator(tf.keras.models.Model):
 
         x = self.relu7t(x)
         x = self.conv7t(x)
-        x = self.in7t(x, training)
+        x = self.in7t(x)
         # x = self.concat7([skip7,x])
         x = self.concat7([x, skip7])
         ###############################
         x = self.relu6t(x)
         x = self.conv6t(x)
-        x = self.in6t(x, training)
+        x = self.in6t(x)
         # x = self.concat6([skip6,x])
         x = self.concat6([x, skip6])
 
         x = self.relu5t(x)
         x = self.conv5t(x)
-        x = self.in5t(x, training)
+        x = self.in5t(x)
         # x = self.concat5([skip5,x])
         x = self.concat5([x, skip5])
 
 
         x = self.relu4t(x)
         x = self.conv4t(x)
-        x = self.in4t(x, training)
+        x = self.in4t(x)
         # x = self.concat4([skip4,x])
         x = self.concat4([x, skip4])
 
 
         x = self.relu3t(x)
         x = self.conv3t(x)
-        x = self.in3t(x, training)
+        x = self.in3t(x)
         # x = self.concat3([skip3,x])
         x = self.concat3([x, skip3])
 
 
         x = self.relu2t(x)
         x = self.conv2t(x)
-        x = self.in2t(x, training)
+        x = self.in2t(x)
         # x = self.concat2([skip2,x])
         x = self.concat2([x, skip2])
 
