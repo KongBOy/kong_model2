@@ -426,6 +426,7 @@ from step08_b_model_obj import *
 
 ########################################################### 14
 exp_dir14 = "5_14_flow_unet"
+### hid_ch=64, 測試 epochs數
 # blender_os_book_flow_unet = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="type8_blender_os_book-5_14_1-20210225_204416-flow_unet-127.35")
 # blender_os_book_flow_unet = Exp_builder().set_basic("train"       , type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
 blender_os_book_flow_unet_epoch050 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1", describe_end="new_shuf_epoch050") .set_train_args(epochs= 50).build(result_name="")
@@ -435,26 +436,35 @@ blender_os_book_flow_unet_epoch300 = Exp_builder().set_basic("train", type8_blen
 blender_os_book_flow_unet_epoch500 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_5", describe_end="new_shuf_epoch500") .set_train_args(epochs=700).build(result_name="")
 blender_os_book_flow_unet_epoch700 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_6", describe_end="new_shuf_epoch700") .set_train_args(epochs=700).build(result_name="")
 
-
+### epoch=500, 測hid_ch, bn=1
 blender_os_book_flow_unet_hid_ch_128 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_128, exp_dir=exp_dir14, describe_mid="5_14_2_1", describe_end="new_shuf_hid_ch_128") .set_train_args(epochs=500).build(result_name="")
 blender_os_book_flow_unet_hid_ch_032 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_2_3", describe_end="new_shuf_hid_ch_032") .set_train_args(epochs=500).build(result_name="")
 blender_os_book_flow_unet_hid_ch_016 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_016, exp_dir=exp_dir14, describe_mid="5_14_2_4", describe_end="new_shuf_hid_ch_016") .set_train_args(epochs=500).build(result_name="")
 blender_os_book_flow_unet_hid_ch_008 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_008, exp_dir=exp_dir14, describe_mid="5_14_2_5", describe_end="new_shuf_hid_ch_008") .set_train_args(epochs=500).build(result_name="")  ### 127.28
 
-### hid_ch64
+### epoch=500, hid_ch=64, 測bn, call沒設定training=True/False
 blender_os_book_flow_unet_bn04 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_3_2", describe_end="bn_04") .set_train_args(batch_size= 4, epochs=500).build(result_name="type8_blender_os_book-5_14_3_3-20210304_102528-flow_unet-bn_04")   ### 已經是new_shuf
 blender_os_book_flow_unet_bn08 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_3_3", describe_end="bn_08") .set_train_args(batch_size= 8, epochs=500).build(result_name="type8_blender_os_book-5_14_3_3-20210304_232248-flow_unet-bn_08")   ### 已經是new_shuf
+### bn=16在127.28已超出記憶體
 
-### hid_ch32
-blender_os_book_flow_unet_bn04 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_2", describe_end="ch32_bn_04") .set_train_args(batch_size= 4, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_bn08 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_3", describe_end="ch32_bn_08") .set_train_args(batch_size= 8, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_bn16 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_4", describe_end="ch32_bn_16") .set_train_args(batch_size=16, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_bn32 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_5", describe_end="ch32_bn_32") .set_train_args(batch_size=32, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_bn64 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_6", describe_end="ch32_bn_64") .set_train_args(batch_size=64, epochs=500).build(result_name="")  ### 已經是new_shuf
+### 把hid_ch 變小，bn可以多一點點
+### epoch=500, hid_ch=32, 測bn, call沒設定training=True/False
+blender_os_book_flow_unet_ch32_bn04 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_2", describe_end="ch32_bn_04") .set_train_args(batch_size= 4, epochs=500).build(result_name="")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn08 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_3", describe_end="ch32_bn_08") .set_train_args(batch_size= 8, epochs=500).build(result_name="")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn16 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_4", describe_end="ch32_bn_16") .set_train_args(batch_size=16, epochs=500).build(result_name="")  ### 已經是new_shuf
+### bn=32在127.28也超出記憶體
 
-blender_os_book_flow_unet_bn04_set_arg_ok = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_2", describe_end="ch32_bn_04_set_arg_ok") .set_train_args(batch_size= 4, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_bn08_set_arg_ok = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_3", describe_end="ch32_bn_08_set_arg_ok") .set_train_args(batch_size= 8, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_bn16_set_arg_ok = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_4", describe_end="ch32_bn_16_set_arg_ok") .set_train_args(batch_size=16, epochs=500).build(result_name="")  ### 已經是new_shuf
+### epoch=500, hid_ch=32, 測bn, call沒設定training=True/False
+blender_os_book_flow_unet_ch32_bn04_set_arg_ok = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_2", describe_end="ch32_bn_04_set_arg_ok") .set_train_args(batch_size= 4, epochs=500).build(result_name="")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn08_set_arg_ok = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_3", describe_end="ch32_bn_08_set_arg_ok") .set_train_args(batch_size= 8, epochs=500).build(result_name="")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn16_set_arg_ok = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_4", describe_end="ch32_bn_16_set_arg_ok") .set_train_args(batch_size=16, epochs=500).build(result_name="")  ### 已經是new_shuf
+#############################################################################################################################################################################################################
+
+blender_os_book_flow_unet_IN_epoch500 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_hid_ch_64, exp_dir=exp_dir14, describe_mid="5_14_1_5", describe_end="new_shuf_IN_epoch500") .set_train_args(epochs=700).build(result_name="")
+blender_os_book_flow_unet_IN_epoch700 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_hid_ch_64, exp_dir=exp_dir14, describe_mid="5_14_1_6", describe_end="new_shuf_IN_epoch700") .set_train_args(epochs=700).build(result_name="")
+
+
+
 
 ### 測試subprocessing 有沒有用
 # blender_os_book_flow_unet_epoch002 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch2, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch002") .set_train_args(batch_size=30, epochs=1).build(result_name="")

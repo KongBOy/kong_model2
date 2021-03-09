@@ -48,8 +48,9 @@ class KModel_Unet_builder(KModel_init_builder):
         return self.kong_model
 
 class KModel_Flow_Unet_builder(KModel_Unet_builder):
-    def build_flow_unet(self, hid_ch=64, out_channel=3):
-        from step08_a_1_UNet      import Generator  #generate_sees, generate_results, train_step
+    def build_flow_unet(self, hid_ch=64, out_channel=3, true_IN=False):
+        if(true_IN): from step08_a_1_UNet_IN   import Generator
+        else:        from step08_a_1_UNet      import Generator  #generate_sees, generate_results, train_step
         from step08_a_4_Flow_UNet import train_step, generate_results, generate_sees_without_rec
         self.kong_model.generator   = Generator(hid_ch=hid_ch, out_channel=out_channel)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
@@ -220,15 +221,17 @@ class MODEL_NAME(Enum):
     justGk3_mrf357_coord_conv = "justGk3_mrf357_corrd_conv"  ### 127.28
 
     ########################################################### 14
-    flow_unet = "flow_unet"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
-    flow_unet_epoch2 = "flow_unet_epoch2"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
-    flow_unet_epoch3 = "flow_unet_epoch3"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
-    flow_unet_epoch4 = "flow_unet_epoch4"   ### 包含這關鍵字就沒問題 ### hid_ch=64 
+    flow_unet = "flow_unet"   ### 包含這關鍵字就沒問題 ### hid_ch=64
+    flow_unet_epoch2 = "flow_unet_epoch2"   ### 包含這關鍵字就沒問題 ### hid_ch=64
+    flow_unet_epoch3 = "flow_unet_epoch3"   ### 包含這關鍵字就沒問題 ### hid_ch=64
+    flow_unet_epoch4 = "flow_unet_epoch4"   ### 包含這關鍵字就沒問題 ### hid_ch=64
 
-    flow_unet_hid_ch_128 = "flow_unet_hid_ch_128"   ### 包含這關鍵字就沒問題 ### hid_ch=32 
-    flow_unet_hid_ch_032 = "flow_unet_hid_ch_032"   ### 包含這關鍵字就沒問題 ### hid_ch=32 
-    flow_unet_hid_ch_016 = "flow_unet_hid_ch_016"   ### 包含這關鍵字就沒問題 ### hid_ch=32 
-    flow_unet_hid_ch_008 = "flow_unet_hid_ch_008"   ### 包含這關鍵字就沒問題 ### hid_ch=32 
+    flow_unet_hid_ch_128 = "flow_unet_hid_ch_128"   ### 包含這關鍵字就沒問題 ### hid_ch=128
+    flow_unet_hid_ch_032 = "flow_unet_hid_ch_032"   ### 包含這關鍵字就沒問題 ### hid_ch=032
+    flow_unet_hid_ch_016 = "flow_unet_hid_ch_016"   ### 包含這關鍵字就沒問題 ### hid_ch=016
+    flow_unet_hid_ch_008 = "flow_unet_hid_ch_008"   ### 包含這關鍵字就沒問題 ### hid_ch=008
+
+    flow_unet_IN_hid_ch_64 = "flow_unet_IN_hid_ch_64"   ### 包含這關鍵字就沒問題 ### hid_ch=364
 
 
 ### 直接先建好 obj 給外面import囉！
@@ -311,14 +314,18 @@ Gk3_resb20  = KModel_builder().set_model_name(MODEL_NAME.Gk3_resb20).build_justG
 justGk3_coord_conv        = KModel_builder().set_model_name(MODEL_NAME.justG              ).build_justG    (first_k3=True, coord_conv=True)
 justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG_mrf357_k3    ).build_justG_mrf(first_k3=True, coord_conv=True, mrf_replace=False, use3=True, use5=True, use7=True)
 
-########################################################### 14
+########################################################### 14 快接近IN了
 flow_unet = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
 flow_unet_hid_ch_128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=128, out_channel=3)
 flow_unet_hid_ch_032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 32, out_channel=3)
 flow_unet_hid_ch_016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 16, out_channel=3)
 flow_unet_hid_ch_008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=  8, out_channel=3)
 
+########################################################### 14 真的IN
+flow_unet_IN_hid_ch_64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3, true_IN=True)
 
+
+########################################################### 14 測試 subprocess
 flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=4, out_channel=3)
 flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=6, out_channel=3)
 flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=8, out_channel=3)
