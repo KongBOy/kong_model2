@@ -166,8 +166,10 @@ class Result:
 
 if(__name__ == "__main__"):
     from step11_b_result_obj_builder import Result_builder
-    import matplotlib.pyplot as plt
 
+    ############################################################################################################################################
+    ### matplot visual
+    ############################################################################################################################################
     ## Result 的 各method測試：
     ### 單loss 的情況
     # os_book = Result_builder().set_by_result_name("5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51").set_ana_plot_title("mae9").build()
@@ -188,6 +190,8 @@ if(__name__ == "__main__"):
     # os_book_lots_loss.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=True)
 
 
+    ############################################################################################################################################
+    ### bm rec
     ############################################################################################################################################
     blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050_try_npz").set_ana_plot_title("blender").build()
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)

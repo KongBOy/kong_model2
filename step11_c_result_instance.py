@@ -263,4 +263,3 @@ rec_bm_results = [
                 # blender_os_book_flow_unet_hid_ch32_bn16,
                 # blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok,
                 ]
-
