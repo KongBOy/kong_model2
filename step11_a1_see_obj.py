@@ -11,6 +11,7 @@ import cv2
 import time
 import numpy as np
 from tqdm import tqdm
+import os
 
 import matplotlib.pyplot as plt
 import pdb
@@ -32,6 +33,10 @@ class See_info:
     def get_see_dir_info(self):
         self.see_jpg_names = get_dir_certain_file_name(self.see_dir, ".jpg")
         self.see_npy_names = get_dir_certain_file_name(self.see_dir, ".npy")
+        self.see_npz_names = get_dir_certain_file_name(self.see_dir, ".npz")
+        self.see_jpg_paths = [self.see_dir + "/" + jpg_name for jpg_name in self.see_jpg_names]
+        self.see_npy_paths = [self.see_dir + "/" + npy_name for npy_name in self.see_npy_names]
+        self.see_npz_paths = [self.see_dir + "/" + npz_name for npz_name in self.see_npz_names]
         self.see_file_amount = len(self.see_jpg_names)
         # self.matplot_visual_dir = self.see_dir + "/matplot_visual"
         # Check_dir_exist_and_build(self.matplot_visual_dir)
@@ -167,12 +172,15 @@ class See_bm_rec(See_info):
 
     ###############################################################################################
     ###############################################################################################
+    ### 我覺得先把 npy 轉成 npz 再來生圖比較好，不要在這邊 邊生圖 邊轉 npz，覺得的原因如下：
+    ###     1.這樣這裡做的事情太多了~~
+    ###     2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.see_npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
     def _Draw_matplot_bm_rec_visual(self, epoch, add_loss=False, bgr2rgb=False):
-        in_img    = cv2.imread(self.see_dir + "/" + self.see_jpg_names[0])          ### 要記得see的第一張存的是 輸入的in影像
-        gt_flow_v = cv2.imread(self.see_dir + "/" + self.see_jpg_names[1])          ### 要記得see的第二張存的是 輸出的gt影像
+        in_img    = cv2.imread(self.see_dir + "/" + self.see_jpg_names[0])          ### 要記得see的jpg第一張存的是 輸入的in影像
+        gt_flow_v = cv2.imread(self.see_dir + "/" + self.see_jpg_names[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
         flow_v    = cv2.imread(self.see_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
-        gt_flow   = np.load(self.see_dir + "/" + self.see_npy_names[0])
-        flow      = np.load(self.see_dir + "/" + self.see_npy_names[epoch + 1])
+        gt_flow   = np.load(self.see_dir + "/" + self.see_npz_names[0])["arr_0"]          ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        flow      = np.load(self.see_dir + "/" + self.see_npz_names[epoch + 1])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         # breakpoint()
         bm  = use_flow_to_get_bm(flow, flow_scale=768)
         rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
@@ -239,6 +247,125 @@ class See_bm_rec(See_info):
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
-class See(See_visual, See_bm_rec):
+
+class See_try_npy_to_npz(See_info):
+    def npy_to_npz_comapre(self):
+        self.get_see_dir_info()
+
+        ### load_3_load_50_npy
+        start_time = time.time()
+        for go_name, see_npy_name in enumerate(self.see_npy_names):
+            np.load(self.see_dir + "/" + see_npy_name)   ### 344 MB
+        load_3_time = time.time() - start_time
+        print("load_3_load_50_npy ok")
+
+        ### save_3_save_50_npy
+        npys = []
+        for go_name, see_npy_name in enumerate(self.see_npy_names):
+            npys.append(np.load(self.see_dir + "/" + see_npy_name))   ### 344 MB
+        start_time = time.time()
+        for go_name, npy in enumerate(npys):
+            np.save(self.see_dir + "/" + self.see_npy_names[go_name], npy)
+        save_3_time = time.time() - start_time
+        print("save_3_save_50_npy ok")
+
+        ### save_2_save_50_npz
+        start_time = time.time()
+        for go_name, npy in enumerate(npys):
+            np.savez_compressed(self.see_dir + "/" + self.see_npy_names[go_name].replace(".npy", ""), npy)
+        save_2_time = time.time() - start_time
+        print("save_2_save_50_npz ok")
+
+        ### load_2_load_50_npz
+        start_time = time.time()
+        for go_name, see_npy_name in enumerate(self.see_npy_names):
+            np.load(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"))   ### 344 MB
+        load_2_time = time.time() - start_time
+        print("load_2_load_50_npz ok")
+
+        ### save_1_save_1_npz_conatin_50npy
+        start_time = time.time()
+        np.savez_compressed(self.see_dir + "/" + "000_try_npz", np.array(npys))
+        save_1_time = time.time() - start_time
+        print("save_1_save_1_npz_conatin_50npy ok")
+
+        ### load_1_load_1_npz_conatin_50npy
+        start_time = time.time()
+        big_npz = np.load(self.see_dir + "/" + "000_try_npz.npz")
+        print(big_npz["arr_0"].shape)   ### 小心！要有使用他，才會真的去load資料喔！
+        load_1_time = time.time() - start_time
+        print("load_1_load_1_npz_conatin_50npy ok")
+        print("")
+        os.remove(self.see_dir + "/" + "000_try_npz.npz")  ### 只是用來看讀取寫入速度而已，沒有真的要用，所以測試完後記得要刪掉喔！
+
+
+        print("save_1_save_1_npz_conatin_50npy:", save_1_time)
+        print("save_2_save_50_npz:", save_2_time)
+        print("save_3_save_50_npy:", save_3_time)
+        print("load_1_load_1_npz_conatin_50npy:", load_1_time)
+        print("load_2_load_50_npz:", load_2_time)
+        print("load_3_load_50_npy:", load_3_time)
+        """
+        save_1_save_1_npz_conatin_50npy: 7.14643120765686
+        save_2_save_50_npz: 7.625092267990112
+        save_3_save_50_npy: 0.1186835765838623 ---------------->用這個
+        load_1_load_1_npz_conatin_50npy: 1.0990545749664307
+        load_2_load_50_npz: 0.2214348316192627 ---------------->用這個
+        load_3_load_50_npy: 0.31119656562805176
+        """
+        print("finish")
+
+    ### 不要想 邊生圖 邊 npy轉npz了，原因寫在 _Draw_matplot_bm_rec_visual 上面
+    # def single_npy_to_npz_by_path(self, npy_path):
+    #     npy = np.load(npy_path)
+    #     np.savez_compressed(npy_path.replace(".npy", ".npz"), npy)
+    #     os.remove(self.see_dir + "/" + npy_path)
+    def _npy_to_npz(self, start_index, amount):
+        for see_npy_name in tqdm(self.see_npy_names[start_index:start_index + amount]):
+            npy = np.load(self.see_dir + "/" + see_npy_name)
+            np.savez_compressed(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
+            os.remove(self.see_dir + "/" + see_npy_name)
+            # print(self.see_dir + "/" + see_npy_name, "delete ok")
+            # npz = np.load(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"))  ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
+            # print((npy - npz["arr_0"]).sum())                                         ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
+
+    def _npy_to_npz_multiprocess(self, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):
+        print("processing %s" % self.see_name)
+        from util import multi_processing_interface
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._npy_to_npz, print_msg=print_msg)
+
+
+    def all_npy_to_npz(self, multiprocess=False, print_msg=False):   ### 因為有刪東西的動作，覺得不要multiprocess比較安全~~
+        """
+        把 See 資料夾內的.npy改存成.npz，存完會把.npy刪除喔～
+        """
+        print(f"doing {self.see_name} turn all npy to npz")
+        self.get_see_dir_info()
+        if(len(self.see_npy_names) > 0):
+            if(multiprocess):
+                self._npy_to_npz_multiprocess(core_amount=CORE_AMOUNT, task_amount=len(self.see_npy_names))
+            else:
+                self._npy_to_npz(start_index=0, amount=len(self.see_npy_names))
+
+                # for see_npy_name in tqdm(self.see_npy_names):
+                #     npy = np.load(self.see_dir + "/" + see_npy_name)
+                #     np.savez_compressed(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
+                #     os.remove(self.see_dir + "/" + see_npy_name)
+
+
+
+
+
+class See(See_visual, See_bm_rec, See_try_npy_to_npz):
     def __init__(self, result_dir, see_name):
         super(See, self).__init__(result_dir, see_name)
+
+
+if(__name__ == "__main__"):
+    from step0_access_path import result_access_path
+    try_npy_to_npz = See( result_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_3b_4-20210306_231628-flow_unet-ch32_bn_16", see_name="see_001-real")
+    # try_npy_to_npz = See( result_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_001-real")
+    # try_npy_to_npz = See( result_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_005-train")
+    # try_npy_to_npz.npy_to_npz_comapre()
+    try_npy_to_npz.all_npy_to_npz(multiprocess=True)
+    # try_npy_to_npz.all_npy_to_npz(multiprocess=True)
