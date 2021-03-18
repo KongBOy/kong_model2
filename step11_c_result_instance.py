@@ -202,30 +202,35 @@ blender_os_book_flow_unet_new_shuffle_epoch050  = Result_builder().set_by_result
 blender_os_book_flow_unet_new_shuffle_epoch100  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_2-20210306_203154-flow_unet-new_shuf_epoch100").set_ana_plot_title("flow_unet-new_shuf-epoch=100").build()
 blender_os_book_flow_unet_new_shuffle_epoch200  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_3-20210306_232534-flow_unet-new_shuf_epoch200").set_ana_plot_title("flow_unet-new_shuf-epoch=200").build()
 blender_os_book_flow_unet_new_shuffle_epoch300  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_4-20210307_051136-flow_unet-new_shuf_epoch300").set_ana_plot_title("flow_unet-new_shuf-epoch=300").build()
-blender_os_book_flow_unet_new_shuffle_epoch500  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5-20210310_062327-flow_unet-new_shuf_epoch500").set_ana_plot_title("flow_unet-new_shuf-epoch=300").build()
+blender_os_book_flow_unet_new_shuffle_epoch500  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5-20210310_062327-flow_unet-new_shuf_epoch500").set_ana_plot_title("flow_unet-new_shuf-epoch=500").build()
 blender_os_book_flow_unet_new_shuffle_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_6-20210308_100044-flow_unet-new_shuf_epoch700").set_ana_plot_title("flow_unet-new_shuf-epoch=700").build()
 blender_os_book_flow_unet_new_shuffle_hid_ch_128 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_1-20210310_230448-flow_unet-new_shuf_hid_ch_128").set_ana_plot_title("flow_unet-new_shuf-hid_ch128").build()
+blender_os_book_flow_unet_new_shuffle_hid_ch_064 = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_epoch500);                  blender_os_book_flow_unet_new_shuffle_hid_ch_064.ana_plot_title = "flow_unet-new_shuf-hid_ch064"
 blender_os_book_flow_unet_new_shuffle_hid_ch_032 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_3-20210309_214404-flow_unet-new_shuf_hid_ch_032").set_ana_plot_title("flow_unet-new_shuf-hid_ch032").build()
 blender_os_book_flow_unet_new_shuffle_hid_ch_016 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_4-20210309_140134-flow_unet-new_shuf_hid_ch_016").set_ana_plot_title("flow_unet-new_shuf-hid_ch016").build()
 blender_os_book_flow_unet_new_shuffle_hid_ch_008 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_5-20210309_061533-flow_unet-new_shuf_hid_ch_008").set_ana_plot_title("flow_unet-new_shuf-hid_ch008").build()
 ###################################################################################################
-
-blender_os_book_flow_unet_new_shuffle_IN_epoch500  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5b-20210309_135755-flow_unet-new_shuf_IN_epoch500").set_ana_plot_title("flow_unet-new_shuf-IN-epoch=300").build()
+blender_os_book_flow_unet_new_shuffle_IN_epoch500  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5b-20210309_135755-flow_unet-new_shuf_IN_epoch500").set_ana_plot_title("flow_unet-new_shuf-IN-epoch=500").build()
 blender_os_book_flow_unet_new_shuffle_IN_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_6b-20210310_012428-flow_unet-new_shuf_IN_epoch700").set_ana_plot_title("flow_unet-new_shuf-IN-epoch=700").build()
 
-blender_os_book_flow_unet_hid_ch64_bn04            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn_04").set_ana_plot_title("flow_unet-bn4").build()  
-blender_os_book_flow_unet_hid_ch64_bn08            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn_08").set_ana_plot_title("flow_unet-bn8").build()
-blender_os_book_flow_unet_hid_ch32_bn04            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210306_111439-flow_unet-ch32_bn_04")           .set_ana_plot_title("flow_unet-hid_ch32_bn4").build()  
-blender_os_book_flow_unet_hid_ch32_bn04_set_arg_ok = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210308_101945-flow_unet-ch32_bn_04_set_arg_ok").set_ana_plot_title("flow_unet-hid_ch32_bn4-set_arg_ok").build()  
-blender_os_book_flow_unet_hid_ch32_bn08            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210306_171735-flow_unet-ch32_bn_08")           .set_ana_plot_title("flow_unet-hid_ch32_bn8").build()
-blender_os_book_flow_unet_hid_ch32_bn08_set_arg_ok = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210308_163036-flow_unet-ch32_bn_08_set_arg_ok").set_ana_plot_title("flow_unet-hid_ch32_bn8-set_arg_ok").build()
-blender_os_book_flow_unet_hid_ch32_bn16            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_4-20210306_231628-flow_unet-ch32_bn_16")           .set_ana_plot_title("flow_unet-hid_ch32_bn16").build()
+blender_os_book_flow_unet_hid_ch64_bn01_set_arg_QQ = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_epoch500);        blender_os_book_flow_unet_hid_ch64_bn01_set_arg_QQ.ana_plot_title = "flow_unet-hid_ch64_bn1-set_arg_QQ"
+blender_os_book_flow_unet_hid_ch64_bn04            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn_04").set_ana_plot_title("flow_unet-hid_ch64_bn4-set_arg_no").build()
+blender_os_book_flow_unet_hid_ch64_bn08            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn_08").set_ana_plot_title("flow_unet-hid_ch64_bn8-set_arg_no").build()
+
+blender_os_book_flow_unet_hid_ch32_bn01_set_arg_QQ = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_hid_ch_032);                 blender_os_book_flow_unet_hid_ch32_bn01_set_arg_QQ.ana_plot_title = "flow_unet-hid_ch64_bn01-set_arg_QQ"
+blender_os_book_flow_unet_hid_ch32_bn04            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210306_111439-flow_unet-ch32_bn_04")           .set_ana_plot_title("flow_unet-hid_ch32_bn04-set_arg_no").build()
+blender_os_book_flow_unet_hid_ch32_bn04_set_arg_ok = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210308_101945-flow_unet-ch32_bn_04_set_arg_ok").set_ana_plot_title("flow_unet-hid_ch32_bn04-set_arg_ok").build()
+blender_os_book_flow_unet_hid_ch32_bn08            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210306_171735-flow_unet-ch32_bn_08")           .set_ana_plot_title("flow_unet-hid_ch32_bn08-set_arg_no").build()
+blender_os_book_flow_unet_hid_ch32_bn08_set_arg_ok = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210308_163036-flow_unet-ch32_bn_08_set_arg_ok").set_ana_plot_title("flow_unet-hid_ch32_bn08-set_arg_ok").build()
+blender_os_book_flow_unet_hid_ch32_bn16            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_4-20210306_231628-flow_unet-ch32_bn_16")           .set_ana_plot_title("flow_unet-hid_ch32_bn16-set_arg_no").build()
 blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_4-20210308_223123-flow_unet-ch32_bn_16_set_arg_ok").set_ana_plot_title("flow_unet-hid_ch32_bn16-set_arg_ok").build()
 
 ### copy的示範
 # blender_os_book_flow_unet_hid_ch_064_300 = copy.deepcopy(blender_os_book_flow_unet_epoch300); blender_os_book_flow_unet_hid_ch_064_300.ana_plot_title = "flow_unet-hid_ch64_300"
 # blender_os_book_flow_unet_hid_ch_064_700 = copy.deepcopy(blender_os_book_flow_unet_epoch700); blender_os_book_flow_unet_hid_ch_064_700.ana_plot_title = "flow_unet-hid_ch64_700"
 
+
+### npy_to_rec 和 生成 bm, rec(這個list不需要加入所有 deepcopy的result喔)
 rec_bm_results = [
                 # blender_os_book_flow_unet_epoch050,
                 # blender_os_book_flow_unet_epoch100,
@@ -263,3 +268,50 @@ rec_bm_results = [
                 # blender_os_book_flow_unet_hid_ch32_bn16,
                 # blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok,
                 ]
+
+
+### 覺得可以把 ana 用的 results 寫在這裡，要改result 的名字較方便
+### epoch
+epoch_old_shuffle_results  = [
+    blender_os_book_flow_unet_epoch050,
+    blender_os_book_flow_unet_epoch100,
+    blender_os_book_flow_unet_epoch200,
+    blender_os_book_flow_unet_epoch300,
+    blender_os_book_flow_unet_epoch700]
+
+epoch_new_shuffle_results  = [
+    blender_os_book_flow_unet_new_shuffle_epoch050,
+    blender_os_book_flow_unet_new_shuffle_epoch100,
+    blender_os_book_flow_unet_new_shuffle_epoch200,
+    blender_os_book_flow_unet_new_shuffle_epoch300,
+    blender_os_book_flow_unet_new_shuffle_epoch500,
+    blender_os_book_flow_unet_new_shuffle_epoch700]
+### hid_ch
+hid_ch_old_shuffle_results = [
+    blender_os_book_flow_unet_hid_ch_128,
+    blender_os_book_flow_unet_hid_ch_032,
+    blender_os_book_flow_unet_hid_ch_016,
+    blender_os_book_flow_unet_hid_ch_008]
+
+hid_ch_new_shuffle_results = [
+    blender_os_book_flow_unet_new_shuffle_hid_ch_128,
+    blender_os_book_flow_unet_new_shuffle_hid_ch_064,
+    blender_os_book_flow_unet_new_shuffle_hid_ch_032,
+    blender_os_book_flow_unet_new_shuffle_hid_ch_016,
+    blender_os_book_flow_unet_new_shuffle_hid_ch_008]
+### bn
+bn_ch64_results = [
+    blender_os_book_flow_unet_hid_ch64_bn01_set_arg_QQ,
+    blender_os_book_flow_unet_hid_ch64_bn04,
+    blender_os_book_flow_unet_hid_ch64_bn08]
+
+bn_ch32_results_set_arg_not_sure = [
+    blender_os_book_flow_unet_hid_ch32_bn01_set_arg_QQ,
+    blender_os_book_flow_unet_hid_ch32_bn04,
+    blender_os_book_flow_unet_hid_ch32_bn08,
+    blender_os_book_flow_unet_hid_ch32_bn16]
+
+bn_ch32_results_set_arg_ok = [
+    blender_os_book_flow_unet_hid_ch32_bn04_set_arg_ok,
+    blender_os_book_flow_unet_hid_ch32_bn08_set_arg_ok,
+    blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok]
