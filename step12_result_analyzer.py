@@ -303,8 +303,8 @@ class Rec_result_analyzer(Result_analyzer):
 
     def do(self, see_num):
         analyze_see_dir = self.analyze_dir + "/" + self.results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來，上面是analyze_see_dir
-        analyze_see_bm_dir  = analyze_see_dir + "/" + "bm"
-        analyze_see_rec_dir = analyze_see_dir + "/" + "rec"
+        analyze_see_bm_dir  = analyze_see_dir + "/" + "bm"       ### 定出 存結果的資料夾
+        analyze_see_rec_dir = analyze_see_dir + "/" + "rec"      ### 定出 存結果的資料夾
         Check_dir_exist_and_build_new_dir(analyze_see_dir)       ### 建立 存結果的資料夾
         Check_dir_exist_and_build_new_dir(analyze_see_bm_dir)    ### 建立 存結果的資料夾
         Check_dir_exist_and_build_new_dir(analyze_see_rec_dir)   ### 建立 存結果的資料夾
@@ -312,10 +312,11 @@ class Rec_result_analyzer(Result_analyzer):
         for go_r, result in enumerate(self.results):
             result.sees[see_num].get_bm_rec_info()  ### 抓 result/see_.../matplot_bm_rec_visual/bm_visual 和 rec_visual 的 nemas, paths
             analyze_describe = result.ana_plot_title.split("-")[-1]     ### 在step11_c.py 可以自己設定設定每個 每個result的 ana_plot_title 喔！
-            analyze_see_rec_final_path = analyze_see_rec_dir + "/" + analyze_describe + ".jpg"  ### 定出rec_final_path
-            analyze_see_rec_gt_path    = analyze_see_rec_dir + "/" + "rec_gt" + ".jpg"         ### 定出rec_gt_path
-            rec_gt    = cv2.imread(result.sees[see_num].rec_paths[-1])  ### 倒數第一張 是 gt
-            rec_final = cv2.imread(result.sees[see_num].rec_paths[-2])  ### 倒數第二張 是 最後一個epoch
+            analyze_see_rec_final_path = analyze_see_rec_dir + "/" + analyze_describe + ".jpg"  ### 定出存哪：rec_final_path
+            analyze_see_rec_gt_path    = analyze_see_rec_dir + "/" + "rec_gt" + ".jpg"          ### 定出存哪：rec_gt_path
+            rec_gt    = cv2.imread(result.sees[see_num].rec_paths[-1])  ### 讀圖，倒數第一張 是 gt
+            rec_final = cv2.imread(result.sees[see_num].rec_paths[-2])  ### 讀圖，倒數第二張 是 最後一個epoch
+            print(result.sees[see_num].rec_paths[-2])
             cv2.imwrite(analyze_see_rec_final_path, rec_final)          ### 根據上面定出的位置存圖
             cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
 
@@ -336,14 +337,31 @@ if(__name__ == "__main__"):
     from step11_b_result_obj_builder import Result_builder
     from step11_c_result_instance import  *
 
-    rec_result_analyze = Rec_result_analyzer("5_14_rec_result_analyze", rec_bm_results)
-    rec_result_analyze_epoch  = Rec_result_analyzer("5_14_rec_result_analyze-epoch", [blender_os_book_flow_unet_epoch050, blender_os_book_flow_unet_epoch100, blender_os_book_flow_unet_epoch200, blender_os_book_flow_unet_epoch300, blender_os_book_flow_unet_epoch700])
-    rec_result_analyze_hid_ch = Rec_result_analyzer("5_14_rec_result_analyze-hid_ch", [blender_os_book_flow_unet_hid_ch_008, blender_os_book_flow_unet_hid_ch_016, blender_os_book_flow_unet_hid_ch_032, blender_os_book_flow_unet_hid_ch_064])
-    rec_result_analyze_hid_ch = Rec_result_analyzer("5_14_rec_result_analyze-hid_ch", [blender_os_book_flow_unet_bn4, blender_os_book_flow_unet_bn8])
+    epoch_old_shuffle_results_ana  = Rec_result_analyzer("5_14_rec_result_analyze-1-epoch_old_shuffle", epoch_old_shuffle_results)
+    epoch_new_shuffle_results_ana  = Rec_result_analyzer("5_14_rec_result_analyze-1-epoch_new_shuffle", epoch_new_shuffle_results)
+
+    hid_ch_old_shuffle_results_ana = Rec_result_analyzer("5_14_rec_result_analyze-2-hid_ch_old_shuffle", hid_ch_old_shuffle_results)
+    hid_ch_new_shuffle_results_ana = Rec_result_analyzer("5_14_rec_result_analyze-2-hid_ch_new_shuffle", hid_ch_new_shuffle_results)
+
+
+    bn_ch64_results_ana                  = Rec_result_analyzer("5_14_rec_result_analyze-3-bn_ch64", bn_ch64_results)
+    bn_ch32_results_set_arg_not_sure_ana = Rec_result_analyzer("5_14_rec_result_analyze-3-bn_ch32_set_arg_not_sure", bn_ch32_results_set_arg_not_sure)
+    bn_ch32_results_set_arg_ok_ana       = Rec_result_analyzer("5_14_rec_result_analyze-3-bn_ch32_set_arg_ok", bn_ch32_results_set_arg_ok)
+
+    rec_analyzers = [
+                    #  epoch_old_shuffle_results_ana,
+                     epoch_new_shuffle_results_ana,
+                    #  hid_ch_old_shuffle_results_ana,
+                    #  hid_ch_new_shuffle_results_ana,
+                    #  bn_ch64_results_ana,
+                    #  bn_ch32_results_set_arg_not_sure_ana,
+                    #  bn_ch32_results_set_arg_ok_ana,
+                     ]
     for see_num in range(0, 12):
         print("current see_num:", see_num)
-        rec_result_analyze_epoch.do(see_num=see_num)
-        rec_result_analyze_hid_ch.do(see_num=see_num)
+        for analyzer in rec_analyzers:
+            analyzer.do(see_num=see_num)
+
     # rec_result_analyze.do(see_num=9)
     # rec_result_analyze.do(see_num=10)
     # rec_result_analyze.do(see_num=11)
