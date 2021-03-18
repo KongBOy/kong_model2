@@ -69,6 +69,7 @@ class Result:
     def save_single_see_as_matplot_bm_rec_visual(self, see_num, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, print_msg=False):
         if(see_num < self.see_amount):  ### 防呆，以防直接使用 save_all_single_see_as_matplot_visual 時 start_index 設的比0大 但 amount 設成 see_amount 或 純粹不小心算錯數字(要算準start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
             print(f"current result:{self.result_name}")
+            self.sees[see_num].all_npy_to_npz(multiprocess=True)
             self.sees[see_num].save_as_matplot_bm_rec_visual_after_train(add_loss, bgr2rgb, single_see_multiprocess, print_msg=print_msg)
 
     def save_all_single_see_as_matplot_bm_rec_visual(self, start_index, amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
@@ -187,12 +188,13 @@ if(__name__ == "__main__"):
     # os_book_lots_loss.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=True)
 
 
-
-    blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050").set_ana_plot_title("blender").build()
+    ############################################################################################################################################
+    blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050_try_npz").set_ana_plot_title("blender").build()
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
-    blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
     # blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
-    # blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+    blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=5, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)   ### 如果失敗就單個跑吧~~
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=6, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=7, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
@@ -200,5 +202,5 @@ if(__name__ == "__main__"):
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=9, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=10, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=11, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-    print(dir(blender_os_book.sees[0]))
-    print(blender_os_book.sees[0].matplot_visual_dir)
+    # print(dir(blender_os_book.sees[0]))
+    # print(blender_os_book.sees[0].matplot_visual_dir)
