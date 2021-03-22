@@ -107,10 +107,10 @@ class See_visual(See_info):
     def _draw_matplot_visual_after_train(self, start_img, img_amount, add_loss):
         for go_img in tqdm(range(start_img, start_img + img_amount)):
             if(go_img >= 2):  ### 第三張 才開始存 epoch影像喔！
-                epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
-                single_row_imgs = self._Draw_matplot_visual(epoch, add_loss)
-                if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_dir + "/../logs", epoch, min_epochs=self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫，還有最後面的參數，是輸入 epochs！所以要-2！
-                single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+                current_epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
+                single_row_imgs = self._Draw_matplot_visual(current_epoch, add_loss)
+                if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_dir + "/../logs", current_epoch, min_epochs=self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫，還有最後面的參數，是輸入 epochs！所以要-2！
+                single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     def _draw_matplot_visual_after_train_multiprocess(self, add_loss, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
         print("processing %s" % self.see_name)
@@ -213,9 +213,9 @@ class See_bm_rec(See_info):
     def _draw_matplot_bm_rec_visual_after_train(self, start_img, img_amount, add_loss, bgr2rgb):
         for go_img in tqdm(range(start_img, start_img + img_amount)):
             if(go_img >= 3):        ### 第四張 才開始存 epoch影像喔！相當於epoch1才開始存，因為epoch0太差了沒寫防呆會出錯，目前乾脆先直接跳過有空再寫防呆。
-                epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
-                single_row_imgs = self._Draw_matplot_bm_rec_visual(epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
-                single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+                current_epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
+                single_row_imgs = self._Draw_matplot_bm_rec_visual(current_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
+                single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
         print("processing %s" % self.see_name)
@@ -231,9 +231,9 @@ class See_bm_rec(See_info):
         start_time = time.time()
         # matplot_bm_rec_visual_dir = self.see_dir + "/" + "matplot_bm_rec_visual" ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build(self.see_dir)
-        Check_dir_exist_and_build_new_dir(self.matplot_bm_rec_visual_dir)      ### 建立 存結果的資料夾
-        Check_dir_exist_and_build_new_dir(self.bm_visual_dir)      ### 建立 存結果的資料夾
-        Check_dir_exist_and_build_new_dir(self.rec_visual_dir)      ### 建立 存結果的資料夾
+        Check_dir_exist_and_build_new_dir(self.matplot_bm_rec_visual_dir)  ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
+        Check_dir_exist_and_build_new_dir(self.bm_visual_dir)              ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
+        Check_dir_exist_and_build_new_dir(self.rec_visual_dir)             ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
         if(single_see_multiprocess): self._draw_matplot_bm_rec_visual_after_train_multiprocess(add_loss, bgr2rgb, core_amount=CORE_AMOUNT, task_amount=self.see_file_amount, print_msg=print_msg)  ### see內的任務 當單位來切，task_amount輸入self.see_file_amount是對的！不用-2變epoch喔！
@@ -244,6 +244,29 @@ class See_bm_rec(See_info):
         Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY])  ### matplot圖存完是png，改存成jpg省空間
         # Video_combine_from_dir(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         print("cost_time:", time.time() - start_time)
+
+    def save_as_matplot_bm_rec_visual_after_train_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):   ### 訓練後，對"指定"epoch的 see結果 產生 matplot_bm_rec_visual
+        print(f"doing {self.see_name} save_as_matplot_bm_rec_visual_after_train_at_certain_epoch:{epoch}")
+        start_time = time.time()
+        Check_dir_exist_and_build(self.see_dir)
+        Check_dir_exist_and_build(self.matplot_bm_rec_visual_dir)  ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
+        Check_dir_exist_and_build(self.bm_visual_dir)              ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
+        Check_dir_exist_and_build(self.rec_visual_dir)             ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
+        self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
+
+        ### 防呆一下
+        current_final_epoch = self.see_file_amount - 3   ### epochs是 epoch總數，要減掉：in_img, gt_img 和 epoch0
+        if(epoch <= current_final_epoch):
+            single_row_imgs = self._Draw_matplot_bm_rec_visual(epoch, add_loss, bgr2rgb)
+            single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+            ### 後處理讓結果更小 但 又不失視覺品質
+            # Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10)  ### 兩次以上有危險可能會 crop錯喔！所以就不crop了~
+            Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY])  ### matplot圖存完是png，改存成jpg省空間
+            print("cost_time:", time.time() - start_time)
+        else:
+            print("epoch=%i 超過目前exp的epoch數目囉！有可能是還沒train完see還沒產生到該epoch 或者 是輸入的epoch數 超過 epochs囉！" % epoch)
+            print("save_as_matplot_bm_rec_visual_after_train_at_certain_epoch不做事情拉~")
+
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
