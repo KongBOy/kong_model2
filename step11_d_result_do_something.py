@@ -7,9 +7,13 @@ if(__name__ == "__main__"):
 
     ### bm, rec，會順便把 npy 轉 npz 喔！
     for rec_bm_result in rec_bm_results:
-        rec_bm_result.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+        # rec_bm_result.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
 
-        # rec_bm_result.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-        # rec_bm_result.save_single_see_as_matplot_bm_rec_visual(see_num=1, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-        # rec_bm_result.save_single_see_as_matplot_bm_rec_visual(see_num=2, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-        # rec_bm_result.save_single_see_as_matplot_bm_rec_visual(see_num=3, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+        # rec_bm_result.save_single_see_as_matplot_bm_rec_visual(see_num=7, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+        # rec_bm_result.save_single_see_as_matplot_bm_rec_visual(see_num=8, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+        # rec_bm_result.save_single_see_as_matplot_bm_rec_visual(see_num=9, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+        # rec_bm_result.save_single_see_as_matplot_bm_rec_visual(see_num=10, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+        # rec_bm_result.save_single_see_as_matplot_bm_rec_visual(see_num=11, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+
+
+        rec_bm_result.save_all_single_see_as_matplot_bm_rec_visual_at_final_epoch(add_loss=False, bgr2rgb=True)
