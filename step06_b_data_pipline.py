@@ -473,8 +473,10 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
         self.tf_data.train_amount    = get_db_amount(self.tf_data.db_obj.train_in_dir)
         self.tf_data.test_amount     = get_db_amount(self.tf_data.db_obj.test_in_dir)
         ##########################################################################################################################################
+        ### 先 zip 再 batch == 先 batch 再 zip (已經實驗過了，詳細內容看 try_lots 的 try10_資料pipline囉)
         self.tf_data.train_db_combine = tf.data.Dataset.zip((self.tf_data.train_in_db, self.tf_data.train_in_db_pre,
                                                              self.tf_data.train_gt_db, self.tf_data.train_gt_db_pre))
+        ### 先shuffle 在 batch
         if(self.tf_data.train_shuffle):
             self.tf_data.train_db_combine = self.tf_data.train_db_combine.shuffle(int(self.tf_data.train_amount / 2))  ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
         self.tf_data.train_db_combine = self.tf_data.train_db_combine.batch(self.tf_data.batch_size)   ### shuffle完 打包成一包包 batch
@@ -486,11 +488,11 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
 
         if(self.tf_data.db_obj.have_see):
             see_in_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.see_in_dir , self.tf_data.db_obj.in_type, self.tf_data.img_resize)  ### see的batch_size 就是用1
-            self.tf_data.see_in_db     = see_in_db.ord_db.batch(1)
-            self.tf_data.see_in_db_pre = see_in_db.pre_db.batch(1)
+            self.tf_data.see_in_db     = see_in_db.ord_db.batch(1)  ### see 的 batch 就是固定1了，有點懶一次處理多batch的生成see
+            self.tf_data.see_in_db_pre = see_in_db.pre_db.batch(1)  ### see 的 batch 就是固定1了，有點懶一次處理多batch的生成see
             see_gt_db  = tf_Datapipline_Factory.new_flow_pipline(self.tf_data.db_obj.see_gt_dir , self.tf_data.db_obj.h, self.tf_data.db_obj.w)
-            self.tf_data.see_gt_db     = see_gt_db.ord_db.batch(1)
-            self.tf_data.see_gt_db_pre = see_gt_db.pre_db.batch(1)
+            self.tf_data.see_gt_db     = see_gt_db.ord_db.batch(1)  ### see 的 batch 就是固定1了，有點懶一次處理多batch的生成see
+            self.tf_data.see_gt_db_pre = see_gt_db.pre_db.batch(1)  ### see 的 batch 就是固定1了，有點懶一次處理多batch的生成see
             self.tf_data.see_amount    = get_db_amount(self.tf_data.db_obj.see_in_dir)
 
         ##########################################################################################################################################
