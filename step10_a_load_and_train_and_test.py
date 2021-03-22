@@ -56,9 +56,9 @@ class Experiment():
         ### train, train_reload 參數
         self.batch_size      = 1
         self.train_shuffle   = True
-        self.epochs          = 1300  ### 看opencv合成的video覺得1300左右就沒變了
-        self.epoch_down_step = 100   ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
-        self.epoch_save_freq = 1     ### 訓練 epoch_save_freq 個 epoch 存一次模型
+        self.epochs          = 500    ### 看opencv合成的video覺得1300左右就沒變了
+        self.epoch_down_step = self.epochs // 2    ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
+        self.epoch_save_freq = 10     ### 訓練 epoch_save_freq 個 epoch 存一次模型
         self.start_epoch     = 0
 
 
@@ -72,18 +72,18 @@ class Experiment():
 
 ################################################################################################################################################
 ################################################################################################################################################
-    def train_init(self, train_reload=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.board, 5.save_code
+    def exp_init(self, reload_result=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.board, 5.save_code
         ### 1.result
-        if(train_reload):
+        if(reload_result):
             print("self.exp_dir", self.exp_dir)
             print("self.result_name", self.result_name)
             self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name).build()  ### 直接用 自己指定好的 result_name
         else: self.result_obj = Result_builder().set_by_exp(self).build()  ### 需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
-        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
+        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle, use_old_shuffle=self.use_old_shuffle).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
         ### 3.model
-        self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
-        if(train_reload):  ### 看需不需要reload model
+        self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
+        if(reload_result):  ### 看需不需要reload model
             self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
             self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
             print("reload ok~~ start_epoch=", self.start_epoch)
@@ -91,13 +91,14 @@ class Experiment():
         ####################################################################################################################
         ### 4.board, 5.save_code；train時才需要 board_obj 和 把code存起來喔！test時不用～
         self.board_obj = Board_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
-        self.step0_save_code()  ### 把source code存起來
+        
 
     def train_reload(self):
-        self.train(train_reload=True)
+        self.train(reload_result=True)
 
-    def train(self, train_reload=False):
-        self.train_init(train_reload)
+    def train(self, reload_result=False):
+        self.exp_init(reload_result)
+        self.step0_save_code()  ### 把source code存起來
         ################################################################################################################################################
         ### 第三階段：train 和 test
         ###  training 的部分 ###################################################################################################
@@ -149,6 +150,9 @@ class Experiment():
             ###    step5 紀錄、顯示 訓練相關的時間
             self.train_step5_show_time(epoch, e_start, total_start, epoch_start_timestamp)
             # break  ### debug用，看subprocess成不成功
+
+        ### 最後train完 記得也要看結果喔！
+        self.train_step1_see_current_img(self.epochs)
 
     def train_step1_see_current_img(self, epoch):
         # sample_start_time = time.time()
@@ -215,22 +219,29 @@ class Experiment():
 
 
 
-    def test(self, result_name):  ### 1.result, 2.data, 3.model且reload
-        ### 1.result
-        self.result_name  = result_name
-        self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + result_name).build()
-        ### 2.data
-        self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
-        ### 3.model且reload
-        self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
-        self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
-        self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
-        ### 待完成
+    def test_see(self):
+        """
+        用最後儲存的 Model 來產生see
+        """
+        self.exp_init(reload_result=True)
+        self.train_step1_see_current_img(self.start_epoch)
+        print("test see finish")
+
+        # ### 1.result
+        # self.result_name  = result_name
+        # self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + result_name).build()
+        # ### 2.data
+        # self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
+        # ### 3.model且reload
+        # self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
+        # self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
+        # self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
+        # ### 待完成
 
     def run(self):
         if  (self.phase == "train"):          self.train()
         elif(self.phase == "train_reload"):   self.train_reload()
-        elif(self.phase == "test"):           self.test()
+        elif(self.phase == "test_see"):       self.test_see()
         elif(self.phase == "train_indicate"): pass  ### 待完成
 
         # from multiprocessing import Process
@@ -431,39 +442,39 @@ exp_dir14 = "5_14_flow_unet"
 ### hid_ch=64, 測試 epochs數
 # blender_os_book_flow_unet = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="type8_blender_os_book-5_14_1-20210225_204416-flow_unet-127.35")
 # blender_os_book_flow_unet = Exp_builder().set_basic("train"       , type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
-blender_os_book_flow_unet_epoch050 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1", describe_end="new_shuf_epoch050") .set_train_args(epochs= 50).build(result_name="")
-blender_os_book_flow_unet_epoch100 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_2", describe_end="new_shuf_epoch100") .set_train_args(epochs=100).build(result_name="")
-blender_os_book_flow_unet_epoch200 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_3", describe_end="new_shuf_epoch200") .set_train_args(epochs=200).build(result_name="")
-blender_os_book_flow_unet_epoch300 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_4", describe_end="new_shuf_epoch300") .set_train_args(epochs=300).build(result_name="")
-blender_os_book_flow_unet_epoch500 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_5", describe_end="new_shuf_epoch500") .set_train_args(epochs=500).build(result_name="")
-blender_os_book_flow_unet_epoch700 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_6", describe_end="new_shuf_epoch700") .set_train_args(epochs=700).build(result_name="")
+blender_os_book_flow_unet_epoch050 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_1", describe_end="new_shuf_epoch050") .set_train_args(epochs= 50).build(result_name="type8_blender_os_book-5_14_1_1_1-20210306_190321-flow_unet-new_shuf_epoch050")
+blender_os_book_flow_unet_epoch100 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_2", describe_end="new_shuf_epoch100") .set_train_args(epochs=100).build(result_name="type8_blender_os_book-5_14_1_1_2-20210306_203154-flow_unet-new_shuf_epoch100")
+blender_os_book_flow_unet_epoch200 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_3", describe_end="new_shuf_epoch200") .set_train_args(epochs=200).build(result_name="type8_blender_os_book-5_14_1_1_3-20210306_232534-flow_unet-new_shuf_epoch200")
+blender_os_book_flow_unet_epoch300 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_4", describe_end="new_shuf_epoch300") .set_train_args(epochs=300).build(result_name="type8_blender_os_book-5_14_1_1_4-20210307_051136-flow_unet-new_shuf_epoch300")
+blender_os_book_flow_unet_epoch500 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_5", describe_end="new_shuf_epoch500") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_1_1_5-20210318_211827-flow_unet-new_shuf_epoch500")
+blender_os_book_flow_unet_epoch700 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_6", describe_end="new_shuf_epoch700") .set_train_args(epochs=700).build(result_name="type8_blender_os_book-5_14_1_1_6-20210308_100044-flow_unet-new_shuf_epoch700")
 
 ### epoch=500, 測hid_ch, bn=1
-blender_os_book_flow_unet_hid_ch_128 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_128, exp_dir=exp_dir14, describe_mid="5_14_2_1", describe_end="new_shuf_hid_ch_128") .set_train_args(epochs=500).build(result_name="")
-blender_os_book_flow_unet_hid_ch_032 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_2_3", describe_end="new_shuf_hid_ch_032") .set_train_args(epochs=500).build(result_name="")
-blender_os_book_flow_unet_hid_ch_016 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_016, exp_dir=exp_dir14, describe_mid="5_14_2_4", describe_end="new_shuf_hid_ch_016") .set_train_args(epochs=500).build(result_name="")
-blender_os_book_flow_unet_hid_ch_008 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_008, exp_dir=exp_dir14, describe_mid="5_14_2_5", describe_end="new_shuf_hid_ch_008") .set_train_args(epochs=500).build(result_name="")  ### 127.28
+blender_os_book_flow_unet_hid_ch_128 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_128, exp_dir=exp_dir14, describe_mid="5_14_1_2_1", describe_end="new_shuf_hid_ch_128") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_1_2_1-20210310_230448-flow_unet-new_shuf_hid_ch_128")
+blender_os_book_flow_unet_hid_ch_032 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_1_2_3", describe_end="new_shuf_hid_ch_032") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_1_2_3-20210309_214404-flow_unet-new_shuf_hid_ch_032")
+blender_os_book_flow_unet_hid_ch_016 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_016, exp_dir=exp_dir14, describe_mid="5_14_1_2_4", describe_end="new_shuf_hid_ch_016") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_1_2_4-20210309_140134-flow_unet-new_shuf_hid_ch_016")
+blender_os_book_flow_unet_hid_ch_008 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_008, exp_dir=exp_dir14, describe_mid="5_14_1_2_5", describe_end="new_shuf_hid_ch_008") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_1_2_5-20210309_061533-flow_unet-new_shuf_hid_ch_008")  ### 127.28
 
 ### epoch=500, hid_ch=64, 測bn, call沒設定training=True/False
-blender_os_book_flow_unet_bn04 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_3_2", describe_end="ch64_bn_04") .set_train_args(batch_size= 4, epochs=500).build(result_name="type8_blender_os_book-5_14_3_3-20210304_102528-flow_unet-bn_04")   ### 已經是new_shuf
-blender_os_book_flow_unet_bn08 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_3_3", describe_end="ch64_bn_08") .set_train_args(batch_size= 8, epochs=500).build(result_name="type8_blender_os_book-5_14_3_3-20210304_232248-flow_unet-bn_08")   ### 已經是new_shuf
+blender_os_book_flow_unet_bn04 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn_04") .set_train_args(batch_size= 4, epochs=500).build(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn_04")   ### 已經是new_shuf
+blender_os_book_flow_unet_bn08 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn_08") .set_train_args(batch_size= 8, epochs=500).build(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn_08")   ### 已經是new_shuf
 ### bn=16在127.28已超出記憶體
 
 ### 把hid_ch 變小，bn可以多一點點
 ### epoch=500, hid_ch=32, 測bn, call沒設定training=True/False
-blender_os_book_flow_unet_ch32_bn04 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_2", describe_end="ch32_bn_04") .set_train_args(batch_size= 4, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_ch32_bn08 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_3", describe_end="ch32_bn_08") .set_train_args(batch_size= 8, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_ch32_bn16 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_4", describe_end="ch32_bn_16") .set_train_args(batch_size=16, epochs=500).build(result_name="")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn04 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_1_3b_2", describe_end="ch32_bn_04") .set_train_args(batch_size= 4, epochs=500).build(result_name="type8_blender_os_book-5_14_1_3b_2-20210306_111439-flow_unet-ch32_bn_04")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn08 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_1_3b_3", describe_end="ch32_bn_08") .set_train_args(batch_size= 8, epochs=500).build(result_name="type8_blender_os_book-5_14_1_3b_3-20210306_171735-flow_unet-ch32_bn_08")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn16 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_1_3b_4", describe_end="ch32_bn_16") .set_train_args(batch_size=16, epochs=500).build(result_name="type8_blender_os_book-5_14_1_3b_4-20210306_231628-flow_unet-ch32_bn_16")  ### 已經是new_shuf
 ### bn=32在127.28也超出記憶體
 
 ### epoch=500, hid_ch=32, 測bn, call沒設定training=True/False
-blender_os_book_flow_unet_ch32_bn04_set_arg_ok = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_2", describe_end="ch32_bn_04_set_arg_ok") .set_train_args(batch_size= 4, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_ch32_bn08_set_arg_ok = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_3", describe_end="ch32_bn_08_set_arg_ok") .set_train_args(batch_size= 8, epochs=500).build(result_name="")  ### 已經是new_shuf
-blender_os_book_flow_unet_ch32_bn16_set_arg_ok = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_3b_4", describe_end="ch32_bn_16_set_arg_ok") .set_train_args(batch_size=16, epochs=500).build(result_name="")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn04_set_arg_ok = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_1_3b_2", describe_end="ch32_bn_04_set_arg_ok") .set_train_args(batch_size= 4, epochs=500).build(result_name="type8_blender_os_book-5_14_1_3b_2-20210308_101945-flow_unet-ch32_bn_04_set_arg_ok")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn08_set_arg_ok = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_1_3b_3", describe_end="ch32_bn_08_set_arg_ok") .set_train_args(batch_size= 8, epochs=500).build(result_name="type8_blender_os_book-5_14_1_3b_3-20210308_163036-flow_unet-ch32_bn_08_set_arg_ok")  ### 已經是new_shuf
+blender_os_book_flow_unet_ch32_bn16_set_arg_ok = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_hid_ch_032, exp_dir=exp_dir14, describe_mid="5_14_1_3b_4", describe_end="ch32_bn_16_set_arg_ok") .set_train_args(batch_size=16, epochs=500).build(result_name="type8_blender_os_book-5_14_1_3b_4-20210308_223123-flow_unet-ch32_bn_16_set_arg_ok")  ### 已經是new_shuf
 #############################################################################################################################################################################################################
 
-blender_os_book_flow_unet_IN_epoch500 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_hid_ch_64, exp_dir=exp_dir14, describe_mid="5_14_1_5", describe_end="new_shuf_IN_epoch500") .set_train_args(epochs=500).build(result_name="")
-blender_os_book_flow_unet_IN_epoch700 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_hid_ch_64, exp_dir=exp_dir14, describe_mid="5_14_1_6", describe_end="new_shuf_IN_epoch700") .set_train_args(epochs=700).build(result_name="")
+blender_os_book_flow_unet_IN_epoch500 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_hid_ch_64, exp_dir=exp_dir14, describe_mid="5_14_1_1_5b", describe_end="new_shuf_IN_epoch500") .set_train_args(epochs=500).build(result_name="type8_blender_os_book-5_14_1_1_5b-20210309_135755-flow_unet-new_shuf_IN_epoch500")
+blender_os_book_flow_unet_IN_epoch700 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_hid_ch_64, exp_dir=exp_dir14, describe_mid="5_14_1_1_6b", describe_end="new_shuf_IN_epoch700") .set_train_args(epochs=700).build(result_name="type8_blender_os_book-5_14_1_1_6b-20210310_012428-flow_unet-new_shuf_IN_epoch700")
 
 
 
@@ -475,7 +486,12 @@ blender_os_book_flow_unet_IN_epoch700 = Exp_builder().set_basic("train", type8_b
 
 import sys
 if(__name__ == "__main__"):
-    # blender_os_book_flow_unet_epoch500.run()
+    ############################################################################################################
+    ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
+    blender_os_book_flow_unet_epoch500.run()
+
+    ############################################################################################################
+    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_a_load_and_train_and_test.py 某個exp.run()
     if len(sys.argv) < 2:
         print('no argument')
         sys.exit()
