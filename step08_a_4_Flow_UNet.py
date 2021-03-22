@@ -37,7 +37,7 @@ def generate_results(model_G, in_img_pre, training=False):
     return flow[0], in_img_back
 
 
-def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, result_obj=None, training=False):
+def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, result_obj=None, training=True):
     flow, in_img_back = generate_results(model_G, in_img_pre, training=training)
     gt_flow = gt_flow[0]
     flow_visual = method1(flow[..., 2], flow[..., 1])[..., ::-1] * 255.
