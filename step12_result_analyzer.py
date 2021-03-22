@@ -316,7 +316,7 @@ class Rec_result_analyzer(Result_analyzer):
             analyze_see_rec_gt_path    = analyze_see_rec_dir + "/" + "rec_gt" + ".jpg"          ### 定出存哪：rec_gt_path
             rec_gt    = cv2.imread(result.sees[see_num].rec_paths[-1])  ### 讀圖，倒數第一張 是 gt
             rec_final = cv2.imread(result.sees[see_num].rec_paths[-2])  ### 讀圖，倒數第二張 是 最後一個epoch
-            print(result.sees[see_num].rec_paths[-2])
+            # print(result.sees[see_num].rec_paths[-2])                   ### debug用
             cv2.imwrite(analyze_see_rec_final_path, rec_final)          ### 根據上面定出的位置存圖
             cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
 
@@ -337,25 +337,39 @@ if(__name__ == "__main__"):
     from step11_b_result_obj_builder import Result_builder
     from step11_c_result_instance import  *
 
-    epoch_old_shuffle_results_ana  = Rec_result_analyzer("5_14_rec_result_analyze-1-epoch_old_shuffle", epoch_old_shuffle_results)
-    epoch_new_shuffle_results_ana  = Rec_result_analyzer("5_14_rec_result_analyze-1-epoch_new_shuffle", epoch_new_shuffle_results)
+    epoch_old_shuffle_results_ana      = Rec_result_analyzer("5_14_rec_result_analyze-1_1-epoch_old_shuffle",     epoch_old_shuffle_results)
+    epoch_new_shuffle_results_ana      = Rec_result_analyzer("5_14_rec_result_analyze-1_2-epoch_new_shuffle",     epoch_new_shuffle_results)
+    epoch_old_new_shuffle_results_ana  = Rec_result_analyzer("5_14_rec_result_analyze-1_3-epoch_old_new_shuffle", epoch_old_new_shuffle_results)
 
-    hid_ch_old_shuffle_results_ana = Rec_result_analyzer("5_14_rec_result_analyze-2-hid_ch_old_shuffle", hid_ch_old_shuffle_results)
-    hid_ch_new_shuffle_results_ana = Rec_result_analyzer("5_14_rec_result_analyze-2-hid_ch_new_shuffle", hid_ch_new_shuffle_results)
+    hid_ch_old_shuffle_results_ana     = Rec_result_analyzer("5_14_rec_result_analyze-2_1-hid_ch_old_shuffle",     hid_ch_old_shuffle_results)
+    hid_ch_new_shuffle_results_ana     = Rec_result_analyzer("5_14_rec_result_analyze-2_2-hid_ch_new_shuffle",     hid_ch_new_shuffle_results)
+    hid_ch_old_new_shuffle_results_ana = Rec_result_analyzer("5_14_rec_result_analyze-2_3-hid_ch_old_new_shuffle", hid_ch_old_new_shuffle_results)
 
+    bn_ch64_results_ana                   = Rec_result_analyzer("5_14_rec_result_analyze-3_1-bn_ch64",                   bn_ch64_results)
+    bn_ch32_results_set_arg_no_ana        = Rec_result_analyzer("5_14_rec_result_analyze-3_2-bn_ch32_set_arg_no",        bn_ch32_results_set_arg_no)
+    bn_ch32_results_set_arg_ok_ana        = Rec_result_analyzer("5_14_rec_result_analyze-3_3-bn_ch32_set_arg_ok",        bn_ch32_results_set_arg_ok)
+    bn_ch32_results_set_arg_no_and_ok_ana = Rec_result_analyzer("5_14_rec_result_analyze-3_4-bn_ch32_set_arg_no_and_ok", bn_ch32_results_set_arg_no_and_ok)
 
-    bn_ch64_results_ana                  = Rec_result_analyzer("5_14_rec_result_analyze-3-bn_ch64", bn_ch64_results)
-    bn_ch32_results_set_arg_not_sure_ana = Rec_result_analyzer("5_14_rec_result_analyze-3-bn_ch32_set_arg_not_sure", bn_ch32_results_set_arg_not_sure)
-    bn_ch32_results_set_arg_ok_ana       = Rec_result_analyzer("5_14_rec_result_analyze-3-bn_ch32_set_arg_ok", bn_ch32_results_set_arg_ok)
+    bn_in_size1_results_ana                    = Rec_result_analyzer("5_14_rec_result_analyze-4_1-bn_in_size1", bn_in_size1_results)
+    bn_in_sizen_results_ana                    = Rec_result_analyzer("5_14_rec_result_analyze-4_2-bn_in_sizen", bn_in_sizen_results)
 
     rec_analyzers = [
-                    #  epoch_old_shuffle_results_ana,
-                     epoch_new_shuffle_results_ana,
-                    #  hid_ch_old_shuffle_results_ana,
-                    #  hid_ch_new_shuffle_results_ana,
-                    #  bn_ch64_results_ana,
-                    #  bn_ch32_results_set_arg_not_sure_ana,
-                    #  bn_ch32_results_set_arg_ok_ana,
+                    ### 1
+                    epoch_old_shuffle_results_ana,
+                    epoch_new_shuffle_results_ana,
+                    epoch_old_new_shuffle_results_ana,
+                    ### 2
+                    hid_ch_old_shuffle_results_ana,
+                    hid_ch_new_shuffle_results_ana,
+                    hid_ch_old_new_shuffle_results_ana,
+                    ### 3
+                    bn_ch64_results_ana,
+                    bn_ch32_results_set_arg_no_ana,
+                    bn_ch32_results_set_arg_ok_ana,
+                    bn_ch32_results_set_arg_no_and_ok_ana,
+                    ### 4
+                    bn_in_size1_results_ana,
+                    bn_in_sizen_results_ana,
                      ]
     for see_num in range(0, 12):
         print("current see_num:", see_num)
