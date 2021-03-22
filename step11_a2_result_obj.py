@@ -85,6 +85,33 @@ class Result:
         single_see_multiprocess = False  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
         multi_processing_interface(core_amount=CORE_AMOUNT, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_bm_rec_visual, task_args=[add_loss, bgr2rgb, single_see_multiprocess], print_msg=print_msg)
 
+    #######################################################################################################################################
+    def save_single_see_as_matplot_bm_rec_visual_at_certain_epoch(self, see_num, epoch, add_loss=False, bgr2rgb=False):
+        """
+        單個 see 裡面的 certain_epoch 重做 matplot_bm_rec_visual
+        """
+        if(see_num < self.see_amount):  ### 防呆，以防直接使用 save_all_single_see_as_matplot_visual 時 start_index 設的比0大 但 amount 設成 see_amount 或 純粹不小心算錯數字(要算準start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
+            print(f"current result:{self.result_name}")
+            self.sees[see_num].all_npy_to_npz(multiprocess=True)
+            self.sees[see_num].save_as_matplot_bm_rec_visual_after_train_at_certain_epoch(epoch, add_loss, bgr2rgb)
+
+    def save_all_single_see_as_matplot_bm_rec_visual_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):
+        """
+        所有 see 裡面的 certain_epoch 重做 matplot_bm_rec_visual
+        """
+        for see_num in self.see_amount:
+            self.save_single_see_as_matplot_bm_rec_visual_at_certain_epoch(see_num, epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
+
+
+    def save_all_single_see_as_matplot_bm_rec_visual_at_final_epoch(self, add_loss=False, bgr2rgb=False):
+        """
+        所有 see 裡面的 final_epoch 重做 matplot_bm_rec_visual
+        """
+        for see_num in range(self.see_amount):
+            self.sees[see_num].get_see_dir_info()  ### 定位出current_final_epochs前，先更新一下 see_dir_info
+            current_final_epochs = self.sees[see_num].see_file_amount - 3   ### 定位出 current_final_epochs，current的意思是可能目前還沒train完也可以用，epochs是 epoch總數，要減掉：in_img, gt_img 和 epoch0
+            self.save_single_see_as_matplot_bm_rec_visual_at_certain_epoch(see_num, current_final_epochs, add_loss=add_loss, bgr2rgb=bgr2rgb)
+
     ##############################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
