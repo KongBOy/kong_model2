@@ -217,8 +217,6 @@ class Experiment():
             f.write("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1))))) ; f.write("\n")
             f.write("\n")
 
-
-
     def test_see(self):
         """
         用最後儲存的 Model 來產生see
@@ -233,14 +231,6 @@ class Experiment():
         elif(self.phase == "test_see"):       self.test_see()
         elif(self.phase == "train_indicate"): pass  ### 待完成
 
-        # from multiprocessing import Process
-        # p = None
-        # if  (self.phase == "train"):          p = Process(target=self.train)
-        # elif(self.phase == "train_reload"):   p = Process(target=self.train_reload)
-        # elif(self.phase == "test"):           p = Process(target=self.test)
-        # elif(self.phase == "train_indicate"): pass  ### 待完成
-        # p.start()
-        # p.join()
 
 
 class Exp_builder():
