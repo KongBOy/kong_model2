@@ -222,9 +222,9 @@ class MODEL_NAME(Enum):
 
     ########################################################### 14
     flow_unet = "flow_unet"   ### 包含這關鍵字就沒問題 ### hid_ch=64
-    flow_unet_epoch2 = "flow_unet_epoch2"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
-    flow_unet_epoch3 = "flow_unet_epoch3"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
-    flow_unet_epoch4 = "flow_unet_epoch4"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
+    flow_unet_epoch2 = "flow_unet_epoch2"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=4
+    flow_unet_epoch3 = "flow_unet_epoch3"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=6
+    flow_unet_epoch4 = "flow_unet_epoch4"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=8
 
     flow_unet_hid_ch_128 = "flow_unet_hid_ch_128"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=128
     flow_unet_hid_ch_032 = "flow_unet_hid_ch_032"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=032
