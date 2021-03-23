@@ -214,7 +214,7 @@ blender_os_book_flow_unet_new_shuffle_IN_epoch500  = Result_builder().set_by_res
 blender_os_book_flow_unet_new_shuffle_IN_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_6b-20210310_012428-flow_unet-new_shuf_IN_epoch700").set_ana_plot_title("flow_unet-epoch=700_new_shuf_IN").build()
 
 blender_os_book_flow_unet_hid_ch64_in01            = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_IN_epoch500);                blender_os_book_flow_unet_hid_ch64_in01.ana_plot_title = "flow_unet-hid_ch64_in1"
-blender_os_book_flow_unet_hid_ch64_bn01_set_arg_QQ = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_epoch500);        blender_os_book_flow_unet_hid_ch64_bn01_set_arg_QQ.ana_plot_title = "flow_unet-hid_ch64_bn1_set_arg_QQ"
+blender_os_book_flow_unet_hid_ch64_bn01_set_arg_ok = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_epoch500);        blender_os_book_flow_unet_hid_ch64_bn01_set_arg_ok.ana_plot_title = "flow_unet-hid_ch64_bn1_set_arg_QQ"
 blender_os_book_flow_unet_hid_ch64_bn04            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn_04").set_ana_plot_title("flow_unet-hid_ch64_bn4_set_arg_no").build()
 blender_os_book_flow_unet_hid_ch64_bn08            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn_08").set_ana_plot_title("flow_unet-hid_ch64_bn8_set_arg_no").build()
 
@@ -233,52 +233,52 @@ blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok = Result_builder().set_by_res
 
 ### npy_to_rec 和 生成 bm, rec(這個list不需要加入所有 deepcopy的result喔)
 rec_bm_results = [
-                # blender_os_book_flow_unet_epoch050,
-                # blender_os_book_flow_unet_epoch100,
-                # blender_os_book_flow_unet_epoch200,
-                # blender_os_book_flow_unet_epoch300,
-                # blender_os_book_flow_unet_epoch700,
+                blender_os_book_flow_unet_epoch050,
+                blender_os_book_flow_unet_epoch100,
+                blender_os_book_flow_unet_epoch200,
+                blender_os_book_flow_unet_epoch300,
+                blender_os_book_flow_unet_epoch700,
 
-                # blender_os_book_flow_unet_hid_ch_128,
-                # blender_os_book_flow_unet_hid_ch_032,
-                # blender_os_book_flow_unet_hid_ch_016,
-                # blender_os_book_flow_unet_hid_ch_008,
+                blender_os_book_flow_unet_hid_ch_128,
+                blender_os_book_flow_unet_hid_ch_032,
+                blender_os_book_flow_unet_hid_ch_016,
+                blender_os_book_flow_unet_hid_ch_008,
                 # #################################################################################
                 blender_os_book_flow_unet_new_shuffle_epoch050,
                 blender_os_book_flow_unet_new_shuffle_epoch100,
                 blender_os_book_flow_unet_new_shuffle_epoch200,
                 blender_os_book_flow_unet_new_shuffle_epoch300,
-                # blender_os_book_flow_unet_new_shuffle_epoch500,
+                blender_os_book_flow_unet_new_shuffle_epoch500,
                 blender_os_book_flow_unet_new_shuffle_epoch700,
 
-                # blender_os_book_flow_unet_new_shuffle_hid_ch_128,
-                # blender_os_book_flow_unet_new_shuffle_hid_ch_032,
-                # blender_os_book_flow_unet_new_shuffle_hid_ch_016,
-                # blender_os_book_flow_unet_new_shuffle_hid_ch_008,
+                blender_os_book_flow_unet_new_shuffle_hid_ch_128,
+                blender_os_book_flow_unet_new_shuffle_hid_ch_032,
+                blender_os_book_flow_unet_new_shuffle_hid_ch_016,
+                blender_os_book_flow_unet_new_shuffle_hid_ch_008,
                 # #################################################################################
-                # blender_os_book_flow_unet_hid_ch64_bn04,
-                # blender_os_book_flow_unet_hid_ch64_bn08,
+                blender_os_book_flow_unet_hid_ch64_bn04,
+                blender_os_book_flow_unet_hid_ch64_bn08,
 
-                # blender_os_book_flow_unet_new_shuffle_IN_epoch500,
+                blender_os_book_flow_unet_new_shuffle_IN_epoch500,
                 blender_os_book_flow_unet_new_shuffle_IN_epoch700,
 
-                # blender_os_book_flow_unet_hid_ch32_bn04,
-                # blender_os_book_flow_unet_hid_ch32_bn04_set_arg_ok,
-                # blender_os_book_flow_unet_hid_ch32_bn08,
-                # blender_os_book_flow_unet_hid_ch32_bn08_set_arg_ok,
-                # blender_os_book_flow_unet_hid_ch32_bn16,
-                # blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok,
+                blender_os_book_flow_unet_hid_ch32_bn04,
+                blender_os_book_flow_unet_hid_ch32_bn04_set_arg_ok,
+                blender_os_book_flow_unet_hid_ch32_bn08,
+                blender_os_book_flow_unet_hid_ch32_bn08_set_arg_ok,
+                blender_os_book_flow_unet_hid_ch32_bn16,
+                blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok,
                 ]
 
 
 ### 覺得可以把 ana 用的 results 寫在這裡，要改result 的名字較方便
 ### 1 epoch
-epoch_old_shuffle_results  = [
-    blender_os_book_flow_unet_epoch050,
-    blender_os_book_flow_unet_epoch100,
-    blender_os_book_flow_unet_epoch200,
-    blender_os_book_flow_unet_epoch300,
-    blender_os_book_flow_unet_epoch700]
+# epoch_old_shuffle_results  = [
+#     blender_os_book_flow_unet_epoch050,
+#     blender_os_book_flow_unet_epoch100,
+#     blender_os_book_flow_unet_epoch200,
+#     blender_os_book_flow_unet_epoch300,
+#     blender_os_book_flow_unet_epoch700]
 
 epoch_new_shuffle_results  = [
     blender_os_book_flow_unet_new_shuffle_epoch050,
@@ -289,25 +289,25 @@ epoch_new_shuffle_results  = [
     blender_os_book_flow_unet_new_shuffle_epoch700]
 
 
-epoch_old_new_shuffle_results  = [
-    blender_os_book_flow_unet_epoch050,
-    blender_os_book_flow_unet_new_shuffle_epoch050,
-    blender_os_book_flow_unet_epoch100,
-    blender_os_book_flow_unet_new_shuffle_epoch100,
-    blender_os_book_flow_unet_epoch200,
-    blender_os_book_flow_unet_new_shuffle_epoch200,
-    blender_os_book_flow_unet_epoch300,
-    blender_os_book_flow_unet_new_shuffle_epoch300,
-    blender_os_book_flow_unet_new_shuffle_epoch500,
-    blender_os_book_flow_unet_epoch700,
-    blender_os_book_flow_unet_new_shuffle_epoch700]
+# epoch_old_new_shuffle_results  = [
+#     blender_os_book_flow_unet_epoch050,
+#     blender_os_book_flow_unet_new_shuffle_epoch050,
+#     blender_os_book_flow_unet_epoch100,
+#     blender_os_book_flow_unet_new_shuffle_epoch100,
+#     blender_os_book_flow_unet_epoch200,
+#     blender_os_book_flow_unet_new_shuffle_epoch200,
+#     blender_os_book_flow_unet_epoch300,
+#     blender_os_book_flow_unet_new_shuffle_epoch300,
+#     blender_os_book_flow_unet_new_shuffle_epoch500,
+#     blender_os_book_flow_unet_epoch700,
+#     blender_os_book_flow_unet_new_shuffle_epoch700]
 
 ### 2 hid_ch
-hid_ch_old_shuffle_results = [
-    blender_os_book_flow_unet_hid_ch_128,
-    blender_os_book_flow_unet_hid_ch_032,
-    blender_os_book_flow_unet_hid_ch_016,
-    blender_os_book_flow_unet_hid_ch_008]
+# hid_ch_old_shuffle_results = [
+#     blender_os_book_flow_unet_hid_ch_128,
+#     blender_os_book_flow_unet_hid_ch_032,
+#     blender_os_book_flow_unet_hid_ch_016,
+#     blender_os_book_flow_unet_hid_ch_008]
 
 hid_ch_new_shuffle_results = [
     blender_os_book_flow_unet_new_shuffle_hid_ch_128,
@@ -316,21 +316,21 @@ hid_ch_new_shuffle_results = [
     blender_os_book_flow_unet_new_shuffle_hid_ch_016,
     blender_os_book_flow_unet_new_shuffle_hid_ch_008]
 
-hid_ch_old_new_shuffle_results = [
-    blender_os_book_flow_unet_hid_ch_128,
-    blender_os_book_flow_unet_new_shuffle_hid_ch_128,
-    blender_os_book_flow_unet_new_shuffle_hid_ch_064,
-    blender_os_book_flow_unet_hid_ch_032,
-    blender_os_book_flow_unet_new_shuffle_hid_ch_032,
-    blender_os_book_flow_unet_hid_ch_016,
-    blender_os_book_flow_unet_new_shuffle_hid_ch_016,
-    blender_os_book_flow_unet_hid_ch_008,
-    blender_os_book_flow_unet_new_shuffle_hid_ch_008]
+# hid_ch_old_new_shuffle_results = [
+#     blender_os_book_flow_unet_hid_ch_128,
+#     blender_os_book_flow_unet_new_shuffle_hid_ch_128,
+#     blender_os_book_flow_unet_new_shuffle_hid_ch_064,
+#     blender_os_book_flow_unet_hid_ch_032,
+#     blender_os_book_flow_unet_new_shuffle_hid_ch_032,
+#     blender_os_book_flow_unet_hid_ch_016,
+#     blender_os_book_flow_unet_new_shuffle_hid_ch_016,
+#     blender_os_book_flow_unet_hid_ch_008,
+#     blender_os_book_flow_unet_new_shuffle_hid_ch_008]
 
 ### 3 bn
 ###   3_1. ch64 只能 bn 1, 4, 8，覺得不夠明顯
 bn_ch64_results = [
-    blender_os_book_flow_unet_hid_ch64_bn01_set_arg_QQ,
+    blender_os_book_flow_unet_hid_ch64_bn01_set_arg_ok,
     blender_os_book_flow_unet_hid_ch64_bn04,
     blender_os_book_flow_unet_hid_ch64_bn08]
 
@@ -340,7 +340,6 @@ bn_ch32_results_set_arg_no = [
     blender_os_book_flow_unet_hid_ch32_bn04,
     blender_os_book_flow_unet_hid_ch32_bn08,
     blender_os_book_flow_unet_hid_ch32_bn16]
-### 以上 training 好像沒有設對 
 
 ###   3_3. ch32 bn1, 4, 8, 16 有設對來看看
 bn_ch32_results_set_arg_ok = [
