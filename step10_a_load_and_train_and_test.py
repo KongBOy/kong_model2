@@ -91,7 +91,7 @@ class Experiment():
         ####################################################################################################################
         ### 4.board, 5.save_code；train時才需要 board_obj 和 把code存起來喔！test時不用～
         self.board_obj = Board_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
-        
+
 
     def train_reload(self):
         self.train(reload_result=True)
@@ -226,17 +226,6 @@ class Experiment():
         self.exp_init(reload_result=True)
         self.train_step1_see_current_img(self.start_epoch)
         print("test see finish")
-
-        # ### 1.result
-        # self.result_name  = result_name
-        # self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + result_name).build()
-        # ### 2.data
-        # self.tf_data      = tf_Data_builder().set_basic(self.db_obj).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
-        # ### 3.model且reload
-        # self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=2)  ###step4 建立checkpoint manager 設定最多存2份
-        # self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
-        # self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
-        # ### 待完成
 
     def run(self):
         if  (self.phase == "train"):          self.train()
