@@ -98,7 +98,7 @@ class Experiment():
 
     def train(self, reload_result=False):
         self.exp_init(reload_result)
-        self.step0_save_code()  ### 把source code存起來
+        self.step0_save_code()  ### training 才需要把source code存起來，所以從exp_init移下來囉
         ################################################################################################################################################
         ### 第三階段：train 和 test
         ###  training 的部分 ###################################################################################################
