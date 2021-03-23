@@ -1,3 +1,5 @@
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import tensorflow as tf
 import numpy as np
 from enum import Enum
@@ -75,8 +77,8 @@ class Experiment():
     def exp_init(self, reload_result=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.board, 5.save_code
         ### 1.result
         if(reload_result):
-            print("self.exp_dir", self.exp_dir)
-            print("self.result_name", self.result_name)
+            # print("self.exp_dir:", self.exp_dir)
+            # print("self.result_name:", self.result_name)
             self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name).build()  ### 直接用 自己指定好的 result_name
         else: self.result_obj = Result_builder().set_by_exp(self).build()  ### 需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
@@ -198,6 +200,7 @@ class Experiment():
         # self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
+        print("current exp:", self.result_name)
         epoch_cost_time = time.time() - e_start
         total_cost_time = time.time() - total_start
         print('epoch %i start at:%s'         % (epoch, epoch_start_timestamp))
@@ -269,9 +272,8 @@ class Exp_builder():
 
     def build(self, result_name=None):
         if(result_name is not None):
-            print("build")
-            print("self.exp.exp_dir", self.exp.exp_dir)
-            print("result_name", result_name)
+            # print("self.exp.exp_dir", self.exp.exp_dir)
+            # print("result_name", result_name)
             self.exp.result_name = result_name
         return self.exp
 
