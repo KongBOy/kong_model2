@@ -80,7 +80,7 @@ class Experiment():
             self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name).build()  ### 直接用 自己指定好的 result_name
         else: self.result_obj = Result_builder().set_by_exp(self).build()  ### 需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
-        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle, use_old_shuffle=self.use_old_shuffle).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
+        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
         ### 3.model
         self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
         if(reload_result):  ### 看需不需要reload model
@@ -222,7 +222,7 @@ class Experiment():
         用最後儲存的 Model 來產生see
         """
         self.exp_init(reload_result=True)
-        self.train_step1_see_current_img(self.start_epoch)
+        # self.train_step1_see_current_img(self.start_epoch)
         print("test see finish")
 
     def run(self):
