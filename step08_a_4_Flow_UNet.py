@@ -37,7 +37,7 @@ def generate_results(model_G, in_img_pre, training=False):
     return flow[0], in_img_back
 
 
-def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, result_obj=None, training=True):
+def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, result_obj=None, training=True, see_reset_init=True):
     flow, in_img_back = generate_results(model_G, in_img_pre, training=training)
     gt_flow = gt_flow[0]
     flow_visual = method1(flow[..., 2], flow[..., 1])[..., ::-1] * 255.
@@ -46,7 +46,7 @@ def generate_sees_without_rec(model_G, see_index, in_img_pre, gt_flow, epoch=0, 
 
     see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
 
-    if(epoch == 0):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
+    if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
         cv2.imwrite(see_dir + "/" + "0a-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_dir + "/" + "0b-gt_a_gt_flow.jpg", gt_flow_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
