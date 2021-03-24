@@ -36,9 +36,12 @@ class Result_sees_builder(Result_init_builder):
                             See(self.result.result_dir, "see_024-train_ld1"), See(self.result.result_dir, "see_025-train_ld2"), See(self.result.result_dir, "see_026-train_ld3"), See(self.result.result_dir, "see_027-train_ld4"),
                             See(self.result.result_dir, "see_028-train_rd1"), See(self.result.result_dir, "see_029-train_rd2"), See(self.result.result_dir, "see_030-train_rd3"), See(self.result.result_dir, "see_031-train_rd4")]
         elif(sees_ver == "sees_ver4_blender"):
+            # self.result.sees = [See(self.result.result_dir, "see_001-real") , See(self.result.result_dir, "see_002-real") , See(self.result.result_dir, "see_003-real"), See(self.result.result_dir , "see_004-real"),
+            #                     See(self.result.result_dir, "see_005-train"), See(self.result.result_dir, "see_006-train"), See(self.result.result_dir, "see_007-train"), See(self.result.result_dir, "see_008-train"),
+            #                     See(self.result.result_dir, "see_009-test") , See(self.result.result_dir, "see_010-test") , See(self.result.result_dir, "see_011-test") , See(self.result.result_dir, "see_012-test")]
             self.result.sees = [See(self.result.result_dir, "see_001-real") , See(self.result.result_dir, "see_002-real") , See(self.result.result_dir, "see_003-real"), See(self.result.result_dir , "see_004-real"),
-                                See(self.result.result_dir, "see_005-train"), See(self.result.result_dir, "see_006-train"), See(self.result.result_dir, "see_007-train"), See(self.result.result_dir, "see_008-train"),
-                                See(self.result.result_dir, "see_009-test") , See(self.result.result_dir, "see_010-test") , See(self.result.result_dir, "see_011-test") , See(self.result.result_dir, "see_012-test")]
+                                See(self.result.result_dir, "see_008-train"),
+                                See(self.result.result_dir, "see_009-test") , See(self.result.result_dir, "see_010-test") ]
 
         self.result.see_amount = len(self.result.sees)
         self.result.see_file_amount = self.result.sees[0].see_file_amount  ### 應該是每個see都一樣多檔案，所以就挑第一個拿他的see_file_amount就好囉～
@@ -69,6 +72,9 @@ class Result_train_builder(Result_sees_builder):
         ### 3b.用result_name 來決定sees_ver，之後再去建立sees
         self.result.sees_ver = self._use_result_name_find_sees_ver()
         self._build_sees(self.result.sees_ver)
+
+        ### 給 ana_plot_title，這是給 step12 用的，default 直 設 result.describe_end
+        self.result.ana_plot_title = result_name.split("-")[-1]
         return self
 
     ###     1.用 exp 資訊來 決定 result_name
