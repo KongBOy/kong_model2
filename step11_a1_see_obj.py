@@ -261,7 +261,7 @@ class See_bm_rec(See_info):
             single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
             ### 後處理讓結果更小 但 又不失視覺品質
             # Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10)  ### 兩次以上有危險可能會 crop錯喔！所以就不crop了~
-            Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY])  ### matplot圖存完是png，改存成jpg省空間
+            Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], multiprocess=True, core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
             print("cost_time:", time.time() - start_time)
         else:
             print("epoch=%i 超過目前exp的epoch數目囉！有可能是還沒train完see還沒產生到該epoch 或者 是輸入的epoch數 超過 epochs囉！" % epoch)
