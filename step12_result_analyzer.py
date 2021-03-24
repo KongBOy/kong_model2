@@ -345,10 +345,10 @@ if(__name__ == "__main__"):
     hid_ch_new_shuffle_results_ana     = Rec_result_analyzer("5_14_rec_result_analyze-2_2-hid_ch_new_shuffle",     hid_ch_new_shuffle_results)
     # hid_ch_old_new_shuffle_results_ana = Rec_result_analyzer("5_14_rec_result_analyze-2_3-hid_ch_old_new_shuffle", hid_ch_old_new_shuffle_results)
 
-    bn_ch64_results_ana                   = Rec_result_analyzer("5_14_rec_result_analyze-3_1-bn_ch64",                   bn_ch64_results)
-    bn_ch32_results_set_arg_no_ana        = Rec_result_analyzer("5_14_rec_result_analyze-3_2-bn_ch32_set_arg_no",        bn_ch32_results_set_arg_no)
-    bn_ch32_results_set_arg_ok_ana        = Rec_result_analyzer("5_14_rec_result_analyze-3_3-bn_ch32_set_arg_ok",        bn_ch32_results_set_arg_ok)
-    bn_ch32_results_set_arg_no_and_ok_ana = Rec_result_analyzer("5_14_rec_result_analyze-3_4-bn_ch32_set_arg_no_and_ok", bn_ch32_results_set_arg_no_and_ok)
+    bn_ch64_results_ana                    = Rec_result_analyzer("5_14_rec_result_analyze-3_1-bn_ch64",                    bn_ch64_results)
+    bn_ch32_results_bn_see_arg_T_ana       = Rec_result_analyzer("5_14_rec_result_analyze-3_2-bn_ch32_bn_see_arg_T",       bn_ch32_results_bn_see_arg_T)
+    bn_ch32_results_bn_see_arg_F_ana       = Rec_result_analyzer("5_14_rec_result_analyze-3_3-bn_ch32_bn_see_arg_F",       bn_ch32_results_bn_see_arg_F)
+    bn_ch32_results_bn_see_arg_T_and_F_ana = Rec_result_analyzer("5_14_rec_result_analyze-3_4-bn_ch32_bn_see_arg_T_and_F", bn_ch32_results_bn_see_arg_T_and_F)
 
     bn_in_size1_results_ana                    = Rec_result_analyzer("5_14_rec_result_analyze-4_1-bn_in_size1", bn_in_size1_results)
     bn_in_sizen_results_ana                    = Rec_result_analyzer("5_14_rec_result_analyze-4_2-bn_in_sizen", bn_in_sizen_results)
@@ -364,9 +364,9 @@ if(__name__ == "__main__"):
                     # hid_ch_old_new_shuffle_results_ana,
                     ### 3
                     bn_ch64_results_ana,
-                    bn_ch32_results_set_arg_no_ana,
-                    bn_ch32_results_set_arg_ok_ana,
-                    bn_ch32_results_set_arg_no_and_ok_ana,
+                    bn_ch32_results_bn_see_arg_T_ana,
+                    bn_ch32_results_bn_see_arg_F_ana,
+                    bn_ch32_results_bn_see_arg_T_and_F_ana,
                     ### 4
                     bn_in_size1_results_ana,
                     bn_in_sizen_results_ana,

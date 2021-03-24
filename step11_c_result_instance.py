@@ -183,196 +183,219 @@ os_book_Gk3_mrf357_coord_conv_all       = Result_builder().set_by_result_name(di
 # compress_results.append(os_book_rect_D05)
 # compress_results.append(os_book_rect_D00)
 
-
+##################################################################################################################################################################
+##################################################################################################################################################################
+##################################################################################################################################################################
 dir14 = "5_14_flow_unet"
-
-blender_os_book_flow_unet_epoch050_try_npz  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050_try_npz").set_ana_plot_title("flow_unet-epoch=050_try_npz").build()
-
-blender_os_book_flow_unet_epoch050  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_1-20210228_144200-flow_unet-epoch050").set_ana_plot_title("flow_unet-epoch=050").build()
-blender_os_book_flow_unet_epoch100  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_2-20210228_161403-flow_unet-epoch100").set_ana_plot_title("flow_unet-epoch=100").build()
-blender_os_book_flow_unet_epoch200  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_3-20210301_015045-flow_unet-epoch200").set_ana_plot_title("flow_unet-epoch=200").build()
-blender_os_book_flow_unet_epoch300  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_4-20210228_164701-flow_unet-epoch300").set_ana_plot_title("flow_unet-epoch=300").build()
-blender_os_book_flow_unet_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_6-20210225_204416-flow_unet-epoch700").set_ana_plot_title("flow_unet-epoch=700").build()
-blender_os_book_flow_unet_hid_ch_128 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_1-20210304_082556-flow_unet-hid_ch_128").set_ana_plot_title("flow_unet-hid_ch128").build()
-blender_os_book_flow_unet_hid_ch_032 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_3-20210302_234709-flow_unet-hid_ch_032").set_ana_plot_title("flow_unet-hid_ch032").build()
-blender_os_book_flow_unet_hid_ch_016 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_4-20210303_083630-flow_unet-hid_ch_016").set_ana_plot_title("flow_unet-hid_ch016").build()
-blender_os_book_flow_unet_hid_ch_008 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_5-20210303_161150-flow_unet-hid_ch_008").set_ana_plot_title("flow_unet-hid_ch008").build()
+### 0 old shuffle，因為bn==1的情況下 old 和 new shuffle 理論上是一樣的，實際上也是差萬分之幾而已，所以先把old收起來囉，想刪記得只刪see就好
+# epoch050_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_1-20210228_144200-flow_unet-epoch050_bn_see_arg_T").build()
+# epoch100_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_2-20210228_161403-flow_unet-epoch100_bn_see_arg_T").build()
+# epoch200_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_3-20210301_015045-flow_unet-epoch200_bn_see_arg_T").build()
+# epoch300_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_4-20210228_164701-flow_unet-epoch300_bn_see_arg_T").build()
+# epoch700_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_6-20210225_204416-flow_unet-epoch700_bn_see_arg_T").build()
+# ch_128_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_1-20210304_082556-flow_unet-ch_128_bn_see_arg_T").build()
+# ch_032_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_3-20210302_234709-flow_unet-ch_032_bn_see_arg_T").build()
+# ch_016_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_4-20210303_083630-flow_unet-ch_016_bn_see_arg_T").build()
+# ch_008_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_5-20210303_161150-flow_unet-ch_008_bn_see_arg_T").build()
 ###################################################################################################
-blender_os_book_flow_unet_new_shuffle_epoch050  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_1-20210306_190321-flow_unet-new_shuf_epoch050").set_ana_plot_title("flow_unet-epoch=050_new_shuf").build()
-blender_os_book_flow_unet_new_shuffle_epoch100  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_2-20210306_203154-flow_unet-new_shuf_epoch100").set_ana_plot_title("flow_unet-epoch=100_new_shuf").build()
-blender_os_book_flow_unet_new_shuffle_epoch200  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_3-20210306_232534-flow_unet-new_shuf_epoch200").set_ana_plot_title("flow_unet-epoch=200_new_shuf").build()
-blender_os_book_flow_unet_new_shuffle_epoch300  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_4-20210307_051136-flow_unet-new_shuf_epoch300").set_ana_plot_title("flow_unet-epoch=300_new_shuf").build()
-blender_os_book_flow_unet_new_shuffle_epoch500  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5-20210318_211827-flow_unet-new_shuf_epoch500").set_ana_plot_title("flow_unet-epoch=500_new_shuf").build()
-blender_os_book_flow_unet_new_shuffle_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_6-20210308_100044-flow_unet-new_shuf_epoch700").set_ana_plot_title("flow_unet-epoch=700_new_shuf").build()
-blender_os_book_flow_unet_new_shuffle_hid_ch_128 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_1-20210310_230448-flow_unet-new_shuf_hid_ch_128").set_ana_plot_title("flow_unet-hid_ch128_new_shuf").build()
-blender_os_book_flow_unet_new_shuffle_hid_ch_064 = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_epoch500);                  blender_os_book_flow_unet_new_shuffle_hid_ch_064.ana_plot_title = "flow_unet-hid_ch064_new_shuf"
-blender_os_book_flow_unet_new_shuffle_hid_ch_032 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_3-20210309_214404-flow_unet-new_shuf_hid_ch_032").set_ana_plot_title("flow_unet-hid_ch032_new_shuf").build()
-blender_os_book_flow_unet_new_shuffle_hid_ch_016 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_4-20210309_140134-flow_unet-new_shuf_hid_ch_016").set_ana_plot_title("flow_unet-hid_ch016_new_shuf").build()
-blender_os_book_flow_unet_new_shuffle_hid_ch_008 = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_5-20210309_061533-flow_unet-new_shuf_hid_ch_008").set_ana_plot_title("flow_unet-hid_ch008_new_shuf").build()
-###################################################################################################
-blender_os_book_flow_unet_new_shuffle_IN_epoch500  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5b-20210309_135755-flow_unet-new_shuf_IN_epoch500").set_ana_plot_title("flow_unet-epoch=500_new_shuf_IN").build()
-blender_os_book_flow_unet_new_shuffle_IN_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_6b-20210310_012428-flow_unet-new_shuf_IN_epoch700").set_ana_plot_title("flow_unet-epoch=700_new_shuf_IN").build()
+### 1 new_shuffle
+### 1_1 epoch
+new_shuf_epoch050_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_1-20210306_190321-flow_unet-new_shuf_epoch050_bn_see_arg_T").build()
+new_shuf_epoch100_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_2-20210306_203154-flow_unet-new_shuf_epoch100_bn_see_arg_T").build()
+new_shuf_epoch200_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_3-20210306_232534-flow_unet-new_shuf_epoch200_bn_see_arg_T").build()
+new_shuf_epoch300_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_4-20210307_051136-flow_unet-new_shuf_epoch300_bn_see_arg_T").build()
+new_shuf_epoch500_bn_see_arg_F  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5-20210318_211827-flow_unet-new_shuf_epoch500_bn_see_arg_F").build()
+new_shuf_epoch500_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5f-20210318_211827-flow_unet-new_shuf_epoch500_bn_see_arg_T").build()
+new_shuf_epoch700_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_6-20210308_100044-flow_unet-new_shuf_epoch700_bn_see_arg_T").build()
 
-blender_os_book_flow_unet_hid_ch64_in01            = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_IN_epoch500);                blender_os_book_flow_unet_hid_ch64_in01.ana_plot_title = "flow_unet-hid_ch64_in1"
-blender_os_book_flow_unet_hid_ch64_bn01_set_arg_ok = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_epoch500);        blender_os_book_flow_unet_hid_ch64_bn01_set_arg_ok.ana_plot_title = "flow_unet-hid_ch64_bn1_set_arg_QQ"
-blender_os_book_flow_unet_hid_ch64_bn04            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn_04").set_ana_plot_title("flow_unet-hid_ch64_bn4_set_arg_no").build()
-blender_os_book_flow_unet_hid_ch64_bn08            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn_08").set_ana_plot_title("flow_unet-hid_ch64_bn8_set_arg_no").build()
+### 1_2 ch，但 bn_see_arg_F，所以結果圖醜，收起來，留 new_shuf_ch032_bn_see_arg_F 是為了給 bn 比較用
+# new_shuf_ch128_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_1-20210310_230448-flow_unet-new_shuf_ch128_bn_see_arg_F").build()
+# new_shuf_ch064_bn_see_arg_F = copy.deepcopy(new_shuf_epoch500_bn_see_arg_F);  new_shuf_ch064_bn_see_arg_F.ana_plot_title = "new_shuf_ch064_bn_see_arg_F"
+new_shuf_ch032_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_3-20210309_214404-flow_unet-new_shuf_ch032_bn_see_arg_F").build()
+# new_shuf_ch016_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_4-20210309_140134-flow_unet-new_shuf_ch016_bn_see_arg_F").build()
+# new_shuf_ch008_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_5-20210309_061533-flow_unet-new_shuf_ch008_bn_see_arg_F").build()
 
-blender_os_book_flow_unet_hid_ch32_bn01_set_arg_ok = copy.deepcopy(blender_os_book_flow_unet_new_shuffle_hid_ch_032);                 blender_os_book_flow_unet_hid_ch32_bn01_set_arg_ok.ana_plot_title = "flow_unet-hid_ch32_bn01_set_arg_QQ"
-blender_os_book_flow_unet_hid_ch32_bn04            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210306_111439-flow_unet-ch32_bn_04")           .set_ana_plot_title("flow_unet-hid_ch32_bn04_set_arg_no").build()
-blender_os_book_flow_unet_hid_ch32_bn04_set_arg_ok = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210308_101945-flow_unet-ch32_bn_04_set_arg_ok").set_ana_plot_title("flow_unet-hid_ch32_bn04_set_arg_ok").build()
-blender_os_book_flow_unet_hid_ch32_bn08            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210306_171735-flow_unet-ch32_bn_08")           .set_ana_plot_title("flow_unet-hid_ch32_bn08_set_arg_no").build()
-blender_os_book_flow_unet_hid_ch32_bn08_set_arg_ok = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210308_163036-flow_unet-ch32_bn_08_set_arg_ok").set_ana_plot_title("flow_unet-hid_ch32_bn08_set_arg_ok").build()
-blender_os_book_flow_unet_hid_ch32_bn16            = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_4-20210306_231628-flow_unet-ch32_bn_16")           .set_ana_plot_title("flow_unet-hid_ch32_bn16_set_arg_no").build()
-blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_4-20210308_223123-flow_unet-ch32_bn_16_set_arg_ok").set_ana_plot_title("flow_unet-hid_ch32_bn16_set_arg_ok").build()
+new_shuf_ch128_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_1f-20210304_082556-flow_unet-new_shuf_ch128_bn_see_arg_T").build()
+new_shuf_ch064_bn_see_arg_T = copy.deepcopy(new_shuf_epoch500_bn_see_arg_T);  new_shuf_ch064_bn_see_arg_T.ana_plot_title = "new_shuf_ch064_bn_see_arg_T"
+new_shuf_ch032_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_3f-20210302_234709-flow_unet-new_shuf_ch032_bn_see_arg_T").build()
+new_shuf_ch016_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_4f-20210303_083630-flow_unet-new_shuf_ch016_bn_see_arg_T").build()
+new_shuf_ch008_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_5f-20210303_161150-flow_unet-new_shuf_ch008_bn_see_arg_T").build()
+
+### 1_3 bn and in
+new_shuf_IN_epoch500  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_4_5b-20210309_135755-flow_unet-new_shuf_IN_epoch500").build()
+new_shuf_IN_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_4_6b-20210310_012428-flow_unet-new_shuf_IN_epoch700").build()
+
+ch64_in01              = copy.deepcopy(new_shuf_IN_epoch500);             ch64_in01.ana_plot_title = "ch64_in01"
+ch64_bn01_bn_see_arg_F = copy.deepcopy(new_shuf_epoch500_bn_see_arg_F);   ch64_bn01_bn_see_arg_F.ana_plot_title = "ch64_bn01_bn_see_arg_F"
+ch64_bn01_bn_see_arg_T = copy.deepcopy(new_shuf_epoch500_bn_see_arg_T);   ch64_bn01_bn_see_arg_T.ana_plot_title = "ch64_bn01_bn_see_arg_T"
+ch64_bn04_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn04_bn_see_arg_T").build()
+ch64_bn04_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn04_bn_see_arg_F").build()
+ch64_bn08_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn08_bn_see_arg_T").build()
+ch64_bn08_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn08_bn_see_arg_F").build()
+
+ch32_bn01_bn_see_arg_F = copy.deepcopy(new_shuf_ch032_bn_see_arg_F);  ch32_bn01_bn_see_arg_F.ana_plot_title = "ch32_bn01_bn_see_arg_F"
+ch32_bn01_bn_see_arg_T = copy.deepcopy(new_shuf_ch032_bn_see_arg_T);  ch32_bn01_bn_see_arg_T.ana_plot_title = "ch32_bn01_bn_see_arg_T"
+ch32_bn04_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210308_101945-flow_unet-ch32_bn04_bn_see_arg_F").build()
+ch32_bn04_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210306_111439-flow_unet-ch32_bn04_bn_see_arg_T").build()
+ch32_bn08_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210306_171735-flow_unet-ch32_bn08_bn_see_arg_T").build()
+ch32_bn08_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210308_163036-flow_unet-ch32_bn08_bn_see_arg_F").build()
+ch32_bn16_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_4-20210306_231628-flow_unet-ch32_bn16_bn_see_arg_T").build()
+ch32_bn16_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_4-20210308_223123-flow_unet-ch32_bn16_bn_see_arg_F").build()
 
 ### copy的示範
-# blender_os_book_flow_unet_hid_ch_064_300 = copy.deepcopy(blender_os_book_flow_unet_epoch300); blender_os_book_flow_unet_hid_ch_064_300.ana_plot_title = "flow_unet-hid_ch64_300"
-# blender_os_book_flow_unet_hid_ch_064_700 = copy.deepcopy(blender_os_book_flow_unet_epoch700); blender_os_book_flow_unet_hid_ch_064_700.ana_plot_title = "flow_unet-hid_ch64_700"
+# ch_064_300 = copy.deepcopy(epoch300_bn_see_arg_T); ch_064_300.ana_plot_title = "flow_unet-ch64_300"
+# ch_064_700 = copy.deepcopy(epoch700_bn_see_arg_T); ch_064_700.ana_plot_title = "flow_unet-ch64_700"
 
 
 ### npy_to_rec 和 生成 bm, rec(這個list不需要加入所有 deepcopy的result喔)
 rec_bm_results = [
-                blender_os_book_flow_unet_epoch050,
-                blender_os_book_flow_unet_epoch100,
-                blender_os_book_flow_unet_epoch200,
-                blender_os_book_flow_unet_epoch300,
-                blender_os_book_flow_unet_epoch700,
+                # epoch050_bn_see_arg_T,
+                # epoch100_bn_see_arg_T,
+                # epoch200_bn_see_arg_T,
+                # epoch300_bn_see_arg_T,
+                # epoch700_bn_see_arg_T,
 
-                blender_os_book_flow_unet_hid_ch_128,
-                blender_os_book_flow_unet_hid_ch_032,
-                blender_os_book_flow_unet_hid_ch_016,
-                blender_os_book_flow_unet_hid_ch_008,
+                # ch_128_bn_see_arg_T,
+                # ch_032_bn_see_arg_T,
+                # ch_016_bn_see_arg_T,
+                # ch_008_bn_see_arg_T,
                 # #################################################################################
-                blender_os_book_flow_unet_new_shuffle_epoch050,
-                blender_os_book_flow_unet_new_shuffle_epoch100,
-                blender_os_book_flow_unet_new_shuffle_epoch200,
-                blender_os_book_flow_unet_new_shuffle_epoch300,
-                blender_os_book_flow_unet_new_shuffle_epoch500,
-                blender_os_book_flow_unet_new_shuffle_epoch700,
+                # new_shuf_epoch050_bn_see_arg_T,
+                # new_shuf_epoch100_bn_see_arg_T,
+                # new_shuf_epoch200_bn_see_arg_T,
+                # new_shuf_epoch300_bn_see_arg_T,
+                # new_shuf_epoch500_bn_see_arg_T,
+                # new_shuf_epoch700_bn_see_arg_T,
 
-                blender_os_book_flow_unet_new_shuffle_hid_ch_128,
-                blender_os_book_flow_unet_new_shuffle_hid_ch_032,
-                blender_os_book_flow_unet_new_shuffle_hid_ch_016,
-                blender_os_book_flow_unet_new_shuffle_hid_ch_008,
+                # new_shuf_ch128_bn_see_arg_F,
+                # new_shuf_ch032_bn_see_arg_F,
+                # new_shuf_ch016_bn_see_arg_F,
+                # new_shuf_ch008_bn_see_arg_F,
                 # #################################################################################
-                blender_os_book_flow_unet_hid_ch64_bn04,
-                blender_os_book_flow_unet_hid_ch64_bn08,
+                # ch64_bn04_bn_see_arg_T,
+                # ch64_bn08_bn_see_arg_T,
 
-                blender_os_book_flow_unet_new_shuffle_IN_epoch500,
-                blender_os_book_flow_unet_new_shuffle_IN_epoch700,
+                # new_shuf_IN_epoch500,
+                # new_shuf_IN_epoch700,
 
-                blender_os_book_flow_unet_hid_ch32_bn04,
-                blender_os_book_flow_unet_hid_ch32_bn04_set_arg_ok,
-                blender_os_book_flow_unet_hid_ch32_bn08,
-                blender_os_book_flow_unet_hid_ch32_bn08_set_arg_ok,
-                blender_os_book_flow_unet_hid_ch32_bn16,
-                blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok,
+                # ch32_bn04_bn_see_arg_T,
+                # ch32_bn04_bn_see_arg_F,
+                # ch32_bn08_bn_see_arg_T,
+                # ch32_bn08_bn_see_arg_F,
+                # ch32_bn16_bn_see_arg_T,
+                # ch32_bn16_bn_see_arg_F,
                 ]
 
 
 ### 覺得可以把 ana 用的 results 寫在這裡，要改result 的名字較方便
 ### 1 epoch
 # epoch_old_shuffle_results  = [
-#     blender_os_book_flow_unet_epoch050,
-#     blender_os_book_flow_unet_epoch100,
-#     blender_os_book_flow_unet_epoch200,
-#     blender_os_book_flow_unet_epoch300,
-#     blender_os_book_flow_unet_epoch700]
+#     epoch050_bn_see_arg_T,
+#     epoch100_bn_see_arg_T,
+#     epoch200_bn_see_arg_T,
+#     epoch300_bn_see_arg_T,
+#     epoch700_bn_see_arg_T]
 
-epoch_new_shuffle_results  = [
-    blender_os_book_flow_unet_new_shuffle_epoch050,
-    blender_os_book_flow_unet_new_shuffle_epoch100,
-    blender_os_book_flow_unet_new_shuffle_epoch200,
-    blender_os_book_flow_unet_new_shuffle_epoch300,
-    blender_os_book_flow_unet_new_shuffle_epoch500,
-    blender_os_book_flow_unet_new_shuffle_epoch700]
+epoch_new_shuf_results  = [
+    new_shuf_epoch050_bn_see_arg_T,
+    new_shuf_epoch100_bn_see_arg_T,
+    new_shuf_epoch200_bn_see_arg_T,
+    new_shuf_epoch300_bn_see_arg_T,
+    new_shuf_epoch500_bn_see_arg_T,
+    new_shuf_epoch700_bn_see_arg_T]
 
 
-# epoch_old_new_shuffle_results  = [
-#     blender_os_book_flow_unet_epoch050,
-#     blender_os_book_flow_unet_new_shuffle_epoch050,
-#     blender_os_book_flow_unet_epoch100,
-#     blender_os_book_flow_unet_new_shuffle_epoch100,
-#     blender_os_book_flow_unet_epoch200,
-#     blender_os_book_flow_unet_new_shuffle_epoch200,
-#     blender_os_book_flow_unet_epoch300,
-#     blender_os_book_flow_unet_new_shuffle_epoch300,
-#     blender_os_book_flow_unet_new_shuffle_epoch500,
-#     blender_os_book_flow_unet_epoch700,
-#     blender_os_book_flow_unet_new_shuffle_epoch700]
+# epoch_old_new_shuf_results  = [
+#     epoch050_bn_see_arg_T,
+#     new_shuf_epoch050_bn_see_arg_T,
+#     epoch100_bn_see_arg_T,
+#     new_shuf_epoch100_bn_see_arg_T,
+#     epoch200_bn_see_arg_T,
+#     new_shuf_epoch200_bn_see_arg_T,
+#     epoch300_bn_see_arg_T,
+#     new_shuf_epoch300_bn_see_arg_T,
+#     new_shuf_epoch500_bn_see_arg_T,
+#     epoch700_bn_see_arg_T,
+#     new_shuf_epoch700_bn_see_arg_T]
 
-### 2 hid_ch
-# hid_ch_old_shuffle_results = [
-#     blender_os_book_flow_unet_hid_ch_128,
-#     blender_os_book_flow_unet_hid_ch_032,
-#     blender_os_book_flow_unet_hid_ch_016,
-#     blender_os_book_flow_unet_hid_ch_008]
+### 2 ch
+# ch_old_shuffle_results = [
+#     ch_128_bn_see_arg_T,
+#     ch_032_bn_see_arg_T,
+#     ch_016_bn_see_arg_T,
+#     ch_008_bn_see_arg_T]
 
-hid_ch_new_shuffle_results = [
-    blender_os_book_flow_unet_new_shuffle_hid_ch_128,
-    blender_os_book_flow_unet_new_shuffle_hid_ch_064,
-    blender_os_book_flow_unet_new_shuffle_hid_ch_032,
-    blender_os_book_flow_unet_new_shuffle_hid_ch_016,
-    blender_os_book_flow_unet_new_shuffle_hid_ch_008]
+# ch_new_shuf_results = [
+#     new_shuf_ch128_bn_see_arg_F,
+#     new_shuf_ch064_bn_see_arg_F,
+#     new_shuf_ch032_bn_see_arg_F,
+#     new_shuf_ch016_bn_see_arg_F,
+#     new_shuf_ch008_bn_see_arg_F]
 
-# hid_ch_old_new_shuffle_results = [
-#     blender_os_book_flow_unet_hid_ch_128,
-#     blender_os_book_flow_unet_new_shuffle_hid_ch_128,
-#     blender_os_book_flow_unet_new_shuffle_hid_ch_064,
-#     blender_os_book_flow_unet_hid_ch_032,
-#     blender_os_book_flow_unet_new_shuffle_hid_ch_032,
-#     blender_os_book_flow_unet_hid_ch_016,
-#     blender_os_book_flow_unet_new_shuffle_hid_ch_016,
-#     blender_os_book_flow_unet_hid_ch_008,
-#     blender_os_book_flow_unet_new_shuffle_hid_ch_008]
+ch_new_shuf_results = [
+    new_shuf_ch128_bn_see_arg_T,
+    new_shuf_ch064_bn_see_arg_T,
+    new_shuf_ch032_bn_see_arg_T,
+    new_shuf_ch016_bn_see_arg_T,
+    new_shuf_ch008_bn_see_arg_T]
+
+# ch_old_new_shuf_results = [
+#     ch_128_bn_see_arg_T,
+#     new_shuf_ch128_bn_see_arg_F,
+#     new_shuf_ch064_bn_see_arg_F,
+#     ch_032_bn_see_arg_T,
+#     new_shuf_ch032_bn_see_arg_F,
+#     ch_016_bn_see_arg_T,
+#     new_shuf_ch016_bn_see_arg_F,
+#     ch_008_bn_see_arg_T,
+#     new_shuf_ch008_bn_see_arg_F]
 
 ### 3 bn
 ###   3_1. ch64 只能 bn 1, 4, 8，覺得不夠明顯
 bn_ch64_results = [
-    blender_os_book_flow_unet_hid_ch64_bn01_set_arg_ok,
-    blender_os_book_flow_unet_hid_ch64_bn04,
-    blender_os_book_flow_unet_hid_ch64_bn08]
+    ch64_bn01_bn_see_arg_F,
+    ch64_bn04_bn_see_arg_T,
+    ch64_bn08_bn_see_arg_T]
 
 ###   3_2. ch32 就能 bn 1, 4, 8, 16
-bn_ch32_results_set_arg_no = [
-    blender_os_book_flow_unet_hid_ch32_bn01_set_arg_ok,
-    blender_os_book_flow_unet_hid_ch32_bn04,
-    blender_os_book_flow_unet_hid_ch32_bn08,
-    blender_os_book_flow_unet_hid_ch32_bn16]
+bn_ch32_results_bn_see_arg_T = [
+    ch32_bn01_bn_see_arg_F,
+    ch32_bn04_bn_see_arg_T,
+    ch32_bn08_bn_see_arg_T,
+    ch32_bn16_bn_see_arg_T]
 
 ###   3_3. ch32 bn1, 4, 8, 16 有設對來看看
-bn_ch32_results_set_arg_ok = [
-    blender_os_book_flow_unet_hid_ch32_bn01_set_arg_ok,
-    blender_os_book_flow_unet_hid_ch32_bn04_set_arg_ok,
-    blender_os_book_flow_unet_hid_ch32_bn08_set_arg_ok,
-    blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok]
+bn_ch32_results_bn_see_arg_F = [
+    ch32_bn01_bn_see_arg_F,
+    ch32_bn04_bn_see_arg_F,
+    ch32_bn08_bn_see_arg_F,
+    ch32_bn16_bn_see_arg_F]
 ###   3_4. ch32 有沒有設對 放一起來比較看看
-bn_ch32_results_set_arg_no_and_ok = [
-    blender_os_book_flow_unet_hid_ch32_bn01_set_arg_ok,
-    blender_os_book_flow_unet_hid_ch32_bn04,
-    blender_os_book_flow_unet_hid_ch32_bn04_set_arg_ok,
-    blender_os_book_flow_unet_hid_ch32_bn08,
-    blender_os_book_flow_unet_hid_ch32_bn08_set_arg_ok,
-    blender_os_book_flow_unet_hid_ch32_bn16,
-    blender_os_book_flow_unet_hid_ch32_bn16_set_arg_ok]
+bn_ch32_results_bn_see_arg_T_and_F = [
+    ch32_bn01_bn_see_arg_F,
+    ch32_bn04_bn_see_arg_T,
+    ch32_bn04_bn_see_arg_F,
+    ch32_bn08_bn_see_arg_T,
+    ch32_bn08_bn_see_arg_F,
+    ch32_bn16_bn_see_arg_T,
+    ch32_bn16_bn_see_arg_F]
 
 ### 4 bn_in
 ### in 的 batch_size一定只能等於1
 ### 所以拿 epoch500 來比較
 ### 
 bn_in_size1_results = [
-    blender_os_book_flow_unet_new_shuffle_epoch500,
-    blender_os_book_flow_unet_new_shuffle_IN_epoch500,
-    blender_os_book_flow_unet_new_shuffle_epoch700,
-    blender_os_book_flow_unet_new_shuffle_IN_epoch700,
+    new_shuf_epoch500_bn_see_arg_T,
+    new_shuf_IN_epoch500,
+    new_shuf_epoch700_bn_see_arg_T,
+    new_shuf_IN_epoch700,
 ]
 
 bn_in_sizen_results = [
-    blender_os_book_flow_unet_new_shuffle_IN_epoch500,
-    blender_os_book_flow_unet_new_shuffle_epoch500,
-    blender_os_book_flow_unet_hid_ch64_bn04,
-    blender_os_book_flow_unet_hid_ch64_bn08,
-    # blender_os_book_flow_unet_new_shuffle_IN_epoch700,
-    # blender_os_book_flow_unet_new_shuffle_epoch700,
+    new_shuf_IN_epoch500,
+    new_shuf_epoch500_bn_see_arg_T,
+    ch64_bn04_bn_see_arg_T,
+    ch64_bn08_bn_see_arg_T,
+    # new_shuf_IN_epoch700,
+    # new_shuf_epoch700_bn_see_arg_T,
 ]
