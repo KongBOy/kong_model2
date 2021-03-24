@@ -1,6 +1,9 @@
 from step11_b_result_obj_builder import Result_builder
 import copy
-
+"""
+這個.py主要是要 把 系列的result 做出來，包成 results 給 step12 用
+results也包再這個.py包的原因是 要改名之類的 用 "取代" 很方便，不用跳檔案
+"""
 compress_results = []
 
 dir01 = "5_01_rect_mae136"
@@ -186,216 +189,259 @@ os_book_Gk3_mrf357_coord_conv_all       = Result_builder().set_by_result_name(di
 ##################################################################################################################################################################
 ##################################################################################################################################################################
 ##################################################################################################################################################################
-dir14 = "5_14_flow_unet"
+from step10_a_load_and_train_and_test import *
+### exp 轉 result_obj 和 實驗系列整理 我覺得可以放一起，
+### 因為 系列之間的 dependency 是有順序性的，：
+###    應該都會是 某系列做完，覺得哪邊可以改，再坐下一個系列
+### 如果發現 要用的還沒宣告，應該是自己系列的設計有問題 
+###   ex:可能有 兩個不同系列的東西混到一起來看之類的，這樣的話就區分出兩個系列即可拉~~
+
 ### 0 old shuffle，因為bn==1的情況下 old 和 new shuffle 理論上是一樣的，實際上也是差萬分之幾而已，所以先把old收起來囉，想刪記得只刪see就好
-# epoch050_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_1-20210228_144200-flow_unet-epoch050_bn_see_arg_T").build()
-# epoch100_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_2-20210228_161403-flow_unet-epoch100_bn_see_arg_T").build()
-# epoch200_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_3-20210301_015045-flow_unet-epoch200_bn_see_arg_T").build()
-# epoch300_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_4-20210228_164701-flow_unet-epoch300_bn_see_arg_T").build()
-# epoch700_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_1_6-20210225_204416-flow_unet-epoch700_bn_see_arg_T").build()
-# ch_128_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_1-20210304_082556-flow_unet-ch_128_bn_see_arg_T").build()
-# ch_032_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_3-20210302_234709-flow_unet-ch_032_bn_see_arg_T").build()
-# ch_016_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_4-20210303_083630-flow_unet-ch_016_bn_see_arg_T").build()
-# ch_008_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_0_2_5-20210303_161150-flow_unet-ch_008_bn_see_arg_T").build()
-###################################################################################################
-### 1 new_shuffle
-### 1_1 epoch
-new_shuf_epoch050_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_1-20210306_190321-flow_unet-new_shuf_epoch050_bn_see_arg_T").build()
-new_shuf_epoch100_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_2-20210306_203154-flow_unet-new_shuf_epoch100_bn_see_arg_T").build()
-new_shuf_epoch200_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_3-20210306_232534-flow_unet-new_shuf_epoch200_bn_see_arg_T").build()
-new_shuf_epoch300_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_4-20210307_051136-flow_unet-new_shuf_epoch300_bn_see_arg_T").build()
-new_shuf_epoch500_bn_see_arg_F  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5-20210318_211827-flow_unet-new_shuf_epoch500_bn_see_arg_F").build()
-new_shuf_epoch500_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_5f-20210318_211827-flow_unet-new_shuf_epoch500_bn_see_arg_T").build()
-new_shuf_epoch700_bn_see_arg_T  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_1_6-20210308_100044-flow_unet-new_shuf_epoch700_bn_see_arg_T").build()
+epoch050_bn_see_arg_T = epoch050_bn_see_arg_T.result_obj
+epoch100_bn_see_arg_T = epoch100_bn_see_arg_T.result_obj
+epoch200_bn_see_arg_T = epoch200_bn_see_arg_T.result_obj
+epoch300_bn_see_arg_T = epoch300_bn_see_arg_T.result_obj
+epoch700_bn_see_arg_T = epoch700_bn_see_arg_T.result_obj
+ch128_bn_see_arg_T = ch128_bn_see_arg_T.result_obj
+### ch064 真的是失誤， 因為無法重現 old shuffle，所以真的無法，跟 dependency 也沒關係
+ch032_bn_see_arg_T = ch032_bn_see_arg_T.result_obj
+ch016_bn_see_arg_T = ch016_bn_see_arg_T.result_obj
+ch008_bn_see_arg_T = ch008_bn_see_arg_T.result_obj
 
-### 1_2 ch，但 bn_see_arg_F，所以結果圖醜，收起來，留 new_shuf_ch032_bn_see_arg_F 是為了給 bn 比較用
-# new_shuf_ch128_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_1-20210310_230448-flow_unet-new_shuf_ch128_bn_see_arg_F").build()
-# new_shuf_ch064_bn_see_arg_F = copy.deepcopy(new_shuf_epoch500_bn_see_arg_F);  new_shuf_ch064_bn_see_arg_F.ana_plot_title = "new_shuf_ch064_bn_see_arg_F"
-new_shuf_ch032_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_3-20210309_214404-flow_unet-new_shuf_ch032_bn_see_arg_F").build()
-# new_shuf_ch016_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_4-20210309_140134-flow_unet-new_shuf_ch016_bn_see_arg_F").build()
-# new_shuf_ch008_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_5-20210309_061533-flow_unet-new_shuf_ch008_bn_see_arg_F").build()
+# ###################################################################################################
+# ### 1 new_shuffle
+# ### 1_1 epoch
+epoch050_new_shuf_bn_see_arg_T = epoch050_new_shuf_bn_see_arg_T.result_obj
+epoch100_new_shuf_bn_see_arg_T = epoch100_new_shuf_bn_see_arg_T.result_obj
+epoch200_new_shuf_bn_see_arg_T = epoch200_new_shuf_bn_see_arg_T.result_obj
+epoch300_new_shuf_bn_see_arg_T = epoch300_new_shuf_bn_see_arg_T.result_obj
+epoch500_new_shuf_bn_see_arg_T = epoch500_new_shuf_bn_see_arg_T.result_obj
+epoch500_new_shuf_bn_see_arg_F = epoch500_new_shuf_bn_see_arg_F.result_obj
+epoch700_new_shuf_bn_see_arg_T = epoch700_new_shuf_bn_see_arg_T.result_obj
 
-new_shuf_ch128_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_1f-20210304_082556-flow_unet-new_shuf_ch128_bn_see_arg_T").build()
-new_shuf_ch064_bn_see_arg_T = copy.deepcopy(new_shuf_epoch500_bn_see_arg_T);  new_shuf_ch064_bn_see_arg_T.ana_plot_title = "new_shuf_ch064_bn_see_arg_T"
-new_shuf_ch032_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_3f-20210302_234709-flow_unet-new_shuf_ch032_bn_see_arg_T").build()
-new_shuf_ch016_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_4f-20210303_083630-flow_unet-new_shuf_ch016_bn_see_arg_T").build()
-new_shuf_ch008_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_2_5f-20210303_161150-flow_unet-new_shuf_ch008_bn_see_arg_T").build()
 
-### 1_3 bn and in
-new_shuf_IN_epoch500  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_4_5b-20210309_135755-flow_unet-new_shuf_IN_epoch500").build()
-new_shuf_IN_epoch700  = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_4_6b-20210310_012428-flow_unet-new_shuf_IN_epoch700").build()
+# ### 1_2 ch，但 bn_see_arg_F，所以結果圖醜，收起來，留 ch032_new_shuf_bn_see_arg_F 是為了給 bn 比較用
+ch128_new_shuf_bn_see_arg_F = ch128_new_shuf_bn_see_arg_F.result_obj
+ch064_new_shuf_bn_see_arg_F = copy.deepcopy(epoch500_new_shuf_bn_see_arg_F); ch064_new_shuf_bn_see_arg_F.ana_plot_title = "ch064_new_shuf_bn_see_arg_F"
+ch032_new_shuf_bn_see_arg_F = ch032_new_shuf_bn_see_arg_F.result_obj
+ch016_new_shuf_bn_see_arg_F = ch016_new_shuf_bn_see_arg_F.result_obj
+ch008_new_shuf_bn_see_arg_F = ch008_new_shuf_bn_see_arg_F.result_obj
 
-ch64_in01              = copy.deepcopy(new_shuf_IN_epoch500);             ch64_in01.ana_plot_title = "ch64_in01"
-ch64_bn01_bn_see_arg_F = copy.deepcopy(new_shuf_epoch500_bn_see_arg_F);   ch64_bn01_bn_see_arg_F.ana_plot_title = "ch64_bn01_bn_see_arg_F"
-ch64_bn01_bn_see_arg_T = copy.deepcopy(new_shuf_epoch500_bn_see_arg_T);   ch64_bn01_bn_see_arg_T.ana_plot_title = "ch64_bn01_bn_see_arg_T"
-ch64_bn04_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn04_bn_see_arg_T").build()
-ch64_bn04_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn04_bn_see_arg_F").build()
-ch64_bn08_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn08_bn_see_arg_T").build()
-ch64_bn08_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn08_bn_see_arg_F").build()
+ch128_new_shuf_bn_see_arg_T = ch128_new_shuf_bn_see_arg_T.result_obj
+ch064_new_shuf_bn_see_arg_T = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch064_new_shuf_bn_see_arg_T.ana_plot_title = "ch064_new_shuf_bn_see_arg_T"
+ch032_new_shuf_bn_see_arg_T = ch032_new_shuf_bn_see_arg_T.result_obj
+ch016_new_shuf_bn_see_arg_T = ch016_new_shuf_bn_see_arg_T.result_obj
+ch008_new_shuf_bn_see_arg_T = ch008_new_shuf_bn_see_arg_T.result_obj
 
-ch32_bn01_bn_see_arg_F = copy.deepcopy(new_shuf_ch032_bn_see_arg_F);  ch32_bn01_bn_see_arg_F.ana_plot_title = "ch32_bn01_bn_see_arg_F"
-ch32_bn01_bn_see_arg_T = copy.deepcopy(new_shuf_ch032_bn_see_arg_T);  ch32_bn01_bn_see_arg_T.ana_plot_title = "ch32_bn01_bn_see_arg_T"
-ch32_bn04_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210308_101945-flow_unet-ch32_bn04_bn_see_arg_F").build()
-ch32_bn04_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_2-20210306_111439-flow_unet-ch32_bn04_bn_see_arg_T").build()
-ch32_bn08_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210306_171735-flow_unet-ch32_bn08_bn_see_arg_T").build()
-ch32_bn08_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_3-20210308_163036-flow_unet-ch32_bn08_bn_see_arg_F").build()
-ch32_bn16_bn_see_arg_T = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_4-20210306_231628-flow_unet-ch32_bn16_bn_see_arg_T").build()
-ch32_bn16_bn_see_arg_F = Result_builder().set_by_result_name(dir14 + "/type8_blender_os_book-5_14_1_3b_4-20210308_223123-flow_unet-ch32_bn16_bn_see_arg_F").build()
+# ### 1_3 bn 的 see_arg 設 True/False 的差別
+ch64_bn01_bn_see_arg_F = copy.deepcopy(epoch500_new_shuf_bn_see_arg_F); ch64_bn01_bn_see_arg_F.ana_plot_title = "ch64_bn01_bn_see_arg_F"
+ch64_bn01_bn_see_arg_T = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_bn01_bn_see_arg_T.ana_plot_title = "ch64_bn01_bn_see_arg_T"
+ch64_bn04_bn_see_arg_F = ch64_bn04_bn_see_arg_F.result_obj
+ch64_bn04_bn_see_arg_T = ch64_bn04_bn_see_arg_T.result_obj
+ch64_bn08_bn_see_arg_F = ch64_bn08_bn_see_arg_F.result_obj
+ch64_bn08_bn_see_arg_T = ch64_bn08_bn_see_arg_T.result_obj
+
+ch32_bn01_bn_see_arg_F = copy.deepcopy(ch032_new_shuf_bn_see_arg_F); ch32_bn01_bn_see_arg_F.ana_plot_title = "ch32_bn01_bn_see_arg_F"
+ch32_bn01_bn_see_arg_T = copy.deepcopy(ch032_new_shuf_bn_see_arg_T); ch32_bn01_bn_see_arg_T.ana_plot_title = "ch32_bn01_bn_see_arg_T"
+ch32_bn04_bn_see_arg_F = ch32_bn04_bn_see_arg_F.result_obj
+ch32_bn04_bn_see_arg_T = ch32_bn04_bn_see_arg_T.result_obj
+ch32_bn08_bn_see_arg_F = ch32_bn08_bn_see_arg_F.result_obj
+ch32_bn08_bn_see_arg_T = ch32_bn08_bn_see_arg_T.result_obj
+ch32_bn16_bn_see_arg_F = ch32_bn16_bn_see_arg_F.result_obj
+ch32_bn16_bn_see_arg_T = ch32_bn16_bn_see_arg_T.result_obj
+
+# ### 1_4 bn 個數的差別 與 in
+ch64_bn_epoch500 = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_bn_epoch500.ana_plot_title = "ch64_bn_epoch500"
+ch64_in_epoch500 = ch64_in_epoch500.result_obj
+ch64_bn_epoch700 = copy.deepcopy(epoch700_new_shuf_bn_see_arg_T); ch64_bn_epoch700.ana_plot_title = "ch64_bn_epoch700"
+ch64_in_epoch700 = ch64_in_epoch700.result_obj
+
+ch64_1_bn01 = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_1_bn01.ana_plot_title = "ch64_1_bn01"
+ch64_2_in01 = copy.deepcopy(ch64_in_epoch500);               ch64_2_in01.ana_plot_title = "ch64_2_in01"
+ch64_3_bn04 = copy.deepcopy(ch64_bn04_bn_see_arg_T);         ch64_3_bn04.ana_plot_title = "ch64_3_bn04"
+ch64_4_bn08 = copy.deepcopy(ch64_bn08_bn_see_arg_T);         ch64_4_bn08.ana_plot_title = "ch64_4_bn08"
 
 ### copy的示範
 # ch_064_300 = copy.deepcopy(epoch300_bn_see_arg_T); ch_064_300.ana_plot_title = "flow_unet-ch64_300"
 # ch_064_700 = copy.deepcopy(epoch700_bn_see_arg_T); ch_064_700.ana_plot_title = "flow_unet-ch64_700"
 
 
-### npy_to_rec 和 生成 bm, rec(這個list不需要加入所有 deepcopy的result喔)
+### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_results = [
-                # epoch050_bn_see_arg_T,
-                # epoch100_bn_see_arg_T,
-                # epoch200_bn_see_arg_T,
-                # epoch300_bn_see_arg_T,
-                # epoch700_bn_see_arg_T,
+    # epoch050_bn_see_arg_T.result_obj,
+    # epoch100_bn_see_arg_T.result_obj,
+    # epoch200_bn_see_arg_T.result_obj,
+    # epoch300_bn_see_arg_T.result_obj,
+    # epoch700_bn_see_arg_T.result_obj,
 
-                # ch_128_bn_see_arg_T,
-                # ch_032_bn_see_arg_T,
-                # ch_016_bn_see_arg_T,
-                # ch_008_bn_see_arg_T,
-                # #################################################################################
-                # new_shuf_epoch050_bn_see_arg_T,
-                # new_shuf_epoch100_bn_see_arg_T,
-                # new_shuf_epoch200_bn_see_arg_T,
-                # new_shuf_epoch300_bn_see_arg_T,
-                # new_shuf_epoch500_bn_see_arg_T,
-                # new_shuf_epoch700_bn_see_arg_T,
+    # ch128_bn_see_arg_T.result_obj,
+    # ch032_bn_see_arg_T.result_obj,
+    # ch016_bn_see_arg_T.result_obj,
+    # ch008_bn_see_arg_T.result_obj,
 
-                # new_shuf_ch128_bn_see_arg_F,
-                # new_shuf_ch032_bn_see_arg_F,
-                # new_shuf_ch016_bn_see_arg_F,
-                # new_shuf_ch008_bn_see_arg_F,
-                # #################################################################################
-                # ch64_bn04_bn_see_arg_T,
-                # ch64_bn08_bn_see_arg_T,
+    # epoch050_new_shuf_bn_see_arg_T.result_obj,
+    # epoch100_new_shuf_bn_see_arg_T.result_obj,
+    # epoch200_new_shuf_bn_see_arg_T.result_obj,
+    # epoch300_new_shuf_bn_see_arg_T.result_obj,
+    # epoch500_new_shuf_bn_see_arg_T.result_obj,
+    # epoch500_new_shuf_bn_see_arg_F.result_obj,
+    # epoch700_new_shuf_bn_see_arg_T.result_obj,
 
-                # new_shuf_IN_epoch500,
-                # new_shuf_IN_epoch700,
+    # ch128_new_shuf_bn_see_arg_F.result_obj,
+    # ch032_new_shuf_bn_see_arg_F.result_obj,
+    # ch016_new_shuf_bn_see_arg_F.result_obj,
+    # ch008_new_shuf_bn_see_arg_F.result_obj,
 
-                # ch32_bn04_bn_see_arg_T,
-                # ch32_bn04_bn_see_arg_F,
-                # ch32_bn08_bn_see_arg_T,
-                # ch32_bn08_bn_see_arg_F,
-                # ch32_bn16_bn_see_arg_T,
-                # ch32_bn16_bn_see_arg_F,
-                ]
+    # ch128_new_shuf_bn_see_arg_T.result_obj,
+    # ch032_new_shuf_bn_see_arg_T.result_obj,
+    # ch016_new_shuf_bn_see_arg_T.result_obj,
+    # ch008_new_shuf_bn_see_arg_T.result_obj,
+
+    # ch64_bn04_bn_see_arg_F.result_obj,
+    # ch64_bn04_bn_see_arg_T.result_obj,
+    # ch64_bn08_bn_see_arg_F.result_obj,
+    # ch64_bn08_bn_see_arg_T.result_obj,
+
+    # ch32_bn04_bn_see_arg_T.result_obj,
+    # ch32_bn08_bn_see_arg_T.result_obj,
+    # ch32_bn16_bn_see_arg_T.result_obj,
+
+    # ch32_bn04_bn_see_arg_F.result_obj,
+    # ch32_bn08_bn_see_arg_F.result_obj,
+    # ch32_bn16_bn_see_arg_F.result_obj,
+
+    # ch64_in_epoch500.result_obj,
+    # ch64_in_epoch700.result_obj,
+]
 
 
-### 覺得可以把 ana 用的 results 寫在這裡，要改result 的名字較方便
-### 1 epoch
-# epoch_old_shuffle_results  = [
-#     epoch050_bn_see_arg_T,
-#     epoch100_bn_see_arg_T,
-#     epoch200_bn_see_arg_T,
-#     epoch300_bn_see_arg_T,
-#     epoch700_bn_see_arg_T]
+
+###################################################################################################
+### 0 old vs new shuffle
+### epoch
+epoch_old_shuf_results  = [
+    epoch050_bn_see_arg_T,
+    epoch100_bn_see_arg_T,
+    epoch200_bn_see_arg_T,
+    epoch300_bn_see_arg_T,
+    epoch700_bn_see_arg_T]
 
 epoch_new_shuf_results  = [
-    new_shuf_epoch050_bn_see_arg_T,
-    new_shuf_epoch100_bn_see_arg_T,
-    new_shuf_epoch200_bn_see_arg_T,
-    new_shuf_epoch300_bn_see_arg_T,
-    new_shuf_epoch500_bn_see_arg_T,
-    new_shuf_epoch700_bn_see_arg_T]
+    epoch050_new_shuf_bn_see_arg_T,
+    epoch100_new_shuf_bn_see_arg_T,
+    epoch200_new_shuf_bn_see_arg_T,
+    epoch300_new_shuf_bn_see_arg_T,
+    epoch500_new_shuf_bn_see_arg_T,
+    epoch700_new_shuf_bn_see_arg_T]
 
+epoch_old_new_shuf_results  = [
+    epoch050_bn_see_arg_T,
+    epoch050_new_shuf_bn_see_arg_T,
+    epoch100_bn_see_arg_T,
+    epoch100_new_shuf_bn_see_arg_T,
+    epoch200_bn_see_arg_T,
+    epoch200_new_shuf_bn_see_arg_T,
+    epoch300_bn_see_arg_T,
+    epoch300_new_shuf_bn_see_arg_T,
+    ### jump epoch500 
+    ### jump epoch500_new_shuf_bn_see_arg_T，因為上面jumpg保持統一性，儘管有也jump
+    epoch700_bn_see_arg_T,
+    epoch700_new_shuf_bn_see_arg_T]
 
-# epoch_old_new_shuf_results  = [
-#     epoch050_bn_see_arg_T,
-#     new_shuf_epoch050_bn_see_arg_T,
-#     epoch100_bn_see_arg_T,
-#     new_shuf_epoch100_bn_see_arg_T,
-#     epoch200_bn_see_arg_T,
-#     new_shuf_epoch200_bn_see_arg_T,
-#     epoch300_bn_see_arg_T,
-#     new_shuf_epoch300_bn_see_arg_T,
-#     new_shuf_epoch500_bn_see_arg_T,
-#     epoch700_bn_see_arg_T,
-#     new_shuf_epoch700_bn_see_arg_T]
-
-### 2 ch
-# ch_old_shuffle_results = [
-#     ch_128_bn_see_arg_T,
-#     ch_032_bn_see_arg_T,
-#     ch_016_bn_see_arg_T,
-#     ch_008_bn_see_arg_T]
-
-# ch_new_shuf_results = [
-#     new_shuf_ch128_bn_see_arg_F,
-#     new_shuf_ch064_bn_see_arg_F,
-#     new_shuf_ch032_bn_see_arg_F,
-#     new_shuf_ch016_bn_see_arg_F,
-#     new_shuf_ch008_bn_see_arg_F]
+### ch
+ch_old_shuf_results = [
+    ch128_bn_see_arg_T,
+    ### jump ch064
+    ch032_bn_see_arg_T,
+    ch016_bn_see_arg_T,
+    ch008_bn_see_arg_T]
 
 ch_new_shuf_results = [
-    new_shuf_ch128_bn_see_arg_T,
-    new_shuf_ch064_bn_see_arg_T,
-    new_shuf_ch032_bn_see_arg_T,
-    new_shuf_ch016_bn_see_arg_T,
-    new_shuf_ch008_bn_see_arg_T]
+    ch128_new_shuf_bn_see_arg_T,
+    ch064_new_shuf_bn_see_arg_T,
+    ch032_new_shuf_bn_see_arg_T,
+    ch016_new_shuf_bn_see_arg_T,
+    ch008_new_shuf_bn_see_arg_T]
 
-# ch_old_new_shuf_results = [
-#     ch_128_bn_see_arg_T,
-#     new_shuf_ch128_bn_see_arg_F,
-#     new_shuf_ch064_bn_see_arg_F,
-#     ch_032_bn_see_arg_T,
-#     new_shuf_ch032_bn_see_arg_F,
-#     ch_016_bn_see_arg_T,
-#     new_shuf_ch016_bn_see_arg_F,
-#     ch_008_bn_see_arg_T,
-#     new_shuf_ch008_bn_see_arg_F]
+ch_old_new_shuf_results = [
+    ch128_bn_see_arg_T,
+    ch128_new_shuf_bn_see_arg_T,
+    ### jump ch064
+    ### jump ch064，因為上面jumpg保持統一性，儘管有也jump
+    ch032_bn_see_arg_T,
+    ch032_new_shuf_bn_see_arg_T,
+    ch016_bn_see_arg_T,
+    ch016_new_shuf_bn_see_arg_T,
+    ch008_bn_see_arg_T,
+    ch008_new_shuf_bn_see_arg_T]
 
+
+###################################################################################################
+### 1 epoch
+epoch_results  = [
+    epoch050_new_shuf_bn_see_arg_T,
+    epoch100_new_shuf_bn_see_arg_T,
+    epoch200_new_shuf_bn_see_arg_T,
+    epoch300_new_shuf_bn_see_arg_T,
+    epoch500_new_shuf_bn_see_arg_T,
+    epoch700_new_shuf_bn_see_arg_T]
+###################################################################################################
+### 2 ch
+ch_results = [
+    ch128_new_shuf_bn_see_arg_T,
+    ch064_new_shuf_bn_see_arg_T,
+    ch032_new_shuf_bn_see_arg_T,
+    ch016_new_shuf_bn_see_arg_T,
+    ch008_new_shuf_bn_see_arg_T]
+
+###################################################################################################
 ### 3 bn
 ###   3_1. ch64 只能 bn 1, 4, 8，覺得不夠明顯
-bn_ch64_results = [
-    ch64_bn01_bn_see_arg_F,
+bn_ch64_results_bn_see_arg_T = [
+    ch64_bn01_bn_see_arg_T,
     ch64_bn04_bn_see_arg_T,
     ch64_bn08_bn_see_arg_T]
 
 ###   3_2. ch32 就能 bn 1, 4, 8, 16
 bn_ch32_results_bn_see_arg_T = [
-    ch32_bn01_bn_see_arg_F,
+    ch32_bn01_bn_see_arg_T,
     ch32_bn04_bn_see_arg_T,
     ch32_bn08_bn_see_arg_T,
     ch32_bn16_bn_see_arg_T]
 
-###   3_3. ch32 bn1, 4, 8, 16 有設對來看看
-bn_ch32_results_bn_see_arg_F = [
+###   3_3. ch32 bn1, 4, 8, 16 see_arg 設 True/False 來比較看看，ch64的 bn數比較少就跳過囉~~
+bn_ch64_results_bn_see_arg_F_and_T = [
+    ch64_bn01_bn_see_arg_F,
+    ch64_bn01_bn_see_arg_T,
+    ch64_bn04_bn_see_arg_F,
+    ch64_bn04_bn_see_arg_T,
+    ch64_bn08_bn_see_arg_F,
+    ch64_bn08_bn_see_arg_T]
+
+###   3_3. ch32 bn1, 4, 8, 16 see_arg 設 True/False 來比較看看，ch64的 bn數比較少就跳過囉~~
+bn_ch32_results_bn_see_arg_F_and_T = [
     ch32_bn01_bn_see_arg_F,
+    ch32_bn01_bn_see_arg_T,
     ch32_bn04_bn_see_arg_F,
-    ch32_bn08_bn_see_arg_F,
-    ch32_bn16_bn_see_arg_F]
-###   3_4. ch32 有沒有設對 放一起來比較看看
-bn_ch32_results_bn_see_arg_T_and_F = [
-    ch32_bn01_bn_see_arg_F,
     ch32_bn04_bn_see_arg_T,
-    ch32_bn04_bn_see_arg_F,
-    ch32_bn08_bn_see_arg_T,
     ch32_bn08_bn_see_arg_F,
-    ch32_bn16_bn_see_arg_T,
-    ch32_bn16_bn_see_arg_F]
+    ch32_bn08_bn_see_arg_T,
+    ch32_bn16_bn_see_arg_F,
+    ch32_bn16_bn_see_arg_T]
 
 ### 4 bn_in
-### in 的 batch_size一定只能等於1
-### 所以拿 epoch500 來比較
-### 
+###   4_1. in 的 batch_size一定只能等於1 所以拿 epoch500 來比較，也像看train 久一點的效果，所以就多train 一個 epoch700 的 並拿相應的 bn來比較
 bn_in_size1_results = [
-    new_shuf_epoch500_bn_see_arg_T,
-    new_shuf_IN_epoch500,
-    new_shuf_epoch700_bn_see_arg_T,
-    new_shuf_IN_epoch700,
+    ch64_bn_epoch500,
+    ch64_in_epoch500,
+    ch64_bn_epoch700,
+    ch64_in_epoch700,
 ]
 
+### 4_2. in vs bn batch_size > 1
 bn_in_sizen_results = [
-    new_shuf_IN_epoch500,
-    new_shuf_epoch500_bn_see_arg_T,
-    ch64_bn04_bn_see_arg_T,
-    ch64_bn08_bn_see_arg_T,
-    # new_shuf_IN_epoch700,
-    # new_shuf_epoch700_bn_see_arg_T,
+    ch64_1_bn01,
+    ch64_2_in01,
+    ch64_3_bn04,
+    ch64_4_bn08,
 ]
