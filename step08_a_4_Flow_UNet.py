@@ -4,9 +4,7 @@ import sys
 sys.path.append("kong_util")
 import tensorflow as tf
 from util import method1
-import matplotlib.pyplot as plt
-from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg
-from util import matplot_visual_single_row_imgs
+from build_dataset_combine import Check_dir_exist_and_build
 import cv2
 import numpy as np
 import pdb

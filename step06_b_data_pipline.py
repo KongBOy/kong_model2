@@ -1,6 +1,7 @@
 import sys
 sys.path.append("kong_util")
-from util import get_dir_move, use_plt_show_move, get_db_amount
+# from util import get_dir_move
+from util import get_db_amount
 
 
 from step06_a_datas_obj import DB_C, DB_N, DB_GM, Dataset_builder

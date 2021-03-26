@@ -1,5 +1,5 @@
 from step0_access_path import data_access_path
-from enum import Enum, auto
+from enum import Enum
 
 class DB_CATEGORY(Enum):
     type0_h_384_w_256_page                        = "type0_h=384,w=256_page"

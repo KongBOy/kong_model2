@@ -87,7 +87,7 @@ os_book_G_mrf_79_firstk3 = Result_builder().set_by_result_name(dir08b_3 + "/type
 os_book_G_mrf_57_firstk3 = Result_builder().set_by_result_name(dir08b_3 + "/type7b_h500_w332_real_os_book-5_8b_3c-20200628_082724-justG_mrf57-128.246ep568").set_ana_plot_title("G_mrf57_firstk3").build()
 os_book_G_mrf_35_firstk3 = Result_builder().set_by_result_name(dir08b_3 + "/type7b_h500_w332_real_os_book-5_8b_3d-20200628_094532-justG_mrf35-127.35ep671") .set_ana_plot_title("G_mrf35_firstk3").build()
 
-### 8b_4. G + mrf replace 7/5/3 
+### 8b_4. G + mrf replace 7/5/3
 dir08b_4 = "5_08b_4_G_mrf_replace357"
 os_book_G_no_mrf         = copy.deepcopy(os_book_justG_mae3);     os_book_G_no_mrf.ana_plot_title = "G_no_mrf"
 os_book_G_mrf_replace7   = copy.deepcopy(os_book_G_mrf_replace7); os_book_G_mrf_replace7.ana_plot_title = "G_mrf_replace7"
@@ -193,7 +193,7 @@ from step10_a_load_and_train_and_test import *
 ### exp 轉 result_obj 和 實驗系列整理 我覺得可以放一起，
 ### 因為 系列之間的 dependency 是有順序性的，：
 ###    應該都會是 某系列做完，覺得哪邊可以改，再坐下一個系列
-### 如果發現 要用的還沒宣告，應該是自己系列的設計有問題 
+### 如果發現 要用的還沒宣告，應該是自己系列的設計有問題
 ###   ex:可能有 兩個不同系列的東西混到一起來看之類的，這樣的話就區分出兩個系列即可拉~~
 
 ### 0 old shuffle，因為bn==1的情況下 old 和 new shuffle 理論上是一樣的，實際上也是差萬分之幾而已，所以先把old收起來囉，想刪記得只刪see就好
@@ -343,7 +343,7 @@ epoch_old_new_shuf_results  = [
     epoch200_new_shuf_bn_see_arg_T,
     epoch300_bn_see_arg_T,
     epoch300_new_shuf_bn_see_arg_T,
-    ### jump epoch500 
+    ### jump epoch500
     ### jump epoch500_new_shuf_bn_see_arg_T，因為上面jumpg保持統一性，儘管有也jump
     epoch700_bn_see_arg_T,
     epoch700_new_shuf_bn_see_arg_T]

@@ -2,7 +2,7 @@ import sys
 sys.path.append("kong_util")
 import tensorflow as tf
 from  tensorflow_addons.layers import InstanceNormalization
-from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, BatchNormalization, Concatenate
+from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, Concatenate
 import time
 
 
@@ -159,7 +159,6 @@ class Generator(tf.keras.models.Model):
 
 #######################################################################################################################################
 if(__name__ == "__main__"):
-    import time
     import numpy as np
 
     generator = Generator()  # 建G

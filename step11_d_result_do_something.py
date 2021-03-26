@@ -1,4 +1,5 @@
-from step11_c_result_instance import compress_results,  rec_bm_results
+# from step11_c_result_instance import compress_results
+from step11_c_result_instance import rec_bm_results
 
 if(__name__ == "__main__"):
     ### matplot_visual   ### 覺得我也不會看所以就省了ˊ口ˋ

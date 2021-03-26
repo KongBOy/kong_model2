@@ -159,7 +159,6 @@ class Generator(tf.keras.models.Model):
 
 #######################################################################################################################################
 if(__name__ == "__main__"):
-    import time
     import numpy as np
 
     generator = Generator()  # 建G

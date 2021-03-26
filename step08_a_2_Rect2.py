@@ -447,7 +447,6 @@ def train_step2(model_obj, dis_img, gt_img, board_obj):
 import sys
 sys.path.append("kong_util")
 
-import time
 import matplotlib.pyplot as plt
 import cv2
 from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg

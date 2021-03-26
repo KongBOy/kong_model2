@@ -319,7 +319,7 @@ flow_unet = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_une
 flow_unet_hid_ch_128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=128, out_channel=3)
 flow_unet_hid_ch_032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 32, out_channel=3)
 flow_unet_hid_ch_016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 16, out_channel=3)
-flow_unet_hid_ch_008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=  8, out_channel=3)
+flow_unet_hid_ch_008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 8 , out_channel=3)
 
 ########################################################### 14 真的IN
 flow_unet_IN_hid_ch_64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3, true_IN=True)

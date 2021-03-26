@@ -18,7 +18,7 @@ class Result_sees_builder(Result_init_builder):
         if  (sees_ver == "sees_ver1"):
             self.result.sees = [See(self.result.result_dir, "see-%03i" % see_num) for see_num in range(32)]
         elif(sees_ver == "sees_ver2"):
-            self.result.sees = [See(self.result.result_dir, "see_000-test_emp"), 
+            self.result.sees = [See(self.result.result_dir, "see_000-test_emp"),
                            See(self.result.result_dir, "see_001-test_img"), See(self.result.result_dir, "see_002-test_img"), See(self.result.result_dir, "see_003-test_img"), See(self.result.result_dir, "see_004-test_img"), See(self.result.result_dir, "see_005-test_img"),
                            See(self.result.result_dir, "see_006-test_lin"), See(self.result.result_dir, "see_007-test_lin"), See(self.result.result_dir, "see_008-test_lin"), See(self.result.result_dir, "see_009-test_lin"), See(self.result.result_dir, "see_010-test_lin"),
                            See(self.result.result_dir, "see_011-test_str"), See(self.result.result_dir, "see_012-test_str"), See(self.result.result_dir, "see_013-test_str"), See(self.result.result_dir, "see_014-test_str"), See(self.result.result_dir, "see_015-test_str"),

@@ -1,16 +1,14 @@
 import cv2
 import time
-import os
 from tqdm import tqdm
 
 import sys
 sys.path.append("kong_util")
 from step0_access_path import result_access_path, JPG_QUALITY
-from util import get_dir_certain_file_name, matplot_visual_single_row_imgs, matplot_visual_multi_row_imgs, draw_loss_util, Matplot_single_row_imgs, Matplot_multi_row_imgs
+from util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from video_from_img import Video_combine_from_dir
 
-import matplotlib.pyplot as plt
 
 class Result_analyzer:
     def __init__(self, ana_describe):
@@ -319,7 +317,7 @@ class Bm_Rec_result_analyze(Result_analyzer):
             # print(result.sees[see_num].rec_paths[-2])                   ### debug用
             cv2.imwrite(analyze_see_rec_final_path, rec_final)          ### 根據上面定出的位置存圖
             cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
-    
+
     def all_single_see_final_rec_results(self):
         print(self.ana_describe, "doing all_single_see_final_rec_results")
         for see_num in range(self.results[0].see_amount):
@@ -327,7 +325,6 @@ class Bm_Rec_result_analyze(Result_analyzer):
 
 
 if(__name__ == "__main__"):
-    from step11_b_result_obj_builder import Result_builder
     from step11_c_result_instance import  *
 
     ana_title = "5_14-bm_rec-"

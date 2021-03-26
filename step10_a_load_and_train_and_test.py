@@ -2,13 +2,10 @@ import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import tensorflow as tf
 import numpy as np
-from enum import Enum
 import time
 
 from step06_b_data_pipline import tf_Data_builder
-from step08_b_model_obj import MODEL_NAME
 from step09_board_obj import Board_builder
-from step11_a2_result_obj import Result
 from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
