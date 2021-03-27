@@ -63,10 +63,10 @@ class Board_justG_builder(Board_rect_builder):
 
 class Board_builder(Board_justG_builder):
     def build_by_model_name(self, model_name):
-        if  ("unet"  in model_name.value) : self.build_unet_board()
+        print("model_name:", model_name.value)
+        if  ("unet"  in model_name.value or "flow" in model_name.value) : self.build_unet_board()
         elif("rect"  in model_name.value) : self.build_rect_board()
         elif("justG" in model_name.value) : self.build_justG_board()
-        elif("flow"  in model_name.value) : self.build_unet_board()
 
         return self
 

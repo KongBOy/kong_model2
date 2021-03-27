@@ -11,7 +11,7 @@ import time
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, out_channel=3, **kwargs):
+    def __init__(self, hid_ch=64, out_ch=3, **kwargs):
         super(Generator, self).__init__(**kwargs)
         self.conv1 = Conv2D(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1")  #,bias=False) ### in_channel:3
 
@@ -74,7 +74,7 @@ class Generator(tf.keras.models.Model):
 
 
         self.relu1t = ReLU(name="relu1t")
-        self.conv1t = Conv2DTranspose(out_channel, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1t")  ### in_channel:128
+        self.conv1t = Conv2DTranspose(out_ch, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1t")  ### in_channel:128
         # (4): Tanh()
 
     def call(self, input_tensor, training=False):

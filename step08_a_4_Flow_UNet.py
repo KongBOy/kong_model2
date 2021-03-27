@@ -69,7 +69,7 @@ if(__name__ == "__main__"):
     from step08_b_model_obj import MODEL_NAME, KModel_builder
     from step09_board_obj import Board_builder
 
-    generator = Generator(out_channel=2)  # 建G
+    generator = Generator(out_ch=2)  # 建G
 
     db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_type(in_type="png", gt_type="knpy", see_type=None).set_detail(have_train=True, have_see=True).build()
     model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_flow_unet()

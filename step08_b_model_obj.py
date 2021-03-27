@@ -26,7 +26,7 @@ class KModel_init_builder:
 class KModel_Unet_builder(KModel_init_builder):
     def build_unet(self):
         from step08_a_1_UNet_512to256 import Generator512to256, generate_sees, generate_results, train_step
-        self.kong_model.generator           = Generator512to256(out_channel=2)
+        self.kong_model.generator           = Generator512to256(out_ch=2)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.kong_model.max_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
         self.kong_model.min_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
@@ -48,11 +48,28 @@ class KModel_Unet_builder(KModel_init_builder):
         return self.kong_model
 
 class KModel_Flow_Unet_builder(KModel_Unet_builder):
-    def build_flow_unet(self, hid_ch=64, out_channel=3, true_IN=False):
+    def build_flow_unet(self, hid_ch=64, out_ch=3, true_IN=False):
         if(true_IN): from step08_a_1_UNet_IN   import Generator
         else:        from step08_a_1_UNet      import Generator  #generate_sees, generate_results, train_step
         from step08_a_4_Flow_UNet import train_step, generate_results, generate_sees_without_rec
-        self.kong_model.generator   = Generator(hid_ch=hid_ch, out_channel=out_channel)
+        self.kong_model.generator   = Generator(hid_ch=hid_ch, out_ch=out_ch)
+        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+
+
+        self.kong_model.generate_results = generate_results             ### 不能checkpoint
+        self.kong_model.generate_sees    = generate_sees_without_rec    ### 不能checkpoint
+        self.kong_model.train_step       = train_step                   ### 不能checkpoint
+
+        ### 建立 tf 存模型 的物件： checkpoint物件
+        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
+                                                   optimizer_G=self.kong_model.optimizer_G,
+                                                   epoch_log=self.kong_model.epoch_log)
+        return self.kong_model
+
+    def build_flow_rect(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3):
+        from step08_a_5_Flow_Rect import Generator
+        from step08_a_5_Flow_Rect import train_step, generate_results, generate_sees_without_rec
+        self.kong_model.generator   = Generator(first_k3=first_k3, hid_ch=hid_ch, true_IN=true_IN, mrfb=mrfb, mrf_replace=mrf_replace, coord_conv=coord_conv, use_res_learning=use_res_learning, resb_num=resb_num, out_ch=out_ch)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
 
@@ -106,7 +123,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Flow_Unet_builder):
 
 class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
     def build_justG(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False):
-        from step08_a_3_justG import Generator, generate_sees, generate_results, train_step
+        from step08_a_3_justG import Generator
         self.kong_model.generator   = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
         self._kong_model_G_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
         return self.kong_model
@@ -226,13 +243,15 @@ class MODEL_NAME(Enum):
     flow_unet_epoch3 = "flow_unet_epoch3"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=6
     flow_unet_epoch4 = "flow_unet_epoch4"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=8
 
-    flow_unet_hid_ch_128 = "flow_unet_hid_ch_128"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=128
-    flow_unet_hid_ch_032 = "flow_unet_hid_ch_032"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=032
-    flow_unet_hid_ch_016 = "flow_unet_hid_ch_016"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=016
-    flow_unet_hid_ch_008 = "flow_unet_hid_ch_008"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=008
+    flow_unet_ch128 = "flow_unet_ch128"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=128
+    flow_unet_ch032 = "flow_unet_ch032"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=032
+    flow_unet_ch016 = "flow_unet_ch016"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=016
+    flow_unet_ch008 = "flow_unet_ch008"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=008
 
-    flow_unet_IN_hid_ch_64 = "flow_unet_IN_hid_ch_64"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=364
+    flow_unet_IN_ch64 = "flow_unet_IN_ch64"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=364
 
+    ########################################################### 15
+    flow_rect_fk3_ch64_tfIN_resb_ok9 = "flow_rect_fk3_ch64_tfIN_resb_ok9"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
 
 ### 直接先建好 obj 給外面import囉！
 unet                = KModel_builder().set_model_name(MODEL_NAME.unet               ).build_unet()
@@ -315,20 +334,22 @@ justGk3_coord_conv        = KModel_builder().set_model_name(MODEL_NAME.justG    
 justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG_mrf357_k3    ).build_justG_mrf(first_k3=True, coord_conv=True, mrf_replace=False, use3=True, use5=True, use7=True)
 
 ########################################################### 14 快接近IN了
-flow_unet = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3)
-flow_unet_hid_ch_128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=128, out_channel=3)
-flow_unet_hid_ch_032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 32, out_channel=3)
-flow_unet_hid_ch_016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 16, out_channel=3)
-flow_unet_hid_ch_008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 8 , out_channel=3)
+flow_unet = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3)
+flow_unet_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=128, out_ch=3)
+flow_unet_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 32, out_ch=3)
+flow_unet_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 16, out_ch=3)
+flow_unet_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 8 , out_ch=3)
 
 ########################################################### 14 真的IN
-flow_unet_IN_hid_ch_64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_channel=3, true_IN=True)
+flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True)
 
 
 ########################################################### 14 測試 subprocess
-flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=4, out_channel=3)
-flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=6, out_channel=3)
-flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=8, out_channel=3)
+flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=4, out_ch=3)
+flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=6, out_ch=3)
+flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=8, out_ch=3)
 
+########################################################### 15 用 resblock 來試試看
+flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect_fk3_ch64_tfIN_resb_ok9).build_flow_rect(first_k3=True, hid_ch=64,true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 if(__name__ == "__main__"):
     pass

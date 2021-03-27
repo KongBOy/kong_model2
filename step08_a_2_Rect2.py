@@ -2,6 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, LeakyReLU, BatchNormalization, ReLU, Conv2DTranspose, Concatenate
 from tensorflow.keras.optimizers import Adam
+from tensorflow_addons.layers import InstanceNormalization
 # from tensorflow_addons.layers import InstanceNormalization
 tf.keras.backend.set_floatx('float32')  ### 這步非常非常重要！用了才可以加速！
 
@@ -67,17 +68,17 @@ class InstanceNorm_kong(tf.keras.layers.Layer):
         # return tf.matmul(input, self.kernel)
 
 class ResBlock(tf.keras.layers.Layer):
-    def __init__(self, c_num, ks=3, s=1, use_res_learning=True, coord_conv=False, **kwargs):
+    def __init__(self, c_num, use_what_IN=InstanceNorm_kong, ks=3, s=1, use_res_learning=True, coord_conv=False, **kwargs):
         super(ResBlock, self).__init__()
         self.ks = ks
         self.use_res_learning = use_res_learning
         self.coord_conv = coord_conv
         # if(self.coord_conv): self.coord_conv_res_layer1 = CoordConv()
         self.conv_1 = Conv2D(c_num, kernel_size=ks, strides=s, padding="valid")
-        self.in_c1 = InstanceNorm_kong()
+        self.in_c1 = use_what_IN()
         # if(self.coord_conv): self.coord_conv_res_layer2 = CoordConv()
         self.conv_2 = Conv2D(c_num, kernel_size=ks, strides=s, padding="valid")
-        self.in_c2 = InstanceNorm_kong()
+        self.in_c2 = use_what_IN()
 
     def call(self, input_tensor):
         p = int((self.ks - 1) / 2)
@@ -95,7 +96,7 @@ class ResBlock(tf.keras.layers.Layer):
         else: return x
 
 class Discriminator(tf.keras.models.Model):
-    def __init__(self, D_first_concat=True, D_kernel_size=4, **kwargs):
+    def __init__(self, D_first_concat=True, use_what_IN=InstanceNorm_kong, D_kernel_size=4, **kwargs):
         super(Discriminator, self).__init__(**kwargs)
 
         self.D_first_concat = D_first_concat
@@ -109,15 +110,15 @@ class Discriminator(tf.keras.models.Model):
         self.leaky_lr1 = LeakyReLU(alpha=0.2)
 
         self.conv_2 = Conv2D(64 * 2, kernel_size=self.D_kernel_size, strides=2, padding="same")
-        self.in_c2   = InstanceNorm_kong()
+        self.in_c2   = use_what_IN()
         self.leaky_lr2 = LeakyReLU(alpha=0.2)
 
         self.conv_3 = Conv2D(64 * 4, kernel_size=self.D_kernel_size, strides=2, padding="same")
-        self.in_c3   = InstanceNorm_kong()
+        self.in_c3   = use_what_IN()
         self.leaky_lr3 = LeakyReLU(alpha=0.2)
 
         self.conv_4 = Conv2D(64 * 8, kernel_size=self.D_kernel_size, strides=2, padding="same")
-        self.in_c4   = InstanceNorm_kong()
+        self.in_c4   = use_what_IN()
         self.leaky_lr4 = LeakyReLU(alpha=0.2)
 
         self.conv_map = Conv2D(1   , kernel_size=self.D_kernel_size, strides=1, padding="same")
@@ -154,7 +155,7 @@ class Discriminator(tf.keras.models.Model):
 
 ### 應該是參考 CycleGAN 的 Generator
 class Generator(tf.keras.models.Model):
-    def __init__(self, first_k3=False, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, **kwargs):
+    def __init__(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3, **kwargs):
         super(Generator, self).__init__(**kwargs)
         ############################################################################
         self.coord_conv = coord_conv
@@ -171,35 +172,40 @@ class Generator(tf.keras.models.Model):
         self.first_k3 = first_k3
         self.first_k = 7
         if(self.first_k3): self.first_k = 3
+        ########################################################################################################################################################
+        ### 還是想實驗看看 tensorflow_addon 跟自己寫的 IN 有沒有差
+        self.true_IN = true_IN
+        self.use_what_IN = InstanceNorm_kong  ### 原本架構使用InstanceNorm_kong，用它來當 default IN
+        if(self.true_IN): self.use_what_IN = InstanceNormalization
 
 
         if(self.coord_conv): self.coord_conv_layer1 = CoordConv()
         if(self.mrf_replace is False):  ### 如果沒有用 mrf 來取代第一層，就用普通的conv
-            self.conv1   = Conv2D(64  , kernel_size=self.first_k, strides=1, padding="valid")
-        self.in_c1   = InstanceNorm_kong()
+            self.conv1   = Conv2D(filters=hid_ch  , kernel_size=self.first_k, strides=1, padding="valid")
+        self.in_c1   = self.use_what_IN()
 
         if(self.coord_conv): self.coord_conv_layer2 = CoordConv()
-        self.conv2   = Conv2D(64 * 2, kernel_size=3, strides=2, padding="same")
-        self.in_c2   = InstanceNorm_kong()
+        self.conv2   = Conv2D(filters=hid_ch * 2, kernel_size=3, strides=2, padding="same")
+        self.in_c2   = self.use_what_IN()
 
         if(self.coord_conv): self.coord_conv_layer3 = CoordConv()
-        self.conv3   = Conv2D(64 * 4, kernel_size=3, strides=2, padding="same")
-        self.in_c3   = InstanceNorm_kong()
+        self.conv3   = Conv2D(filters=hid_ch * 4, kernel_size=3, strides=2, padding="same")
+        self.in_c3   = self.use_what_IN()
 
         self.use_res_learning = use_res_learning
         self.resb_num = resb_num
         self.resbs = []
-        for go_r in range(resb_num): self.resbs.append(ResBlock(c_num=64 * 4, use_res_learning=self.use_res_learning, coord_conv=coord_conv))
+        for go_r in range(resb_num): self.resbs.append(ResBlock(c_num=hid_ch * 4, use_what_IN=self.use_what_IN, use_res_learning=self.use_res_learning, coord_conv=coord_conv))
 
 
         if(self.coord_conv): self.coord_conv_layer4 = CoordConv()
-        self.convT1  = Conv2DTranspose(64 * 2, kernel_size=3, strides=2, padding="same")
-        self.in_cT1  = InstanceNorm_kong()
+        self.convT1  = Conv2DTranspose(filters=hid_ch * 2, kernel_size=3, strides=2, padding="same")
+        self.in_cT1  = self.use_what_IN()
         if(self.coord_conv): self.coord_conv_layer5 = CoordConv()
-        self.convT2  = Conv2DTranspose(64  , kernel_size=3, strides=2, padding="same")
-        self.in_cT2  = InstanceNorm_kong()
+        self.convT2  = Conv2DTranspose(filters=hid_ch  , kernel_size=3, strides=2, padding="same")
+        self.in_cT2  = self.use_what_IN()
         if(self.coord_conv): self.coord_conv_layer6 = CoordConv()
-        self.convRGB = Conv2D(3  , kernel_size=self.first_k, strides=1, padding="valid")
+        self.convRGB = Conv2D(filters=out_ch  , kernel_size=self.first_k, strides=1, padding="valid")
 
     def call(self, input_tensor):
         if(self.coord_conv):
@@ -253,7 +259,7 @@ class Generator(tf.keras.models.Model):
 
 
 class MRFBlock(tf.keras.layers.Layer):
-    def __init__(self, c_num, use1=False, use3=False, use5=False, use7=False, use9=False, **kwargs):
+    def __init__(self, c_num, use_what_IN=InstanceNorm_kong, use1=False, use3=False, use5=False, use7=False, use9=False, **kwargs):
         super(MRFBlock, self).__init__()
         self.use1 = use1
         self.use3 = use3
@@ -264,37 +270,37 @@ class MRFBlock(tf.keras.layers.Layer):
 
         if(self.use1):
             self.conv_11 = Conv2D(c_num, kernel_size=1, strides=1, padding="same")
-            self.in_c11  = InstanceNorm_kong()
+            self.in_c11  = use_what_IN()
             self.conv_12 = Conv2D(c_num, kernel_size=1, strides=1, padding="same")
-            self.in_c12  = InstanceNorm_kong()
+            self.in_c12  = use_what_IN()
             self.branch_amount += 1
 
         if(self.use3):
             self.conv_31 = Conv2D(c_num, kernel_size=3, strides=1, padding="same")
-            self.in_c31  = InstanceNorm_kong()
+            self.in_c31  = use_what_IN()
             self.conv_32 = Conv2D(c_num, kernel_size=3, strides=1, padding="same")
-            self.in_c32  = InstanceNorm_kong()
+            self.in_c32  = use_what_IN()
             self.branch_amount += 1
 
         if(self.use5):
             self.conv_51 = Conv2D(c_num, kernel_size=5, strides=1, padding="same")
-            self.in_c51  = InstanceNorm_kong()
+            self.in_c51  = use_what_IN()
             self.conv_52 = Conv2D(c_num, kernel_size=5, strides=1, padding="same")
-            self.in_c52  = InstanceNorm_kong()
+            self.in_c52  = use_what_IN()
             self.branch_amount += 1
 
         if(self.use7):
             self.conv_71 = Conv2D(c_num, kernel_size=7, strides=1, padding="same")
-            self.in_c71  = InstanceNorm_kong()
+            self.in_c71  = use_what_IN()
             self.conv_72 = Conv2D(c_num, kernel_size=7, strides=1, padding="same")
-            self.in_c72  = InstanceNorm_kong()
+            self.in_c72  = use_what_IN()
             self.branch_amount += 1
 
         if(self.use9):
             self.conv_91 = Conv2D(c_num, kernel_size=9, strides=1, padding="same")
-            self.in_c91  = InstanceNorm_kong()
+            self.in_c91  = use_what_IN()
             self.conv_92 = Conv2D(c_num, kernel_size=9, strides=1, padding="same")
-            self.in_c92  = InstanceNorm_kong()
+            self.in_c92  = use_what_IN()
             self.branch_amount += 1
 
         if  (self.branch_amount == 0):
@@ -464,7 +470,7 @@ def generate_results(model_G, in_img_pre):
 def generate_sees(model_G, see_index, in_img_pre, gt_img, epoch=0, result_obj=None, see_reset_init=False):
     rect_back, in_img_back = generate_results(model_G, in_img_pre)
     see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
+    plot_dir = see_dir + "/" + "matplot_visual"    ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
 
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
