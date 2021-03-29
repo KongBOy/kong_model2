@@ -54,5 +54,9 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["ch64_in_epoch700.run()"])  ### 測試真的IN
 
 #######################
-sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()"])
-sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.run()"])
+sb.run(same_command + ["epoch700_bn_see_arg_T_no_down.run()"])  ### 看看 lr 都不下降的效果
+sb.run(same_command + ["concat_A.run()"])  ### 看看Activation 完再concat的效果
+
+#######################
+# sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()"])
+# sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.run()"])
