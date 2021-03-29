@@ -496,7 +496,11 @@ ch64_in_epoch500 = Exp_builder().set_basic("test_see", type8_blender_os_book_768
 ch64_in_epoch700 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64, exp_dir=exp_dir14, describe_mid="5_14_1_4_6b", describe_end="ch64_in_epoch700") .set_train_args(epochs=700, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_4_6b-20210310_012428-flow_unet-ch64_in_epoch700")
 
 #############################################################################################################################################################################################################
-########################################################### 14
+
+concat_A = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_concat_A, exp_dir=exp_dir14, describe_mid="5_14_1_5_1", describe_end="concat_A") .set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="")
+
+#############################################################################################################################################################################################################
+########################################################### 15
 exp_dir15 = "5_15_flow_rect"
 rect_fk3_ch64_tfIN_resb_ok9_epoch500               = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch500"        ).set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="")
 rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch700_no_down").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
@@ -516,6 +520,7 @@ if(__name__ == "__main__"):
         # blender_os_book_flow_unet_new_shuf_ch008_fake.run()
         # rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()
         # rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.run()
+        concat_A.run()
         print('no argument')
         sys.exit()
 

@@ -48,9 +48,10 @@ class KModel_Unet_builder(KModel_init_builder):
         return self.kong_model
 
 class KModel_Flow_Unet_builder(KModel_Unet_builder):
-    def build_flow_unet(self, hid_ch=64, out_ch=3, true_IN=False):
+    def build_flow_unet(self, hid_ch=64, out_ch=3, true_IN=False, concat_Activation=False):
         if(true_IN): from step08_a_1_UNet_IN   import Generator
         else:        from step08_a_1_UNet      import Generator  #generate_sees, generate_results, train_step
+        if(concat_Activation): from step08_a_1_UNet_concat_Activation import Generator
         from step08_a_4_Flow_UNet import train_step, generate_results, generate_sees_without_rec
         self.kong_model.generator   = Generator(hid_ch=hid_ch, out_ch=out_ch)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
@@ -349,6 +350,8 @@ flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_f
 flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=6, out_ch=3)
 flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=8, out_ch=3)
 
+########################################################### 14 測試 subprocess
+flow_unet_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True, concat_Activation=True)
 ########################################################### 15 用 resblock 來試試看
 flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect_fk3_ch64_tfIN_resb_ok9).build_flow_rect(first_k3=True, hid_ch=64,true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 if(__name__ == "__main__"):
