@@ -1,34 +1,19 @@
 .vscode
+.srctr
 __*
 *.rar
+data_dir
+0_data_dir
 
 kong_util/.*
 kong_util/__*
 
-
-test*
-
-datasets*
-step1_page*
-step2_build_flow*
-step3_apply_flow*
-step4_apply_rec_flow*
-
-step9_model_result*
-rect*
 dont track
-analyze_dir
-
-training_checkpoints*
-
-��X*
-*.bmp
-
-model*
-
-
-�첾�q�̤p�˦�0�ƥ�*
 
 *.lnk
 
 events*
+
+abc
+
+temp*
