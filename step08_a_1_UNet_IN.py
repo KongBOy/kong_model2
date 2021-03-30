@@ -11,66 +11,81 @@ import time
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, out_ch=3, **kwargs):
+        """
+        depth_level: 2~7
+        """
         super(Generator, self).__init__(**kwargs)
+        self.depth_level = depth_level
         self.conv1 = Conv2D(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1")  #,bias=False) ### in_channel:3
 
-        self.lrelu2 = LeakyReLU(alpha=0.2, name="lrelu2")
-        self.conv2  = Conv2D(hid_ch * 2, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv2")  #,bias=False) ### in_channel:64
-        self.in2    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+        if(self.depth_level >= 2):
+            self.lrelu2 = LeakyReLU(alpha=0.2, name="lrelu2")
+            self.conv2  = Conv2D(hid_ch * 2, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv2")  #,bias=False) ### in_channel:64
+            if(self.depth_level > 2): self.in2    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
 
-        self.lrelu3 = LeakyReLU(alpha=0.2, name="lrelu3")
-        self.conv3  = Conv2D(hid_ch * 4, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv3")  #,bias=False) ### in_channel:128
-        self.in3    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+        if(self.depth_level >= 3):
+            self.lrelu3 = LeakyReLU(alpha=0.2, name="lrelu3")
+            self.conv3  = Conv2D(hid_ch * 4, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv3")  #,bias=False) ### in_channel:128
+            if(self.depth_level > 3): self.in3    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
 
-        self.lrelu4 = LeakyReLU(alpha=0.2, name="lrelu4")
-        self.conv4  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv4")  #,bias=False) ### in_channel:256
-        self.in4    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+        if(self.depth_level >= 4):
+            self.lrelu4 = LeakyReLU(alpha=0.2, name="lrelu4")
+            self.conv4  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv4")  #,bias=False) ### in_channel:256
+            if(self.depth_level > 4): self.in4    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
 
-        self.lrelu5 = LeakyReLU(alpha=0.2, name="lrelu5")
-        self.conv5  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv5")  #,bias=False) ### in_channel:512
-        self.in5    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+        if(self.depth_level >= 5):
+            self.lrelu5 = LeakyReLU(alpha=0.2, name="lrelu5")
+            self.conv5  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv5")  #,bias=False) ### in_channel:512
+            if(self.depth_level > 5): self.in5    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
 
-        self.lrelu6 = LeakyReLU(alpha=0.2, name="lrelu6")
-        self.conv6  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6")  #,bias=False) ### in_channel:512
-        self.in6    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+        if(self.depth_level >= 6):
+            self.lrelu6 = LeakyReLU(alpha=0.2, name="lrelu6")
+            self.conv6  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6")  #,bias=False) ### in_channel:512
+            if(self.depth_level > 6): self.in6    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
 
         ###################
         # 最底層
-        self.lrelu7  = LeakyReLU(alpha=0.2, name="lrelu7")
-        self.conv7   = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv7")  #,bias=False) ### in_channel:512
+        if(self.depth_level >= 7):
+            self.lrelu7  = LeakyReLU(alpha=0.2, name="lrelu7")
+            self.conv7   = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv7")  #,bias=False) ### in_channel:512
 
-        self.relu7t  = ReLU(name="relu7t")
-        self.conv7t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv7t")  #,bias=False) ### in_channel:512
-        self.in7t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
-        self.concat7 = Concatenate(name="concat7")
+        if(self.depth_level >= 7):
+            self.relu7t  = ReLU(name="relu7t")
+            self.conv7t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv7t")  #,bias=False) ### in_channel:512
+            self.in7t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.concat7 = Concatenate(name="concat7")
         ###################
+        if(self.depth_level >= 6):
+            self.relu6t  = ReLU(name="relu6t")
+            self.conv6t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6t")  #,bias=False) ### in_channel:1024
+            self.in6t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.concat6 = Concatenate(name="concat6")
 
-        self.relu6t  = ReLU(name="relu6t")
-        self.conv6t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6t")  #,bias=False) ### in_channel:1024
-        self.in6t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
-        self.concat6 = Concatenate(name="concat6")
+        if(self.depth_level >= 5):
+            self.relu5t  = ReLU(name="relu5t")
+            self.conv5t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv5t")  #,bias=False) ### in_channel:1024
+            self.in5t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.concat5 = Concatenate(name="concat5")
 
-        self.relu5t  = ReLU(name="relu5t")
-        self.conv5t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv5t")  #,bias=False) ### in_channel:1024
-        self.in5t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
-        self.concat5 = Concatenate(name="concat5")
+        if(self.depth_level >= 4):
+            self.relu4t  = ReLU(name="relu4t")
+            self.conv4t  = Conv2DTranspose(hid_ch * 4, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv4t")  #,bias=False) ### in_channel:1024
+            self.in4t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.concat4 = Concatenate(name="concat4")
 
-        self.relu4t  = ReLU(name="relu4t")
-        self.conv4t  = Conv2DTranspose(hid_ch * 4, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv4t")  #,bias=False) ### in_channel:1024
-        self.in4t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
-        self.concat4 = Concatenate(name="concat4")
-
-        self.relu3t  = ReLU(name="relu3t")
-        self.conv3t  = Conv2DTranspose(hid_ch * 2, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv3t")  #,bias=False) ### in_channel:512
-        self.in3t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
-        self.concat3 = Concatenate(name="concat3")
+        if(self.depth_level >= 3):
+            self.relu3t  = ReLU(name="relu3t")
+            self.conv3t  = Conv2DTranspose(hid_ch * 2, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv3t")  #,bias=False) ### in_channel:512
+            self.in3t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.concat3 = Concatenate(name="concat3")
 
 
-        self.relu2t  = ReLU(name="relu2t")
-        self.conv2t  = Conv2DTranspose(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv2t")  #,bias=False) ### in_channel:256
-        self.in2t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
-        self.concat2 = Concatenate(name="concat2")
+        if(self.depth_level >= 2):
+            self.relu2t  = ReLU(name="relu2t")
+            self.conv2t  = Conv2DTranspose(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv2t")  #,bias=False) ### in_channel:256
+            self.in2t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.concat2 = Concatenate(name="concat2")
 
 
         self.relu1t = ReLU(name="relu1t")
@@ -80,73 +95,85 @@ class Generator(tf.keras.models.Model):
     def call(self, input_tensor, training=False):
         x = self.conv1(input_tensor)
 
-        skip2 = x
-        x = self.lrelu2(skip2)
-        x = self.conv2(x)
-        x = self.in2(x)
+        if(self.depth_level >= 2):
+            skip2 = x
+            x = self.lrelu2(skip2)
+            x = self.conv2(x)
+            if(self.depth_level > 2): x = self.in2(x)
 
-        skip3 = x
-        x = self.lrelu3(skip3)
-        x = self.conv3(x)
-        x = self.in3(x)
+        if(self.depth_level >= 3):
+            skip3 = x
+            x = self.lrelu3(skip3)
+            x = self.conv3(x)
+            if(self.depth_level > 3): x = self.in3(x)
 
-        skip4 = x
-        x = self.lrelu4(skip4)
-        x = self.conv4(x)
-        x = self.in4(x)
+        if(self.depth_level >= 4):
+            skip4 = x
+            x = self.lrelu4(skip4)
+            x = self.conv4(x)
+            if(self.depth_level > 4): x = self.in4(x)
 
-        skip5 = x
-        x = self.lrelu5(skip5)
-        x = self.conv5(x)
-        x = self.in5(x)
+        if(self.depth_level >= 5):
+            skip5 = x
+            x = self.lrelu5(skip5)
+            x = self.conv5(x)
+            if(self.depth_level > 5): x = self.in5(x)
 
-        skip6 = x
-        x = self.lrelu6(skip6)
-        x = self.conv6(x)
-        x = self.in6(x)
+        if(self.depth_level >= 6):
+            skip6 = x
+            x = self.lrelu6(skip6)
+            x = self.conv6(x)
+            if(self.depth_level > 6): x = self.in6(x)
         ###############################
-        skip7 = x
-        x = self.lrelu7(skip7)
-        x = self.conv7(x)
+        if(self.depth_level >= 7):
+            skip7 = x
+            x = self.lrelu7(skip7)
+            x = self.conv7(x)
 
-        x = self.relu7t(x)
-        x = self.conv7t(x)
-        x = self.in7t(x)
-        # x = self.concat7([skip7,x])
-        x = self.concat7([x, skip7])
+        if(self.depth_level >= 7):
+            x = self.relu7t(x)
+            x = self.conv7t(x)
+            x = self.in7t(x)
+            # x = self.concat7([skip7,x])
+            x = self.concat7([x, skip7])
         ###############################
-        x = self.relu6t(x)
-        x = self.conv6t(x)
-        x = self.in6t(x)
-        # x = self.concat6([skip6,x])
-        x = self.concat6([x, skip6])
+        if(self.depth_level >= 6):
+            x = self.relu6t(x)
+            x = self.conv6t(x)
+            x = self.in6t(x)
+            # x = self.concat6([skip6,x])
+            x = self.concat6([x, skip6])
 
-        x = self.relu5t(x)
-        x = self.conv5t(x)
-        x = self.in5t(x)
-        # x = self.concat5([skip5,x])
-        x = self.concat5([x, skip5])
-
-
-        x = self.relu4t(x)
-        x = self.conv4t(x)
-        x = self.in4t(x)
-        # x = self.concat4([skip4,x])
-        x = self.concat4([x, skip4])
+        if(self.depth_level >= 5):
+            x = self.relu5t(x)
+            x = self.conv5t(x)
+            x = self.in5t(x)
+            # x = self.concat5([skip5,x])
+            x = self.concat5([x, skip5])
 
 
-        x = self.relu3t(x)
-        x = self.conv3t(x)
-        x = self.in3t(x)
-        # x = self.concat3([skip3,x])
-        x = self.concat3([x, skip3])
+        if(self.depth_level >= 4):
+            x = self.relu4t(x)
+            x = self.conv4t(x)
+            x = self.in4t(x)
+            # x = self.concat4([skip4,x])
+            x = self.concat4([x, skip4])
 
 
-        x = self.relu2t(x)
-        x = self.conv2t(x)
-        x = self.in2t(x)
-        # x = self.concat2([skip2,x])
-        x = self.concat2([x, skip2])
+        if(self.depth_level >= 3):
+            x = self.relu3t(x)
+            x = self.conv3t(x)
+            x = self.in3t(x)
+            # x = self.concat3([skip3,x])
+            x = self.concat3([x, skip3])
+
+
+        if(self.depth_level >= 2):
+            x = self.relu2t(x)
+            x = self.conv2t(x)
+            x = self.in2t(x)
+            # x = self.concat2([skip2,x])
+            x = self.concat2([x, skip2])
 
         x = self.relu1t(x)
         x = self.conv1t(x)
