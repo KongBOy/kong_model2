@@ -9,35 +9,29 @@ from step09_board_obj import Board_builder
 from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
-from util import time_util
+from util import time_util, get_dir_certain_file_name
 
 from tqdm import tqdm
 
 
 class Experiment():
     def step0_save_code(self):
+        '''
+        把 step.py 和 kong_util資料夾 存一份進result
+        '''
         import shutil
         from build_dataset_combine import Check_dir_exist_and_build
-        code_dir = self.result_obj.result_dir + "/" + "train_code"
-        Check_dir_exist_and_build(code_dir)
-        shutil.copy("step06_a_datas_obj.py"               , code_dir + "/" + "step06_a_datas_obj.py")
-        shutil.copy("step06_b_data_pipline.py"            , code_dir + "/" + "step06_b_data_pipline.py")
-        shutil.copy("step08_a_1_UNet.py"                  , code_dir + "/" + "step08_a_1_UNet.py")
-        shutil.copy("step08_a_1_UNet_IN.py"               , code_dir + "/" + "step08_a_1_UNet_IN.py")
-        shutil.copy("step08_a_1_UNet_512to256.py"         , code_dir + "/" + "step08_a_1_UNet_512to256.py")
-        shutil.copy("step08_a_2_Rect2.py"                 , code_dir + "/" + "step08_a_2_Rect2.py")
-        shutil.copy("step08_a_3_justG.py"                 , code_dir + "/" + "step08_a_3_justG.py")
-        shutil.copy("step08_a_4_Flow_UNet.py"             , code_dir + "/" + "step08_a_4_Flow_UNet.py")
-        shutil.copy("step08_b_model_obj.py"               , code_dir + "/" + "step08_b_model_obj.py")
-        shutil.copy("step09_board_obj.py"                 , code_dir + "/" + "step09_board_obj.py")
-        shutil.copy("step10_a_load_and_train_and_test.py" , code_dir + "/" + "step10_a_load_and_train_and_test.py")
-        shutil.copy("step10_b_subprocess.py"              , code_dir + "/" + "step10_b_subprocess.py")
-        shutil.copy("step11_a1_see_obj.py"                , code_dir + "/" + "step11_a1_see_obj.py")
-        shutil.copy("step11_a2_result_obj.py"             , code_dir + "/" + "step11_a2_result_obj.py")
-        shutil.copy("step11_b_result_obj_builder.py"      , code_dir + "/" + "step11_b_result_obj_builder.py")
-        shutil.copy("step11_c_result_instance.py"         , code_dir + "/" + "step11_c_result_instance.py")
-        shutil.copy("step11_d_result_do_something.py"     , code_dir + "/" + "step11_d_result_do_something.py")
-        shutil.copy("step12_result_analyzer.py"           , code_dir + "/" + "step12_result_analyzer.py")
+        code_dir = self.result_obj.result_dir + "/" + "train_code"  ### 定位出 result存code的目的地
+        Check_dir_exist_and_build(code_dir)                         ### 建立目的地資料夾
+        py_file_names = get_dir_certain_file_name(".", certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
+        for py_file_name in py_file_names:
+            ### 這兩行可以 抓 step"幾" 然後只存 step"幾".py 喔，但還沒整理以前的code，保險起見還是全存好了，有空再細細處理~~
+            # py_file_name_step = int(py_file_name.split("_")[0][4:])          ### 抓出 step "幾"
+            # if(py_file_name_step >= 6 or py_file_name_step == 0):            ### step06 以上
+            shutil.copy(py_file_name, code_dir + "/" + py_file_name)     ### 存起來
+        
+        shutil.copytree("kong_util", code_dir + "/" + "kong_util")  
+        
 
 ################################################################################################################################################
 ################################################################################################################################################
