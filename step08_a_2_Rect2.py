@@ -92,7 +92,7 @@ class ResBlock(tf.keras.layers.Layer):
         x = tf.pad(x, [[0, 0], [p, p], [p, p], [0, 0]], "REFLECT")
         x = self.conv_2(x)
         x = self.in_c2(x)
-        if(self.use_res_learning): return x + input_tensor[..., :256]
+        if(self.use_res_learning): return x + input_tensor[..., :]
         else: return x
 
 class Discriminator(tf.keras.models.Model):

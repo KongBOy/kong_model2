@@ -505,6 +505,7 @@ concat_A = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet
 exp_dir15 = "5_15_flow_rect"
 rect_fk3_ch64_tfIN_resb_ok9_epoch500               = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch500"        ).set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="")
 rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch700_no_down").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
+flow_rect_7_level = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level, exp_dir=exp_dir15, describe_mid="5_15_2", describe_end="epoch700ND").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
 
 
 
@@ -522,6 +523,7 @@ if(__name__ == "__main__"):
         # rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()
         # rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.run()
         # concat_A.run()
+        flow_rect_7_level.run()
         print('no argument')
         sys.exit()
 

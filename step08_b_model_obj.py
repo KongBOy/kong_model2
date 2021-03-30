@@ -47,45 +47,56 @@ class KModel_Unet_builder(KModel_init_builder):
                                                    epoch_log=self.kong_model.epoch_log)
         return self.kong_model
 
-class KModel_Flow_Unet_builder(KModel_Unet_builder):
+class KModel_Flow_Generator_builder(KModel_Unet_builder):
+    def _build_flow_part(self):
+        ### 
+        from step08_a_4_Flow_UNet import train_step, generate_results, generate_sees_without_rec
+        self.kong_model.generate_results = generate_results             ### 不能checkpoint
+        self.kong_model.generate_sees    = generate_sees_without_rec    ### 不能checkpoint
+        self.kong_model.train_step       = train_step                   ### 不能checkpoint
+
+    def _build_ckpt_part(self):
+        ### 建立 tf 存模型 的物件： checkpoint物件
+        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
+                                                   optimizer_G=self.kong_model.optimizer_G,
+                                                   epoch_log=self.kong_model.epoch_log)
+
     def build_flow_unet(self, hid_ch=64, out_ch=3, true_IN=False, concat_Activation=False):
+        ### model_part
         if(true_IN): from step08_a_1_UNet_IN   import Generator
         else:        from step08_a_1_UNet      import Generator  #generate_sees, generate_results, train_step
         if(concat_Activation): from step08_a_1_UNet_concat_Activation import Generator
-        from step08_a_4_Flow_UNet import train_step, generate_results, generate_sees_without_rec
         self.kong_model.generator   = Generator(hid_ch=hid_ch, out_ch=out_ch)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
 
-        self.kong_model.generate_results = generate_results             ### 不能checkpoint
-        self.kong_model.generate_sees    = generate_sees_without_rec    ### 不能checkpoint
-        self.kong_model.train_step       = train_step                   ### 不能checkpoint
-
-        ### 建立 tf 存模型 的物件： checkpoint物件
-        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
-                                                   optimizer_G=self.kong_model.optimizer_G,
-                                                   epoch_log=self.kong_model.epoch_log)
+        self._build_flow_part()
+        self._build_ckpt_part()
         return self.kong_model
 
     def build_flow_rect(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3):
+        ### model_part
         from step08_a_5_Flow_Rect import Generator
-        from step08_a_5_Flow_Rect import train_step, generate_results, generate_sees_without_rec
         self.kong_model.generator   = Generator(first_k3=first_k3, hid_ch=hid_ch, true_IN=true_IN, mrfb=mrfb, mrf_replace=mrf_replace, coord_conv=coord_conv, use_res_learning=use_res_learning, resb_num=resb_num, out_ch=out_ch)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
 
-        self.kong_model.generate_results = generate_results             ### 不能checkpoint
-        self.kong_model.generate_sees    = generate_sees_without_rec    ### 不能checkpoint
-        self.kong_model.train_step       = train_step                   ### 不能checkpoint
-
-        ### 建立 tf 存模型 的物件： checkpoint物件
-        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
-                                                   optimizer_G=self.kong_model.optimizer_G,
-                                                   epoch_log=self.kong_model.epoch_log)
+        self._build_flow_part()
+        self._build_ckpt_part()
         return self.kong_model
 
+    def build_flow_rect_7_level(self, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3):
+        ### model_part
+        from step08_a_5_Flow_Rect_7_level import Rect_7_layer as Generator
+        self.kong_model.generator   = Generator(hid_ch=hid_ch, true_IN=true_IN, use_res_learning=use_res_learning, resb_num=resb_num, out_ch=out_ch)
+        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-class KModel_GD_and_mrfGD_builder(KModel_Flow_Unet_builder):
+
+        self._build_flow_part()
+        self._build_ckpt_part()
+        return self.kong_model
+
+class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
     def build_rect2(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
         from step08_a_2_Rect2 import Generator, Discriminator, Rect2
         gen_obj = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
@@ -253,6 +264,7 @@ class MODEL_NAME(Enum):
 
     ########################################################### 15
     flow_rect_fk3_ch64_tfIN_resb_ok9 = "flow_rect_fk3_ch64_tfIN_resb_ok9"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
+    flow_rect_7_level = "flow_rect_7_level"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
 
 ### 直接先建好 obj 給外面import囉！
 unet                = KModel_builder().set_model_name(MODEL_NAME.unet               ).build_unet()
@@ -353,6 +365,8 @@ flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_f
 ########################################################### 14 測試 subprocess
 flow_unet_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True, concat_Activation=True)
 ########################################################### 15 用 resblock 來試試看
-flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect_fk3_ch64_tfIN_resb_ok9).build_flow_rect(first_k3=True, hid_ch=64,true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect_fk3_ch64_tfIN_resb_ok9).build_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_7_level = KModel_builder().set_model_name(MODEL_NAME.flow_rect_7_level).build_flow_rect_7_level(hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+
 if(__name__ == "__main__"):
     pass
