@@ -494,12 +494,26 @@ ch64_in_epoch700 = Exp_builder().set_basic("test_see", type8_blender_os_book_768
 
 concat_A = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_concat_A, exp_dir=exp_dir14, describe_mid="5_14_1_5_1", describe_end="concat_A") .set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="")
 
+unet_2l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_2l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_3l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_3l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_4l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_4l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_5l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_5l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_6l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_6l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_7l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_7l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+
 #############################################################################################################################################################################################################
 ########################################################### 15
 exp_dir15 = "5_15_flow_rect"
 rect_fk3_ch64_tfIN_resb_ok9_epoch500               = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch500"        ).set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="")
 rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch700_no_down").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
-flow_rect_7_level = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level, exp_dir=exp_dir15, describe_mid="5_15_2", describe_end="epoch700ND").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
+rect_7_level_fk7 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk7, exp_dir=exp_dir15, describe_mid="5_15_2", describe_end="epoch700ND").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
+
+rect_2_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_2_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="2l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
+rect_3_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_3_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="3l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
+rect_4_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_4_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="4l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
+rect_5_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_5_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="5l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
+rect_6_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_6_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="6l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
+rect_7_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="7l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
 
 
 
@@ -517,7 +531,10 @@ if(__name__ == "__main__"):
         # rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()
         # rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.run()
         # concat_A.run()
-        flow_rect_7_level.run()
+        # flow_rect_7_level_fk7.run()
+        # flow_rect_7_level_fk3.run()
+        flow_rect_2_level_fk3.run()
+
         print('no argument')
         sys.exit()
 
