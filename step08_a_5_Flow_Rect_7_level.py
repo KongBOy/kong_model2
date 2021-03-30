@@ -41,9 +41,9 @@ class Rect_7_layer(tf.keras.models.Model):
             self.lrelud4 = LeakyReLU(alpha=0.2)  ### x1/16, 512
 
         if(self.depth_level >= 5):
-        self.convd5  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/16, 512, out:x1/32, 512
-        self.ind5    = use_what_IN()         ### x1/32, 512
-        self.lrelud5 = LeakyReLU(alpha=0.2)  ### x1/32, 512
+            self.convd5  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/16, 512, out:x1/32, 512
+            self.ind5    = use_what_IN()         ### x1/32, 512
+            self.lrelud5 = LeakyReLU(alpha=0.2)  ### x1/32, 512
 
         if(self.depth_level >= 6):
             self.convd6  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/32, 512, out:x1/64, 512
