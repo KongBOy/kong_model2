@@ -7,9 +7,15 @@ from step08_a_4_Flow_UNet import generator_loss, train_step, generate_results, g
 
 ### 模仿UNet
 class Rect_7_layer(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, true_IN=True, depth_level=7, use_res_learning=True, resb_num=9, out_ch=3, **kwargs):
+    def __init__(self, first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3, **kwargs):
+        """
+        depth_level: 0~7
+        """
         super(Rect_7_layer, self).__init__(**kwargs)
         ########################################################################################################################################################
+        self.first_k = first_k
+
+
         ### 還是想實驗看看 tensorflow_addon 跟自己寫的 IN 有沒有差
         self.true_IN = true_IN
         use_what_IN = InstanceNorm_kong  ### 原本架構使用InstanceNorm_kong，用它來當 default IN
@@ -18,17 +24,19 @@ class Rect_7_layer(tf.keras.models.Model):
         ########################################################################################################################################################
         self.depth_level = depth_level
 
-        self.conv0  = Conv2D(hid_ch, kernel_size=7, strides=(1, 1), padding="valid")  ### in:x1, 3, out:x1, 64
+        self.conv0  = Conv2D(hid_ch, kernel_size=self.first_k, strides=(1, 1), padding="valid")  ### in:x1, 3, out:x1, 64
         self.in0    = use_what_IN()          ### x1, 64
         self.lrelu0 = LeakyReLU(alpha=0.2)   ### x1, 64
 
-        self.convd1  = Conv2D(hid_ch * 2, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1, 64, out:x1/2, 128
-        self.ind1    = use_what_IN()         ### x1/2, 128
-        self.lrelud1 = LeakyReLU(alpha=0.2)  ### x1/2, 128
+        if(self.depth_level >= 1):
+            self.convd1  = Conv2D(hid_ch * 2, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1, 64, out:x1/2, 128
+            self.ind1    = use_what_IN()         ### x1/2, 128
+            self.lrelud1 = LeakyReLU(alpha=0.2)  ### x1/2, 128
 
-        self.convd2  = Conv2D(hid_ch * 4, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/2, 128, out:x1/4, 256
-        self.ind2    = use_what_IN()         ### x1/4, 256
-        self.lrelud2 = LeakyReLU(alpha=0.2)  ### x1/4, 256
+        if(self.depth_level >= 2):
+            self.convd2  = Conv2D(hid_ch * 4, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/2, 128, out:x1/4, 256
+            self.ind2    = use_what_IN()         ### x1/4, 256
+            self.lrelud2 = LeakyReLU(alpha=0.2)  ### x1/4, 256
 
         if(self.depth_level >= 3):
             self.convd3  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/4, 256, out:x1/8, 512
@@ -59,7 +67,10 @@ class Rect_7_layer(tf.keras.models.Model):
         self.use_res_learning = use_res_learning
         self.resb_num = resb_num
         self.resbs = []
-        for go_r in range(resb_num): self.resbs.append(ResBlock(c_num=hid_ch * 8, use_what_IN=use_what_IN, use_res_learning=self.use_res_learning))
+        res_ch = 64 * (2 ** self.depth_level)
+        if(self.depth_level > 3): res_ch = 64 * 8
+        
+        for go_r in range(resb_num): self.resbs.append(ResBlock(c_num=res_ch, use_what_IN=use_what_IN, use_res_learning=self.use_res_learning))
 
 
         if(self.depth_level >= 7):
@@ -87,19 +98,21 @@ class Rect_7_layer(tf.keras.models.Model):
             self.in_cT3  = use_what_IN()  ### x1/004, 256
             self.relud3  = ReLU()         ### x1/004, 256
 
-        self.convT2  = Conv2DTranspose(filters=hid_ch * 2, kernel_size=3, strides=2, padding="same")  ### in: x1/004, 256, out:x1/002, 128
-        self.in_cT2  = use_what_IN()  ### x1/002, 128
-        self.relud2  = ReLU()         ### x1/002, 128
+        if(self.depth_level >= 2):
+            self.convT2  = Conv2DTranspose(filters=hid_ch * 2, kernel_size=3, strides=2, padding="same")  ### in: x1/004, 256, out:x1/002, 128
+            self.in_cT2  = use_what_IN()  ### x1/002, 128
+            self.relud2  = ReLU()         ### x1/002, 128
 
-        self.convT1  = Conv2DTranspose(filters=hid_ch * 1, kernel_size=3, strides=2, padding="same")  ### in: x1/002, 128, out:x1/001, 064
-        self.in_cT1  = use_what_IN()  ### x1/001, 064
-        self.relud1  = ReLU()         ### x1/001, 064
+        if(self.depth_level >= 1):
+            self.convT1  = Conv2DTranspose(filters=hid_ch * 1, kernel_size=3, strides=2, padding="same")  ### in: x1/002, 128, out:x1/001, 064
+            self.in_cT1  = use_what_IN()  ### x1/001, 064
+            self.relud1  = ReLU()         ### x1/001, 064
 
-        self.convRGB = Conv2D(filters=out_ch  , kernel_size=7, strides=1, padding="valid")  ### in: x1/001, 064, out:x1/001, out_ch
+        self.convRGB = Conv2D(filters=out_ch  , kernel_size=self.first_k, strides=1, padding="valid")  ### in: x1/001, 064, out:x1/001, out_ch
 
     def call(self, input_tensor):
 
-        first_pad_size = int((7 - 1) / 2)
+        first_pad_size = int((self.first_k - 1) / 2)
         x = tf.pad(input_tensor, [[0, 0], [first_pad_size, first_pad_size], [first_pad_size, first_pad_size], [0, 0]], "REFLECT")
 
         ### c0
@@ -108,14 +121,16 @@ class Rect_7_layer(tf.keras.models.Model):
         x = self.lrelu0(x)
 
         ### cd1
-        x = self.convd1(x)
-        x = self.ind1(x)
-        x = self.lrelud1(x)
+        if(self.depth_level >= 1):
+            x = self.convd1(x)
+            x = self.ind1(x)
+            x = self.lrelud1(x)
 
         ### cd2
-        x = self.convd2(x)
-        x = self.ind2(x)
-        x = self.lrelud2(x)
+        if(self.depth_level >= 2):
+            x = self.convd2(x)
+            x = self.ind2(x)
+            x = self.lrelud2(x)
 
         ### cd3
         if(self.depth_level >= 3):
@@ -181,14 +196,16 @@ class Rect_7_layer(tf.keras.models.Model):
             x = self.relud3(x)
 
         ### ct2
-        x = self.convT2(x)
-        x = self.in_cT2(x)
-        x = self.relud2(x)
+        if(self.depth_level >= 2):
+            x = self.convT2(x)
+            x = self.in_cT2(x)
+            x = self.relud2(x)
 
         ### ct1
-        x = self.convT1(x)
-        x = self.in_cT1(x)
-        x = self.relud1(x)
+        if(self.depth_level >= 1):
+            x = self.convT1(x)
+            x = self.in_cT1(x)
+            x = self.relud1(x)
 
         x = tf.pad(x, [[0, 0], [first_pad_size, first_pad_size], [first_pad_size, first_pad_size], [0, 0]], "REFLECT")
         x_RGB = self.convRGB(x)
