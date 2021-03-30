@@ -7,7 +7,7 @@ from step08_a_4_Flow_UNet import generator_loss, train_step, generate_results, g
 
 ### 模仿UNet
 class Rect_7_layer(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, true_IN=True, depth_level=7, use_res_learning=True, resb_num=9, out_ch=3, **kwargs):
         super(Rect_7_layer, self).__init__(**kwargs)
         ########################################################################################################################################################
         ### 還是想實驗看看 tensorflow_addon 跟自己寫的 IN 有沒有差
@@ -15,6 +15,8 @@ class Rect_7_layer(tf.keras.models.Model):
         use_what_IN = InstanceNorm_kong  ### 原本架構使用InstanceNorm_kong，用它來當 default IN
         if(self.true_IN): use_what_IN = InstanceNormalization
 
+        ########################################################################################################################################################
+        self.depth_level = depth_level
 
         self.conv0  = Conv2D(hid_ch, kernel_size=7, strides=(1, 1), padding="valid")  ### in:x1, 3, out:x1, 64
         self.in0    = use_what_IN()          ### x1, 64
@@ -28,25 +30,30 @@ class Rect_7_layer(tf.keras.models.Model):
         self.ind2    = use_what_IN()         ### x1/4, 256
         self.lrelud2 = LeakyReLU(alpha=0.2)  ### x1/4, 256
 
-        self.convd3  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/4, 256, out:x1/8, 512
-        self.ind3    = use_what_IN()         ### x1/8, 512
-        self.lrelud3 = LeakyReLU(alpha=0.2)  ### x1/8, 512
+        if(self.depth_level >= 3):
+            self.convd3  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/4, 256, out:x1/8, 512
+            self.ind3    = use_what_IN()         ### x1/8, 512
+            self.lrelud3 = LeakyReLU(alpha=0.2)  ### x1/8, 512
 
-        self.convd4  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/8, 512, out:x1/16, 512
-        self.ind4    = use_what_IN()         ### x1/16, 512
-        self.lrelud4 = LeakyReLU(alpha=0.2)  ### x1/16, 512
+        if(self.depth_level >= 4):
+            self.convd4  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/8, 512, out:x1/16, 512
+            self.ind4    = use_what_IN()         ### x1/16, 512
+            self.lrelud4 = LeakyReLU(alpha=0.2)  ### x1/16, 512
 
+        if(self.depth_level >= 5):
         self.convd5  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/16, 512, out:x1/32, 512
         self.ind5    = use_what_IN()         ### x1/32, 512
         self.lrelud5 = LeakyReLU(alpha=0.2)  ### x1/32, 512
 
-        self.convd6  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/32, 512, out:x1/64, 512
-        self.ind6    = use_what_IN()         ### x1/64, 512
-        self.lrelud6 = LeakyReLU(alpha=0.2)  ### x1/64, 512
+        if(self.depth_level >= 6):
+            self.convd6  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/32, 512, out:x1/64, 512
+            self.ind6    = use_what_IN()         ### x1/64, 512
+            self.lrelud6 = LeakyReLU(alpha=0.2)  ### x1/64, 512
 
-        self.convd7  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/64, 512, out:x1/128, 512
-        self.ind7    = use_what_IN()         ### x1/128, 512
-        self.lrelud7 = LeakyReLU(alpha=0.2)  ### x1/128, 512
+        if(self.depth_level >= 7):
+            self.convd7  = Conv2D(hid_ch * 8, kernel_size=3, strides=(2, 2), padding="same")  ### in:x1/64, 512, out:x1/128, 512
+            self.ind7    = use_what_IN()         ### x1/128, 512
+            self.lrelud7 = LeakyReLU(alpha=0.2)  ### x1/128, 512
 
 
         self.use_res_learning = use_res_learning
@@ -55,32 +62,36 @@ class Rect_7_layer(tf.keras.models.Model):
         for go_r in range(resb_num): self.resbs.append(ResBlock(c_num=hid_ch * 8, use_what_IN=use_what_IN, use_res_learning=self.use_res_learning))
 
 
+        if(self.depth_level >= 7):
+            self.convT7  = Conv2DTranspose(filters=hid_ch * 8, kernel_size=3, strides=2, padding="same")  ### in: x1/128, 512, out:x1/064, 512
+            self.in_cT7  = use_what_IN()  ### x1/064, 512
+            self.relud7  = ReLU()         ### x1/064, 512
 
-        self.convT7  = Conv2DTranspose(filters=hid_ch * 8, kernel_size=3, strides=2, padding="same")  ### in: x1/128, 512, out:x1/064, 512
-        self.in_cT7  = use_what_IN()  ### x1/064, 512
-        self.relud7  = ReLU()         ### x1/064, 512
+        if(self.depth_level >= 6):
+            self.convT6  = Conv2DTranspose(filters=hid_ch * 8, kernel_size=3, strides=2, padding="same")  ### in: x1/064, 512, out:x1/032, 512
+            self.in_cT6  = use_what_IN()  ### x1/032, 512
+            self.relud6  = ReLU()         ### x1/032, 512
 
-        self.convT6  = Conv2DTranspose(filters=hid_ch * 8, kernel_size=3, strides=2, padding="same")  ### in: x1/064, 512, out:x1/032, 512
-        self.in_cT6  = use_what_IN()  ### x1/032, 512
-        self.relud6  = ReLU()         ### x1/032, 512
+        if(self.depth_level >= 5):
+            self.convT5  = Conv2DTranspose(filters=hid_ch * 8, kernel_size=3, strides=2, padding="same")  ### in: x1/032, 512, out:x1/016, 512
+            self.in_cT5  = use_what_IN()  ### x1/016, 512
+            self.relud5  = ReLU()         ### x1/016, 512
 
-        self.convT5  = Conv2DTranspose(filters=hid_ch * 8, kernel_size=3, strides=2, padding="same")  ### in: x1/032, 512, out:x1/016, 512
-        self.in_cT5  = use_what_IN()  ### x1/016, 512
-        self.relud5  = ReLU()         ### x1/016, 512
+        if(self.depth_level >= 4):
+            self.convT4  = Conv2DTranspose(filters=hid_ch * 8, kernel_size=3, strides=2, padding="same")  ### in: x1/016, 512, out:x1/008, 512
+            self.in_cT4  = use_what_IN()  ### x1/008, 512
+            self.relud4  = ReLU()         ### x1/008, 512
 
-        self.convT4  = Conv2DTranspose(filters=hid_ch * 8, kernel_size=3, strides=2, padding="same")  ### in: x1/016, 512, out:x1/008, 512
-        self.in_cT4  = use_what_IN()  ### x1/008, 512
-        self.relud4  = ReLU()         ### x1/008, 512
-
-        self.convT3  = Conv2DTranspose(filters=hid_ch * 4, kernel_size=3, strides=2, padding="same")  ### in: x1/008, 512, out:x1/004, 256
-        self.in_cT3  = use_what_IN()  ### x1/004, 256
-        self.relud3  = ReLU()         ### x1/004, 256
+        if(self.depth_level >= 3):
+            self.convT3  = Conv2DTranspose(filters=hid_ch * 4, kernel_size=3, strides=2, padding="same")  ### in: x1/008, 512, out:x1/004, 256
+            self.in_cT3  = use_what_IN()  ### x1/004, 256
+            self.relud3  = ReLU()         ### x1/004, 256
 
         self.convT2  = Conv2DTranspose(filters=hid_ch * 2, kernel_size=3, strides=2, padding="same")  ### in: x1/004, 256, out:x1/002, 128
         self.in_cT2  = use_what_IN()  ### x1/002, 128
         self.relud2  = ReLU()         ### x1/002, 128
 
-        self.convT1  = Conv2DTranspose(filters=hid_ch * 2, kernel_size=3, strides=2, padding="same")  ### in: x1/002, 128, out:x1/001, 064
+        self.convT1  = Conv2DTranspose(filters=hid_ch * 1, kernel_size=3, strides=2, padding="same")  ### in: x1/002, 128, out:x1/001, 064
         self.in_cT1  = use_what_IN()  ### x1/001, 064
         self.relud1  = ReLU()         ### x1/001, 064
 
@@ -107,57 +118,67 @@ class Rect_7_layer(tf.keras.models.Model):
         x = self.lrelud2(x)
 
         ### cd3
-        x = self.convd3(x)
-        x = self.ind3(x)
-        x = self.lrelud3(x)
+        if(self.depth_level >= 3):
+            x = self.convd3(x)
+            x = self.ind3(x)
+            x = self.lrelud3(x)
 
         ### cd4
-        x = self.convd4(x)
-        x = self.ind4(x)
-        x = self.lrelud4(x)
+        if(self.depth_level >= 4):
+            x = self.convd4(x)
+            x = self.ind4(x)
+            x = self.lrelud4(x)
 
         ### cd5
-        x = self.convd5(x)
-        x = self.ind5(x)
-        x = self.lrelud5(x)
+        if(self.depth_level >= 5):
+            x = self.convd5(x)
+            x = self.ind5(x)
+            x = self.lrelud5(x)
 
         ### cd6
-        x = self.convd6(x)
-        x = self.ind6(x)
-        x = self.lrelud6(x)
+        if(self.depth_level >= 6):
+            x = self.convd6(x)
+            x = self.ind6(x)
+            x = self.lrelud6(x)
 
         ### cd7
-        x = self.convd7(x)
-        x = self.ind7(x)
-        x = self.lrelud7(x)
+        if(self.depth_level >= 7):
+            x = self.convd7(x)
+            x = self.ind7(x)
+            x = self.lrelud7(x)
 
         for go_r in range(self.resb_num):
             x = self.resbs[go_r](x)
 
         ### ct7
-        x = self.convT7(x)
-        x = self.in_cT7(x)
-        x = self.relud7(x)
+        if(self.depth_level >= 7):
+            x = self.convT7(x)
+            x = self.in_cT7(x)
+            x = self.relud7(x)
 
         ### ct6
-        x = self.convT6(x)
-        x = self.in_cT6(x)
-        x = self.relud6(x)
+        if(self.depth_level >= 6):
+            x = self.convT6(x)
+            x = self.in_cT6(x)
+            x = self.relud6(x)
 
         ### ct5
-        x = self.convT5(x)
-        x = self.in_cT5(x)
-        x = self.relud5(x)
+        if(self.depth_level >= 5):
+            x = self.convT5(x)
+            x = self.in_cT5(x)
+            x = self.relud5(x)
 
         ### ct4
-        x = self.convT4(x)
-        x = self.in_cT4(x)
-        x = self.relud4(x)
+        if(self.depth_level >= 4):
+            x = self.convT4(x)
+            x = self.in_cT4(x)
+            x = self.relud4(x)
 
         ### ct3
-        x = self.convT3(x)
-        x = self.in_cT3(x)
-        x = self.relud3(x)
+        if(self.depth_level >= 3):
+            x = self.convT3(x)
+            x = self.in_cT3(x)
+            x = self.relud3(x)
 
         ### ct2
         x = self.convT2(x)
