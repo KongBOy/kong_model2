@@ -198,7 +198,7 @@ class Experiment():
         # self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
-        print("current exp:", self.result_name)
+        print("current exp:", self.result_obj.result_name)
         epoch_cost_time = time.time() - e_start
         total_cost_time = time.time() - total_start
         print('epoch %i start at:%s'         % (epoch, epoch_start_timestamp))
