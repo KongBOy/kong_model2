@@ -264,10 +264,25 @@ ch64_4_bn08 = copy.deepcopy(ch64_bn08_bn_see_arg_T);         ch64_4_bn08.ana_plo
 ### copy的示範
 # ch_064_300 = copy.deepcopy(epoch300_bn_see_arg_T); ch_064_300.ana_plot_title = "flow_unet-ch64_300"
 # ch_064_700 = copy.deepcopy(epoch700_bn_see_arg_T); ch_064_700.ana_plot_title = "flow_unet-ch64_700"
+########################################################################################################################
+rect_2_level_fk3 = rect_2_level_fk3.result_obj
+rect_3_level_fk3 = rect_3_level_fk3.result_obj
+rect_4_level_fk3 = rect_4_level_fk3.result_obj
+rect_5_level_fk3 = rect_5_level_fk3.result_obj
+rect_6_level_fk3 = rect_6_level_fk3.result_obj
+rect_7_level_fk3 = rect_7_level_fk3.result_obj
+
 
 
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_results = [
+    rect_2_level_fk3,
+    rect_3_level_fk3,
+    rect_4_level_fk3,
+    rect_5_level_fk3,
+    rect_6_level_fk3,
+    rect_7_level_fk3,
+
     # epoch050_bn_see_arg_T.result_obj,
     # epoch100_bn_see_arg_T.result_obj,
     # epoch200_bn_see_arg_T.result_obj,
