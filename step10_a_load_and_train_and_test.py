@@ -30,6 +30,8 @@ class Experiment():
             # if(py_file_name_step >= 6 or py_file_name_step == 0):            ### step06 以上
             shutil.copy(py_file_name, code_dir + "/" + py_file_name)     ### 存起來
         
+        if(os.path.isdir(code_dir + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
+            shutil.rmtree(code_dir + "/" + "kong_util")
         shutil.copytree("kong_util", code_dir + "/" + "kong_util")  
         
 
@@ -508,12 +510,12 @@ rect_fk3_ch64_tfIN_resb_ok9_epoch500               = Exp_builder().set_basic("tr
 rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch700_no_down").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
 rect_7_level_fk7 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk7, exp_dir=exp_dir15, describe_mid="5_15_2", describe_end="epoch700ND").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
 
-rect_2_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_2_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="2l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
-rect_3_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_3_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="3l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
-rect_4_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_4_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="4l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
-rect_5_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_5_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="5l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
-rect_6_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_6_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="6l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
-rect_7_level_fk3 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk3, exp_dir=exp_dir15, describe_mid="5_15_3", describe_end="7l_fk3").set_train_args(epochs=10, epoch_down_step=10, exp_bn_see_arg=None).build(result_name="")
+rect_2_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_2_level_fk3, exp_dir=exp_dir15, describe_mid="5", describe_end="2l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5-20210330_211817-flow_rect-2l_fk3_35to28")
+rect_3_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_3_level_fk3, exp_dir=exp_dir15, describe_mid="5", describe_end="3l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5-20210331_015433-flow_rect-3l_fk3")
+rect_4_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_4_level_fk3, exp_dir=exp_dir15, describe_mid="5", describe_end="4l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5-20210331_033121-flow_rect-4l_fk3")
+rect_5_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_5_level_fk3, exp_dir=exp_dir15, describe_mid="5", describe_end="5l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5-20210331_043804-flow_rect-5l_fk3")
+rect_6_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_6_level_fk3, exp_dir=exp_dir15, describe_mid="5", describe_end="6l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5-20210331_053654-flow_rect-6l_fk3")
+rect_7_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_7_level_fk3, exp_dir=exp_dir15, describe_mid="5", describe_end="7l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5-20210331_063414-flow_rect-7l_fk3")
 
 
 
