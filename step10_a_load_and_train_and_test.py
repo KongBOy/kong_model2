@@ -533,7 +533,8 @@ if(__name__ == "__main__"):
         # concat_A.run()
         # flow_rect_7_level_fk7.run()
         # flow_rect_7_level_fk3.run()
-        flow_rect_2_level_fk3.run()
+        # flow_rect_2_level_fk3.run()
+        unet_2l.run().run()
 
         print('no argument')
         sys.exit()
