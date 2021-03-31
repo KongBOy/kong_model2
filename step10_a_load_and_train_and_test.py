@@ -13,6 +13,8 @@ from util import time_util, get_dir_certain_file_name
 
 from tqdm import tqdm
 
+import socket    ### 取得 本機 IP   給 train_step5_show_time 紀錄
+import getpass   ### 取得 本機 User 給 train_step5_show_time 紀錄
 
 class Experiment():
     def step0_save_code(self):
@@ -38,6 +40,9 @@ class Experiment():
 ################################################################################################################################################
 ################################################################################################################################################
     def __init__(self):
+        self.machine_ip = None
+        self.machine_user = None
+        ##############################################################################################################################
         self.phase        = "train"
         self.db_obj       = None
         self.model_obj    = None
@@ -203,7 +208,8 @@ class Experiment():
         print("current exp:", self.result_obj.result_name)
         epoch_cost_time = time.time() - e_start
         total_cost_time = time.time() - total_start
-        print('epoch %i start at:%s'         % (epoch, epoch_start_timestamp))
+        print(self.phase)
+        print('epoch %i start at:%s, %s, %s' % (epoch, epoch_start_timestamp, self.machine_ip, self.machine_user))
         print('epoch %i cost time:%.2f'      % (epoch, epoch_cost_time))
         print("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))
         print("total cost time:%s"           % (time_util(total_cost_time)))
@@ -211,13 +217,13 @@ class Experiment():
         print("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1)))))
         print("")
         with open(self.result_obj.result_dir + "/" + "cost_time.txt", "a") as f:
-            f.write(self.phase)                                                                                  ; f.write("\n")
-            f.write('epoch %i start at:%s'         % (epoch, epoch_start_timestamp))                             ; f.write("\n")
-            f.write('epoch cost time:%.2f'         % (epoch_cost_time))                                          ; f.write("\n")
-            f.write("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))              ; f.write("\n")
-            f.write("total cost time:%s"           % (time_util(total_cost_time)))                               ; f.write("\n")
-            f.write("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))                 ; f.write("\n")
-            f.write("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1))))) ; f.write("\n")
+            f.write(self.phase)                                                                                         ; f.write("\n")
+            f.write('epoch %i start at:%s, %s, %s' % (epoch, epoch_start_timestamp, self.machine_ip, self.machine_user)); f.write("\n")
+            f.write('epoch cost time:%.2f'         % (epoch_cost_time))                                                 ; f.write("\n")
+            f.write("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))                     ; f.write("\n")
+            f.write("total cost time:%s"           % (time_util(total_cost_time)))                                      ; f.write("\n")
+            f.write("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))                        ; f.write("\n")
+            f.write("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1)))))        ; f.write("\n")
             f.write("\n")
 
     def test_see(self):
@@ -230,6 +236,8 @@ class Experiment():
         print("test see finish")
 
     def run(self):
+        self.machine_ip   = socket.gethostbyname(socket.gethostname())  ### 取得 本機 IP   給 train_step5_show_time 紀錄
+        self.machine_user = getpass.getuser()                           ### 取得 本機 User 給 train_step5_show_time 紀錄
         if  (self.phase == "train"):          self.train()
         elif(self.phase == "train_reload"):   self.train_reload()
         elif(self.phase == "test_see"):       self.test_see()
