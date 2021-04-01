@@ -196,6 +196,11 @@ from step10_a_load_and_train_and_test import *
 ### 如果發現 要用的還沒宣告，應該是自己系列的設計有問題
 ###   ex:可能有 兩個不同系列的東西混到一起來看之類的，這樣的話就區分出兩個系列即可拉~~
 
+
+### copy的示範
+# ch_064_300 = copy.deepcopy(epoch300_bn_see_arg_T); ch_064_300.ana_plot_title = "flow_unet-ch64_300"
+# ch_064_700 = copy.deepcopy(epoch700_bn_see_arg_T); ch_064_700.ana_plot_title = "flow_unet-ch64_700"
+
 ### 0 old shuffle，因為bn==1的情況下 old 和 new shuffle 理論上是一樣的，實際上也是差萬分之幾而已，所以先把old收起來囉，想刪記得只刪see就好
 epoch050_bn_see_arg_T = epoch050_bn_see_arg_T.result_obj
 epoch100_bn_see_arg_T = epoch100_bn_see_arg_T.result_obj
@@ -218,7 +223,7 @@ epoch300_new_shuf_bn_see_arg_T = epoch300_new_shuf_bn_see_arg_T.result_obj
 epoch500_new_shuf_bn_see_arg_T = epoch500_new_shuf_bn_see_arg_T.result_obj
 epoch500_new_shuf_bn_see_arg_F = epoch500_new_shuf_bn_see_arg_F.result_obj
 epoch700_new_shuf_bn_see_arg_T = epoch700_new_shuf_bn_see_arg_T.result_obj
-
+epoch700_bn_see_arg_T_no_down  = epoch700_bn_see_arg_T_no_down .result_obj
 
 # ### 1_2 ch，但 bn_see_arg_F，所以結果圖醜，收起來，留 ch032_new_shuf_bn_see_arg_F 是為了給 bn 比較用
 ch128_new_shuf_bn_see_arg_F = ch128_new_shuf_bn_see_arg_F.result_obj
@@ -261,9 +266,18 @@ ch64_2_in01 = copy.deepcopy(ch64_in_epoch500);               ch64_2_in01.ana_plo
 ch64_3_bn04 = copy.deepcopy(ch64_bn04_bn_see_arg_T);         ch64_3_bn04.ana_plot_title = "ch64_3_bn04"
 ch64_4_bn08 = copy.deepcopy(ch64_bn08_bn_see_arg_T);         ch64_4_bn08.ana_plot_title = "ch64_4_bn08"
 
-### copy的示範
-# ch_064_300 = copy.deepcopy(epoch300_bn_see_arg_T); ch_064_300.ana_plot_title = "flow_unet-ch64_300"
-# ch_064_700 = copy.deepcopy(epoch700_bn_see_arg_T); ch_064_700.ana_plot_title = "flow_unet-ch64_700"
+# ### 1_5 unet concat Activation vs concat BN
+concat_A = concat_A.result_obj
+concat_B = copy.deepcopy(ch64_in_epoch500); concat_B.ana_plot_title = "concat_B"
+
+# ### 1_6 unet level 2~7
+unet_2l = unet_2l.result_obj
+unet_3l = unet_3l.result_obj
+unet_4l = unet_4l.result_obj
+unet_5l = unet_5l.result_obj
+unet_6l = unet_6l.result_obj
+unet_7l = unet_7l.result_obj
+
 ########################################################################################################################
 rect_2_level_fk3 = rect_2_level_fk3.result_obj
 rect_3_level_fk3 = rect_3_level_fk3.result_obj
@@ -282,6 +296,16 @@ rec_bm_results = [
     rect_5_level_fk3,
     rect_6_level_fk3,
     rect_7_level_fk3,
+    epoch700_bn_see_arg_T_no_down,
+
+    # unet_2l,
+    # unet_3l,
+    # unet_4l,
+    # unet_5l,
+    # unet_6l,
+    # unet_7l,
+
+    # concat_A,
 
     # epoch050_bn_see_arg_T.result_obj,
     # epoch100_bn_see_arg_T.result_obj,
