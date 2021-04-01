@@ -510,13 +510,15 @@ unet_3l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_
 unet_4l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_4_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_4l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_175806-flow_unet-unet_4l")
 unet_5l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_5_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_5l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_221927-flow_unet-unet_5l")
 unet_6l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_6_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_6l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_031859-flow_unet-unet_6l")
-unet_7l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_7l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_085335-flow_unet-unet_7l")
+unet_7l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_7l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_124509-flow_unet-unet_7l")
 
 ### 看看 UNet 的 concat 改用 + 會有什麼影響
 unet_7l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_7l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 unet_6l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_6_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_6l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 unet_5l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_5_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_5l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 unet_4l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_4_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_4l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_3l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_3_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_3l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_2l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_2l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 #############################################################################################################################################################################################################
 ########################################################### 15
 exp_dir15 = "5_15_flow_rect"
@@ -550,9 +552,9 @@ if(__name__ == "__main__"):
         # flow_rect_7_level_fk7.run()
         # flow_rect_7_level_fk3.run()
         # flow_rect_2_level_fk3.run()
-        # unet_2l.run().run()
-        # unet_7l.run().run()
-        unet_7l_skip_add.run().run()
+        # unet_2l.run()
+        # unet_7l.run()
+        unet_7l_skip_add.run()
 
         print('no argument')
         sys.exit()

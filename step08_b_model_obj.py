@@ -386,9 +386,11 @@ flow_unet_7_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build
 
 ########################################################### 14 看 unet 的 concat 改成 + 會有什麼影響
 flow_unet_7_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=7, skip_use_add=True, out_ch=3, true_IN=True)
-flow_unet_6_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=7, skip_use_add=True, out_ch=3, true_IN=True)
-flow_unet_5_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=7, skip_use_add=True, out_ch=3, true_IN=True)
-flow_unet_4_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=7, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_6_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=6, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_5_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=5, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_4_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=4, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_3_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=3, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_2_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=2, skip_use_add=True, out_ch=3, true_IN=True)
 
 ########################################################### 15 用 resblock 來試試看
 flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect_fk3_ch64_tfIN_resb_ok9).build_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)

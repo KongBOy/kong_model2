@@ -68,6 +68,8 @@ sb.run(same_command + ["unet_7l_skip_add.run()"])  ### 看看Activation 完再co
 sb.run(same_command + ["unet_6l_skip_add.run()"])  ### 看看Activation 完再concat的效果
 sb.run(same_command + ["unet_5l_skip_add.run()"])  ### 看看Activation 完再concat的效果
 sb.run(same_command + ["unet_4l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["unet_3l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["unet_2l_skip_add.run()"])  ### 看看Activation 完再concat的效果
 
 #######################
 # sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()"])
