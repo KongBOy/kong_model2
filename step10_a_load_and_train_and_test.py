@@ -511,8 +511,10 @@ unet_4l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_
 unet_5l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_5_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_5l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_221927-flow_unet-unet_5l")
 unet_6l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_6_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_6l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_031859-flow_unet-unet_6l")
 unet_7l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_7l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_124509-flow_unet-unet_7l")
+unet_8l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_8_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_8l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 
 ### 看看 UNet 的 concat 改用 + 會有什麼影響
+unet_8l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_8_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_7l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 unet_7l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_7l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 unet_6l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_6_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_6l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 unet_5l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_5_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_5l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
@@ -554,7 +556,8 @@ if(__name__ == "__main__"):
         # flow_rect_2_level_fk3.run()
         # unet_2l.run()
         # unet_7l.run()
-        unet_7l_skip_add.run()
+        # unet_7l_skip_add.run()
+        unet_8l.run()
 
         print('no argument')
         sys.exit()

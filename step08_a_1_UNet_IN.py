@@ -13,7 +13,7 @@ import time
 class Generator(tf.keras.models.Model):
     def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_ch=3, **kwargs):
         """
-        depth_level: 2~7
+        depth_level: 2~8, 9有點難，因為要是512的倍數，不是512就1024，只能等我研究好512的dataset才有機會式
         """
         super(Generator, self).__init__(**kwargs)
         self.depth_level = depth_level
@@ -46,18 +46,42 @@ class Generator(tf.keras.models.Model):
             self.conv6  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6")  #,bias=False) ### in_channel:512
             if(self.depth_level > 6): self.in6    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
 
-        ###################
-        # 最底層
         if(self.depth_level >= 7):
             self.lrelu7  = LeakyReLU(alpha=0.2, name="lrelu7")
             self.conv7   = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv7")  #,bias=False) ### in_channel:512
+            if(self.depth_level > 7): self.in7    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+
+        if(self.depth_level >= 8):
+            self.lrelu8  = LeakyReLU(alpha=0.2, name="lrelu8")
+            self.conv8   = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv8")  #,bias=False) ### in_channel:512
+            if(self.depth_level > 8): self.in8    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+
+        ###################
+        # 最底層
+        if(self.depth_level >= 9):
+            self.lrelu9  = LeakyReLU(alpha=0.2, name="lrelu9")
+            self.conv9   = Conv2D(hid_ch * 9, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv9")  #,bias=False) ### in_channel:512
+
+
+        if(self.depth_level >= 9):
+            self.relu9t  = ReLU(name="relu9t")
+            self.conv9t  = Conv2DTranspose(hid_ch * 9, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv9t")  #,bias=False) ### in_channel:512
+            self.in9t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            if(self.skip_use_add is False): self.concat9 = Concatenate(name="concat9")
+
+        ###################
+        if(self.depth_level >= 8):
+            self.relu8t  = ReLU(name="relu8t")
+            self.conv8t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv8t")  #,bias=False) ### in_channel:512
+            self.in8t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            if(self.skip_use_add is False): self.concat8 = Concatenate(name="concat8")
 
         if(self.depth_level >= 7):
             self.relu7t  = ReLU(name="relu7t")
             self.conv7t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv7t")  #,bias=False) ### in_channel:512
             self.in7t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
             if(self.skip_use_add is False): self.concat7 = Concatenate(name="concat7")
-        ###################
+
         if(self.depth_level >= 6):
             self.relu6t  = ReLU(name="relu6t")
             self.conv6t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6t")  #,bias=False) ### in_channel:1024
@@ -126,11 +150,42 @@ class Generator(tf.keras.models.Model):
             x = self.lrelu6(skip6)
             x = self.conv6(x)
             if(self.depth_level > 6): x = self.in6(x)
-        ###############################
+
         if(self.depth_level >= 7):
             skip7 = x
             x = self.lrelu7(skip7)
             x = self.conv7(x)
+            if(self.depth_level > 7): x = self.in7(x)
+
+        if(self.depth_level >= 8):
+            skip8 = x
+            x = self.lrelu8(skip8)
+            x = self.conv8(x)
+            if(self.depth_level > 8): x = self.in8(x)
+
+        ###############################
+        if(self.depth_level >= 9):
+            skip9 = x
+            x = self.lrelu9(skip9)
+            x = self.conv9(x)
+
+        if(self.depth_level >= 9):
+            x = self.relu9t(x)
+            x = self.conv9t(x)
+            x = self.in9t(x)
+            if(self.skip_use_add is False):
+                # x = self.concat9([skip9,x])
+                x = self.concat9([x, skip9])
+            else: x = x + skip9
+        ###############################
+        if(self.depth_level >= 8):
+            x = self.relu8t(x)
+            x = self.conv8t(x)
+            x = self.in8t(x)
+            if(self.skip_use_add is False):
+                # x = self.concat8([skip8,x])
+                x = self.concat8([x, skip8])
+            else: x = x + skip8
 
         if(self.depth_level >= 7):
             x = self.relu7t(x)
@@ -140,7 +195,7 @@ class Generator(tf.keras.models.Model):
                 # x = self.concat7([skip7,x])
                 x = self.concat7([x, skip7])
             else: x = x + skip7
-        ###############################
+
         if(self.depth_level >= 6):
             x = self.relu6t(x)
             x = self.conv6t(x)
@@ -202,8 +257,8 @@ class Generator(tf.keras.models.Model):
 if(__name__ == "__main__"):
     import numpy as np
 
-    generator = Generator()  # 建G
-    img = np.ones(shape=(1, 256, 256, 3), dtype=np.float32)  # 建 假資料
+    generator = Generator(depth_level=9)  # 建G
+    img = np.ones(shape=(1, 512, 512, 3), dtype=np.float32)  # 建 假資料
     start_time = time.time()  # 看資料跑一次花多少時間
     y = generator(img)
     print(y)

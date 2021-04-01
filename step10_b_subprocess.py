@@ -63,13 +63,15 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["unet_5l.run()"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + ["unet_6l.run()"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + ["unet_7l.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["unet_8l.run()"])  ### 看看Activation 完再concat的效果
 
-sb.run(same_command + ["unet_7l_skip_add.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_6l_skip_add.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_5l_skip_add.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_4l_skip_add.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_3l_skip_add.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_2l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["unet_8l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_7l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_6l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_5l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_4l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_3l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_2l_skip_add.run()"])  ### 看看Activation 完再concat的效果
 
 #######################
 # sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()"])
