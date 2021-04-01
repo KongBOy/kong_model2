@@ -31,11 +31,11 @@ class Experiment():
             # py_file_name_step = int(py_file_name.split("_")[0][4:])          ### 抓出 step "幾"
             # if(py_file_name_step >= 6 or py_file_name_step == 0):            ### step06 以上
             shutil.copy(py_file_name, code_dir + "/" + py_file_name)     ### 存起來
-        
+
         if(os.path.isdir(code_dir + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
             shutil.rmtree(code_dir + "/" + "kong_util")
         shutil.copytree("kong_util", code_dir + "/" + "kong_util")  
-        
+
 
 ################################################################################################################################################
 ################################################################################################################################################
@@ -501,16 +501,22 @@ ch64_in_epoch500 = Exp_builder().set_basic("test_see", type8_blender_os_book_768
 ch64_in_epoch700 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64, exp_dir=exp_dir14, describe_mid="5_14_1_4_6b", describe_end="ch64_in_epoch700") .set_train_args(epochs=700, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_4_6b-20210310_012428-flow_unet-ch64_in_epoch700")
 
 #############################################################################################################################################################################################################
+### 測試 concate 用 Activation 後的 feature map 來 concat, 且 unet 本身已用 IN 的 UNet 沒有設定 training=True/False問題
+concat_A = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_concat_A, exp_dir=exp_dir14, describe_mid="5_14_1_5_1", describe_end="concat_A") .set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_5_1-20210329_212042-flow_unet-concat_A")
 
-concat_A = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_concat_A, exp_dir=exp_dir14, describe_mid="5_14_1_5_1", describe_end="concat_A") .set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="")
+### 測試 UNet 用 2~7 層的效果，且 unet 本身已用 IN 的 UNet 沒有設定 training=True/False問題
+unet_2l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_2l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210330_230045-flow_unet-unet_2l")
+unet_3l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_3_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_3l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_140947-flow_unet-unet_3l")
+unet_4l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_4_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_4l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_175806-flow_unet-unet_4l")
+unet_5l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_5_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_5l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_221927-flow_unet-unet_5l")
+unet_6l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_6_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_6l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_031859-flow_unet-unet_6l")
+unet_7l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_7l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_085335-flow_unet-unet_7l")
 
-unet_2l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_2l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_3l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_3l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_4l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_4l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_5l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_5l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_6l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_6l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_7l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_7l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-
+### 看看 UNet 的 concat 改用 + 會有什麼影響
+unet_7l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_7l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_6l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_6_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_6l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_5l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_5_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_5l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_4l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_4_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_4l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 #############################################################################################################################################################################################################
 ########################################################### 15
 exp_dir15 = "5_15_flow_rect"
@@ -544,7 +550,9 @@ if(__name__ == "__main__"):
         # flow_rect_7_level_fk7.run()
         # flow_rect_7_level_fk3.run()
         # flow_rect_2_level_fk3.run()
-        unet_2l.run().run()
+        # unet_2l.run().run()
+        # unet_7l.run().run()
+        unet_7l_skip_add.run().run()
 
         print('no argument')
         sys.exit()

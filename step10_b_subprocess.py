@@ -57,21 +57,25 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["epoch700_bn_see_arg_T_no_down.run()"])  ### 看看 lr 都不下降的效果
 # sb.run(same_command + ["concat_A.run()"])  ### 看看Activation 完再concat的效果
 
-sb.run(same_command + ["unet_2l.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_3l.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_4l.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_5l.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_6l.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["unet_7l.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_2l.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_3l.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_4l.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_5l.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_6l.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["unet_7l.run()"])  ### 看看Activation 完再concat的效果
 
+sb.run(same_command + ["unet_7l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["unet_6l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["unet_5l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["unet_4l_skip_add.run()"])  ### 看看Activation 完再concat的效果
 
 #######################
 # sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()"])
 # sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.run()"])
 
 # sb.run(same_command + ["rect_2_level_fk3.run()"])
-sb.run(same_command + ["rect_3_level_fk3.run()"])
-sb.run(same_command + ["rect_4_level_fk3.run()"])
-sb.run(same_command + ["rect_5_level_fk3.run()"])
-sb.run(same_command + ["rect_6_level_fk3.run()"])
-sb.run(same_command + ["rect_7_level_fk3.run()"])
+# sb.run(same_command + ["rect_3_level_fk3.run()"])
+# sb.run(same_command + ["rect_4_level_fk3.run()"])
+# sb.run(same_command + ["rect_5_level_fk3.run()"])
+# sb.run(same_command + ["rect_6_level_fk3.run()"])
+# sb.run(same_command + ["rect_7_level_fk3.run()"])

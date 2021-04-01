@@ -5,12 +5,15 @@ from tensorflow_addons.layers import InstanceNormalization
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, Concatenate
 import time
 
+"""
+因為 要改的部分太多，所以才多寫一個.py喔！
+"""
 
 
 ### 參考 DewarpNet 的 train_wc 用的 UNet
 ### 試試看 activation 完 再去 concate
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_ch=3, **kwargs):
         super(Generator, self).__init__(**kwargs)
         self.conv1 = Conv2D(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1")  #,bias=False) ### in_channel:3
 
