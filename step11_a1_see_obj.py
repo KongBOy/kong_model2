@@ -1,4 +1,4 @@
-from step0_access_path import JPG_QUALITY, CORE_AMOUNT
+from step0_access_path import JPG_QUALITY, CORE_AMOUNT, CORE_AMOUNT_NPY_TO_NPZ, CORE_AMOUNT_BM_REC_VISUAL, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
 
 import sys
 sys.path.append("kong_util")
@@ -130,10 +130,10 @@ class See_visual(See_info):
         else: self._draw_matplot_visual_after_train(0, self.see_file_amount, add_loss)
 
         ### 後處理讓結果更小 但 又不失視覺品質
-        Find_ltrd_and_crop(self.matplot_visual_dir, self.matplot_visual_dir, padding=15, search_amount=10)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(self.matplot_visual_dir, self.matplot_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY])  ### matplot圖存完是png，改存成jpg省空間
+        Find_ltrd_and_crop(self.matplot_visual_dir, self.matplot_visual_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+        Save_as_jpg(self.matplot_visual_dir, self.matplot_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
         # Video_combine_from_dir(self.matplot_visual_dir, self.matplot_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
-        print("cost_time:", time.time() - start_time)
+        print("save_as_matplot_visual_after_train cost_time:", time.time() - start_time)
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
@@ -217,10 +217,12 @@ class See_bm_rec(See_info):
                 single_row_imgs = self._Draw_matplot_bm_rec_visual(current_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
                 single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-    def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
+    def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=CORE_AMOUNT_BM_REC_VISUAL, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
         print("processing %s" % self.see_name)
+        start_time = time.time()
         from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=print_msg)
+        print("draw_matplot_bm_rec_visual_after_train cost_time:", time.time() - start_time)
 
     def save_as_matplot_bm_rec_visual_after_train(self,   ### 訓練後，可以走訪所有see_file 並重新產生 matplot_bm_rec_visual
                                            add_loss=False,
@@ -236,14 +238,14 @@ class See_bm_rec(See_info):
         Check_dir_exist_and_build_new_dir(self.rec_visual_dir)             ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
-        if(single_see_multiprocess): self._draw_matplot_bm_rec_visual_after_train_multiprocess(add_loss, bgr2rgb, core_amount=CORE_AMOUNT, task_amount=self.see_file_amount, print_msg=print_msg)  ### see內的任務 當單位來切，task_amount輸入self.see_file_amount是對的！不用-2變epoch喔！
+        if(single_see_multiprocess): self._draw_matplot_bm_rec_visual_after_train_multiprocess(add_loss, bgr2rgb, core_amount=CORE_AMOUNT_BM_REC_VISUAL, task_amount=self.see_file_amount, print_msg=print_msg)  ### see內的任務 當單位來切，task_amount輸入self.see_file_amount是對的！不用-2變epoch喔！
         else: self._draw_matplot_bm_rec_visual_after_train(0, self.see_file_amount, add_loss, bgr2rgb)
 
         ### 後處理讓結果更小 但 又不失視覺品質
-        Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY])  ### matplot圖存完是png，改存成jpg省空間
+        Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+        Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
         # Video_combine_from_dir(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
-        print("cost_time:", time.time() - start_time)
+        print("save_as_matplot_bm_rec_visual_after_train cost_time:", time.time() - start_time)
 
     def save_as_matplot_bm_rec_visual_after_train_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):   ### 訓練後，對"指定"epoch的 see結果 產生 matplot_bm_rec_visual
         print(f"doing {self.see_name} save_as_matplot_bm_rec_visual_after_train_at_certain_epoch:{epoch}")
@@ -260,8 +262,8 @@ class See_bm_rec(See_info):
             single_row_imgs = self._Draw_matplot_bm_rec_visual(epoch, add_loss, bgr2rgb)
             single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
             ### 後處理讓結果更小 但 又不失視覺品質
-            # Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10)  ### 兩次以上有危險可能會 crop錯喔！所以就不crop了~
-            Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], multiprocess=True, core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
+            # Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 兩次以上有危險可能會 crop錯喔！所以就不crop了~
+            Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], multiprocess=True, core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
             print("cost_time:", time.time() - start_time)
         else:
             print("epoch=%i 超過目前exp的epoch數目囉！有可能是還沒train完see還沒產生到該epoch 或者 是輸入的epoch數 超過 epochs囉！" % epoch)
@@ -352,7 +354,7 @@ class See_try_npy_to_npz(See_info):
             # npz = np.load(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"))  ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
             # print((npy - npz["arr_0"]).sum())                                         ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
 
-    def _npy_to_npz_multiprocess(self, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):
+    def _npy_to_npz_multiprocess(self, core_amount=CORE_AMOUNT_NPY_TO_NPZ, task_amount=600, print_msg=False):
         print("processing %s" % self.see_name)
         from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._npy_to_npz, print_msg=print_msg)
@@ -363,10 +365,11 @@ class See_try_npy_to_npz(See_info):
         把 See 資料夾內的.npy改存成.npz，存完會把.npy刪除喔～
         """
         print(f"doing {self.see_name} turn all npy to npz")
+        start_time = time.time()
         self.get_see_dir_info()
         if(len(self.see_npy_names) > 0):
             if(multiprocess):
-                self._npy_to_npz_multiprocess(core_amount=CORE_AMOUNT, task_amount=len(self.see_npy_names))
+                self._npy_to_npz_multiprocess(core_amount=CORE_AMOUNT_NPY_TO_NPZ, task_amount=len(self.see_npy_names))
             else:
                 self._npy_to_npz(start_index=0, amount=len(self.see_npy_names))
 
@@ -374,7 +377,7 @@ class See_try_npy_to_npz(See_info):
                 #     npy = np.load(self.see_dir + "/" + see_npy_name)
                 #     np.savez_compressed(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
                 #     os.remove(self.see_dir + "/" + see_npy_name)
-
+        print("all_npy_to_npz cost time:", time.time() - start_time)
 
 
 
