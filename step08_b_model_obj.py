@@ -267,14 +267,7 @@ class MODEL_NAME(Enum):
     ########################################################### 15
     flow_rect_fk3_ch64_tfIN_resb_ok9 = "flow_rect_fk3_ch64_tfIN_resb_ok9"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
     flow_rect = "flow_rect"
-    flow_rect_7_level = "flow_rect_7_level"
-    # flow_rect_7_level_fk7 = "flow_rect_7_level_fk7"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
-    # flow_rect_2_level_fk3 = "flow_rect_2_level_fk3"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
-    # flow_rect_3_level_fk3 = "flow_rect_3_level_fk3"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
-    # flow_rect_4_level_fk3 = "flow_rect_4_level_fk3"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
-    # flow_rect_5_level_fk3 = "flow_rect_5_level_fk3"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
-    # flow_rect_6_level_fk3 = "flow_rect_6_level_fk3"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
-    # flow_rect_7_level_fk3 = "flow_rect_7_level_fk3"   ### 包含這flow_unet關鍵字就沒問題 ### hid_ch=64
+
 
 ### 直接先建好 obj 給外面import囉！
 unet                = KModel_builder().set_model_name(MODEL_NAME.unet               ).build_unet()
@@ -373,7 +366,7 @@ flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_f
 flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=8, out_ch=3)
 
 ########################################################### 14 看 concat Activation 有沒有差
-flow_unet_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet_concat_A).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True, concat_Activation=True)
+flow_unet_ch64_in_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True, concat_Activation=True)
 
 ########################################################### 14 看 不同level 的效果
 flow_unet_2_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=2,  out_ch=3, true_IN=True)
@@ -397,7 +390,7 @@ flow_unet_2_level_skip_add  = KModel_builder().set_model_name(MODEL_NAME.flow_un
 ########################################################### 15 用 resblock 來試試看
 flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect_fk3_ch64_tfIN_resb_ok9).build_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 
-flow_rect_7_level_fk7 = KModel_builder().set_model_name(MODEL_NAME.flow_rect_7_level).build_flow_rect_7_level(first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_7_level_fk7 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 
 flow_rect_2_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=2, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 flow_rect_3_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=3, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
