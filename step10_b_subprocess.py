@@ -83,3 +83,11 @@ sb.run(same_command + ["unet_8l_skip_add.run()"])  ### 看看Activation 完再co
 # sb.run(same_command + ["rect_5_level_fk3.run()"])
 # sb.run(same_command + ["rect_6_level_fk3.run()"])
 # sb.run(same_command + ["rect_7_level_fk3.run()"])
+
+sb.run(same_command + ["rect_2_level_fk3_ReLU.run()"])
+sb.run(same_command + ["rect_3_level_fk3_ReLU.run()"])
+sb.run(same_command + ["unet_8l_skip_add.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["rect_4_level_fk3_ReLU.run()"])
+sb.run(same_command + ["rect_5_level_fk3_ReLU.run()"])
+sb.run(same_command + ["rect_6_level_fk3_ReLU.run()"])
+sb.run(same_command + ["rect_7_level_fk3_ReLU.run()"])

@@ -535,6 +535,13 @@ rect_5_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book
 rect_6_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_6_level_fk3, exp_dir=exp_dir15, describe_mid="5", describe_end="6l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5-20210331_053654-flow_rect-6l_fk3")
 rect_7_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_7_level_fk3, exp_dir=exp_dir15, describe_mid="5", describe_end="7l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5-20210331_063414-flow_rect-7l_fk3")
 
+rect_2_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_2_level_fk3_ReLU, exp_dir=exp_dir15, describe_mid="5", describe_end="2l_fk3_ReLU").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="")
+rect_3_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_3_level_fk3_ReLU, exp_dir=exp_dir15, describe_mid="5", describe_end="3l_fk3_ReLU").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="")
+rect_4_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_4_level_fk3_ReLU, exp_dir=exp_dir15, describe_mid="5", describe_end="4l_fk3_ReLU").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="")
+rect_5_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_5_level_fk3_ReLU, exp_dir=exp_dir15, describe_mid="5", describe_end="5l_fk3_ReLU").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="")
+rect_6_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_6_level_fk3_ReLU, exp_dir=exp_dir15, describe_mid="5", describe_end="6l_fk3_ReLU").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="")
+rect_7_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk3_ReLU, exp_dir=exp_dir15, describe_mid="5", describe_end="7l_fk3_ReLU").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="")
+
 
 
 ### 測試subprocessing 有沒有用
