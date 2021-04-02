@@ -461,7 +461,7 @@ epoch300_new_shuf_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blend
 epoch500_new_shuf_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_5", describe_end="epoch500_new_shuf_bn_see_arg_T").set_train_args(epochs=500, exp_bn_see_arg=True) .build(result_name="type8_blender_os_book-5_14_1_1_5-20210318_211827f-flow_unet-epoch500_new_shuf_bn_see_arg_T")
 epoch500_new_shuf_bn_see_arg_F = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_5", describe_end="epoch500_new_shuf_bn_see_arg_F").set_train_args(epochs=500, exp_bn_see_arg=False).build(result_name="type8_blender_os_book-5_14_1_1_5-20210318_211827-flow_unet-epoch500_new_shuf_bn_see_arg_F")
 epoch700_new_shuf_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_6", describe_end="epoch700_new_shuf_bn_see_arg_T").set_train_args(epochs=700, exp_bn_see_arg=True) .build(result_name="type8_blender_os_book-5_14_1_1_6-20210308_100044-flow_unet-epoch700_new_shuf_bn_see_arg_T")
-epoch700_bn_see_arg_T_no_down  = Exp_builder().set_basic("train",    type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_7", describe_end="epoch700_no_down") .set_train_args(epochs=700, exp_bn_see_arg=True, epoch_down_step=700).build(result_name="type8_blender_os_book-5_14_1_1_7-20210330_093032-flow_unet-700ND")
+epoch700_bn_see_arg_T_no_down  = Exp_builder().set_basic("train",    type8_blender_os_book_768, flow_unet, exp_dir=exp_dir14, describe_mid="5_14_1_1_7", describe_end="epoch700_no_down") .set_train_args(epochs=700, exp_bn_see_arg=True, epoch_down_step=700).build(result_name="type8_blender_os_book-5_14_1_1_7-20210330_093032-flow_unet-epoch700_no_epoch_down")
 
 ### epoch=500, 測hid_ch, bn=1
 ### 這裡的 bn 當初照著 bn 正常的使用方式使用：在testing 時 bn 使用上的 training要指定 False，但發現效果奇差，透過這結果應該可以知道是因為每張影像都是獨特的存在，差異性太大，每一張影像應該要跟自己的 mu, sigma 作用才對，因此應該要用 in 比較好，所以這些結果就先不用了，用的是下面的結果～
@@ -502,7 +502,7 @@ ch64_in_epoch700 = Exp_builder().set_basic("test_see", type8_blender_os_book_768
 
 #############################################################################################################################################################################################################
 ### 測試 concate 用 Activation 後的 feature map 來 concat, 且 unet 本身已用 IN 的 UNet 沒有設定 training=True/False問題
-concat_A = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_concat_A, exp_dir=exp_dir14, describe_mid="5_14_1_5_1", describe_end="concat_A") .set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_5_1-20210329_212042-flow_unet-concat_A")
+ch64_in_concat_A = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_ch64_in_concat_A, exp_dir=exp_dir14, describe_mid="5_14_1_5_1", describe_end="ch64_in_concat_A") .set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_5_1-20210329_212042-flow_unet-ch64_in_concat_A")
 
 ### 測試 UNet 用 2~7 層的效果，且 unet 本身已用 IN 的 UNet 沒有設定 training=True/False問題
 unet_2l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_2l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210330_230045-flow_unet-unet_2l")
@@ -511,21 +511,20 @@ unet_4l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_
 unet_5l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_5_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_5l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_221927-flow_unet-unet_5l")
 unet_6l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_6_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_6l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_031859-flow_unet-unet_6l")
 unet_7l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_7l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_124509-flow_unet-unet_7l")
-unet_8l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_8_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_8l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_8l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_8_level, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_8l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_6_1-20210402_020604-flow_unet-unet_8l")
 
 ### 看看 UNet 的 concat 改用 + 會有什麼影響
-unet_8l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_8_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_7l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_7l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_7l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_6l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_6_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_6l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_5l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_5_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_5l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_4l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_4_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_4l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_3l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_3_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_3l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
-unet_2l_skip_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level_skip_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_2l_skip_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_8l_skip_use_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_8_level_skip_use_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_8l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_7l_skip_use_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_7_level_skip_use_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_7l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_7_1-20210401_115231-flow_unet-unet_7l_skip_use_add")
+unet_6l_skip_use_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_6_level_skip_use_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_6l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_7_1-20210401_225248-flow_unet-unet_6l_skip_use_add")
+unet_5l_skip_use_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_5_level_skip_use_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_5l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_7_1-20210402_023315-flow_unet-unet_5l_skip_use_add")
+unet_4l_skip_use_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_4_level_skip_use_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_4l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_3l_skip_use_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_3_level_skip_use_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_3l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
+unet_2l_skip_use_add = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_2_level_skip_use_add, exp_dir=exp_dir14, describe_mid="5_14_1_7_1", describe_end="unet_2l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).build(result_name="")
 #############################################################################################################################################################################################################
 ########################################################### 15
 exp_dir15 = "5_15_flow_rect"
-rect_fk3_ch64_tfIN_resb_ok9_epoch500               = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch500"        ).set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="")
-rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch700_no_down").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
+rect_fk3_ch64_tfIN_resb_ok9_epoch500               = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch500"        ).set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_15_1-20210327_162414-flow_rect_fk3_ch64_tfIN_resb_ok9-epoch500_okok")
 rect_7_level_fk7 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk7, exp_dir=exp_dir15, describe_mid="5_15_2", describe_end="epoch700ND").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).build(result_name="")
 
 rect_2_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_2_level_fk3, exp_dir=exp_dir15, describe_mid="5", describe_end="2l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5-20210330_211817-flow_rect-2l_fk3_35to28")
@@ -563,8 +562,9 @@ if(__name__ == "__main__"):
         # flow_rect_2_level_fk3.run()
         # unet_2l.run()
         # unet_7l.run()
-        # unet_7l_skip_add.run()
-        unet_8l.run()
+        # unet_7l_skip_use_add.run()
+        # unet_8l.run()
+        rect_2_level_fk3_ReLU.run()
 
         print('no argument')
         sys.exit()

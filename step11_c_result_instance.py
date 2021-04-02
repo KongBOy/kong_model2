@@ -266,9 +266,9 @@ ch64_2_in01 = copy.deepcopy(ch64_in_epoch500);               ch64_2_in01.ana_plo
 ch64_3_bn04 = copy.deepcopy(ch64_bn04_bn_see_arg_T);         ch64_3_bn04.ana_plot_title = "ch64_3_bn04"
 ch64_4_bn08 = copy.deepcopy(ch64_bn08_bn_see_arg_T);         ch64_4_bn08.ana_plot_title = "ch64_4_bn08"
 
-# ### 1_5 unet concat Activation vs concat BN
-concat_A = concat_A.result_obj
-concat_B = copy.deepcopy(ch64_in_epoch500); concat_B.ana_plot_title = "concat_B"
+# ### 1_5 unet concat Activation vs concat BN，都是epoch500 且 lr有下降
+ch64_in_concat_A = ch64_in_concat_A.result_obj
+ch64_in_concat_B = copy.deepcopy(ch64_in_epoch500); ch64_in_concat_B.ana_plot_title = "ch64_in_concat_B"
 
 # ### 1_6 unet level 2~7
 unet_2l = unet_2l.result_obj
@@ -277,6 +277,12 @@ unet_4l = unet_4l.result_obj
 unet_5l = unet_5l.result_obj
 unet_6l = unet_6l.result_obj
 unet_7l = unet_7l.result_obj
+unet_8l = unet_8l.result_obj
+
+
+unet_7l_skip_use_add = unet_7l_skip_use_add.result_obj
+unet_6l_skip_use_add = unet_6l_skip_use_add.result_obj
+unet_5l_skip_use_add = unet_5l_skip_use_add.result_obj
 
 ########################################################################################################################
 rect_2_level_fk3 = rect_2_level_fk3.result_obj
@@ -290,13 +296,19 @@ rect_7_level_fk3 = rect_7_level_fk3.result_obj
 
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_results = [
-    rect_2_level_fk3,
-    rect_3_level_fk3,
-    rect_4_level_fk3,
-    rect_5_level_fk3,
-    rect_6_level_fk3,
-    rect_7_level_fk3,
-    epoch700_bn_see_arg_T_no_down,
+    # unet_8l,
+
+    unet_7l_skip_use_add,
+    unet_6l_skip_use_add,
+    unet_5l_skip_use_add,
+
+    # rect_2_level_fk3,
+    # rect_3_level_fk3,
+    # rect_4_level_fk3,
+    # rect_5_level_fk3,
+    # rect_6_level_fk3,
+    # rect_7_level_fk3,
+    # epoch700_bn_see_arg_T_no_down,
 
     # unet_2l,
     # unet_3l,
@@ -483,4 +495,49 @@ bn_in_sizen_results = [
     ch64_2_in01,
     ch64_3_bn04,
     ch64_4_bn08,
+]
+
+### 5_1. unet concat Activation vs concat BN，先不管 concatA loss 相當於表現差的哪種結果
+in_concat_AB = [
+    ch64_in_concat_A,
+    ch64_in_concat_B,
+]
+
+### 6_1. unet 想看看 差一層 差多少，先不管 8_layer 表現好 的 相當於 哪種結果
+unet_layers = [
+    unet_2l,
+    unet_3l,
+    unet_4l,
+    unet_5l,
+    unet_6l,
+    unet_7l,
+    unet_8l,
+]
+
+### 6_2 unet 的concat 改成 add 的效果如何
+unet_skip_use_add = [
+    unet_7l_skip_use_add,
+    unet_6l_skip_use_add,
+    unet_5l_skip_use_add,
+]
+
+### 6_3 unet 的concat 改成 add 的效果如何
+unet_skip_use_concat_vs_add = [
+    unet_7l,
+    unet_7l_skip_use_add,
+    unet_6l,
+    unet_6l_skip_use_add,
+    unet_5l,
+    unet_5l_skip_use_add,
+]
+###########################################################################
+### 另一個架構
+
+rect_layers = [
+    rect_2_level_fk3,
+    rect_3_level_fk3,
+    rect_4_level_fk3,
+    rect_5_level_fk3,
+    rect_6_level_fk3,
+    rect_7_level_fk3,
 ]
