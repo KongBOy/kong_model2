@@ -343,6 +343,13 @@ if(__name__ == "__main__"):
     Bm_Rec_result_analyze(ana_title + "3_4-bn_ch32_results_bn_see_arg_F_and_T", bn_ch32_results_bn_see_arg_F_and_T).all_single_see_final_rec_results()
     Bm_Rec_result_analyze(ana_title + "4_1-bn_in_size1_results",                bn_in_size1_results)               .all_single_see_final_rec_results()
     Bm_Rec_result_analyze(ana_title + "4_2-bn_in_sizen_results",                bn_in_sizen_results)               .all_single_see_final_rec_results()
+    
+    Bm_Rec_result_analyze(ana_title + "5_1-in_concat_AB",                       in_concat_AB)                      .all_single_see_final_rec_results()
+    Bm_Rec_result_analyze(ana_title + "6_1-unet_layers",                        unet_layers)                       .all_single_see_final_rec_results()
+    Bm_Rec_result_analyze(ana_title + "6_2-unet_skip_use_add",                  unet_skip_use_add)                 .all_single_see_final_rec_results()
+    Bm_Rec_result_analyze(ana_title + "6_3-unet_skip_use_concat_vs_add",        unet_skip_use_concat_vs_add)       .all_single_see_final_rec_results()
+
+    # Bm_Rec_result_analyze(ana_title + "7_1-rect_layers",                        rect_layers)                       .all_single_see_final_rec_results()
 
     # epoch_new_shuffle_results_ana      = Bm_Rec_result_analyze("5_14_rec_result_analyze-1_2-epoch_new_shuffle",     epoch_new_shuffle_results)
     # epoch_old_new_shuffle_results_ana  = Bm_Rec_result_analyze("5_14_rec_result_analyze-1_3-epoch_old_new_shuffle", epoch_old_new_shuffle_results)
