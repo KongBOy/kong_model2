@@ -1,5 +1,5 @@
 .vscode
-.srctr
+*.srctr*
 __*
 *.rar
 data_dir
@@ -8,6 +8,7 @@ data_dir
 kong_util/.*
 kong_util/__*
 
+try_*
 dont track
 
 *.lnk
