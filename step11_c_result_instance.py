@@ -280,6 +280,7 @@ unet_7l = unet_7l.result_obj
 unet_8l = unet_8l.result_obj
 
 
+unet_8l_skip_use_add = unet_8l_skip_use_add.result_obj
 unet_7l_skip_use_add = unet_7l_skip_use_add.result_obj
 unet_6l_skip_use_add = unet_6l_skip_use_add.result_obj
 unet_5l_skip_use_add = unet_5l_skip_use_add.result_obj
