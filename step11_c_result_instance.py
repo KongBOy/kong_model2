@@ -283,8 +283,13 @@ unet_8l = unet_8l.result_obj
 unet_7l_skip_use_add = unet_7l_skip_use_add.result_obj
 unet_6l_skip_use_add = unet_6l_skip_use_add.result_obj
 unet_5l_skip_use_add = unet_5l_skip_use_add.result_obj
+unet_4l_skip_use_add = unet_4l_skip_use_add.result_obj
+unet_3l_skip_use_add = unet_3l_skip_use_add.result_obj
 
 ########################################################################################################################
+rect_fk3_ch64_tfIN_resb_ok9_epoch500 = rect_fk3_ch64_tfIN_resb_ok9_epoch500.result_obj
+rect_7_level_fk7 = rect_7_level_fk7.result_obj
+
 rect_2_level_fk3 = rect_2_level_fk3.result_obj
 rect_3_level_fk3 = rect_3_level_fk3.result_obj
 rect_4_level_fk3 = rect_4_level_fk3.result_obj
@@ -298,16 +303,23 @@ rect_7_level_fk3 = rect_7_level_fk3.result_obj
 rec_bm_results = [
     # unet_8l,
 
-    unet_7l_skip_use_add,
-    unet_6l_skip_use_add,
-    unet_5l_skip_use_add,
+    unet_8l_skip_use_add,
+    # unet_7l_skip_use_add,
+    # unet_6l_skip_use_add,
+    # unet_5l_skip_use_add,
+    # unet_4l_skip_use_add,
+    # unet_3l_skip_use_add,
 
+    # rect_fk3_ch64_tfIN_resb_ok9_epoch500,
+    # rect_7_level_fk7,
     # rect_2_level_fk3,
     # rect_3_level_fk3,
     # rect_4_level_fk3,
     # rect_5_level_fk3,
     # rect_6_level_fk3,
     # rect_7_level_fk3,
+
+
     # epoch700_bn_see_arg_T_no_down,
 
     # unet_2l,
