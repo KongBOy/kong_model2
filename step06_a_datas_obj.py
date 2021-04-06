@@ -172,6 +172,9 @@ class Dataset_type_builder(Dataset_dir_builder):
 
 class Dataset_detail_builder(Dataset_type_builder):
     def set_detail(self, have_train=True, have_see=False):
+        """
+        資料集 裡面有沒有 train/see 資料夾，有的時候因為懶所以還沒建就想用了這樣子
+        """
         self.db.have_train    = have_train
         self.db.have_see      = have_see
         return self

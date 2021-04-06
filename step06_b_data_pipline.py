@@ -342,7 +342,7 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
                                                              self.tf_data.train_gt_db, self.tf_data.train_gt_db_pre))
         if(self.tf_data.train_shuffle):
             self.tf_data.train_db_combine = self.tf_data.train_db_combine.shuffle(int(self.tf_data.train_amount / 2))  ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
-        self.tf_data.train_db_combine = self.tf_data.train_db_combine.batch(self.batch_size)   ### shuffle完 打包成一包包 batch
+        self.tf_data.train_db_combine = self.tf_data.train_db_combine.batch(self.tf_data.batch_size)   ### shuffle完 打包成一包包 batch
         # print('self.tf_data.train_in_db',self.tf_data.train_in_db)
         # print('self.tf_data.train_in_db_pre',self.tf_data.train_in_db_pre)
         # print('self.tf_data.train_gt_db',self.tf_data.train_gt_db)
@@ -419,7 +419,7 @@ class tf_Data_in_dis_gt_img_builder(tf_Data_in_dis_gt_move_map_builder):
 
         if(self.tf_data.train_shuffle):
             self.tf_data.train_db_combine = self.tf_data.train_db_combine.shuffle(int(self.tf_data.train_amount / 2))  ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
-        self.tf_data.train_db_combine = self.tf_data.train_db_combine.batch(self.batch_size)   ### shuffle完 打包成一包包 batch
+        self.tf_data.train_db_combine = self.tf_data.train_db_combine.batch(self.tf_data.batch_size)   ### shuffle完 打包成一包包 batch
         #########################################################
         ### 勿刪！用來測試寫得對不對！
         # import matplotlib.pyplot as plt
