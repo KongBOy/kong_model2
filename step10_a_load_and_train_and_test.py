@@ -64,6 +64,9 @@ class Experiment():
 
         self.exp_bn_see_arg = False  ### 本來 bn 在 test 的時候就應該要丟 false，只是 現在batch_size=1， 丟 True 會變 IN ， 所以加這個flag 來控制
 
+        self.lr_start = 0.0002  ### learning rate
+        self.lr_current = self.lr_start
+
         # self.phase = "train_reload" ### 要記得去決定 result_name 喔！
         # self.phase = "test"         ### test是用固定 train/test 資料夾架構的讀法 ### 要記得去決定 result_name 喔！
         ### self.phase = "test_indicate" ### 這應該是可以刪掉了，因為在取db的時候，已經有包含了test_indecate的取法了！不用在特別區分出來 取資料囉！
@@ -126,8 +129,8 @@ class Experiment():
             e_start = time.time()
             ###############################################################################################################################
             ###    step0 設定learning rate
-            lr = 0.0002 if epoch < self.epoch_down_step else 0.0002 * (self.epochs - epoch) / (self.epochs - self.epoch_down_step)
-            self.model_obj.optimizer_G.lr = lr
+            self.lr_current = self.lr_start if epoch < self.epoch_down_step else self.lr_start * (self.epochs - epoch) / (self.epochs - self.epoch_down_step)
+            self.model_obj.optimizer_G.lr = self.lr_current
             ###############################################################################################################################
             if(epoch == 0): print("Initializing Model~~~")  ### sample的時候就會initial model喔！
             ###############################################################################################################################
