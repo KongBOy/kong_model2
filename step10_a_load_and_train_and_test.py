@@ -305,7 +305,7 @@ from step06_a_datas_obj import type5c_real_have_see_no_bg_gt_color,\
                             type7b_h500_w332_real_os_book_400data,\
                             type8_blender_os_book_768
 
-from step08_b_model_obj import *
+from step08_c_model_obj import *
 
 
 ##########################################################################################################################################

@@ -554,7 +554,7 @@ class tf_Data_builder(tf_Data_in_dis_gt_flow_builder):
 
 
 if(__name__ == "__main__"):
-    from step08_b_model_obj import MODEL_NAME, KModel_builder
+    from step08_c_model_obj import MODEL_NAME, KModel_builder
     import os
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
     import time

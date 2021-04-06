@@ -269,7 +269,7 @@ if(__name__ == "__main__"):
     from tqdm import tqdm
     from step06_a_datas_obj import DB_C, DB_N, DB_GM
     from step06_b_data_pipline import Dataset_builder, tf_Data_builder
-    from step08_b_model_obj import MODEL_NAME, KModel_builder
+    from step08_c_model_obj import MODEL_NAME, KModel_builder
     from step09_board_obj import Board_builder
 
 
