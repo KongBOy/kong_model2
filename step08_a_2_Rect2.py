@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Input, Conv2D, LeakyReLU, BatchNormalization, ReLU, Conv2DTranspose, Concatenate
+from tensorflow.keras.layers import Input, Conv2D, LeakyReLU, BatchNormalization, ReLU, Conv2DTranspose, Concatenate, Activation
 from tensorflow.keras.optimizers import Adam
 from tensorflow_addons.layers import InstanceNormalization
 # from tensorflow_addons.layers import InstanceNormalization
@@ -207,7 +207,9 @@ class Generator(tf.keras.models.Model):
         if(self.coord_conv): self.coord_conv_layer6 = CoordConv()
         self.convRGB = Conv2D(filters=out_ch  , kernel_size=self.first_k, strides=1, padding="valid")
 
-    def call(self, input_tensor):
+        self.tanh = Activation(tf.nn.tanh)
+
+    def call(self, input_tensor, training=None):  ### 這裡的training只是為了介面統一，實際上沒用到喔，因為IN不需要指定 train/test mode
         if(self.coord_conv):
             input_tensor = self.coord_conv_layer1(input_tensor)
 
@@ -255,7 +257,7 @@ class Generator(tf.keras.models.Model):
         if(self.coord_conv): x = self.coord_conv_layer6(x)
         x = tf.pad(x, [[0, 0], [first_pad_size, first_pad_size], [first_pad_size, first_pad_size], [0, 0]], "REFLECT")
         x_RGB = self.convRGB(x)
-        return tf.nn.tanh(x_RGB)
+        return self.tanh(x_RGB)
 
 
 class MRFBlock(tf.keras.layers.Layer):
@@ -382,112 +384,6 @@ class Rect2(tf.keras.models.Model):
         return tf.keras.models.Model(inputs=[dis_img, gt_img], outputs=self.call(dis_img, gt_img))
 
 
-
-@tf.function
-def mse_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
-    loss = tf.reduce_mean(tf.math.square(tensor1 - tensor2))
-    return loss * lamb
-
-@tf.function
-def mae_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
-    loss = tf.reduce_mean(tf.math.abs(tensor1 - tensor2))
-    return loss * lamb
-
-@tf.function
-# def train_step(rect2, dis_img, gt_img, optimizer_G, optimizer_D, board_dict ):
-def train_step(model_obj, dis_img, gt_img, board_obj):
-    with tf.GradientTape(persistent=True) as tape:
-        g_rec_img, fake_score, real_score = model_obj.rect(dis_img, gt_img)
-        loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(3., tf.float32))  ### 40 調回 3
-        loss_g2d = mse_kong(fake_score, tf.ones_like(fake_score, dtype=tf.float32), lamb=tf.constant(1., tf.float32))
-        g_total_loss = loss_rec + loss_g2d
-
-        loss_d_fake = mse_kong(fake_score, tf.zeros_like(fake_score, dtype=tf.float32), lamb=tf.constant(1., tf.float32))
-        loss_d_real = mse_kong(real_score, tf.ones_like (real_score, dtype=tf.float32), lamb=tf.constant(1., tf.float32))
-        d_total_loss = (loss_d_real + loss_d_fake) / 2
-
-    grad_D = tape.gradient(d_total_loss, model_obj.rect.discriminator.trainable_weights)
-    grad_G = tape.gradient(g_total_loss, model_obj.rect.generator.    trainable_weights)
-    model_obj.optimizer_D.apply_gradients(zip(grad_D, model_obj.rect.discriminator.trainable_weights))
-    model_obj.optimizer_G.apply_gradients(zip(grad_G, model_obj.rect.generator.    trainable_weights))
-
-    ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
-    board_obj.losses["1_loss_rec"](loss_rec)
-    board_obj.losses["2_loss_g2d"](loss_g2d)
-    board_obj.losses["3_g_total_loss"](g_total_loss)
-    board_obj.losses["4_loss_d_fake"](loss_d_fake)
-    board_obj.losses["5_loss_d_real"](loss_d_real)
-    board_obj.losses["6_d_total_loss"](d_total_loss)
-
-
-@tf.function
-def train_step2(model_obj, dis_img, gt_img, board_obj):
-    for _ in range(1):
-        with tf.GradientTape(persistent=True) as tape:
-            g_rec_img, fake_score, real_score = model_obj.rect(dis_img, gt_img)
-            loss_d_fake = mse_kong(fake_score, tf.zeros_like(fake_score, dtype=tf.float32), lamb=tf.constant(1., tf.float32))
-            loss_d_real = mse_kong(real_score, tf.ones_like (real_score, dtype=tf.float32), lamb=tf.constant(1., tf.float32))
-            d_total_loss = (loss_d_real + loss_d_fake) / 2
-        grad_D = tape.gradient(d_total_loss, model_obj.rect.discriminator.trainable_weights)
-        model_obj.optimizer_D.apply_gradients(zip(grad_D, model_obj.rect.discriminator.trainable_weights))
-
-        board_obj.losses["4_loss_d_fake"](loss_d_fake)
-        board_obj.losses["5_loss_d_real"](loss_d_real)
-        board_obj.losses["6_d_total_loss"](d_total_loss)
-
-
-    for _ in range(5):
-        with tf.GradientTape(persistent=True) as g_tape:
-            g_rec_img, fake_score, real_score = model_obj.rect(dis_img, gt_img)
-            loss_rec = mae_kong(g_rec_img, gt_img, lamb=tf.constant(3., tf.float32))  ### 40 調回 3
-            loss_g2d = mse_kong(fake_score, tf.ones_like(fake_score, dtype=tf.float32), lamb=tf.constant(0.1, tf.float32))
-            g_total_loss = loss_rec + loss_g2d
-        grad_G = g_tape.gradient(g_total_loss, model_obj.rect.generator.    trainable_weights)
-        model_obj.optimizer_G.apply_gradients(zip(grad_G, model_obj.rect.generator.    trainable_weights))
-        ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
-        board_obj.losses["1_loss_rec"](loss_rec)
-        board_obj.losses["2_loss_g2d"](loss_g2d)
-        board_obj.losses["3_g_total_loss"](g_total_loss)
-
-
-import sys
-sys.path.append("kong_util")
-
-import matplotlib.pyplot as plt
-import cv2
-from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg
-from util import matplot_visual_single_row_imgs
-import numpy as np
-
-### 用 網路 生成 影像
-def generate_results(model_G, in_img_pre):
-    rect       = model_G(in_img_pre, training=True)  ### 把影像丟進去model生成還原影像
-    rect_back  = ((rect[0].numpy() + 1) * 125).astype(np.uint8)         ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
-    in_img_back = ((in_img_pre[0].numpy() + 1) * 125).astype(np.uint8)  ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
-    return rect_back, in_img_back  ### 注意訓練model時是用tf來讀img，為rgb的方式訓練，所以生成的是rgb的圖喔！
-
-### 這是一張一張進來的，沒有辦法跟 Result 裡面的 see 生成法合併，要的話就是把這裡matplot部分去除，用result裡的see生成matplot圖囉！
-def generate_sees(model_G, see_index, in_img_pre, gt_img, epoch=0, result_obj=None, see_reset_init=False):
-    rect_back, in_img_back = generate_results(model_G, in_img_pre)
-    see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    plot_dir = see_dir + "/" + "matplot_visual"    ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
-
-    if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
-        Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
-        Check_dir_exist_and_build(plot_dir)  ### 建立 see資料夾/matplot_visual資料夾
-        cv2.imwrite(see_dir + "/" + "0a-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(see_dir + "/" + "0b-gt_img.jpg", gt_img[0].numpy())  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-    cv2.imwrite(see_dir + "/" + "epoch_%04i.jpg" % epoch, rect_back[:, :, ::-1])  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
-
-    ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
-    ### 這部分要記得做！在 train_step3 的 self.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
-    result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch)
-
-    # imgs = [in_img_back, rect_back, gt_img]  ### 把 in_img_back, rect_back, gt_img 包成list
-    # titles = ['Input Image', 'rect Image', 'Ground Truth']  ### 設定 title要顯示的字
-    # matplot_visual_single_row_imgs(img_titles=titles, imgs=imgs, fig_title="epoch_%04i"%epoch, dst_dir=plot_dir ,file_name="epoch=%04i"%epoch, bgr2rgb=False)
-    # Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
-
 #######################################################################################################################
 #######################################################################################################################
 ### testing 的部分 ####################################################################################################
@@ -536,47 +432,66 @@ def test_visual(test_dir_name, data_dict, start_index=0):
     ######################################################################################################################
 
 
+#######################################################################################################################################
 if(__name__ == "__main__"):
+    ### 直接用 假資料 嘗試 model 跑不跑得過
     import numpy as np
     import matplotlib.pyplot as plt
-    # generator = Generator()
-    # img_g = np.ones( shape=(1,256,256,3), dtype=np.float32)
-    # out_g = generator(img_g)
-    # plt.imshow(out_g[0,...])
-    # plt.show()
-    # print("out_g.numpy()",out_g.numpy())
+    generator = Generator()
+    img_g = np.ones( shape=(1, 256, 256, 3), dtype=np.float32)
+    out_g = generator(img_g)
+    plt.imshow(out_g[0, ...])
+    plt.show()
+    print("out_g.numpy()", out_g.numpy())
 
-    # discriminator = Discriminator()
-    # img_d1 = np.ones(shape=(1,256,256,3),dtype=np.float32)
-    # img_d2 = np.ones(shape=(1,256,256,3),dtype=np.float32)
-    # out_d = discriminator(img_d1, img_d2)
-    # plt.imshow(out_d[0,...,-1], vmin=-20, vmax=20, cmap='RdBu_r')
-    # plt.colorbar()
-    # plt.show()
-    # print("out_d.numpy()",out_d.numpy())
+    discriminator = Discriminator()
+    img_d1 = np.ones(shape=(1, 256, 256, 3), dtype=np.float32)
+    img_d2 = np.ones(shape=(1, 256, 256, 3), dtype=np.float32)
+    out_d = discriminator(img_d1, img_d2)
+    plt.imshow(out_d[0, ..., -1], vmin=-20, vmax=20, cmap='RdBu_r')
+    plt.colorbar()
+    plt.show()
+    print("out_d.numpy()", out_d.numpy())
 
     rect = Rect2()
     dis_img = np.ones(shape=(1, 496, 336, 3), dtype=np.float32)
-    gt_img = np.ones(shape=(1, 496, 336, 3), dtype=np.float32)
-    optimizer_G = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
-    optimizer_D = tf.keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
-    summary_writer = tf.summary.create_file_writer("temp_logs_dir")  ### 建tensorboard，這會自動建資料夾喔！
-    train_step(rect, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, 0)
-    # train_step(rect, dis_img, gt_img, optimizer_G, optimizer_D, summary_writer, 0)
+    gt_img  = np.ones(shape=(1, 496, 336, 3), dtype=np.float32)
+    rect(dis_img, gt_img)
+
+#######################################################################################################################################
+    ### 嘗試 真的 load tf_data 進來 train 看看
+    from tqdm import tqdm
+    from step06_a_datas_obj import DB_C, DB_N, DB_GM
+    from step06_b_data_pipline import Dataset_builder, tf_Data_builder
+    from step08_e_model_obj import KModel_builder, MODEL_NAME
+    from step08_c_loss_info_obj import Loss_info_builder
 
 
-    img_resize = (494 + 2, 336)  ### dis_img(in_img的大小)的大小且要是4的倍數
-    from step06_b_data_pipline import get_1_pure_unet_db  , get_2_pure_rect2_dataset
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.rect).build_rect2(first_k3=False, g_train_many=False)
+    db_obj = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book , DB_N.os_book_800data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+    loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_by_model_name(model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
 
-    data_access_path = "F:/Users/Lin_server/Desktop/0 db/"
-    db_dir  = data_access_path + "datasets"
-    db_name = "2_pure_rect2_page_h=384,w=256"
-    BATCH_SIZE = 1
+    ###     step2 訓練
+    for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
+        model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_fun=None, loss_info_obj=loss_info_obj)
+    print("finish")
 
-    data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
-    for n, (input_image, target) in enumerate(zip(data_dict["train_in_db_pre"], data_dict["train_gt_db_pre"])):
-        g_rec_img, fake_score, real_score = rect2(input_image, target)
-        train_step(rect2    , input_image, target, optimizer_G, optimizer_D, summary_writer, n)
+
+
+#######################################################################################################################################
+    ### 以前舊的東西，之後沒用到舊刪掉囉！
+    # img_resize = (494 + 2, 336)  ### dis_img(in_img的大小)的大小且要是4的倍數
+    # from step06_b_data_pipline import get_1_pure_unet_db  , get_2_pure_rect2_dataset
+
+    # data_access_path = "F:/Users/Lin_server/Desktop/0 db/"
+    # db_dir  = data_access_path + "datasets"
+    # db_name = "2_pure_rect2_page_h=384,w=256"
+    # BATCH_SIZE = 1
+
+    # data_dict = get_2_pure_rect2_dataset(db_dir=db_dir, db_name=db_name, batch_size=BATCH_SIZE, img_resize=img_resize)
+    # for n, (input_image, target) in enumerate(zip(data_dict["train_in_db_pre"], data_dict["train_gt_db_pre"])):
+    #     g_rec_img, fake_score, real_score = rect2(input_image, target)
+    #     train_step(rect2    , input_image, target, optimizer_G, optimizer_D, summary_writer, n)
 
     # print(rect2.generator(dis_img))
-    print("finish")

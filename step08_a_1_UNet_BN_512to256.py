@@ -81,33 +81,33 @@ class Generator512to256(tf.keras.models.Model):
         self.conv_out = Conv2D(out_ch, kernel_size=(4, 4), strides=(1, 1), padding="same", name="conv_out")  ### in_channel:128
         # (4): Tanh()
 
-    def call(self, input_tensor):
+    def call(self, input_tensor, training=True):
         x = self.conv1(input_tensor)
 
         skip2 = x
         x = self.lrelu2(skip2)
         x = self.conv2(x)
-        x = self.bn2(x)
+        x = self.bn2(x, training)
 
         skip3 = x
         x = self.lrelu3(skip3)
         x = self.conv3(x)
-        x = self.bn3(x)
+        x = self.bn3(x, training)
 
         skip4 = x
         x = self.lrelu4(skip4)
         x = self.conv4(x)
-        x = self.bn4(x)
+        x = self.bn4(x, training)
 
         skip5 = x
         x = self.lrelu5(skip5)
         x = self.conv5(x)
-        x = self.bn5(x)
+        x = self.bn5(x, training)
 
         skip6 = x
         x = self.lrelu6(skip6)
         x = self.conv6(x)
-        x = self.bn6(x)
+        x = self.bn6(x, training)
         ###############################
         skip7 = x
         x = self.lrelu7(skip7)
@@ -115,40 +115,40 @@ class Generator512to256(tf.keras.models.Model):
 
         x = self.relu7t(x)
         x = self.conv7t(x)
-        x = self.bn7t(x)
+        x = self.bn7t(x, training)
         # x = self.concat7([skip7,x])
         x = self.concat7([x, skip7])
         ###############################
         x = self.relu6t(x)
         x = self.conv6t(x)
-        x = self.bn6t(x)
+        x = self.bn6t(x, training)
         # x = self.concat6([skip6,x])
         x = self.concat6([x, skip6])
 
         x = self.relu5t(x)
         x = self.conv5t(x)
-        x = self.bn5t(x)
+        x = self.bn5t(x, training)
         # x = self.concat5([skip5,x])
         x = self.concat5([x, skip5])
 
 
         x = self.relu4t(x)
         x = self.conv4t(x)
-        x = self.bn4t(x)
+        x = self.bn4t(x, training)
         # x = self.concat4([skip4,x])
         x = self.concat4([x, skip4])
 
 
         x = self.relu3t(x)
         x = self.conv3t(x)
-        x = self.bn3t(x)
+        x = self.bn3t(x, training)
         # x = self.concat3([skip3,x])
         x = self.concat3([x, skip3])
 
 
         x = self.relu2t(x)
         x = self.conv2t(x)
-        x = self.bn2t(x)
+        x = self.bn2t(x, training)
         # x = self.concat2([skip2,x])
         x = self.concat2([x, skip2])
 

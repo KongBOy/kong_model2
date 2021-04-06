@@ -5,7 +5,8 @@ import numpy as np
 import time
 
 from step06_b_data_pipline import tf_Data_builder
-from step09_board_obj import Board_builder
+from step08_c_loss_info_obj import Loss_info_builder
+from step08_d_loss_funs_and_train_step import mae_kong
 from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
@@ -73,7 +74,7 @@ class Experiment():
 
 ################################################################################################################################################
 ################################################################################################################################################
-    def exp_init(self, reload_result=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.board, 5.save_code
+    def exp_init(self, reload_result=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.Loss_info, 5.save_code
         ### 1.result
         if(reload_result):
             # print("self.exp_dir:", self.exp_dir)
@@ -90,8 +91,8 @@ class Experiment():
             print("Reload: %s ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
 
         ####################################################################################################################
-        ### 4.board, 5.save_code；train時才需要 board_obj 和 把code存起來喔！test時不用～
-        self.board_obj = Board_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
+        ### 4.Loss_info, 5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～
+        self.loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
 
 
     def train_reload(self):
@@ -135,11 +136,11 @@ class Experiment():
             ###############################################################################################################################
             ###     step2 訓練
             for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(self.tf_data.train_db_combine)):
-                self.model_obj.train_step(self.model_obj, train_in_pre, train_gt_pre, self.board_obj)
+                self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_fun=mae_kong, loss_info_obj=self.loss_info_obj)
                 # break   ### debug用，看subprocess成不成功
             ###############################################################
             ###     step3 整個epoch 的 loss 算平均，存進tensorboard
-            self.train_step3_board_save_loss(epoch)
+            self.train_step3_Loss_info_save_loss(epoch)
             ###############################################################################################################################
             ###     step4 儲存模型 (checkpoint) the model every "epoch_save_freq" epochs
             if (epoch + 1) % self.epoch_save_freq == 0:
@@ -181,10 +182,13 @@ class Experiment():
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
 
-    def train_step3_board_save_loss(self, epoch):
-        with self.board_obj.summary_writer.as_default():
-            for loss_name, loss_containor in self.board_obj.losses.items():
+    def train_step3_Loss_info_save_loss(self, epoch):
+        with self.loss_info_obj.summary_writer.as_default():
+            for loss_name, loss_containor in self.loss_info_obj.loss_containors.items():
+                ### tensorboard
                 tf.summary.scalar(loss_name, loss_containor.result(), step=epoch)
+
+                ### 自己另存成 npy
                 loss_value = loss_containor.result().numpy()
                 if(epoch == 0):  ### 第一次 直接把值存成np.array
                     np.save(self.result_obj.logs_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
@@ -197,10 +201,10 @@ class Experiment():
                     # print(loss_array)
 
         ###    reset tensorboard 的 loss紀錄容器
-        for loss_containor in self.board_obj.losses.values():
+        for loss_containor in self.loss_info_obj.loss_containors.values():
             loss_containor.reset_states()
         ###############################################################
-        self.board_obj.see_loss(self.epochs)  ### 把 loss資訊 用 matplot畫出來
+        self.loss_info_obj.see_loss(self.epochs)  ### 把 loss資訊 用 matplot畫出來
         ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了
         # self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
@@ -305,7 +309,7 @@ from step06_a_datas_obj import type5c_real_have_see_no_bg_gt_color,\
                             type7b_h500_w332_real_os_book_400data,\
                             type8_blender_os_book_768
 
-from step08_c_model_obj import *
+from step08_e_model_obj import *
 
 
 ##########################################################################################################################################

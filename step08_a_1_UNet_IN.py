@@ -2,7 +2,7 @@ import sys
 sys.path.append("kong_util")
 import tensorflow as tf
 from  tensorflow_addons.layers import InstanceNormalization
-from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, Concatenate
+from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, Concatenate, Activation
 import time
 
 
@@ -11,13 +11,14 @@ import time
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_tanh=True, out_ch=3, **kwargs):
         """
         depth_level: 2~8, 9有點難，因為要是512的倍數，不是512就1024，只能等我研究好512的dataset才有機會式
         """
         super(Generator, self).__init__(**kwargs)
         self.depth_level = depth_level
         self.skip_use_add = skip_use_add
+        self.out_tanh = out_tanh
 
         self.conv1 = Conv2D(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1")  #,bias=False) ### in_channel:3
 
@@ -116,9 +117,11 @@ class Generator(tf.keras.models.Model):
 
         self.relu1t = ReLU(name="relu1t")
         self.conv1t = Conv2DTranspose(out_ch, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1t")  ### in_channel:128
-        # (4): Tanh()
 
-    def call(self, input_tensor, training=False):
+        if(self.out_tanh): self.tanh    = Activation(tf.nn.tanh)
+        else:              self.sigmoid = Activation(tf.nn.sigmoid)
+
+    def call(self, input_tensor, training=None):  ### 這裡的training只是為了介面統一，實際上沒用到喔，因為IN不需要指定 train/test mode
         x = self.conv1(input_tensor)
 
         if(self.depth_level >= 2):
@@ -246,7 +249,9 @@ class Generator(tf.keras.models.Model):
 
         x = self.relu1t(x)
         x = self.conv1t(x)
-        return tf.nn.tanh(x)
+
+        if(self.out_tanh): return self.tanh(x)
+        else:              return self.sigmoid(x)
 
 
     def model(self, x):  ### 看summary用的
@@ -255,6 +260,7 @@ class Generator(tf.keras.models.Model):
 
 #######################################################################################################################################
 if(__name__ == "__main__"):
+    ### 直接用 假資料 嘗試 model 跑不跑得過
     import numpy as np
 
     generator = Generator(depth_level=9)  # 建G
@@ -263,3 +269,24 @@ if(__name__ == "__main__"):
     y = generator(img)
     print(y)
     print("cost time", time.time() - start_time)
+
+#######################################################################################################################################
+    ### 嘗試 真的 load tf_data 進來 train 看看
+    import time
+    import numpy as np
+    from tqdm import tqdm
+    from step06_a_datas_obj import DB_C, DB_N, DB_GM
+    from step06_b_data_pipline import Dataset_builder, tf_Data_builder
+    from step08_e_model_obj import MODEL_NAME, KModel_builder
+    from step08_d_loss_funs_and_train_step import mae_kong
+    from step08_c_loss_info_obj import Loss_info_builder
+
+
+    db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_type(in_type="png", gt_type="knpy", see_type=None).set_detail(have_train=True, have_see=True).build()
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_flow_unet()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+
+    loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_by_model_name(model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
+    ###     step2 訓練
+    for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
+        model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_fun=mae_kong, loss_info_obj=loss_info_obj)

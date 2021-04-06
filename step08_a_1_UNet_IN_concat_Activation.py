@@ -2,7 +2,7 @@ import sys
 sys.path.append("kong_util")
 import tensorflow as tf
 from tensorflow_addons.layers import InstanceNormalization
-from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, Concatenate
+from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, Concatenate, Activation
 import time
 
 """
@@ -77,9 +77,9 @@ class Generator(tf.keras.models.Model):
 
         self.relu1t = ReLU(name="relu1t")
         self.conv1t = Conv2DTranspose(out_ch, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1t")  ### in_channel:128
-        # (4): Tanh()
+        self.tanh   = Activation(tf.nn.tanh)  # (4): Tanh()
 
-    def call(self, input_tensor, training=False):
+    def call(self, input_tensor, training=True):  ### 這裡的training只是為了介面統一，實際上沒用到喔，因為IN不需要指定 train/test mode
         x = self.conv1(input_tensor)
 
         x = self.lrelu2(x)
@@ -152,7 +152,7 @@ class Generator(tf.keras.models.Model):
 
         x = self.relu1t(x)
         x = self.conv1t(x)
-        return tf.nn.tanh(x)
+        return self.tanh(x)
 
 
     def model(self, x):  ### 看summary用的
@@ -161,6 +161,7 @@ class Generator(tf.keras.models.Model):
 
 #######################################################################################################################################
 if(__name__ == "__main__"):
+    ### 直接用 假資料 嘗試 model 跑不跑得過
     import numpy as np
 
     generator = Generator()  # 建G
