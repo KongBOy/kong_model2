@@ -211,7 +211,7 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
         self.pre_db = None  ### 進 generator 之前 做resize 和 值變-1~1的處理 後的db
 
     ####################################################################################################
-    def build_img_db_from_file_name(self):
+    def build_img_db(self):
         file_names = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_format, shuffle=False)
         byte_imgs = file_names.map(self.step0a_load_byte_img)
 
@@ -225,11 +225,13 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
         print("VALUE_RANGE.zero_to_one.value:", VALUE_RANGE.zero_to_one.value, self.use_range == VALUE_RANGE.zero_to_one.value)
         if  (self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = decoded_imgs.map(self.step1_load_img_float32_resize_and_to_tanh)
         elif(self.use_range == VALUE_RANGE.zero_to_one.value):    self.pre_db = decoded_imgs.map(self.step1_load_img_float32_resize_and_to_01)
+        elif(self.use_range == VALUE_RANGE.img_range): print("img 的 in/gt range 設錯囉！ 不能夠直接用 0~255 的range 來train 模型喔~~")
+        elif(self.use_range is None): print("tf_data 忘記設定 in/gt_use_range 了！，你可能會看到 Dataset.zip() 的錯誤喔 ~ ")
 
 
         # if  (self.img_format == "bmp"):
-            # self.ord_db = self.ord_db.map(self._step1_load_bmp_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-            # self.pre_db = self.pre_db.map(self._step1_load_bmp_ord_resize_and_to_tanh)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+        #     self.ord_db = self.ord_db.map(self._step1_load_bmp_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
+        #     self.pre_db = self.pre_db.map(self._step1_load_bmp_ord_resize_and_to_tanh)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
         # elif(self.img_format == "jpg"):
         #     self.ord_db = self.ord_db.map(self._step1_load_jpg_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
         #     self.pre_db = self.pre_db.map(self._step1_load_jpg_ord_resize_and_to_tanh)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
@@ -255,21 +257,26 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
         # if  (self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = self.pre_db.map(lambda file_name: tf.py_function(self.step1_load_img_ord_resize_and_to_tanh, inp=[file_name, self.img_format], Tout=tf.float32))  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
         # elif(self.use_range == VALUE_RANGE.zero_to_one.value):    self.pre_db = self.pre_db.map(lambda file_name: tf.py_function(self.step1_load_img_ord_resize_and_to_01,   inp=[file_name, self.img_format], Tout=tf.float32))  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
 
-    def build_mov_db_from_file_name(self):
+
+    def build_mov_db(self):
         self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
         self.ord_db = self.ord_db.map(self.step1_load_mov_ord_resize)
         self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
         if  (self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = self.pre_db.map(self.step1_load_mov_ord_resize_and_to_tanh)
         elif(self.use_range == VALUE_RANGE.zero_to_one.value):   self.pre_db = self.pre_db.map(self.step1_load_mov_ord_resize_and_to_tanh)
+        elif(self.use_range == VALUE_RANGE.img_range): print("img 的 in/gt range 設錯囉！ 不能夠直接用 0~255 的range 來train 模型喔~~")  ### 防呆一下
+        elif(self.use_range is None): print("tf_data 忘記設定 in/gt_use_range 了！，你可能會看到 Dataset.zip() 的錯誤喔 ~ ")             ### 防呆一下
 
 
-    def build_flow_db_from_file_name(self):
+    def build_flow_db(self):
         self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
         self.ord_db = self.ord_db.map(self.step1_load_flow_ord_resize)
 
         self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
         if  (self.use_range == self.db_range):                    self.pre_db = self.pre_db.map(self.step1_load_flow_ord_resize)          ### resize而已，值方面blender都幫我們弄好了：值在 0~1 之間，所以不用normalize囉！
         elif(self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = self.pre_db.map(self.step1_load_flow_ord_resize_and_to_tanh)  ### resize 和 值弄到 -1~1，假設(99%正確拉懶得考慮其他可能ˊ口ˋ)blender 的 flow一定0~1，所以不等於發生時 一定是要弄成 -1~1
+        elif(self.use_range == VALUE_RANGE.img_range): print("img 的 in/gt range 設錯囉！ 不能夠直接用 0~255 的range 來train 模型喔~~")   ### 防呆一下
+        elif(self.use_range is None): print("tf_data 忘記設定 in/gt_use_range 了！，你可能會看到 Dataset.zip() 的錯誤喔 ~ ")              ### 防呆一下
 
 ####################################################################################################
 ####################################################################################################
@@ -322,19 +329,19 @@ class tf_Datapipline_Factory:
         use_range: 進網路前想用的 range(由 exp_obj 決定)
         '''
         img_pipline = tf_Datapipline_builder().build_img_pipline(ord_dir, img_format=img_format, resize_shape=resize_shape, db_range=db_range, use_range=use_range)
-        img_pipline.build_img_db_from_file_name()
+        img_pipline.build_img_db()
         return img_pipline
 
     @staticmethod
     def new_mov_pipline(ord_dir, h, w, max_train_move, min_train_move, db_range, use_range):
         mov_pipline = tf_Datapipline_builder().build_mov_pipline(ord_dir, h=h, w=w, max_train_move=max_train_move, min_train_move=min_train_move, db_range=db_range, use_range=use_range)
-        mov_pipline.build_mov_db_from_file_name()
+        mov_pipline.build_mov_db()
         return mov_pipline
 
     @staticmethod
     def new_flow_pipline(ord_dir, h, w, db_range, use_range):
         flow_pipline = tf_Datapipline_builder().build_flow_pipline(ord_dir, h=h, w=w, db_range=db_range, use_range=use_range)
-        flow_pipline.build_flow_db_from_file_name()
+        flow_pipline.build_flow_db()
         return flow_pipline
 
 
