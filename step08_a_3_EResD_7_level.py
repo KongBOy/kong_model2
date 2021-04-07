@@ -3,7 +3,6 @@ from tensorflow.keras.layers import Conv2D, LeakyReLU, ReLU, Conv2DTranspose, Ac
 from  tensorflow_addons.layers import InstanceNormalization
 
 from step08_a_2_Rect2 import InstanceNorm_kong, ResBlock
-from step08_d_loss_funs_and_train_step import  train_step_pure_G
 
 ### 模仿UNet
 class Rect_7_layer(tf.keras.models.Model):
@@ -288,8 +287,8 @@ if(__name__ == "__main__"):
     from step06_a_datas_obj import DB_C, DB_N, DB_GM
     from step06_b_data_pipline import Dataset_builder, tf_Data_builder
     from step08_e_model_obj import MODEL_NAME, KModel_builder
-    from step08_d_loss_funs_and_train_step import mae_kong
-    from step08_c_loss_info_obj import Loss_info_builder
+    from step09_a_loss_info_obj import Loss_info_builder
+    
 
     db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book, DB_N.blender_os_hw768 , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_type(in_type="png", gt_type="knpy", see_type=None).set_detail(have_train=True, have_see=True).build()
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level()
@@ -298,4 +297,4 @@ if(__name__ == "__main__"):
     loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_by_model_name(model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
     # ###     step2 訓練
     for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
-        model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_fun=mae_kong, loss_info_obj=loss_info_obj)
+        model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=loss_info_obj)

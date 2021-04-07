@@ -51,7 +51,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
     def _build_flow_part(self):
         ### 生成flow的部分
         from step08_b_use_G_generate import generate_flow_sees_without_rec
-        from step08_d_loss_funs_and_train_step import train_step_pure_G
+        from step09_b_train_step import train_step_pure_G
         # self.kong_model.generate_results = generate_flow_results             ### 不能checkpoint  ### 好像用不到
         self.kong_model.generate_sees    = generate_flow_sees_without_rec    ### 不能checkpoint
         self.kong_model.train_step       = train_step_pure_G                 ### 不能checkpoint
@@ -126,7 +126,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
         from step08_b_use_G_generate import generate_img_results, generate_img_sees
         # self.kong_model.generate_results = generate_img_results  ### 不能checkpoint
         self.kong_model.generate_sees  = generate_img_sees     ### 不能checkpoint
-        from step08_d_loss_funs_and_train_step import train_step_GAN, train_step_GAN2
+        from step09_b_train_step import train_step_GAN, train_step_GAN2
         if  (g_train_many): self.kong_model.train_step = train_step_GAN2  ### 不能checkpoint
         else:               self.kong_model.train_step = train_step_GAN   ### 不能checkpoint
 
@@ -157,7 +157,7 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
         self.kong_model.generate_results = generate_img_results  ### 不能checkpoint
         self.kong_model.generate_sees  = generate_img_sees     ### 不能checkpoint
 
-        from step08_d_loss_funs_and_train_step import train_step_pure_G
+        from step09_b_train_step import train_step_pure_G
         self.kong_model.train_step = train_step_pure_G           ### 不能checkpoint
 
         ### 建立 tf 存模型 的物件： checkpoint物件
@@ -412,6 +412,9 @@ flow_rect_4_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rec
 flow_rect_5_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=5, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
 flow_rect_6_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=6, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
 flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+
+
+
 
 if(__name__ == "__main__"):
     pass

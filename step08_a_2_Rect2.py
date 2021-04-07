@@ -467,7 +467,7 @@ if(__name__ == "__main__"):
     from step06_a_datas_obj import DB_C, DB_N, DB_GM
     from step06_b_data_pipline import Dataset_builder, tf_Data_builder
     from step08_e_model_obj import KModel_builder, MODEL_NAME
-    from step08_c_loss_info_obj import Loss_info_builder
+    from step09_a_loss_info_obj import Loss_info_builder
 
 
     model_obj = KModel_builder().set_model_name(MODEL_NAME.rect).build_rect2(first_k3=False, g_train_many=False)

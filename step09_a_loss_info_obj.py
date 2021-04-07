@@ -1,13 +1,21 @@
 import tensorflow as tf
-from step08_e_model_obj import MODEL_NAME
 import matplotlib.pyplot as plt
 import numpy as np
+
+def mse_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
+    loss = tf.reduce_mean(tf.math.square(tensor1 - tensor2))
+    return loss * lamb
+
+def mae_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
+    loss = tf.reduce_mean(tf.math.abs(tensor1 - tensor2))
+    return loss * lamb
 
 
 class Loss_info:
     def __init__(self):
         self.logs_dir = None
         self.summary_writer = None
+        self.loss_funs_dict = {}
         self.loss_containors = {}
 
     def see_loss(self, epochs):
@@ -28,7 +36,7 @@ class Loss_info:
         print("plot loss ok~")
 
 
-
+###########################################################################################################
 class Loss_info_init_builder:
     def __init__(self, loss_info=None):
         if(loss_info is None): self.loss_info = Loss_info()
@@ -43,12 +51,30 @@ class Loss_info_init_builder:
         return self.loss_info
 
 class Loss_info_G_loss_builder(Loss_info_init_builder):
-    def build_g_loss(self):
+    '''
+    想多加嘗試 G loss 的話 就在這裡多加 method 就好囉！
+    '''
+    def build_g_mae_loss(self):
+        self.loss_info.loss_funs_dict["G"] = mae_kong
+        return self
+
+    def build_g_mse_loss(self):
+        self.loss_info.loss_funs_dict["G"] = mse_kong
+        return self
+
+    def build_g_loss_containors(self):
         self.loss_info.loss_containors["gen_loss" ] = tf.keras.metrics.Mean('gen_loss', dtype=tf.float32)
         return self
 
 class Loss_info_GAN_loss_builder(Loss_info_G_loss_builder):
     def build_gan_loss(self):
+        self.loss_info.loss_funs_dict["G"] = mae_kong
+        self.loss_info.loss_funs_dict["G_to_D"] = mse_kong
+        self.loss_info.loss_funs_dict["D_Real"] = mse_kong
+        self.loss_info.loss_funs_dict["D_Fake"] = mse_kong
+        return self
+
+    def build_gan_loss_containors(self):
         self.loss_info.loss_containors["1_loss_rec"    ] = tf.keras.metrics.Mean('1_loss_rec'    , dtype=tf.float32)
         self.loss_info.loss_containors["2_loss_g2d"    ] = tf.keras.metrics.Mean('2_loss_g2d'    , dtype=tf.float32)
         self.loss_info.loss_containors["3_g_total_loss"] = tf.keras.metrics.Mean('3_g_total_loss', dtype=tf.float32)
@@ -57,22 +83,35 @@ class Loss_info_GAN_loss_builder(Loss_info_G_loss_builder):
         self.loss_info.loss_containors["6_d_total_loss"] = tf.keras.metrics.Mean('6_d_total_loss', dtype=tf.float32)
         return self
 
-# class Loss_info_justG_builder(Loss_info_GAN_loss_builder):
-#     def build_justG(self):
-#         self.loss_info.loss_containors["loss_rec"    ] = tf.keras.metrics.Mean('loss_rec'    , dtype=tf.float32)
-#         return self
-
 
 class Loss_info_builder(Loss_info_GAN_loss_builder):
-    def build_by_model_name(self, model_name):
+    def build_loss_containors_by_model_name(self, model_name):
         print("model_name:", model_name.value)
-        if  ("unet"  in model_name.value or "flow" in model_name.value) : self.build_g_loss()
-        elif("rect"  in model_name.value) : self.build_gan_loss()
-        elif("justG" in model_name.value) : self.build_g_loss()
+        if  ("unet" in model_name.value or
+             "flow" in model_name.value) : self.build_g_loss_containors()
+        elif("rect"  in model_name.value): self.build_gan_loss_containors()
+        elif("justG" in model_name.value): self.build_g_loss_containors()
         return self
+
+    ### 這好像有點多餘，直接在上面 寫 method 就好啦
+    # def custom_loss_funs_dict(self, loss_funs_dict):
+    #     self.loss_info.loss_funs_dict = loss_funs_dict
+    #     return self
+
+    # def custom_loss_containors(self, loss_containors):
+    #     self.loss_info.loss_containors = loss_containors
+    #     return self
+
+
+### 並不是 model 決定 Loss， 而是由 我想 怎麼設計決定，
+# 所以 不能只寫 build_by_model_name，也要寫 我自己指定的method
+# 所以 也可以跟 model 一樣 先建好
+G_mse_loss_info = Loss_info_builder().build_g_mse_loss().build_g_loss_containors().build()
+G_mae_loss_info = Loss_info_builder().build_g_mae_loss().build_g_loss_containors().build()
 
 
 if(__name__ == "__main__"):
-    loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_by_model_name(MODEL_NAME.rect).build()
+    from step08_e_model_obj import MODEL_NAME
+    loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_loss_containors_by_model_name(MODEL_NAME.rect).build()
     print(loss_info_obj.loss_containors)
     print(loss_info_obj.summary_writer)
