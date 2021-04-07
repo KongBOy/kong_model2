@@ -54,19 +54,22 @@ class img_mapping_util(mapping_util):
 
     def step1_load_img_uint8(self, img):
         img  = tf.cast(img, tf.uint8)
-        return img
+        return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
+
 
     def step1_load_img_float32_resize_and_to_01(self, img):
         img  = tf.cast(img, tf.float32)
         img = self._resize(img)
         img = self._norm_img_to_01(img)
-        return img
+        return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
+
 
     def step1_load_img_float32_resize_and_to_tanh(self, img):
         img  = tf.cast(img, tf.float32)
         img = self._resize(img)
         img = self._norm_img_to_tanh(img)
-        return img
+        return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
+
 
     # ### 以下是 bmp file_name -> tensor  成功！
     # ### 這種寫法是 img 沒有用 self.img 來寫，有種先在上面組裝好的概念，比較 能夠顯現 img傳遞過程的概念，先用這個好了，想看上一種風格去git 6b63a99 調喔
