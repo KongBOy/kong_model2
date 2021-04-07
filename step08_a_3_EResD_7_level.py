@@ -288,13 +288,17 @@ if(__name__ == "__main__"):
     from step06_b_data_pipline import Dataset_builder, tf_Data_builder
     from step08_e_model_obj import MODEL_NAME, KModel_builder
     from step09_a_loss_info_obj import Loss_info_builder
-    
 
-    db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book, DB_N.blender_os_hw768 , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_type(in_type="png", gt_type="knpy", see_type=None).set_detail(have_train=True, have_see=True).build()
+    ### 1. model_obj
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level()
-    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
-    loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_by_model_name(model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
-    # ###     step2 訓練
+    ### 2. db_obj 和 tf_data
+    db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book, DB_N.blender_os_hw768 , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy").set_detail(have_train=True, have_see=True).build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range().set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+
+    ### 3. loss_info_obj
+    G_mse_loss_info = Loss_info_builder().build_g_mse_loss().build_g_loss_containors().build()
+
+    ### 4. 跑起來試試看
     for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
-        model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=loss_info_obj)
+        model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=G_mse_loss_info)

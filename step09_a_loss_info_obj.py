@@ -108,6 +108,7 @@ class Loss_info_builder(Loss_info_GAN_loss_builder):
 # 所以 也可以跟 model 一樣 先建好
 G_mse_loss_info = Loss_info_builder().build_g_mse_loss().build_g_loss_containors().build()
 G_mae_loss_info = Loss_info_builder().build_g_mae_loss().build_g_loss_containors().build()
+GAN_mae_loss_info = Loss_info_builder().build_gan_loss().build_gan_loss_containors().build()
 
 
 if(__name__ == "__main__"):

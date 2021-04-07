@@ -445,7 +445,7 @@ if(__name__ == "__main__"):
     out_g = generator(img_g)
     plt.imshow(out_g[0, ...])
     plt.show()
-    print("out_g.numpy()", out_g.numpy())
+    print("out_g.numpy()", out_g.numpy().shape)
 
     discriminator = Discriminator()
     img_d1 = np.ones(shape=(1, 256, 256, 3), dtype=np.float32)
@@ -454,7 +454,7 @@ if(__name__ == "__main__"):
     plt.imshow(out_d[0, ..., -1], vmin=-20, vmax=20, cmap='RdBu_r')
     plt.colorbar()
     plt.show()
-    print("out_d.numpy()", out_d.numpy())
+    print("out_d.numpy()", out_d.numpy().shape)
 
     rect = Rect2()
     dis_img = np.ones(shape=(1, 496, 336, 3), dtype=np.float32)
@@ -469,15 +469,19 @@ if(__name__ == "__main__"):
     from step08_e_model_obj import KModel_builder, MODEL_NAME
     from step09_a_loss_info_obj import Loss_info_builder
 
-
+    ### 1. model_obj
     model_obj = KModel_builder().set_model_name(MODEL_NAME.rect).build_rect2(first_k3=False, g_train_many=False)
-    db_obj = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book , DB_N.os_book_800data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
-    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
-    loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_by_model_name(model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
 
-    ###     step2 訓練
+    ### 2. db_obj 和 tf_data
+    db_obj = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book , DB_N.os_book_800data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", gt_format="jpg").set_detail(have_train=True, have_see=True).build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range().set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+
+    ### 3. loss_info_obj
+    GAN_mae_loss_info = Loss_info_builder().build_gan_loss().build_gan_loss_containors().build()
+
+    ### 4. 跑起來試試看
     for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
-        model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_fun=None, loss_info_obj=loss_info_obj)
+        model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=GAN_mae_loss_info)
     print("finish")
 
 

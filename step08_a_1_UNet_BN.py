@@ -179,3 +179,5 @@ if(__name__ == "__main__"):
     y = generator(img)
     print(y)
     print("cost time", time.time() - start_time)
+
+    ### 沒有真的常在用，所以就沒有測試train_step囉！
