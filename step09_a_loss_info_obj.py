@@ -106,6 +106,7 @@ class Loss_info_builder(Loss_info_GAN_loss_builder):
 ### 並不是 model 決定 Loss， 而是由 我想 怎麼設計決定，
 # 所以 不能只寫 build_by_model_name，也要寫 我自己指定的method
 # 所以 也可以跟 model 一樣 先建好
+# 然後還要在 exp 裡面 再次設定喔！
 G_mse_loss_info = Loss_info_builder().build_g_mse_loss().build_g_loss_containors().build()
 G_mae_loss_info = Loss_info_builder().build_g_mae_loss().build_g_loss_containors().build()
 GAN_mae_loss_info = Loss_info_builder().build_gan_loss().build_gan_loss_containors().build()

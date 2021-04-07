@@ -55,7 +55,7 @@ class Experiment():
         self.phase        = "train"
         self.db_obj       = None
         self.model_obj    = None
-        self.loss_info_obj = None
+        self.loss_info_obj = G_mae_loss_info
         self.exp_dir      = None
         self.describe_mid = None
         self.describe_end = "try_try_try_enum"
@@ -104,7 +104,7 @@ class Experiment():
 
         ####################################################################################################################
         ### 4.Loss_info, 5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉
-        # self.loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_by_model_name(self.model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
+        self.loss_info_obj = Loss_info_builder(G_mae_loss_info).set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build_loss_containors_by_model_name(self.model_obj.model_name).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
 
 
     def train_reload(self):
