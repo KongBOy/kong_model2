@@ -13,7 +13,14 @@ import time
 ### 參考 DewarpNet 的 train_wc 用的 UNet
 ### 試試看 activation 完 再去 concate
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_tanh=True, out_ch=3, **kwargs):
+        '''
+        depth_level, skip_use_add 還沒有實作喔，有用到再做吧~
+
+        out_tanh：想實驗看看 output 是 tanh 和 sigmoid 的效果，out_tanh=False 就是用 sigmoid
+        '''
+        self.out_tanh = out_tanh
+
         super(Generator, self).__init__(**kwargs)
         self.conv1 = Conv2D(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1")  #,bias=False) ### in_channel:3
 
@@ -77,7 +84,9 @@ class Generator(tf.keras.models.Model):
 
         self.relu1t = ReLU(name="relu1t")
         self.conv1t = Conv2DTranspose(out_ch, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1t")  ### in_channel:128
-        self.tanh   = Activation(tf.nn.tanh)  # (4): Tanh()
+
+        if(self.out_tanh): self.tanh    = Activation(tf.nn.tanh)
+        else:              self.sigmoid = Activation(tf.nn.sigmoid)
 
     def call(self, input_tensor, training=True):  ### 這裡的training只是為了介面統一，實際上沒用到喔，因為IN不需要指定 train/test mode
         x = self.conv1(input_tensor)
@@ -152,7 +161,9 @@ class Generator(tf.keras.models.Model):
 
         x = self.relu1t(x)
         x = self.conv1t(x)
-        return self.tanh(x)
+
+        if(self.out_tanh): return self.tanh(x)
+        else:              return self.sigmoid(x)
 
 
     def model(self, x):  ### 看summary用的

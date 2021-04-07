@@ -14,6 +14,8 @@ class Generator(tf.keras.models.Model):
     def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_tanh=True, out_ch=3, **kwargs):
         """
         depth_level: 2~8, 9有點難，因為要是512的倍數，不是512就1024，只能等我研究好512的dataset才有機會式
+        skip_use_add：把 concat 改成 用 + 的看看效果如何
+        out_tanh：想實驗看看 output 是 tanh 和 sigmoid 的效果，out_tanh=False 就是用 sigmoid
         """
         super(Generator, self).__init__(**kwargs)
         self.depth_level = depth_level
@@ -250,8 +252,12 @@ class Generator(tf.keras.models.Model):
         x = self.relu1t(x)
         x = self.conv1t(x)
 
-        if(self.out_tanh): return self.tanh(x)
-        else:              return self.sigmoid(x)
+        if(self.out_tanh):
+            # print("tanh")
+            return self.tanh(x)
+        else:
+            # print("sigmoid")
+            return self.sigmoid(x)
 
 
     def model(self, x):  ### 看summary用的

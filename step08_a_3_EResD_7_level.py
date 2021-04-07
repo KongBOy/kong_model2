@@ -10,6 +10,7 @@ class Rect_7_layer(tf.keras.models.Model):
     def __init__(self, first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=False, use_res_learning=True, resb_num=9, out_tanh=True, out_ch=3, **kwargs):
         """
         depth_level: 0~7
+        out_tanh：想實驗看看 output 是 tanh 和 sigmoid 的效果，out_tanh=False 就是用 sigmoid
         """
         super(Rect_7_layer, self).__init__(**kwargs)
         ########################################################################################################################################################

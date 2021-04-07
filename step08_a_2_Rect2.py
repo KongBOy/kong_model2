@@ -155,7 +155,7 @@ class Discriminator(tf.keras.models.Model):
 
 ### 應該是參考 CycleGAN 的 Generator
 class Generator(tf.keras.models.Model):
-    def __init__(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3, **kwargs):
+    def __init__(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_tanh=True, out_ch=3, **kwargs):
         super(Generator, self).__init__(**kwargs)
         ############################################################################
         self.coord_conv = coord_conv
@@ -177,6 +177,9 @@ class Generator(tf.keras.models.Model):
         self.true_IN = true_IN
         self.use_what_IN = InstanceNorm_kong  ### 原本架構使用InstanceNorm_kong，用它來當 default IN
         if(self.true_IN): self.use_what_IN = InstanceNormalization
+        ########################################################################################################################################################
+        ### 想實驗看看 output 是 tanh 和 sigmoid 的效果，out_tanh=False 就是用 sigmoid
+        self.out_tanh = out_tanh
 
 
         if(self.coord_conv): self.coord_conv_layer1 = CoordConv()

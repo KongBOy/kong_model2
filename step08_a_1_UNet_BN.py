@@ -11,7 +11,14 @@ import time
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_tanh=True, out_ch=3, **kwargs):
+        '''
+        depth_level, skip_use_add 還沒有實作喔，有用到再做吧~
+
+        out_tanh：想實驗看看 output 是 tanh 和 sigmoid 的效果，out_tanh=False 就是用 sigmoid
+        '''
+        self.out_tanh = out_tanh
+
         super(Generator, self).__init__(**kwargs)
         self.conv1 = Conv2D(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1")  #,bias=False) ### in_channel:3
 
@@ -75,7 +82,9 @@ class Generator(tf.keras.models.Model):
 
         self.relu1t = ReLU(name="relu1t")
         self.conv1t = Conv2DTranspose(out_ch, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1t")  ### in_channel:128
-        self.tanh   = Activation(tf.nn.tanh)  # (4): Tanh()
+
+        if(self.out_tanh): self.tanh    = Activation(tf.nn.tanh)
+        else:              self.sigmoid = Activation(tf.nn.sigmoid)
 
     def call(self, input_tensor, training=True):  ### 就是為了這裡，我其他的IN 都要多丟一個training參數這樣子拉~~
         x = self.conv1(input_tensor)
@@ -150,7 +159,9 @@ class Generator(tf.keras.models.Model):
 
         x = self.relu1t(x)
         x = self.conv1t(x)
-        return self.tanh(x)
+
+        if(self.out_tanh): return self.tanh(x)
+        else:              return self.sigmoid(x)
 
 
     def model(self, x):  ### 看summary用的
