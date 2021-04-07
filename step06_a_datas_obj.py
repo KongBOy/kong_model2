@@ -1,3 +1,6 @@
+"""
+直接看 DB 的狀況並且記錄下來
+"""
 from step0_access_path import data_access_path
 from enum import Enum
 
@@ -60,6 +63,11 @@ class DB_GET_METHOD(Enum):
 
     in_dis_gt_flow     = "in_dis_gt_flow"
 
+class VALUE_RANGE(Enum):
+    zero_to_one = "0~1"
+    img_range   = "0~255"
+    neg_one_to_one = "-1~1"
+
 ####################################################################################################################################
 class Datasets():  ### 以上 以下 都是為了要設定這個物件
     # def __init__(self, category, db_name, get_method, h, w):
@@ -78,11 +86,12 @@ class Datasets():  ### 以上 以下 都是為了要設定這個物件
         self.test_gt_dir  = None
         self.see_in_dir   = None
         self.see_gt_dir   = None
-        ### (必須)type
+        ### (必須)format
         ### 最主要是再 step7 unet generate image 時用到，但我覺得那邊可以改寫！改成記bmp/jpg了！
-        self.in_type  = None  ### 本來指定 img/move_map(但因有用get_method，已經可區分img/move_map的動作)，現在覺得指定 bmp/jpg好了
-        self.gt_type  = None
-        self.see_type = None
+        self.in_format  = None  ### 本來指定 img/move_map(但因有用get_method，已經可區分img/move_map的動作)，現在覺得指定 bmp/jpg好了
+        self.in_range = None
+        self.gt_format  = None
+        self.gt_range = None
         ### (不必須)detail
         self.have_train = True
         self.have_see   = False
@@ -103,7 +112,7 @@ class Datasets():  ### 以上 以下 都是為了要設定這個物件
         print("test_gt_dir:%s," % self.test_gt_dir)
         print("see_in_dir:%s," % self.see_in_dir)
         print("see_gt_dir:%s," % self.see_gt_dir)
-        print("in_type:%s, gt_type:%s, see_type:%s" % (self.in_type, self.gt_type, self.see_type))
+        print("in_format:%s, gt_format:%s" % (self.in_format, self.gt_format))
         return ""
 ####################################################################################################################################
 
@@ -163,14 +172,18 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.see_gt_dir   = self.db.db_dir + "/see/"   + gt_dir_name
         return self
 
-class Dataset_type_builder(Dataset_dir_builder):
-    def set_in_gt_type(self, in_type="bmp", gt_type="bmp", see_type="bmp"):
-        self.db.in_type  = in_type
-        self.db.gt_type  = gt_type
-        self.db.see_type = see_type
+class Dataset_format_builder(Dataset_dir_builder):
+    def set_in_gt_format_and_range(self, in_format="bmp", in_range="0~1", gt_format="bmp", gt_range="0~1"):
+        """
+        設定 bmp, npy, knpy, ...... 等等的 資料格式
+        """
+        self.db.in_format  = in_format
+        self.db.in_range   = in_range
+        self.db.gt_format  = gt_format
+        self.db.gt_range   = gt_range
         return self
 
-class Dataset_detail_builder(Dataset_type_builder):
+class Dataset_detail_builder(Dataset_format_builder):
     def set_detail(self, have_train=True, have_see=False):
         """
         資料集 裡面有沒有 train/see 資料夾，有的時候因為懶所以還沒建就想用了這樣子
@@ -187,22 +200,22 @@ DB_C = DB_CATEGORY
 DB_N = DB_NAME
 DB_GM = DB_GET_METHOD
 ### 直接先建好 obj 給外面import囉！
-type5c_real_have_see_no_bg_gt_color          = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_color        , DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="bmp", see_type="bmp").set_detail(have_train=True, have_see=True).build()
-type6_h384_w256_smooth_curl_fold_page        = Dataset_builder().set_basic(DB_C.type6_h_384_w_256_smooth_curl_fold_and_page, DB_N.smooth_complex_page_more_like_move_map, DB_GM.in_dis_gt_move_map, h=384, w=256).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="npy", see_type="npy").set_detail(have_train=True, have_see=True).build()
-type7_h472_w304_real_os_book_400data         = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book               , DB_N.os_book_400data       , DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
-type7b_h500_w332_real_os_book_1532data       = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
-type7b_h500_w332_real_os_book_1532data_focus = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data_focus, DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
-type7b_h500_w332_real_os_book_1532data_big   = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data_big  , DB_GM.in_dis_gt_ord, h=600, w=396).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
-type7b_h500_w332_real_os_book_400data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_400data       , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
-type7b_h500_w332_real_os_book_800data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_800data       , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
-type8_blender_os_book_756                    = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw756      , DB_GM.in_dis_gt_flow, h=756, w=756).set_dir_by_basic().set_in_gt_type(in_type="png", gt_type="knpy", see_type=None).set_detail(have_train=True, have_see=True).build()
-type8_blender_os_book_768                    = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_type(in_type="png", gt_type="knpy", see_type=None).set_detail(have_train=True, have_see=True).build()
+type5c_real_have_see_no_bg_gt_color          = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_color        , DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", in_range="0~255", gt_format="bmp", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
+type6_h384_w256_smooth_curl_fold_page        = Dataset_builder().set_basic(DB_C.type6_h_384_w_256_smooth_curl_fold_and_page, DB_N.smooth_complex_page_more_like_move_map, DB_GM.in_dis_gt_move_map, h=384, w=256).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", in_range="0~255", gt_format="npy", gt_range="???").set_detail(have_train=True, have_see=True).build()
+type7_h472_w304_real_os_book_400data         = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book               , DB_N.os_book_400data       , DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
+type7b_h500_w332_real_os_book_1532data       = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
+type7b_h500_w332_real_os_book_1532data_focus = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data_focus, DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
+type7b_h500_w332_real_os_book_1532data_big   = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_1532data_big  , DB_GM.in_dis_gt_ord, h=600, w=396).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
+type7b_h500_w332_real_os_book_400data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_400data       , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
+type7b_h500_w332_real_os_book_800data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_800data       , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
+type8_blender_os_book_756                    = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw756      , DB_GM.in_dis_gt_flow, h=756, w=756).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1").set_detail(have_train=True, have_see=True).build()
+type8_blender_os_book_768                    = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1").set_detail(have_train=True, have_see=True).build()
 
 
 if(__name__ == "__main__"):
-    db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="bmp", gt_type="bmp", see_type="bmp").set_detail(have_train=True, have_see=True).build()
-    db = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book, DB_N.os_book_400data, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
-    db = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book, DB_N.os_book_1532data, DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_type(in_type="jpg", gt_type="jpg", see_type="jpg").set_detail(have_train=True, have_see=True).build()
+    db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", in_range="0~255", gt_format="bmp", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
+    db = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book,                DB_N.os_book_400data,  DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
+    db = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book,               DB_N.os_book_1532data, DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
     print(type8_blender_os_book_768)
     # db_complex_1_pure_unet = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_move_map   , h=256, w=256 )
     # db_complex_2_pure_rect = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_ord_pad_img, h=256, w=256 )
