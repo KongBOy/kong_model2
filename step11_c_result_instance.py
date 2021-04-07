@@ -286,6 +286,9 @@ unet_6l_skip_use_add = unet_6l_skip_use_add.result_obj
 unet_5l_skip_use_add = unet_5l_skip_use_add.result_obj
 unet_4l_skip_use_add = unet_4l_skip_use_add.result_obj
 unet_3l_skip_use_add = unet_3l_skip_use_add.result_obj
+unet_2l_skip_use_add = unet_2l_skip_use_add.result_obj
+
+ch64_in_epoch500_sigmoid = ch64_in_epoch500_sigmoid.result_obj
 
 ########################################################################################################################
 rect_fk3_ch64_tfIN_resb_ok9_epoch500 = rect_fk3_ch64_tfIN_resb_ok9_epoch500.result_obj
@@ -298,18 +301,28 @@ rect_5_level_fk3 = rect_5_level_fk3.result_obj
 rect_6_level_fk3 = rect_6_level_fk3.result_obj
 rect_7_level_fk3 = rect_7_level_fk3.result_obj
 
+rect_2_level_fk3_ReLU = rect_2_level_fk3_ReLU.result_obj
+rect_3_level_fk3_ReLU = rect_3_level_fk3_ReLU.result_obj
+rect_4_level_fk3_ReLU = rect_4_level_fk3_ReLU.result_obj
+rect_5_level_fk3_ReLU = rect_5_level_fk3_ReLU.result_obj
+rect_6_level_fk3_ReLU = rect_6_level_fk3_ReLU.result_obj
+rect_7_level_fk3_ReLU = rect_7_level_fk3_ReLU.result_obj
+
 
 
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_results = [
+    ch64_in_epoch500_sigmoid,
+
     # unet_8l,
 
-    unet_8l_skip_use_add,
+    # unet_8l_skip_use_add,
     # unet_7l_skip_use_add,
     # unet_6l_skip_use_add,
     # unet_5l_skip_use_add,
     # unet_4l_skip_use_add,
     # unet_3l_skip_use_add,
+    # unet_2l_skip_use_add,
 
     # rect_fk3_ch64_tfIN_resb_ok9_epoch500,
     # rect_7_level_fk7,
@@ -319,6 +332,13 @@ rec_bm_results = [
     # rect_5_level_fk3,
     # rect_6_level_fk3,
     # rect_7_level_fk3,
+
+    # rect_2_level_fk3_ReLU,
+    # rect_3_level_fk3_ReLU,
+    # rect_4_level_fk3_ReLU,
+    # rect_5_level_fk3_ReLU,
+    # rect_6_level_fk3_ReLU,
+    # rect_7_level_fk3_ReLU,
 
 
     # epoch700_bn_see_arg_T_no_down,
