@@ -202,6 +202,7 @@ class Experiment():
             for loss_name, loss_containor in self.loss_info_obj.loss_containors.items():
                 ### tensorboard
                 tf.summary.scalar(loss_name, loss_containor.result(), step=epoch)
+                tf.summary.scalar("lr", self.lr_current, step=epoch)
 
                 ### 自己另存成 npy
                 loss_value = loss_containor.result().numpy()
