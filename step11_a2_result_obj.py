@@ -28,6 +28,9 @@ class Result:
         self.see_amount = None
         self.see_file_amount = None
 
+        self.in_use_range = "0~1"
+        self.gt_use_range = "0~1"
+
         ### after train的時候才用的
         self.ana_plot_title = None  ### 這是給matplot用的title
 

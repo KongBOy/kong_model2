@@ -68,6 +68,7 @@ class Experiment():
         self.train_shuffle   = True
         self.epochs          = 500    ### 看opencv合成的video覺得1300左右就沒變了
         self.epoch_down_step = self.epochs // 2    ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
+        self.epoch_stop      = self.epochs
         self.epoch_save_freq = 10     ### 訓練 epoch_save_freq 個 epoch 存一次模型
         self.start_epoch     = 0
 
@@ -75,6 +76,10 @@ class Experiment():
 
         self.in_use_range = "0~1"
         self.gt_use_range = "0~1"
+        '''
+        覺得不要 mo_use_range，因為本來就應該要 model_output 就直接拿來用了呀，所以直接根據 gt_use_range 來做後處理即可
+        output如果不能拿來用 或者 拿來用出問題，代表model設計有問題
+        '''
 
         self.lr_start = 0.0002  ### learning rate
         self.lr_current = self.lr_start
@@ -168,6 +173,8 @@ class Experiment():
             self.train_step5_show_time(epoch, e_start, total_start, epoch_start_timestamp)
             # break  ### debug用，看subprocess成不成功
 
+            if((epoch + 1) == self.epoch_stop): break   ### 想要有lr 下降，但又不想train滿 中途想離開就 設 epcoh_stop 囉！
+
         ### 最後train完 記得也要看結果喔！
         self.train_step1_see_current_img(self.epochs, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
@@ -179,20 +186,22 @@ class Experiment():
         see_reset_init：是給 test_see 用的，有時候製作 fake_exp 的時候，只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要 重建一份see，這時see_reset_init要設True就會重建一下囉
         """
         # sample_start_time = time.time()
+        see_in     = self.tf_data.test_in_db
         see_in_pre = self.tf_data.test_in_db_pre
         see_gt     = self.tf_data.test_gt_db
         see_amount = 1
         if(self.db_obj.have_see):
+            see_in     = self.tf_data.see_in_db
             see_in_pre = self.tf_data.see_in_db_pre
             see_gt     = self.tf_data.see_gt_db
             see_amount = self.tf_data.see_amount
 
-        for see_index, (test_in_pre, test_gt) in enumerate(tqdm(zip(see_in_pre.take(see_amount), see_gt.take(see_amount)))):
+        for see_index, (test_in, test_in_pre, test_gt) in enumerate(tqdm(zip(see_in.take(see_amount), see_in_pre.take(see_amount), see_gt.take(see_amount)))):
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow" not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_dir, result_obj, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj, training, see_reset_init)
-            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
-            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
+                 "flow" not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_dir, result_obj, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, training, see_reset_init)
+            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
+            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
@@ -203,6 +212,10 @@ class Experiment():
                 ### tensorboard
                 tf.summary.scalar(loss_name, loss_containor.result(), step=epoch)
                 tf.summary.scalar("lr", self.lr_current, step=epoch)
+<<<<<<< HEAD
+=======
+
+>>>>>>> faa4ed33895c31b8d32cb7f7b633fde3b7387f7b
                 ### 自己另存成 npy
                 loss_value = loss_containor.result().numpy()
                 if(epoch == 0):  ### 第一次 直接把值存成np.array
@@ -280,10 +293,12 @@ class Exp_builder():
         self.exp.describe_end = describe_end
         return self
 
-    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=700, epoch_down_step=None, exp_bn_see_arg=False):
+    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=700, epoch_down_step=None, epoch_stop=700, exp_bn_see_arg=False):
         """
         train_shuffle：注意一下，這裡的train_shuffle無法重現 old shuffle 喔
         epochs：train的 總epoch數， epoch_down_step 設定為 epoch_down_step//2
+        epoch_down_step：第幾個epoch後 lr 下降
+        epoch_stop：想要有lr 下降，但又不想 花時間 train滿 中途想離開就 設 epcoh_stop 囉！
         exp_bn_see_arg：在 train/test 生成see 的時候， 決定 bn 的 training = True 或 False， 詳情看 train_step1_see_current_img～
         """
         # self.exp.phase = "train"
@@ -292,6 +307,7 @@ class Exp_builder():
         self.exp.epochs = epochs
         if(epoch_down_step is None): self.exp.epoch_down_step = epochs / 2
         else: self.exp.epoch_down_step = epoch_down_step
+        self.exp.epoch_stop = epoch_stop
         self.exp.start_epoch = 0
         self.exp.exp_bn_see_arg = exp_bn_see_arg
         return self
@@ -536,8 +552,8 @@ in_tanh_ch64_in_epoch500_tanh____gt_tanh = Exp_builder().set_basic("train_reload
 in_01_ch64_in_epoch500_tanh____gt_tanh = Exp_builder().set_basic("trai_reloadn", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_3", describe_end="01_th_th") .set_train_args(epochs=250, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_3-20210408_050717-flow_unet-01_th_th")
 in_01_ch64_in_epoch500_sigmoid_gt_tanh = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_4", describe_end="01_01_th") .set_train_args(epochs=250, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_4-20210408_100237-flow_unet-01_01_th")
 in_tanh_ch64_in_epoch500_tanh____gt_01 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_5", describe_end="th_th_01") .set_train_args(epochs=250, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_5-20210408_141452-flow_unet-th_th_01")
-in_tanh_ch64_in_epoch500_sigmoid_gt_01   = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_6", describe_end="th_01_01") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1").build(result_name="")
-in_tanh_ch64_in_epoch500_sigmoid_gt_tanh = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_8", describe_end="th_01_th") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="")
+in_tanh_ch64_in_epoch500_sigmoid_gt_01   = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_6", describe_end="th_01_01") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=375, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1"). build(result_name="type8_blender_os_book-5_14_1_8_6-20210408_001841-flow_unet-th_01_01")
+in_tanh_ch64_in_epoch500_sigmoid_gt_tanh = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_8", describe_end="th_01_th") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=375, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_8-20210408_054355-flow_unet-th_01_th")
 
 
 ### 看看 UNet 的 concat 改用 + 會有什麼影響
