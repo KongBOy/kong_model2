@@ -173,6 +173,8 @@ class Experiment():
             self.train_step5_show_time(epoch, e_start, total_start, epoch_start_timestamp)
             # break  ### debug用，看subprocess成不成功
 
+            if((epoch + 1) == self.epoch_stop): break   ### 想要有lr 下降，但又不想train滿 中途想離開就 設 epcoh_stop 囉！
+
         ### 最後train完 記得也要看結果喔！
         self.train_step1_see_current_img(self.epochs, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
