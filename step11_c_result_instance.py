@@ -288,8 +288,10 @@ unet_4l_skip_use_add = unet_4l_skip_use_add.result_obj
 unet_3l_skip_use_add = unet_3l_skip_use_add.result_obj
 unet_2l_skip_use_add = unet_2l_skip_use_add.result_obj
 
-ch64_in_epoch500_sigmoid = ch64_in_epoch500_sigmoid.result_obj
-
+# ch64_in_epoch500_sigmoid = ch64_in_epoch500_sigmoid.result_obj
+### 127.35
+in_tanh_ch64_in_epoch500_sigmoid_gt_01 = in_tanh_ch64_in_epoch500_sigmoid_gt_01.result_obj  ### 6
+in_tanh_ch64_in_epoch500_sigmoid_gt_tanh = in_tanh_ch64_in_epoch500_sigmoid_gt_tanh.result_obj  ### 8
 ########################################################################################################################
 rect_fk3_ch64_tfIN_resb_ok9_epoch500 = rect_fk3_ch64_tfIN_resb_ok9_epoch500.result_obj
 rect_7_level_fk7 = rect_7_level_fk7.result_obj
@@ -312,7 +314,9 @@ rect_7_level_fk3_ReLU = rect_7_level_fk3_ReLU.result_obj
 
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_results = [
-    ch64_in_epoch500_sigmoid,
+    # ch64_in_epoch500_sigmoid,
+    # in_tanh_ch64_in_epoch500_sigmoid_gt_01,     ### 6  127.35
+    # in_tanh_ch64_in_epoch500_sigmoid_gt_tanh,   ### 8  127.35
 
     # unet_8l,
 
