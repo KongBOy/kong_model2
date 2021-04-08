@@ -68,6 +68,7 @@ class Experiment():
         self.train_shuffle   = True
         self.epochs          = 500    ### 看opencv合成的video覺得1300左右就沒變了
         self.epoch_down_step = self.epochs // 2    ### 在第 epoch_down_step 個 epoch 後開始下降learning rate
+        self.epoch_stop      = self.epochs
         self.epoch_save_freq = 10     ### 訓練 epoch_save_freq 個 epoch 存一次模型
         self.start_epoch     = 0
 
@@ -75,6 +76,10 @@ class Experiment():
 
         self.in_use_range = "0~1"
         self.gt_use_range = "0~1"
+        '''
+        覺得不要 mo_use_range，因為本來就應該要 model_output 就直接拿來用了呀，所以直接根據 gt_use_range 來做後處理即可
+        output如果不能拿來用 或者 拿來用出問題，代表model設計有問題
+        '''
 
         self.lr_start = 0.0002  ### learning rate
         self.lr_current = self.lr_start
@@ -283,10 +288,12 @@ class Exp_builder():
         self.exp.describe_end = describe_end
         return self
 
-    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=700, epoch_down_step=None, exp_bn_see_arg=False):
+    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=700, epoch_down_step=None, epoch_stop=700, exp_bn_see_arg=False):
         """
         train_shuffle：注意一下，這裡的train_shuffle無法重現 old shuffle 喔
         epochs：train的 總epoch數， epoch_down_step 設定為 epoch_down_step//2
+        epoch_down_step：第幾個epoch後 lr 下降
+        epoch_stop：想要有lr 下降，但又不想 花時間 train滿 中途想離開就 設 epcoh_stop 囉！
         exp_bn_see_arg：在 train/test 生成see 的時候， 決定 bn 的 training = True 或 False， 詳情看 train_step1_see_current_img～
         """
         # self.exp.phase = "train"
@@ -295,6 +302,7 @@ class Exp_builder():
         self.exp.epochs = epochs
         if(epoch_down_step is None): self.exp.epoch_down_step = epochs / 2
         else: self.exp.epoch_down_step = epoch_down_step
+        self.exp.epoch_stop = epoch_stop
         self.exp.start_epoch = 0
         self.exp.exp_bn_see_arg = exp_bn_see_arg
         return self
