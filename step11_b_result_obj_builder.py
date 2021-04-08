@@ -45,7 +45,9 @@ class Result_sees_builder(Result_init_builder):
 
         self.result.see_amount = len(self.result.sees)
         self.result.see_file_amount = self.result.sees[0].see_file_amount  ### 應該是每個see都一樣多檔案，所以就挑第一個拿他的see_file_amount就好囉～
-
+        for see in self.result.sees:  ### 設定 in/gt_use_range，生圖 才會跟 gt 的前處理一致喔！
+            see.in_use_range = self.result.in_use_range
+            see.gt_use_range = self.result.gt_use_range
 
 class Result_train_builder(Result_sees_builder):
     ###     3b.用result_name 裡面的 DB_CATEGORY 來決定sees_ver
@@ -90,11 +92,15 @@ class Result_train_builder(Result_sees_builder):
 
     ### 設定方式一：用exp_obj來設定
     def set_by_exp(self, exp):
-        ### 1.用 exp 資訊來 決定 result_name
+        ### 1.用 exp 資訊來(describe_mid, describe_end) 和 時間日期 組成 result_name
         self.result.result_name  = self._get_result_name_by_exp(exp)
 
         ### 2.決定好 result_name 後，用result_name來設定Result
         self.set_by_result_name(self.result.result_name)
+
+        ### 3. 設定 in/gt_use_range
+        self.result.in_use_range = exp.in_use_range
+        self.result.gt_use_range = exp.gt_use_range
         return self
 
 class Result_plot_builder(Result_train_builder):

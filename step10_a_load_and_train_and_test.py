@@ -179,20 +179,22 @@ class Experiment():
         see_reset_init：是給 test_see 用的，有時候製作 fake_exp 的時候，只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要 重建一份see，這時see_reset_init要設True就會重建一下囉
         """
         # sample_start_time = time.time()
+        see_in     = self.tf_data.test_in_db
         see_in_pre = self.tf_data.test_in_db_pre
         see_gt     = self.tf_data.test_gt_db
         see_amount = 1
         if(self.db_obj.have_see):
+            see_in     = self.tf_data.see_in_db
             see_in_pre = self.tf_data.see_in_db_pre
             see_gt     = self.tf_data.see_gt_db
             see_amount = self.tf_data.see_amount
 
-        for see_index, (test_in_pre, test_gt) in enumerate(tqdm(zip(see_in_pre.take(see_amount), see_gt.take(see_amount)))):
+        for see_index, (test_in, test_in_pre, test_gt) in enumerate(tqdm(zip(see_in.take(see_amount), see_in_pre.take(see_amount), see_gt.take(see_amount)))):
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow" not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_dir, result_obj, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj, training, see_reset_init)
-            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
-            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
+                 "flow" not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_dir, result_obj, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, training, see_reset_init)
+            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
+            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
