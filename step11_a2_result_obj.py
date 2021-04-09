@@ -60,7 +60,7 @@ class Result:
 
     def save_all_single_see_as_matplot_visual_multiprocess(self, add_loss=False):  ### 以 sees 的 see當單位來切
         """
-        目前覺得不建議使用，因為以sees內的see當單位來切，覺得有點沒效率
+        目前覺得不建議使用，因為以sees內的see當單位來切，覺得有點沒效率，且用 see 當單位 ， 用的記憶體大喔！
         """
         print(f"doing {self.result_name}")
         from util import multi_processing_interface
@@ -79,14 +79,18 @@ class Result:
         for see_num in tqdm(range(start_index, start_index + amount)):  ### 這裡寫 start_index + amount 是為了 multiprocess 的格式！
             self.save_single_see_as_matplot_bm_rec_visual(see_num, add_loss, bgr2rgb, single_see_multiprocess, print_msg=print_msg)
 
+    ## 想刪~~ 再保留一版 用不到就刪了
     def save_all_single_see_as_matplot_bm_rec_visual_multiprocess(self, add_loss=False, bgr2rgb=False, print_msg=False):  ### 以 sees 的 see當單位來切
         """
         目前覺得不建議使用，因為以sees內的see當單位來切，覺得有點沒效率
+        不過真的試過以後，效率其實還不錯！
+        但記憶體會爆的問題還是在，可能只適合在記憶體大的電腦跑這樣子
         """
         print(f"doing {self.result_name}")
         from util import multi_processing_interface
         single_see_multiprocess = False  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
         multi_processing_interface(core_amount=CORE_AMOUNT, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_bm_rec_visual, task_args=[add_loss, bgr2rgb, single_see_multiprocess], print_msg=print_msg)
+        print("")
 
     #######################################################################################################################################
     def save_single_see_as_matplot_bm_rec_visual_at_certain_epoch(self, see_num, epoch, add_loss=False, bgr2rgb=False):

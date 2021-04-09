@@ -261,7 +261,8 @@ class Experiment():
 
     def test_see(self):
         """
-        用最後儲存的 Model 來產生see
+        用最後儲存的 Model 來產生see～
+        也常常拿來 reset in/gt see 喔！
         想設定 testing 時的 bn 使用的 training arg 的話， 麻煩用 exp.exp_bn_see_arg 來指定， 因為要用test_see 就要先建exp， 就統一寫在exp裡 個人覺得比較連貫， 因此 就不另外開一個 arg 給 test_see 用囉！
         """
         self.exp_init(reload_result=True)
