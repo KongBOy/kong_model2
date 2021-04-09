@@ -184,6 +184,8 @@ class See_bm_rec(See_info):
         flow_v    = cv2.imread(self.see_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
         gt_flow   = np.load(self.see_dir + "/" + self.see_npz_names[0])["arr_0"]          ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         flow      = np.load(self.see_dir + "/" + self.see_npz_names[epoch + 1])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+
+        # print("2. see gt_use_range=", self.gt_use_range)
         if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
 
         # breakpoint()
