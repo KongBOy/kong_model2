@@ -73,15 +73,17 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["unet_3l_skip_use_add.run()"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + ["unet_2l_skip_use_add.run()"])  ### 看看Activation 完再concat的效果
 
-# 01_01_01 已跑完 500epoch 有lr下降
-# 01_th_th 已跑完 500epoch 有lr下降
+# 2 01_01_01 已跑完 500epoch 有lr下降
+# 1 01_th_th 已跑完 500epoch 有lr下降
 # 以下先跑 200epoch 無lr下降
-# sb.run(same_command + ["in_th_mo_th_gt_th.run()"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + ["in_01_mo_th_gt_th.run()"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + ["in_01_mo_01_gt_th.run()"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + ["in_th_mo_th_gt_01.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["in_th_mo_01_gt_01.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["in_th_mo_01_gt_th.run()"])  ### 看看Activation 完再concat的效果
+### 127.28
+# sb.run(same_command + ["in_th_mo_th_gt_th.run()"])  ### 看看 7 Activation 完再concat的效果
+# sb.run(same_command + ["in_01_mo_th_gt_th.run()"])  ### 看看 3 Activation 完再concat的效果
+# sb.run(same_command + ["in_01_mo_01_gt_th.run()"])  ### 看看 4 Activation 完再concat的效果
+# sb.run(same_command + ["in_th_mo_th_gt_01.run()"])  ### 看看 5 Activation 完再concat的效果
+### 127.35
+# sb.run(same_command + ["in_th_mo_01_gt_01.run()"])  ### 看看 6 Activation 完再concat的效果
+# sb.run(same_command + ["in_th_mo_01_gt_th.run()"])  ### 看看 8 Activation 完再concat的效果
 
 
 
