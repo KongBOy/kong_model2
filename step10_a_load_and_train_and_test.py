@@ -176,7 +176,7 @@ class Experiment():
             if((epoch + 1) == self.epoch_stop): break   ### 想要有lr 下降，但又不想train滿 中途想離開就 設 epcoh_stop 囉！
 
         ### 最後train完 記得也要看結果喔！
-        self.train_step1_see_current_img(self.epochs, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+        self.train_step1_see_current_img(epoch + 1, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
     def train_step1_see_current_img(self, epoch, training=False, see_reset_init=False):
         """
@@ -271,6 +271,7 @@ class Experiment():
         elif(self.phase == "train_reload"):   self.train_reload()
         elif(self.phase == "test_see"):       self.test_see()
         elif(self.phase == "train_indicate"): pass  ### 待完成
+        else: print("ㄘㄋㄇㄉ phase 打錯字了拉~~~")
 
 
 
@@ -546,7 +547,7 @@ unet_8l = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_
 # in_01_ch64_in_epoch500_tanh____gt_01
 # in_01_ch64_in_epoch500_sigmoid_gt_01   = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_2", describe_end="01_01_01") .set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
 in_tanh_ch64_in_epoch500_tanh____gt_tanh = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_7", describe_end="th_th_th") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=375, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_7-20210408_001245-flow_unet-th_th_th")
-in_01_ch64_in_epoch500_tanh____gt_tanh = Exp_builder().set_basic("trai_reloadn", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_3", describe_end="01_th_th") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=375, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_3-20210408_050717-flow_unet-01_th_th")
+in_01_ch64_in_epoch500_tanh____gt_tanh = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_3", describe_end="01_th_th") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=375, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_3-20210408_050717-flow_unet-01_th_th")
 in_01_ch64_in_epoch500_sigmoid_gt_tanh = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_4", describe_end="01_01_th") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=375, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_4-20210408_100237-flow_unet-01_01_th")
 in_tanh_ch64_in_epoch500_tanh____gt_01 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_5", describe_end="th_th_01") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=375, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_5-20210408_141452-flow_unet-th_th_01")
 in_tanh_ch64_in_epoch500_sigmoid_gt_01   = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_6", describe_end="th_01_01") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=400, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1"). build(result_name="type8_blender_os_book-5_14_1_8_6-20210408_001841-flow_unet-th_01_01")
