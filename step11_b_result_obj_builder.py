@@ -14,7 +14,7 @@ class Result_init_builder:
         return self.result
 
 class Result_sees_builder(Result_init_builder):
-    def _build_sees(self, sees_ver):
+    def _build_sees(self, sees_ver, in_use_range, gt_use_range):
         if  (sees_ver == "sees_ver1"):
             self.result.sees = [See(self.result.result_dir, "see-%03i" % see_num) for see_num in range(32)]
         elif(sees_ver == "sees_ver2"):
@@ -45,9 +45,10 @@ class Result_sees_builder(Result_init_builder):
 
         self.result.see_amount = len(self.result.sees)
         self.result.see_file_amount = self.result.sees[0].see_file_amount  ### 應該是每個see都一樣多檔案，所以就挑第一個拿他的see_file_amount就好囉～
+        # print("3. at see", self.result.result_name, ", self.result.gt_use_range~~~~~~~~~~~~~~~", self.result.gt_use_range)
         for see in self.result.sees:  ### 設定 in/gt_use_range，生圖 才會跟 gt 的前處理一致喔！
-            see.in_use_range = self.result.in_use_range
-            see.gt_use_range = self.result.gt_use_range
+            see.in_use_range = in_use_range
+            see.gt_use_range = gt_use_range
 
 class Result_train_builder(Result_sees_builder):
     ###     3b.用result_name 裡面的 DB_CATEGORY 來決定sees_ver
@@ -63,44 +64,54 @@ class Result_train_builder(Result_sees_builder):
         else: sees_ver = "sees_ver1"
         return sees_ver
 
+    ### 設定方式一：用exp_obj來設定
+    def set_by_exp(self, exp):
+        '''
+        step1,2： 用 exp 資訊(describe_mid, describe_end) 和 時間日期 來組成 result_name，
+                  設定好 result_name 後 會在 呼叫 step3 來設定 result細節(ckpt/logs dir、see_version、in/gt_use_range)喔！
+        '''
+        ### step0. (step1.包成function而已) 用 exp 資訊(describe_mid, describe_end) 和 時間日期 來組成 result_name
+        def _get_result_name_by_exp(exp):
+            import datetime
+            ### 自動決定 result_name，再去做進一步設定
+            result_name_element = [exp.db_obj.category.value]
+            if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
+            result_name_element += [datetime.datetime.now().strftime("%Y%m%d_%H%M%S"), exp.model_obj.model_name.value]
+            if(exp.describe_end is not None): result_name_element += [exp.describe_end]
+            result_name = "-".join(result_name_element)  ### result資料夾，裡面放checkpoint和tensorboard資料夾
+            return exp.exp_dir + "/" + result_name
+
+        ### step1.用 exp 資訊(describe_mid, describe_end) 和 時間日期 來組成 result_name
+        self.result.result_name  = _get_result_name_by_exp(exp)
+
+        ### step2.決定好 result_name 後，用result_name來設定Result，
+        self.set_by_result_name(self.result.result_name, in_use_range=exp.in_use_range, gt_use_range=exp.gt_use_range)
+        return self
+
     ### 設定方式二：直接給 result_name來設定( result_name格式可以參考 _get_result_name_by_exp )
-    def set_by_result_name(self, result_name):
-        ### 3a.用result_name 來設定ckpt, logs 的資料夾
+    def set_by_result_name(self, result_name, in_use_range, gt_use_range):
+        '''
+        step3abc. 完全手動設定 result_name 和 result細節(ckpt/logs dir、see_version/sees、in/gt_use_range)
+        '''
+        ### step3a.用result_name 來設定ckpt, logs 的資料夾
         self.result.result_name = result_name  ### 如果他被包在某個資料夾，該資料夾也算名字喔！ex：5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.35_copy
         self.result.result_dir  = result_access_path + "result/" + result_name
         self.result.ckpt_dir = self.result.result_dir + "/ckpt"
         self.result.logs_dir = self.result.result_dir + "/logs"
 
-        ### 3b.用result_name 來決定sees_ver，之後再去建立sees
+        ### step3b. 設定 in/gt_use_range，這步一定要在 建立 sees 前面做喔！這樣 sees 才知道怎麼設 in/gt_use_range
+        self.result.in_use_range = in_use_range
+        self.result.gt_use_range = gt_use_range
+        # print("2. self.result.gt_use_range", self.result.gt_use_range)
+
+        ### step3c.用result_name 來決定sees_ver， 再用 in/gt_use_range 去建立sees
         self.result.sees_ver = self._use_result_name_find_sees_ver()
-        self._build_sees(self.result.sees_ver)
+        self._build_sees(self.result.sees_ver, self.result.in_use_range, self.result.gt_use_range)
+
+
 
         ### 給 ana_plot_title，這是給 step12 用的，default 直 設 result.describe_end
         self.result.ana_plot_title = result_name.split("-")[-1]
-        return self
-
-    ###     1.用 exp 資訊來 決定 result_name
-    def _get_result_name_by_exp(self, exp):
-        import datetime
-        ### 自動決定 result_name，再去做進一步設定
-        result_name_element = [exp.db_obj.category.value]
-        if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
-        result_name_element += [datetime.datetime.now().strftime("%Y%m%d_%H%M%S"), exp.model_obj.model_name.value]
-        if(exp.describe_end is not None): result_name_element += [exp.describe_end]
-        result_name = "-".join(result_name_element)  ### result資料夾，裡面放checkpoint和tensorboard資料夾
-        return exp.exp_dir + "/" + result_name
-
-    ### 設定方式一：用exp_obj來設定
-    def set_by_exp(self, exp):
-        ### 1.用 exp 資訊來(describe_mid, describe_end) 和 時間日期 組成 result_name
-        self.result.result_name  = self._get_result_name_by_exp(exp)
-
-        ### 2.決定好 result_name 後，用result_name來設定Result
-        self.set_by_result_name(self.result.result_name)
-
-        ### 3. 設定 in/gt_use_range
-        self.result.in_use_range = exp.in_use_range
-        self.result.gt_use_range = exp.gt_use_range
         return self
 
 class Result_plot_builder(Result_train_builder):

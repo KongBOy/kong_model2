@@ -99,7 +99,7 @@ class Experiment():
         if(reload_result):
             # print("self.exp_dir:", self.exp_dir)
             # print("self.result_name:", self.result_name)
-            self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name).build()  ### 直接用 自己指定好的 result_name
+            self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name, self.in_use_range, self.gt_use_range).build()  ### 直接用 自己指定好的 result_name
         else: self.result_obj = Result_builder().set_by_exp(self).build()  ### exp在train時 要自動建新的 result，才不會覆蓋到之前訓練的result，Result_builder()需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(in_use_range=self.in_use_range, gt_use_range=self.gt_use_range).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
@@ -330,11 +330,16 @@ class Exp_builder():
         return self
 
     def build(self, result_name=None):
-        if(result_name is not None):  ### 這邊建好可以給 step11, step12 用喔，且 因為我有寫 在train時 會自動建新的 result，所以不用怕 覆蓋到 這邊指定的 result
+        '''
+        這邊先建好 result_obj 的話就可以給 step11, step12 用喔，
+        且 因為我有寫 在train時 會自動建新的 result，所以不用怕 用到這邊 隨便建立的 default result_obj 囉！
+        '''
+        if(result_name is not None):
             # print("self.exp.exp_dir", self.exp.exp_dir)
-            # print("result_name", result_name)
+            # print("1.result_name", result_name, ", self.exp.gt_use_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.gt_use_range)  ### 追蹤see的建立過程
             self.exp.result_name = result_name
-            self.exp.result_obj  = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name).build()  ### 直接用 自己指定好的 result_name
+            self.exp.result_obj  = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
+            # print()  ### 追蹤see的建立過程
         return self.exp
 
 
