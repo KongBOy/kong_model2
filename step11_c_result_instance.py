@@ -288,7 +288,11 @@ unet_4l_skip_use_add = unet_4l_skip_use_add.result_obj
 unet_3l_skip_use_add = unet_3l_skip_use_add.result_obj
 unet_2l_skip_use_add = unet_2l_skip_use_add.result_obj
 
-# ch64_in_epoch500_sigmoid = ch64_in_epoch500_sigmoid.result_obj
+### 127.28
+in_01_mo_th_gt_th = in_01_mo_th_gt_th.result_obj  ### 3
+in_01_mo_01_gt_th = in_01_mo_01_gt_th.result_obj  ### 4
+in_th_mo_th_gt_01 = in_th_mo_th_gt_01.result_obj  ### 5
+in_th_mo_th_gt_th = in_th_mo_th_gt_th.result_obj  ### 7
 ### 127.35
 in_th_mo_01_gt_01 = in_th_mo_01_gt_01.result_obj  ### 6
 in_th_mo_01_gt_th = in_th_mo_01_gt_th.result_obj  ### 8
