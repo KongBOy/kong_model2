@@ -76,12 +76,12 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # 01_01_01 已跑完 500epoch 有lr下降
 # 01_th_th 已跑完 500epoch 有lr下降
 # 以下先跑 200epoch 無lr下降
-sb.run(same_command + ["in_01_ch64_in_epoch500_tanh____gt_tanh.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["in_01_ch64_in_epoch500_sigmoid_gt_tanh.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["in_tanh_ch64_in_epoch500_tanh____gt_01.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["in_tanh_ch64_in_epoch500_sigmoid_gt_01.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["in_tanh_ch64_in_epoch500_tanh____gt_tanh.run()"])  ### 看看Activation 完再concat的效果
-sb.run(same_command + ["in_tanh_ch64_in_epoch500_sigmoid_gt_tanh.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["in_th_mo_th_gt_th.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["in_01_mo_th_gt_th.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["in_01_mo_01_gt_th.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + ["in_th_mo_th_gt_01.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["in_th_mo_01_gt_01.run()"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + ["in_th_mo_01_gt_th.run()"])  ### 看看Activation 完再concat的效果
 
 
 
