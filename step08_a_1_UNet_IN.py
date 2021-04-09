@@ -269,11 +269,13 @@ if(__name__ == "__main__"):
     ### 直接用 假資料 嘗試 model 跑不跑得過
     import numpy as np
 
-    generator = Generator(depth_level=9)  # 建G
+    generator = Generator(depth_level=9, out_tanh=False)  # 建G
     img = np.ones(shape=(1, 512, 512, 3), dtype=np.float32)  # 建 假資料
     start_time = time.time()  # 看資料跑一次花多少時間
     y = generator(img)
-    print(y)
+    print(y.shape)
+    print(y.numpy().max())   ### 可以在這裡先看看 out_tanh 有沒有設定成功
+    print(y.numpy().min())   ### 可以在這裡先看看 out_tanh 有沒有設定成
     print("cost time", time.time() - start_time)
 
 #######################################################################################################################################
