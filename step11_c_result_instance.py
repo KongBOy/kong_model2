@@ -318,9 +318,18 @@ rect_7_level_fk3_ReLU = rect_7_level_fk3_ReLU.result_obj
 
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_results = [
-    # ch64_in_epoch500_sigmoid,
-    in_th_mo_01_gt_01,     ### 6  127.35
-    in_th_mo_01_gt_th,   ### 8  127.35
+    ### 1 複製 IN_epoch500，早就做完了
+    ### 2 早就做完了
+
+    ### 127.28
+    # in_01_mo_th_gt_th,  ### 3 127.28
+    # in_th_mo_th_gt_01,  ### 5 127.28
+    in_th_mo_th_gt_th,  ### 7 127.28
+    in_01_mo_01_gt_th,  ### 4 127.28
+
+    ### 127.35
+    # in_th_mo_01_gt_01,  ### 6  127.35
+    # in_th_mo_01_gt_th,  ### 8  127.35
 
     # unet_8l,
 
