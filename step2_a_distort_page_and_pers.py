@@ -158,7 +158,7 @@ def distort_just_page(dst_dir, start_index, row, col, repeat=5, write_npy=True):
             dis_start_time = time.time()
             page_move = build_page_move_map(row, col, top_curl=go_page_curl, down_curl=go_page_curl, lr_shift=0)  ### 建立 page_move
             page_move = page_move.astype(np.float32)
-            if(write_npy) : np.save(data_access_path + dst_dir + "/" + "move_maps/%06i"%(index), page_move)       ### 把move_map存起來，記得要轉成float32！
+            if(write_npy) : np.save(data_access_path + dst_dir + "/" + "move_maps/%06i" % (index), page_move)       ### 把move_map存起來，記得要轉成float32！
             print("%06i process 1 mesh cost time:" % index, "%.3f" % (time.time() - dis_start_time), "total_time:", time_util(time.time() - start_time))
             index += 1
             move_maps.append(page_move)

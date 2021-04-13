@@ -99,7 +99,7 @@ lr_shift_sl    .on_changed(update)
 ###################################################
 ### Reset按鈕部分
 ### 1.圖 → 2.按鈕 → 3.按鈕功能 做連結
-reset_ax = plt.axes([0.4, 0.01, 0.2, 0.03], facecolor=axcolor) ### 1.畫圖出來
+reset_ax = plt.axes([0.4, 0.01, 0.2, 0.03], facecolor=axcolor)  ### 1.畫圖出來
 reset_btn = Button(reset_ax, "Reset")  ### 1. -> 2. 圖和button做連結
 def reset(event):  ### 3.定義功能
     if  (dis_type == "pers"):
@@ -116,7 +116,7 @@ reset_btn.on_clicked(reset)  ### 2. -> 3. 把功能和button做連結
 
 ## Apply按鈕部分
 ## 1.圖 → 2.按鈕 → 3.按鈕功能 做連結
-apply_ax = plt.axes([0.2, 0.01, 0.2, 0.03], facecolor=axcolor) ### 1.畫圖出來
+apply_ax = plt.axes([0.2, 0.01, 0.2, 0.03], facecolor=axcolor)  ### 1.畫圖出來
 apply_btn = Button(apply_ax, "Apply")  ### 1. -> 2. 圖和button做連結
 def Apply(event):  ### 3.定義功能
     apply_move()

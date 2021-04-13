@@ -110,7 +110,7 @@ def apply_move(img, move_map, max_db_move_x=None, max_db_move_y=None, name="0", 
     for go_row in range(dis_img.shape[0]):
         for go_col in range(dis_img.shape[1]):
             if dis_msk[go_row, go_col] > 1:   ### 扭曲的過程中可能有 多點移到相同的點會被加多次，把他跟加的次數除回來
-                dis_img[go_row, go_col] = dis_img[go_row, go_col] / dis_msk[go_row, go_col]      
+                dis_img[go_row, go_col] = dis_img[go_row, go_col] / dis_msk[go_row, go_col]
                 rec_mov[go_row, go_col] = rec_mov[go_row, go_col] / dis_msk[go_row, go_col]
 
     ### 視覺化
@@ -194,7 +194,7 @@ def load_data_and_apply_move(ord_imgs_dir, move_maps_dir, dst_dir, start_index, 
     print("max_db_move_x", max_db_move_x, ", max_db_move_y", max_db_move_y)     ### 看一下 max_db_move_xy 是多少
     Check_dir_exist_and_build(data_access_path + dst_dir)                       ### 建立放結果的資料夾
 
-    
+
     core_amount = 8
     amount = len(move_maps)
     split_amount = int(amount // core_amount)
@@ -236,4 +236,3 @@ if(__name__ == "__main__"):
     move_maps_dir = src_dir + "/" + "move_maps"
     dst_dir       = src_dir.replace("step2_build_flow", "step3_apply_flow")
     load_data_and_apply_move(ord_imgs_dir, move_maps_dir, dst_dir, start_index, write_to_step3=True)
-    

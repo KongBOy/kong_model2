@@ -1,8 +1,7 @@
-import sys 
+import sys
 sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build
-import numpy as np 
-import time
+import numpy as np
 from step0_access_path import data_access_path
 from step2_a_distort_curl_and_fold import distort_rand
 from step2_a_distort_page_and_pers import distort_just_perspect, distort_just_page

@@ -116,7 +116,7 @@ apply_btn.on_clicked(Apply)  ### 2. -> 3. 把功能和button做連結
 
 ## Apply按鈕部分
 ## 1.圖 → 2.按鈕 → 3.按鈕功能 做連結
-stick_ax = plt.axes([0.6, 0.01, 0.2, 0.03], facecolor=axcolor) ### 1.畫圖出來
+stick_ax = plt.axes([0.6, 0.01, 0.2, 0.03], facecolor=axcolor)  ### 1.畫圖出來
 stick_btn = Button(stick_ax, "Stick")  ### 1. -> 2. 圖和button做連結
 def Stick(event):  ### 3.定義功能
     global row, col, vert_x, vert_y, move_x, move_y, curve_type, alpha

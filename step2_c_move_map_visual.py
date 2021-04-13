@@ -1,5 +1,5 @@
 from step0_access_path import data_access_path
-import numpy as np 
+import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 from util import get_dir_move, get_reference_map, method1, method2
@@ -56,4 +56,3 @@ if(__name__ == "__main__"):
 
     ### 方法3：不大行
     # plt.scatter(x=x.ravel(), y=y.ravel(),c = np.arange(visual_row**2), cmap="hsv")
-    
