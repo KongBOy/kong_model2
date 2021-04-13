@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 from build_dataset_combine import Check_dir_exist_and_build
 from util import time_util
 import time
+
+debug_spyder_dict = dict()
 ### 參考連結：https://stackoverflow.com/questions/53907633/how-to-warp-an-image-using-deformed-mesh
 def get_xy_f(row, col):  ### get_xy_flatten，拿到的map的shape：(..., 2)
     x = np.arange(col)
@@ -23,12 +25,12 @@ def get_xy_f(row, col):  ### get_xy_flatten，拿到的map的shape：(..., 2)
 
 ### 整個function都是用 image的方式來看(左上角(0,0)，x往右邊走增加，y往上面走增加)
 def distort(row, col, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50, debug=False):
-    xy_f = get_xy_f(row, col)  ### 拿到map的shape：(..., 2)
+    xy_f = get_xy_f(row, col)  ### 拿到map的shape：(..., 2), f 是 flatten 的意思
 
     ### step1.選一個點當扭曲點
     vtex = np.array([vert_x, vert_y])  ### 指定的扭曲點xy座標
     xy_f_shifted  = xy_f - vtex        ### 位移整張mesh變成以扭曲點座標為原點
-    # 準備等等要算 d的材料：xy_f_shifted 多加一個channel z，填0
+    # 準備等等要算 d的材料：xyz_f_shifted 多加一個channel z，填0
     xyz_f = np.zeros(shape=(row * col, 3))
     xyz_f[:, 0:2] = xy_f_shifted
 
@@ -37,19 +39,29 @@ def distort(row, col, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50,
         move_x = 0.00001
         move_y = 0.00001
     move_xy = np.array([[move_x, move_y]], dtype=np.float64)
-    move_xyz      = np.array([move_x, move_y, 0])    ### 多一個channel z，填0
+    move_xyz      = np.array([move_x, move_y, 0])        ### 多一個channel z，填0
     move_xyz_proc = np.tile( move_xyz, (row * col, 1) )  ### 擴張給每個點使用
 
     ### step3.決定每個點的移動大小d，決定d的大小方式：離扭曲點越近d越小 且 以扭曲點為原點，走到該點的向量 越像(正反方向) 移動向量的話 d越小，
     ###   所以就用  位移後的mesh(就剛好是以扭曲點為原點，走到該點的向量) 和 移動向量 做 外積了(方向和 移動向量 越像，算出來的值越小)
     d = np.cross(xyz_f, move_xyz_proc)        ### shape=(...,3)
     d = np.absolute(d[:, 2])                  ### shape=(...,1)，前兩個col一定是0，所以取第三個col，且 我們只在意"值"不在意"方向"，所以取絕對值
+    print("d.max()", d.max())
+    print("d.min()", d.min())
+    print("d.shape", d.shape)
+    print("d[0]", d[0])
+    debug_spyder_dict["d_before_norm"] = d
+    debug_spyder_dict["d_norm2"] = np.linalg.norm(move_xy, ord=2)
     d = d / (np.linalg.norm(move_xy, ord=2))  ### norm2 就是算 move_xy向量的 長度 喔！
     # d = d / d.max() ### 最後嘗試了以後覺得效果不好，所以還是用回原本的 除 move_xy的向量長度
     # print("dis_type:",dis_type)
-    # print("d.max()",d.max())
-    # print("d.min()",d.min())
-
+    print("d.max()", d.max())
+    print("d.min()", d.min())
+    print("d.shape", d.shape)
+    print("d[0]", d[0])
+    debug_spyder_dict["xyz_f"] = xyz_f
+    debug_spyder_dict["move_xyz_proc"] = move_xyz_proc
+    debug_spyder_dict["d_after_norm"] = d
     #############################################################
     ### step4. d越小移動越大，概念是要 離扭曲點越近移動越大。細部的alpha參數可以看ppt，照這樣子做就有 折/捲 的效果
     ### wt算除來的值介於0~1之間，
@@ -218,8 +230,11 @@ def show_move_map_visual(move_map, ax):
 
 if(__name__ == "__main__"):
     ### 理解用，手動慢慢扭曲
-    # move_f =          distort( row, col, x=col/2, y=row/2, move_x= col/2, move_y= row/2, dis_type="fold", alpha=2, debug=True )  ### alpha:2~4
-    # move_f = move_f + distort( row, col, x= 0, y=10, move_x=3.5, move_y= 2.5, dis_type="fold", alpha=200, debug=True )
+    row = 256
+    col = 256
+
+    move_f =          distort(row, col, vert_x=col / 2, vert_y=row / 2, move_x=  10, move_y=  10, dis_type="fold", alpha=  30, debug=True )  ### alpha:2~4
+    # move_f = move_f + distort(row, col, vert_x=      0, vert_y=     10, move_x= 3.5, move_y= 2.5, dis_type="fold", alpha=200, debug=True )
 
     # fig, ax = plt.subplots(1,1)
     # fig.set_size_inches(4, 5)
@@ -250,12 +265,12 @@ if(__name__ == "__main__"):
     # distort_like_page(dst_dir=dst_dir, start_index=2000    , row=row, col=col) ### 目前寫死，固定生成60*26個 move_maps喔！
     #############################################################################################################################################
     ### 平滑多一點 384*256_1500張
-    dst_dir = "step2_build_flow_h=384,w=256_smooth_curl+fold"
-    row = 384
-    col = 256
-    amount = 450
-    distort_rand(dst_dir=dst_dir, start_index=amount * 0, amount=amount, row=row, col=col, distort_time=1, curl_probability=1.0, move_x_thresh=40, move_y_thresh=55, smooth=True )
-    distort_rand(dst_dir=dst_dir, start_index=amount * 1, amount=amount, row=row, col=col, distort_time=1, curl_probability=0.0, move_x_thresh=40, move_y_thresh=55, smooth=True )
+    # dst_dir = "step2_build_flow_h=384,w=256_smooth_curl+fold"
+    # row = 384
+    # col = 256
+    # amount = 450
+    # distort_rand(dst_dir=dst_dir, start_index=amount * 0, amount=amount, row=row, col=col, distort_time=1, curl_probability=1.0, move_x_thresh=40, move_y_thresh=55, smooth=True )
+    # distort_rand(dst_dir=dst_dir, start_index=amount * 1, amount=amount, row=row, col=col, distort_time=1, curl_probability=0.0, move_x_thresh=40, move_y_thresh=55, smooth=True )
 
     #############################################################################################################################################
     ### old應該要拿掉，有生成像page的60*26張，剩下用隨機補滿2000張
