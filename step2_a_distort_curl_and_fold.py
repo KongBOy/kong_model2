@@ -26,8 +26,8 @@ def distort(row, col, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50,
     xy_f = get_xy_f(row, col)  ### 拿到map的shape：(..., 2)
 
     ### step1.選一個點當扭曲點
-    vtex = np.array([vert_x, vert_y])      ### 指定的扭曲點xy座標
-    xy_f_shifted  = xy_f - vtex  ### 位移整張mesh變成以扭曲點座標為原點
+    vtex = np.array([vert_x, vert_y])  ### 指定的扭曲點xy座標
+    xy_f_shifted  = xy_f - vtex        ### 位移整張mesh變成以扭曲點座標為原點
     # 準備等等要算 d的材料：xy_f_shifted 多加一個channel z，填0
     xyz_f = np.zeros(shape=(row * col, 3))
     xyz_f[:, 0:2] = xy_f_shifted
@@ -42,8 +42,8 @@ def distort(row, col, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50,
 
     ### step3.決定每個點的移動大小d，決定d的大小方式：離扭曲點越近d越小 且 以扭曲點為原點，走到該點的向量 越像(正反方向) 移動向量的話 d越小，
     ###   所以就用  位移後的mesh(就剛好是以扭曲點為原點，走到該點的向量) 和 移動向量 做 外積了(方向和 移動向量 越像，算出來的值越小)
-    d = np.cross(xyz_f, move_xyz_proc)   ###shape=(...,3)
-    d = np.absolute(d[:, 2])  ###shape=(...,1)，前兩個col一定是0，所以取第三個col，且 我們只在意"值"不在意"方向"，所以取絕對值
+    d = np.cross(xyz_f, move_xyz_proc)        ### shape=(...,3)
+    d = np.absolute(d[:, 2])                  ### shape=(...,1)，前兩個col一定是0，所以取第三個col，且 我們只在意"值"不在意"方向"，所以取絕對值
     d = d / (np.linalg.norm(move_xy, ord=2))  ### norm2 就是算 move_xy向量的 長度 喔！
     # d = d / d.max() ### 最後嘗試了以後覺得效果不好，所以還是用回原本的 除 move_xy的向量長度
     # print("dis_type:",dis_type)
