@@ -85,6 +85,7 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["in_th_mo_01_gt_01.run()"])  ### 看看 6 Activation 完再concat的效果
 # sb.run(same_command + ["in_th_mo_01_gt_th.run()"])  ### 看看 8 Activation 完再concat的效果
 
+sb.run(same_command + ["unet_IN_7l_firstnoC.run()"])  ### 看看 8 Activation 完再concat的效果
 
 
 #######################

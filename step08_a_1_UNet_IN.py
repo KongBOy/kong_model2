@@ -11,7 +11,7 @@ import time
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, skip_use_add=False, out_tanh=True, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, first_concat=True, skip_use_add=False, out_tanh=True, out_ch=3, **kwargs):
         """
         depth_level: 2~8, 9有點難，因為要是512的倍數，不是512就1024，只能等我研究好512的dataset才有機會式
         skip_use_add：把 concat 改成 用 + 的看看效果如何
@@ -19,6 +19,7 @@ class Generator(tf.keras.models.Model):
         """
         super(Generator, self).__init__(**kwargs)
         self.depth_level = depth_level
+        self.first_concat = first_concat
         self.skip_use_add = skip_use_add
         self.out_tanh = out_tanh
 
@@ -244,10 +245,11 @@ class Generator(tf.keras.models.Model):
             x = self.relu2t(x)
             x = self.conv2t(x)
             x = self.in2t(x)
-            if(self.skip_use_add is False):
-                # x = self.concat2([skip2,x])
-                x = self.concat2([x, skip2])
-            else: x = x + skip2
+            if(self.first_concat):
+                if(self.skip_use_add is False):
+                    # x = self.concat2([skip2,x])
+                    x = self.concat2([x, skip2])
+                else: x = x + skip2
 
         x = self.relu1t(x)
         x = self.conv1t(x)
