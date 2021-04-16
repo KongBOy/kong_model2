@@ -219,7 +219,7 @@ class Experiment():
 
                 ### 自己另存成 npy
                 loss_value = loss_containor.result().numpy()
-                if(epoch == 0):  ### 第一次 直接把值存成np.array
+                if(epoch == 1):  ### 第一次 直接把值存成np.array
                     np.save(self.result_obj.logs_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
 
                 else:  ### 第二次後，先把np.array先讀出來append值後 再存進去
