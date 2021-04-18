@@ -296,7 +296,7 @@ class Exp_builder():
         self.exp.describe_end = describe_end
         return self
 
-    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=700, epoch_down_step=None, epoch_stop=700, exp_bn_see_arg=False):
+    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=500, epoch_down_step=None, epoch_stop=500, exp_bn_see_arg=False):
         """
         train_shuffle：注意一下，這裡的train_shuffle無法重現 old shuffle 喔
         epochs：train的 總epoch數， epoch_down_step 設定為 epoch_down_step//2
