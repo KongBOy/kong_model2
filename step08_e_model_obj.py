@@ -361,7 +361,7 @@ flow_unet_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_fl
 flow_unet_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 8 , out_ch=3)
 
 ########################################################### 14 真的IN
-flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True)
+flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, true_IN=True)
 
 
 ########################################################### 14 測試 subprocess
