@@ -393,7 +393,7 @@ flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flo
 
 ########################################################### 14 看 unet 的 output 改成sigmoid
 flow_unet_IN_7l_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=8, skip_use_add=True, out_tanh=False, out_ch=3, true_IN=True)
-flow_unet_IN_7l_ch64_firstnoC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=8, first_concat=False, skip_use_add=True, out_tanh=False, out_ch=3, true_IN=True)
+flow_unet_IN_7l_ch64_firstnoC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, first_concat=False, true_IN=True)
 
 ########################################################### 15 用 resblock 來試試看
 flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect_fk3_ch64_tfIN_resb_ok9).build_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
