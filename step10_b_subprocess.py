@@ -73,31 +73,31 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["unet_3l_skip_use_add.run()"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + ["unet_2l_skip_use_add.run()"])  ### 看看Activation 完再concat的效果
 
-# 2 01_01_01 已跑完 500epoch 有lr下降
-# 1 01_th_th 已跑完 500epoch 有lr下降
-# 以下先跑 200epoch 無lr下降
-### 127.28
-# sb.run(same_command + ["in_th_mo_th_gt_th.run()"])  ### 看看 7 Activation 完再concat的效果
-# sb.run(same_command + ["in_01_mo_th_gt_th.run()"])  ### 看看 3 Activation 完再concat的效果
-# sb.run(same_command + ["in_01_mo_01_gt_th.run()"])  ### 看看 4 Activation 完再concat的效果
-# sb.run(same_command + ["in_th_mo_th_gt_01.run()"])  ### 看看 5 Activation 完再concat的效果
-### 127.35
-# sb.run(same_command + ["in_01_mo_01_gt_01.run()"])  ### 看看 6 Activation 完再concat的效果
-# sb.run(same_command + ["in_th_mo_01_gt_01.run()"])  ### 看看 6 Activation 完再concat的效果
-# sb.run(same_command + ["in_th_mo_01_gt_th.run()"])  ### 看看 8 Activation 完再concat的效果
-
-# sb.run(same_command + ["unet_IN_7l_firstnoC.run()"])  ### 看看 8 Activation 完再concat的效果
+#############################################################################################
+### 8
+### 之前 都跑錯的 mse 喔！將錯就錯， 下面重跑 正確的 mae 試試看 順便比較 mse/mae的效果
+# sb.run(same_command + ["t1_in_01_mo_th_gt_01_mse.run()"])  ### 127.35
+# sb.run(same_command + ["t2_in_01_mo_01_gt_01_mse.run()"])  ### ok  當初127.28偷懶誤打誤撞結果對了所以不用重跑就ok
+# sb.run(same_command + ["t3_in_01_mo_th_gt_th_mse.run()"])  ### ok
+# sb.run(same_command + ["t4_in_01_mo_01_gt_th_mse.run()"])  ### 127.35 待重跑
+# sb.run(same_command + ["t5_in_th_mo_th_gt_01_mse.run()"])  ### ok
+# sb.run(same_command + ["t7_in_th_mo_th_gt_th_mse.run()"])  ### ok
+# sb.run(same_command + ["t6_in_th_mo_01_gt_01_mse.run()"])  ### ok  已重跑所以ok
+# sb.run(same_command + ["t8_in_th_mo_01_gt_th_mse.run()"])  ### ok  已重跑所以ok
 
 
 ### 上面 應該是 沒改到loss所以才用mse，現在改用mae試試看
-# sb.run(same_command + ["in_01_mo_th_gt_01_mae.run()"])  ### 看看 8 Activation 完再concat的效果
-# sb.run(same_command + ["in_01_mo_01_gt_01_mae.run()"])  ### 看看 8 Activation 完再concat的效果
-# sb.run(same_command + ["in_01_mo_th_gt_th_mae.run()"])  ### 看看 8 Activation 完再concat的效果
-# sb.run(same_command + ["in_01_mo_01_gt_th_mae.run()"])  ### 看看 8 Activation 完再concat的效果
-# sb.run(same_command + ["in_th_mo_th_gt_01_mae.run()"])  ### 看看 8 Activation 完再concat的效果
-# sb.run(same_command + ["in_th_mo_01_gt_01_mae.run()"])  ### 看看 8 Activation 完再concat的效果
-# sb.run(same_command + ["in_th_mo_th_gt_th_mae.run()"])  ### 看看 8 Activation 完再concat的效果
-# sb.run(same_command + ["in_th_mo_01_gt_th_mae.run()"])  ### 看看 8 Activation 完再concat的效果
+# sb.run(same_command + ["t2_in_01_mo_01_gt_01_mae.run()"])  ### 127.28
+# sb.run(same_command + ["t1_in_01_mo_th_gt_01_mae.run()"])  ### 127.28
+# sb.run(same_command + ["t3_in_01_mo_th_gt_th_mae.run()"])  ### 127.28
+# sb.run(same_command + ["t5_in_th_mo_th_gt_01_mae.run()"])  ### 127.28
+# sb.run(same_command + ["t6_in_th_mo_01_gt_01_mae.run()"])  ### 127.28
+# sb.run(same_command + ["t7_in_th_mo_th_gt_th_mae.run()"])  ### 127.28
+# sb.run(same_command + ["t4_in_01_mo_01_gt_th_mae.run()"])  ### 127.35
+# sb.run(same_command + ["t8_in_th_mo_01_gt_th_mae.run()"])  ### 127.35
+#############################################################################################
+### 9 的東西
+# sb.run(same_command + ["unet_IN_7l_firstnoC.run()"])
 
 
 
