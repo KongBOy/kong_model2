@@ -82,10 +82,25 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["in_01_mo_01_gt_th.run()"])  ### 看看 4 Activation 完再concat的效果
 # sb.run(same_command + ["in_th_mo_th_gt_01.run()"])  ### 看看 5 Activation 完再concat的效果
 ### 127.35
+# sb.run(same_command + ["in_01_mo_01_gt_01.run()"])  ### 看看 6 Activation 完再concat的效果
 # sb.run(same_command + ["in_th_mo_01_gt_01.run()"])  ### 看看 6 Activation 完再concat的效果
 # sb.run(same_command + ["in_th_mo_01_gt_th.run()"])  ### 看看 8 Activation 完再concat的效果
 
-sb.run(same_command + ["unet_IN_7l_firstnoC.run()"])  ### 看看 8 Activation 完再concat的效果
+# sb.run(same_command + ["unet_IN_7l_firstnoC.run()"])  ### 看看 8 Activation 完再concat的效果
+
+
+### 上面 應該是 沒改到loss所以才用mse，現在改用mae試試看
+# sb.run(same_command + ["in_01_mo_th_gt_01_mae.run()"])  ### 看看 8 Activation 完再concat的效果
+# sb.run(same_command + ["in_01_mo_01_gt_01_mae.run()"])  ### 看看 8 Activation 完再concat的效果
+# sb.run(same_command + ["in_01_mo_th_gt_th_mae.run()"])  ### 看看 8 Activation 完再concat的效果
+# sb.run(same_command + ["in_01_mo_01_gt_th_mae.run()"])  ### 看看 8 Activation 完再concat的效果
+# sb.run(same_command + ["in_th_mo_th_gt_01_mae.run()"])  ### 看看 8 Activation 完再concat的效果
+# sb.run(same_command + ["in_th_mo_01_gt_01_mae.run()"])  ### 看看 8 Activation 完再concat的效果
+# sb.run(same_command + ["in_th_mo_th_gt_th_mae.run()"])  ### 看看 8 Activation 完再concat的效果
+# sb.run(same_command + ["in_th_mo_01_gt_th_mae.run()"])  ### 看看 8 Activation 完再concat的效果
+
+
+
 
 
 #######################

@@ -47,6 +47,10 @@ class img_mapping_util(mapping_util):
         byte_img = tf.io.read_file(file_name)
         return byte_img
 
+    '''
+    寫得這麼難看，是因為 dataset.map() 不能傳參數呀~~ 網路上查到用lambda 傳參數 可跑過，但是無法autograph！
+    所以就乖乖寫得這麼難看囉！
+    '''
     def step0b_decode_bmp(self, byte_img): return tf.image.decode_bmp(byte_img)
     def step0b_decode_jpg(self, byte_img): return tf.image.decode_jpeg(byte_img)
     def step0b_decode_png(self, byte_img): return tf.image.decode_png(byte_img)

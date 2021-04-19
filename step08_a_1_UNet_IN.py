@@ -3,6 +3,7 @@ sys.path.append("kong_util")
 import tensorflow as tf
 from  tensorflow_addons.layers import InstanceNormalization
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, Concatenate, Activation
+from tensorflow.keras import Sequential
 import time
 
 
@@ -11,7 +12,7 @@ import time
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, first_concat=True, skip_use_add=False, out_tanh=True, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, first_concat=True, skip_use_add=False, skip_use_cnn3_relu=False, out_tanh=True, out_ch=3, **kwargs):
         """
         depth_level: 2~8, 9有點難，因為要是512的倍數，不是512就1024，只能等我研究好512的dataset才有機會式
         skip_use_add：把 concat 改成 用 + 的看看效果如何
@@ -21,6 +22,7 @@ class Generator(tf.keras.models.Model):
         self.depth_level = depth_level
         self.first_concat = first_concat
         self.skip_use_add = skip_use_add
+        self.skip_use_cnn3_relu = skip_use_cnn3_relu
         self.out_tanh = out_tanh
 
         self.conv1 = Conv2D(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1")  #,bias=False) ### in_channel:3
@@ -29,6 +31,7 @@ class Generator(tf.keras.models.Model):
             self.lrelu2 = LeakyReLU(alpha=0.2, name="lrelu2")
             self.conv2  = Conv2D(hid_ch * 2, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv2")  #,bias=False) ### in_channel:64
             if(self.depth_level > 2): self.in2    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            # if(self.skip_use_cnn3_relu): self.skip_cnn3 = Sequential([Conv2D(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv1"), ])
 
         if(self.depth_level >= 3):
             self.lrelu3 = LeakyReLU(alpha=0.2, name="lrelu3")
