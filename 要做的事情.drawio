@@ -1,1 +1,37 @@
-<mxfile host="app.diagrams.net" modified="2021-04-19T01:36:55.781Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36" etag="6dmS0EJNrXfrgPXnfvkM" version="14.6.1" type="github"><diagram id="msBns1qqR1EzNI2stvdH" name="Page-1">3ZfLjpswFIaf5ixbBczFLAMlU/W2iUZde8AFGoMjY4akT18bDAkDI03VEaPJBpn/+IK/8/sAgKLydCfIMf/OU8rA3qQnQJ/Atj3fV1ctnHsBeagXMlGkvWRdhH3xhxpxY9SmSGk96Sg5Z7I4TsWEVxVN5EQjQvB22u0XZ9NVjySjM2GfEDZXfxapzHsV2/5F/0yLLB9Wtrygj5Rk6Gx2Uuck5e2VhGJAkeBc9q3yFFGm2Q1c+nG7Z6LjgwlayZcMOJFzxb8dvt55v8v7L75dY777YPezPBLWmA1D7EHgQuhA7EOwAewJWjdMmk3I80BG8KZKqZ58Ayhs80LS/ZEkOtoqKygtlyVTd5ZqjpvXfWsp+GHEaY1KxBkXSql4pWYJzaNRIenp2T1bI0nlQMpLKsVZdTED0ADfuM9yzX17yaVnpPwqjcMwYtyTjTNfAKuGYfwPvK0F3hi2IQReB94D7P8f6deghp5QQ3NqzprU0Iza/Q96I47039iRzoxtJkiqFMbr+jYQB2+M2H1BkVVxQRmRVKNvuTi8S/R24E7Qj6/xK/SWtSZ7b7ngdqW2b4RbiF3AkVZugvlCtV6XuT9j/lCqiZpHJXaGdyDY6SOAsTZ/HAC2AMc6tMWAw9tIw8KnxrppwLM0SFrVXDxwItLbYLzw8lyX8bDYpL50Dt9iXcWLKlNRuzO+q/2O+++8WBm/TbqmKkLqMDgQhoC7w6AKUhi9z/z4/sdphtBmIUOO+yoZUreXv6cudvULiuK/</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-04-19T01:39:08.319Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36" etag="Mg5cpV5QRbshQ5nw-WRz" version="14.6.1" type="github">
+  <diagram id="msBns1qqR1EzNI2stvdH" name="Page-1">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="xaynoLkKG6jmUJ72s8oF-2" value="整理result" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;strokeWidth=1;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="320" y="150" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="xaynoLkKG6jmUJ72s8oF-1" value="論文" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="330" y="130" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="xaynoLkKG6jmUJ72s8oF-3" value="UNet" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;strokeWidth=1;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="320" y="170" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="xaynoLkKG6jmUJ72s8oF-4" value="grad loss" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;strokeWidth=1;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="320" y="190" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="xaynoLkKG6jmUJ72s8oF-5" value="整理 related work" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;strokeWidth=1;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="295" y="210" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="xaynoLkKG6jmUJ72s8oF-6" value="視覺化" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;strokeWidth=1;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="295" y="230" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="xaynoLkKG6jmUJ72s8oF-7" value="bm/uv 生成過程" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;strokeWidth=1;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="295" y="250" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="xaynoLkKG6jmUJ72s8oF-8" value="tensorboard" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;strokeWidth=1;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="295" y="270" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="xaynoLkKG6jmUJ72s8oF-10" value="用working 2 分析wc是什麼" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;strokeWidth=1;strokeColor=none;" parent="1" vertex="1">
+          <mxGeometry x="277.5" y="290" width="145" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
