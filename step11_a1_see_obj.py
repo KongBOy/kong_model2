@@ -195,8 +195,15 @@ class See_bm_rec(See_info):
         if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
 
         # breakpoint()
-        bm  = use_flow_to_get_bm(flow, flow_scale=768)
-        rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
+        valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
+        total_pix_amount = flow.shape[0] * flow.shape[1]
+        if( valid_mask_pix_amount / total_pix_amount > 0.5 ):
+            bm  = use_flow_to_get_bm(flow, flow_scale=768)
+            rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
+        else:
+            bm  = np.zeros(shape=(768, 768, 2))
+            rec = np.zeros(shape=(768, 768, 3))
+
         if(gt_flow.sum() > 0):
             gt_bm  = use_flow_to_get_bm(gt_flow, flow_scale=768)
             gt_rec = use_bm_to_rec_img(gt_bm, flow_scale=768, dis_img=in_img)
