@@ -288,14 +288,24 @@ unet_4l_skip_use_add = unet_4l_skip_use_add.result_obj
 unet_3l_skip_use_add = unet_3l_skip_use_add.result_obj
 unet_2l_skip_use_add = unet_2l_skip_use_add.result_obj
 
-### 127.28
-in_01_mo_th_gt_th = in_01_mo_th_gt_th.result_obj  ### 3
-in_01_mo_01_gt_th = in_01_mo_01_gt_th.result_obj  ### 4
-in_th_mo_th_gt_01 = in_th_mo_th_gt_01.result_obj  ### 5
-in_th_mo_th_gt_th = in_th_mo_th_gt_th.result_obj  ### 7
-### 127.35
-in_th_mo_01_gt_01 = in_th_mo_01_gt_01.result_obj  ### 6
-in_th_mo_01_gt_th = in_th_mo_01_gt_th.result_obj  ### 8
+t1_in_01_mo_th_gt_01_mse = t1_in_01_mo_th_gt_01_mse.result_obj
+t2_in_01_mo_01_gt_01_mse = t2_in_01_mo_01_gt_01_mse.result_obj
+t3_in_01_mo_th_gt_th_mse = t3_in_01_mo_th_gt_th_mse.result_obj
+t4_in_01_mo_01_gt_th_mse = t4_in_01_mo_01_gt_th_mse.result_obj
+t5_in_th_mo_th_gt_01_mse = t5_in_th_mo_th_gt_01_mse.result_obj
+t6_in_th_mo_01_gt_01_mse = t6_in_th_mo_01_gt_01_mse.result_obj
+t7_in_th_mo_th_gt_th_mse = t7_in_th_mo_th_gt_th_mse.result_obj
+t8_in_th_mo_01_gt_th_mse = t8_in_th_mo_01_gt_th_mse.result_obj
+
+t1_in_01_mo_th_gt_01_mae = t1_in_01_mo_th_gt_01_mae.result_obj
+t2_in_01_mo_01_gt_01_mae = t2_in_01_mo_01_gt_01_mae.result_obj
+t3_in_01_mo_th_gt_th_mae = t3_in_01_mo_th_gt_th_mae.result_obj
+t4_in_01_mo_01_gt_th_mae = t4_in_01_mo_01_gt_th_mae.result_obj
+t5_in_th_mo_th_gt_01_mae = t5_in_th_mo_th_gt_01_mae.result_obj
+t6_in_th_mo_01_gt_01_mae = t6_in_th_mo_01_gt_01_mae.result_obj
+t7_in_th_mo_th_gt_th_mae = t7_in_th_mo_th_gt_th_mae.result_obj
+t8_in_th_mo_01_gt_th_mae = t8_in_th_mo_01_gt_th_mae.result_obj
+
 ########################################################################################################################
 rect_fk3_ch64_tfIN_resb_ok9_epoch500 = rect_fk3_ch64_tfIN_resb_ok9_epoch500.result_obj
 rect_7_level_fk7 = rect_7_level_fk7.result_obj
@@ -314,22 +324,28 @@ rect_5_level_fk3_ReLU = rect_5_level_fk3_ReLU.result_obj
 rect_6_level_fk3_ReLU = rect_6_level_fk3_ReLU.result_obj
 rect_7_level_fk3_ReLU = rect_7_level_fk3_ReLU.result_obj
 
-
+testest = testest.result_obj
 
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_results = [
-    ### 1 複製 IN_epoch500，早就做完了
-    ### 2 早就做完了
+    # testest,
+    # t1_in_01_mo_th_gt_01_mse,
+    # t2_in_01_mo_01_gt_01_mse,
+    # t3_in_01_mo_th_gt_th_mse,
+    # t4_in_01_mo_01_gt_th_mse,
+    # t5_in_th_mo_th_gt_01_mse,
+    # t6_in_th_mo_01_gt_01_mse,
+    # t7_in_th_mo_th_gt_th_mse,
+    # t8_in_th_mo_01_gt_th_mse,
 
-    ### 127.28
-    # in_01_mo_th_gt_th,  ### 3 127.28
-    # in_th_mo_th_gt_01,  ### 5 127.28
-    in_th_mo_th_gt_th,  ### 7 127.28
-    in_01_mo_01_gt_th,  ### 4 127.28
-
-    ### 127.35
-    # in_th_mo_01_gt_01,  ### 6  127.35
-    # in_th_mo_01_gt_th,  ### 8  127.35
+    # t1_in_01_mo_th_gt_01_mse,
+    # t2_in_01_mo_01_gt_01_mse,
+    # t3_in_01_mo_th_gt_th_mse,
+    # t4_in_01_mo_01_gt_th_mse,
+    # t5_in_th_mo_th_gt_01_mse,
+    # t6_in_th_mo_01_gt_01_mse,
+    # t7_in_th_mo_th_gt_th_mse,
+    # t8_in_th_mo_01_gt_th_mse,
 
     # unet_8l,
 
