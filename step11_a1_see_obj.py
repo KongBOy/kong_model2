@@ -265,7 +265,8 @@ class See_bm_rec(See_info):
             Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
         else:  ### see內的任務 不切 multiprocess，和上面幾乎一樣，只差 call 沒 multiprocess 的 method 和 core_amount 指定1
-            self._draw_matplot_bm_rec_visual_after_train(0, self.see_file_amount, add_loss, bgr2rgb)
+            self._draw_matplot_bm_rec_visual_after_train_multiprocess(add_loss, bgr2rgb, core_amount=10, task_amount=self.see_file_amount, print_msg=print_msg)  ### see內的任務 當單位來切，task_amount輸入self.see_file_amount是對的！不用-2變epoch喔！
+            # self._draw_matplot_bm_rec_visual_after_train(0, self.see_file_amount, add_loss, bgr2rgb)
             ### 後處理讓結果更小 但 又不失視覺品質
             Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
