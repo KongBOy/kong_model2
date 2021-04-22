@@ -338,14 +338,14 @@ rec_bm_results = [
     # t7_in_th_mo_th_gt_th_mse,
     # t8_in_th_mo_01_gt_th_mse,
 
-    # t1_in_01_mo_th_gt_01_mse,
-    # t2_in_01_mo_01_gt_01_mse,
-    # t3_in_01_mo_th_gt_th_mse,
-    # t4_in_01_mo_01_gt_th_mse,
-    # t5_in_th_mo_th_gt_01_mse,
-    # t6_in_th_mo_01_gt_01_mse,
-    # t7_in_th_mo_th_gt_th_mse,
-    # t8_in_th_mo_01_gt_th_mse,
+    # t1_in_01_mo_th_gt_01_mae,
+    # t2_in_01_mo_01_gt_01_mae,
+    # t3_in_01_mo_th_gt_th_mae,
+    # t4_in_01_mo_01_gt_th_mae,
+    # t5_in_th_mo_th_gt_01_mae,
+    # t6_in_th_mo_01_gt_01_mae,
+    # t7_in_th_mo_th_gt_th_mae,
+    # t8_in_th_mo_01_gt_th_mae,
 
     # unet_8l,
 
