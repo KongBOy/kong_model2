@@ -197,7 +197,8 @@ class See_bm_rec(See_info):
         # breakpoint()
         valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
         total_pix_amount = flow.shape[0] * flow.shape[1]
-        if( valid_mask_pix_amount / total_pix_amount > 0.5 ):
+        # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
+        if( valid_mask_pix_amount / total_pix_amount > 0.36):
             bm  = use_flow_to_get_bm(flow, flow_scale=768)
             rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
         else:
@@ -225,6 +226,15 @@ class See_bm_rec(See_info):
         ### 單獨存大張 rec：
         if(epoch <= 3): cv2.imwrite(self.rec_visual_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
         cv2.imwrite(self.rec_visual_dir + "/" + "rec_epoch=%04i.jpg" % epoch, rec)     ### 存大張rec
+
+        # del in_img
+        # del gt_flow_v
+        # del flow_v
+        # del gt_flow
+        # del bm
+        # del rec
+        # del gt_bm
+        # del gt_rec
         return single_row_imgs
 
     ###############################################################################################
