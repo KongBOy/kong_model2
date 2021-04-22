@@ -14,7 +14,8 @@ def train_step_pure_G(model_obj, in_data, gt_data, loss_info_obj=None):
     model_obj .optimizer_G .apply_gradients(zip(generator_gradients, model_obj.generator.trainable_variables))
 
     ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
-    loss_info_obj.loss_containors["gen_loss"](gen_loss)
+    for loss_name in loss_info_obj.loss_containors.keys():
+        loss_info_obj.loss_containors[loss_name](gen_loss)
 
 
 @tf.function
