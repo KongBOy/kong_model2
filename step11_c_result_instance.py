@@ -599,11 +599,20 @@ unet_skip_use_concat_vs_add = [
 ###########################################################################
 ### 另一個架構
 
-rect_layers = [
+rect_layers_wrong_lrelu = [
     rect_2_level_fk3,
     rect_3_level_fk3,
     rect_4_level_fk3,
     rect_5_level_fk3,
     rect_6_level_fk3,
     rect_7_level_fk3,
+]
+
+rect_layers_right_relu = [
+    rect_2_level_fk3_ReLU,
+    rect_3_level_fk3_ReLU,
+    rect_4_level_fk3_ReLU,
+    rect_5_level_fk3_ReLU,
+    rect_6_level_fk3_ReLU,
+    rect_7_level_fk3_ReLU,
 ]
