@@ -87,7 +87,7 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 
 
 ### 上面 應該是 沒改到loss所以才用mse，現在改用mae試試看
-# sb.run(same_command + ["t2_in_01_mo_01_gt_01_mae.run()"])  ### 127.28
+# sb.run(same_command + ["t2_in_01_mo_01_gt_01_mae.run()"])  ### ok
 # sb.run(same_command + ["t1_in_01_mo_th_gt_01_mae.run()"])  ### 127.28
 # sb.run(same_command + ["t3_in_01_mo_th_gt_th_mae.run()"])  ### 127.28
 # sb.run(same_command + ["t5_in_th_mo_th_gt_01_mae.run()"])  ### 127.28
