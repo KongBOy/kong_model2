@@ -76,25 +76,25 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 #############################################################################################
 ### 8
 ### 之前 都跑錯的 mse 喔！將錯就錯， 下面重跑 正確的 mae 試試看 順便比較 mse/mae的效果
-# sb.run(same_command + ["t1_in_01_mo_th_gt_01_mse.run()"])  ### 127.35
-# sb.run(same_command + ["t2_in_01_mo_01_gt_01_mse.run()"])  ### ok  當初127.28偷懶誤打誤撞結果對了所以不用重跑就ok
-# sb.run(same_command + ["t3_in_01_mo_th_gt_th_mse.run()"])  ### ok
-# sb.run(same_command + ["t4_in_01_mo_01_gt_th_mse.run()"])  ### 127.35 待重跑
-# sb.run(same_command + ["t5_in_th_mo_th_gt_01_mse.run()"])  ### ok
-# sb.run(same_command + ["t7_in_th_mo_th_gt_th_mse.run()"])  ### ok
-# sb.run(same_command + ["t6_in_th_mo_01_gt_01_mse.run()"])  ### ok  已重跑所以ok
-# sb.run(same_command + ["t8_in_th_mo_01_gt_th_mse.run()"])  ### ok  已重跑所以ok
+# sb.run(same_command + ["t2_in_01_mo_01_gt_01_mse.run()"])  ### 已確認錯了 , 重train 127.35
+# sb.run(same_command + ["t1_in_01_mo_th_gt_01_mse.run()"])  ### 已確認錯了 , 重train 127.35
+# sb.run(same_command + ["t7_in_th_mo_th_gt_th_mse.run()"])  ### 已確認錯了 , 重train 127.28
+# sb.run(same_command + ["t3_in_01_mo_th_gt_th_mse.run()"])  ### 已確認錯了 , 重train 127.28
+# sb.run(same_command + ["t5_in_th_mo_th_gt_01_mse.run()"])  ### 已確認錯了 , 重train 127.28
+# sb.run(same_command + ["t6_in_th_mo_01_gt_01_mse.run()"])  ### 已確認錯了 , 重train 127.28
+# sb.run(same_command + ["t4_in_01_mo_01_gt_th_mse.run()"])  ### 圖確認過覺得怪怪的 , 不想重train
+# sb.run(same_command + ["t8_in_th_mo_01_gt_th_mse.run()"])  ### 已確認錯了, 隨然沒 train完，但前面的175 epoch 也幾乎一樣囉！, 不想重train
 
 
 ### 上面 應該是 沒改到loss所以才用mse，現在改用mae試試看
 # sb.run(same_command + ["t2_in_01_mo_01_gt_01_mae.run()"])  ### ok
-# sb.run(same_command + ["t1_in_01_mo_th_gt_01_mae.run()"])  ### 127.28
-# sb.run(same_command + ["t3_in_01_mo_th_gt_th_mae.run()"])  ### 127.28
-# sb.run(same_command + ["t5_in_th_mo_th_gt_01_mae.run()"])  ### 127.28
-# sb.run(same_command + ["t6_in_th_mo_01_gt_01_mae.run()"])  ### 127.28
-# sb.run(same_command + ["t7_in_th_mo_th_gt_th_mae.run()"])  ### 127.28
-# sb.run(same_command + ["t4_in_01_mo_01_gt_th_mae.run()"])  ### 127.35
-# sb.run(same_command + ["t8_in_th_mo_01_gt_th_mae.run()"])  ### 127.35
+# sb.run(same_command + ["t1_in_01_mo_th_gt_01_mae.run()"])  ### 127.28 ok
+# sb.run(same_command + ["t3_in_01_mo_th_gt_th_mae.run()"])  ### 127.28 ok
+# sb.run(same_command + ["t5_in_th_mo_th_gt_01_mae.run()"])  ### 127.28 ok
+# sb.run(same_command + ["t6_in_th_mo_01_gt_01_mae.run()"])  ### 127.28 ok
+# sb.run(same_command + ["t7_in_th_mo_th_gt_th_mae.run()"])  ### 127.28 ok
+# sb.run(same_command + ["t4_in_01_mo_01_gt_th_mae.run()"])  ### 127.35 ok
+# sb.run(same_command + ["t8_in_th_mo_01_gt_th_mae.run()"])  ### 127.35 沒train完
 #############################################################################################
 ### 9 的東西
 # sb.run(same_command + ["unet_IN_7l_firstnoC.run()"])
