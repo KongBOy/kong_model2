@@ -94,21 +94,22 @@ class Experiment():
 
 ################################################################################################################################################
 ################################################################################################################################################
-    def exp_init(self, reload_result=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.Loss_info, 5.save_code
+    def exp_init(self, reload_result=False, reload_model=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.Loss_info, 5.save_code
         ### 1.result
         if(reload_result):
             # print("self.exp_dir:", self.exp_dir)
             # print("self.result_name:", self.result_name)
             self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name, self.in_use_range, self.gt_use_range).build()  ### 直接用 自己指定好的 result_name
+            print("Reload: %s ok~~" % (self.result_obj.result_name))
         else: self.result_obj = Result_builder().set_by_exp(self).build()  ### exp在train時 要自動建新的 result，才不會覆蓋到之前訓練的result，Result_builder()需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(in_use_range=self.in_use_range, gt_use_range=self.gt_use_range).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
         ### 3.model
         self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
-        if(reload_result):  ### 看需不需要reload model
+        if(reload_model):  ### 看需不需要reload model
             self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
             self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
-            print("Reload: %s ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
+            print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
 
         ####################################################################################################################
         ### 4.Loss_info, 5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉
@@ -117,10 +118,10 @@ class Experiment():
 
 
     def train_reload(self):
-        self.train(reload_result=True)
+        self.train(reload_result=True, reload_model=True)
 
-    def train(self, reload_result=False):
-        self.exp_init(reload_result)
+    def train(self, reload_result=False, reload_model=False):
+        self.exp_init(reload_result, reload_model)
         self.step0_save_code()  ### training 才需要把source code存起來，所以從exp_init移下來囉
         ################################################################################################################################################
         ### 第三階段：train 和 test
@@ -266,9 +267,15 @@ class Experiment():
         也常常拿來 reset in/gt see 喔！
         想設定 testing 時的 bn 使用的 training arg 的話， 麻煩用 exp.exp_bn_see_arg 來指定， 因為要用test_see 就要先建exp， 就統一寫在exp裡 個人覺得比較連貫， 因此 就不另外開一個 arg 給 test_see 用囉！
         """
-        self.exp_init(reload_result=True)
+        self.exp_init(reload_result=True, reload_model=True)
         self.train_step1_see_current_img(self.start_epoch, training=self.exp_bn_see_arg, see_reset_init=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         print("test see finish")
+
+    def board_rebuild(self):
+        self.exp_init(reload_result=True, reload_model=False)
+        self.loss_info_obj.use_npy_rebuild_tensorboard_loss(self, rebuild_board_name="gen_loss_and_lr")
+        print("board_rebuild finish")
+        print("")
 
     def run(self):
         self.machine_ip   = socket.gethostbyname(socket.gethostname())  ### 取得 本機 IP   給 train_step5_show_time 紀錄
@@ -276,6 +283,7 @@ class Experiment():
         if  (self.phase == "train"):          self.train()
         elif(self.phase == "train_reload"):   self.train_reload()
         elif(self.phase == "test_see"):       self.test_see()
+        elif(self.phase == "board_rebuild"):  self.board_rebuild()
         elif(self.phase == "train_indicate"): pass  ### 待完成Z
         elif(self.phase.lower() == "ok"): pass      ### 不做事情，只是個標記而以這樣子
         else: print("ㄘㄋㄇㄉ phase 打錯字了拉~~~")
@@ -569,9 +577,9 @@ t1_in_01_mo_th_gt_01_mae = Exp_builder().set_basic("ok", type8_blender_os_book_7
 t2_in_01_mo_01_gt_01_mae = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_2", describe_end="t2_01_01_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_2-20210419_165424-flow_unet-t2_01_01_01_mae")
 t3_in_01_mo_th_gt_th_mae = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_3", describe_end="t3_01_th_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_3-20210420_051408-flow_unet-t3_01_th_th_mae")
 t4_in_01_mo_01_gt_th_mae = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_4", describe_end="t4_01_01_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_4-20210420_232234-flow_unet-t4_01_01_th_mae")  ### 127.35
-t5_in_th_mo_th_gt_01_mae = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_5", describe_end="t5_th_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_5-20210420_173615-flow_unet-t5_th_th_01_mae")
+t5_in_th_mo_th_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_5", describe_end="t5_th_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_5-20210420_173615-flow_unet-t5_th_th_01_mae")
 t6_in_th_mo_01_gt_01_mae = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_6", describe_end="t6_th_01_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1"). build(result_name="type8_blender_os_book-5_14_1_8_6-20210421_055934-flow_unet-t6_th_01_01_mae")
-t7_in_th_mo_th_gt_th_mae = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_7", describe_end="t7_th_th_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_7-20210421_181950-flow_unet-t7_th_th_th_mae")
+t7_in_th_mo_th_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_7", describe_end="t7_th_th_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_7-20210421_181950-flow_unet-t7_th_th_th_mae")
 t8_in_th_mo_01_gt_th_mae = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_8", describe_end="t8_th_01_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_8-20210421_142854-flow_unet-t8_th_01_th_mae")  ### 127.35
 
 testest = Exp_builder().set_basic("ok", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-testest")

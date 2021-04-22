@@ -18,22 +18,42 @@ class Loss_info:
         self.loss_funs_dict = {}
         self.loss_containors = {}
 
+        self.loss_npy_dict = {}
+
+    def _load_loss_npy_dict(self):
+        for loss_name in self.loss_containors.keys():
+            self.loss_npy_dict[loss_name] = np.load(self.logs_dir + "/" + loss_name + ".npy")
+
     def see_loss(self, epochs):
         for loss_name in self.loss_containors.keys():
             plt.figure(figsize=(20, 6))                              ### 建立畫布
             plt.ylim(0, 0.01)
             plt.ylabel(loss_name)
-            y_loss_array = np.load(self.logs_dir + "/" + loss_name + ".npy")
+            npy_loss = np.load(self.logs_dir + "/" + loss_name + ".npy")
 
             plt.xlim(0, epochs)
             plt.xlabel("epoch_num")
-            x_epoch = np.arange(len(y_loss_array))
+            x_epoch = np.arange(len(npy_loss))
 
-            plt.plot(x_epoch, y_loss_array)
+            plt.plot(x_epoch, npy_loss)
             plt.savefig(self.logs_dir + "/" + loss_name + ".png")
             plt.close()
             # print("plot %s loss ok~"%loss_name )
         print("plot loss ok~")
+
+    def use_npy_rebuild_tensorboard_loss(self, exp, rebuild_board_name="gen_loss_and_lr"):
+        self._load_loss_npy_dict()
+        #######################################################################################################################################
+        ### write to summary writer
+        writer = tf.summary.create_file_writer( self.logs_dir + "/" + rebuild_board_name)  ### 建tensorboard，這會自動建資料夾喔！
+        for loss_name in self.loss_containors.keys():   ### 根據 loss_name 讀出 相對應的 loss
+            for go_epoch in range( min(len(self.loss_npy_dict[loss_name]), exp.epochs)):  ### loss_index 本身就有 epoch 的概念 囉，所以用for 來 跑 len(loss_npy) 模擬 epoch！取 min 是因為 可能當初 exp 寫錯，train到超出 epochs 了
+                epoch = go_epoch + 1  ###  +1是因為 我在主程式 都是 train完 才紀錄 loss，所以 模擬的時候也要 +1
+                with writer.as_default():
+                    tf.summary.scalar(loss_name, self.loss_npy_dict[loss_name][go_epoch], step=epoch)   ### 把 loss 值 讀出來 並寫進 tensorboard
+                    lr_current = exp.lr_start if epoch < exp.epoch_down_step else exp.lr_start * (exp.epochs - epoch) / (exp.epochs - exp.epoch_down_step)  ### 模擬訓練時的lr下降
+                    tf.summary.scalar("lr", lr_current, step=epoch)   ### 把lr模擬值 寫入 tensorboard
+
 
 
 ###########################################################################################################
