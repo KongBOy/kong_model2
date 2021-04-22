@@ -54,17 +54,16 @@ class Loss_info_G_loss_builder(Loss_info_init_builder):
     '''
     想多加嘗試 G loss 的話 就在這裡多加 method 就好囉！
     '''
-    def build_g_mae_loss(self):
+    def build_g_mae_loss_fun_and_containor(self):
         self.loss_info.loss_funs_dict["G"] = mae_kong
+        self.loss_info.loss_containors["gen_mae_loss" ] = tf.keras.metrics.Mean('gen_mae_loss', dtype=tf.float32)
         return self
 
-    def build_g_mse_loss(self):
+    def build_g_mse_loss_fun_and_containor(self):
         self.loss_info.loss_funs_dict["G"] = mse_kong
+        self.loss_info.loss_containors["gen_mse_loss" ] = tf.keras.metrics.Mean('gen_mse_loss', dtype=tf.float32)
         return self
 
-    def build_g_loss_containors(self):
-        self.loss_info.loss_containors["gen_loss" ] = tf.keras.metrics.Mean('gen_loss', dtype=tf.float32)
-        return self
 
 class Loss_info_GAN_loss_builder(Loss_info_G_loss_builder):
     def build_gan_loss(self):
@@ -85,13 +84,14 @@ class Loss_info_GAN_loss_builder(Loss_info_G_loss_builder):
 
 
 class Loss_info_builder(Loss_info_GAN_loss_builder):
-    def build_loss_containors_by_model_name(self, model_name):
-        print("model_name:", model_name.value)
-        if  ("unet" in model_name.value or
-             "flow" in model_name.value) : self.build_g_loss_containors()
-        elif("rect"  in model_name.value): self.build_gan_loss_containors()
-        elif("justG" in model_name.value): self.build_g_loss_containors()
-        return self
+    pass
+    # def build_loss_containors_by_model_name(self, model_name):
+    #     print("model_name:", model_name.value)
+    #     if  ("unet" in model_name.value or
+    #          "flow" in model_name.value) : self.build_g_loss_containors()
+    #     elif("rect"  in model_name.value): self.build_gan_loss_containors()
+    #     elif("justG" in model_name.value): self.build_g_loss_containors()
+    #     return self
 
     ### 這好像有點多餘，直接在上面 寫 method 就好啦
     # def custom_loss_funs_dict(self, loss_funs_dict):
@@ -107,13 +107,13 @@ class Loss_info_builder(Loss_info_GAN_loss_builder):
 # 所以 不能只寫 build_by_model_name，也要寫 我自己指定的method
 # 所以 也可以跟 model 一樣 先建好
 # 然後還要在 exp 裡面 再次設定喔！
-G_mse_loss_info = Loss_info_builder().build_g_mse_loss().build_g_loss_containors().build()
-G_mae_loss_info = Loss_info_builder().build_g_mae_loss().build_g_loss_containors().build()
+G_mse_loss_info = Loss_info_builder().build_g_mse_loss_fun_and_containor().build()
+G_mae_loss_info = Loss_info_builder().build_g_mae_loss_fun_and_containor().build()
 GAN_mae_loss_info = Loss_info_builder().build_gan_loss().build_gan_loss_containors().build()
 
 
 if(__name__ == "__main__"):
-    from step08_e_model_obj import MODEL_NAME
-    loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_loss_containors_by_model_name(MODEL_NAME.rect).build()
+    # from step08_e_model_obj import MODEL_NAME
+    loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_g_mse_loss_fun_and_containor().build()
     print(loss_info_obj.loss_containors)
     print(loss_info_obj.summary_writer)
