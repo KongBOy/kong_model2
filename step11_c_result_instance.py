@@ -329,6 +329,9 @@ testest = testest.result_obj
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_results = [
     # testest,
+
+    # unet_IN_7l_firstnoC,
+
     # t1_in_01_mo_th_gt_01_mse,
     # t2_in_01_mo_01_gt_01_mse,
     # t3_in_01_mo_th_gt_th_mse,
