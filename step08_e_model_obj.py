@@ -394,6 +394,7 @@ flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flo
 ########################################################### 14 看 unet 的 output 改成sigmoid
 flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_tanh=False, true_IN=True)
 ########################################################### 14 看 unet 的 第一層試試看 不 concat 效果如何
+flow_unet_IN_7l_ch32_firstnoC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=32, first_concat=False, true_IN=True)
 flow_unet_IN_7l_ch64_firstnoC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, first_concat=False, true_IN=True)
 flow_unet_IN_7l_ch64_1and2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, first_concat=False, second_concat=False, true_IN=True)
 ########################################################### 14 看 unet 的 output 改成sigmoid
