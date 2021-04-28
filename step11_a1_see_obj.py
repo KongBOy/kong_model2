@@ -13,7 +13,7 @@ import numpy as np
 from tqdm import tqdm
 import os
 
-# import matplotlib.pyplot as plt
+
 # import pdb
 
 class See_info:
@@ -195,10 +195,19 @@ class See_bm_rec(See_info):
         if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
 
         # breakpoint()
+        
+        # import matplotlib.pyplot as plt
+        # gt_valid_mask_pix_amount = (gt_flow[..., 0] >= 0.99).astype(np.int).sum()
+        # gt_total_pix_amount = gt_flow.shape[0] * flow.shape[1]
+        # print("gt_valid_mask_pix_amount", gt_valid_mask_pix_amount)
+        # print("gt_total_pix_amount", gt_total_pix_amount)
+        # print("gt_valid_mask_pix_amount / gt_total_pix_amount:", gt_valid_mask_pix_amount / gt_total_pix_amount)
+        # plt.imshow(gt_flow)
+        # plt.show()
         valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
         total_pix_amount = flow.shape[0] * flow.shape[1]
         # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
-        if( valid_mask_pix_amount / total_pix_amount > 0.36):
+        if( valid_mask_pix_amount / total_pix_amount > 0.28):
             bm  = use_flow_to_get_bm(flow, flow_scale=768)
             rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
         else:
