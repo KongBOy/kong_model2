@@ -298,14 +298,32 @@ class Bm_Rec_result_analyze(Result_analyzer):
         super().__init__(ana_describe)
         self.results = results
 
-
-    def single_see_final_rec_results(self, see_num):
+    def _build_analyze_see_bm_rec_dir(self, see_num):
         analyze_see_dir = self.analyze_dir + "/" + self.results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來，上面是analyze_see_dir
         analyze_see_bm_dir  = analyze_see_dir + "/" + "bm"       ### 定出 存結果的資料夾
         analyze_see_rec_dir = analyze_see_dir + "/" + "rec"      ### 定出 存結果的資料夾
         Check_dir_exist_and_build_new_dir(analyze_see_dir)       ### 建立 存結果的資料夾
         Check_dir_exist_and_build_new_dir(analyze_see_bm_dir)    ### 建立 存結果的資料夾
         Check_dir_exist_and_build_new_dir(analyze_see_rec_dir)   ### 建立 存結果的資料夾
+        return analyze_see_bm_dir, analyze_see_rec_dir
+
+
+    def single_see_certain_rec_analyze(self, see_num, epoch):
+        analyze_see_bm_dir, analyze_see_rec_dir = self._build_analyze_see_bm_rec_dir(see_num)  ### 定出 存結果的資料夾
+
+        for go_r, result in enumerate(self.results):
+            result.sees[see_num].get_bm_rec_info()  ### 抓 result/see_.../matplot_bm_rec_visual/bm_visual 和 rec_visual 的 nemas, paths
+            analyze_describe = result.ana_plot_title.split("-")[-1]     ### 在step11_c.py 可以自己設定設定每個 每個result的 ana_plot_title 喔！
+            analyze_see_rec_final_path = analyze_see_rec_dir + "/" + analyze_describe + ".jpg"  ### 定出存哪：rec_final_path
+            analyze_see_rec_gt_path    = analyze_see_rec_dir + "/" + "rec_gt" + ".jpg"          ### 定出存哪：rec_gt_path
+            rec_gt    = cv2.imread(result.sees[see_num].rec_paths[epoch])  ### 讀圖，倒數第一張 是 gt
+            rec_final = cv2.imread(result.sees[see_num].rec_paths[epoch])  ### 讀圖，倒數第二張 是 最後一個epoch
+            # print(result.sees[see_num].rec_paths[-2])                   ### debug用
+            cv2.imwrite(analyze_see_rec_final_path, rec_final)          ### 根據上面定出的位置存圖
+            cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
+
+    def single_see_final_rec_analyze(self, see_num):
+        analyze_see_bm_dir, analyze_see_rec_dir = self._build_analyze_see_bm_rec_dir(see_num)  ### 定出 存結果的資料夾
 
         for go_r, result in enumerate(self.results):
             result.sees[see_num].get_bm_rec_info()  ### 抓 result/see_.../matplot_bm_rec_visual/bm_visual 和 rec_visual 的 nemas, paths
@@ -318,38 +336,45 @@ class Bm_Rec_result_analyze(Result_analyzer):
             cv2.imwrite(analyze_see_rec_final_path, rec_final)          ### 根據上面定出的位置存圖
             cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
 
-    def all_single_see_final_rec_results(self):
-        print(self.ana_describe, "doing all_single_see_final_rec_results")
+    def all_single_see_final_rec_analyze(self):
+        print(self.ana_describe, "doing all_single_see_final_rec_analyze")
         for see_num in range(self.results[0].see_amount):
-            self.single_see_final_rec_results(see_num=see_num)
+            self.single_see_final_rec_analyze(see_num=see_num)
+    
+    def analyze_tensorboard(self): pass
+
 
 
 if(__name__ == "__main__"):
     from step11_c_result_instance import  *
 
     ana_title = "5_14-bm_rec-"
-    Bm_Rec_result_analyze(ana_title + "0_1-epoch_old_shuf_results",     epoch_old_shuf_results)    .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "0_2-epoch_new_shuf_results",     epoch_new_shuf_results)    .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "0_3-epoch_old_new_shuf_results", epoch_old_new_shuf_results).all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "0_4-ch_old_shuf_results",        ch_old_shuf_results)       .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "0_5-ch_new_shuf_results",        ch_new_shuf_results)       .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "0_6-ch_old_new_shuf_results",    ch_old_new_shuf_results)   .all_single_see_final_rec_results()
+    # Bm_Rec_result_analyze(ana_title + "0_1-epoch_old_shuf_results",     epoch_old_shuf_results)    .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "0_2-epoch_new_shuf_results",     epoch_new_shuf_results)    .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "0_3-epoch_old_new_shuf_results", epoch_old_new_shuf_results).all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "0_4-ch_old_shuf_results",        ch_old_shuf_results)       .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "0_5-ch_new_shuf_results",        ch_new_shuf_results)       .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "0_6-ch_old_new_shuf_results",    ch_old_new_shuf_results)   .all_single_see_final_rec_analyze()
 
-    Bm_Rec_result_analyze(ana_title + "1_1-epoch_results",                      epoch_results)                     .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "2_1-ch_results",                         ch_results)                        .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "3_1-bn_ch64_results_bn_see_arg_T",       bn_ch64_results_bn_see_arg_T)      .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "3_2-bn_ch32_results_bn_see_arg_T",       bn_ch32_results_bn_see_arg_T)      .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "3_3-bn_ch64_results_bn_see_arg_F_and_T", bn_ch64_results_bn_see_arg_F_and_T).all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "3_4-bn_ch32_results_bn_see_arg_F_and_T", bn_ch32_results_bn_see_arg_F_and_T).all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "4_1-bn_in_size1_results",                bn_in_size1_results)               .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "4_2-bn_in_sizen_results",                bn_in_sizen_results)               .all_single_see_final_rec_results()
-    
-    Bm_Rec_result_analyze(ana_title + "5_1-in_concat_AB",                       in_concat_AB)                      .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "6_1-unet_layers",                        unet_layers)                       .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "6_2-unet_skip_use_add",                  unet_skip_use_add)                 .all_single_see_final_rec_results()
-    Bm_Rec_result_analyze(ana_title + "6_3-unet_skip_use_concat_vs_add",        unet_skip_use_concat_vs_add)       .all_single_see_final_rec_results()
+    # Bm_Rec_result_analyze(ana_title + "1_1-epoch_results",                      epoch_results)                     .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "2_1-ch_results",                         ch_results)                        .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "3_1-bn_ch64_results_bn_see_arg_T",       bn_ch64_results_bn_see_arg_T)      .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "3_2-bn_ch32_results_bn_see_arg_T",       bn_ch32_results_bn_see_arg_T)      .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "3_3-bn_ch64_results_bn_see_arg_F_and_T", bn_ch64_results_bn_see_arg_F_and_T).all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "3_4-bn_ch32_results_bn_see_arg_F_and_T", bn_ch32_results_bn_see_arg_F_and_T).all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "4_1-bn_in_size1_results",                bn_in_size1_results)               .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "4_2-bn_in_sizen_results",                bn_in_sizen_results)               .all_single_see_final_rec_analyze()
 
-    # Bm_Rec_result_analyze(ana_title + "7_1-rect_layers",                        rect_layers)                       .all_single_see_final_rec_results()
+    # Bm_Rec_result_analyze(ana_title + "5_1-in_concat_AB",                       in_concat_AB)                      .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "6_1-unet_layers",                        unet_layers)                       .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "6_2-unet_skip_use_add",                  unet_skip_use_add)                 .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "6_3-unet_skip_use_concat_vs_add",        unet_skip_use_concat_vs_add)       .all_single_see_final_rec_analyze()
+    Bm_Rec_result_analyze(ana_title + "8_1-unet_range_mae",                     unet_range_mae)                    .all_single_see_final_rec_analyze()
+    Bm_Rec_result_analyze(ana_title + "8_2-unet_range_mae_good",                     unet_range_mae_good)                    .all_single_see_final_rec_analyze()
+    Bm_Rec_result_analyze(ana_title + "8_3-unet_range_mae_ok",                     unet_range_mae_ok)                    .all_single_see_final_rec_analyze()
+
+    # Bm_Rec_result_analyze(ana_title + "9_1-rect_layers_right_relu",        rect_layers_right_relu)       .all_single_see_final_rec_analyze()
+    # Bm_Rec_result_analyze(ana_title + "7_1-rect_layers",                        rect_layers)                       .all_single_see_final_rec_analyze()
 
     # epoch_new_shuffle_results_ana      = Bm_Rec_result_analyze("5_14_rec_result_analyze-1_2-epoch_new_shuffle",     epoch_new_shuffle_results)
     # epoch_old_new_shuffle_results_ana  = Bm_Rec_result_analyze("5_14_rec_result_analyze-1_3-epoch_old_new_shuffle", epoch_old_new_shuffle_results)
@@ -387,11 +412,11 @@ if(__name__ == "__main__"):
     # for see_num in range(0, 12):
     #     print("current see_num:", see_num)
     #     for analyzer in rec_analyzers:
-    #         analyzer.single_see_final_rec_results(see_num=see_num)
+    #         analyzer.single_see_final_rec_analyze(see_num=see_num)
 
-    # rec_result_analyze.single_see_final_rec_results(see_num=9)
-    # rec_result_analyze.single_see_final_rec_results(see_num=10)
-    # rec_result_analyze.single_see_final_rec_results(see_num=11)
+    # rec_result_analyze.single_see_final_rec_analyze(see_num=9)
+    # rec_result_analyze.single_see_final_rec_analyze(see_num=10)
+    # rec_result_analyze.single_see_final_rec_analyze(see_num=11)
 
 
     ### Result_analyzer 的 各method測試：
