@@ -20,6 +20,7 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["epoch500_new_shuf_bn_see_arg_T.run()"])
 # sb.run(same_command + ["epoch500_new_shuf_bn_see_arg_F.run()"])
 # sb.run(same_command + ["epoch700_new_shuf_bn_see_arg_T.run()"])
+# sb.run(same_command + ["epoch700_bn_see_arg_T_no_down.run()"])  ### 看看 lr 都不下降的效果
 
 # sb.run(same_command + ["ch128_new_shuf_bn_see_arg_F.run()"])
 # sb.run(same_command + ["ch032_new_shuf_bn_see_arg_F.run()"])
@@ -53,9 +54,8 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["ch64_in_epoch500.run()"])  ### 測試真的IN
 # sb.run(same_command + ["ch64_in_epoch700.run()"])  ### 測試真的IN
 
-#######################
-# sb.run(same_command + ["epoch700_bn_see_arg_T_no_down.run()"])  ### 看看 lr 都不下降的效果
-# sb.run(same_command + ["concat_A.run()"])  ### 看看Activation 完再concat的效果
+# ######################
+# sb.run(same_command + ["ch64_in_concat_A.run()"])  ### 看看Activation 完再concat的效果
 
 # sb.run(same_command + ["unet_2l.run()"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + ["unet_3l.run()"])  ### 看看Activation 完再concat的效果
