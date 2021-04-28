@@ -649,7 +649,8 @@ if(__name__ == "__main__"):
         # unet_8l.run()
         # rect_2_level_fk3_ReLU.run()
         # ch64_in_epoch500_sigmoid.run()
-        in_th_mo_th_gt_th.run()
+        # in_th_mo_th_gt_th.run()
+        t3_in_01_mo_th_gt_th_mae.run()
 
         print('no argument')
         sys.exit()
