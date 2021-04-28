@@ -1,6 +1,10 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
+sys.path.append("kong_util")
+from build_dataset_combine import Check_dir_exist_and_build_new_dir
+
 
 def mse_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
     loss = tf.reduce_mean(tf.math.square(tensor1 - tensor2))
@@ -41,18 +45,30 @@ class Loss_info:
             # print("plot %s loss ok~"%loss_name )
         print("plot loss ok~")
 
-    def use_npy_rebuild_tensorboard_loss(self, exp, rebuild_board_name="gen_loss_and_lr"):
+    def use_npy_rebuild_justG_tensorboard_loss(self, exp, rebuild_board_name="gen_loss_and_lr"):
         self._load_loss_npy_dict()
+        epochs          = exp.epochs
+        lr_start        = exp.lr_start
+        epoch_down_step = exp.epoch_down_step
+        ### 在外部資料夾 區分出 用什麼loss，內部統一用 gen_loss 當名字，這樣才能 mae/mse 放在同個圖裡面比較喔！
+        if  ("gen_mae_loss" in self.loss_containors.keys()): rebuild_board_name = "gen_mae_loss_and_lr"
+        elif("gen_mse_loss" in self.loss_containors.keys()): rebuild_board_name = "gen_mse_loss_and_lr"
+
         #######################################################################################################################################
         ### write to summary writer
-        writer = tf.summary.create_file_writer( self.logs_dir + "/" + rebuild_board_name)  ### 建tensorboard，這會自動建資料夾喔！
+        Check_dir_exist_and_build_new_dir(self.logs_dir + "/" + rebuild_board_name)       ### 雖然會自動建立資料夾，如果重複執行 我想刪掉 上次的執行結果， 所以還是 Check_dir_exist_and_build_new_dir() 囉！
+        writer = tf.summary.create_file_writer(self.logs_dir + "/" + rebuild_board_name)  ### 建tensorboard，這會自動建資料夾喔！
         for loss_name in self.loss_containors.keys():   ### 根據 loss_name 讀出 相對應的 loss
             for go_epoch in range( min(len(self.loss_npy_dict[loss_name]), exp.epochs)):  ### loss_index 本身就有 epoch 的概念 囉，所以用for 來 跑 len(loss_npy) 模擬 epoch！取 min 是因為 可能當初 exp 寫錯，train到超出 epochs 了
                 epoch = go_epoch + 1  ###  +1是因為 我在主程式 都是 train完 才紀錄 loss，所以 模擬的時候也要 +1
                 with writer.as_default():
-                    tf.summary.scalar(loss_name, self.loss_npy_dict[loss_name][go_epoch], step=epoch)   ### 把 loss 值 讀出來 並寫進 tensorboard
-                    lr_current = exp.lr_start if epoch < exp.epoch_down_step else exp.lr_start * (exp.epochs - epoch) / (exp.epochs - exp.epoch_down_step)  ### 模擬訓練時的lr下降
-                    tf.summary.scalar("lr", lr_current, step=epoch)   ### 把lr模擬值 寫入 tensorboard
+                    ### 內部統一用 gen_loss 當名字，這樣才能 mae/mse 放在同個圖裡面比較喔！
+                    tf.summary.scalar("gen_loss", self.loss_npy_dict[loss_name][go_epoch], step=epoch)   ### 把 loss 值 讀出來 並寫進 tensorboard
+                    if  (epochs == epoch_down_step):  ### lr 沒有下降
+                        tf.summary.scalar("lr", lr_start, step=epoch)   ### 把lr模擬值 寫入 tensorboard
+                    elif(epochs != epoch_down_step):  ### lr 有下降，目前就一種，到epoch_down_step後 用直線 下降到 0
+                        lr_current = lr_start if epoch < epoch_down_step else lr_start * (epochs - epoch) / (epochs - epoch_down_step)  ### 模擬訓練時的lr下降
+                        tf.summary.scalar("lr", lr_current, step=epoch)   ### 把lr模擬值 寫入 tensorboard
 
 
 

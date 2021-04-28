@@ -114,7 +114,9 @@ class Experiment():
         ####################################################################################################################
         ### 4.Loss_info, 5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉
         ###   loss_info_obj 在 exo build的時候就已經有指定一個了，這邊是在把那時指定的 loss_info_obj 填入 這裡才知道的 result 資訊
-        self.loss_info_obj = Loss_info_builder(self.loss_info_obj).set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
+        self.result_obj = Result_builder(self.result_obj).set_loss_info_obj(self.loss_info_obj).build()   ### 因為想強調 loss_info_obj 丟給 result 這件事， 所以才特別拉出這行 醜醜的這樣子喔！
+
+        # self.loss_info_obj = Loss_info_builder(self.loss_info_obj).set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
 
 
     def train_reload(self):
@@ -273,7 +275,7 @@ class Experiment():
 
     def board_rebuild(self):
         self.exp_init(reload_result=True, reload_model=False)
-        self.loss_info_obj.use_npy_rebuild_tensorboard_loss(self, rebuild_board_name="gen_loss_and_lr")
+        self.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(self)
         print("board_rebuild finish")
         print("")
 
@@ -343,13 +345,16 @@ class Exp_builder():
     def build(self, result_name=None):
         '''
         這邊先建好 result_obj 的話就可以給 step11, step12 用喔，
-        且 因為我有寫 在train時 會自動建新的 result，所以不用怕 用到這邊 隨便建立的 default result_obj 囉！
+        且 因為我有寫 在train時 會自動建新的 result，所以不用怕 用到這邊 給 step11, step12 建立的 default result_obj 囉！
+
+        也補上 建好result 馬上設定 loss_info_obj 拉，這樣 step11, step12 也能用了！
         '''
         if(result_name is not None):
             # print("self.exp.exp_dir", self.exp.exp_dir)
             # print("1.result_name", result_name, ", self.exp.gt_use_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.gt_use_range)  ### 追蹤see的建立過程
             self.exp.result_name = result_name
             self.exp.result_obj  = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
+            self.exp.result_obj  = Result_builder(self.exp.result_obj).set_loss_info_obj(self.exp.loss_info_obj).build()   ### 因為想強調 loss_info_obj 丟給 result 這件事， 所以才特別拉出這行 醜醜的這樣子喔！
             # print()  ### 追蹤see的建立過程
         return self.exp
 

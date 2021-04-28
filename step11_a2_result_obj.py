@@ -34,6 +34,8 @@ class Result:
         ### after train的時候才用的
         self.ana_plot_title = None  ### 這是給matplot用的title
 
+        self.loss_info_obj = None
+
     # def rename_see1_to_see2(self):
     #     for go_see in range(self.see_amount):
     #         if(os.path.isdir(self.sees1[go_see].see_dir)):
