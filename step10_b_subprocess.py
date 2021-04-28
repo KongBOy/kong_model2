@@ -98,6 +98,7 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 #############################################################################################
 ### 9 的東西
 # sb.run(same_command + ["unet_IN_7l_firstnoC.run()"])
+# sb.run(same_command + ["unet_IN_7l_1and2noC.run()"])
 
 
 

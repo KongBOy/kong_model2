@@ -601,6 +601,7 @@ t8_in_th_mo_01_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blende
 
 ### 看看 UNet 的 concat 第一個如果不用會不會更好
 unet_IN_7l_firstnoC = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_7l_ch64_firstnoC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_1", describe_end="unet_IN_7l_firstnoC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_9_1-20210416_172119-flow_unet-unet_IN_7l_firstnoC")
+unet_IN_7l_1and2noC = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_7l_ch64_1and2noC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_1", describe_end="unet_IN_7l_1and2noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
 
 ### 測試 怎麼樣設定 multiprocess 才較快
 testest = Exp_builder().set_basic("ok", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-testest")
