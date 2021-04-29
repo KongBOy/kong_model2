@@ -306,6 +306,9 @@ t6_in_th_mo_01_gt_01_mae = t6_in_th_mo_01_gt_01_mae.result_obj
 t7_in_th_mo_th_gt_th_mae = t7_in_th_mo_th_gt_th_mae.result_obj
 t8_in_th_mo_01_gt_th_mae = t8_in_th_mo_01_gt_th_mae.result_obj
 
+unet_IN_7l_firstnoC      = unet_IN_7l_firstnoC.result_obj
+unet_IN_7l_firstnoC_ch32 = unet_IN_7l_firstnoC_ch32.result_obj
+unet_IN_7l_1and2noC      = unet_IN_7l_1and2noC.result_obj
 ########################################################################################################################
 rect_fk3_ch64_tfIN_resb_ok9_epoch500 = rect_fk3_ch64_tfIN_resb_ok9_epoch500.result_obj
 rect_7_level_fk7 = rect_7_level_fk7.result_obj
@@ -330,15 +333,17 @@ testest = testest.result_obj
 rec_bm_results = [
     # testest,
 
-    # unet_IN_7l_firstnoC,
+    # unet_IN_7l_firstnoC,   ### 3491
+    # unet_IN_7l_firstnoC_ch32,
+    # unet_IN_7l_1and2noC,
 
-    t1_in_01_mo_th_gt_01_mse,
-    # t2_in_01_mo_01_gt_01_mse,
+    # t1_in_01_mo_th_gt_01_mse,  ### 4964
+    # t2_in_01_mo_01_gt_01_mse,  ### 3577
     # t3_in_01_mo_th_gt_th_mse,
     # t4_in_01_mo_01_gt_th_mse,
     # t5_in_th_mo_th_gt_01_mse,
     # t6_in_th_mo_01_gt_01_mse,
-    # t7_in_th_mo_th_gt_th_mse,
+    # t7_in_th_mo_th_gt_th_mse,  ### 3632
     # t8_in_th_mo_01_gt_th_mse,
 
     # t1_in_01_mo_th_gt_01_mae,
