@@ -4,7 +4,7 @@ import numpy as np
 import sys
 sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
-
+import copy
 
 def mse_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
     loss = tf.reduce_mean(tf.math.square(tensor1 - tensor2))
@@ -45,8 +45,14 @@ class Loss_info:
             # print("plot %s loss ok~"%loss_name )
         print("plot loss ok~")
 
-    def use_npy_rebuild_justG_tensorboard_loss(self, exp, rebuild_board_name="gen_loss_and_lr"):
-        self._load_loss_npy_dict()
+    def use_npy_rebuild_justG_tensorboard_loss(self, exp, dst_dir=".", rebuild_board_name="gen_loss_and_lr"):
+        '''
+        最終會建立的樣子   ：舉例 result/logs/rebuild_board_name/event...
+        exp               ：用來抓出當初exp用的 epochs, lr_start, epoch_down_step
+        dst_dir           ：通常會在 對應的 result/logs，但 analyze 我也想 用這個fun，所以還是多個參數來控制喔！
+        result_board_name ：目前是想用來區分 用什麼loss，所以default gen_loss ， 下面會 根據 使用的 loss 區別出 gen_mae/gen_mse
+        '''
+        self._load_loss_npy_dict()  ### 讀取 result/logs 的 .npy
         epochs          = exp.epochs
         lr_start        = exp.lr_start
         epoch_down_step = exp.epoch_down_step
@@ -56,8 +62,8 @@ class Loss_info:
 
         #######################################################################################################################################
         ### write to summary writer
-        Check_dir_exist_and_build_new_dir(self.logs_dir + "/" + rebuild_board_name)       ### 雖然會自動建立資料夾，如果重複執行 我想刪掉 上次的執行結果， 所以還是 Check_dir_exist_and_build_new_dir() 囉！
-        writer = tf.summary.create_file_writer(self.logs_dir + "/" + rebuild_board_name)  ### 建tensorboard，這會自動建資料夾喔！
+        Check_dir_exist_and_build_new_dir(dst_dir + "/" + rebuild_board_name)       ### 雖然會自動建立資料夾，如果重複執行 我想刪掉 上次的執行結果， 所以還是 Check_dir_exist_and_build_new_dir() 囉！
+        writer = tf.summary.create_file_writer(dst_dir + "/" + rebuild_board_name)  ### 建tensorboard，這會自動建資料夾喔！
         for loss_name in self.loss_containors.keys():   ### 根據 loss_name 讀出 相對應的 loss
             for go_epoch in range( min(len(self.loss_npy_dict[loss_name]), exp.epochs)):  ### loss_index 本身就有 epoch 的概念 囉，所以用for 來 跑 len(loss_npy) 模擬 epoch！取 min 是因為 可能當初 exp 寫錯，train到超出 epochs 了
                 epoch = go_epoch + 1  ###  +1是因為 我在主程式 都是 train完 才紀錄 loss，所以 模擬的時候也要 +1
@@ -74,9 +80,17 @@ class Loss_info:
 
 ###########################################################################################################
 class Loss_info_init_builder:
-    def __init__(self, loss_info=None):
+    def __init__(self, loss_info=None, in_obj_copy=True):
+        '''
+        一定要注意需不需要 in_obj_copy喔！
+        因為雖然 loss_fun 是共用的， 但是每個exp 算出來的 loss_value是不同的！因此 logs_dir 也是不同的！
+        所以還是需要每個 exp 都有自己的 loss_info_obj 喔！才不會 logs_dir 被共用 這樣子！
+        所以 step10_a 的 exp_builder.build() 裡面 呼叫 Loss_info_builder() 更新 loss_info_obj時，in_obj_copy 就要指定 True 拉！
+        '''
         if(loss_info is None): self.loss_info = Loss_info()
-        else:                  self.loss_info = loss_info
+        else:
+            self.loss_info = loss_info
+            if(in_obj_copy): self.loss_info = copy.deepcopy(self.loss_info)
 
     def set_logs_dir(self, logs_dir):
         self.loss_info.logs_dir = logs_dir
