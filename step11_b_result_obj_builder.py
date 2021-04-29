@@ -1,6 +1,5 @@
 from step0_access_path import result_access_path
 from step06_a_datas_obj import DB_C
-from step09_a_loss_info_obj import Loss_info_builder
 from step11_a1_see_obj import See
 from step11_a2_result_obj import Result
 
@@ -111,13 +110,13 @@ class Result_train_builder(Result_sees_builder):
 
 
 
-        ### 給 ana_plot_title，這是給 step12 用的，default 直 設 result.describe_end
-        self.result.ana_plot_title = result_name.split("-")[-1]
+        ### 給 ana_describe，這是給 step12 用的，default 直 設 result.describe_end
+        self.result.ana_describe = result_name.split("-")[-1]
         return self
 
 class Result_plot_builder(Result_train_builder):
-    def set_ana_plot_title(self, ana_plot_title):
-        self.result.ana_plot_title = ana_plot_title
+    def set_ana_describe(self, ana_describe):
+        self.result.ana_describe = ana_describe
         return self
 
 class Result_builder(Result_plot_builder): pass

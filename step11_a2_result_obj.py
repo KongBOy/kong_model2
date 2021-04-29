@@ -32,7 +32,7 @@ class Result:
         self.gt_use_range = "0~1"
 
         ### after train的時候才用的
-        self.ana_plot_title = None  ### 這是給matplot用的title
+        self.ana_describe = None  ### 這是給matplot用的title
 
         self.loss_info_obj = None
 
@@ -197,7 +197,7 @@ class Result:
             gt_imgs.append(cv2.imread(self.sees[see_num].see_dir + "/" + self.sees[see_num].see_jpg_names[1]))
 
         ### 抓 第一row的 要顯示的 titles
-        titles = ["in_img", self.ana_plot_title, "gt_img"]
+        titles = ["in_img", self.ana_describe, "gt_img"]
         r_c_titles = [titles]  ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
         ### 抓 row/col 要顯示的imgs
@@ -225,7 +225,7 @@ if(__name__ == "__main__"):
     ############################################################################################################################################
     ## Result 的 各method測試：
     ### 單loss 的情況
-    # os_book = Result_builder().set_by_result_name("5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51").set_ana_plot_title("mae9").build()
+    # os_book = Result_builder().set_by_result_name("5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51").set_ana_describe("mae9").build()
     # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=False, single_see_multiprocess=False)
     # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=False)
     # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=False, single_see_multiprocess=True)
@@ -239,14 +239,14 @@ if(__name__ == "__main__"):
     # os_book.save_multi_see_as_matplot_visual([29, 30, 31], "train_rd", add_loss=True, multiprocess=True)
 
     ### 看多 loss 的情況
-    # os_book_lots_loss = Result_builder().set_by_result_name("5_rect_mae136/type7b_h500_w332_real_os_book-20200524-012601-rect-1532data_mae3_127.35").set_ana_plot_title("see_lots_loss").build()
+    # os_book_lots_loss = Result_builder().set_by_result_name("5_rect_mae136/type7b_h500_w332_real_os_book-20200524-012601-rect-1532data_mae3_127.35").set_ana_describe("see_lots_loss").build()
     # os_book_lots_loss.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=True)
 
 
     ############################################################################################################################################
     ### bm rec
     ############################################################################################################################################
-    blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050_try_npz").set_ana_plot_title("blender").build()
+    blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050_try_npz").set_ana_describe("blender").build()
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
     # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
     # blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
