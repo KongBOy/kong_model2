@@ -78,9 +78,8 @@ class Loss_info_init_builder:
         if(loss_info is None): self.loss_info = Loss_info()
         else:                  self.loss_info = loss_info
 
-    def set_logs_dir_and_summary_writer(self, logs_dir):
+    def set_logs_dir(self, logs_dir):
         self.loss_info.logs_dir = logs_dir
-        self.loss_info.summary_writer = tf.summary.create_file_writer(logs_dir)  ### 建tensorboard，這會自動建資料夾喔！
         return self
 
     def build(self):
@@ -150,6 +149,6 @@ GAN_mae_loss_info = Loss_info_builder().build_gan_loss().build_gan_loss_containo
 
 if(__name__ == "__main__"):
     # from step08_e_model_obj import MODEL_NAME
-    loss_info_obj = Loss_info_builder().set_logs_dir_and_summary_writer(logs_dir="abc").build_g_mse_loss_fun_and_containor().build()
+    loss_info_obj = Loss_info_builder().set_logs_dir(logs_dir="abc").build_g_mse_loss_fun_and_containor().build()
     print(loss_info_obj.loss_containors)
     print(loss_info_obj.summary_writer)

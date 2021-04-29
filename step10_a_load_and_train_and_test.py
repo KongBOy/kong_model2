@@ -116,7 +116,7 @@ class Experiment():
         ###   loss_info_obj 在 exo build的時候就已經有指定一個了，這邊是在把那時指定的 loss_info_obj 填入 這裡才知道的 result 資訊
         self.result_obj = Result_builder(self.result_obj).set_loss_info_obj(self.loss_info_obj).build()   ### 因為想強調 loss_info_obj 丟給 result 這件事， 所以才特別拉出這行 醜醜的這樣子喔！
 
-        # self.loss_info_obj = Loss_info_builder(self.loss_info_obj).set_logs_dir_and_summary_writer(self.result_obj.logs_dir).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
+        # self.loss_info_obj = Loss_info_builder(self.loss_info_obj).set_logs_dir(self.result_obj.logs_dir).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
 
 
     def train_reload(self):
@@ -215,6 +215,7 @@ class Experiment():
         # print("sample all see time:", time.time()-sample_start_time)
 
     def train_step3_Loss_info_save_loss(self, epoch):
+        self.loss_info_obj.summary_writer = tf.summary.create_file_writer(self.loss_info_obj.logs_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的
         with self.loss_info_obj.summary_writer.as_default():
             for loss_name, loss_containor in self.loss_info_obj.loss_containors.items():
                 ### tensorboard
