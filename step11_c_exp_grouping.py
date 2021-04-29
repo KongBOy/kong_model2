@@ -207,6 +207,7 @@ epoch100_bn_see_arg_T
 epoch200_bn_see_arg_T
 epoch300_bn_see_arg_T
 epoch700_bn_see_arg_T
+
 ch128_bn_see_arg_T
 ### ch064 真的是失誤， 因為無法重現 old shuffle，所以真的無法，跟 dependency 也沒關係
 ch032_bn_see_arg_T
@@ -308,7 +309,13 @@ t8_in_th_mo_01_gt_th_mae
 
 unet_IN_7l_firstnoC
 unet_IN_7l_firstnoC_ch32
+ch64_in_epoch500
+unet_7l
+ch64_bn_epoch500
+
+unet_IN_7l_firstnoC
 unet_IN_7l_1and2noC
+
 ########################################################################################################################
 rect_fk3_ch64_tfIN_resb_ok9_epoch500
 rect_7_level_fk7
