@@ -202,139 +202,139 @@ from step10_a_load_and_train_and_test import *
 # ch_064_700 = copy.deepcopy(epoch700_bn_see_arg_T); ch_064_700.ana_plot_title = "flow_unet-ch64_700"
 
 ### 0 old shuffle，因為bn==1的情況下 old 和 new shuffle 理論上是一樣的，實際上也是差萬分之幾而已，所以先把old收起來囉，想刪記得只刪see就好
-epoch050_bn_see_arg_T = epoch050_bn_see_arg_T.result_obj
-epoch100_bn_see_arg_T = epoch100_bn_see_arg_T.result_obj
-epoch200_bn_see_arg_T = epoch200_bn_see_arg_T.result_obj
-epoch300_bn_see_arg_T = epoch300_bn_see_arg_T.result_obj
-epoch700_bn_see_arg_T = epoch700_bn_see_arg_T.result_obj
-ch128_bn_see_arg_T = ch128_bn_see_arg_T.result_obj
+epoch050_bn_see_arg_T
+epoch100_bn_see_arg_T
+epoch200_bn_see_arg_T
+epoch300_bn_see_arg_T
+epoch700_bn_see_arg_T
+ch128_bn_see_arg_T
 ### ch064 真的是失誤， 因為無法重現 old shuffle，所以真的無法，跟 dependency 也沒關係
-ch032_bn_see_arg_T = ch032_bn_see_arg_T.result_obj
-ch016_bn_see_arg_T = ch016_bn_see_arg_T.result_obj
-ch008_bn_see_arg_T = ch008_bn_see_arg_T.result_obj
+ch032_bn_see_arg_T
+ch016_bn_see_arg_T
+ch008_bn_see_arg_T
 
 # ###################################################################################################
 # ### 1 new_shuffle
 # ### 1_1 epoch
-epoch050_new_shuf_bn_see_arg_T = epoch050_new_shuf_bn_see_arg_T.result_obj
-epoch100_new_shuf_bn_see_arg_T = epoch100_new_shuf_bn_see_arg_T.result_obj
-epoch200_new_shuf_bn_see_arg_T = epoch200_new_shuf_bn_see_arg_T.result_obj
-epoch300_new_shuf_bn_see_arg_T = epoch300_new_shuf_bn_see_arg_T.result_obj
-epoch500_new_shuf_bn_see_arg_T = epoch500_new_shuf_bn_see_arg_T.result_obj
-epoch500_new_shuf_bn_see_arg_F = epoch500_new_shuf_bn_see_arg_F.result_obj
-epoch700_new_shuf_bn_see_arg_T = epoch700_new_shuf_bn_see_arg_T.result_obj
-epoch700_bn_see_arg_T_no_down  = epoch700_bn_see_arg_T_no_down .result_obj
+epoch050_new_shuf_bn_see_arg_T
+epoch100_new_shuf_bn_see_arg_T
+epoch200_new_shuf_bn_see_arg_T
+epoch300_new_shuf_bn_see_arg_T
+epoch500_new_shuf_bn_see_arg_T
+epoch500_new_shuf_bn_see_arg_F
+epoch700_new_shuf_bn_see_arg_T
+epoch700_bn_see_arg_T_no_down
 
 # ### 1_2 ch，但 bn_see_arg_F，所以結果圖醜，收起來，留 ch032_new_shuf_bn_see_arg_F 是為了給 bn 比較用
-ch128_new_shuf_bn_see_arg_F = ch128_new_shuf_bn_see_arg_F.result_obj
-# ch064_new_shuf_bn_see_arg_F = copy.deepcopy(epoch500_new_shuf_bn_see_arg_F); ch064_new_shuf_bn_see_arg_F.ana_plot_title = "ch064_new_shuf_bn_see_arg_F"
-ch032_new_shuf_bn_see_arg_F = ch032_new_shuf_bn_see_arg_F.result_obj
-ch016_new_shuf_bn_see_arg_F = ch016_new_shuf_bn_see_arg_F.result_obj
-ch008_new_shuf_bn_see_arg_F = ch008_new_shuf_bn_see_arg_F.result_obj
+ch128_new_shuf_bn_see_arg_F
+ch064_new_shuf_bn_see_arg_F = copy.deepcopy(epoch500_new_shuf_bn_see_arg_F); ch064_new_shuf_bn_see_arg_F.result_obj.ana_plot_title = "ch064_new_shuf_bn_see_arg_F"
+ch032_new_shuf_bn_see_arg_F
+ch016_new_shuf_bn_see_arg_F
+ch008_new_shuf_bn_see_arg_F
 
-ch128_new_shuf_bn_see_arg_T = ch128_new_shuf_bn_see_arg_T.result_obj
-# ch064_new_shuf_bn_see_arg_T = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch064_new_shuf_bn_see_arg_T.ana_plot_title = "ch064_new_shuf_bn_see_arg_T"
-ch032_new_shuf_bn_see_arg_T = ch032_new_shuf_bn_see_arg_T.result_obj
-ch016_new_shuf_bn_see_arg_T = ch016_new_shuf_bn_see_arg_T.result_obj
-ch008_new_shuf_bn_see_arg_T = ch008_new_shuf_bn_see_arg_T.result_obj
+ch128_new_shuf_bn_see_arg_T
+ch064_new_shuf_bn_see_arg_T = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch064_new_shuf_bn_see_arg_T.result_obj.ana_plot_title = "ch064_new_shuf_bn_see_arg_T"
+ch032_new_shuf_bn_see_arg_T
+ch016_new_shuf_bn_see_arg_T
+ch008_new_shuf_bn_see_arg_T
 
 # ### 1_3 bn 的 see_arg 設 True/False 的差別
-# ch64_bn01_bn_see_arg_F = copy.deepcopy(epoch500_new_shuf_bn_see_arg_F); ch64_bn01_bn_see_arg_F.ana_plot_title = "ch64_bn01_bn_see_arg_F"
-# ch64_bn01_bn_see_arg_T = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_bn01_bn_see_arg_T.ana_plot_title = "ch64_bn01_bn_see_arg_T"
-ch64_bn04_bn_see_arg_F = ch64_bn04_bn_see_arg_F.result_obj
-ch64_bn04_bn_see_arg_T = ch64_bn04_bn_see_arg_T.result_obj
-ch64_bn08_bn_see_arg_F = ch64_bn08_bn_see_arg_F.result_obj
-ch64_bn08_bn_see_arg_T = ch64_bn08_bn_see_arg_T.result_obj
+ch64_bn01_bn_see_arg_F = copy.deepcopy(epoch500_new_shuf_bn_see_arg_F); ch64_bn01_bn_see_arg_F.result_obj.ana_plot_title = "ch64_bn01_bn_see_arg_F"
+ch64_bn01_bn_see_arg_T = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_bn01_bn_see_arg_T.result_obj.ana_plot_title = "ch64_bn01_bn_see_arg_T"
+ch64_bn04_bn_see_arg_F
+ch64_bn04_bn_see_arg_T
+ch64_bn08_bn_see_arg_F
+ch64_bn08_bn_see_arg_T
 
-# ch32_bn01_bn_see_arg_F = copy.deepcopy(ch032_new_shuf_bn_see_arg_F); ch32_bn01_bn_see_arg_F.ana_plot_title = "ch32_bn01_bn_see_arg_F"
-# ch32_bn01_bn_see_arg_T = copy.deepcopy(ch032_new_shuf_bn_see_arg_T); ch32_bn01_bn_see_arg_T.ana_plot_title = "ch32_bn01_bn_see_arg_T"
-ch32_bn04_bn_see_arg_F = ch32_bn04_bn_see_arg_F.result_obj
-ch32_bn04_bn_see_arg_T = ch32_bn04_bn_see_arg_T.result_obj
-ch32_bn08_bn_see_arg_F = ch32_bn08_bn_see_arg_F.result_obj
-ch32_bn08_bn_see_arg_T = ch32_bn08_bn_see_arg_T.result_obj
-ch32_bn16_bn_see_arg_F = ch32_bn16_bn_see_arg_F.result_obj
-ch32_bn16_bn_see_arg_T = ch32_bn16_bn_see_arg_T.result_obj
+ch32_bn01_bn_see_arg_F = copy.deepcopy(ch032_new_shuf_bn_see_arg_F); ch32_bn01_bn_see_arg_F.result_obj.ana_plot_title = "ch32_bn01_bn_see_arg_F"
+ch32_bn01_bn_see_arg_T = copy.deepcopy(ch032_new_shuf_bn_see_arg_T); ch32_bn01_bn_see_arg_T.result_obj.ana_plot_title = "ch32_bn01_bn_see_arg_T"
+ch32_bn04_bn_see_arg_F
+ch32_bn04_bn_see_arg_T
+ch32_bn08_bn_see_arg_F
+ch32_bn08_bn_see_arg_T
+ch32_bn16_bn_see_arg_F
+ch32_bn16_bn_see_arg_T
 
 # ### 1_4 bn 個數的差別 與 in
-# ch64_bn_epoch500 = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_bn_epoch500.ana_plot_title = "ch64_bn_epoch500"
-ch64_in_epoch500 = ch64_in_epoch500.result_obj
-# ch64_bn_epoch700 = copy.deepcopy(epoch700_new_shuf_bn_see_arg_T); ch64_bn_epoch700.ana_plot_title = "ch64_bn_epoch700"
-ch64_in_epoch700 = ch64_in_epoch700.result_obj
+ch64_bn_epoch500 = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_bn_epoch500.result_obj.ana_plot_title = "ch64_bn_epoch500"
+ch64_in_epoch500
+ch64_bn_epoch700 = copy.deepcopy(epoch700_new_shuf_bn_see_arg_T); ch64_bn_epoch700.result_obj.ana_plot_title = "ch64_bn_epoch700"
+ch64_in_epoch700
 
-# ch64_1_bn01 = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_1_bn01.ana_plot_title = "ch64_1_bn01"
-# ch64_2_in01 = copy.deepcopy(ch64_in_epoch500);               ch64_2_in01.ana_plot_title = "ch64_2_in01"
-# ch64_3_bn04 = copy.deepcopy(ch64_bn04_bn_see_arg_T);         ch64_3_bn04.ana_plot_title = "ch64_3_bn04"
-# ch64_4_bn08 = copy.deepcopy(ch64_bn08_bn_see_arg_T);         ch64_4_bn08.ana_plot_title = "ch64_4_bn08"
+ch64_1_bn01 = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_1_bn01.result_obj.ana_plot_title = "ch64_1_bn01"
+ch64_2_in01 = copy.deepcopy(ch64_in_epoch500);               ch64_2_in01.result_obj.ana_plot_title = "ch64_2_in01"
+ch64_3_bn04 = copy.deepcopy(ch64_bn04_bn_see_arg_T);         ch64_3_bn04.result_obj.ana_plot_title = "ch64_3_bn04"
+ch64_4_bn08 = copy.deepcopy(ch64_bn08_bn_see_arg_T);         ch64_4_bn08.result_obj.ana_plot_title = "ch64_4_bn08"
 
 # ### 1_5 unet concat Activation vs concat BN，都是epoch500 且 lr有下降
-ch64_in_concat_A = ch64_in_concat_A.result_obj
-# ch64_in_concat_B = copy.deepcopy(ch64_in_epoch500); ch64_in_concat_B.ana_plot_title = "ch64_in_concat_B"
+ch64_in_concat_A
+ch64_in_concat_B = copy.deepcopy(ch64_in_epoch500); ch64_in_concat_B.result_obj.ana_plot_title = "ch64_in_concat_B"
 
 # ### 1_6 unet level 2~7
-unet_2l = unet_2l.result_obj
-unet_3l = unet_3l.result_obj
-unet_4l = unet_4l.result_obj
-unet_5l = unet_5l.result_obj
-unet_6l = unet_6l.result_obj
-unet_7l = unet_7l.result_obj
-unet_8l = unet_8l.result_obj
+unet_2l
+unet_3l
+unet_4l
+unet_5l
+unet_6l
+unet_7l
+unet_8l
 
 
-unet_8l_skip_use_add = unet_8l_skip_use_add.result_obj
-unet_7l_skip_use_add = unet_7l_skip_use_add.result_obj
-unet_6l_skip_use_add = unet_6l_skip_use_add.result_obj
-unet_5l_skip_use_add = unet_5l_skip_use_add.result_obj
-unet_4l_skip_use_add = unet_4l_skip_use_add.result_obj
-unet_3l_skip_use_add = unet_3l_skip_use_add.result_obj
-unet_2l_skip_use_add = unet_2l_skip_use_add.result_obj
+unet_8l_skip_use_add
+unet_7l_skip_use_add
+unet_6l_skip_use_add
+unet_5l_skip_use_add
+unet_4l_skip_use_add
+unet_3l_skip_use_add
+unet_2l_skip_use_add
 
-t1_in_01_mo_th_gt_01_mse = t1_in_01_mo_th_gt_01_mse.result_obj
-t2_in_01_mo_01_gt_01_mse = t2_in_01_mo_01_gt_01_mse.result_obj
-t3_in_01_mo_th_gt_th_mse = t3_in_01_mo_th_gt_th_mse.result_obj
-t4_in_01_mo_01_gt_th_mse = t4_in_01_mo_01_gt_th_mse.result_obj
-t5_in_th_mo_th_gt_01_mse = t5_in_th_mo_th_gt_01_mse.result_obj
-t6_in_th_mo_01_gt_01_mse = t6_in_th_mo_01_gt_01_mse.result_obj
-t7_in_th_mo_th_gt_th_mse = t7_in_th_mo_th_gt_th_mse.result_obj
-t8_in_th_mo_01_gt_th_mse = t8_in_th_mo_01_gt_th_mse.result_obj
+t1_in_01_mo_th_gt_01_mse
+t2_in_01_mo_01_gt_01_mse
+t3_in_01_mo_th_gt_th_mse
+t4_in_01_mo_01_gt_th_mse
+t5_in_th_mo_th_gt_01_mse
+t6_in_th_mo_01_gt_01_mse
+t7_in_th_mo_th_gt_th_mse
+t8_in_th_mo_01_gt_th_mse
 
-t1_in_01_mo_th_gt_01_mae = t1_in_01_mo_th_gt_01_mae.result_obj
-t2_in_01_mo_01_gt_01_mae = t2_in_01_mo_01_gt_01_mae.result_obj
-t3_in_01_mo_th_gt_th_mae = t3_in_01_mo_th_gt_th_mae.result_obj
-t4_in_01_mo_01_gt_th_mae = t4_in_01_mo_01_gt_th_mae.result_obj
-t5_in_th_mo_th_gt_01_mae = t5_in_th_mo_th_gt_01_mae.result_obj
-t6_in_th_mo_01_gt_01_mae = t6_in_th_mo_01_gt_01_mae.result_obj
-t7_in_th_mo_th_gt_th_mae = t7_in_th_mo_th_gt_th_mae.result_obj
-t8_in_th_mo_01_gt_th_mae = t8_in_th_mo_01_gt_th_mae.result_obj
+t1_in_01_mo_th_gt_01_mae
+t2_in_01_mo_01_gt_01_mae
+t3_in_01_mo_th_gt_th_mae
+t4_in_01_mo_01_gt_th_mae
+t5_in_th_mo_th_gt_01_mae
+t6_in_th_mo_01_gt_01_mae
+t7_in_th_mo_th_gt_th_mae
+t8_in_th_mo_01_gt_th_mae
 
-unet_IN_7l_firstnoC      = unet_IN_7l_firstnoC.result_obj
-unet_IN_7l_firstnoC_ch32 = unet_IN_7l_firstnoC_ch32.result_obj
-unet_IN_7l_1and2noC      = unet_IN_7l_1and2noC.result_obj
+unet_IN_7l_firstnoC
+unet_IN_7l_firstnoC_ch32
+unet_IN_7l_1and2noC
 ########################################################################################################################
-rect_fk3_ch64_tfIN_resb_ok9_epoch500 = rect_fk3_ch64_tfIN_resb_ok9_epoch500.result_obj
-rect_7_level_fk7 = rect_7_level_fk7.result_obj
+rect_fk3_ch64_tfIN_resb_ok9_epoch500
+rect_7_level_fk7
 
-rect_2_level_fk3 = rect_2_level_fk3.result_obj
-rect_3_level_fk3 = rect_3_level_fk3.result_obj
-rect_4_level_fk3 = rect_4_level_fk3.result_obj
-rect_5_level_fk3 = rect_5_level_fk3.result_obj
-rect_6_level_fk3 = rect_6_level_fk3.result_obj
-rect_7_level_fk3 = rect_7_level_fk3.result_obj
+rect_2_level_fk3
+rect_3_level_fk3
+rect_4_level_fk3
+rect_5_level_fk3
+rect_6_level_fk3
+rect_7_level_fk3
 
-rect_2_level_fk3_ReLU = rect_2_level_fk3_ReLU.result_obj
-rect_3_level_fk3_ReLU = rect_3_level_fk3_ReLU.result_obj
-rect_4_level_fk3_ReLU = rect_4_level_fk3_ReLU.result_obj
-rect_5_level_fk3_ReLU = rect_5_level_fk3_ReLU.result_obj
-rect_6_level_fk3_ReLU = rect_6_level_fk3_ReLU.result_obj
-rect_7_level_fk3_ReLU = rect_7_level_fk3_ReLU.result_obj
+rect_2_level_fk3_ReLU
+rect_3_level_fk3_ReLU
+rect_4_level_fk3_ReLU
+rect_5_level_fk3_ReLU
+rect_6_level_fk3_ReLU
+rect_7_level_fk3_ReLU
 
-testest = testest.result_obj
+testest
 
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_results = [
     # testest,
 
-    # unet_IN_7l_firstnoC,   ### 3491
-    # unet_IN_7l_firstnoC_ch32,
+    # unet_IN_7l_firstnoC,       ### 3491
+    # unet_IN_7l_firstnoC_ch32,  ### 2985
     # unet_IN_7l_1and2noC,
 
     # t1_in_01_mo_th_gt_01_mse,  ### 4964
@@ -512,12 +512,12 @@ epoch_results  = [
     epoch700_new_shuf_bn_see_arg_T]
 ###################################################################################################
 ### 2 ch
-# ch_results = [
-#     ch128_new_shuf_bn_see_arg_T,
-#     ch064_new_shuf_bn_see_arg_T,
-#     ch032_new_shuf_bn_see_arg_T,
-#     ch016_new_shuf_bn_see_arg_T,
-#     ch008_new_shuf_bn_see_arg_T]
+ch_results = [
+    ch128_new_shuf_bn_see_arg_T,
+    ch064_new_shuf_bn_see_arg_T,
+    ch032_new_shuf_bn_see_arg_T,
+    ch016_new_shuf_bn_see_arg_T,
+    ch008_new_shuf_bn_see_arg_T]
 
 ###################################################################################################
 ### 3 bn
