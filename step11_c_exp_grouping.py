@@ -335,7 +335,7 @@ rec_bm_exps_compress = [
 
     # unet_IN_7l_firstnoC,       ### 3491
     # unet_IN_7l_firstnoC_ch32,  ### 2985
-    # unet_IN_7l_1and2noC,
+    # unet_IN_7l_1and2noC,       ### 2157
 
     # t1_in_01_mo_th_gt_01_mse,  ### 4964
     # t2_in_01_mo_01_gt_01_mse,  ### 3577
