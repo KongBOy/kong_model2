@@ -355,7 +355,7 @@ class Exp_builder():
             # print("1.result_name", result_name, ", self.exp.gt_use_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.gt_use_range)  ### 追蹤see的建立過程
             self.exp.result_name = result_name
             self.exp.result_obj  = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
-            self.exp.result_obj  = Result_builder(self.exp.result_obj).set_loss_info_obj(self.exp.loss_info_obj).build()   ### 因為想強調 loss_info_obj 丟給 result 這件事， 所以才特別拉出這行 醜醜的這樣子喔！
+            self.exp.result_obj  = Result_builder(self.exp.result_obj).set_loss_info_obj(self.exp.loss_info_obj).build()   ### 因為想強調 loss_info_obj 丟給 result 這件事， 所以才特別拉出這行 醜醜的這樣子喔！，要不然這行其實可以併到上一行後面加個.set_loss_info_obj()喔！
             # print()  ### 追蹤see的建立過程
         return self.exp
 
