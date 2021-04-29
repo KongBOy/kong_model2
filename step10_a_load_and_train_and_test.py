@@ -114,9 +114,7 @@ class Experiment():
         ####################################################################################################################
         ### 4.Loss_info, 5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉
         ###   loss_info_obj 在 exo build的時候就已經有指定一個了，這邊是在把那時指定的 loss_info_obj 填入 這裡才知道的 result 資訊
-        self.result_obj = Result_builder(self.result_obj).set_loss_info_obj(self.loss_info_obj).build()   ### 因為想強調 loss_info_obj 丟給 result 這件事， 所以才特別拉出這行 醜醜的這樣子喔！
-
-        # self.loss_info_obj = Loss_info_builder(self.loss_info_obj).set_logs_dir(self.result_obj.logs_dir).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
+        self.loss_info_obj = Loss_info_builder(self.loss_info_obj, in_obj_copy=True).set_logs_dir(self.result_obj.logs_dir).build()  ### 上面 result_obj 定位出 logs_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
 
 
     def train_reload(self):
@@ -276,7 +274,7 @@ class Experiment():
 
     def board_rebuild(self):
         self.exp_init(reload_result=True, reload_model=False)
-        self.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(self)
+        self.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(self, dst_dir=self.result_obj.logs_dir)
         print("board_rebuild finish")
         print("")
 
@@ -353,9 +351,10 @@ class Exp_builder():
         if(result_name is not None):
             # print("self.exp.exp_dir", self.exp.exp_dir)
             # print("1.result_name", result_name, ", self.exp.gt_use_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.gt_use_range)  ### 追蹤see的建立過程
-            self.exp.result_name = result_name
-            self.exp.result_obj  = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
-            self.exp.result_obj  = Result_builder(self.exp.result_obj).set_loss_info_obj(self.exp.loss_info_obj).build()   ### 因為想強調 loss_info_obj 丟給 result 這件事， 所以才特別拉出這行 醜醜的這樣子喔！，要不然這行其實可以併到上一行後面加個.set_loss_info_obj()喔！
+            self.exp.result_name   = result_name
+            self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
+            self.exp.loss_info_obj = Loss_info_builder(self.exp.loss_info_obj, in_obj_copy=True).set_logs_dir(self.exp.result_obj.logs_dir).build()  ### 上面定位出 logs_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
+            print("self.exp.loss_info_obj.logs_dir", self.exp.loss_info_obj.logs_dir)
             # print()  ### 追蹤see的建立過程
         return self.exp
 
