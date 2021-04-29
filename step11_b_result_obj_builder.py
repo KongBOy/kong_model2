@@ -120,11 +120,4 @@ class Result_plot_builder(Result_train_builder):
         self.result.ana_plot_title = ana_plot_title
         return self
 
-class Result_loss_info_builder(Result_plot_builder):
-    def set_loss_info_obj(self, loss_info_obj):
-        self.result.loss_info_obj          = loss_info_obj
-        self.result.loss_info_obj.logs_dir = self.result.logs_dir
-        self.result.loss_info_obj          = Loss_info_builder(self.result.loss_info_obj).set_logs_dir(self.result.logs_dir).build()  ###step3 建立tensorboard，只有train 和 train_reload需要
-        return self
-
-class Result_builder(Result_loss_info_builder): pass
+class Result_builder(Result_plot_builder): pass
