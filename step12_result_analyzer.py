@@ -293,7 +293,7 @@ def doing_analyze_2page(analyze_obj):
 
 
 
-class Bm_Rec_result_analyze(Result_analyzer):
+class Bm_Rec_results_analyze(Result_analyzer):
     def __init__(self, ana_describe, results):
         super().__init__(ana_describe)
         self.results = results
@@ -340,7 +340,7 @@ class Bm_Rec_result_analyze(Result_analyzer):
         print(self.ana_describe, "doing all_single_see_final_rec_analyze")
         for see_num in range(self.results[0].see_amount):
             self.single_see_final_rec_analyze(see_num=see_num)
-    
+
     def analyze_tensorboard(self): pass
 
 
@@ -349,47 +349,47 @@ if(__name__ == "__main__"):
     from step11_c_result_instance import  *
 
     ana_title = "5_14-bm_rec-"
-    # Bm_Rec_result_analyze(ana_title + "0_1-epoch_old_shuf_results",     epoch_old_shuf_results)    .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "0_2-epoch_new_shuf_results",     epoch_new_shuf_results)    .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "0_3-epoch_old_new_shuf_results", epoch_old_new_shuf_results).all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "0_4-ch_old_shuf_results",        ch_old_shuf_results)       .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "0_5-ch_new_shuf_results",        ch_new_shuf_results)       .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "0_6-ch_old_new_shuf_results",    ch_old_new_shuf_results)   .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "0_1-epoch_old_shuf_results",     epoch_old_shuf_results)    .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "0_2-epoch_new_shuf_results",     epoch_new_shuf_results)    .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "0_3-epoch_old_new_shuf_results", epoch_old_new_shuf_results).all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "0_4-ch_old_shuf_results",        ch_old_shuf_results)       .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "0_5-ch_new_shuf_results",        ch_new_shuf_results)       .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "0_6-ch_old_new_shuf_results",    ch_old_new_shuf_results)   .all_single_see_final_rec_analyze()
 
-    # Bm_Rec_result_analyze(ana_title + "1_1-epoch_results",                      epoch_results)                     .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "2_1-ch_results",                         ch_results)                        .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "3_1-bn_ch64_results_bn_see_arg_T",       bn_ch64_results_bn_see_arg_T)      .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "3_2-bn_ch32_results_bn_see_arg_T",       bn_ch32_results_bn_see_arg_T)      .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "3_3-bn_ch64_results_bn_see_arg_F_and_T", bn_ch64_results_bn_see_arg_F_and_T).all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "3_4-bn_ch32_results_bn_see_arg_F_and_T", bn_ch32_results_bn_see_arg_F_and_T).all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "4_1-bn_in_size1_results",                bn_in_size1_results)               .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "4_2-bn_in_sizen_results",                bn_in_sizen_results)               .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "1_1-epoch_results",                      epoch_results)                     .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "2_1-ch_results",                         ch_results)                        .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "3_1-bn_ch64_results_bn_see_arg_T",       bn_ch64_results_bn_see_arg_T)      .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "3_2-bn_ch32_results_bn_see_arg_T",       bn_ch32_results_bn_see_arg_T)      .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "3_3-bn_ch64_results_bn_see_arg_F_and_T", bn_ch64_results_bn_see_arg_F_and_T).all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "3_4-bn_ch32_results_bn_see_arg_F_and_T", bn_ch32_results_bn_see_arg_F_and_T).all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "4_1-bn_in_size1_results",                bn_in_size1_results)               .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "4_2-bn_in_sizen_results",                bn_in_sizen_results)               .all_single_see_final_rec_analyze()
 
-    # Bm_Rec_result_analyze(ana_title + "5_1-in_concat_AB",                       in_concat_AB)                      .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "6_1-unet_layers",                        unet_layers)                       .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "6_2-unet_skip_use_add",                  unet_skip_use_add)                 .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "6_3-unet_skip_use_concat_vs_add",        unet_skip_use_concat_vs_add)       .all_single_see_final_rec_analyze()
-    Bm_Rec_result_analyze(ana_title + "8_1-unet_range_mae",                     unet_range_mae)                    .all_single_see_final_rec_analyze()
-    Bm_Rec_result_analyze(ana_title + "8_2-unet_range_mae_good",                     unet_range_mae_good)                    .all_single_see_final_rec_analyze()
-    Bm_Rec_result_analyze(ana_title + "8_3-unet_range_mae_ok",                     unet_range_mae_ok)                    .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "5_1-in_concat_AB",                       in_concat_AB)                      .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "6_1-unet_layers",                        unet_layers)                       .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "6_2-unet_skip_use_add",                  unet_skip_use_add)                 .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "6_3-unet_skip_use_concat_vs_add",        unet_skip_use_concat_vs_add)       .all_single_see_final_rec_analyze()
+    Bm_Rec_results_analyze(ana_title + "8_1-unet_range_mae",                     unet_range_mae)                    .all_single_see_final_rec_analyze()
+    Bm_Rec_results_analyze(ana_title + "8_2-unet_range_mae_good",                     unet_range_mae_good)                    .all_single_see_final_rec_analyze()
+    Bm_Rec_results_analyze(ana_title + "8_3-unet_range_mae_ok",                     unet_range_mae_ok)                    .all_single_see_final_rec_analyze()
 
-    # Bm_Rec_result_analyze(ana_title + "9_1-rect_layers_right_relu",        rect_layers_right_relu)       .all_single_see_final_rec_analyze()
-    # Bm_Rec_result_analyze(ana_title + "7_1-rect_layers",                        rect_layers)                       .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "9_1-rect_layers_right_relu",        rect_layers_right_relu)       .all_single_see_final_rec_analyze()
+    # Bm_Rec_results_analyze(ana_title + "7_1-rect_layers",                        rect_layers)                       .all_single_see_final_rec_analyze()
 
-    # epoch_new_shuffle_results_ana      = Bm_Rec_result_analyze("5_14_rec_result_analyze-1_2-epoch_new_shuffle",     epoch_new_shuffle_results)
-    # epoch_old_new_shuffle_results_ana  = Bm_Rec_result_analyze("5_14_rec_result_analyze-1_3-epoch_old_new_shuffle", epoch_old_new_shuffle_results)
+    # epoch_new_shuffle_results_ana      = Bm_Rec_results_analyze("5_14_rec_result_analyze-1_2-epoch_new_shuffle",     epoch_new_shuffle_results)
+    # epoch_old_new_shuffle_results_ana  = Bm_Rec_results_analyze("5_14_rec_result_analyze-1_3-epoch_old_new_shuffle", epoch_old_new_shuffle_results)
 
-    # hid_ch_old_shuffle_results_ana     = Bm_Rec_result_analyze("5_14_rec_result_analyze-2_1-hid_ch_old_shuffle",     hid_ch_old_shuffle_results)
-    # hid_ch_new_shuffle_results_ana     = Bm_Rec_result_analyze("5_14_rec_result_analyze-2_2-hid_ch_new_shuffle",     hid_ch_new_shuffle_results)
-    # hid_ch_old_new_shuffle_results_ana = Bm_Rec_result_analyze("5_14_rec_result_analyze-2_3-hid_ch_old_new_shuffle", hid_ch_old_new_shuffle_results)
+    # hid_ch_old_shuffle_results_ana     = Bm_Rec_results_analyze("5_14_rec_result_analyze-2_1-hid_ch_old_shuffle",     hid_ch_old_shuffle_results)
+    # hid_ch_new_shuffle_results_ana     = Bm_Rec_results_analyze("5_14_rec_result_analyze-2_2-hid_ch_new_shuffle",     hid_ch_new_shuffle_results)
+    # hid_ch_old_new_shuffle_results_ana = Bm_Rec_results_analyze("5_14_rec_result_analyze-2_3-hid_ch_old_new_shuffle", hid_ch_old_new_shuffle_results)
 
-    # bn_ch64_results_ana                    = Bm_Rec_result_analyze("5_14_rec_result_analyze-3_1-bn_ch64",                    bn_ch64_results)
-    # bn_ch32_results_bn_see_arg_T_ana       = Bm_Rec_result_analyze("5_14_rec_result_analyze-3_2-bn_ch32_bn_see_arg_T",       bn_ch32_results_bn_see_arg_T)
-    # bn_ch32_results_bn_see_arg_F_ana       = Bm_Rec_result_analyze("5_14_rec_result_analyze-3_3-bn_ch32_bn_see_arg_F",       bn_ch32_results_bn_see_arg_F)
-    # bn_ch32_results_bn_see_arg_T_and_F_ana = Bm_Rec_result_analyze("5_14_rec_result_analyze-3_4-bn_ch32_bn_see_arg_T_and_F", bn_ch32_results_bn_see_arg_T_and_F)
+    # bn_ch64_results_ana                    = Bm_Rec_results_analyze("5_14_rec_result_analyze-3_1-bn_ch64",                    bn_ch64_results)
+    # bn_ch32_results_bn_see_arg_T_ana       = Bm_Rec_results_analyze("5_14_rec_result_analyze-3_2-bn_ch32_bn_see_arg_T",       bn_ch32_results_bn_see_arg_T)
+    # bn_ch32_results_bn_see_arg_F_ana       = Bm_Rec_results_analyze("5_14_rec_result_analyze-3_3-bn_ch32_bn_see_arg_F",       bn_ch32_results_bn_see_arg_F)
+    # bn_ch32_results_bn_see_arg_T_and_F_ana = Bm_Rec_results_analyze("5_14_rec_result_analyze-3_4-bn_ch32_bn_see_arg_T_and_F", bn_ch32_results_bn_see_arg_T_and_F)
 
-    # bn_in_size1_results_ana                    = Bm_Rec_result_analyze("5_14_rec_result_analyze-4_1-bn_in_size1", bn_in_size1_results)
-    # bn_in_sizen_results_ana                    = Bm_Rec_result_analyze("5_14_rec_result_analyze-4_2-bn_in_sizen", bn_in_sizen_results)
+    # bn_in_size1_results_ana                    = Bm_Rec_results_analyze("5_14_rec_result_analyze-4_1-bn_in_size1", bn_in_size1_results)
+    # bn_in_sizen_results_ana                    = Bm_Rec_results_analyze("5_14_rec_result_analyze-4_2-bn_in_sizen", bn_in_sizen_results)
 
     # rec_analyzers = [
     #                 ### 1
