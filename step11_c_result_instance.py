@@ -330,7 +330,7 @@ rect_7_level_fk3_ReLU
 testest
 
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
-rec_bm_results = [
+rec_bm_exps_compress = [
     # testest,
 
     # unet_IN_7l_firstnoC,       ### 3491
@@ -444,14 +444,14 @@ rec_bm_results = [
 ###################################################################################################
 ### 0 old vs new shuffle
 ### epoch
-epoch_old_shuf_results  = [
+epoch_old_shuf_exps  = [
     epoch050_bn_see_arg_T,
     epoch100_bn_see_arg_T,
     epoch200_bn_see_arg_T,
     epoch300_bn_see_arg_T,
     epoch700_bn_see_arg_T]
 
-epoch_new_shuf_results  = [
+epoch_new_shuf_exps  = [
     epoch050_new_shuf_bn_see_arg_T,
     epoch100_new_shuf_bn_see_arg_T,
     epoch200_new_shuf_bn_see_arg_T,
@@ -459,7 +459,7 @@ epoch_new_shuf_results  = [
     epoch500_new_shuf_bn_see_arg_T,
     epoch700_new_shuf_bn_see_arg_T]
 
-epoch_old_new_shuf_results  = [
+epoch_old_new_shuf_exps  = [
     epoch050_bn_see_arg_T,
     epoch050_new_shuf_bn_see_arg_T,
     epoch100_bn_see_arg_T,
@@ -474,21 +474,21 @@ epoch_old_new_shuf_results  = [
     epoch700_new_shuf_bn_see_arg_T]
 
 ### ch
-ch_old_shuf_results = [
+ch_old_shuf_exps = [
     ch128_bn_see_arg_T,
     ### jump ch064
     ch032_bn_see_arg_T,
     ch016_bn_see_arg_T,
     ch008_bn_see_arg_T]
 
-# ch_new_shuf_results = [
+# ch_new_shuf_exps = [
 #     ch128_new_shuf_bn_see_arg_T,
 #     ch064_new_shuf_bn_see_arg_T,
 #     ch032_new_shuf_bn_see_arg_T,
 #     ch016_new_shuf_bn_see_arg_T,
 #     ch008_new_shuf_bn_see_arg_T]
 
-ch_old_new_shuf_results = [
+ch_old_new_shuf_exps = [
     ch128_bn_see_arg_T,
     ch128_new_shuf_bn_see_arg_T,
     ### jump ch064
@@ -503,7 +503,7 @@ ch_old_new_shuf_results = [
 
 ###################################################################################################
 ### 1 epoch
-epoch_results  = [
+epoch_exps  = [
     epoch050_new_shuf_bn_see_arg_T,
     epoch100_new_shuf_bn_see_arg_T,
     epoch200_new_shuf_bn_see_arg_T,
@@ -512,7 +512,7 @@ epoch_results  = [
     epoch700_new_shuf_bn_see_arg_T]
 ###################################################################################################
 ### 2 ch
-ch_results = [
+ch_exps = [
     ch128_new_shuf_bn_see_arg_T,
     ch064_new_shuf_bn_see_arg_T,
     ch032_new_shuf_bn_see_arg_T,
@@ -522,20 +522,20 @@ ch_results = [
 ###################################################################################################
 ### 3 bn
 ###   3_1. ch64 只能 bn 1, 4, 8，覺得不夠明顯
-# bn_ch64_results_bn_see_arg_T = [
+# bn_ch64_exps_bn_see_arg_T = [
 #     ch64_bn01_bn_see_arg_T,
 #     ch64_bn04_bn_see_arg_T,
 #     ch64_bn08_bn_see_arg_T]
 
 ###   3_2. ch32 就能 bn 1, 4, 8, 16
-# bn_ch32_results_bn_see_arg_T = [
+# bn_ch32_exps_bn_see_arg_T = [
 #     ch32_bn01_bn_see_arg_T,
 #     ch32_bn04_bn_see_arg_T,
 #     ch32_bn08_bn_see_arg_T,
 #     ch32_bn16_bn_see_arg_T]
 
 ###   3_3. ch32 bn1, 4, 8, 16 see_arg 設 True/False 來比較看看，ch64的 bn數比較少就跳過囉~~
-# bn_ch64_results_bn_see_arg_F_and_T = [
+# bn_ch64_exps_bn_see_arg_F_and_T = [
 #     ch64_bn01_bn_see_arg_F,
 #     ch64_bn01_bn_see_arg_T,
 #     ch64_bn04_bn_see_arg_F,
@@ -544,7 +544,7 @@ ch_results = [
 #     ch64_bn08_bn_see_arg_T]
 
 ###   3_3. ch32 bn1, 4, 8, 16 see_arg 設 True/False 來比較看看，ch64的 bn數比較少就跳過囉~~
-# bn_ch32_results_bn_see_arg_F_and_T = [
+# bn_ch32_exps_bn_see_arg_F_and_T = [
 #     ch32_bn01_bn_see_arg_F,
 #     ch32_bn01_bn_see_arg_T,
 #     ch32_bn04_bn_see_arg_F,
@@ -556,7 +556,7 @@ ch_results = [
 
 ### 4 bn_in
 ###   4_1. in 的 batch_size一定只能等於1 所以拿 epoch500 來比較，也像看train 久一點的效果，所以就多train 一個 epoch700 的 並拿相應的 bn來比較
-# bn_in_size1_results = [
+# bn_in_size1_exps = [
 #     ch64_bn_epoch500,
 #     ch64_in_epoch500,
 #     ch64_bn_epoch700,
@@ -564,7 +564,7 @@ ch_results = [
 # ]
 
 ### 4_2. in vs bn batch_size > 1
-# bn_in_sizen_results = [
+# bn_in_sizen_exps = [
 #     ch64_1_bn01,
 #     ch64_2_in01,
 #     ch64_3_bn04,
