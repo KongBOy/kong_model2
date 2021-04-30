@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 import sys
 sys.path.append("kong_util")
-from step0_access_path import result_access_path, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
+from step0_access_path import analyze_access_path, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
 from util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop, Save_as_jpg
 from video_from_img import Video_combine_from_dir
@@ -13,7 +13,7 @@ from video_from_img import Video_combine_from_dir
 class Result_analyzer:
     def __init__(self, ana_describe):
         self.ana_describe = ana_describe
-        self.analyze_dir = result_access_path + "analyze_dir" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
+        self.analyze_dir = analyze_access_path + "analyze_dir" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
         Check_dir_exist_and_build(self.analyze_dir)
 
     ########################################################################################################################################
@@ -361,74 +361,34 @@ if(__name__ == "__main__"):
     from step11_c_exp_grouping import  *
 
     ana_title = "5_14-bm_rec-"
-    # Bm_Rec_exps_analyze(ana_title + "0_1-epoch_old_shuf_exps",     epoch_old_shuf_exps)    .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "0_2-epoch_new_shuf_exps",     epoch_new_shuf_exps)    .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "0_3-epoch_old_new_shuf_exps", epoch_old_new_shuf_exps).all_single_see_final_rec_analyze().
-    # Bm_Rec_exps_analyze(ana_title + "0_4-ch_old_shuf_exps",        ch_old_shuf_exps)       .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "0_5-ch_new_shuf_exps",        ch_new_shuf_exps)       .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "0_6-ch_old_new_shuf_exps",    ch_old_new_shuf_exps)   .all_single_see_final_rec_analyze()
+    # Bm_Rec_exps_analyze(ana_title + "0_1-epoch_old_shuf_exps",     epoch_old_shuf_exps)    .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "0_2-epoch_new_shuf_exps",     epoch_new_shuf_exps)    .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "0_3-epoch_old_new_shuf_exps", epoch_old_new_shuf_exps).all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "0_4-ch_old_shuf_exps",        ch_old_shuf_exps)       .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "0_5-ch_new_shuf_exps",        ch_new_shuf_exps)       .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "0_6-ch_old_new_shuf_exps",    ch_old_new_shuf_exps)   .all_single_see_final_rec_analyze().analyze_tensorboard()
 
-    # Bm_Rec_exps_analyze(ana_title + "1_1-epoch_exps",                      epoch_exps)                     .all_single_see_final_rec_analyze()
-    Bm_Rec_exps_analyze(ana_title + "2_1-ch_exps",                         ch_exps)                        .all_single_see_final_rec_analyze().analyze_tensorboard()
-    # Bm_Rec_exps_analyze(ana_title + "3_1-bn_ch64_exps_bn_see_arg_T",       bn_ch64_exps_bn_see_arg_T)      .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "3_2-bn_ch32_exps_bn_see_arg_T",       bn_ch32_exps_bn_see_arg_T)      .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "3_3-bn_ch64_exps_bn_see_arg_F_and_T", bn_ch64_exps_bn_see_arg_F_and_T).all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "3_4-bn_ch32_exps_bn_see_arg_F_and_T", bn_ch32_exps_bn_see_arg_F_and_T).all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "4_1-bn_in_size1_exps",                bn_in_size1_exps)               .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "4_2-bn_in_sizen_exps",                bn_in_sizen_exps)               .all_single_see_final_rec_analyze()
+    # Bm_Rec_exps_analyze(ana_title + "1_1-epoch_exps",                      epoch_exps)                     .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "2_1-ch_exps",                         ch_exps)                        .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "3_1-bn_ch64_exps_bn_see_arg_T",       bn_ch64_exps_bn_see_arg_T)      .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "3_2-bn_ch32_exps_bn_see_arg_T",       bn_ch32_exps_bn_see_arg_T)      .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "3_3-bn_ch64_exps_bn_see_arg_F_and_T", bn_ch64_exps_bn_see_arg_F_and_T).all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "3_4-bn_ch32_exps_bn_see_arg_F_and_T", bn_ch32_exps_bn_see_arg_F_and_T).all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "4_1-bn_in_size1_exps",                bn_in_size1_exps)               .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "4_2-bn_in_sizen_exps",                bn_in_sizen_exps)               .all_single_see_final_rec_analyze().analyze_tensorboard()
 
-    # Bm_Rec_exps_analyze(ana_title + "5_1-in_concat_AB",                       in_concat_AB)                      .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "6_1-unet_layers",                        unet_layers)                       .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "6_2-unet_skip_use_add",                  unet_skip_use_add)                 .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "6_3-unet_skip_use_concat_vs_add",        unet_skip_use_concat_vs_add)       .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "8_1-unet_range_mae",                     unet_range_mae)                    .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "8_2-unet_range_mae_good",                     unet_range_mae_good)                    .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "8_3-unet_range_mae_ok",                     unet_range_mae_ok)                    .all_single_see_final_rec_analyze()
+    # Bm_Rec_exps_analyze(ana_title + "5_1-in_concat_AB",                    in_concat_AB)                   .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "6_1-unet_layers",                     unet_layers)                    .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "6_2-unet_skip_use_add",               unet_skip_use_add)              .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "6_3-unet_skip_use_concat_vs_add",     unet_skip_use_concat_vs_add)    .all_single_see_final_rec_analyze().analyze_tensorboard()
 
-    # Bm_Rec_exps_analyze(ana_title + "9_1-rect_layers_right_relu",        rect_layers_right_relu)       .all_single_see_final_rec_analyze()
-    # Bm_Rec_exps_analyze(ana_title + "7_1-rect_layers",                        rect_layers)                       .all_single_see_final_rec_analyze()
+    Bm_Rec_exps_analyze(ana_title + "7_1-unet_firstnoC",                  unet_firstnoC)                 .all_single_see_final_rec_analyze().analyze_tensorboard()
 
-    # epoch_new_shuffle_results_ana      = Bm_Rec_exps_analyze("5_14_rec_result_analyze-1_2-epoch_new_shuffle",     epoch_new_shuffle_results)
-    # epoch_old_new_shuffle_results_ana  = Bm_Rec_exps_analyze("5_14_rec_result_analyze-1_3-epoch_old_new_shuffle", epoch_old_new_shuffle_results)
+    # Bm_Rec_exps_analyze(ana_title + "8_1-unet_range_mae",                  unet_range_mae)                 .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "8_2-unet_range_mae_good",             unet_range_mae_good)            .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "8_3-unet_range_mae_ok",               unet_range_mae_ok)              .all_single_see_final_rec_analyze().analyze_tensorboard()
 
-    # hid_ch_old_shuffle_results_ana     = Bm_Rec_exps_analyze("5_14_rec_result_analyze-2_1-hid_ch_old_shuffle",     hid_ch_old_shuffle_results)
-    # hid_ch_new_shuffle_results_ana     = Bm_Rec_exps_analyze("5_14_rec_result_analyze-2_2-hid_ch_new_shuffle",     hid_ch_new_shuffle_results)
-    # hid_ch_old_new_shuffle_results_ana = Bm_Rec_exps_analyze("5_14_rec_result_analyze-2_3-hid_ch_old_new_shuffle", hid_ch_old_new_shuffle_results)
-
-    # bn_ch64_results_ana                    = Bm_Rec_exps_analyze("5_14_rec_result_analyze-3_1-bn_ch64",                    bn_ch64_results)
-    # bn_ch32_exps_bn_see_arg_T_ana       = Bm_Rec_exps_analyze("5_14_rec_result_analyze-3_2-bn_ch32_bn_see_arg_T",       bn_ch32_exps_bn_see_arg_T)
-    # bn_ch32_results_bn_see_arg_F_ana       = Bm_Rec_exps_analyze("5_14_rec_result_analyze-3_3-bn_ch32_bn_see_arg_F",       bn_ch32_results_bn_see_arg_F)
-    # bn_ch32_exps_bn_see_arg_T_and_F_ana = Bm_Rec_exps_analyze("5_14_rec_result_analyze-3_4-bn_ch32_bn_see_arg_T_and_F", bn_ch32_exps_bn_see_arg_T_and_F)
-
-    # bn_in_size1_exps_ana                    = Bm_Rec_exps_analyze("5_14_rec_result_analyze-4_1-bn_in_size1", bn_in_size1_exps)
-    # bn_in_sizen_exps_ana                    = Bm_Rec_exps_analyze("5_14_rec_result_analyze-4_2-bn_in_sizen", bn_in_sizen_exps)
-
-    # rec_analyzers = [
-    #                 ### 1
-    #                 # epoch_old_shuffle_results_ana,
-    #                 epoch_new_shuffle_results_ana,
-    #                 # epoch_old_new_shuffle_results_ana,
-    #                 ### 2
-    #                 # hid_ch_old_shuffle_results_ana,
-    #                 hid_ch_new_shuffle_results_ana,
-    #                 # hid_ch_old_new_shuffle_results_ana,
-    #                 ### 3
-    #                 bn_ch64_results_ana,
-    #                 bn_ch32_exps_bn_see_arg_T_ana,
-    #                 bn_ch32_results_bn_see_arg_F_ana,
-    #                 bn_ch32_exps_bn_see_arg_T_and_F_ana,
-    #                 ### 4
-    #                 bn_in_size1_exps_ana,
-    #                 bn_in_sizen_exps_ana,
-    #                  ]
-    # for see_num in range(0, 12):
-    #     print("current see_num:", see_num)
-    #     for analyzer in rec_analyzers:
-    #         analyzer.single_see_final_rec_analyze(see_num=see_num)
-
-    # rec_result_analyze.single_see_final_rec_analyze(see_num=9)
-    # rec_result_analyze.single_see_final_rec_analyze(see_num=10)
-    # rec_result_analyze.single_see_final_rec_analyze(see_num=11)
+    # Bm_Rec_exps_analyze(ana_title + "9_1-rect_layers_right_relu",        rect_layers_right_relu)           .all_single_see_final_rec_analyze()
 
 
     ### Result_analyzer 的 各method測試：
