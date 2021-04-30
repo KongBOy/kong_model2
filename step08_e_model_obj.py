@@ -62,12 +62,12 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
                                                    optimizer_G=self.kong_model.optimizer_G,
                                                    epoch_log=self.kong_model.epoch_log)
 
-    def build_flow_unet(self, hid_ch=64, depth_level=7, first_concat=True, second_concat=True, skip_use_add=False, skip_use_cnn3_relu=False, out_tanh=True, out_ch=3, true_IN=False, concat_Activation=False):
+    def build_flow_unet(self, hid_ch=64, depth_level=7, no_concat_layer=0, first_concat=True, second_concat=True, skip_use_add=False, skip_use_cnn3_relu=False, out_tanh=True, out_ch=3, true_IN=False, concat_Activation=False):
         ### model_part
         if  (true_IN and concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
         elif(true_IN and concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
         else:                                         from step08_a_1_UNet_BN                   import Generator
-        self.kong_model.generator   = Generator(hid_ch=hid_ch, depth_level=depth_level, first_concat=first_concat, second_concat=second_concat, skip_use_add=skip_use_add, skip_use_cnn3_relu=skip_use_cnn3_relu, out_tanh=out_tanh, out_ch=out_ch)
+        self.kong_model.generator   = Generator(hid_ch=hid_ch, depth_level=depth_level, no_concat_layer=no_concat_layer, first_concat=first_concat, second_concat=second_concat, skip_use_add=skip_use_add, skip_use_cnn3_relu=skip_use_cnn3_relu, out_tanh=out_tanh, out_ch=out_ch)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
         self._build_flow_part()
@@ -394,9 +394,14 @@ flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flo
 ########################################################### 14 看 unet 的 output 改成sigmoid
 flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_tanh=False, true_IN=True)
 ########################################################### 14 看 unet 的 第一層試試看 不 concat 效果如何
-flow_unet_IN_7l_ch32_firstnoC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=32, first_concat=False, true_IN=True)
-flow_unet_IN_7l_ch64_firstnoC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, first_concat=False, true_IN=True)
-flow_unet_IN_7l_ch64_1and2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, first_concat=False, second_concat=False, true_IN=True)
+flow_unet_IN_7l_ch32_firstnoC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=32, no_concat_layer=2, first_concat=False, true_IN=True)
+flow_unet_IN_7l_ch64_firstnoC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=2, first_concat=False, true_IN=True)
+flow_unet_IN_7l_ch64_1and2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=3, first_concat=False, second_concat=False, true_IN=True)
+flow_unet_IN_7l_ch64_2to4noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=4, true_IN=True)
+flow_unet_IN_7l_ch64_2to5noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=5, true_IN=True)
+flow_unet_IN_7l_ch64_2to6noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=6, true_IN=True)
+flow_unet_IN_7l_ch64_2to7noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=7, true_IN=True)
+flow_unet_IN_7l_ch64_2to8noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=8, true_IN=True)
 ########################################################### 14 看 unet 的 output 改成sigmoid
 flow_unet_IN_7l_ch64_skip_use_relu = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn3_relu=True, true_IN=True)
 

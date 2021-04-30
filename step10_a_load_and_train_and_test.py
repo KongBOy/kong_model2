@@ -297,6 +297,8 @@ class Exp_builder():
             self.exp = Experiment()
         else: self.exp = exp
 
+    def set_com(self, machine="127.35"): return self  ### 只是單純讓我自己能直接看到而已，懶得去翻 cost_time.txt
+
     def set_basic(self, phase, db_obj, model_obj, loss_info_obj, exp_dir=".", describe_mid=None, describe_end=None, result_name=None):
         self.exp.phase = phase
         self.exp.db_obj = db_obj
@@ -603,6 +605,11 @@ t8_in_th_mo_01_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blende
 unet_IN_7l_firstnoC      = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_7l_ch64_firstnoC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_1", describe_end="unet_IN_7l_firstnoC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_9_1-20210416_172119-flow_unet-unet_IN_7l_firstnoC")
 unet_IN_7l_firstnoC_ch32 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch32_firstnoC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_1", describe_end="unet_IN_7l_firstnoC_ch32") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_9_1-20210428_213215-flow_unet-unet_IN_7l_firstnoC_ch32")
 unet_IN_7l_1and2noC      = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_1and2noC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_1", describe_end="unet_IN_7l_1and2noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_9_1-20210428_212431-flow_unet-unet_IN_7l_1and2noC")
+unet_IN_7l_2to4noC      = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to4noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_4", describe_end="unet_IN_7l_2to4noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+unet_IN_7l_2to5noC      = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to5noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_5", describe_end="unet_IN_7l_2to5noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+unet_IN_7l_2to6noC      = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to6noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_6", describe_end="unet_IN_7l_2to6noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+unet_IN_7l_2to7noC      = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to7noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_7", describe_end="unet_IN_7l_2to7noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+unet_IN_7l_2to8noC      = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to8noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_8", describe_end="unet_IN_7l_2to8noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
 
 ### 測試 怎麼樣設定 multiprocess 才較快
 testest = Exp_builder().set_basic("ok", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-testest")
@@ -652,8 +659,8 @@ if(__name__ == "__main__"):
         # rect_2_level_fk3_ReLU.run()
         # ch64_in_epoch500_sigmoid.run()
         # in_th_mo_th_gt_th.run()
-        t3_in_01_mo_th_gt_th_mae.run()
-
+        # t3_in_01_mo_th_gt_th_mae.run()
+        # unet_IN_7l_2to4noC.run()
         print('no argument')
         sys.exit()
 

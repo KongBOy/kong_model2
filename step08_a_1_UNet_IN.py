@@ -12,14 +12,16 @@ import time
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, first_concat=True, second_concat=True, skip_use_add=False, skip_use_cnn3_relu=False, out_tanh=True, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, no_concat_layer=0, first_concat=True, second_concat=True, skip_use_add=False, skip_use_cnn3_relu=False, out_tanh=True, out_ch=3, **kwargs):
         """
-        depth_level: 2~8, 9有點難，因為要是512的倍數，不是512就1024，只能等我研究好512的dataset才有機會式
+        depth_level     : 2~8, 9有點難，因為要是512的倍數，不是512就1024，只能等我研究好512的dataset才有機會式
+        no_concat_layer : 2~8, 0 1 的話代表全concat，2 代表 conv2 的結果 到 decoder 不concat， 3 代表 conv2~3 的結果到 decoder 不concat， 4 代表 conv2~4 ..... 同理
         skip_use_add：把 concat 改成 用 + 的看看效果如何
         out_tanh：想實驗看看 output 是 tanh 和 sigmoid 的效果，out_tanh=False 就是用 sigmoid
         """
         super(Generator, self).__init__(**kwargs)
         self.depth_level = depth_level
+        self.no_concat_layer = no_concat_layer
         self.first_concat = first_concat
         self.second_concat = second_concat
         self.skip_use_add = skip_use_add
@@ -192,54 +194,59 @@ class Generator(tf.keras.models.Model):
             x = self.relu8t(x)
             x = self.conv8t(x)
             x = self.in8t(x)
-            if(self.skip_use_add is False):
-                # x = self.concat8([skip8,x])
-                x = self.concat8([x, skip8])
-            else: x = x + skip8
+            if(self.no_concat_layer < 8):
+                if(self.skip_use_add is False):
+                    # x = self.concat8([skip8,x])
+                    x = self.concat8([x, skip8])
+                else: x = x + skip8
 
         if(self.depth_level >= 7):
             x = self.relu7t(x)
             x = self.conv7t(x)
             x = self.in7t(x)
-            if(self.skip_use_add is False):
-                # x = self.concat7([skip7,x])
-                x = self.concat7([x, skip7])
-            else: x = x + skip7
+            if(self.no_concat_layer < 7):
+                if(self.skip_use_add is False):
+                    # x = self.concat7([skip7,x])
+                    x = self.concat7([x, skip7])
+                else: x = x + skip7
 
         if(self.depth_level >= 6):
             x = self.relu6t(x)
             x = self.conv6t(x)
             x = self.in6t(x)
-            if(self.skip_use_add is False):
-                # x = self.concat6([skip6,x])
-                x = self.concat6([x, skip6])
-            else: x = x + skip6
+            if(self.no_concat_layer < 6):
+                if(self.skip_use_add is False):
+                    # x = self.concat6([skip6,x])
+                    x = self.concat6([x, skip6])
+                else: x = x + skip6
 
         if(self.depth_level >= 5):
             x = self.relu5t(x)
             x = self.conv5t(x)
             x = self.in5t(x)
-            if(self.skip_use_add is False):
-                # x = self.concat5([skip5,x])
-                x = self.concat5([x, skip5])
-            else: x = x + skip5
+            if(self.no_concat_layer < 5):
+                if(self.skip_use_add is False):
+                    # x = self.concat5([skip5,x])
+                    x = self.concat5([x, skip5])
+                else: x = x + skip5
 
 
         if(self.depth_level >= 4):
             x = self.relu4t(x)
             x = self.conv4t(x)
             x = self.in4t(x)
-            if(self.skip_use_add is False):
-                # x = self.concat4([skip4,x])
-                x = self.concat4([x, skip4])
-            else: x = x + skip4
+            if(self.no_concat_layer < 4):
+                if(self.skip_use_add is False):
+                    # x = self.concat4([skip4,x])
+                    x = self.concat4([x, skip4])
+                else: x = x + skip4
 
 
         if(self.depth_level >= 3):
             x = self.relu3t(x)
             x = self.conv3t(x)
             x = self.in3t(x)
-            if(self.second_concat):
+            if(self.no_concat_layer < 3):
                 if(self.skip_use_add is False):
                     # x = self.concat3([skip3,x])
                     x = self.concat3([x, skip3])
@@ -250,7 +257,7 @@ class Generator(tf.keras.models.Model):
             x = self.relu2t(x)
             x = self.conv2t(x)
             x = self.in2t(x)
-            if(self.first_concat):
+            if(self.no_concat_layer < 2):
                 if(self.skip_use_add is False):
                     # x = self.concat2([skip2,x])
                     x = self.concat2([x, skip2])
