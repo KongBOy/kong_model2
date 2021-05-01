@@ -1,6 +1,13 @@
 from step11_b_result_obj_builder import Result_builder
 import copy
 """
+這個.py主要是要 把 系列的exp 從step10a 裡面抽出來，包成 exps 給 step12 用
+
+系列之間的 dependency 是有順序性的，：
+應該都會是 某系列做完，覺得哪邊可以改，再坐下一個系列
+如果發現 要用的還沒宣告，應該是自己系列的設計有問題
+ex:可能有 兩個不同系列的東西混到一起來看之類的，這樣的話就區分出兩個系列即可拉~~
+
 group寫法1(但缺點很大目前不採用)：用Result_bulder()重新在這裡建構
     優點：速度快，因為只建構Result，不需要跟 Exp一樣 有db, model, board, loss, ...複雜的建構過程
     缺點：不好維護，因為我result_dir可能會改名字，這樣子 我 step10_a 改完result_name，這裡又要跟著改一次！太麻煩且易改錯！
@@ -192,19 +199,11 @@ group寫法1(但缺點很大目前不採用)：用Result_bulder()重新在這裡
 ##################################################################################################################################################################
 from step10_a_load_and_train_and_test import *
 """
-這個.py主要是要 把 系列的exp 從step10a 裡面抽出來，包成 exps 給 ste11_d, step12 用
-exps 也包在這個.py包的原因是 要改名之類的 用 "取代" 很方便，不用跳檔案
-
+group寫法2：from step10_a_load_and_train_and_test import * 直接包 exps
 補充：無法直接 from step10_a import * 直接處理，
     因為裡面包含太多其他物件了！光要抽出自己想用的 exp物件就是一大工程覺得~
     還有我也不知道要怎麼 直接用 ，也是要一個個 名字 打出來 才能用，名字 都打出來了，不如就直接 包成exps 囉！
 """
-### exp 轉 result_obj 和 實驗系列整理 我覺得可以放一起，
-### 因為 系列之間的 dependency 是有順序性的，：
-###    應該都會是 某系列做完，覺得哪邊可以改，再坐下一個系列
-### 如果發現 要用的還沒宣告，應該是自己系列的設計有問題
-###   ex:可能有 兩個不同系列的東西混到一起來看之類的，這樣的話就區分出兩個系列即可拉~~
-
 
 ### copy的示範
 # ch_064_300 = copy.deepcopy(epoch300_bn_see_arg_T); ch_064_300.ana_describe = "flow_unet-ch64_300"
