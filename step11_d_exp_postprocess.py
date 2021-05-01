@@ -1,5 +1,5 @@
-# from step11_c_result_instance import compress_results
-from step11_c_result_instance import rec_bm_exps_compress
+# from step11_c_exp_grouping import compress_results
+from step11_c_exp_grouping import rec_bm_exps_compress
 # import os
 # os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 if(__name__ == "__main__"):
