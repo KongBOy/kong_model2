@@ -611,6 +611,11 @@ unet_IN_7l_2to6noC      = Exp_builder().set_com("127.28").set_basic("train", typ
 unet_IN_7l_2to7noC      = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to7noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_7", describe_end="unet_IN_7l_2to7noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_9_7-20210430_100856-flow_unet-unet_IN_7l_2to7noC")
 unet_IN_7l_2to8noC      = Exp_builder().set_com("127.35").set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to8noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_8", describe_end="unet_IN_7l_2to8noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_9_8-20210430_214900-flow_unet-unet_IN_7l_2to8noC")
 
+### 學 印度方法 看看skip connection 中間加 cnn 的效果
+unet_IN_7l_skip_use_cnn1_NO_relu = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_10_1", describe_end="unet_IN_7l_skip_use_cnn1_NO_relu") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+unet_IN_7l_skip_use_cnn1_USErelu = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_10_2", describe_end="unet_IN_7l_skip_use_cnn1_USErelu") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+unet_IN_7l_skip_use_cnn3_USErelu = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_10_3", describe_end="unet_IN_7l_skip_use_cnn3_USErelu") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+
 ### 測試 怎麼樣設定 multiprocess 才較快
 testest = Exp_builder().set_basic("ok", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-testest")
 #############################################################################################################################################################################################################
@@ -661,7 +666,8 @@ if(__name__ == "__main__"):
         # in_th_mo_th_gt_th.run()
         # t3_in_01_mo_th_gt_th_mae.run()
         # unet_IN_7l_2to4noC.run()
-        print('no argument')
+        unet_IN_7l_skip_use_cnn1_NO_relu.run()
+        # print('no argument')
         sys.exit()
 
     ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_a_load_and_train_and_test.py 某個exp.run()

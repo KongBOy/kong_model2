@@ -107,6 +107,10 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["unet_IN_7l_2to8noC     .run()"])
 
 
+#############################################################################################
+# sb.run(same_command + ["unet_IN_7l_skip_use_cnn1_NO_relu.run()"])   ### 127.35
+# sb.run(same_command + ["unet_IN_7l_skip_use_cnn1_USErelu.run()"])   ### 127.28
+# sb.run(same_command + ["unet_IN_7l_skip_use_cnn3_USErelu.run()"])   ### 127.28
 
 
 

@@ -403,7 +403,9 @@ flow_unet_IN_7l_ch64_2to6noC  = KModel_builder().set_model_name(MODEL_NAME.flow_
 flow_unet_IN_7l_ch64_2to7noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=7, true_IN=True)
 flow_unet_IN_7l_ch64_2to8noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=8, true_IN=True)
 ########################################################### 14 看 unet 的 output 改成sigmoid
-flow_unet_IN_7l_ch64_skip_use_relu = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn3_relu=True, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_relu=False, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_relu=True, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=3, skip_use_relu=True, true_IN=True)
 
 
 ########################################################### 15 用 resblock 來試試看
