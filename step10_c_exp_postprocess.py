@@ -8,9 +8,9 @@ from step10_a_load_and_train_and_test import *
 rec_bm_exps_compress = [
     # testest,
 
-    # unet_IN_7l_firstnoC,       ### 3491
-    # unet_IN_7l_firstnoC_ch32,  ### 2985
-    # unet_IN_7l_1and2noC,       ### 2157
+    # unet_IN_7l_2to2noC,       ### 3491
+    # unet_IN_7l_2to2noC_ch32,  ### 2985
+    # unet_IN_7l_2to3noC,       ### 2157
 
     # unet_IN_7l_2to4noC,
     # unet_IN_7l_2to5noC,

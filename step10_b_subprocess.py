@@ -97,9 +97,9 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["t8_in_th_mo_01_gt_th_mae.run()"])  ### 127.35 沒train完
 #############################################################################################
 ### 9 的東西
-# sb.run(same_command + ["unet_IN_7l_firstnoC     .run()"])
-# sb.run(same_command + ["unet_IN_7l_firstnoC_ch32.run()"])
-# sb.run(same_command + ["unet_IN_7l_1and2noC     .run()"])
+# sb.run(same_command + ["unet_IN_7l_2to2noC     .run()"])
+# sb.run(same_command + ["unet_IN_7l_2to2noC_ch32.run()"])
+# sb.run(same_command + ["unet_IN_7l_2to3noC     .run()"])
 # sb.run(same_command + ["unet_IN_7l_2to4noC     .run()"])
 # sb.run(same_command + ["unet_IN_7l_2to5noC     .run()"])
 # sb.run(same_command + ["unet_IN_7l_2to6noC     .run()"])

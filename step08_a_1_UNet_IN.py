@@ -12,7 +12,7 @@ import time
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, no_concat_layer=0, first_concat=True, second_concat=True, skip_use_add=False, skip_use_cnn3_relu=False, out_tanh=True, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cnn3_relu=False, out_tanh=True, out_ch=3, **kwargs):
         """
         depth_level     : 2~8, 9有點難，因為要是512的倍數，不是512就1024，只能等我研究好512的dataset才有機會式
         no_concat_layer : 2~8, 0 1 的話代表全concat，2 代表 conv2 的結果 到 decoder 不concat， 3 代表 conv2~3 的結果到 decoder 不concat， 4 代表 conv2~4 ..... 同理
@@ -22,8 +22,6 @@ class Generator(tf.keras.models.Model):
         super(Generator, self).__init__(**kwargs)
         self.depth_level = depth_level
         self.no_concat_layer = no_concat_layer
-        self.first_concat = first_concat
-        self.second_concat = second_concat
         self.skip_use_add = skip_use_add
         self.skip_use_cnn3_relu = skip_use_cnn3_relu
         self.out_tanh = out_tanh
@@ -185,10 +183,11 @@ class Generator(tf.keras.models.Model):
             x = self.relu9t(x)
             x = self.conv9t(x)
             x = self.in9t(x)
-            if(self.skip_use_add is False):
-                # x = self.concat9([skip9,x])
-                x = self.concat9([x, skip9])
-            else: x = x + skip9
+            if(self.no_concat_layer < 9):
+                if(self.skip_use_add is False):
+                    # x = self.concat9([skip9,x])
+                    x = self.concat9([x, skip9])
+                else: x = x + skip9
         ###############################
         if(self.depth_level >= 8):
             x = self.relu8t(x)
