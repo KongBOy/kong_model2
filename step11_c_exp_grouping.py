@@ -348,6 +348,7 @@ bn_ch32_exps_bn_see_arg_F_and_T = [
 ###################################################################################################
 ### 4 bn_in
 ###   4_1. in 的 batch_size一定只能等於1 所以拿 epoch500 來比較，也像看train 久一點的效果，所以就多train 一個 epoch700 的 並拿相應的 bn來比較
+###   不管 epoch500, 700 都是 in 比 bn 好！
 ch64_bn_epoch500 = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_bn_epoch500.result_obj.ana_describe = "ch64_bn_epoch500"
 ch64_bn_epoch700 = copy.deepcopy(epoch700_new_shuf_bn_see_arg_T); ch64_bn_epoch700.result_obj.ana_describe = "ch64_bn_epoch700"
 bn_in_size1_exps = [
@@ -357,7 +358,8 @@ bn_in_size1_exps = [
     ch64_in_epoch700,
 ]
 
-## 4_2. in vs bn batch_size > 1
+### 4_2. in vs bn batch_size > 1
+###   batch_size 越大，效果越差
 ch64_1_bn01 = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T); ch64_1_bn01.result_obj.ana_describe = "ch64_1_bn01"
 ch64_2_in01 = copy.deepcopy(ch64_in_epoch500);               ch64_2_in01.result_obj.ana_describe = "ch64_2_in01"
 ch64_3_bn04 = copy.deepcopy(ch64_bn04_bn_see_arg_T);         ch64_3_bn04.result_obj.ana_describe = "ch64_3_bn04"
@@ -370,7 +372,8 @@ bn_in_sizen_exps = [
 ]
 ###################################################################################################
 ###################################################################################################
-# ### 5 unet concat Activation vs concat BN，都是epoch500 且 lr有下降， 先不管 concatA loss 相當於表現差的哪種結果 只放兩個exp比較
+### 5 unet concat Activation vs concat BN，都是epoch500 且 lr有下降， 先不管 concatA loss 相當於表現差的哪種結果 只放兩個exp比較
+###    concat_A 的效果比較好，且從架構圖上已經看出來 確實 concat_A 較合理
 ch64_in_concat_B = copy.deepcopy(ch64_in_epoch500); ch64_in_concat_B.result_obj.ana_describe = "ch64_in_concat_B"
 in_concat_AB = [
     ch64_in_concat_A,
@@ -379,8 +382,9 @@ in_concat_AB = [
 
 ###################################################################################################
 ###################################################################################################
-# ### 1_6 unet level 2~7
-### 6_1. unet 想看看 差一層 差多少，先不管 8_layer 表現好 的 相當於 哪種結果
+### 6 unet level 2~7
+###   想看看 差一層 差多少，先不管 8_layer 表現好 的 相當於 哪種結果
+###   最後發現 層越少效果越差，但 第8層 效果跟 第7層 差不多， 沒辦法試 第9層 因為要512的倍數
 unet_layers = [
     unet_2l,
     unet_3l,
@@ -391,7 +395,7 @@ unet_layers = [
     unet_8l,
 ]
 
-### 6_2 unet 的concat 改成 add 的效果如何
+### 6_2 unet 的concat 改成 add 的效果如何，效果超差
 unet_skip_use_add = [
     unet_8l_skip_use_add,
     unet_7l_skip_use_add,
@@ -402,7 +406,7 @@ unet_skip_use_add = [
     unet_2l_skip_use_add,
 ]
 
-### 6_3 unet 的concat vs add 的效果如何
+### 6_3 unet 的concat vs add 的效果如何，concat好，add不好
 unet_skip_use_concat_vs_add = [
     unet_7l,
     unet_7l_skip_use_add,
@@ -414,23 +418,37 @@ unet_skip_use_concat_vs_add = [
 ###################################################################################################
 ###################################################################################################
 ### 7_1 unet 的 第一層不concat 來跟 前面還不錯的結果比較
-unet_IN_7l_all_C_ch64_in_epoch500 = copy.deepcopy(ch64_in_epoch500); unet_IN_7l_all_C_ch64_in_epoch500.result_obj.ana_describe = "1-unet_IN_7l_all_C_ch64_in_epoch500"
-unet_IN_7l_all_C_ch64_bn_epoch500 = copy.deepcopy(ch64_bn_epoch500); unet_IN_7l_all_C_ch64_bn_epoch500.result_obj.ana_describe = "2-unet_IN_7l_all_C_ch64_bn_epoch500"
-unet_IN_7l_all_C_unet_7l          = copy.deepcopy(unet_7l); unet_IN_7l_all_C_unet_7l.result_obj.ana_describe = "3-unet_IN_7l_all_C_unet_7l"
-unet_IN_7l_firstnoC               .result_obj.ana_describe = "4-unet_IN_7l_firstnoC"
-unet_IN_7l_firstnoC_ch32          .result_obj.ana_describe = "5-unet_IN_7l_firstnoC_ch32"
-unet_IN_7l_1and2noC               .result_obj.ana_describe = "6-unet_IN_7l_1and2noC"
+### train loss 在 全接~前兩個skip省略 表現差不多，
+### see來看的話 train/test 都差不多，但在 real 前兩個skip 的結果 看起來都比 全接好！ 且 覺得 2to3noC 比 2to2noC 更好些！
+### 2to4noC 在 real3 表現差，且 2to4noC 之後 邊緣 的部分就越做越差囉～
+unet_IN_7l_all_C_ch64_in_epoch500 = copy.deepcopy(ch64_in_epoch500); unet_IN_7l_all_C_ch64_in_epoch500.result_obj.ana_describe = "1a-unet_IN_7l_all_C_ch64_in_epoch500"  ### 當初的train_code沒寫好沒有存到 model用的 code
+# unet_IN_7l_all_C_ch64_bn_epoch500 = copy.deepcopy(ch64_bn_epoch500); unet_IN_7l_all_C_ch64_bn_epoch500.result_obj.ana_describe = "1b-unet_IN_7l_all_C_ch64_bn_epoch500"  ### 從4_1就知道bn沒有in好，所以就不用這個了
+# unet_IN_7l_all_C_unet_7l          = copy.deepcopy(unet_7l); unet_IN_7l_all_C_unet_7l.result_obj.ana_describe = "1c-unet_IN_7l_all_C_unet_7l"  ### 他的loss好像最低，但沒有train完
+unet_IN_7l_2to2noC               .result_obj.ana_describe = "2a-unet_IN_7l_2to2noC"
+# unet_IN_7l_2to2noC_ch32          .result_obj.ana_describe = "2b-unet_IN_7l_2to2noC_ch32"  ### ch32 效果比較沒那麼好，先註解跳過不看
+unet_IN_7l_2to3noC               .result_obj.ana_describe = "3-unet_IN_7l_2to3noC"
+unet_IN_7l_2to4noC               .result_obj.ana_describe = "4-unet_IN_7l_2to4noC"
+unet_IN_7l_2to5noC               .result_obj.ana_describe = "5-unet_IN_7l_2to5noC"
+unet_IN_7l_2to6noC               .result_obj.ana_describe = "6-unet_IN_7l_2to6noC"
+unet_IN_7l_2to7noC               .result_obj.ana_describe = "7-unet_IN_7l_2to7noC"
+# unet_IN_7l_2to8noC               .result_obj.ana_describe = "8-unet_IN_7l_2to8noC"   ### 當初訓練就怪怪的，先跳過！
+
 unet_firstnoC = [
     unet_IN_7l_all_C_ch64_in_epoch500,
-    unet_IN_7l_all_C_ch64_bn_epoch500,
-    unet_IN_7l_all_C_unet_7l,
-    unet_IN_7l_firstnoC,
-    unet_IN_7l_firstnoC_ch32,
-    unet_IN_7l_1and2noC,
+    # unet_IN_7l_all_C_ch64_bn_epoch500,
+    # unet_IN_7l_all_C_unet_7l,
+    unet_IN_7l_2to2noC,
+    # unet_IN_7l_2to2noC_ch32,
+    unet_IN_7l_2to3noC,
+    unet_IN_7l_2to4noC,
+    unet_IN_7l_2to5noC,
+    unet_IN_7l_2to6noC,
+    unet_IN_7l_2to7noC,
+    # unet_IN_7l_2to8noC,   ### 好像train壞掉怪怪的
 ]
 
 
-unet_IN_7l_firstnoC
+
 
 ###################################################################################################
 ###################################################################################################
