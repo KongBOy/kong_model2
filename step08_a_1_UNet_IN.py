@@ -12,7 +12,7 @@ import time
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
 ### 目前 總共用7層，所以size縮小 2**7 ，也就是 1/128 這樣子！例如256*256*3丟進去，最中間的feature map長寬2*2*512喔！
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cnn3_relu=False, out_tanh=True, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_relu=False, out_tanh=True, out_ch=3, **kwargs):
         """
         depth_level     : 2~8, 9有點難，因為要是512的倍數，不是512就1024，只能等我研究好512的dataset才有機會式
         no_concat_layer : 2~8, 0 1 的話代表全concat，2 代表 conv2 的結果 到 decoder 不concat， 3 代表 conv2~3 的結果到 decoder 不concat， 4 代表 conv2~4 ..... 同理

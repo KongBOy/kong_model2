@@ -62,12 +62,12 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
                                                    optimizer_G=self.kong_model.optimizer_G,
                                                    epoch_log=self.kong_model.epoch_log)
 
-    def build_flow_unet(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cnn3_relu=False, out_tanh=True, out_ch=3, true_IN=False, concat_Activation=False):
+    def build_flow_unet(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_relu=False, out_tanh=True, out_ch=3, true_IN=False, concat_Activation=False):
         ### model_part
         if  (true_IN and concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
         elif(true_IN and concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
         else:                                         from step08_a_1_UNet_BN                   import Generator
-        self.kong_model.generator   = Generator(hid_ch=hid_ch, depth_level=depth_level, no_concat_layer=no_concat_layer, skip_use_add=skip_use_add, skip_use_cnn3_relu=skip_use_cnn3_relu, out_tanh=out_tanh, out_ch=out_ch)
+        self.kong_model.generator   = Generator(hid_ch=hid_ch, depth_level=depth_level, no_concat_layer=no_concat_layer, skip_use_add=skip_use_add, skip_use_cnn=skip_use_cnn, skip_cnn_k=skip_cnn_k, skip_use_relu=skip_use_relu, out_tanh=out_tanh, out_ch=out_ch)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
         self._build_flow_part()
