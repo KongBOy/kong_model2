@@ -16,7 +16,7 @@ rec_bm_exps_compress = [
     # unet_IN_7l_2to5noC,
     # unet_IN_7l_2to6noC,   ### 2194
     # unet_IN_7l_2to7noC,
-    # unet_IN_7l_2to8noC,
+    # unet_IN_7l_2to8noC,   ### 3597
 
     # t1_in_01_mo_th_gt_01_mse,  ### 4964
     # t2_in_01_mo_01_gt_01_mse,  ### 3577
