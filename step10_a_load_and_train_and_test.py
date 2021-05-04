@@ -356,7 +356,7 @@ class Exp_builder():
             self.exp.result_name   = result_name
             self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
             self.exp.loss_info_obj = Loss_info_builder(self.exp.loss_info_obj, in_obj_copy=True).set_logs_dir(self.exp.result_obj.logs_dir).build()  ### 上面定位出 logs_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
-            print("self.exp.loss_info_obj.logs_dir", self.exp.loss_info_obj.logs_dir)
+            # print("self.exp.loss_info_obj.logs_dir", self.exp.loss_info_obj.logs_dir)
             # print()  ### 追蹤see的建立過程
         return self.exp
 
@@ -612,7 +612,7 @@ unet_IN_7l_2to7noC      = Exp_builder().set_com("127.35").set_basic("train", typ
 unet_IN_7l_2to8noC      = Exp_builder().set_com("127.35").set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to8noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_9_8", describe_end="unet_IN_7l_2to8noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_9_8-20210430_214900-flow_unet-unet_IN_7l_2to8noC")
 
 ### 學 印度方法 看看skip connection 中間加 cnn 的效果
-unet_IN_7l_skip_use_cnn1_NO_relu = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_10_1", describe_end="unet_IN_7l_skip_use_cnn1_NO_relu") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+unet_IN_7l_skip_use_cnn1_NO_relu = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_10_1", describe_end="unet_IN_7l_skip_use_cnn1_NO_relu") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_10_1-20210503_214221-flow_unet-unet_IN_7l_skip_use_cnn1_NO_relu")
 unet_IN_7l_skip_use_cnn1_USErelu = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_10_2", describe_end="unet_IN_7l_skip_use_cnn1_USErelu") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
 unet_IN_7l_skip_use_cnn3_USErelu = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_10_3", describe_end="unet_IN_7l_skip_use_cnn3_USErelu") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
 

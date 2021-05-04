@@ -6,6 +6,7 @@
 from step10_a_load_and_train_and_test import *
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_exps_compress = [
+    unet_IN_7l_skip_use_cnn1_NO_relu,
     # testest,
 
     # unet_IN_7l_2to2noC,       ### 3491
