@@ -395,7 +395,9 @@ unet_layers = [
     unet_8l,
 ]
 
-### 6_2 unet 的concat 改成 add 的效果如何，效果超差
+
+###################################################################################################
+### 7a_1 unet 的concat 改成 add 的效果如何，效果超差
 unet_skip_use_add = [
     unet_8l_skip_use_add,
     unet_7l_skip_use_add,
@@ -406,7 +408,7 @@ unet_skip_use_add = [
     unet_2l_skip_use_add,
 ]
 
-### 6_3 unet 的concat vs add 的效果如何，concat好，add不好
+### 7a_2 unet 的concat vs add 的效果如何，concat好，add不好
 unet_skip_use_concat_vs_add = [
     unet_7l,
     unet_7l_skip_use_add,
@@ -415,12 +417,12 @@ unet_skip_use_concat_vs_add = [
     unet_5l,
     unet_5l_skip_use_add,
 ]
-###################################################################################################
-###################################################################################################
-### 7_1 unet 的 第一層不concat 來跟 前面還不錯的結果比較
-### train loss 在 全接~前兩個skip省略 表現差不多，
-### see來看的話 train/test 都差不多，但在 real 前兩個skip 的結果 看起來都比 全接好！ 且 覺得 2to3noC 比 2to2noC 更好些！
-### 2to4noC 在 real3 表現差，且 2to4noC 之後 邊緣 的部分就越做越差囉～
+
+
+### 7b unet 的 第一層不concat 來跟 前面還不錯的結果比較
+###    train loss 在 全接~前兩個skip省略 表現差不多，
+###    see來看的話 train/test 都差不多，但在 real 前兩個skip 的結果 看起來都比 全接好！ 且 覺得 2to3noC 比 2to2noC 更好些！
+###    2to4noC 在 real3 表現差，且 2to4noC 之後 邊緣 的部分就越做越差囉～
 unet_IN_7l_all_C_ch64_in_epoch500 = copy.deepcopy(ch64_in_epoch500); unet_IN_7l_all_C_ch64_in_epoch500.result_obj.ana_describe = "1a-unet_IN_7l_all_C_ch64_in_epoch500"  ### 當初的train_code沒寫好沒有存到 model用的 code
 # unet_IN_7l_all_C_ch64_bn_epoch500 = copy.deepcopy(ch64_bn_epoch500); unet_IN_7l_all_C_ch64_bn_epoch500.result_obj.ana_describe = "1b-unet_IN_7l_all_C_ch64_bn_epoch500"  ### 從4_1就知道bn沒有in好，所以就不用這個了
 # unet_IN_7l_all_C_unet_7l          = copy.deepcopy(unet_7l); unet_IN_7l_all_C_unet_7l.result_obj.ana_describe = "1c-unet_IN_7l_all_C_unet_7l"  ### 他的loss好像最低，但沒有train完
@@ -433,7 +435,7 @@ unet_IN_7l_2to6noC               .result_obj.ana_describe = "6-unet_IN_7l_2to6no
 unet_IN_7l_2to7noC               .result_obj.ana_describe = "7-unet_IN_7l_2to7noC"
 # unet_IN_7l_2to8noC               .result_obj.ana_describe = "8-unet_IN_7l_2to8noC"   ### 當初訓練就怪怪的，先跳過！
 
-unet_firstnoC = [
+unet_skip_noC = [
     unet_IN_7l_all_C_ch64_in_epoch500,
     # unet_IN_7l_all_C_ch64_bn_epoch500,
     # unet_IN_7l_all_C_unet_7l,
@@ -448,7 +450,19 @@ unet_firstnoC = [
 ]
 
 
+### 7c unet 的 第一層不concat 來跟 前面還不錯的結果比較
+unet_IN_7l_skip_clean = copy.deepcopy(ch64_in_epoch500); unet_IN_7l_skip_clean.result_obj.ana_describe = "1-unet_IN_7l_skip_clean"  ### 當初的train_code沒寫好沒有存到 model用的 code
 
+unet_IN_7l_skip_use_cnn1_NO_relu  .result_obj.ana_describe = "2-unet_IN_7l_skip_use_cnn1_NO_relu"
+unet_IN_7l_skip_use_cnn1_USErelu  .result_obj.ana_describe = "3-unet_IN_7l_skip_use_cnn1_USErelu"
+unet_IN_7l_skip_use_cnn3_USErelu  .result_obj.ana_describe = "4-unet_IN_7l_skip_use_cnn3_USErelu"
+
+unet_skip_use_cnn = [
+    unet_IN_7l_skip_clean,
+    unet_IN_7l_skip_use_cnn1_NO_relu,
+    unet_IN_7l_skip_use_cnn1_USErelu,
+    unet_IN_7l_skip_use_cnn3_USErelu,
+]
 
 ###################################################################################################
 ###################################################################################################
