@@ -8,7 +8,7 @@ from step10_a_load_and_train_and_test import *
 rec_bm_exps_compress = [
     # unet_IN_7l_skip_use_cnn1_NO_relu,
     # unet_IN_7l_skip_use_cnn1_USErelu,
-    # unet_IN_7l_skip_use_cnn3_USErelu,
+    # unet_IN_7l_skip_use_cnn3_USErelu,  ### 2329
     # testest,
 
     # unet_IN_7l_2to2noC,       ### 3491
