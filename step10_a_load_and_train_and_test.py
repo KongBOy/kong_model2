@@ -213,7 +213,7 @@ class Experiment():
         # print("sample all see time:", time.time()-sample_start_time)
 
     def train_step3_Loss_info_save_loss(self, epoch):
-        self.loss_info_obj.summary_writer = tf.summary.create_file_writer(self.loss_info_obj.logs_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的
+        if(epoch == 1 or self.phase == "train_reload"): self.loss_info_obj.summary_writer = tf.summary.create_file_writer(self.loss_info_obj.logs_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的，注意 只有第一次 要建立tensorboard喔！
         with self.loss_info_obj.summary_writer.as_default():
             for loss_name, loss_containor in self.loss_info_obj.loss_containors.items():
                 ### tensorboard
