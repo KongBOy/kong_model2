@@ -6,39 +6,8 @@
 from step10_a_load_and_train_and_test import *
 ### 不小心放到copy的東西也沒關係，只是相同的 result 會被執行兩次而已~~
 rec_bm_exps_compress = [
-    # unet_IN_7l_skip_use_cnn1_NO_relu,
-    # unet_IN_7l_skip_use_cnn1_USErelu,
-    # unet_IN_7l_skip_use_cnn3_USErelu,  ### 2329
-    unet_IN_7l_skip_use_cnn3_USEsigmoid
     # testest,
 
-    # unet_IN_7l_2to2noC,       ### 3491
-    # unet_IN_7l_2to2noC_ch32,  ### 2985
-    # unet_IN_7l_2to3noC,       ### 2157
-
-    # unet_IN_7l_2to4noC,
-    # unet_IN_7l_2to5noC,
-    # unet_IN_7l_2to6noC,   ### 2194
-    # unet_IN_7l_2to7noC,
-    # unet_IN_7l_2to8noC,   ### 3597
-
-    # t1_in_01_mo_th_gt_01_mse,  ### 4964
-    # t2_in_01_mo_01_gt_01_mse,  ### 3577
-    # t3_in_01_mo_th_gt_th_mse,
-    # t4_in_01_mo_01_gt_th_mse,
-    # t5_in_th_mo_th_gt_01_mse,
-    # t6_in_th_mo_01_gt_01_mse,
-    # t7_in_th_mo_th_gt_th_mse,  ### 3632
-    # t8_in_th_mo_01_gt_th_mse,
-
-    # t1_in_01_mo_th_gt_01_mae,
-    # t2_in_01_mo_01_gt_01_mae,
-    # t3_in_01_mo_th_gt_th_mae,
-    # t4_in_01_mo_01_gt_th_mae,
-    # t5_in_th_mo_th_gt_01_mae,
-    # t6_in_th_mo_01_gt_01_mae,
-    # t7_in_th_mo_th_gt_th_mae,
-    # t8_in_th_mo_01_gt_th_mae,
 
     # unet_8l,
 
@@ -120,8 +89,43 @@ rec_bm_exps_compress = [
     # ch32_bn08_bn_see_arg_F.result_obj,
     # ch32_bn16_bn_see_arg_F.result_obj,
 
-    # ch64_in_epoch500.result_obj,
-    # ch64_in_epoch700.result_obj,
+    # ch64_in_epoch500.result_obj,          ### 已重建
+    # ch64_in_epoch700.result_obj,          ### 已重建
+    # unet_IN_7l_skip_use_cnn1_NO_relu,     ### 已重建
+    # unet_IN_7l_skip_use_cnn1_USErelu,     ### 已重建
+    # unet_IN_7l_skip_use_cnn1_USEsigmoid,  ### 重train中
+    # unet_IN_7l_skip_use_cnn3_USErelu,       ### 已重建  2329
+    # unet_IN_7l_skip_use_cnn3_USEsigmoid,
+
+    # unet_IN_7l_2to2noC,       ### 3491
+    # unet_IN_7l_2to2noC_ch32,  ### 2985
+    # unet_IN_7l_2to3noC,       ### 2157
+    # unet_IN_7l_2to4noC,
+    # unet_IN_7l_2to5noC,
+    # unet_IN_7l_2to6noC,   ### 2194
+    # unet_IN_7l_2to7noC,
+    # unet_IN_7l_2to8noC,   ### 3597
+
+
+    # t1_in_01_mo_th_gt_01_mse,  ### 4964
+    # t2_in_01_mo_01_gt_01_mse,  ### 3577
+    # t3_in_01_mo_th_gt_th_mse,
+    # t4_in_01_mo_01_gt_th_mse,
+    # t5_in_th_mo_th_gt_01_mse,
+    # t6_in_th_mo_01_gt_01_mse,
+    # t7_in_th_mo_th_gt_th_mse,  ### 3632
+    # t8_in_th_mo_01_gt_th_mse,
+
+    # t1_in_01_mo_th_gt_01_mae,
+    # t2_in_01_mo_01_gt_01_mae,
+    # t3_in_01_mo_th_gt_th_mae,
+    # t4_in_01_mo_01_gt_th_mae,
+    # t5_in_th_mo_th_gt_01_mae,
+    # t6_in_th_mo_01_gt_01_mae,
+    # t7_in_th_mo_th_gt_th_mae,
+    # t8_in_th_mo_01_gt_th_mae,
+
+
 ]
 
 ### matplot_visual   ### 覺得我也不會看所以就省了ˊ口ˋ
