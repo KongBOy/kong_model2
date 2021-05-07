@@ -348,9 +348,10 @@ class Bm_Rec_exps_analyze(Result_analyzer):
             self.single_see_final_rec_analyze(see_num=see_num)
         return self
 
-    def analyze_tensorboard(self):
+    def analyze_tensorboard(self, reset_board_dir=False):
         analyze_board_dir = self.analyze_dir + "/" + "boards"  ### 分析結果存哪裡定位出來 例如 D:\0 data_dir\analyze_dir\5_14-bm_rec-2_1-ch_results\boards
-        Check_dir_exist_and_build(analyze_board_dir)           ### 建立 存結果的資料夾，目前覺的外層的這個 不用 build_new_dir，這樣才可以存筆記在裡面，要小心的是 如果 exps 有刪掉某個exp，就不會自動刪掉囉！
+        if(reset_board_dir): Check_dir_exist_and_build_new_dir(analyze_board_dir)    ### 一開始雖然覺得下面較好，但實際用起來發現我也不會存結論在board資料夾，而是直接寫在這裡，所以就多個reset_flag，讓我可控制要不要刪掉上次的board資料夾囉！
+        else:                Check_dir_exist_and_build(analyze_board_dir)           ### 建立 存結果的資料夾，目前覺的外層的這個 不用 build_new_dir，這樣才可以存筆記在裡面，要小心的是 如果 exps 有刪掉某個exp，就不會自動刪掉囉！
         for exp in self.exps:
             analyze_board_ana_dir = analyze_board_dir + "/" + exp.result_obj.ana_describe   ### D:\0 data_dir\analyze_dir\5_14-bm_rec-2_1-ch_results\boards\exp.result_obj.ana_describe
             exp.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(exp=exp, dst_dir=analyze_board_ana_dir)
