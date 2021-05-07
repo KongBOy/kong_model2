@@ -1,6 +1,13 @@
 import subprocess as sb
 same_command = ["python", "step10_a_load_and_train_and_test.py"]
-
+run = "run()"
+compress_all = "result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_2te = "result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=1, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_3te = "result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=2, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_4te = "result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=3, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_8te = "result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=4, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_9te = "result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=5, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_10te = "result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=6, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 # ### hid_ch=64, 來測試 epoch系列 ##############################
 # sb.run(same_command + ["epoch050_bn_see_arg_T.run()"])
 # sb.run(same_command + ["epoch100_bn_see_arg_T.run()"])
@@ -13,14 +20,14 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["ch016_bn_see_arg_T.run()"])
 # sb.run(same_command + ["ch008_bn_see_arg_T.run()"])
 
-# sb.run(same_command + ["epoch050_new_shuf_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch100_new_shuf_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch200_new_shuf_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch300_new_shuf_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch500_new_shuf_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch500_new_shuf_bn_see_arg_F.run()"])
-# sb.run(same_command + ["epoch700_new_shuf_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch700_bn_see_arg_T_no_down.run()"])  ### 看看 lr 都不下降的效果
+# sb.run(same_command + [f"epoch050_new_shuf_bn_see_arg_T.{compress_all}"])  ### 802
+# sb.run(same_command + [f"epoch100_new_shuf_bn_see_arg_T.{compress_all}"])  ### 1275
+# sb.run(same_command + [f"epoch200_new_shuf_bn_see_arg_T.{compress_all}"])  ### 1309
+sb.run(same_command + [f"epoch300_new_shuf_bn_see_arg_T.{compress_all}"])
+sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_T.{compress_all}"])
+sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_F.{compress_all}"])
+sb.run(same_command + [f"epoch700_new_shuf_bn_see_arg_T.{compress_all}"])
+sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down.{compress_all}"])  ### 看看 lr 都不下降的效果
 
 # sb.run(same_command + ["ch128_new_shuf_bn_see_arg_F.run()"])
 # sb.run(same_command + ["ch032_new_shuf_bn_see_arg_F.run()"])
@@ -98,13 +105,13 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 #############################################################################################
 ### 9 的東西
 # sb.run(same_command + ["unet_IN_7l_2to2noC     .run()"])
-# sb.run(same_command + ["unet_IN_7l_2to2noC_ch32.run()"])
-# sb.run(same_command + ["unet_IN_7l_2to3noC     .run()"])
-# sb.run(same_command + ["unet_IN_7l_2to4noC     .run()"])
-# sb.run(same_command + ["unet_IN_7l_2to5noC     .run()"])
-# sb.run(same_command + ["unet_IN_7l_2to6noC     .run()"])
-# sb.run(same_command + ["unet_IN_7l_2to7noC     .run()"])
-# sb.run(same_command + ["unet_IN_7l_2to8noC     .run()"])
+# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{compress_9te}"])
+# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{compress_all}"])  ### 3254
+# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{compress_all}"])  ### 3073
+# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{compress_all}"])  ### 2851
+# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{compress_all}"])  ### 2920
 
 
 #############################################################################################
