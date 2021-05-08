@@ -454,14 +454,18 @@ unet_skip_noC = [
 unet_IN_7l_skip_clean = copy.deepcopy(ch64_in_epoch500); unet_IN_7l_skip_clean.result_obj.ana_describe = "1-unet_IN_7l_skip_clean"  ### 當初的train_code沒寫好沒有存到 model用的 code
 
 unet_IN_7l_skip_use_cnn1_NO_relu  .result_obj.ana_describe = "2-unet_IN_7l_skip_use_cnn1_NO_relu"
-unet_IN_7l_skip_use_cnn1_USErelu  .result_obj.ana_describe = "3-unet_IN_7l_skip_use_cnn1_USErelu"
-unet_IN_7l_skip_use_cnn3_USErelu  .result_obj.ana_describe = "4-unet_IN_7l_skip_use_cnn3_USErelu"
+unet_IN_7l_skip_use_cnn1_USErelu  .result_obj.ana_describe = "3a-unet_IN_7l_skip_use_cnn1_USErelu"
+unet_IN_7l_skip_use_cnn1_USEsigmoid  .result_obj.ana_describe = "3b-unet_IN_7l_skip_use_cnn1_USEsigmoid"
+unet_IN_7l_skip_use_cnn3_USErelu     .result_obj.ana_describe = "4a-unet_IN_7l_skip_use_cnn3_USErelu"
+unet_IN_7l_skip_use_cnn3_USEsigmoid  .result_obj.ana_describe = "4b-unet_IN_7l_skip_use_cnn3_USEsigmoid"
 
 unet_skip_use_cnn = [
     unet_IN_7l_skip_clean,
     unet_IN_7l_skip_use_cnn1_NO_relu,
     unet_IN_7l_skip_use_cnn1_USErelu,
+    unet_IN_7l_skip_use_cnn1_USEsigmoid,
     unet_IN_7l_skip_use_cnn3_USErelu,
+    unet_IN_7l_skip_use_cnn3_USEsigmoid,
 ]
 
 ###################################################################################################
