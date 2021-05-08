@@ -27,6 +27,7 @@ class Result:
         self.sees = None
         self.see_amount = None
         self.see_file_amount = None
+        self.test_dir = None
 
         self.in_use_range = "0~1"
         self.gt_use_range = "0~1"

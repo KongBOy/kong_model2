@@ -98,6 +98,7 @@ class Result_train_builder(Result_sees_builder):
         self.result.result_dir  = result_access_path + "result/" + result_name
         self.result.ckpt_dir = self.result.result_dir + "/ckpt"
         self.result.logs_dir = self.result.result_dir + "/logs"
+        self.result.test_dir = self.result.result_dir + "/test"
 
         ### step3b. 設定 in/gt_use_range，這步一定要在 建立 sees 前面做喔！這樣 sees 才知道怎麼設 in/gt_use_range
         self.result.in_use_range = in_use_range

@@ -50,9 +50,10 @@ class KModel_Unet_builder(KModel_init_builder):
 class KModel_Flow_Generator_builder(KModel_Unet_builder):
     def _build_flow_part(self):
         ### 生成flow的部分
-        from step08_b_use_G_generate import generate_flow_sees_without_rec
+        from step08_b_use_G_generate import generate_flow_results, generate_flow_sees_without_rec
         from step09_b_train_step import train_step_pure_G
-        # self.kong_model.generate_results = generate_flow_results             ### 不能checkpoint  ### 好像用不到
+        # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
+        self.kong_model.generate_results = generate_flow_results             ### 不能checkpoint
         self.kong_model.generate_sees    = generate_flow_sees_without_rec    ### 不能checkpoint
         self.kong_model.train_step       = train_step_pure_G                 ### 不能checkpoint
 

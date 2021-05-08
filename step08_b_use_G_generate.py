@@ -51,7 +51,7 @@ def generate_flow_results(model_G, in_img_pre, gt_use_range, training=False):
     # print("flow before max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
     if(gt_use_range == "-1~1"): flow = (flow + 1) / 2
     # print("flow after max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
-    return flow[0]
+    return flow
 
 
 def generate_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_flow, epoch=0, result_obj=None, training=True, see_reset_init=True):
