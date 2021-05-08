@@ -94,7 +94,7 @@ class Experiment():
 
 ################################################################################################################################################
 ################################################################################################################################################
-    def exp_init(self, reload_result=False, reload_model=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.Loss_info, 5.save_code
+    def exp_init(self, reload_result=False, reload_model=False):  ### 共作四件事： 1.result, 2.data, 3.model(reload), 4.Loss_info
         ### 1.result
         if(reload_result):
             # print("self.exp_dir:", self.exp_dir)
@@ -112,7 +112,7 @@ class Experiment():
             print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
 
         ####################################################################################################################
-        ### 4.Loss_info, 5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉
+        ### 4.Loss_info, (5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉)
         ###   loss_info_obj 在 exo build的時候就已經有指定一個了，這邊是在把那時指定的 loss_info_obj 填入 這裡才知道的 result 資訊
         self.loss_info_obj = Loss_info_builder(self.loss_info_obj, in_obj_copy=True).set_logs_dir(self.result_obj.logs_dir).build()  ### 上面 result_obj 定位出 logs_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
 
@@ -718,8 +718,6 @@ t6_in_th_mo_01_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blende
 t7_in_th_mo_th_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_7", describe_end="t7_th_th_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_7-20210421_181950-flow_unet-t7_th_th_th_mae")
 t8_in_th_mo_01_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_8", describe_end="t8_th_01_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_8-20210421_142854-flow_unet-t8_th_01_th_mae")
 
-### 測試 怎麼樣設定 multiprocess 才較快
-testest = Exp_builder().set_basic("ok", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-testest")
 #############################################################################################################################################################################################################
 ########################################################### 15
 exp_dir15 = "5_15_flow_rect"
@@ -747,6 +745,12 @@ rect_7_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_7
 # blender_os_book_flow_unet_epoch003 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch3, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch003") .set_train_args(epochs=3).build(result_name="")
 # blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).build(result_name="")
 
+### 測試 怎麼樣設定 multiprocess 才較快
+testest = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="", describe_end="testest_copy_from_ch64_in_epoch500") .set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-testest_copy_from_ch64_in_epoch500")
+
+
+
+
 import sys
 if(__name__ == "__main__"):
     if len(sys.argv) < 2:
@@ -769,7 +773,8 @@ if(__name__ == "__main__"):
         # t3_in_01_mo_th_gt_th_mae.run()
         # unet_IN_7l_2to4noC.run()
         # unet_IN_7l_skip_use_cnn1_NO_relu.run()
-        unet_IN_7l_skip_use_cnn1_USEsigmoid.run()
+        # unet_IN_7l_skip_use_cnn1_USEsigmoid.run()
+        testest.run()
         # print('no argument')
         sys.exit()
 
