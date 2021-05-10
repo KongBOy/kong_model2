@@ -58,6 +58,11 @@ compress_10te = "result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_i
 # sb.run(same_command + ["ch32_bn16_bn_see_arg_F.run()"])
 
 
+# sb.run(same_command + ["ch64_in_epoch320.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch340.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch360.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch380.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch400.run()"])  ### 測試真的IN
 # sb.run(same_command + ["ch64_in_epoch500.run()"])  ### 測試真的IN
 # sb.run(same_command + ["ch64_in_epoch700.run()"])  ### 測試真的IN
 

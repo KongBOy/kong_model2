@@ -421,7 +421,7 @@ class Exp_builder():
         self.exp.batch_size = batch_size
         self.exp.train_shuffle = train_shuffle
         self.exp.epochs = epochs
-        if(epoch_down_step is None): self.exp.epoch_down_step = epochs / 2
+        if(epoch_down_step is None): self.exp.epoch_down_step = epochs // 2
         else: self.exp.epoch_down_step = epoch_down_step
         self.exp.epoch_stop = epoch_stop
         self.exp.start_epoch = 0
@@ -654,6 +654,11 @@ ch32_bn08_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_
 ch32_bn16_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_4", describe_end="ch32_bn16_bn_see_arg_F") .set_train_args(batch_size=16, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3b_4-20210308_223123-flow_unet-ch32_bn16_bn_see_arg_F")  ### 已經是new_shuf
 #############################################################################################################################################################################################################
 ### 4. IN 效果如何
+ch64_in_epoch320 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_5b", describe_end="ch64_in_epoch320") .set_train_args(epochs=320, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+ch64_in_epoch340 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_5b", describe_end="ch64_in_epoch340") .set_train_args(epochs=340, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+ch64_in_epoch360 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_5b", describe_end="ch64_in_epoch360") .set_train_args(epochs=360, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+ch64_in_epoch380 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_5b", describe_end="ch64_in_epoch380") .set_train_args(epochs=380, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
+ch64_in_epoch400 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_5b", describe_end="ch64_in_epoch400") .set_train_args(epochs=400, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
 ch64_in_epoch500 = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_5b", describe_end="ch64_in_epoch500") .set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_4_5b-20210309_135755-flow_unet-ch64_in_epoch500")
 ch64_in_epoch700 = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_6b", describe_end="ch64_in_epoch700") .set_train_args(epochs=700, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_4_6b-20210310_012428-flow_unet-ch64_in_epoch700")
 
