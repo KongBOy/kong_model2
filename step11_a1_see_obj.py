@@ -253,7 +253,7 @@ class See_bm_rec(See_info):
     ###############################################################################################
     def _draw_matplot_bm_rec_visual_after_train(self, start_img, img_amount, add_loss, bgr2rgb):
         for go_img in tqdm(range(start_img, start_img + img_amount)):
-            if(go_img >= 3):        ### 第四張 才開始存 epoch影像喔！相當於epoch1才開始存，因為epoch0太差了沒寫防呆會出錯，目前乾脆先直接跳過有空再寫防呆。
+            if(go_img >= 2):        ### 已經有用msdk寫防呆了，所以可以從 第三張開始做囉！
                 current_epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
                 single_row_imgs = self._Draw_matplot_bm_rec_visual(current_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
                 single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
