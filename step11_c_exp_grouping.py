@@ -304,6 +304,20 @@ ch_exps = [
     ch032_new_shuf_bn_see_arg_T,
     ch016_new_shuf_bn_see_arg_T,
     ch008_new_shuf_bn_see_arg_T]
+
+### 這 epoch_no_down_vs_ch_exps 真的很重要，
+### 理解到了 training loss 在 0.000x 上閜跑是沒有什麼差的，
+### 因為 ch008 跟 epoch700_no_down 的 training loss 最後是一樣的！
+### 但是 在 real 影像上 是截然不同的喔！ epoch700_no_down 比 ch008 好很多！
+### 所以不能只看 training loss，一定要直接看 real影像 處理的效果
+epoch_no_down_vs_ch_exps = [
+    ch128_new_shuf_bn_see_arg_T,
+    ch064_new_shuf_bn_see_arg_T,
+    ch032_new_shuf_bn_see_arg_T,
+    ch016_new_shuf_bn_see_arg_T,
+    ch008_new_shuf_bn_see_arg_T,
+    epoch700_bn_see_arg_T_no_down
+    ]
 ###################################################################################################
 ###################################################################################################
 ### 3 bn
