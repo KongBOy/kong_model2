@@ -51,6 +51,11 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 # sb.run(same_command + ["ch32_bn16_bn_see_arg_F.run()"])
 
 
+# sb.run(same_command + ["ch64_in_epoch320.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch340.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch360.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch380.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch400.run()"])  ### 測試真的IN
 # sb.run(same_command + ["ch64_in_epoch500.run()"])  ### 測試真的IN
 # sb.run(same_command + ["ch64_in_epoch700.run()"])  ### 測試真的IN
 
