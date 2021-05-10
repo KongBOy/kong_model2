@@ -23,11 +23,11 @@ compress_10te = "result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_i
 # sb.run(same_command + [f"epoch050_new_shuf_bn_see_arg_T.{compress_all}"])  ### 802
 # sb.run(same_command + [f"epoch100_new_shuf_bn_see_arg_T.{compress_all}"])  ### 1275
 # sb.run(same_command + [f"epoch200_new_shuf_bn_see_arg_T.{compress_all}"])  ### 1309
-sb.run(same_command + [f"epoch300_new_shuf_bn_see_arg_T.{compress_all}"])
-sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_T.{compress_all}"])
-sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_F.{compress_all}"])
-sb.run(same_command + [f"epoch700_new_shuf_bn_see_arg_T.{compress_all}"])
-sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down.{compress_all}"])  ### 看看 lr 都不下降的效果
+# sb.run(same_command + [f"epoch300_new_shuf_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down.{compress_4te}"])  ### 看看 lr 都不下降的效果
+# sb.run(same_command + [f"epoch700_new_shuf_bn_see_arg_T.{compress_9te}"])
 
 # sb.run(same_command + ["ch128_new_shuf_bn_see_arg_F.run()"])
 # sb.run(same_command + ["ch032_new_shuf_bn_see_arg_F.run()"])
@@ -104,14 +104,14 @@ sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down.{compress_all}"])  ### �
 # sb.run(same_command + ["t8_in_th_mo_01_gt_th_mae.run()"])  ### 127.35 沒train完
 #############################################################################################
 ### 9 的東西
-# sb.run(same_command + ["unet_IN_7l_2to2noC     .run()"])
-# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{compress_9te}"])
-# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{compress_all}"])  ### 3254
-# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{compress_all}"])
-# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{compress_all}"])
-# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{compress_all}"])  ### 3073
-# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{compress_all}"])  ### 2851
-# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{compress_all}"])  ### 2920
+# sb.run(same_command + [f"unet_IN_7l_2to2noC     .{run}"])
+# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{run}"])
+# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{run}"])  ### 3254
+# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{run}"])
+# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{run}"])
+# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{run}"])  ### 3073
+# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{run}"])  ### 2851
+# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{run}"])  ### 2920
 
 
 #############################################################################################
