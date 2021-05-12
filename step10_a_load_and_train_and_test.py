@@ -30,9 +30,10 @@ class Experiment():
         '''
         把 step.py 和 kong_util資料夾 存一份進result
         '''
+        import datetime
         import shutil
         from build_dataset_combine import Check_dir_exist_and_build
-        code_dir = self.result_obj.result_dir + "/" + "train_code"  ### 定位出 result存code的目的地
+        code_dir = self.result_obj.result_dir + "/" + "train_code_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  ### 定位出 result存code的目的地
         Check_dir_exist_and_build(code_dir)                         ### 建立目的地資料夾
         py_file_names = get_dir_certain_file_name(".", certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
         for py_file_name in py_file_names:
