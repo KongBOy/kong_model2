@@ -1,6 +1,9 @@
 from enum import Enum
 import tensorflow as tf
 
+import time
+start_time = time.time()
+
 class KModel:
     def __init__(self):  ### 共通有的 元件，其實這邊只留model_name好像也可以
         self.model_name = None
@@ -45,6 +48,7 @@ class KModel_Unet_builder(KModel_init_builder):
                                                    max_db_move_x=self.kong_model.max_db_move_x,
                                                    max_db_move_y=self.kong_model.max_db_move_y,
                                                    epoch_log=self.kong_model.epoch_log)
+        print("build_unet", "finish")
         return self.kong_model
 
 class KModel_Flow_Generator_builder(KModel_Unet_builder):
@@ -73,6 +77,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
 
         self._build_flow_part()
         self._build_ckpt_part()
+        print("build_flow_unet", "finish")
         return self.kong_model
 
     def build_flow_rect_7_level(self, first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=False, use_res_learning=True, resb_num=9, out_ch=3):
@@ -86,6 +91,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
 
         self._build_flow_part()
         self._build_ckpt_part()
+        print("build_flow_rect_7_level", "finish")
         return self.kong_model
 
     def build_flow_rect(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3):
@@ -99,6 +105,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
 
         self._build_flow_part()
         self._build_ckpt_part()
+        print("build_flow_rect", "finish")
         return self.kong_model
 
 class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
@@ -108,6 +115,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
         dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
         self.kong_model.rect = Rect2(gen_obj, dis_obj)   ### 把 Generator物件 丟進 Rect建立 Rect物件
         self._kong_model_GD_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
+        print("build_rect2", "finish")
         return self.kong_model
 
     def build_rect2_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
@@ -117,6 +125,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
         dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
         self.kong_model.rect = Rect2(gen_obj, dis_obj)   ### 再把 Generator物件 丟進 Rect建立 Rect物件
         self._kong_model_GD_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
+        print("build_rect2_mrf", "finish")
         return self.kong_model
 
     def _kong_model_GD_setting(self, g_train_many=False):
@@ -143,6 +152,7 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
         from step08_a_2_Rect2 import Generator
         self.kong_model.generator   = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
         self._kong_model_G_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
+        print("build_justG", "finish")
         return self.kong_model
 
     def build_justG_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False):
@@ -150,6 +160,7 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
         mrfb = MRFBlock(c_num=64, use1=use1, use3=use3, use5=use5, use7=use7, use9=use9)  ### 先建立 mrf物件
         self.kong_model.generator = Generator(first_k3=first_k3, mrfb=mrfb, mrf_replace=mrf_replace, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 把 mrf物件 丟進 Generator 建立 Generator物件
         self._kong_model_G_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
+        print("build_justG_mrf", "finish")
         return self.kong_model
 
     def _kong_model_G_setting(self, g_train_many=False):
@@ -434,4 +445,5 @@ flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rec
 
 
 if(__name__ == "__main__"):
+    print("build_model cost time:", time.time() - start_time)
     pass
