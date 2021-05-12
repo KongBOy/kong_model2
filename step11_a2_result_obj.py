@@ -26,7 +26,6 @@ class Result:
         self.sees_ver = None
         self.sees = None
         self.see_amount = None
-        self.see_file_amount = None
         self.test_dir = None
 
         self.in_use_range = "0~1"
@@ -161,7 +160,7 @@ class Result:
                                     add_loss  =add_loss)
 
                 multi_row_imgs.Draw_img()
-                if(add_loss): multi_row_imgs.Draw_ax_loss_after_train(multi_row_imgs.ax[-1, 1], self.logs_dir, epoch, self.see_file_amount - 2)
+                if(add_loss): multi_row_imgs.Draw_ax_loss_after_train(multi_row_imgs.ax[-1, 1], self.logs_dir, epoch, self.sees[see_num].see_file_amount - 2)
                 multi_row_imgs.Save_fig(dst_dir=matplot_multi_see_dir, epoch=epoch)
 
                 # fig, ax = matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles,
@@ -169,7 +168,7 @@ class Result:
                 #                               fig_title        = "epoch=%04i"%epoch,   ### 圖上的大標題
                 #                               bgr2rgb          = True,
                 #                               add_loss         = add_loss)
-                # if(add_loss): fig, ax = draw_loss_util(fig, ax[-1,1], self.logs_dir, epoch, self.see_file_amount-2)
+                # if(add_loss): fig, ax = draw_loss_util(fig, ax[-1,1], self.logs_dir, epoch, self.sees[see_num].see_file_amount-2)
                 # plt.savefig(matplot_multi_see_dir+"/"+"epoch=%04i"%epoch )
                 # plt.close()  ### 一定要記得關喔！要不然圖開太多會當掉！
 
@@ -202,7 +201,7 @@ class Result:
         r_c_titles = [titles]  ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
         ### 抓 row/col 要顯示的imgs
-        if(multiprocess): self._draw_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss, core_amount=CORE_AMOUNT, task_amount=self.see_file_amount, print_msg=print_msg)
+        if(multiprocess): self._draw_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss, core_amount=CORE_AMOUNT, task_amount=self.sees[see_num].see_file_amount, print_msg=print_msg)
         else: self._Draw_multi_see(0, self.see_file_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss)
 
         ### 後處理，讓資料變得 好看 且 更小 並 串成影片

@@ -44,7 +44,7 @@ class Result_sees_builder(Result_init_builder):
                                 See(self.result.result_dir, "see_009-test") , See(self.result.result_dir, "see_010-test") ]
 
         self.result.see_amount = len(self.result.sees)
-        self.result.see_file_amount = self.result.sees[0].see_file_amount  ### 應該是每個see都一樣多檔案，所以就挑第一個拿他的see_file_amount就好囉～
+        # self.result.see_file_amount = self.result.sees[0].see_file_amount   ### 覺得 see 已經有 see_file_amount了，result 就不需要這attr了， 想用 要知道 要去 sees[...] 取 喔！
         # print("3. at see", self.result.result_name, ", self.result.gt_use_range~~~~~~~~~~~~~~~", self.result.gt_use_range)
         for see in self.result.sees:  ### 設定 in/gt_use_range，生圖 才會跟 gt 的前處理一致喔！
             see.in_use_range = in_use_range
@@ -55,8 +55,8 @@ class Result_train_builder(Result_sees_builder):
     def _use_result_name_find_sees_ver(self):
         db_c = self.result.result_name.split("/")[-1].split("-")[0]  ### "/"是為了抓底層資料夾，"-"是為了抓 DB_CATEGORY
         sees_ver = ""
-        if  (db_c in [DB_C.type5c_real_have_see_no_bg_gt_color_gray3ch.value,
-                      DB_C.type5d_real_have_see_have_bg_gt_color_gray3ch.value,
+        if  (db_c in [DB_C.type5c_real_have_see_no_bg.value,
+                      DB_C.type5d_real_have_see_have_bg.value,
                       DB_C.type6_h_384_w_256_smooth_curl_fold_and_page.value  ]): sees_ver = "sees_ver2"
         elif(db_c in [DB_C.type7_h472_w304_real_os_book.value,
                       DB_C.type7b_h500_w332_real_os_book.value]):                 sees_ver = "sees_ver3"
