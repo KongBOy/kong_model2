@@ -752,7 +752,7 @@ rect_7_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_7
 # blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).set_result_name(result_name="")
 
 ### 測試 怎麼樣設定 multiprocess 才較快
-testest = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="", describe_end="testest_copy_from_ch64_in_epoch500") .set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-testest_copy_from_ch64_in_epoch500")
+testest = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="", describe_end="testest_copy_from_ch64_in_epoch500") .set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-testest_copy_from_ch64_in_epoch500")
 
 
 
@@ -781,7 +781,7 @@ if(__name__ == "__main__"):
         # unet_IN_7l_2to4noC.build().run()
         # unet_IN_7l_skip_use_cnn1_NO_relu.build().run()
         # unet_IN_7l_skip_use_cnn1_USEsigmoid.build().run()
-        # testest.build().run()
+        testest.build().run()
         # print('no argument')
         sys.exit()
 
