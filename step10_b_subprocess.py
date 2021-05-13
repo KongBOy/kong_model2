@@ -68,6 +68,10 @@ compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual
 # sb.run(same_command + ["ch64_in_epoch360.run()"])  ### 測試真的IN
 # sb.run(same_command + ["ch64_in_epoch380.run()"])  ### 測試真的IN
 # sb.run(same_command + ["ch64_in_epoch400.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch420.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch440.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch460.run()"])  ### 測試真的IN
+# sb.run(same_command + ["ch64_in_epoch480.run()"])  ### 測試真的IN
 # sb.run(same_command + ["ch64_in_epoch500.run()"])  ### 測試真的IN
 # sb.run(same_command + ["ch64_in_epoch700.run()"])  ### 測試真的IN
 
