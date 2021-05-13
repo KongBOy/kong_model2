@@ -19,37 +19,44 @@ class KModel_init_builder:
         if(kong_model is None): self.kong_model = KModel()
         else: self.kong_model = kong_model
 
+        # self.model_name = None   ### 這是為了給 exp.build() 用
+        self.build = None
+
     def set_model_name(self, model_name):
+        self.model_name = model_name
         self.kong_model.model_name = model_name
         return self
 
-    def build(self):
-        return self.kong_model
+    # def build(self):
+    #     return self.kong_model
 
 class KModel_Unet_builder(KModel_init_builder):
     def build_unet(self):
-        from step08_a_1_UNet_BN_512to256 import Generator512to256, generate_sees, generate_results, train_step
-        self.kong_model.generator           = Generator512to256(out_ch=2)
-        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-        self.kong_model.max_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
-        self.kong_model.min_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
-        self.kong_model.max_db_move_x  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
-        self.kong_model.max_db_move_y  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
+        def _build_unet():
+            from step08_a_1_UNet_BN_512to256 import Generator512to256, generate_sees, generate_results, train_step
+            self.kong_model.generator           = Generator512to256(out_ch=2)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+            self.kong_model.max_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
+            self.kong_model.min_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
+            self.kong_model.max_db_move_x  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
+            self.kong_model.max_db_move_y  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
 
-        self.kong_model.generate_results = generate_results  ### 不能checkpoint
-        self.kong_model.generate_sees   = generate_sees    ### 不能checkpoint
-        self.kong_model.train_step      = train_step       ### 不能checkpoint
+            self.kong_model.generate_results = generate_results  ### 不能checkpoint
+            self.kong_model.generate_sees   = generate_sees    ### 不能checkpoint
+            self.kong_model.train_step      = train_step       ### 不能checkpoint
 
-        ### 建立 tf 存模型 的物件： checkpoint物件
-        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
-                                                   optimizer_G=self.kong_model.optimizer_G,
-                                                   max_train_move=self.kong_model.max_train_move,
-                                                   min_train_move=self.kong_model.min_train_move,
-                                                   max_db_move_x=self.kong_model.max_db_move_x,
-                                                   max_db_move_y=self.kong_model.max_db_move_y,
-                                                   epoch_log=self.kong_model.epoch_log)
-        print("build_unet", "finish")
-        return self.kong_model
+            ### 建立 tf 存模型 的物件： checkpoint物件
+            self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
+                                                    optimizer_G=self.kong_model.optimizer_G,
+                                                    max_train_move=self.kong_model.max_train_move,
+                                                    min_train_move=self.kong_model.min_train_move,
+                                                    max_db_move_x=self.kong_model.max_db_move_x,
+                                                    max_db_move_y=self.kong_model.max_db_move_y,
+                                                    epoch_log=self.kong_model.epoch_log)
+            print("build_unet", "finish")
+            return self.kong_model
+        self.build = _build_unet
+        return self
 
 class KModel_Flow_Generator_builder(KModel_Unet_builder):
     def _build_flow_part(self):
@@ -68,73 +75,95 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
                                                    epoch_log=self.kong_model.epoch_log)
 
     def build_flow_unet(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, true_IN=False, concat_Activation=False):
-        ### model_part
-        if  (true_IN and concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
-        elif(true_IN and concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
-        else:                                         from step08_a_1_UNet_BN                   import Generator
-        self.kong_model.generator   = Generator(hid_ch=hid_ch, depth_level=depth_level, no_concat_layer=no_concat_layer, skip_use_add=skip_use_add, skip_use_cnn=skip_use_cnn, skip_cnn_k=skip_cnn_k, skip_use_Acti=skip_use_Acti, out_tanh=out_tanh, out_ch=out_ch)
-        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        self.hid_ch = hid_ch
+        self.depth_level = depth_level
+        self.no_concat_layer = no_concat_layer
+        self.skip_use_add = no_concat_layer
+        self.skip_use_cnn = skip_use_cnn
+        self.skip_cnn_k = skip_cnn_k
+        self.skip_use_Acti = skip_use_Acti
+        self.out_tanh = out_tanh
+        self.out_ch = out_ch
+        self.true_IN = true_IN
+        self.concat_Activation = concat_Activation
 
-        self._build_flow_part()
-        self._build_ckpt_part()
-        print("build_flow_unet", "finish")
-        return self.kong_model
+        def _build_flow_unet():
+            ### model_part
+            if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
+            elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
+            else:                                                   from step08_a_1_UNet_BN                   import Generator
+            self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, no_concat_layer=self.no_concat_layer, skip_use_add=self.skip_use_add, skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti, out_tanh=self.out_tanh, out_ch=self.out_ch)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+
+            self._build_flow_part()
+            self._build_ckpt_part()
+            print("build_flow_unet", "finish")
+            return self.kong_model
+        self.build = _build_flow_unet
+        return self
+
+
 
     def build_flow_rect_7_level(self, first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=False, use_res_learning=True, resb_num=9, out_ch=3):
-        '''
-        depth_level=2 的情況 已經做到 和 Rect 幾乎一樣了，下面的 flow_rect 還留著是因為 裡面還有 MRFB 和 CoordConv 的東西
-        '''
-        ### model_part
-        from step08_a_3_EResD_7_level import Rect_7_layer as Generator
-        self.kong_model.generator   = Generator(first_k=first_k, hid_ch=hid_ch, depth_level=depth_level, true_IN=true_IN, use_ReLU=use_ReLU, use_res_learning=use_res_learning, resb_num=resb_num, out_ch=out_ch)
-        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        self.first_k = first_k
+        self.hid_ch = hid_ch
+        self.depth_level = depth_level
+        self.true_IN = true_IN
+        self.use_ReLU = use_ReLU
+        self.use_res_learning = use_res_learning
+        self.resb_num = resb_num
+        self.out_ch = out_ch
 
-        self._build_flow_part()
-        self._build_ckpt_part()
-        print("build_flow_rect_7_level", "finish")
-        return self.kong_model
+        def _build_flow_rect_7_level():
+            '''
+            depth_level=2 的情況 已經做到 和 Rect 幾乎一樣了，下面的 flow_rect 還留著是因為 裡面還有 MRFB 和 CoordConv 的東西
+            '''
+            ### model_part
+            from step08_a_3_EResD_7_level import Rect_7_layer as Generator
+            self.kong_model.generator   = Generator(first_k=self.first_k, hid_ch=self.hid_ch, depth_level=self.depth_level, true_IN=self.true_IN, use_ReLU=self.use_ReLU, use_res_learning=self.use_res_learning, resb_num=self.resb_num, out_ch=self.out_ch)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+
+            self._build_flow_part()
+            self._build_ckpt_part()
+            print("build_flow_rect_7_level", "finish")
+            return self.kong_model
+        self.build = _build_flow_rect_7_level
+        return self
 
     def build_flow_rect(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3):
-        '''
-        flow_rect 還留著是因為 裡面還有 MRFB 和 CoordConv 的東西
-        '''
-        ### model_part
-        from step08_a_2_Rect2 import Generator
-        self.kong_model.generator   = Generator(first_k3=first_k3, hid_ch=hid_ch, true_IN=true_IN, mrfb=mrfb, mrf_replace=mrf_replace, coord_conv=coord_conv, use_res_learning=use_res_learning, resb_num=resb_num, out_ch=out_ch)
-        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        self.first_k3 = first_k3
+        self.hid_ch = hid_ch
+        self.true_IN = true_IN
+        self.mrfb = mrfb
+        self.mrf_replace = mrf_replace
+        self.coord_conv = coord_conv
+        self.use_res_learning = use_res_learning
+        self.resb_num = resb_num
+        self.out_ch = out_ch
 
-        self._build_flow_part()
-        self._build_ckpt_part()
-        print("build_flow_rect", "finish")
-        return self.kong_model
+        def _build_flow_rect():
+            '''
+            flow_rect 還留著是因為 裡面還有 MRFB 和 CoordConv 的東西
+            '''
+            ### model_part
+            from step08_a_2_Rect2 import Generator
+            self.kong_model.generator   = Generator(first_k3=first_k3, hid_ch=hid_ch, true_IN=true_IN, mrfb=mrfb, mrf_replace=mrf_replace, coord_conv=coord_conv, use_res_learning=use_res_learning, resb_num=resb_num, out_ch=out_ch)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+
+            self._build_flow_part()
+            self._build_ckpt_part()
+            print("build_flow_rect", "finish")
+            return self.kong_model
+        self.build = _build_flow_rect
+        return self
 
 class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
-    def build_rect2(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
-        from step08_a_2_Rect2 import Generator, Discriminator, Rect2
-        gen_obj = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
-        dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
-        self.kong_model.rect = Rect2(gen_obj, dis_obj)   ### 把 Generator物件 丟進 Rect建立 Rect物件
-        self._kong_model_GD_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
-        print("build_rect2", "finish")
-        return self.kong_model
-
-    def build_rect2_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
-        from step08_a_2_Rect2 import MRFBlock, Generator, Discriminator, Rect2
-        mrfb    = MRFBlock(c_num=64, use1=use1, use3=use3, use5=use5, use7=use7, use9=use9)  ### 先建立 mrf物件
-        gen_obj = Generator(first_k3=first_k3, mrfb=mrfb, mrf_replace=mrf_replace, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)   ### 把 mrf物件 丟進 Generator 建立 Generator物件
-        dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
-        self.kong_model.rect = Rect2(gen_obj, dis_obj)   ### 再把 Generator物件 丟進 Rect建立 Rect物件
-        self._kong_model_GD_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
-        print("build_rect2_mrf", "finish")
-        return self.kong_model
-
     def _kong_model_GD_setting(self, g_train_many=False):
         self.kong_model.generator = self.kong_model.rect.generator
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.kong_model.optimizer_D = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-        from step08_b_use_G_generate import generate_img_results, generate_img_sees
-        # self.kong_model.generate_results = generate_img_results  ### 不能checkpoint
+        from step08_b_use_G_generate import  generate_img_sees
         self.kong_model.generate_sees  = generate_img_sees     ### 不能checkpoint
         from step09_b_train_step import train_step_GAN, train_step_GAN2
         if  (g_train_many): self.kong_model.train_step = train_step_GAN2  ### 不能checkpoint
@@ -147,22 +176,55 @@ class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
                                                    optimizer_D=self.kong_model.optimizer_D,
                                                    epoch_log=self.kong_model.epoch_log)
 
+    def build_rect2(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
+        self.first_k3 = first_k3
+        self.use_res_learning = use_res_learning
+        self.resb_num = resb_num
+        self.coord_conv = coord_conv
+        self.g_train_many = g_train_many
+        self.D_first_concat = D_first_concat
+        self.D_kernel_size = D_kernel_size
+
+        def _build_rect2():
+            from step08_a_2_Rect2 import Generator, Discriminator, Rect2
+            gen_obj = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
+            dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
+            self.kong_model.rect = Rect2(gen_obj, dis_obj)   ### 把 Generator物件 丟進 Rect建立 Rect物件
+            self._kong_model_GD_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
+            print("build_rect2", "finish")
+            return self.kong_model
+        self.build = _build_rect2
+        return self
+
+    def build_rect2_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
+        self.first_k3 = first_k3
+        self.mrf_replace = mrf_replace
+        self.use_res_learning = use_res_learning
+        self.resb_num = resb_num
+        self.coord_conv = coord_conv
+        self.use1 = use1
+        self.use3 = use3
+        self.use5 = use5
+        self.use7 = use7
+        self.use9 = use9
+        self.g_train_many = g_train_many
+        self.D_first_concat = D_first_concat
+        self.D_kernel_size = D_kernel_size
+
+        def _build_rect2_mrf():
+            from step08_a_2_Rect2 import MRFBlock, Generator, Discriminator, Rect2
+            mrfb    = MRFBlock(c_num=64, use1=use1, use3=use3, use5=use5, use7=use7, use9=use9)  ### 先建立 mrf物件
+            gen_obj = Generator(first_k3=first_k3, mrfb=mrfb, mrf_replace=mrf_replace, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)   ### 把 mrf物件 丟進 Generator 建立 Generator物件
+            dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
+            self.kong_model.rect = Rect2(gen_obj, dis_obj)   ### 再把 Generator物件 丟進 Rect建立 Rect物件
+            self._kong_model_GD_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
+            print("build_rect2_mrf", "finish")
+            return self.kong_model
+        self.build = _build_rect2_mrf
+        return self
+
+
 class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
-    def build_justG(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False):
-        from step08_a_2_Rect2 import Generator
-        self.kong_model.generator   = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
-        self._kong_model_G_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
-        print("build_justG", "finish")
-        return self.kong_model
-
-    def build_justG_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False):
-        from step08_a_2_Rect2 import MRFBlock, Generator
-        mrfb = MRFBlock(c_num=64, use1=use1, use3=use3, use5=use5, use7=use7, use9=use9)  ### 先建立 mrf物件
-        self.kong_model.generator = Generator(first_k3=first_k3, mrfb=mrfb, mrf_replace=mrf_replace, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 把 mrf物件 丟進 Generator 建立 Generator物件
-        self._kong_model_G_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
-        print("build_justG_mrf", "finish")
-        return self.kong_model
-
     def _kong_model_G_setting(self, g_train_many=False):
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         from step08_b_use_G_generate import generate_img_sees, generate_img_results
@@ -177,6 +239,45 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
                                                    optimizer_G=self.kong_model.optimizer_G,
                                                    epoch_log=self.kong_model.epoch_log)
 
+    def build_justG(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False):
+        self.first_k3 = first_k3
+        self.use_res_learning = use_res_learning
+        self.resb_num = resb_num
+        self.coord_conv = coord_conv
+        self.g_train_many = g_train_many
+
+        def _build_justG():
+            from step08_a_2_Rect2 import Generator
+            self.kong_model.generator   = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
+            self._kong_model_G_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
+            print("build_justG", "finish")
+            return self.kong_model
+        self.build = _build_justG
+        return self
+
+    def build_justG_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False):
+        self.first_k3 = first_k3
+        self.mrf_replace = mrf_replace
+        self.use_res_learning = use_res_learning
+        self.resb_num = resb_num
+        self.coord_conv = coord_conv
+        self.use1 = use1
+        self.use3 = use3
+        self.use5 = use5
+        self.use7 = use7
+        self.use9 = use9
+        self.g_train_many = g_train_many
+
+        def _build_justG_mrf():
+            from step08_a_2_Rect2 import MRFBlock, Generator
+            mrfb = MRFBlock(c_num=64, use1=use1, use3=use3, use5=use5, use7=use7, use9=use9)  ### 先建立 mrf物件
+            self.kong_model.generator = Generator(first_k3=first_k3, mrfb=mrfb, mrf_replace=mrf_replace, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 把 mrf物件 丟進 Generator 建立 Generator物件
+            self._kong_model_G_setting(g_train_many=g_train_many)  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
+            print("build_justG_mrf", "finish")
+            return self.kong_model
+
+        self.build = _build_justG_mrf
+        return self
 
 
 class KModel_builder(KModel_justG_and_mrf_justG_builder): pass
@@ -445,5 +546,6 @@ flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rec
 
 
 if(__name__ == "__main__"):
+    print(flow_rect_2_level_fk3.build())
     print("build_model cost time:", time.time() - start_time)
     pass

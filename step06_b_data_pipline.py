@@ -425,6 +425,7 @@ class tf_Data_init_builder:
         return self
 
     def build(self):
+        # print("build tf_data finish")
         return self.tf_data
 
 class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):

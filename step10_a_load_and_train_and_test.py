@@ -49,7 +49,6 @@ class Experiment():
             shutil.rmtree(code_dir + "/" + "kong_util")
         shutil.copytree("kong_util", code_dir + "/" + "kong_util")  
 
-
 ################################################################################################################################################
 ################################################################################################################################################
     def __init__(self):
@@ -58,7 +57,8 @@ class Experiment():
         ##############################################################################################################################
         self.phase        = "train"
         self.db_obj       = None
-        self.model_obj    = None
+        self.model_builder = None
+        self.model_obj     = None
         self.loss_info_obj = None
         self.exp_dir      = None
         self.describe_mid = None
@@ -99,6 +99,9 @@ class Experiment():
 ################################################################################################################################################
 ################################################################################################################################################
     def exp_init(self, reload_result=False, reload_model=False):  ### 共作四件事： 1.result, 2.data, 3.model(reload), 4.Loss_info
+        ### 0.真的建立出 model_obj， 在這之前都還是 KModel_builder喔！ 會寫這麼麻煩是為了 想實現 "真的用到的時候再建構出來！" 這樣才省時間！
+        self.model_obj = self.model_builder.build()
+
         ### 1.result
         if(reload_result):
             # print("self.exp_dir:", self.exp_dir)
@@ -403,10 +406,10 @@ class Exp_builder():
 
     def set_com(self, machine="127.35"): return self  ### 只是單純讓我自己能直接看到而已，懶得去翻 cost_time.txt
 
-    def set_basic(self, phase, db_obj, model_obj, loss_info_obj, exp_dir=".", describe_mid=None, describe_end=None, result_name=None):
+    def set_basic(self, phase, db_obj, model_builder, loss_info_obj, exp_dir=".", describe_mid=None, describe_end=None, result_name=None):
         self.exp.phase = phase
         self.exp.db_obj = db_obj
-        self.exp.model_obj = model_obj
+        self.exp.model_builder = model_builder
         self.exp.loss_info_obj = loss_info_obj
         self.exp.exp_dir = exp_dir
         self.exp.describe_mid = describe_mid

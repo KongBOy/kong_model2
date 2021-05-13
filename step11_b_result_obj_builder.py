@@ -11,6 +11,7 @@ class Result_init_builder:
             self.result = result
 
     def build(self):
+        print(self.result.result_name, "build finish ~~~~~~~~~~~~~~~~~~")
         return self.result
 
 class Result_sees_builder(Result_init_builder):
