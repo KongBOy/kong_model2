@@ -46,21 +46,22 @@ def generate_img_sees(model_G, see_index, in_img, in_img_pre, gt_img, epoch=0, r
 
 
 #######################################################################################################################################
-def generate_flow_results(model_G, in_img_pre, gt_use_range, training=False):
+def generate_flow_results(model_G, in_img_pre, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     flow      = model_G(in_img_pre, training=training)
     # print("flow before max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
     if(gt_use_range == "-1~1"): flow = (flow + 1) / 2
     # print("flow after max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
-    return flow[0]
+    return flow
 
 
 def generate_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_flow, epoch=0, result_obj=None, training=True, see_reset_init=True):
     '''
     如果有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
     '''
-    flow = generate_flow_results(model_G, in_img_pre, result_obj.gt_use_range, training=training)
-    gt_flow = gt_flow[0]
-    flow_visual = method1(flow[..., 2], flow[..., 1])[..., ::-1] * 255.
+    flow           = generate_flow_results(model_G, in_img_pre, result_obj.gt_use_range, training=training)
+    flow           = flow[0]
+    gt_flow        = gt_flow[0]
+    flow_visual    = method1(flow[..., 2], flow[..., 1])[..., ::-1] * 255.
     gt_flow_visual = method1(gt_flow[..., 2], gt_flow[..., 1])[..., ::-1] * 255.
 
 

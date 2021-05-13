@@ -25,14 +25,18 @@ from tqdm import tqdm
 import socket    ### 取得 本機 IP   給 train_step5_show_time 紀錄
 import getpass   ### 取得 本機 User 給 train_step5_show_time 紀錄
 
+import time
+start_time = time.time()
+
 class Experiment():
     def step0_save_code(self):
         '''
         把 step.py 和 kong_util資料夾 存一份進result
         '''
+        import datetime
         import shutil
         from build_dataset_combine import Check_dir_exist_and_build
-        code_dir = self.result_obj.result_dir + "/" + "train_code"  ### 定位出 result存code的目的地
+        code_dir = self.result_obj.result_dir + "/" + "train_code_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  ### 定位出 result存code的目的地
         Check_dir_exist_and_build(code_dir)                         ### 建立目的地資料夾
         py_file_names = get_dir_certain_file_name(".", certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
         for py_file_name in py_file_names:
@@ -45,7 +49,6 @@ class Experiment():
             shutil.rmtree(code_dir + "/" + "kong_util")
         shutil.copytree("kong_util", code_dir + "/" + "kong_util")  
 
-
 ################################################################################################################################################
 ################################################################################################################################################
     def __init__(self):
@@ -54,7 +57,8 @@ class Experiment():
         ##############################################################################################################################
         self.phase        = "train"
         self.db_obj       = None
-        self.model_obj    = None
+        self.model_builder = None
+        self.model_obj     = None
         self.loss_info_obj = None
         self.exp_dir      = None
         self.describe_mid = None
@@ -94,7 +98,10 @@ class Experiment():
 
 ################################################################################################################################################
 ################################################################################################################################################
-    def exp_init(self, reload_result=False, reload_model=False):  ### 共作五件事： 1.result, 2.data, 3.model(reload), 4.Loss_info, 5.save_code
+    def exp_init(self, reload_result=False, reload_model=False):  ### 共作四件事： 1.result, 2.data, 3.model(reload), 4.Loss_info
+        ### 0.真的建立出 model_obj， 在這之前都還是 KModel_builder喔！ 會寫這麼麻煩是為了 想實現 "真的用到的時候再建構出來！" 這樣才省時間！
+        self.model_obj = self.model_builder.build()
+
         ### 1.result
         if(reload_result):
             # print("self.exp_dir:", self.exp_dir)
@@ -112,7 +119,7 @@ class Experiment():
             print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
 
         ####################################################################################################################
-        ### 4.Loss_info, 5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉
+        ### 4.Loss_info, (5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉)
         ###   loss_info_obj 在 exo build的時候就已經有指定一個了，這邊是在把那時指定的 loss_info_obj 填入 這裡才知道的 result 資訊
         self.loss_info_obj = Loss_info_builder(self.loss_info_obj, in_obj_copy=True).set_logs_dir(self.result_obj.logs_dir).build()  ### 上面 result_obj 定位出 logs_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
 
@@ -183,6 +190,98 @@ class Experiment():
 
         ### 最後train完 記得也要看結果喔！
         self.train_step1_see_current_img(current_epoch, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+
+    def testing(self, current_epoch, add_loss=False, bgr2rgb=False):
+        from build_dataset_combine import Check_dir_exist_and_build_new_dir,  method1
+        from util import Matplot_single_row_imgs
+        from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
+        import matplotlib.pyplot as plt
+
+        fig, ax = plt.subplots(nrows=1, ncols=4)
+        fig2, ax2 = plt.subplots(nrows=1, ncols=3)
+        fig3, ax3 = plt.subplots(nrows=1, ncols=3)
+        fig_bm, ax_bm = plt.subplots(nrows=1, ncols=2)
+
+        print("self.result_obj.test_dir", self.result_obj.test_dir)
+        Check_dir_exist_and_build_new_dir(self.result_obj.test_dir)
+        test_in     = self.tf_data.test_in_db
+        test_in_pre = self.tf_data.test_in_db_pre
+        test_gt     = self.tf_data.test_gt_db
+
+        flows = []
+        for test_index, (test_in, test_in_pre, test_gt, test_gt_pre) in enumerate(tqdm(self.tf_data.test_db_combine)):
+            print("test_index~~~~~~~~~~~~~~~~", test_index)
+            print("test_in.shape", test_in.shape)
+            print("test_in_pre.shape", test_in_pre.shape)
+            print("test_gt.shape", test_gt.shape)
+            print("test_gt_pre.shape", test_gt_pre.shape)
+
+            in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy
+            ax[0].imshow(test_in[0])
+
+            flow           = self.model_obj.generate_results(model_G=self.model_obj.generator, in_img_pre=test_in_pre, gt_use_range=self.gt_use_range)  ### BHWC
+            flow           = flow[0].numpy()   ### HWC 和 tensor -> numpy
+            # flow           = flow[..., ::-1]
+            flow[..., 1]   = 1 - flow[..., 1]  ### y 上下 flip
+            if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
+            print(" flow.shape", flow.shape)
+            print(" flow.min()", flow.min())
+            print(" flow.max()", flow.max())
+            flow_v    = method1(flow[..., 1], flow[..., 2])  ### [..., ::-1] * 255. ### 如果用opencv存，才需要rgb->bgr 和 range:0~255
+            ax[1].imshow(flow_v)
+            ax2[0].imshow(flow[..., 0])
+            ax2[1].imshow(flow[..., 1])
+            ax2[2].imshow(flow[..., 2])
+
+            gt_flow        = test_gt[0].numpy()   ### HWC 和 tensor -> numpy
+            gt_flow_visual = method1(gt_flow[..., 2], gt_flow[..., 1])
+            ax[2].imshow(gt_flow_visual)
+            ax3[0].imshow(gt_flow[..., 0])
+            ax3[1].imshow(gt_flow[..., 1])
+            ax3[2].imshow(gt_flow[..., 2])
+            print(" gt_flow.min()", gt_flow.min())
+            print(" gt_flow.max()", gt_flow.max())
+
+
+            valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
+            total_pix_amount = flow.shape[0] * flow.shape[1]
+            # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
+            if( valid_mask_pix_amount / total_pix_amount > 0.25):
+                print("flow.shape", flow.shape)
+                print("type(flow)", type(flow))
+                plt.show()
+                print("valid_mask_pix_amount / total_pix_amount~~~~~~~~~~~~~~~~~~~~~~", valid_mask_pix_amount / total_pix_amount)
+                bm  = use_flow_to_get_bm(flow, flow_scale=768)
+                print("finish bm")
+                ax_bm[0].imshow(bm[..., 0])
+                ax_bm[1].imshow(bm[..., 1])
+                # plt.show()
+                plt.close()
+                # rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
+                rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=test_in_pre[0].numpy())
+            else:
+                bm  = np.zeros(shape=(768, 768, 2))
+                rec = np.zeros(shape=(768, 768, 3))
+
+            # if(gt_flow.sum() > 0):
+            #     gt_bm  = use_flow_to_get_bm(gt_flow, flow_scale=768)
+            #     gt_rec = use_bm_to_rec_img(gt_bm, flow_scale=768, dis_img=in_img)
+            # else:
+            #     gt_bm  = np.zeros(shape=(768, 768, 2))
+            #     gt_rec = np.zeros(shape=(768, 768, 3))
+
+            # bm_visual  = method1(bm[...,0], bm[...,1]*-1)
+            # gt_bm_visual = method1(gt_bm[...,0], gt_bm[...,1]*-1)
+            single_row_imgs = Matplot_single_row_imgs(
+                                    imgs      =[ in_img ,   flow_v ,        rec],    ### 把要顯示的每張圖包成list
+                                    img_titles=["in_img", "pred_flow_v", "pred_rec"],    ### 把每張圖要顯示的字包成list
+                                    fig_title ="test_%04i, epoch=%04i" % (test_index, current_epoch),   ### 圖上的大標題
+                                    add_loss  =add_loss,
+                                    bgr2rgb   =bgr2rgb)
+            single_row_imgs.Draw_img()
+            single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
+
+
 
     def train_step1_see_current_img(self, epoch, training=False, see_reset_init=False):
         """
@@ -272,6 +371,13 @@ class Experiment():
         self.train_step1_see_current_img(self.start_epoch, training=self.exp_bn_see_arg, see_reset_init=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         print("test see finish")
 
+    def test(self):
+        """
+        """
+        self.exp_init(reload_result=True, reload_model=True)
+        self.testing(self.start_epoch)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        print("test finish")
+
     def board_rebuild(self):
         self.exp_init(reload_result=True, reload_model=False)
         self.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(self, dst_dir=self.result_obj.logs_dir)
@@ -285,6 +391,7 @@ class Experiment():
         elif(self.phase == "train_reload"):   self.train_reload()
         elif(self.phase == "test_see"):       self.test_see()
         elif(self.phase == "board_rebuild"):  self.board_rebuild()
+        elif(self.phase == "test"):           self.test()
         elif(self.phase == "train_indicate"): pass  ### 待完成Z
         elif(self.phase.lower() == "ok"): pass      ### 不做事情，只是個標記而以這樣子
         else: print("ㄘㄋㄇㄉ phase 打錯字了拉~~~")
@@ -299,10 +406,10 @@ class Exp_builder():
 
     def set_com(self, machine="127.35"): return self  ### 只是單純讓我自己能直接看到而已，懶得去翻 cost_time.txt
 
-    def set_basic(self, phase, db_obj, model_obj, loss_info_obj, exp_dir=".", describe_mid=None, describe_end=None, result_name=None):
+    def set_basic(self, phase, db_obj, model_builder, loss_info_obj, exp_dir=".", describe_mid=None, describe_end=None, result_name=None):
         self.exp.phase = phase
         self.exp.db_obj = db_obj
-        self.exp.model_obj = model_obj
+        self.exp.model_builder = model_builder
         self.exp.loss_info_obj = loss_info_obj
         self.exp.exp_dir = exp_dir
         self.exp.describe_mid = describe_mid
@@ -338,9 +445,8 @@ class Exp_builder():
         self.result_name = result_name
         return self
 
-    def set_test(self, result_name):
-        self.exp.phase = "test"
-        self.result_name = result_name
+    def set_result_name(self, result_name):
+        self.exp.result_name = result_name
         return self
 
     def build(self, result_name=None):
@@ -350,208 +456,203 @@ class Exp_builder():
 
         也補上 建好result 馬上設定 loss_info_obj 拉，這樣 step11, step12 也能用了！
         '''
-        if(result_name is not None):
-            # print("self.exp.exp_dir", self.exp.exp_dir)
+        if(self.exp.result_name is not None):
             # print("1.result_name", result_name, ", self.exp.gt_use_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.gt_use_range)  ### 追蹤see的建立過程
-            self.exp.result_name   = result_name
+            # self.exp.result_name   = result_name
             self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
             self.exp.loss_info_obj = Loss_info_builder(self.exp.loss_info_obj, in_obj_copy=True).set_logs_dir(self.exp.result_obj.logs_dir).build()  ### 上面定位出 logs_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
             # print("self.exp.loss_info_obj.logs_dir", self.exp.loss_info_obj.logs_dir)
             # print()  ### 追蹤see的建立過程
+            print(self.exp.exp_dir, "build finish ~~~~~~~~~~~~~~~~~~")
         return self.exp
-
-
-# if(__name__ == "__main__"):
-
-
-
 ##########################################################################################################################################
 ### 5_1_GD_Gmae136_epoch700
-# os_book_1532_rect_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_1", describe_end="1532data_mae1_127.28").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_2", describe_end="1532data_mae1_127.35").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_3", describe_end="1532data_mae1_127.51").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_1", describe_end="1532data_mae1_127.28").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_2", describe_end="1532data_mae1_127.35").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_3", describe_end="1532data_mae1_127.51").set_train_args(epochs=700).set_result_name(result_name="")
 
 ##########################################################################################################################################
 ### 5_2_GD_vs_justG
-# os_book_1532_rect_D_05  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_2_2", describe_end="1532data_D_0.5_128.245").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_D_025 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_2_3", describe_end="1532data_D_0.25_127.35").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_D_01  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_2_4", describe_end="1532data_D_0.1_127.28").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_D_05  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_2_2", describe_end="1532data_D_0.5_128.245").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_D_025 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_2_3", describe_end="1532data_D_0.25_127.35").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_D_01  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_2_4", describe_end="1532data_D_0.1_127.28").set_train_args(epochs=700).set_result_name(result_name="")
 
 ##########################################################################################################################################
 ### 5_3_just_G_136920 ### 目前mae部分還是需要手動調(20200626)
-# os_book_1532_justG_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_1", describe_end="1532data_mae1_127.28").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_2", describe_end="1532data_mae3_127.51").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_3", describe_end="1532data_mae6_128.246").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mae9 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_4", describe_end="1532data_mae9_127.35").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_justG_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_1", describe_end="1532data_mae1_127.28").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_2", describe_end="1532data_mae3_127.51").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_3", describe_end="1532data_mae6_128.246").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mae9 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_4", describe_end="1532data_mae9_127.35").set_train_args(epochs=700).set_result_name(result_name="")
 
 ##########################################################################################################################################
 ### 5_4_just_G_a_bigger  ### 目前其他 smaller, smaller2 的高度 400, 300 都要手動去調喔 resize大小喔！
-# os_book_1532_justG_mae3_big      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, justG, describe_mid="5_4_1", describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).build(result_name="type7b_h500_w332_real_os_book-20200615_030658-justG-1532data_mae3_big_127.35")
-# os_book_1532_justG_mae3_smaller  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, justG, describe_mid="5_4_3", describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mae3_smaller2 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, justG, describe_mid="5_4_4", describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_justG_mae3_big      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, justG, describe_mid="5_4_1", describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).set_result_name(result_name="type7b_h500_w332_real_os_book-20200615_030658-justG-1532data_mae3_big_127.35")
+# os_book_1532_justG_mae3_smaller  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, justG, describe_mid="5_4_3", describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mae3_smaller2 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, justG, describe_mid="5_4_4", describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).set_result_name(result_name="")
 
 ##########################################################################################################################################
 ### 5_5_focus_GD_vs_G
-# os_book_1532_rect_mae3_focus     = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect , describe_mid="5_5_2", describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mae3_focus    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, justG, describe_mid="5_5_4", describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_mae3_focus     = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect , describe_mid="5_5_2", describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mae3_focus    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, justG, describe_mid="5_5_4", describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).set_result_name(result_name="")
 
 
 ##########################################################################################################################################
 ### 5_6_a_400_page
-# os_book_400_rect_mae3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_400data, rect, describe_mid="5_6_1", describe_end="400data_mae3_127.35").set_train_args(epochs=2681).build(result_name="")
-# os_book_800_rect_mae3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_800data, rect, describe_mid="no time to train", describe_end="800data_mae3_127.35").set_train_args(epochs=1341).build(result_name="")
-# os_book_400_justG_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_400data, justG, describe_mid="5_6_2", describe_end="400data_justG_mae3_127.28").set_train_args(epochs=2681).build(result_name="")
+# os_book_400_rect_mae3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_400data, rect, describe_mid="5_6_1", describe_end="400data_mae3_127.35").set_train_args(epochs=2681).set_result_name(result_name="")
+# os_book_800_rect_mae3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_800data, rect, describe_mid="no time to train", describe_end="800data_mae3_127.35").set_train_args(epochs=1341).set_result_name(result_name="")
+# os_book_400_justG_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_400data, justG, describe_mid="5_6_2", describe_end="400data_justG_mae3_127.28").set_train_args(epochs=2681).set_result_name(result_name="")
 
 ##########################################################################################################################################
 ### 5_7_first_k7_vs_k3
-# os_book_1532_rect_firstk3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_firstk3 , describe_mid="5_7_2", describe_end="127.246").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_firstk3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_firstk3, describe_mid="5_7_4", describe_end="128.246").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_firstk3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_firstk3 , describe_mid="5_7_2", describe_end="127.246").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_firstk3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_firstk3, describe_mid="5_7_4", describe_end="128.246").set_train_args(epochs=700).set_result_name(result_name="")
 
 ##########################################################################################################################################
 ### 5_8a_GD_mrf
-# os_book_1532_rect_mrf7         = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf7         , describe_mid="5_8a_2", describe_end="127.48").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_mrf79        = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf79        , describe_mid="5_8a_3", describe_end="128.245").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_replace_mrf7 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf7 , describe_mid="5_8a_4", describe_end="127.35").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_replace_mrf79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf79, describe_mid="5_8a_5", describe_end="127.51").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_mrf7         = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf7         , describe_mid="5_8a_2", describe_end="127.48").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf79        = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf79        , describe_mid="5_8a_3", describe_end="128.245").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_replace_mrf7 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf7 , describe_mid="5_8a_4", describe_end="127.35").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_replace_mrf79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf79, describe_mid="5_8a_5", describe_end="127.51").set_train_args(epochs=700).set_result_name(result_name="")
 
 ### 5_8b_G_mrf
 ########################################################### 08b2
-# os_book_1532_justG_mrf7          = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7         , describe_mid="5_8b_2" , describe_end="128.245").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf7_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7_k3      , describe_mid="5_8b_2b", describe_end="128.51" ).set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf5_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf5_k3      , describe_mid="5_8b_2c", describe_end="128.51" ).set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf3_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf3_k3      , describe_mid="5_8b_2d", describe_end="128.48" ).set_train_args(epochs=700).build(result_name="")
+# os_book_1532_justG_mrf7          = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7         , describe_mid="5_8b_2" , describe_end="128.245").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf7_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7_k3      , describe_mid="5_8b_2b", describe_end="128.51" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf5_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf5_k3      , describe_mid="5_8b_2c", describe_end="128.51" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf3_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf3_k3      , describe_mid="5_8b_2d", describe_end="128.48" ).set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 08b3
-# os_book_1532_justG_mrf79         = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79        , describe_mid="5_8b_3" , describe_end="128.245").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf79_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79_k3     , describe_mid="5_8b_3b", describe_end="128.246").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf57_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf57_k3     , describe_mid="5_8b_3c", describe_end="128.246").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf35_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf35_k3     , describe_mid="5_8b_3d", describe_end="127.35" ).set_train_args(epochs=700).build(result_name="")
+# os_book_1532_justG_mrf79         = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79        , describe_mid="5_8b_3" , describe_end="128.245").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf79_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79_k3     , describe_mid="5_8b_3b", describe_end="128.246").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf57_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf57_k3     , describe_mid="5_8b_3c", describe_end="128.246").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf35_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf35_k3     , describe_mid="5_8b_3d", describe_end="127.35" ).set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 08b4
-# os_book_1532_justG_mrf_replace7  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace7 , describe_mid="5_8b_4" , describe_end="127.40").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf_replace5  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace5 , describe_mid="5_8b_4b", describe_end="127.35").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf_replace3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace3 , describe_mid="5_8b_4c", describe_end="127.48").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_justG_mrf_replace7  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace7 , describe_mid="5_8b_4" , describe_end="127.40").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf_replace5  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace5 , describe_mid="5_8b_4b", describe_end="127.35").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf_replace3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace3 , describe_mid="5_8b_4c", describe_end="127.48").set_train_args(epochs=700).set_result_name(result_name="")
 ########################################################### 08b5
-# os_book_1532_justG_mrf_replace79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace79, describe_mid="5_8b_5" , describe_end="128.55").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf_replace75 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace75, describe_mid="5_8b_5b", describe_end="128.55").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf_replace35 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace35, describe_mid="5_8b_5c", describe_end="128.28").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_justG_mrf_replace79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace79, describe_mid="5_8b_5" , describe_end="128.55").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf_replace75 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace75, describe_mid="5_8b_5b", describe_end="128.55").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf_replace35 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace35, describe_mid="5_8b_5c", describe_end="128.28").set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 08c
-# os_book_1532_justG_mrf135_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c1_Gk3mrf135" , describe_end="128.246").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf357_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c2_Gk3mrf357" , describe_end="127.51" ).set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justG_mrf3579_k3     = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c3_Gk3mrf3579", describe_end="127.28" ).set_train_args(epochs=700).build(result_name="")
+# os_book_1532_justG_mrf135_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c1_Gk3mrf135" , describe_end="128.246").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf357_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c2_Gk3mrf357" , describe_end="127.51" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf3579_k3     = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c3_Gk3mrf3579", describe_end="127.28" ).set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 08d
-# os_book_1532_rect_mrf35_Gk3_DnoC_k4   = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf35_Gk3_DnoC_k4    , describe_mid="5_8d1_Gmrf35"  , describe_end="127.55"  ).set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_mrf135_Gk3_DnoC_k4  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf135_Gk3_DnoC_k4   , describe_mid="5_8d2_Gmrf135" , describe_end="128.246" ).set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_mrf357_Gk3_DnoC_k4  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf357_Gk3_DnoC_k4   , describe_mid="5_8d3_Gmrf357" , describe_end="127.51"  ).set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_mrf3579_Gk3_DnoC_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf3579_Gk3_DnoC_k4  , describe_mid="5_8d4_Gmrf3579", describe_end="127.28"  ).set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_mrf35_Gk3_DnoC_k4   = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf35_Gk3_DnoC_k4    , describe_mid="5_8d1_Gmrf35"  , describe_end="127.55"  ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf135_Gk3_DnoC_k4  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf135_Gk3_DnoC_k4   , describe_mid="5_8d2_Gmrf135" , describe_end="128.246" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf357_Gk3_DnoC_k4  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf357_Gk3_DnoC_k4   , describe_mid="5_8d3_Gmrf357" , describe_end="127.51"  ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf3579_Gk3_DnoC_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf3579_Gk3_DnoC_k4  , describe_mid="5_8d4_Gmrf3579", describe_end="127.28"  ).set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 09a
-# os_book_1532_rect_Gk4_D_concat_k3    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_concat_k3   , describe_mid="5_9a_2", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_Gk4_D_no_concat_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k4, describe_mid="5_9a_3", describe_end="128.246").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_Gk4_D_no_concat_k3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k3, describe_mid="5_9a_4", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_Gk4_D_concat_k3    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_concat_k3   , describe_mid="5_9a_2", describe_end="127.51") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk4_D_no_concat_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k4, describe_mid="5_9a_3", describe_end="128.246").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk4_D_no_concat_k3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k3, describe_mid="5_9a_4", describe_end="127.28") .set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 09b
-# os_book_1532_rect_Gk3_D_concat_k4    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k4   , describe_mid="5_9b_1", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_Gk3_D_concat_k3    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k3   , describe_mid="5_9b_2", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_Gk3_D_no_concat_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k4   , describe_mid="5_9b_3", describe_end="127.55") .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_Gk3_D_no_concat_k3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k3   , describe_mid="5_9b_4", describe_end="127.48") .set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_Gk3_D_concat_k4    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k4   , describe_mid="5_9b_1", describe_end="no_machine") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_D_concat_k3    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k3   , describe_mid="5_9b_2", describe_end="no_machine") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_D_no_concat_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k4   , describe_mid="5_9b_3", describe_end="127.55") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_D_no_concat_k3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k3   , describe_mid="5_9b_4", describe_end="127.48") .set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 10
 ### 5_10_GD_D_train1_G_train_135
 ### 舊版，如果要重train記得改資料庫喔(拿掉focus)！
-# os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_2", describe_end="1532data_mae3_focus_G03D01_127.35").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_3", describe_end="1532data_mae3_focus_G05D01_127.35").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_2", describe_end="1532data_mae3_focus_G03D01_127.35").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_3", describe_end="1532data_mae3_focus_G05D01_127.35").set_train_args(epochs=700).set_result_name(result_name="")
 
 ### 新版
-# os_book_1532_rect_Gk3_train3_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train3_Dk4_no_concat, describe_mid="5_10_2", describe_end="127.246").set_train_args(epochs=700).build(result_name="")
-# os_book_1532_rect_Gk3_train5_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train5_Dk4_no_concat, describe_mid="5_10_3", describe_end="no_machine").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_rect_Gk3_train3_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train3_Dk4_no_concat, describe_mid="5_10_2", describe_end="127.246").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_train5_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train5_Dk4_no_concat, describe_mid="5_10_3", describe_end="no_machine").set_train_args(epochs=700).set_result_name(result_name="")
 ########################################################### 11
-# os_book_1532_Gk3_no_res              =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_no_res            , describe_mid="5_11_1", describe_end="127.51") .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_Gk3_no_res_D_no_concat  =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_no_res_D_no_concat, describe_mid="5_11_2", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_Gk3_no_res_mrf357       =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_mrf357_no_res     , describe_mid="5_11_3", describe_end="128.246").set_train_args(epochs=700).build(result_name="")
+# os_book_1532_Gk3_no_res              =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_no_res            , describe_mid="5_11_1", describe_end="127.51") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_no_res_D_no_concat  =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_no_res_D_no_concat, describe_mid="5_11_2", describe_end="127.28") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_no_res_mrf357       =Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_mrf357_no_res     , describe_mid="5_11_3", describe_end="128.246").set_train_args(epochs=700).set_result_name(result_name="")
 
 # ########################################################### 12
 # exp_dir12 = "5_12_resb_num"
-# os_book_1532_Gk3_resb00 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb00 , exp_dir=exp_dir12, describe_mid="5_12_1", describe_end="finish" ) .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_Gk3_resb01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb01 , exp_dir=exp_dir12, describe_mid="5_12_2", describe_end="127.48" ) .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_Gk3_resb03 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb03 , exp_dir=exp_dir12, describe_mid="5_12_3", describe_end="127.35" ) .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_Gk3_resb05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb05 , exp_dir=exp_dir12, describe_mid="5_12_4", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_Gk3_resb07 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="no_machine") .set_train_args(epochs=700).build(result_name="")
+# os_book_1532_Gk3_resb00 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb00 , exp_dir=exp_dir12, describe_mid="5_12_1", describe_end="finish" ) .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb01 , exp_dir=exp_dir12, describe_mid="5_12_2", describe_end="127.48" ) .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb03 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb03 , exp_dir=exp_dir12, describe_mid="5_12_3", describe_end="127.35" ) .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb05 , exp_dir=exp_dir12, describe_mid="5_12_4", describe_end="no_machine") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb07 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="no_machine") .set_train_args(epochs=700).set_result_name(result_name="")
 # # os_book_1532_Gk3_resb09 ### 原本已經訓練過了，但為了確保沒train錯，還是建了resb_09來train看看囉
-# os_book_1532_Gk3_resb09 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb09 , exp_dir=exp_dir12, describe_mid="5_12_6", describe_end="finish") .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_Gk3_resb11 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7", describe_end="127.55") .set_train_args(epochs=700).build(result_name="")
+# os_book_1532_Gk3_resb09 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb09 , exp_dir=exp_dir12, describe_mid="5_12_6", describe_end="finish") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb11 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7", describe_end="127.55") .set_train_args(epochs=700).set_result_name(result_name="")
 # ### 13
-# os_book_1532_Gk3_resb15 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb15 , exp_dir=exp_dir12, describe_mid="5_12_7_3", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
+# os_book_1532_Gk3_resb15 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb15 , exp_dir=exp_dir12, describe_mid="5_12_7_3", describe_end="127.28") .set_train_args(epochs=700).set_result_name(result_name="")
 # ### 17
-# os_book_1532_Gk3_resb20 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8", describe_end="128.244") .set_train_args(epochs=700).build(result_name="")
+# os_book_1532_Gk3_resb20 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8", describe_end="128.244") .set_train_args(epochs=700).set_result_name(result_name="")
 
 # ########################################################### 12
 # exp_dir13 = "5_13_coord_conv"
-# os_book_1532_justGk3_coord_conv        = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_coord_conv        , exp_dir=exp_dir13, describe_mid="5_13_1", describe_end="127.35") .set_train_args(epochs=700).build(result_name="")
-# os_book_1532_justGk3_mrf357_coord_conv = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_mrf357_coord_conv , exp_dir=exp_dir13, describe_mid="5_13_2", describe_end="127.28") .set_train_args(epochs=700).build(result_name="")
+# os_book_1532_justGk3_coord_conv        = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_coord_conv        , exp_dir=exp_dir13, describe_mid="5_13_1", describe_end="127.35") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justGk3_mrf357_coord_conv = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_mrf357_coord_conv , exp_dir=exp_dir13, describe_mid="5_13_2", describe_end="127.28") .set_train_args(epochs=700).set_result_name(result_name="")
+
 
 ########################################################### 14
 exp_dir14 = "5_14_flow_unet"
 ### 以下 old_shuffle (先 batch 再 shuffle)，注意目前無法重現 old shuffle，且也沒必要重現喔！因為 old/new shuffle 因為 batch_size==1 ， 理論上是一樣的！
 ### 1.測epoch數，hid_ch=64, bn=1
 old_shuf_dir = exp_dir14 + "/" + "0 old_shuf_dir"
-epoch050_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_1", describe_end="epoch050_bn_see_arg_T") .set_train_args(epochs= 50, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_0_1_1-20210228_144200-flow_unet-epoch050_bn_see_arg_T")
-epoch100_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_2", describe_end="epoch100_bn_see_arg_T") .set_train_args(epochs=100, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_0_1_2-20210228_161403-flow_unet-epoch100_bn_see_arg_T")
-epoch200_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_3", describe_end="epoch200_bn_see_arg_T") .set_train_args(epochs=200, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_0_1_3-20210301_015045-flow_unet-epoch200_bn_see_arg_T")
-epoch300_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_4", describe_end="epoch300_bn_see_arg_T") .set_train_args(epochs=300, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_0_1_4-20210228_164701-flow_unet-epoch300_bn_see_arg_T")
-epoch700_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_6", describe_end="epoch700_bn_see_arg_T") .set_train_args(epochs=700, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_0_1_6-20210225_204416-flow_unet-epoch700_bn_see_arg_T")
+epoch050_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_1", describe_end="epoch050_bn_see_arg_T") .set_train_args(epochs= 50, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_0_1_1-20210228_144200-flow_unet-epoch050_bn_see_arg_T")
+epoch100_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_2", describe_end="epoch100_bn_see_arg_T") .set_train_args(epochs=100, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_0_1_2-20210228_161403-flow_unet-epoch100_bn_see_arg_T")
+epoch200_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_3", describe_end="epoch200_bn_see_arg_T") .set_train_args(epochs=200, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_0_1_3-20210301_015045-flow_unet-epoch200_bn_see_arg_T")
+epoch300_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_4", describe_end="epoch300_bn_see_arg_T") .set_train_args(epochs=300, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_0_1_4-20210228_164701-flow_unet-epoch300_bn_see_arg_T")
+epoch700_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_1_6", describe_end="epoch700_bn_see_arg_T") .set_train_args(epochs=700, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_0_1_6-20210225_204416-flow_unet-epoch700_bn_see_arg_T")
 ### 2.epoch=500, 測hid_ch, bn=1
-ch128_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_ch128, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_2_1", describe_end="ch128_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_0_2_1-20210304_082556-flow_unet-ch128_bn_see_arg_T")
-ch032_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_2_3", describe_end="ch032_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_0_2_3-20210302_234709-flow_unet-ch032_bn_see_arg_T")
-ch016_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_ch016, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_2_4", describe_end="ch016_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_0_2_4-20210303_083630-flow_unet-ch016_bn_see_arg_T")
-ch008_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_ch008, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_2_5", describe_end="ch008_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_0_2_5-20210303_161150-flow_unet-ch008_bn_see_arg_T")
+ch128_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_ch128, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_2_1", describe_end="ch128_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_0_2_1-20210304_082556-flow_unet-ch128_bn_see_arg_T")
+ch032_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_2_3", describe_end="ch032_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_0_2_3-20210302_234709-flow_unet-ch032_bn_see_arg_T")
+ch016_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_ch016, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_2_4", describe_end="ch016_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_0_2_4-20210303_083630-flow_unet-ch016_bn_see_arg_T")
+ch008_bn_see_arg_T = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_ch008, G_mae_loss_info, exp_dir=old_shuf_dir, describe_mid="5_14_0_2_5", describe_end="ch008_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_0_2_5-20210303_161150-flow_unet-ch008_bn_see_arg_T")
 
 #############################################################
 ### 以下 new_shuffle (先 shuffle 再 batch)
 ### 1.測epoch數，hid_ch=64, bn=1
-epoch050_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_1", describe_end="epoch050_new_shuf_bn_see_arg_T").set_train_args(epochs= 50, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .build(result_name="type8_blender_os_book-5_14_1_1_1-20210306_190321-flow_unet-epoch050_new_shuf_bn_see_arg_T")
-epoch100_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_2", describe_end="epoch100_new_shuf_bn_see_arg_T").set_train_args(epochs=100, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .build(result_name="type8_blender_os_book-5_14_1_1_2-20210306_203154-flow_unet-epoch100_new_shuf_bn_see_arg_T")
-epoch200_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_3", describe_end="epoch200_new_shuf_bn_see_arg_T").set_train_args(epochs=200, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .build(result_name="type8_blender_os_book-5_14_1_1_3-20210306_232534-flow_unet-epoch200_new_shuf_bn_see_arg_T")
-epoch300_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_4", describe_end="epoch300_new_shuf_bn_see_arg_T").set_train_args(epochs=300, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .build(result_name="type8_blender_os_book-5_14_1_1_4-20210307_051136-flow_unet-epoch300_new_shuf_bn_see_arg_T")
-epoch500_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_5", describe_end="epoch500_new_shuf_bn_see_arg_T").set_train_args(epochs=500, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .build(result_name="type8_blender_os_book-5_14_1_1_5-20210318_211827f-flow_unet-epoch500_new_shuf_bn_see_arg_T")
-epoch500_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_5", describe_end="epoch500_new_shuf_bn_see_arg_F").set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_1_5-20210318_211827-flow_unet-epoch500_new_shuf_bn_see_arg_F")
-epoch700_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_6", describe_end="epoch700_new_shuf_bn_see_arg_T").set_train_args(epochs=700, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .build(result_name="type8_blender_os_book-5_14_1_1_6-20210308_100044-flow_unet-epoch700_new_shuf_bn_see_arg_T")
-epoch700_bn_see_arg_T_no_down  = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_7", describe_end="epoch700_no_down") .set_train_args(epochs=700, exp_bn_see_arg=True, epoch_down_step=700).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_1_7-20210330_093032-flow_unet-epoch700_no_epoch_down")
+epoch050_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_1", describe_end="epoch050_new_shuf_bn_see_arg_T").set_train_args(epochs= 50, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .set_result_name(result_name="type8_blender_os_book-5_14_1_1_1-20210306_190321-flow_unet-epoch050_new_shuf_bn_see_arg_T")
+epoch100_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_2", describe_end="epoch100_new_shuf_bn_see_arg_T").set_train_args(epochs=100, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .set_result_name(result_name="type8_blender_os_book-5_14_1_1_2-20210306_203154-flow_unet-epoch100_new_shuf_bn_see_arg_T")
+epoch200_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_3", describe_end="epoch200_new_shuf_bn_see_arg_T").set_train_args(epochs=200, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .set_result_name(result_name="type8_blender_os_book-5_14_1_1_3-20210306_232534-flow_unet-epoch200_new_shuf_bn_see_arg_T")
+epoch300_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_4", describe_end="epoch300_new_shuf_bn_see_arg_T").set_train_args(epochs=300, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .set_result_name(result_name="type8_blender_os_book-5_14_1_1_4-20210307_051136-flow_unet-epoch300_new_shuf_bn_see_arg_T")
+epoch500_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_5", describe_end="epoch500_new_shuf_bn_see_arg_T").set_train_args(epochs=500, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .set_result_name(result_name="type8_blender_os_book-5_14_1_1_5-20210318_211827f-flow_unet-epoch500_new_shuf_bn_see_arg_T")
+epoch500_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_5", describe_end="epoch500_new_shuf_bn_see_arg_F").set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_1_5-20210318_211827-flow_unet-epoch500_new_shuf_bn_see_arg_F")
+epoch700_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_6", describe_end="epoch700_new_shuf_bn_see_arg_T").set_train_args(epochs=700, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1") .set_result_name(result_name="type8_blender_os_book-5_14_1_1_6-20210308_100044-flow_unet-epoch700_new_shuf_bn_see_arg_T")
+epoch700_bn_see_arg_T_no_down  = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_1_7", describe_end="epoch700_no_down") .set_train_args(epochs=700, exp_bn_see_arg=True, epoch_down_step=700).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_1_7-20210330_093032-flow_unet-epoch700_no_epoch_down")
 
 ### 2.epoch=500, 測hid_ch, bn=1
 ### 這裡的 bn 當初照著 bn 正常的使用方式使用：在testing 時 bn 使用上的 training要指定 False，但發現效果奇差，透過這結果應該可以知道是因為每張影像都是獨特的存在，差異性太大，每一張影像應該要跟自己的 mu, sigma 作用才對，因此應該要用 in 比較好，所以這些結果就先不用了，用的是下面的結果～
 new_shuffle_ch_but_wrong_see_arg_dir = exp_dir14 + "/" + "1 new_shuffle_ch_but_wrong_see_arg_dir"
-ch128_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch128, G_mae_loss_info, exp_dir=new_shuffle_ch_but_wrong_see_arg_dir, describe_mid="5_14_1_2_1", describe_end="ch128_new_shuf_bn_see_arg_F") .set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_2_1-20210310_230448-flow_unet-ch128_new_shuf_bn_see_arg_F")
-ch032_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=new_shuffle_ch_but_wrong_see_arg_dir, describe_mid="5_14_1_2_3", describe_end="ch032_new_shuf_bn_see_arg_F") .set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_2_3-20210309_214404-flow_unet-ch032_new_shuf_bn_see_arg_F")
-ch016_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch016, G_mae_loss_info, exp_dir=new_shuffle_ch_but_wrong_see_arg_dir, describe_mid="5_14_1_2_4", describe_end="ch016_new_shuf_bn_see_arg_F") .set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_2_4-20210309_140134-flow_unet-ch016_new_shuf_bn_see_arg_F")
-ch008_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch008, G_mae_loss_info, exp_dir=new_shuffle_ch_but_wrong_see_arg_dir, describe_mid="5_14_1_2_5", describe_end="ch008_new_shuf_bn_see_arg_F") .set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_2_5-20210309_061533-flow_unet-ch008_new_shuf_bn_see_arg_F")  ### 127.28
+ch128_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch128, G_mae_loss_info, exp_dir=new_shuffle_ch_but_wrong_see_arg_dir, describe_mid="5_14_1_2_1", describe_end="ch128_new_shuf_bn_see_arg_F") .set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_2_1-20210310_230448-flow_unet-ch128_new_shuf_bn_see_arg_F")
+ch032_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=new_shuffle_ch_but_wrong_see_arg_dir, describe_mid="5_14_1_2_3", describe_end="ch032_new_shuf_bn_see_arg_F") .set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_2_3-20210309_214404-flow_unet-ch032_new_shuf_bn_see_arg_F")
+ch016_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch016, G_mae_loss_info, exp_dir=new_shuffle_ch_but_wrong_see_arg_dir, describe_mid="5_14_1_2_4", describe_end="ch016_new_shuf_bn_see_arg_F") .set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_2_4-20210309_140134-flow_unet-ch016_new_shuf_bn_see_arg_F")
+ch008_new_shuf_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch008, G_mae_loss_info, exp_dir=new_shuffle_ch_but_wrong_see_arg_dir, describe_mid="5_14_1_2_5", describe_end="ch008_new_shuf_bn_see_arg_F") .set_train_args(epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_2_5-20210309_061533-flow_unet-ch008_new_shuf_bn_see_arg_F")  ### 127.28
 ### 如何用 bn 模擬 in 就是在 testing 時 training 仍要設 True， 而這剛好就是我舊的 old shuffle 的寫法(當時還不會設bn 剛好 default 就為 True XD) 所以就從 old shuffle 裡 copy 出 ckpt, log, ... 當作假的 new shuffle 囉！
-ch128_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch128, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_2_1", describe_end="ch128_new_shuf_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_2_1-20210304_082556f-flow_unet-ch128_new_shuf_bn_see_arg_T")
-ch032_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_2_3", describe_end="ch032_new_shuf_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_2_3-20210302_234709f-flow_unet-ch032_new_shuf_bn_see_arg_T")
-ch016_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch016, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_2_4", describe_end="ch016_new_shuf_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_2_4-20210303_083630f-flow_unet-ch016_new_shuf_bn_see_arg_T")
-ch008_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch008, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_2_5", describe_end="ch008_new_shuf_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_2_5-20210303_161150f-flow_unet-ch008_new_shuf_bn_see_arg_T")  ### 127.28
+ch128_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch128, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_2_1", describe_end="ch128_new_shuf_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_2_1-20210304_082556f-flow_unet-ch128_new_shuf_bn_see_arg_T")
+ch032_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_2_3", describe_end="ch032_new_shuf_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_2_3-20210302_234709f-flow_unet-ch032_new_shuf_bn_see_arg_T")
+ch016_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch016, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_2_4", describe_end="ch016_new_shuf_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_2_4-20210303_083630f-flow_unet-ch016_new_shuf_bn_see_arg_T")
+ch008_new_shuf_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch008, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_2_5", describe_end="ch008_new_shuf_bn_see_arg_T") .set_train_args(epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_2_5-20210303_161150f-flow_unet-ch008_new_shuf_bn_see_arg_T")  ### 127.28
 
 
 ### 3.epoch=500, hid_ch=64, 測bn, call沒設定training=True/False
-ch64_bn04_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn04_bn_see_arg_F") .set_train_args(batch_size= 4, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_102528f-flow_unet-ch64_bn04_bn_see_arg_F")   ### 已經是new_shuf
-ch64_bn04_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn04_bn_see_arg_T") .set_train_args(batch_size= 4, epochs=500, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn04_bn_see_arg_T")   ### 已經是new_shuf
-ch64_bn08_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn08_bn_see_arg_F") .set_train_args(batch_size= 8, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_232248f-flow_unet-ch64_bn08_bn_see_arg_F")   ### 已經是new_shuf
-ch64_bn08_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn08_bn_see_arg_T") .set_train_args(batch_size= 8, epochs=500, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn08_bn_see_arg_T")   ### 已經是new_shuf
+ch64_bn04_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn04_bn_see_arg_F") .set_train_args(batch_size= 4, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_102528f-flow_unet-ch64_bn04_bn_see_arg_F")   ### 已經是new_shuf
+ch64_bn04_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn04_bn_see_arg_T") .set_train_args(batch_size= 4, epochs=500, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_102528-flow_unet-ch64_bn04_bn_see_arg_T")   ### 已經是new_shuf
+ch64_bn08_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn08_bn_see_arg_F") .set_train_args(batch_size= 8, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_232248f-flow_unet-ch64_bn08_bn_see_arg_F")   ### 已經是new_shuf
+ch64_bn08_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3a_3", describe_end="ch64_bn08_bn_see_arg_T") .set_train_args(batch_size= 8, epochs=500, exp_bn_see_arg=True) .set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3a_3-20210304_232248-flow_unet-ch64_bn08_bn_see_arg_T")   ### 已經是new_shuf
 ### bn=16在127.28已超出記憶體
 
 ### 3.把hid_ch 變小，bn可以多一點點
 ### epoch=500, hid_ch=32, 測bn, call沒設定training=True/False
-ch32_bn04_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_2", describe_end="ch32_bn04_bn_see_arg_T") .set_train_args(batch_size= 4, epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3b_2-20210306_111439-flow_unet-ch32_bn04_bn_see_arg_T")  ### 已經是new_shuf
-ch32_bn08_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_3", describe_end="ch32_bn08_bn_see_arg_T") .set_train_args(batch_size= 8, epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3b_3-20210306_171735-flow_unet-ch32_bn08_bn_see_arg_T")  ### 已經是new_shuf
-ch32_bn16_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_4", describe_end="ch32_bn16_bn_see_arg_T") .set_train_args(batch_size=16, epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3b_4-20210306_231628-flow_unet-ch32_bn16_bn_see_arg_T")  ### 已經是new_shuf
+ch32_bn04_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_2", describe_end="ch32_bn04_bn_see_arg_T") .set_train_args(batch_size= 4, epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3b_2-20210306_111439-flow_unet-ch32_bn04_bn_see_arg_T")  ### 已經是new_shuf
+ch32_bn08_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_3", describe_end="ch32_bn08_bn_see_arg_T") .set_train_args(batch_size= 8, epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3b_3-20210306_171735-flow_unet-ch32_bn08_bn_see_arg_T")  ### 已經是new_shuf
+ch32_bn16_bn_see_arg_T = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_4", describe_end="ch32_bn16_bn_see_arg_T") .set_train_args(batch_size=16, epochs=500, exp_bn_see_arg=True).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3b_4-20210306_231628-flow_unet-ch32_bn16_bn_see_arg_T")  ### 已經是new_shuf
 ### bn=32在127.28也超出記憶體
 
 ### 3.epoch=500, hid_ch=32, 測bn, call沒設定training=True/False
-ch32_bn04_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_2", describe_end="ch32_bn04_bn_see_arg_F") .set_train_args(batch_size= 4, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3b_2-20210308_101945-flow_unet-ch32_bn04_bn_see_arg_F")  ### 已經是new_shuf
-ch32_bn08_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_3", describe_end="ch32_bn08_bn_see_arg_F") .set_train_args(batch_size= 8, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3b_3-20210308_163036-flow_unet-ch32_bn08_bn_see_arg_F")  ### 已經是new_shuf
-ch32_bn16_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_4", describe_end="ch32_bn16_bn_see_arg_F") .set_train_args(batch_size=16, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_3b_4-20210308_223123-flow_unet-ch32_bn16_bn_see_arg_F")  ### 已經是new_shuf
+ch32_bn04_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_2", describe_end="ch32_bn04_bn_see_arg_F") .set_train_args(batch_size= 4, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3b_2-20210308_101945-flow_unet-ch32_bn04_bn_see_arg_F")  ### 已經是new_shuf
+ch32_bn08_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_3", describe_end="ch32_bn08_bn_see_arg_F") .set_train_args(batch_size= 8, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3b_3-20210308_163036-flow_unet-ch32_bn08_bn_see_arg_F")  ### 已經是new_shuf
+ch32_bn16_bn_see_arg_F = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch032, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_3b_4", describe_end="ch32_bn16_bn_see_arg_F") .set_train_args(batch_size=16, epochs=500, exp_bn_see_arg=False).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_3b_4-20210308_223123-flow_unet-ch32_bn16_bn_see_arg_F")  ### 已經是new_shuf
 #############################################################################################################################################################################################################
 ### 4. IN 效果如何
 ch64_in_epoch320 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_5b", describe_end="ch64_in_epoch320") .set_train_args(epochs=320, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="")
@@ -566,121 +667,127 @@ ch64_in_epoch480 = Exp_builder().set_basic("train", type8_blender_os_book_768, f
 ch64_in_epoch500 = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_5b", describe_end="ch64_in_epoch500") .set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_4_5b-20210309_135755-flow_unet-ch64_in_epoch500")
 ch64_in_epoch700 = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_4_6b", describe_end="ch64_in_epoch700") .set_train_args(epochs=700, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_4_6b-20210310_012428-flow_unet-ch64_in_epoch700")
 
+
 #############################################################################################################################################################################################################
 ### 5.測試 concate 用 Activation 後的 feature map 來 concat, 且 unet 本身已用 IN 的 UNet 沒有設定 training=True/False問題
-ch64_in_concat_A = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch64_in_concat_A, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_5_1", describe_end="ch64_in_concat_A") .set_train_args(epochs=500, exp_bn_see_arg=None).build(result_name="type8_blender_os_book-5_14_1_5_1-20210329_212042-flow_unet-ch64_in_concat_A")
+ch64_in_concat_A = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch64_in_concat_A, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_5_1", describe_end="ch64_in_concat_A") .set_train_args(epochs=500, exp_bn_see_arg=None).set_result_name(result_name="type8_blender_os_book-5_14_1_5_1-20210329_212042-flow_unet-ch64_in_concat_A")
 
 ### 6.測試 UNet 用 2~7 層的效果，且 unet 本身已用 IN 的 UNet 沒有設定 training=True/False問題
-unet_2l = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_2_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_2l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_6_1-20210330_230045-flow_unet-unet_2l")
-unet_3l = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_3_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_3l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_140947-flow_unet-unet_3l")
-unet_4l = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_4_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_4l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_175806-flow_unet-unet_4l")
-unet_5l = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_5_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_5l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_6_1-20210331_221927-flow_unet-unet_5l")
-unet_6l = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_6_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_6l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_031859-flow_unet-unet_6l")
-unet_7l = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_7_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_7l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_6_1-20210401_124509-flow_unet-unet_7l")
-unet_8l = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_8_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_8l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_6_1-20210402_020604-flow_unet-unet_8l")
+unet_2l = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_2_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_2l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_6_1-20210330_230045-flow_unet-unet_2l")
+unet_3l = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_3_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_3l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_6_1-20210331_140947-flow_unet-unet_3l")
+unet_4l = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_4_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_4l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_6_1-20210331_175806-flow_unet-unet_4l")
+unet_5l = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_5_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_5l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_6_1-20210331_221927-flow_unet-unet_5l")
+unet_6l = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_6_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_6l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_6_1-20210401_031859-flow_unet-unet_6l")
+unet_7l = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_7_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_7l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_6_1-20210401_124509-flow_unet-unet_7l")
+unet_8l = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_8_level, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_6_1", describe_end="unet_8l") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_6_1-20210402_020604-flow_unet-unet_8l")
 
 ### 7. 在skip connect 上做些手腳看看
 ### 7a.看看 UNet 的 concat 改用 + 會有什麼影響
-unet_8l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_8_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_7", describe_end="unet_8l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7a_7-20210403_141018-flow_unet-unet_8l_skip_use_add")
-unet_7l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_7_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_6", describe_end="unet_7l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7a_6-20210401_115231-flow_unet-unet_7l_skip_use_add")
-unet_6l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_6_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_5", describe_end="unet_6l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7a_5-20210401_225248-flow_unet-unet_6l_skip_use_add")
-unet_5l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_5_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_4", describe_end="unet_5l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7a_4-20210402_023315-flow_unet-unet_5l_skip_use_add")
-unet_4l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_4_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_3", describe_end="unet_4l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7a_3-20210402_055832-flow_unet-unet_4l_skip_use_add")
-unet_3l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_3_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_2", describe_end="unet_3l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7a_2-20210402_090649-flow_unet-unet_3l_skip_use_add")
-unet_2l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_2_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_1", describe_end="unet_2l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7a_1-20210404_110035-flow_unet-unet_2l_skip_use_add")
+unet_8l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_8_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_7", describe_end="unet_8l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7a_7-20210403_141018-flow_unet-unet_8l_skip_use_add")
+unet_7l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_7_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_6", describe_end="unet_7l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7a_6-20210401_115231-flow_unet-unet_7l_skip_use_add")
+unet_6l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_6_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_5", describe_end="unet_6l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7a_5-20210401_225248-flow_unet-unet_6l_skip_use_add")
+unet_5l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_5_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_4", describe_end="unet_5l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7a_4-20210402_023315-flow_unet-unet_5l_skip_use_add")
+unet_4l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_4_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_3", describe_end="unet_4l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7a_3-20210402_055832-flow_unet-unet_4l_skip_use_add")
+unet_3l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_3_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_2", describe_end="unet_3l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7a_2-20210402_090649-flow_unet-unet_3l_skip_use_add")
+unet_2l_skip_use_add = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_2_level_skip_use_add, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7a_1", describe_end="unet_2l_skip_use_add") .set_train_args(epochs=200, epoch_down_step=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7a_1-20210404_110035-flow_unet-unet_2l_skip_use_add")
 
 ### 7b.看看 UNet 的 concat 第一個開始 不要concat 看看效果如何
-unet_IN_7l_2to2noC      = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to2noC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_2", describe_end="unet_IN_7l_2to2noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7b_2-20210507_120926-flow_unet-unet_IN_7l_2to2noC")
-unet_IN_7l_2to2noC_ch32 = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch32_2to2noC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_2", describe_end="unet_IN_7l_2to2noC_ch32") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7b_2-20210428_213215-flow_unet-unet_IN_7l_2to2noC_ch32")
-unet_IN_7l_2to3noC      = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to3noC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_3", describe_end="unet_IN_7l_2to3noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7b_3-20210428_212431-flow_unet-unet_IN_7l_2to3noC")
-unet_IN_7l_2to4noC      = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to4noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_4", describe_end="unet_IN_7l_2to4noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7b_4-20210430_100832-flow_unet-unet_IN_7l_2to4noC")
-unet_IN_7l_2to5noC      = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to5noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_5", describe_end="unet_IN_7l_2to5noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7b_5-20210430_212045-flow_unet-unet_IN_7l_2to5noC")
-unet_IN_7l_2to6noC      = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to6noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_6", describe_end="unet_IN_7l_2to6noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7b_6-20210501_080747-flow_unet-unet_IN_7l_2to6noC")
-unet_IN_7l_2to7noC      = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to7noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_7", describe_end="unet_IN_7l_2to7noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7b_7-20210430_100856-flow_unet-unet_IN_7l_2to7noC")
-unet_IN_7l_2to8noC      = Exp_builder().set_com("127.35").set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to8noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_8", describe_end="unet_IN_7l_2to8noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7b_8-20210430_214900-flow_unet-unet_IN_7l_2to8noC")
+unet_IN_7l_2to2noC      = Exp_builder().set_com("127.28").set_basic("test", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to2noC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_2", describe_end="unet_IN_7l_2to2noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7b_2-20210507_120926-flow_unet-unet_IN_7l_2to2noC")
+unet_IN_7l_2to2noC_ch32 = Exp_builder().set_com("127.35").set_basic("test", type8_blender_os_book_768, flow_unet_IN_7l_ch32_2to2noC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_2", describe_end="unet_IN_7l_2to2noC_ch32") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7b_2-20210428_213215-flow_unet-unet_IN_7l_2to2noC_ch32")
+unet_IN_7l_2to3noC      = Exp_builder().set_com("127.35").set_basic("test", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to3noC, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_3", describe_end="unet_IN_7l_2to3noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7b_3-20210428_212431-flow_unet-unet_IN_7l_2to3noC")
+unet_IN_7l_2to4noC      = Exp_builder().set_com("127.28").set_basic("test", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to4noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_4", describe_end="unet_IN_7l_2to4noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7b_4-20210430_100832-flow_unet-unet_IN_7l_2to4noC")
+unet_IN_7l_2to5noC      = Exp_builder().set_com("127.28").set_basic("test", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to5noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_5", describe_end="unet_IN_7l_2to5noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7b_5-20210430_212045-flow_unet-unet_IN_7l_2to5noC")
+unet_IN_7l_2to6noC      = Exp_builder().set_com("127.28").set_basic("test", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to6noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_6", describe_end="unet_IN_7l_2to6noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7b_6-20210501_080747-flow_unet-unet_IN_7l_2to6noC")
+unet_IN_7l_2to7noC      = Exp_builder().set_com("127.35").set_basic("test", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to7noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_7", describe_end="unet_IN_7l_2to7noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7b_7-20210430_100856-flow_unet-unet_IN_7l_2to7noC")
+unet_IN_7l_2to8noC      = Exp_builder().set_com("127.35").set_basic("test", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to8noC,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7b_8", describe_end="unet_IN_7l_2to8noC") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7b_8-20210430_214900-flow_unet-unet_IN_7l_2to8noC")
 
 ### 7c.學 印度方法 看看skip connection 中間加 cnn 的效果
-unet_IN_7l_skip_use_cnn1_NO_relu    = Exp_builder().set_com("127.35").set_basic("ok   ", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu   ,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_1", describe_end="unet_IN_7l_skip_use_cnn1_NO_relu")    .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7c_1-20210503_214221-flow_unet-unet_IN_7l_skip_use_cnn1_NO_relu")
-unet_IN_7l_skip_use_cnn1_USErelu    = Exp_builder().set_com("127.28").set_basic("ok   ", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu   ,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_2", describe_end="unet_IN_7l_skip_use_cnn1_USErelu")    .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7c_2-20210503_214711-flow_unet-unet_IN_7l_skip_use_cnn1_USErelu")
-unet_IN_7l_skip_use_cnn1_USEsigmoid = Exp_builder().set_com("127.28").set_basic("train_reload", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_2", describe_end="unet_IN_7l_skip_use_cnn1_USEsigmoid") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7c_2-20210506_110742-flow_unet-unet_IN_7l_skip_use_cnn1_USErelu")
-unet_IN_7l_skip_use_cnn3_USErelu    = Exp_builder().set_com("127.28").set_basic("ok   ", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu   ,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_3", describe_end="unet_IN_7l_skip_use_cnn3_USErelu") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7c_3-20210504_120839-flow_unet-unet_IN_7l_skip_use_cnn3_USErelu")
-unet_IN_7l_skip_use_cnn3_USEsigmoid = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn3_USEsigmoid,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_3", describe_end="unet_IN_7l_skip_use_cnn3_USEsigmoid") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_7c_3-20210505_120542-flow_unet-unet_IN_7l_skip_use_cnn3_USEsigmoid")
-
+unet_IN_7l_skip_use_cnn1_NO_relu    = Exp_builder().set_com("127.35").set_basic("ok   ", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu   ,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_1", describe_end="unet_IN_7l_skip_use_cnn1_NO_relu")    .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7c_1-20210503_214221-flow_unet-unet_IN_7l_skip_use_cnn1_NO_relu")
+unet_IN_7l_skip_use_cnn1_USErelu    = Exp_builder().set_com("127.28").set_basic("ok   ", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu   ,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_2", describe_end="unet_IN_7l_skip_use_cnn1_USErelu")    .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7c_2-20210503_214711-flow_unet-unet_IN_7l_skip_use_cnn1_USErelu")
+unet_IN_7l_skip_use_cnn1_USEsigmoid = Exp_builder().set_com("壞掉待t").set_basic("GG   ", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_2", describe_end="unet_IN_7l_skip_use_cnn1_USEsigmoid") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+unet_IN_7l_skip_use_cnn3_USErelu    = Exp_builder().set_com("127.28").set_basic("ok   ", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu   ,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_3", describe_end="unet_IN_7l_skip_use_cnn3_USErelu") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7c_3-20210504_120839-flow_unet-unet_IN_7l_skip_use_cnn3_USErelu")
+unet_IN_7l_skip_use_cnn3_USEsigmoid = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn3_USEsigmoid,  G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_7c_3", describe_end="unet_IN_7l_skip_use_cnn3_USEsigmoid") .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7c_3-20210505_120542-flow_unet-unet_IN_7l_skip_use_cnn3_USEsigmoid")
 
 
 ### 8.測試 UNet 用 output 用 sigmoid 的效果
-t1_in_01_mo_th_gt_01_mse = Exp_builder().set_basic("train_reload",     type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_1-20210423_065645-flow_unet-t1_01_th_01_mse")
-t2_in_01_mo_01_gt_01_mse = Exp_builder().set_basic("board_rebuild",     type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_2", describe_end="t2_01_01_01_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_2-20210422_155205-flow_unet-t2_01_01_01_mse")
-t3_in_01_mo_th_gt_th_mse = Exp_builder().set_basic("train",     type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_3", describe_end="t3_01_th_th_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_3-20210423_041650-flow_unet-t3_01_th_th_mse")
-t4_in_01_mo_01_gt_th_mse = Exp_builder().set_basic("不想train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_4", describe_end="t4_01_01_th_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="")
-t5_in_th_mo_th_gt_01_mse = Exp_builder().set_basic("train",     type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_5", describe_end="t5_th_th_01_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_5-20210423_233840-flow_unet-t5_th_th_01_mse")
-t6_in_th_mo_01_gt_01_mse = Exp_builder().set_basic("train",     type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_6", describe_end="t6_th_01_01_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1"). build(result_name="type8_blender_os_book-5_14_1_8_6-20210424_120109-flow_unet-t6_th_01_01_mse")
-t7_in_th_mo_th_gt_th_mse = Exp_builder().set_basic("board_rebuild",     type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_7", describe_end="t7_th_th_th_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_7-20210422_160842-flow_unet-t7_th_th_th_mse")
-t8_in_th_mo_01_gt_th_mse = Exp_builder().set_basic("不想train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_8", describe_end="t8_th_01_th_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="")
+t1_in_01_mo_th_gt_01_mse = Exp_builder().set_basic("train_reload",     type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_1-20210423_065645-flow_unet-t1_01_th_01_mse")
+t2_in_01_mo_01_gt_01_mse = Exp_builder().set_basic("board_rebuild",     type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_2", describe_end="t2_01_01_01_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_2-20210422_155205-flow_unet-t2_01_01_01_mse")
+t3_in_01_mo_th_gt_th_mse = Exp_builder().set_basic("train",     type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_3", describe_end="t3_01_th_th_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_3-20210423_041650-flow_unet-t3_01_th_th_mse")
+t4_in_01_mo_01_gt_th_mse = Exp_builder().set_basic("不想train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_4", describe_end="t4_01_01_th_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").set_result_name(result_name="")
+t5_in_th_mo_th_gt_01_mse = Exp_builder().set_basic("train",     type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_5", describe_end="t5_th_th_01_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_5-20210423_233840-flow_unet-t5_th_th_01_mse")
+t6_in_th_mo_01_gt_01_mse = Exp_builder().set_basic("train",     type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_6", describe_end="t6_th_01_01_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1"). set_result_name(result_name="type8_blender_os_book-5_14_1_8_6-20210424_120109-flow_unet-t6_th_01_01_mse")
+t7_in_th_mo_th_gt_th_mse = Exp_builder().set_basic("board_rebuild",     type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_7", describe_end="t7_th_th_th_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_7-20210422_160842-flow_unet-t7_th_th_th_mse")
+t8_in_th_mo_01_gt_th_mse = Exp_builder().set_basic("不想train", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mse_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_8", describe_end="t8_th_01_th_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_result_name(result_name="")
 
-t1_in_01_mo_th_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_1-20210309_135755f-flow_unet-t1_01_th_01_mae")
-t2_in_01_mo_01_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_2", describe_end="t2_01_01_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_2-20210419_165424-flow_unet-t2_01_01_01_mae")
-t3_in_01_mo_th_gt_th_mae = Exp_builder().set_basic("train",         type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_3", describe_end="t3_01_th_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_3-20210420_051408-flow_unet-t3_01_th_th_mae")
-t4_in_01_mo_01_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_4", describe_end="t4_01_01_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_4-20210420_232234-flow_unet-t4_01_01_th_mae")
-t5_in_th_mo_th_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_5", describe_end="t5_th_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_14_1_8_5-20210420_173615-flow_unet-t5_th_th_01_mae")
-t6_in_th_mo_01_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_6", describe_end="t6_th_01_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1"). build(result_name="type8_blender_os_book-5_14_1_8_6-20210421_055934-flow_unet-t6_th_01_01_mae")
-t7_in_th_mo_th_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_7", describe_end="t7_th_th_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_7-20210421_181950-flow_unet-t7_th_th_th_mae")
-t8_in_th_mo_01_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_8", describe_end="t8_th_01_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").build(result_name="type8_blender_os_book-5_14_1_8_8-20210421_142854-flow_unet-t8_th_01_th_mae")
+t1_in_01_mo_th_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_1-20210309_135755f-flow_unet-t1_01_th_01_mae")
+t2_in_01_mo_01_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_2", describe_end="t2_01_01_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_2-20210419_165424-flow_unet-t2_01_01_01_mae")
+t3_in_01_mo_th_gt_th_mae = Exp_builder().set_basic("train",         type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_3", describe_end="t3_01_th_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_3-20210420_051408-flow_unet-t3_01_th_th_mae")
+t4_in_01_mo_01_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_4", describe_end="t4_01_01_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="-1~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_4-20210420_232234-flow_unet-t4_01_01_th_mae")
+t5_in_th_mo_th_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_5", describe_end="t5_th_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_5-20210420_173615-flow_unet-t5_th_th_01_mae")
+t6_in_th_mo_01_gt_01_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_6", describe_end="t6_th_01_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="0~1"). set_result_name(result_name="type8_blender_os_book-5_14_1_8_6-20210421_055934-flow_unet-t6_th_01_01_mae")
+t7_in_th_mo_th_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_7", describe_end="t7_th_th_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_7-20210421_181950-flow_unet-t7_th_th_th_mae")
+t8_in_th_mo_01_gt_th_mae = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_IN_ch64_sigmoid, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_8", describe_end="t8_th_01_th_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_8-20210421_142854-flow_unet-t8_th_01_th_mae")
 
-### 測試 怎麼樣設定 multiprocess 才較快
-testest = Exp_builder().set_basic("ok", type8_blender_os_book_768, flow_unet_IN_ch64        , G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mae") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-testest")
 #############################################################################################################################################################################################################
 ########################################################### 15
 exp_dir15 = "5_15_flow_rect"
-rect_fk3_ch64_tfIN_resb_ok9_epoch500  = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch500"        ).set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_15_1-20210327_162414-flow_rect_fk3_ch64_tfIN_resb_ok9-epoch500_okok")
-rect_7_level_fk7 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk7, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5_15_2", describe_end="epoch700ND").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5_15_2-20210330_140254-flow_rect_7_level-7l_fk7")
+rect_fk3_ch64_tfIN_resb_ok9_epoch500  = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_fk3_ch64_tfIN_resb_ok9, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5_15_1", describe_end="epoch500"        ).set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_15_1-20210327_162414-flow_rect_fk3_ch64_tfIN_resb_ok9-epoch500_okok")
+rect_7_level_fk7 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk7, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5_15_2", describe_end="epoch700ND").set_train_args(epochs=700, epoch_down_step=700, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_15_2-20210330_140254-flow_rect_7_level-7l_fk7")
 
-rect_2_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_2_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="2l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210330_211817-flow_rect-2l_fk3_35to28")
-rect_3_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_3_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="3l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210331_015433-flow_rect-3l_fk3")
-rect_4_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_4_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="4l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210331_033121-flow_rect-4l_fk3")
-rect_5_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_5_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="5l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210331_043804-flow_rect-5l_fk3")
-rect_6_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_6_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="6l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210331_053654-flow_rect-6l_fk3")
-rect_7_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_7_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="7l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210331_063414-flow_rect-7l_fk3")
+rect_2_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_2_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="2l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210330_211817-flow_rect-2l_fk3_35to28")
+rect_3_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_3_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="3l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210331_015433-flow_rect-3l_fk3")
+rect_4_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_4_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="4l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210331_033121-flow_rect-4l_fk3")
+rect_5_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_5_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="5l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210331_043804-flow_rect-5l_fk3")
+rect_6_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_6_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="6l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210331_053654-flow_rect-6l_fk3")
+rect_7_level_fk3 = Exp_builder().set_basic("train_reload", type8_blender_os_book_768, flow_rect_7_level_fk3, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="7l_fk3").set_train_args(epochs=30, epoch_down_step=30, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210331_063414-flow_rect-7l_fk3")
 
-rect_2_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_2_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="2l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210402_114147-flow_rect-2l_fk3_ReLU")
-rect_3_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_3_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="3l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210402_144837-flow_rect-3l_fk3_ReLU")
-rect_4_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_4_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="4l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210402_200821-flow_rect-4l_fk3_ReLU")
-rect_5_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_5_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="5l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210402_214520-flow_rect-5l_fk3_ReLU")
-rect_6_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_6_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="6l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210402_231047-flow_rect-6l_fk3_ReLU")
-rect_7_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="7l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").build(result_name="type8_blender_os_book-5-20210403_003408-flow_rect-7l_fk3_ReLU")
+rect_2_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_2_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="2l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210402_114147-flow_rect-2l_fk3_ReLU")
+rect_3_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_3_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="3l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210402_144837-flow_rect-3l_fk3_ReLU")
+rect_4_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_4_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="4l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210402_200821-flow_rect-4l_fk3_ReLU")
+rect_5_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_5_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="5l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210402_214520-flow_rect-5l_fk3_ReLU")
+rect_6_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_6_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="6l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210402_231047-flow_rect-6l_fk3_ReLU")
+rect_7_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_rect_7_level_fk3_ReLU, G_mae_loss_info, exp_dir=exp_dir15, describe_mid="5", describe_end="7l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210403_003408-flow_rect-7l_fk3_ReLU")
 
 
 
 ### 測試subprocessing 有沒有用
-# blender_os_book_flow_unet_epoch002 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch2, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch002") .set_train_args(batch_size=30, epochs=1).build(result_name="")
-# blender_os_book_flow_unet_epoch003 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch3, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch003") .set_train_args(epochs=3).build(result_name="")
-# blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).build(result_name="")
+# blender_os_book_flow_unet_epoch002 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch2, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch002") .set_train_args(batch_size=30, epochs=1).set_result_name(result_name="")
+# blender_os_book_flow_unet_epoch003 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch3, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch003") .set_train_args(epochs=3).set_result_name(result_name="")
+# blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).set_result_name(result_name="")
+
+### 測試 怎麼樣設定 multiprocess 才較快
+testest = Exp_builder().set_basic("test", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info, exp_dir=exp_dir14, describe_mid="", describe_end="testest_copy_from_ch64_in_epoch500") .set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-testest_copy_from_ch64_in_epoch500")
+
+
+
 
 import sys
 if(__name__ == "__main__"):
+    print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        # blender_os_book_flow_unet_new_shuf_ch008_fake.run()
-        # rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()
-        # rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.run()
-        # concat_A.run()
-        # flow_rect_7_level_fk7.run()
-        # flow_rect_7_level_fk3.run()
-        # flow_rect_2_level_fk3.run()
-        # unet_2l.run()
-        # unet_7l.run()
-        # unet_7l_skip_use_add.run()
-        # unet_8l.run()
-        # rect_2_level_fk3_ReLU.run()
-        # ch64_in_epoch500_sigmoid.run()
-        # in_th_mo_th_gt_th.run()
-        # t3_in_01_mo_th_gt_th_mae.run()
-        # unet_IN_7l_2to4noC.run()
-        # unet_IN_7l_skip_use_cnn1_NO_relu.run()
-        unet_IN_7l_skip_use_cnn1_USEsigmoid.run()
+        # blender_os_book_flow_unet_new_shuf_ch008_fake.build().run()
+        # rect_fk3_ch64_tfIN_resb_ok9_epoch500.build().run()
+        # rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.build().run()
+        # concat_A.build().run()
+        # flow_rect_7_level_fk7.build().run()
+        # flow_rect_7_level_fk3.build().run()
+        # flow_rect_2_level_fk3.build().run()
+        # unet_2l.build().run()
+        # unet_7l.build().run()
+        # unet_7l_skip_use_add.build().run()
+        # unet_8l.build().run()
+        # rect_2_level_fk3_ReLU.build().run()
+        # ch64_in_epoch500_sigmoid.build().run()
+        # in_th_mo_th_gt_th.build().run()
+        # t3_in_01_mo_th_gt_th_mae.build().run()
+        # unet_IN_7l_2to4noC.build().run()
+        # unet_IN_7l_skip_use_cnn1_NO_relu.build().run()
+        # unet_IN_7l_skip_use_cnn1_USEsigmoid.build().run()
+        # testest.build().run()
         # print('no argument')
         sys.exit()
 
-    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_a_load_and_train_and_test.py 某個exp.run()
+    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_a_load_and_train_and_test.py 某個exp.build().run()
     eval(sys.argv[1])

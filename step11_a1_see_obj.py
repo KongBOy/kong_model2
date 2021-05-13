@@ -192,7 +192,7 @@ class See_bm_rec(See_info):
         flow      = np.load(self.see_dir + "/" + self.see_npz_names[epoch + 1])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         # gt_flow[..., 1] = 1 - gt_flow[..., 1]
         flow   [..., 1] = 1 - flow[..., 1]
-        
+
         # print("2. see gt_use_range=", self.gt_use_range)
         if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
 
@@ -253,7 +253,7 @@ class See_bm_rec(See_info):
     ###############################################################################################
     def _draw_matplot_bm_rec_visual_after_train(self, start_img, img_amount, add_loss, bgr2rgb):
         for go_img in tqdm(range(start_img, start_img + img_amount)):
-            if(go_img >= 3):        ### 第四張 才開始存 epoch影像喔！相當於epoch1才開始存，因為epoch0太差了沒寫防呆會出錯，目前乾脆先直接跳過有空再寫防呆。
+            if(go_img >= 2):        ### 已經有用msdk寫防呆了，所以可以從 第三張開始做囉！
                 current_epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
                 single_row_imgs = self._Draw_matplot_bm_rec_visual(current_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
                 single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！

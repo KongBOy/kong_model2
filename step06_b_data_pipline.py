@@ -379,6 +379,7 @@ class tf_Data:   ### 以上 以下 都是為了設定這個物件
         self.test_in_db_pre   = None
         self.test_gt_db       = None
         self.test_gt_db_pre   = None
+        self.test_db_combine = None
         self.test_amount      = None
 
         self.see_in_db        = None
@@ -424,6 +425,7 @@ class tf_Data_init_builder:
         return self
 
     def build(self):
+        # print("build tf_data finish")
         return self.tf_data
 
 class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
@@ -608,10 +610,14 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
         ### 先 zip 再 batch == 先 batch 再 zip (已經實驗過了，詳細內容看 try_lots 的 try10_資料pipline囉)
         self.tf_data.train_db_combine = tf.data.Dataset.zip((self.tf_data.train_in_db, self.tf_data.train_in_db_pre,
                                                              self.tf_data.train_gt_db, self.tf_data.train_gt_db_pre))
-        ### 先shuffle 在 batch
-        if(self.tf_data.train_shuffle):
-            self.tf_data.train_db_combine = self.tf_data.train_db_combine.shuffle(int(self.tf_data.train_amount / 2))  ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
+        self.tf_data.test_db_combine  = tf.data.Dataset.zip((self.tf_data.test_in_db, self.tf_data.test_in_db_pre,
+                                                             self.tf_data.test_gt_db, self.tf_data.test_gt_db_pre))
+        ### 先shuffle(只有 train_db 需要) 在 batch
+        if(self.tf_data.train_shuffle): self.tf_data.train_db_combine = self.tf_data.train_db_combine.shuffle(int(self.tf_data.train_amount / 2))  ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
         self.tf_data.train_db_combine = self.tf_data.train_db_combine.batch(self.tf_data.batch_size)   ### shuffle完 打包成一包包 batch
+        self.tf_data.test_db_combine  = self.tf_data.test_db_combine.batch(self.tf_data.batch_size)   ### shuffle完 打包成一包包 batch
+
+
 
         # print('self.tf_data.train_in_db',self.tf_data.train_in_db)
         # print('self.tf_data.train_in_db_pre',self.tf_data.train_in_db_pre)
