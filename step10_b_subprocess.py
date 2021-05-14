@@ -7,6 +7,13 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 run = "build().run()"
 compress_all = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 compress_1   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_2   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=1, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_3   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=2, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_4   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=3, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_8   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=4, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_9   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=5, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_10  = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=6, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+
 compress_2te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=1, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 compress_3te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=2, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 compress_4te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=3, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
@@ -14,7 +21,7 @@ compress_8te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(
 compress_9te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=5, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=6, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 
-# sb.run(same_command + [f"test2.{compress_1}"])
+sb.run(same_command + [f"test2.{compress_8}"])
 
 # ### hid_ch=64, 來測試 epoch系列 ##############################
 # sb.run(same_command + [f"epoch050_bn_see_arg_T.{run}"])
