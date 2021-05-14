@@ -73,15 +73,18 @@ sb.run(same_command + [f"test2.{compress_8}"])
 # sb.run(same_command + [f"ch32_bn16_bn_see_arg_F.{run}"])
 
 
-# sb.run(same_command + [f"ch64_in_epoch320.{run}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch340.{run}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch360.{run}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch380.{run}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch400.{run}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch420.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch320.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch340.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch360.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch380.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch400.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch420.{compress_all}"])  ### 測試真的IN
+
 # sb.run(same_command + [f"ch64_in_epoch440.{run}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch460.{run}"])  ### 測試真的IN
+
 # sb.run(same_command + [f"ch64_in_epoch480.{compress_all}"])  ### 測試真的IN
+
 # sb.run(same_command + [f"ch64_in_epoch500.{run}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch700.{run}"])  ### 測試真的IN
 
