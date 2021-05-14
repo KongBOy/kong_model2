@@ -786,7 +786,7 @@ if(__name__ == "__main__"):
         # unet_IN_7l_2to4noC.build().run()
         # unet_IN_7l_skip_use_cnn1_NO_relu.build().run()
         # unet_IN_7l_skip_use_cnn1_USEsigmoid.build().run()
-        testest.build().run()
+        test1.build().run()
         # print('no argument')
         sys.exit()
 
