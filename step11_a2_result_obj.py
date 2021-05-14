@@ -80,7 +80,7 @@ class Result:
     def save_all_single_see_as_matplot_bm_rec_visual(self, start_index, amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
         result_start = time.time()
         print("result level: doing save_all_single_see_as_matplot_bm_rec_visual")
-        for see_num in tqdm(range(start_index, start_index + amount)):  ### 這裡寫 start_index + amount 是為了 multiprocess 的格式！
+        for see_num in range(start_index, start_index + amount):  ### 這裡寫 start_index + amount 是為了 multiprocess 的格式！
             self.save_single_see_as_matplot_bm_rec_visual(see_num, add_loss, bgr2rgb, single_see_multiprocess, print_msg=print_msg)
         print("result level: finish save_all_single_see_as_matplot_bm_rec_visual")
         print("result level: cost_time=", time.time() - result_start)
