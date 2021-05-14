@@ -194,19 +194,21 @@ class See_bm_rec(See_info):
         flow      [..., 1] = 1 - flow[..., 1]
         gt_flow   [..., 1] = 1 - gt_flow[..., 1]
 
+        # import matplotlib.pyplot as plt
+        # fig, ax = plt.subplots(nrows=1, ncols=4)
+        # print(gt_flow.min())
+        # print(gt_flow.max())
+        # ax[0].imshow(gt_flow[..., 0])
+        # ax[1].imshow(gt_flow[..., 1])
+        # ax[2].imshow(gt_flow_y_inv[..., 0])
+        # ax[3].imshow(gt_flow_y_inv[..., 1])
+        # plt.show()
         # print("2. see gt_use_range=", self.gt_use_range)
         if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
 
         # breakpoint()
 
-        # import matplotlib.pyplot as plt
-        # gt_valid_mask_pix_amount = (gt_flow[..., 0] >= 0.99).astype(np.int).sum()
-        # gt_total_pix_amount = gt_flow.shape[0] * flow.shape[1]
-        # print("gt_valid_mask_pix_amount", gt_valid_mask_pix_amount)
-        # print("gt_total_pix_amount", gt_total_pix_amount)
-        # print("gt_valid_mask_pix_amount / gt_total_pix_amount:", gt_valid_mask_pix_amount / gt_total_pix_amount)
-        # plt.imshow(gt_flow)
-        # plt.show()
+        ### predict flow part
         valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
         total_pix_amount = flow.shape[0] * flow.shape[1]
         # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
@@ -217,7 +219,16 @@ class See_bm_rec(See_info):
             bm  = np.zeros(shape=(768, 768, 2))
             rec = np.zeros(shape=(768, 768, 3))
 
-        if(gt_flow.sum() > 0):
+
+        # import matplotlib.pyplot as plt
+        # gt_valid_mask_pix_amount = (gt_flow[..., 0] >= 0.99).astype(np.int).sum()
+        # gt_total_pix_amount = gt_flow.shape[0] * flow.shape[1]
+        # print("gt_valid_mask_pix_amount", gt_valid_mask_pix_amount)
+        # print("gt_total_pix_amount", gt_total_pix_amount)
+        # print("gt_valid_mask_pix_amount / gt_total_pix_amount:", gt_valid_mask_pix_amount / gt_total_pix_amount)
+        # plt.imshow(gt_flow)
+        # plt.show()
+        if(gt_flow[..., 0].sum() > 0):
             gt_bm  = use_flow_to_get_bm(gt_flow, flow_scale=768)
             gt_rec = use_bm_to_rec_img(gt_bm, flow_scale=768, dis_img=in_img)
         else:
@@ -286,13 +297,15 @@ class See_bm_rec(See_info):
             ### 後處理讓結果更小 但 又不失視覺品質
             Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
-        else:  ### see內的任務 不切 multiprocess，和上面幾乎一樣，只差 call 沒 multiprocess 的 method 和 core_amount 指定1
-            self._draw_matplot_bm_rec_visual_after_train_multiprocess(add_loss, bgr2rgb, core_amount=10, task_amount=self.see_file_amount, print_msg=print_msg)  ### see內的任務 當單位來切，task_amount輸入self.see_file_amount是對的！不用-2變epoch喔！
-            # self._draw_matplot_bm_rec_visual_after_train(0, self.see_file_amount, add_loss, bgr2rgb)
+        else:
+            ### see內的任務 不切 multiprocess，和上面幾乎一樣，只差 call 沒 multiprocess 的 method 和 core_amount 指定1
+            self._draw_matplot_bm_rec_visual_after_train(0, self.see_file_amount, add_loss, bgr2rgb)
             ### 後處理讓結果更小 但 又不失視覺品質
             Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
-        Video_combine_from_dir(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
+        Video_combine_from_dir(self.see_dir, self.see_dir)                                         ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
+        Video_combine_from_dir(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir)     ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
+        Video_combine_from_dir(self.rec_visual_dir, self.rec_visual_dir)     ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         print("save_as_matplot_bm_rec_visual_after_train cost_time:", time.time() - start_time)
 
     def save_as_matplot_bm_rec_visual_after_train_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):   ### 訓練後，對"指定"epoch的 see結果 產生 matplot_bm_rec_visual
