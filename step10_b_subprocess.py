@@ -13,6 +13,9 @@ compress_4te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(
 compress_8te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=4, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 compress_9te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=5, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=6, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+
+# sb.run(same_command + [f"test2.{compress_1}"])
+
 # ### hid_ch=64, 來測試 epoch系列 ##############################
 # sb.run(same_command + [f"epoch050_bn_see_arg_T.{run}"])
 # sb.run(same_command + [f"epoch100_bn_see_arg_T.{run}"])
@@ -71,7 +74,7 @@ compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual
 # sb.run(same_command + [f"ch64_in_epoch420.{run}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch440.{run}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch460.{run}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch480.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch480.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch500.{run}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch700.{run}"])  ### 測試真的IN
 
