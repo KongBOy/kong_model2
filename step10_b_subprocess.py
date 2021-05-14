@@ -14,11 +14,11 @@ compress_8te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(
 compress_9te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=5, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=6, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
 # ### hid_ch=64, 來測試 epoch系列 ##############################
-# sb.run(same_command + ["epoch050_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch100_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch200_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch300_bn_see_arg_T.run()"])
-# sb.run(same_command + ["epoch700_bn_see_arg_T.run()"])
+# sb.run(same_command + [f"epoch050_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"epoch100_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"epoch200_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"epoch300_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"epoch700_bn_see_arg_T.{run}"])
 
 # sb.run(same_command + [f"ch128_bn_see_arg_T.{compress_all}"])
 # sb.run(same_command + [f"ch032_bn_see_arg_T.{compress_3te}"])
@@ -45,38 +45,38 @@ compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual
 # sb.run(same_command + [f"ch008_new_shuf_bn_see_arg_T.{compress_all}"])
 
 
-# sb.run(same_command + ["ch64_bn04_bn_see_arg_F.run()"])
-# sb.run(same_command + ["ch64_bn04_bn_see_arg_T.run()"])
-# sb.run(same_command + ["ch64_bn08_bn_see_arg_F.run()"])
-# sb.run(same_command + ["ch64_bn08_bn_see_arg_T.run()"])
+# sb.run(same_command + [f"ch64_bn04_bn_see_arg_F.{run}"])
+# sb.run(same_command + [f"ch64_bn04_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"ch64_bn08_bn_see_arg_F.{run}"])
+# sb.run(same_command + [f"ch64_bn08_bn_see_arg_T.{run}"])
 
 
-# sb.run(same_command + ["ch32_bn04_bn_see_arg_T.run()"])
-# sb.run(same_command + ["ch32_bn08_bn_see_arg_T.run()"])
-# sb.run(same_command + ["ch32_bn16_bn_see_arg_T.run()"])
-# ### sb.run(same_command + ["blender_os_book_flow_unet_ch32_bn32.run()"])  ### 失敗
-# ### sb.run(same_command + ["blender_os_book_flow_unet_ch32_bn64.run()"])  ### 失敗
+# sb.run(same_command + [f"ch32_bn04_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"ch32_bn08_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"ch32_bn16_bn_see_arg_T.{run}"])
+# ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn32.{run}"])  ### 失敗
+# ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn64.{run}"])  ### 失敗
 
 
-# sb.run(same_command + ["ch32_bn04_bn_see_arg_F.run()"])
-# sb.run(same_command + ["ch32_bn08_bn_see_arg_F.run()"])
-# sb.run(same_command + ["ch32_bn16_bn_see_arg_F.run()"])
+# sb.run(same_command + [f"ch32_bn04_bn_see_arg_F.{run}"])
+# sb.run(same_command + [f"ch32_bn08_bn_see_arg_F.{run}"])
+# sb.run(same_command + [f"ch32_bn16_bn_see_arg_F.{run}"])
 
 
-# sb.run(same_command + ["ch64_in_epoch320.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch340.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch360.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch380.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch400.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch420.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch440.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch460.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch480.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch500.run()"])  ### 測試真的IN
-# sb.run(same_command + ["ch64_in_epoch700.run()"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch320.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch340.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch360.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch380.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch400.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch420.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch440.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch460.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch480.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch500.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch700.{run}"])  ### 測試真的IN
 
 # ######################
-# sb.run(same_command + ["ch64_in_concat_A.run()"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + [f"ch64_in_concat_A.{run}"])  ### 看看Activation 完再concat的效果
 
 # sb.run(same_command + [f"unet_2l.{compress_all}"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + [f"unet_3l.{compress_all}"])  ### 看看Activation 完再concat的效果
@@ -129,28 +129,28 @@ compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual
 
 
 #############################################################################################
-# sb.run(same_command + ["unet_IN_7l_skip_use_cnn1_NO_relu.run()"])   ### 127.35
-# sb.run(same_command + ["unet_IN_7l_skip_use_cnn1_USErelu.run()"])   ### 127.28
-# sb.run(same_command + ["unet_IN_7l_skip_use_cnn3_USErelu.run()"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_NO_relu.{run}"])   ### 127.35
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USErelu.{run}"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USErelu.{run}"])   ### 127.28
 
-# sb.run(same_command + ["unet_IN_7l_skip_use_cnn1_USEsigmoid.run()"])   ### 127.35
-# sb.run(same_command + ["unet_IN_7l_skip_use_cnn3_USEsigmoid.run()"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USEsigmoid.{run}"])   ### 127.35
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USEsigmoid.{run}"])   ### 127.28
 
 
 #######################
-# sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch500.run()"])
-# sb.run(same_command + ["rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.run()"])
+# sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch500.{run}"])
+# sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.{run}"])
 
-# sb.run(same_command + ["rect_2_level_fk3.run()"])
-# sb.run(same_command + ["rect_3_level_fk3.run()"])
-# sb.run(same_command + ["rect_4_level_fk3.run()"])
-# sb.run(same_command + ["rect_5_level_fk3.run()"])
-# sb.run(same_command + ["rect_6_level_fk3.run()"])
-# sb.run(same_command + ["rect_7_level_fk3.run()"])
+# sb.run(same_command + [f"rect_2_level_fk3.{run}"])
+# sb.run(same_command + [f"rect_3_level_fk3.{run}"])
+# sb.run(same_command + [f"rect_4_level_fk3.{run}"])
+# sb.run(same_command + [f"rect_5_level_fk3.{run}"])
+# sb.run(same_command + [f"rect_6_level_fk3.{run}"])
+# sb.run(same_command + [f"rect_7_level_fk3.{run}"])
 
-# sb.run(same_command + ["rect_2_level_fk3_ReLU.run()"])  ### 127.28跑
-# sb.run(same_command + ["rect_3_level_fk3_ReLU.run()"])  ### 127.28跑
-# sb.run(same_command + ["rect_4_level_fk3_ReLU.run()"])  ### 127.28跑
-# sb.run(same_command + ["rect_5_level_fk3_ReLU.run()"])  ### 127.28跑
-# sb.run(same_command + ["rect_6_level_fk3_ReLU.run()"])  ### 127.28跑
-# sb.run(same_command + ["rect_7_level_fk3_ReLU.run()"])  ### 127.28跑
+# sb.run(same_command + [f"rect_2_level_fk3_ReLU.{run}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_3_level_fk3_ReLU.{run}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_4_level_fk3_ReLU.{run}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_5_level_fk3_ReLU.{run}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_6_level_fk3_ReLU.{run}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_7_level_fk3_ReLU.{run}"])  ### 127.28跑
