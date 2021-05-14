@@ -3,15 +3,12 @@ import sys
 sys.path.append("kong_util")
 
 ### 步驟一：中間畫線
-import os
-import cv2
-import numpy as np
 from build_dataset_combine import Page_num, Crop_use_center, Resize_hw, Select_lt_rt_ld_rd_train_test_see
 
 
 
 
-produce_curve_dir = data_access_path + "/datasets/cut_os_book/produce_curve/" 
+produce_curve_dir = data_access_path + "/datasets/cut_os_book/produce_curve/"
 
 step0_dir = produce_curve_dir + "0_os_photo/1_photoimpact_black_bg"
 step1_dir = produce_curve_dir + "1_page_num_ok"
@@ -44,7 +41,7 @@ Crop_use_center(step1_dir , step2_dir, center_xy_file=produce_curve_dir + "cente
 ### 原始版本(1532data)
 # Resize_hw(step2_dir, step3_dir ,width=332, height=500, method="cv2")
 # ### 這要和 straight的對應到喔！建議直接複製過去～然後這裡是"dis_imgs"喔！
-# Select_lt_rt_ld_rd_train_test_see( step3_dir, final_dir, result_dir_name="dis_imgs", 
+# Select_lt_rt_ld_rd_train_test_see( step3_dir, final_dir, result_dir_name="dis_imgs",
 #                            train_4page_index_list=range(387), test_4page_index_list=[101,102,103,104], see_train_4page_index_list=[1,2,4,6])
 
 

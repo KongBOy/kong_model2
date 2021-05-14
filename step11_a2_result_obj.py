@@ -86,7 +86,6 @@ class Result:
         print("result level: cost_time=", time.time() - result_start)
         print("")
 
-
     ## 想刪~~ 再保留一版 用不到就刪了
     def save_all_single_see_as_matplot_bm_rec_visual_multiprocess(self, add_loss=False, bgr2rgb=False, print_msg=False):  ### 以 sees 的 see當單位來切
         """
