@@ -32,49 +32,49 @@ class Generator(tf.keras.models.Model):
         if(self.depth_level >= 2):
             self.lrelu2 = LeakyReLU(alpha=0.2, name="lrelu2")
             self.conv2  = Conv2D(hid_ch * 2, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv2")  #,bias=False) ### in_channel:64
-            if(self.depth_level > 2): self.in2    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            if(self.depth_level > 2): self.in2    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in2")
             if(self.skip_use_cnn):  self.skip_cnn2  = Conv2D(hid_ch * 2, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn2")
             if(self.skip_use_Acti): self.skip_Acti2 = Activation(self.skip_use_Acti, name="skip_%s2" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 3):
             self.lrelu3 = LeakyReLU(alpha=0.2, name="lrelu3")
             self.conv3  = Conv2D(hid_ch * 4, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv3")  #,bias=False) ### in_channel:128
-            if(self.depth_level > 3): self.in3    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            if(self.depth_level > 3): self.in3    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in3")
             if(self.skip_use_cnn):  self.skip_cnn3  = Conv2D(hid_ch * 4, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn3")
             if(self.skip_use_Acti): self.skip_Acti3 = Activation(self.skip_use_Acti, name="skip_%s3" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 4):
             self.lrelu4 = LeakyReLU(alpha=0.2, name="lrelu4")
             self.conv4  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv4")  #,bias=False) ### in_channel:256
-            if(self.depth_level > 4): self.in4    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            if(self.depth_level > 4): self.in4    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in4")
             if(self.skip_use_cnn):  self.skip_cnn4  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn4")
             if(self.skip_use_Acti): self.skip_Acti4 = Activation(self.skip_use_Acti, name="skip_%s4" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 5):
             self.lrelu5 = LeakyReLU(alpha=0.2, name="lrelu5")
             self.conv5  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv5")  #,bias=False) ### in_channel:512
-            if(self.depth_level > 5): self.in5    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            if(self.depth_level > 5): self.in5    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in5")
             if(self.skip_use_cnn):  self.skip_cnn5  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn5")
             if(self.skip_use_Acti): self.skip_Acti5 = Activation(self.skip_use_Acti, name="skip_%s5" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 6):
             self.lrelu6 = LeakyReLU(alpha=0.2, name="lrelu6")
             self.conv6  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6")  #,bias=False) ### in_channel:512
-            if(self.depth_level > 6): self.in6    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            if(self.depth_level > 6): self.in6    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in6")
             if(self.skip_use_cnn):  self.skip_cnn6  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn6")
             if(self.skip_use_Acti): self.skip_Acti6 = Activation(self.skip_use_Acti, name="skip_%s6" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 7):
             self.lrelu7  = LeakyReLU(alpha=0.2, name="lrelu7")
             self.conv7   = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv7")  #,bias=False) ### in_channel:512
-            if(self.depth_level > 7): self.in7    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            if(self.depth_level > 7): self.in7    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in7")
             if(self.skip_use_cnn):  self.skip_cnn7  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn7")
             if(self.skip_use_Acti): self.skip_Acti7 = Activation(self.skip_use_Acti, name="skip_%s7" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 8):
             self.lrelu8  = LeakyReLU(alpha=0.2, name="lrelu8")
             self.conv8   = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv8")  #,bias=False) ### in_channel:512
-            if(self.depth_level > 8): self.in8    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            if(self.depth_level > 8): self.in8    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in8")
             if(self.skip_use_cnn):  self.skip_cnn8  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn8")
             if(self.skip_use_Acti): self.skip_Acti8 = Activation(self.skip_use_Acti, name="skip_%s8" % self.skip_use_Acti.__name__)
 
@@ -90,51 +90,51 @@ class Generator(tf.keras.models.Model):
         if(self.depth_level >= 9):
             self.relu9t  = ReLU(name="relu9t")
             self.conv9t  = Conv2DTranspose(hid_ch * 9, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv9t")  #,bias=False) ### in_channel:512
-            self.in9t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.in9t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in9t")
             if(self.skip_use_add is False): self.concat9 = Concatenate(name="concat9")
 
         ###################
         if(self.depth_level >= 8):
             self.relu8t  = ReLU(name="relu8t")
             self.conv8t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv8t")  #,bias=False) ### in_channel:512
-            self.in8t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.in8t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in8t")
             if(self.skip_use_add is False): self.concat8 = Concatenate(name="concat8")
 
         if(self.depth_level >= 7):
             self.relu7t  = ReLU(name="relu7t")
             self.conv7t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv7t")  #,bias=False) ### in_channel:512
-            self.in7t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.in7t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in7t")
             if(self.skip_use_add is False): self.concat7 = Concatenate(name="concat7")
 
         if(self.depth_level >= 6):
             self.relu6t  = ReLU(name="relu6t")
             self.conv6t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6t")  #,bias=False) ### in_channel:1024
-            self.in6t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.in6t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in6t")
             if(self.skip_use_add is False): self.concat6 = Concatenate(name="concat6")
 
         if(self.depth_level >= 5):
             self.relu5t  = ReLU(name="relu5t")
             self.conv5t  = Conv2DTranspose(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv5t")  #,bias=False) ### in_channel:1024
-            self.in5t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.in5t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in5t")
             if(self.skip_use_add is False): self.concat5 = Concatenate(name="concat5")
 
         if(self.depth_level >= 4):
             self.relu4t  = ReLU(name="relu4t")
             self.conv4t  = Conv2DTranspose(hid_ch * 4, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv4t")  #,bias=False) ### in_channel:1024
-            self.in4t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.in4t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in4t")
             if(self.skip_use_add is False): self.concat4 = Concatenate(name="concat4")
 
         if(self.depth_level >= 3):
             self.relu3t  = ReLU(name="relu3t")
             self.conv3t  = Conv2DTranspose(hid_ch * 2, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv3t")  #,bias=False) ### in_channel:512
-            self.in3t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.in3t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in3t")
             if(self.skip_use_add is False): self.concat3 = Concatenate(name="concat3")
 
 
         if(self.depth_level >= 2):
             self.relu2t  = ReLU(name="relu2t")
             self.conv2t  = Conv2DTranspose(hid_ch * 1, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv2t")  #,bias=False) ### in_channel:256
-            self.in2t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform")
+            self.in2t    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in2t")
             if(self.skip_use_add is False): self.concat2 = Concatenate(name="concat2")
 
 
@@ -314,14 +314,14 @@ if(__name__ == "__main__"):
     ### 直接用 假資料 嘗試 model 跑不跑得過
     import numpy as np
 
-    generator = Generator(depth_level=9, out_tanh=False)  # 建G
-    img = np.ones(shape=(1, 512, 512, 3), dtype=np.float32)  # 建 假資料
-    start_time = time.time()  # 看資料跑一次花多少時間
-    y = generator(img)
-    print(y.shape)
-    print(y.numpy().max())   ### 可以在這裡先看看 out_tanh 有沒有設定成功
-    print(y.numpy().min())   ### 可以在這裡先看看 out_tanh 有沒有設定成
-    print("cost time", time.time() - start_time)
+    # generator = Generator(depth_level=9, out_tanh=False)  # 建G
+    # img = np.ones(shape=(1, 512, 512, 3), dtype=np.float32)  # 建 假資料
+    # start_time = time.time()  # 看資料跑一次花多少時間
+    # y = generator(img)
+    # print(y.shape)
+    # print(y.numpy().max())   ### 可以在這裡先看看 out_tanh 有沒有設定成功
+    # print(y.numpy().min())   ### 可以在這裡先看看 out_tanh 有沒有設定成
+    # print("cost time", time.time() - start_time)
 
 #######################################################################################################################################
     ### 嘗試 真的 load tf_data 進來 train 看看
@@ -334,15 +334,18 @@ if(__name__ == "__main__"):
     from step09_a_loss_info_obj import Loss_info_builder
 
     ### 1. model_obj
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_flow_unet()
-    flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True)
+    flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu, true_IN=True).build()
+    flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=False, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid, true_IN=True).build()
+
+    model_obj = flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu  ### 可替換成 上面 想測試的 model
+    # flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True)
     ### 2. db_obj 和 tf_data
     db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy").set_detail(have_train=True, have_see=True).build()
     tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
-    G_mse_loss_info = Loss_info_builder().build_g_mse_loss_fun_and_containor().build_g_loss_containors().build()
-
+    # G_mse_loss_info = Loss_info_builder().build_g_mse_loss_fun_and_containor().build_g_loss_containors().build()
+    G_mae_loss_info = Loss_info_builder().build_g_mae_loss_fun_and_containor().build()
     ### 4. 跑起來試試看
     for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
-        flow_unet_IN_ch64.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=G_mse_loss_info)
+        model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=G_mae_loss_info)

@@ -78,7 +78,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
         self.hid_ch = hid_ch
         self.depth_level = depth_level
         self.no_concat_layer = no_concat_layer
-        self.skip_use_add = no_concat_layer
+        self.skip_use_add = skip_use_add
         self.skip_use_cnn = skip_use_cnn
         self.skip_cnn_k = skip_cnn_k
         self.skip_use_Acti = skip_use_Acti
@@ -88,6 +88,14 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
         self.concat_Activation = concat_Activation
 
         def _build_flow_unet():
+            # ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
+            # print("hid_ch", hid_ch)
+            # print("skip_use_cnn", skip_use_cnn)
+            # print("skip_cnn_k", skip_cnn_k)
+            # print("skip_use_Acti", skip_use_Acti)
+            # print("true_IN", true_IN)
+            # print()
+
             ### model_part
             if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
             elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
