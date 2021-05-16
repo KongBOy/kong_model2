@@ -6,6 +6,8 @@ from util import get_dir_certain_file_name, Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
 from video_from_img import Video_combine_from_dir
+from multiprocess_util import multi_processing_interface
+from multiprocessing import Process
 
 import cv2
 import time
@@ -97,7 +99,7 @@ class See_visual(See_info):
         #     Check_dir_exist_and_build_new_dir(self.matplot_visual_dir)      ### 建立 存結果的資料夾
         self.get_see_dir_info()  ### 每次執行都要 update喔！ 取得result內的 某個see資料夾 內的所有影像 檔名 和 數量
         self.single_row_imgs_during_train = self._Draw_matplot_visual(epoch, add_loss=True, bgr2rgb=bgr2rgb)  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
-        if(show_msg): print(f"processing {self.see_name}, cost_time:{time.time() - start_time}")
+        if(show_msg): print(f"See level: doing save_as_matplot_visual_during_train, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
     ###############################################################################################
     def draw_loss_at_see_during_train(self, epoch, epochs):
@@ -300,7 +302,14 @@ class See_bm_rec(See_info):
             Find_ltrd_and_crop(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
 
-        
+        ### 存 video
+        video_processes = []
+        video_processes.append(Process( target=Video_combine_from_dir, args=(self.see_dir, self.see_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
+        video_processes.append(Process( target=Video_combine_from_dir, args=(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉###
+        video_processes.append(Process( target=Video_combine_from_dir, args=(self.rec_visual_write_dir, self.rec_visual_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
+        for video_p in video_processes: video_p.start()
+        for video_p in video_processes: video_p.join()
+
         print(f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}, cost time:{time.time() - start_time}")
 
     def save_as_matplot_bm_rec_visual_after_train_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):   ### 訓練後，對"指定"epoch的 see結果 產生 matplot_bm_rec_visual
