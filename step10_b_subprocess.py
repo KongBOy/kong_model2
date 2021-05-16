@@ -5,33 +5,34 @@ import subprocess as sb
 
 same_command = ["python", "step10_a_load_and_train_and_test.py"]
 run = "build().run()"
-compress_all = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_1   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_2   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=1, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_3   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=2, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_4   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=3, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_8   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=4, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_9   = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=5, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_10  = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=6, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+bm_rec_print_msg = False
+compress_all  = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_1    = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_2    = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=1, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_3    = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=2, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_4    = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=3, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_8    = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=4, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_9    = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=5, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_10   = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=6, amount=1 , add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
 
-compress_2te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=1, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_3te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=2, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_4te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=3, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_8te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=4, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_9te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=5, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
-compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=6, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg=True)"
+compress_2te  = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=1, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_3te  = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=2, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_4te  = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=3, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_8te  = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=4, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_9te  = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=5, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
+compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visual(start_index=6, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True, print_msg={bm_rec_print_msg})"
 
-# sb.run(same_command + [f"test2.{compress_8}"])
+# sb.run(same_command + [f"test2.{compress_1}"])
 
 # ### hid_ch=64, 來測試 epoch系列 ##############################
-# sb.run(same_command + [f"epoch050_bn_see_arg_T.{run}"])
-# sb.run(same_command + [f"epoch100_bn_see_arg_T.{run}"])
-# sb.run(same_command + [f"epoch200_bn_see_arg_T.{run}"])
-# sb.run(same_command + [f"epoch300_bn_see_arg_T.{run}"])
-# sb.run(same_command + [f"epoch700_bn_see_arg_T.{run}"])
+sb.run(same_command + [f"epoch050_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"epoch100_bn_see_arg_T.{compress_all}"])  ### 636
+# sb.run(same_command + [f"epoch200_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"epoch300_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"epoch700_bn_see_arg_T.{compress_all}"])
 
 # sb.run(same_command + [f"ch128_bn_see_arg_T.{compress_all}"])
-# sb.run(same_command + [f"ch032_bn_see_arg_T.{compress_3te}"])
+# sb.run(same_command + [f"ch032_bn_see_arg_T.{compress_all}"])
 # sb.run(same_command + [f"ch016_bn_see_arg_T.{compress_all}"])
 # sb.run(same_command + [f"ch008_bn_see_arg_T.{compress_all}"])
 
@@ -41,7 +42,7 @@ compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual
 # sb.run(same_command + [f"epoch300_new_shuf_bn_see_arg_T.{compress_all}"])
 # sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_T.{compress_all}"])
 # sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_F.{compress_all}"])
-# sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down.{compress_4te}"])  ### 看看 lr 都不下降的效果
+# sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down.{compress_all}"])  ### 看看 lr 都不下降的效果
 # sb.run(same_command + [f"epoch700_new_shuf_bn_see_arg_T.{compress_9te}"])
 
 # sb.run(same_command + [f"ch128_new_shuf_bn_see_arg_F.{compress_all}"])
@@ -55,22 +56,22 @@ compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual
 # sb.run(same_command + [f"ch008_new_shuf_bn_see_arg_T.{compress_all}"])
 
 
-# sb.run(same_command + [f"ch64_bn04_bn_see_arg_F.{run}"])
-# sb.run(same_command + [f"ch64_bn04_bn_see_arg_T.{run}"])
-# sb.run(same_command + [f"ch64_bn08_bn_see_arg_F.{run}"])
-# sb.run(same_command + [f"ch64_bn08_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"ch64_bn04_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"ch64_bn04_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"ch64_bn08_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"ch64_bn08_bn_see_arg_T.{compress_all}"])
 
 
-# sb.run(same_command + [f"ch32_bn04_bn_see_arg_T.{run}"])
-# sb.run(same_command + [f"ch32_bn08_bn_see_arg_T.{run}"])
-# sb.run(same_command + [f"ch32_bn16_bn_see_arg_T.{run}"])
-# ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn32.{run}"])  ### 失敗
-# ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn64.{run}"])  ### 失敗
+# sb.run(same_command + [f"ch32_bn04_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"ch32_bn08_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"ch32_bn16_bn_see_arg_T.{compress_all}"])
+# ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn32.{compress_all}"])  ### 失敗
+# ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn64.{compress_all}"])  ### 失敗
 
 
-# sb.run(same_command + [f"ch32_bn04_bn_see_arg_F.{run}"])
-# sb.run(same_command + [f"ch32_bn08_bn_see_arg_F.{run}"])
-# sb.run(same_command + [f"ch32_bn16_bn_see_arg_F.{run}"])
+# sb.run(same_command + [f"ch32_bn04_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"ch32_bn08_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"ch32_bn16_bn_see_arg_F.{compress_all}"])
 
 
 # sb.run(same_command + [f"ch64_in_epoch320.{compress_all}"])  ### 測試真的IN
@@ -83,13 +84,13 @@ compress_10te = "build().result_obj.save_all_single_see_as_matplot_bm_rec_visual
 # sb.run(same_command + [f"ch64_in_epoch440.{run}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch460.{run}"])  ### 測試真的IN
 
-sb.run(same_command + [f"ch64_in_epoch480.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch480.{compress_8te}"])  ### 測試真的IN ########################
 
-# sb.run(same_command + [f"ch64_in_epoch500.{run}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch700.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch500.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch700.{compress_all}"])  ### 測試真的IN
 
 # ######################
-# sb.run(same_command + [f"ch64_in_concat_A.{run}"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + [f"ch64_in_concat_A.{compress_all}"])  ### 看看Activation 完再concat的效果
 
 # sb.run(same_command + [f"unet_2l.{compress_all}"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + [f"unet_3l.{compress_all}"])  ### 看看Activation 完再concat的效果
@@ -100,7 +101,7 @@ sb.run(same_command + [f"ch64_in_epoch480.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"unet_8l.{compress_all}"])  ### 看看Activation 完再concat的效果
 
 # sb.run(same_command + [f"unet_8l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_7l_skip_use_add.{compress_1}"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + [f"unet_7l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + [f"unet_6l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + [f"unet_5l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
 # sb.run(same_command + [f"unet_4l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
@@ -131,39 +132,39 @@ sb.run(same_command + [f"ch64_in_epoch480.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"t8_in_th_mo_01_gt_th_mae.{compress_all}"])  ### 127.35 沒train完
 #############################################################################################
 ### 9 的東西
-# sb.run(same_command + [f"unet_IN_7l_2to2noC     .{run}"])
-# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{run}"])
-# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{run}"])  ### 3254
-# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{run}"])
-# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{run}"])
-# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{run}"])  ### 3073
-# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{run}"])  ### 2851
-# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{run}"])  ### 2920
+# sb.run(same_command + [f"unet_IN_7l_2to2noC     .{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{compress_all}"])  ### 3254
+# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{compress_all}"])  ### 3073
+# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{compress_all}"])  ### 2851
+# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{compress_all}"])  ### 2920
 
 
 #############################################################################################
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_NO_relu.{run}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USErelu.{run}"])   ### 127.28
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USErelu.{run}"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_NO_relu.{compress_all}"])   ### 127.35
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USErelu.{compress_all}"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USErelu.{compress_all}"])   ### 127.28
 
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USEsigmoid.{run}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USEsigmoid.{run}"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USEsigmoid.{compress_all}"])   ### 127.35
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USEsigmoid.{compress_all}"])   ### 127.28
 
 
 #######################
-# sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch500.{run}"])
-# sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.{run}"])
+# sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch500.{compress_all}"])
+# sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.{compress_all}"])
 
-# sb.run(same_command + [f"rect_2_level_fk3.{run}"])
-# sb.run(same_command + [f"rect_3_level_fk3.{run}"])
-# sb.run(same_command + [f"rect_4_level_fk3.{run}"])
-# sb.run(same_command + [f"rect_5_level_fk3.{run}"])
-# sb.run(same_command + [f"rect_6_level_fk3.{run}"])
-# sb.run(same_command + [f"rect_7_level_fk3.{run}"])
+# sb.run(same_command + [f"rect_2_level_fk3.{compress_all}"])
+# sb.run(same_command + [f"rect_3_level_fk3.{compress_all}"])
+# sb.run(same_command + [f"rect_4_level_fk3.{compress_all}"])
+# sb.run(same_command + [f"rect_5_level_fk3.{compress_all}"])
+# sb.run(same_command + [f"rect_6_level_fk3.{compress_all}"])
+# sb.run(same_command + [f"rect_7_level_fk3.{compress_all}"])
 
-# sb.run(same_command + [f"rect_2_level_fk3_ReLU.{run}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_3_level_fk3_ReLU.{run}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_4_level_fk3_ReLU.{run}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_5_level_fk3_ReLU.{run}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_6_level_fk3_ReLU.{run}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_7_level_fk3_ReLU.{run}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_2_level_fk3_ReLU.{compress_all}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_3_level_fk3_ReLU.{compress_all}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_4_level_fk3_ReLU.{compress_all}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_5_level_fk3_ReLU.{compress_all}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_6_level_fk3_ReLU.{compress_all}"])  ### 127.28跑
+# sb.run(same_command + [f"rect_7_level_fk3_ReLU.{compress_all}"])  ### 127.28跑
