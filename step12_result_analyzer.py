@@ -386,6 +386,7 @@ if(__name__ == "__main__"):
     # Bm_Rec_exps_analyze(ana_title + "0_6-ch_old_new_shuf_exps",    ch_old_new_shuf_exps)   .all_single_see_final_rec_analyze().analyze_tensorboard()
 
     # Bm_Rec_exps_analyze(ana_title + "1_1-epoch_exps",                      epoch_exps)                     .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "1_1b-epoch_exps_in_300_500",           epoch300_500_exps)               .all_single_see_final_rec_analyze().analyze_tensorboard()
     # Bm_Rec_exps_analyze(ana_title + "2_1-ch_exps",                         ch_exps)                        .all_single_see_final_rec_analyze().analyze_tensorboard()
     # Bm_Rec_exps_analyze(ana_title + "2_2-epoch_no_down_vs_ch_exps",        epoch_no_down_vs_ch_exps)       .all_single_see_final_rec_analyze().analyze_tensorboard()
 
@@ -393,7 +394,8 @@ if(__name__ == "__main__"):
     # Bm_Rec_exps_analyze(ana_title + "3_2-bn_ch32_exps_bn_see_arg_T",       bn_ch32_exps_bn_see_arg_T)      .all_single_see_final_rec_analyze().analyze_tensorboard()
     # Bm_Rec_exps_analyze(ana_title + "3_3-bn_ch64_exps_bn_see_arg_F_and_T", bn_ch64_exps_bn_see_arg_F_and_T).all_single_see_final_rec_analyze().analyze_tensorboard()
     # Bm_Rec_exps_analyze(ana_title + "3_4-bn_ch32_exps_bn_see_arg_F_and_T", bn_ch32_exps_bn_see_arg_F_and_T).all_single_see_final_rec_analyze().analyze_tensorboard()
-    # Bm_Rec_exps_analyze(ana_title + "4_1-bn_in_size1_exps",                bn_in_size1_exps)               .all_single_see_final_rec_analyze().analyze_tensorboard()
+    # Bm_Rec_exps_analyze(ana_title + "4_1a-bn_in_size1_exps",                bn_in_size1_exps)               .all_single_see_final_rec_analyze().analyze_tensorboard()
+
     # Bm_Rec_exps_analyze(ana_title + "4_2-bn_in_sizen_exps",                bn_in_sizen_exps)               .all_single_see_final_rec_analyze().analyze_tensorboard()
 
     # Bm_Rec_exps_analyze(ana_title + "5_1-in_concat_AB",                    in_concat_AB)                   .all_single_see_final_rec_analyze().analyze_tensorboard()

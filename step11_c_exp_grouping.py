@@ -357,6 +357,20 @@ epoch_exps  = [
     epoch700_new_shuf_bn_see_arg_T.build(),
     epoch700_bn_see_arg_T_no_down.build(), ]   ### 如果 lr 都不下降 會怎麼樣
 
+epoch300_500_exps  = [
+    ch64_in_epoch320.build(),
+    ch64_in_epoch340.build(),
+    ch64_in_epoch360.build(),
+    ch64_in_epoch380.build(),
+    ch64_in_epoch400.build(),
+    ch64_in_epoch420.build(),
+    ch64_in_epoch440.build(),
+    ch64_in_epoch460.build(),
+    ch64_in_epoch480.build(),
+    ch64_in_epoch500.build(),
+    ch64_in_epoch700.build(),
+    ]
+
 # # ### 1_2 ch，但 bn_see_arg_F，所以結果圖醜，收起來，留 ch032_new_shuf_bn_see_arg_F 是為了給 bn 比較用
 # ch128_new_shuf_bn_see_arg_F
 # ch064_new_shuf_bn_see_arg_F = copy.deepcopy(epoch500_new_shuf_bn_see_arg_F.build()); ch064_new_shuf_bn_see_arg_F.result_obj.ana_describe = "ch064_new_shuf_bn_see_arg_F"
@@ -438,6 +452,7 @@ bn_in_size1_exps = [
     ch64_bn_epoch700,
     ch64_in_epoch700.build(),
 ]
+
 
 ### 4_2. in vs bn batch_size > 1
 ###   batch_size 越大，效果越差
