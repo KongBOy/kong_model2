@@ -38,10 +38,10 @@ class Result:
 
     # def rename_see1_to_see2(self):
     #     for go_see in range(self.see_amount):
-    #         if(os.path.isdir(self.sees1[go_see].see_dir)):
-    #             print("rename_ord:", self.sees1[go_see].see_dir)
-    #             print("rename_dst:", self.sees2[go_see].see_dir)
-    #             os.rename(self.sees1[go_see].see_dir, self.sees2[go_see].see_dir)
+    #         if(os.path.isdir(self.sees1[go_see].see_read_dir)):
+    #             print("rename_ord:", self.sees1[go_see].see_read_dir)
+    #             print("rename_dst:", self.sees2[go_see].see_read_dir)
+    #             os.rename(self.sees1[go_see].see_read_dir, self.sees2[go_see].see_read_dir)
 
     ### 在train step3的時候 才會做這個動作，在那個階段，看的應該是result_obj，所以Draw_loss才寫在Rsult而不寫在See囉
     def Draw_loss_during_train(self, epoch, epochs):
@@ -148,7 +148,7 @@ class Result:
                 r_c_imgs = []
                 for go_see_num, see_num in enumerate(see_nums):
                     c_imgs = [in_imgs[go_see_num]]
-                    c_imgs.append(cv2.imread(self.sees[see_num].see_dir + "/" + self.sees[see_num].see_jpg_names[go_img]))
+                    c_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_jpg_names[go_img]))
                     c_imgs += [gt_imgs[go_see_num]]
                     r_c_imgs.append(c_imgs)
 
@@ -193,8 +193,8 @@ class Result:
         in_imgs = []
         gt_imgs = []
         for see_num in see_nums:
-            in_imgs.append(cv2.imread(self.sees[see_num].see_dir + "/" + self.sees[see_num].see_jpg_names[0]))
-            gt_imgs.append(cv2.imread(self.sees[see_num].see_dir + "/" + self.sees[see_num].see_jpg_names[1]))
+            in_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_jpg_names[0]))
+            gt_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_jpg_names[1]))
 
         ### 抓 第一row的 要顯示的 titles
         titles = ["in_img", self.ana_describe, "gt_img"]

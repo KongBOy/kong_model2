@@ -57,7 +57,7 @@ class Col_results_analyzer(Result_analyzer):
                 epoch = go_img - 2
 
                 c_imgs   = [in_imgs]
-                for result in self.c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_jpg_names[go_img]))
+                for result in self.c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_read_dir + "/" + result.sees[see_num].see_jpg_names[go_img]))
                 c_imgs += [gt_imgs]
 
                 single_row_imgs = Matplot_single_row_imgs(
@@ -87,8 +87,8 @@ class Col_results_analyzer(Result_analyzer):
         self._c_results_get_see_dir_info(self.c_results)
 
         ### 抓 in/gt imgs
-        in_imgs = cv2.imread(self.c_results[0].sees[see_num].see_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[0])
-        gt_imgs = cv2.imread(self.c_results[0].sees[see_num].see_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[1])
+        in_imgs = cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[0])
+        gt_imgs = cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[1])
 
         ### 抓 要顯示的 titles
         c_titles = ["in_img"]
@@ -126,7 +126,7 @@ class Col_results_analyzer(Result_analyzer):
                 r_c_imgs = []
                 for go_see_num, see_num in enumerate(see_nums):
                     c_imgs   = [in_imgs[go_see_num]]
-                    for result in self.c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_jpg_names[go_img]))
+                    for result in self.c_results: c_imgs.append(cv2.imread(result.sees[see_num].see_read_dir + "/" + result.sees[see_num].see_jpg_names[go_img]))
                     c_imgs += [gt_imgs[go_see_num]]
                     r_c_imgs.append(c_imgs)
 
@@ -168,8 +168,8 @@ class Col_results_analyzer(Result_analyzer):
         in_imgs = []
         gt_imgs = []
         for see_num in see_nums:
-            in_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[0]))
-            gt_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[1]))
+            in_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[0]))
+            gt_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[1]))
 
         ### 抓 第一row的 要顯示的 titles
         c_titles = ["in_img"]
@@ -211,8 +211,8 @@ class Row_col_results_analyzer(Result_analyzer):
     def _draw_row_col_results_single_see(self, start_img, img_amount, see_num, r_c_titles, analyze_see_dir):
         ### 要記得see的第一張存的是 輸入的in影像，第二張存的是 輸出的gt影像
         ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
-        in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_dir + "/" + self.r_c_results[0][0].sees[see_num].see_jpg_names[0])  ### 第一張：in_img
-        gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_dir + "/" + self.r_c_results[0][0].sees[see_num].see_jpg_names[1])  ### 第二張：gt_img
+        in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_read_dir + "/" + self.r_c_results[0][0].sees[see_num].see_jpg_names[0])  ### 第一張：in_img
+        gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_read_dir + "/" + self.r_c_results[0][0].sees[see_num].see_jpg_names[1])  ### 第二張：gt_img
         # for go_img in tqdm(range(self.r_c_min_see_file_amount)):
         for go_img in tqdm(range(start_img, start_img + img_amount)):
             if(go_img >= 2):
@@ -222,7 +222,7 @@ class Row_col_results_analyzer(Result_analyzer):
                 for row_results in self.r_c_results:
                     c_imgs   = [in_img]   ### 每個row的第一張要放in_img
                     for result in row_results:  ### 抓出一個row的 img 和 title
-                        c_imgs.append(cv2.imread(result.sees[see_num].see_dir + "/" + result.sees[see_num].see_jpg_names[go_img]))
+                        c_imgs.append(cv2.imread(result.sees[see_num].see_read_dir + "/" + result.sees[see_num].see_jpg_names[go_img]))
                     c_imgs += [gt_img]      ### 每個row的最後一張要放gt_img
                     r_c_imgs.append(c_imgs)
                 ###########################################################################################################

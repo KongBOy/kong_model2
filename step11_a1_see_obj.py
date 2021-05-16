@@ -28,7 +28,7 @@ class See_info:
         self.result_write_dir = result_write_dir
 
         self.see_name = see_name
-        self.see_dir = self.result_read_dir + "/" + self.see_name
+        self.see_read_dir = self.result_read_dir + "/" + self.see_name
         self.see_write_dir = self.result_write_dir + "/" + self.see_name
 
         self.see_jpg_names = None
@@ -39,12 +39,12 @@ class See_info:
         self.gt_use_range = "0~1"
 
     def get_see_dir_info(self):
-        self.see_jpg_names = get_dir_certain_file_name(self.see_dir, ".jpg")
-        self.see_npy_names = get_dir_certain_file_name(self.see_dir, ".npy")
-        self.see_npz_names = get_dir_certain_file_name(self.see_dir, ".npz")
-        self.see_jpg_paths = [self.see_dir + "/" + jpg_name for jpg_name in self.see_jpg_names]
-        self.see_npy_paths = [self.see_dir + "/" + npy_name for npy_name in self.see_npy_names]
-        self.see_npz_paths = [self.see_dir + "/" + npz_name for npz_name in self.see_npz_names]
+        self.see_jpg_names = get_dir_certain_file_name(self.see_read_dir, ".jpg")
+        self.see_npy_names = get_dir_certain_file_name(self.see_read_dir, ".npy")
+        self.see_npz_names = get_dir_certain_file_name(self.see_read_dir, ".npz")
+        self.see_jpg_paths = [self.see_read_dir + "/" + jpg_name for jpg_name in self.see_jpg_names]
+        self.see_npy_paths = [self.see_read_dir + "/" + npy_name for npy_name in self.see_npy_names]
+        self.see_npz_paths = [self.see_read_dir + "/" + npz_name for npz_name in self.see_npz_names]
         self.see_file_amount = len(self.see_jpg_names)
 
     def save_as_jpg(self):  ### 後來看覺得好像有點多餘
@@ -53,7 +53,7 @@ class See_info:
 
     def save_as_avi(self):  ### 後來看覺得好像有點多餘
         Check_dir_exist_and_build(self.see_write_dir)
-        Video_combine_from_dir(self.see_dir, self.see_write_dir, "0-combine_jpg_tail_long.avi", tail_long=True)
+        Video_combine_from_dir(self.see_read_dir, self.see_write_dir, "0-combine_jpg_tail_long.avi", tail_long=True)
 
 
 
@@ -77,9 +77,9 @@ class See_visual(See_info):
     ###############################################################################################
     ### 主要做的事情，此fun會給 save_as_matplot_visual_during/after train 使用
     def _Draw_matplot_visual(self, epoch, add_loss=False, bgr2rgb=False):
-        in_img = cv2.imread(self.see_dir + "/" + self.see_jpg_names[0])       ### 要記得see的第一張存的是 輸入的in影像
-        gt_img = cv2.imread(self.see_dir + "/" + self.see_jpg_names[1])       ### 要記得see的第二張存的是 輸出的gt影像
-        img = cv2.imread(self.see_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
+        in_img = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[0])       ### 要記得see的第一張存的是 輸入的in影像
+        gt_img = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[1])       ### 要記得see的第二張存的是 輸出的gt影像
+        img = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
         single_row_imgs = Matplot_single_row_imgs(
                                 imgs      =[ in_img ,   img ,      gt_img],    ### 把要顯示的每張圖包成list
                                 img_titles=["in_img", "out_img", "gt_img"],    ### 把每張圖要顯示的字包成list
@@ -104,7 +104,7 @@ class See_visual(See_info):
     ###############################################################################################
     def draw_loss_at_see_during_train(self, epoch, epochs):
         Check_dir_exist_and_build(self.matplot_visual_dir)  ### 以防matplot_visual資料夾被刪掉，要生圖找不到資料夾
-        self.single_row_imgs_during_train.Draw_ax_loss_during_train(self.single_row_imgs_during_train.ax[-1, 1], self.see_dir + "/../logs", epoch, epochs )
+        self.single_row_imgs_during_train.Draw_ax_loss_during_train(self.single_row_imgs_during_train.ax[-1, 1], self.see_read_dir + "/../logs", epoch, epochs )
         self.single_row_imgs_during_train.Save_fig(dst_dir=self.matplot_visual_dir, epoch=epoch)
 
     ###############################################################################################
@@ -115,7 +115,7 @@ class See_visual(See_info):
             if(go_img >= 2):  ### 第三張 才開始存 epoch影像喔！
                 current_epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
                 single_row_imgs = self._Draw_matplot_visual(current_epoch, add_loss)
-                if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_dir + "/../logs", current_epoch, min_epochs=self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫，還有最後面的參數，是輸入 epochs！所以要-2！
+                if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", current_epoch, min_epochs=self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫，還有最後面的參數，是輸入 epochs！所以要-2！
                 single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     def _draw_matplot_visual_after_train_multiprocess(self, add_loss, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
@@ -159,11 +159,11 @@ class See_bm_rec(See_info):
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See_bm_rec, self).__init__(result_read_dir, result_write_dir, see_name)
 
-        self.matplot_bm_rec_visual_read_dir   = self.see_dir       + "/matplot_bm_rec_visual"
+        self.matplot_bm_rec_visual_read_dir   = self.see_read_dir       + "/matplot_bm_rec_visual"
         self.matplot_bm_rec_visual_write_dir  = self.see_write_dir + "/matplot_bm_rec_visual"
-        self.bm_visual_read_dir               = self.see_dir       + "/matplot_bm_rec_visual/bm_visual"
+        self.bm_visual_read_dir               = self.see_read_dir       + "/matplot_bm_rec_visual/bm_visual"
         self.bm_visual_write_dir              = self.see_write_dir + "/matplot_bm_rec_visual/bm_visual"
-        self.rec_visual_read_dir              = self.see_dir       + "/matplot_bm_rec_visual/rec_visual"
+        self.rec_visual_read_dir              = self.see_read_dir       + "/matplot_bm_rec_visual/rec_visual"
         self.rec_visual_write_dir             = self.see_write_dir + "/matplot_bm_rec_visual/rec_visual"
         self.bm_names  = None
         self.bm_paths  = None
@@ -186,11 +186,11 @@ class See_bm_rec(See_info):
     ###     1.這樣這裡做的事情太多了~~
     ###     2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.see_npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
     def _Draw_matplot_bm_rec_visual(self, epoch, add_loss=False, bgr2rgb=False):
-        in_img    = cv2.imread(self.see_dir + "/" + self.see_jpg_names[0])          ### 要記得see的jpg第一張存的是 輸入的in影像
-        gt_flow_v = cv2.imread(self.see_dir + "/" + self.see_jpg_names[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
-        flow_v    = cv2.imread(self.see_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
-        gt_flow   = np.load(self.see_dir + "/" + self.see_npz_names[0])["arr_0"]          ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
-        flow      = np.load(self.see_dir + "/" + self.see_npz_names[epoch + 1])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        in_img    = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[0])          ### 要記得see的jpg第一張存的是 輸入的in影像
+        gt_flow_v = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
+        flow_v    = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
+        gt_flow   = np.load(self.see_read_dir + "/" + self.see_npz_names[0])["arr_0"]          ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        flow      = np.load(self.see_read_dir + "/" + self.see_npz_names[epoch + 1])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         # gt_flow[..., 1] = 1 - gt_flow[..., 1]
         flow      [..., 1] = 1 - flow[..., 1]
         gt_flow   [..., 1] = 1 - gt_flow[..., 1]
@@ -304,7 +304,7 @@ class See_bm_rec(See_info):
 
         ### 存 video
         video_processes = []
-        video_processes.append(Process( target=Video_combine_from_dir, args=(self.see_dir, self.see_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
+        video_processes.append(Process( target=Video_combine_from_dir, args=(self.see_read_dir, self.see_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         video_processes.append(Process( target=Video_combine_from_dir, args=(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉###
         video_processes.append(Process( target=Video_combine_from_dir, args=(self.rec_visual_write_dir, self.rec_visual_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         for video_p in video_processes: video_p.start()
@@ -345,14 +345,14 @@ class See_try_npy_to_npz(See_info):
         ### load_3_load_50_npy
         start_time = time.time()
         for go_name, see_npy_name in enumerate(self.see_npy_names):
-            np.load(self.see_dir + "/" + see_npy_name)   ### 344 MB
+            np.load(self.see_read_dir + "/" + see_npy_name)   ### 344 MB
         load_3_time = time.time() - start_time
         print("load_3_load_50_npy ok")
 
         ### save_3_save_50_npy
         npys = []
         for go_name, see_npy_name in enumerate(self.see_npy_names):
-            npys.append(np.load(self.see_dir + "/" + see_npy_name))   ### 344 MB
+            npys.append(np.load(self.see_read_dir + "/" + see_npy_name))   ### 344 MB
         start_time = time.time()
         for go_name, npy in enumerate(npys):
             np.save(self.see_write_dir + "/" + self.see_npy_names[go_name], npy)
@@ -369,7 +369,7 @@ class See_try_npy_to_npz(See_info):
         ### load_2_load_50_npz
         start_time = time.time()
         for go_name, see_npy_name in enumerate(self.see_npy_names):
-            np.load(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"))   ### 344 MB
+            np.load(self.see_read_dir + "/" + see_npy_name.replace(".npy", ".npz"))   ### 344 MB
         load_2_time = time.time() - start_time
         print("load_2_load_50_npz ok")
 
@@ -381,12 +381,12 @@ class See_try_npy_to_npz(See_info):
 
         ### load_1_load_1_npz_conatin_50npy
         start_time = time.time()
-        big_npz = np.load(self.see_dir + "/" + "000_try_npz.npz")
+        big_npz = np.load(self.see_read_dir + "/" + "000_try_npz.npz")
         print(big_npz["arr_0"].shape)   ### 小心！要有使用他，才會真的去load資料喔！
         load_1_time = time.time() - start_time
         print("load_1_load_1_npz_conatin_50npy ok")
         print("")
-        os.remove(self.see_dir + "/" + "000_try_npz.npz")  ### 只是用來看讀取寫入速度而已，沒有真的要用，所以測試完後記得要刪掉喔！
+        os.remove(self.see_read_dir + "/" + "000_try_npz.npz")  ### 只是用來看讀取寫入速度而已，沒有真的要用，所以測試完後記得要刪掉喔！
 
 
         print("save_1_save_1_npz_conatin_50npy:", save_1_time)
@@ -409,14 +409,14 @@ class See_try_npy_to_npz(See_info):
     # def single_npy_to_npz_by_path(self, npy_path):
     #     npy = np.load(npy_path)
     #     np.savez_compressed(npy_path.replace(".npy", ".npz"), npy)
-    #     os.remove(self.see_dir + "/" + npy_path)
+    #     os.remove(self.see_read_dir + "/" + npy_path)
     def _npy_to_npz(self, start_index, amount):
         for see_npy_name in tqdm(self.see_npy_names[start_index:start_index + amount]):
-            npy = np.load(self.see_dir + "/" + see_npy_name)
+            npy = np.load(self.see_read_dir + "/" + see_npy_name)
             np.savez_compressed(self.see_write_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
-            os.remove(self.see_dir + "/" + see_npy_name)
-            # print(self.see_dir + "/" + see_npy_name, "delete ok")
-            # npz = np.load(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"))  ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
+            os.remove(self.see_read_dir + "/" + see_npy_name)
+            # print(self.see_read_dir + "/" + see_npy_name, "delete ok")
+            # npz = np.load(self.see_read_dir + "/" + see_npy_name.replace(".npy", ".npz"))  ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
             # print((npy - npz["arr_0"]).sum())                                         ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
 
     def _npy_to_npz_multiprocess(self, core_amount=CORE_AMOUNT_NPY_TO_NPZ, task_amount=600, print_msg=False):
@@ -438,9 +438,9 @@ class See_try_npy_to_npz(See_info):
                 self._npy_to_npz(start_index=0, amount=len(self.see_npy_names))
 
                 # for see_npy_name in tqdm(self.see_npy_names):
-                #     npy = np.load(self.see_dir + "/" + see_npy_name)
+                #     npy = np.load(self.see_read_dir + "/" + see_npy_name)
                 #     np.savez_compressed(self.see_write_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
-                #     os.remove(self.see_dir + "/" + see_npy_name)
+                #     os.remove(self.see_read_dir + "/" + see_npy_name)
         print(f"See level: doing all_npy_to_npz, Current See:{self.see_name}, cost time:{time.time() - start_time}")
 
 

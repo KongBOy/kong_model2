@@ -195,17 +195,17 @@ def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, m
     in_rec_img = apply_move_to_rec2(in_img_back, move_map_back, max_train_move, min_train_move)
     gt_rec_img = apply_move_to_rec2(in_img_back, gt_move_map, max_train_move, min_train_move)
 
-    see_dir  = result_obj.sees[see_index].see_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    plot_dir = see_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
+    see_write_dir  = result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    plot_dir = see_write_dir + "/" + "matplot_visual"        ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
 
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
-        Check_dir_exist_and_build(see_dir)   ### 建立 see資料夾
+        Check_dir_exist_and_build(see_write_dir)   ### 建立 see資料夾
         Check_dir_exist_and_build(plot_dir)  ### 建立 see資料夾/matplot_visual資料夾
-        cv2.imwrite(see_dir + "/" + "0a-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(see_dir + "/" + "0b-gt_a_gt_move_map.jpg", gt_move_map_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        cv2.imwrite(see_dir + "/" + "0b-gt_b_gt_rec_img.jpg", gt_rec_img)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-    cv2.imwrite(see_dir + "/" + "epoch_%04i_a_move_map_visual.jpg" % epoch, move_map_back_visual)  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
-    cv2.imwrite(see_dir + "/" + "epoch_%04i_b_in_rec_img.jpg" % epoch     , in_rec_img)  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
+        cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg", in_img_back)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_move_map.jpg", gt_move_map_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_write_dir + "/" + "0b-gt_b_gt_rec_img.jpg", gt_rec_img)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_move_map_visual.jpg" % epoch, move_map_back_visual)  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_b_in_rec_img.jpg" % epoch     , in_rec_img)  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
 
     imgs = [in_img_back, move_map_back_visual, gt_move_map_visual, in_rec_img, gt_rec_img]  ### 把 in_img_back, rect_back, gt_img 包成list
     titles = ['Input Image', 'gen_move_map', 'gt_move_map', 'gen_rec_img', 'gt_rec_img', 'Ground Truth']  ### 設定 title要顯示的字
