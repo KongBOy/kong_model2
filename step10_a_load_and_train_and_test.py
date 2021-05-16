@@ -478,7 +478,7 @@ class Exp_builder():
             # self.exp.loss_info_obj = Loss_info_builder(self.exp.loss_info_obj, in_obj_copy=True).set_logs_dir(self.exp.result_obj.logs_dir).build()  ### 上面定位出 logs_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
             # print("self.exp.loss_info_obj.logs_dir", self.exp.loss_info_obj.logs_dir)
             # print()  ### 追蹤see的建立過程
-            print(self.exp.exp_dir, "build finish ~~~~~~~~~~~~~~~~~~")
+            print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
         return self.exp
 ##########################################################################################################################################
 ### 5_1_GD_Gmae136_epoch700

@@ -19,7 +19,6 @@ class KModel_init_builder:
         if(kong_model is None): self.kong_model = KModel()
         else: self.kong_model = kong_model
 
-        # self.model_name = None   ### 這是為了給 exp.build() 用
         self.build = None
 
     def set_model_name(self, model_name):
