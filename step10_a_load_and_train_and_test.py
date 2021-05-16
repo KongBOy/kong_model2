@@ -25,7 +25,6 @@ from tqdm import tqdm
 import socket    ### 取得 本機 IP   給 train_step5_show_time 紀錄
 import getpass   ### 取得 本機 User 給 train_step5_show_time 紀錄
 
-import time
 start_time = time.time()
 
 class Experiment():

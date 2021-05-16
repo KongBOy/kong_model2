@@ -242,7 +242,6 @@ def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, m
 def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
     from build_dataset_combine import Check_dir_exist_and_build
     import numpy as np
-    import matplotlib.pyplot as plt
     from util import  get_dir_move, get_dir_certain_img
 
 
@@ -329,7 +328,6 @@ def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
 
 #######################################################################################################################################
 if(__name__ == "__main__"):
-    import time
     import numpy as np
 
     generator = Generator512to256()  # 建G
