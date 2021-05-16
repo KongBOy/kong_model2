@@ -20,8 +20,10 @@ class Result:
     def __init__(self):
         ### train的時候用的
         self.result_name = None
-        self.result_dir  = None
-        self.ckpt_dir = None
+        self.result_read_dir  = None
+        self.result_write_dir = None
+        self.ckpt_read_dir = None
+        self.ckpt_write_dir = None
         self.logs_dir = None
         self.sees_ver = None
         self.sees = None
@@ -33,8 +35,6 @@ class Result:
 
         ### after train的時候才用的
         self.ana_describe = None  ### 這是給matplot用的title
-
-        self.loss_info_obj = None
 
     # def rename_see1_to_see2(self):
     #     for go_see in range(self.see_amount):
@@ -65,25 +65,26 @@ class Result:
         目前覺得不建議使用，因為以sees內的see當單位來切，覺得有點沒效率，且用 see 當單位 ， 用的記憶體大喔！
         """
         print(f"doing {self.result_name}")
-        from util import multi_processing_interface
+        from multiprocess_util import multi_processing_interface
         single_see_multiprocess = False  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
         multi_processing_interface(core_amount=CORE_AMOUNT, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_visual, task_args=[add_loss, single_see_multiprocess])
 
     ##############################################################################################################################
     ##############################################################################################################################
     def save_single_see_as_matplot_bm_rec_visual(self, see_num, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, print_msg=False):
+        print(f"Result level: doing save_single_see_as_matplot_bm_rec_visual, Current Result:{self.result_name}")
         if(see_num < self.see_amount):  ### 防呆，以防直接使用 save_all_single_see_as_matplot_visual 時 start_index 設的比0大 但 amount 設成 see_amount 或 純粹不小心算錯數字(要算準start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
-            print(f"current result:{self.result_name}")
             self.sees[see_num].all_npy_to_npz(multiprocess=True)
             self.sees[see_num].save_as_matplot_bm_rec_visual_after_train(add_loss, bgr2rgb, single_see_multiprocess, print_msg=print_msg)
 
     def save_all_single_see_as_matplot_bm_rec_visual(self, start_index, amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
         result_start = time.time()
-        print("result level: doing save_all_single_see_as_matplot_bm_rec_visual")
+        print(f"Result level: doing save_all_single_see_as_matplot_bm_rec_visual, Current Result:{self.result_name}")
         for see_num in range(start_index, start_index + amount):  ### 這裡寫 start_index + amount 是為了 multiprocess 的格式！
             self.save_single_see_as_matplot_bm_rec_visual(see_num, add_loss, bgr2rgb, single_see_multiprocess, print_msg=print_msg)
-        print("result level: finish save_all_single_see_as_matplot_bm_rec_visual")
-        print("result level: cost_time=", time.time() - result_start)
+            print("")
+        print("Result level: finish save_all_single_see_as_matplot_bm_rec_visual")
+        print("Result level: cost_time=", time.time() - result_start)
         print("")
 
     ## 想刪~~ 再保留一版 用不到就刪了
@@ -103,7 +104,7 @@ class Result:
         result_start = time.time()
         print(f"doing {self.result_name}")
         print("result level: doing save_all_single_see_as_matplot_bm_rec_visual_multiprocess")
-        from util import multi_processing_interface
+        from multiprocess_util import multi_processing_interface
         single_see_multiprocess = False  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
         multi_processing_interface(core_amount=CORE_AMOUNT, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_bm_rec_visual, task_args=[add_loss, bgr2rgb, single_see_multiprocess], print_msg=print_msg)
         print("result level: finish save_all_single_see_as_matplot_bm_rec_visual_multiprocess")
@@ -172,7 +173,7 @@ class Result:
                 # plt.close()  ### 一定要記得關喔！要不然圖開太多會當掉！
 
     def _draw_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):
-        from util import multi_processing_interface
+        from multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_multi_see, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss], print_msg=print_msg)
 
     ### 好像比較少用到
@@ -185,7 +186,7 @@ class Result:
             return
         ###############################################################################################
         start_time = time.time()
-        matplot_multi_see_dir = self.result_dir + "/" + save_name  ### 結果存哪裡定位出來
+        matplot_multi_see_dir = self.result_write_dir + "/" + save_name  ### 結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(matplot_multi_see_dir)   ### 建立 存結果的資料夾
 
         ### 抓 各row的in/gt imgs

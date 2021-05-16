@@ -334,6 +334,7 @@ class Bm_Rec_exps_analyze(Result_analyzer):
         return self
 
     def single_see_final_rec_analyze(self, see_num):
+        print(f"Bm_Rec_exps_analyze, doing single_see_final_rec_analyze, analyzing see_num:{see_num}")
         analyze_see_bm_dir, analyze_see_rec_dir = self._build_analyze_see_bm_rec_dir(see_num)  ### 定出 存結果的資料夾
 
         for exp in self.exps:
@@ -351,9 +352,11 @@ class Bm_Rec_exps_analyze(Result_analyzer):
         return self
 
     def all_single_see_final_rec_analyze(self):
-        print(self.ana_describe, "doing all_single_see_final_rec_analyze")
+        print(f"Bm_Rec_exps_analyze, doing all_single_see_final_rec_analyze, analyzing {self.ana_describe}")
+        start_time = time.time()
         for see_num in range(self.exps[0].result_obj.see_amount):
             self.single_see_final_rec_analyze(see_num=see_num)
+        print(f"Bm_Rec_exps_analyze, doing all_single_see_final_rec_analyze, analyzing {self.ana_describe}, cost time:{time.time() - start_time}")
         return self
 
     def analyze_tensorboard(self, reset_board_dir=False):

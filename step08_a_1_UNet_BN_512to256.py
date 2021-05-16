@@ -179,7 +179,7 @@ def train_step(model_obj, in_dis_img, gt_move_map, board_obj):
     board_obj.losses["gen_l1_loss"](gen_l1_loss)
 
 #######################################################################################################################################
-# def generate_results( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_dir="."):
+# def generate_results( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_write_dir="."):
 def generate_results(model_G, in_img_pre, max_train_move, min_train_move):
     move_map      = model_G(in_img_pre, training=True)
     move_map_back = ((move_map - min_train_move) / (max_train_move - min_train_move)) * 2 - 1
@@ -230,7 +230,7 @@ def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, m
     #         plt.imshow(back_bgr)
     #     plt.axis('off')
     # # plt.show()
-    # plt.savefig(result_dir + "/" + "epoch_%04i-result.png"%epoch)
+    # plt.savefig(result_write_dir + "/" + "epoch_%04i-result.png"%epoch)
     # plt.close()
     # print("sample image cost time:", time.time()-sample_start_time)
 

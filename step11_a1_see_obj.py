@@ -21,10 +21,13 @@ class See_info:
     See 是 最直接、最基本 model output的東西，在各個model裡面都應該有寫 自己的 generate_see
     而這邊只是 讀取 training 過程中生成的 See 這樣子囉~~
     '''
-    def __init__(self, result_dir, see_name):
-        self.result_dir = result_dir
+    def __init__(self, result_read_dir, result_write_dir, see_name):
+        self.result_read_dir = result_read_dir
+        self.result_write_dir = result_write_dir
+
         self.see_name = see_name
-        self.see_dir = self.result_dir + "/" + self.see_name
+        self.see_dir = self.result_read_dir + "/" + self.see_name
+        self.see_write_dir = self.result_write_dir + "/" + self.see_name
 
         self.see_jpg_names = None
         self.see_npy_names = None
@@ -41,16 +44,14 @@ class See_info:
         self.see_npy_paths = [self.see_dir + "/" + npy_name for npy_name in self.see_npy_names]
         self.see_npz_paths = [self.see_dir + "/" + npz_name for npz_name in self.see_npz_names]
         self.see_file_amount = len(self.see_jpg_names)
-        # self.matplot_visual_dir = self.see_dir + "/matplot_visual"
-        # Check_dir_exist_and_build(self.matplot_visual_dir)
 
     def save_as_jpg(self):  ### 後來看覺得好像有點多餘
-        Check_dir_exist_and_build(self.see_dir)
-        Save_as_jpg(self.see_dir, self.see_dir, delete_ord_file=True)
+        Check_dir_exist_and_build(self.see_write_dir)
+        Save_as_jpg(self.see_write_dir, self.see_write_dir, delete_ord_file=True)
 
     def save_as_avi(self):  ### 後來看覺得好像有點多餘
-        Check_dir_exist_and_build(self.see_dir)
-        Video_combine_from_dir(self.see_dir, self.see_dir, "0-combine_jpg_tail_long.avi", tail_long=True)
+        Check_dir_exist_and_build(self.see_write_dir)
+        Video_combine_from_dir(self.see_dir, self.see_write_dir, "0-combine_jpg_tail_long.avi", tail_long=True)
 
 
 
@@ -60,13 +61,13 @@ class See_visual(See_info):
       所以要看的東西就是簡單的：
         單純的input, 單純的output, 單純的gt
     """
-    def __init__(self, result_dir, see_name):
-        super(See_visual, self).__init__(result_dir, see_name)
-        self.matplot_visual_dir = self.see_dir + "/matplot_visual"
+    def __init__(self, result_read_dir, result_write_dir, see_name):
+        super(See_visual, self).__init__(result_read_dir, result_write_dir, see_name)
+        self.matplot_visual_dir = self.see_write_dir + "/matplot_visual"
 
         ### 不確定要不要，因為在initial就做這麼多事情好嗎~~會不會容易出錯哩~~
         ### 覺得還是不要比較好，要使用到的時候再建立，要不然有時候在analyze只是想要result_obj而已，結果又把see資料夾又重建了一次
-        # Check_dir_exist_and_build(self.see_dir)
+        # Check_dir_exist_and_build(self.see_write_dir)
         # self.get_see_dir_info()   ### 好像只有在 analyze時會用到！所以用到的時候再抓就好囉！
         self.single_row_imgs_during_train = None  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
 
@@ -116,16 +117,13 @@ class See_visual(See_info):
                 single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     def _draw_matplot_visual_after_train_multiprocess(self, add_loss, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
-        print("processing %s" % self.see_name)
-        from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss], print_msg=print_msg)
 
 
     def save_as_matplot_visual_after_train(self, add_loss=False, single_see_multiprocess=True, print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_visual_multiprocess)，傳參數時這要設為false喔！
-        print(f"doing {self.see_name} save_as_matplot_visual_after_train")
+        print(f"See level: doing save_as_matplot_visual_after_train, Current See:{self.see_name}")
         start_time = time.time()
-        # matplot_visual_dir = self.see_dir + "/" + "matplot_visual" ### 分析結果存哪裡定位出來
-        Check_dir_exist_and_build(self.see_dir)
+        Check_dir_exist_and_build(self.see_write_dir)
         Check_dir_exist_and_build_new_dir(self.matplot_visual_dir)      ### 建立 存結果的資料夾
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
@@ -142,7 +140,7 @@ class See_visual(See_info):
             Save_as_jpg(self.matplot_visual_dir, self.matplot_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
 
         # Video_combine_from_dir(self.matplot_visual_dir, self.matplot_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
-        print("save_as_matplot_visual_after_train cost_time:", time.time() - start_time)
+        print(f"See level: doing save_as_matplot_visual_after_train, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
@@ -156,12 +154,15 @@ class See_bm_rec(See_info):
           rec_visual資料夾
           順便視覺化一下(input, output, output_gt, rec, rec_gt)，bm視覺化好像有點問題先跳過ˊ口ˋ
     """
-    def __init__(self, result_dir, see_name):
-        super(See_bm_rec, self).__init__(result_dir, see_name)
+    def __init__(self, result_read_dir, result_write_dir, see_name):
+        super(See_bm_rec, self).__init__(result_read_dir, result_write_dir, see_name)
 
-        self.matplot_bm_rec_visual_dir = self.see_dir + "/matplot_bm_rec_visual"
-        self.bm_visual_dir             = self.see_dir + "/matplot_bm_rec_visual/bm_visual"
-        self.rec_visual_dir            = self.see_dir + "/matplot_bm_rec_visual/rec_visual"
+        self.matplot_bm_rec_visual_read_dir   = self.see_dir       + "/matplot_bm_rec_visual"
+        self.matplot_bm_rec_visual_write_dir  = self.see_write_dir + "/matplot_bm_rec_visual"
+        self.bm_visual_read_dir               = self.see_dir       + "/matplot_bm_rec_visual/bm_visual"
+        self.bm_visual_write_dir              = self.see_write_dir + "/matplot_bm_rec_visual/bm_visual"
+        self.rec_visual_read_dir              = self.see_dir       + "/matplot_bm_rec_visual/rec_visual"
+        self.rec_visual_write_dir             = self.see_write_dir + "/matplot_bm_rec_visual/rec_visual"
         self.bm_names  = None
         self.bm_paths  = None
         self.rec_names = None
@@ -170,14 +171,12 @@ class See_bm_rec(See_info):
     ###############################################################################################
     ###############################################################################################
     def get_bm_rec_info(self):
-        self.bm_names  = get_dir_certain_file_name(self.bm_visual_dir , ".jpg")
-        self.bm_paths  = [self.bm_visual_dir + "/" + name for name in self.bm_names]
-        self.rec_names = get_dir_certain_file_name(self.rec_visual_dir, ".jpg")
-        self.rec_paths = [self.rec_visual_dir + "/" + name for name in self.rec_names]
+        self.bm_names  = get_dir_certain_file_name(self.bm_visual_read_dir , ".jpg")
+        self.bm_paths  = [self.bm_visual_read_dir + "/" + name for name in self.bm_names]
+        self.rec_names = get_dir_certain_file_name(self.rec_visual_read_dir, ".jpg")
+        self.rec_paths = [self.rec_visual_read_dir + "/" + name for name in self.rec_names]
 
         self.see_file_amount = len(self.rec_names)
-        # self.matplot_visual_dir = self.see_dir + "/matplot_visual"
-        # Check_dir_exist_and_build(self.matplot_visual_dir)
 
     ###############################################################################################
     ###############################################################################################
@@ -247,8 +246,8 @@ class See_bm_rec(See_info):
 
         ### 單獨存大張 bm，有空再弄
         ### 單獨存大張 rec：
-        if(epoch <= 3): cv2.imwrite(self.rec_visual_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
-        cv2.imwrite(self.rec_visual_dir + "/" + "rec_epoch=%04i.jpg" % epoch, rec)     ### 存大張rec
+        if(epoch <= 3): cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
+        cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_epoch=%04i.jpg" % epoch, rec)     ### 存大張rec
 
         # del in_img
         # del gt_flow_v
@@ -268,12 +267,10 @@ class See_bm_rec(See_info):
             if(go_img >= 2):        ### 已經有用msdk寫防呆了，所以可以從 第三張開始做囉！
                 current_epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
                 single_row_imgs = self._Draw_matplot_bm_rec_visual(current_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
-                single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+                single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_write_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=CORE_AMOUNT_BM_REC_VISUAL, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
-        print("processing %s" % self.see_name)
         start_time = time.time()
-        from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=print_msg)
         print("draw_matplot_bm_rec_visual_after_train cost_time:", time.time() - start_time)
 
@@ -282,50 +279,48 @@ class See_bm_rec(See_info):
                                            bgr2rgb =False,
                                            single_see_multiprocess=True,
                                            print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_bm_rec_visual_multiprocess)，傳參數時這要設為false喔！
-        print(f"doing {self.see_name} save_as_matplot_bm_rec_visual_after_train")
+        print(f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}")
         start_time = time.time()
-        # matplot_bm_rec_visual_dir = self.see_dir + "/" + "matplot_bm_rec_visual" ### 分析結果存哪裡定位出來
-        Check_dir_exist_and_build(self.see_dir)
-        Check_dir_exist_and_build_new_dir(self.matplot_bm_rec_visual_dir)  ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
-        Check_dir_exist_and_build_new_dir(self.bm_visual_dir)              ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
-        Check_dir_exist_and_build_new_dir(self.rec_visual_dir)             ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
+        Check_dir_exist_and_build(self.see_write_dir)
+        Check_dir_exist_and_build_new_dir(self.matplot_bm_rec_visual_write_dir)  ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
+        Check_dir_exist_and_build_new_dir(self.bm_visual_write_dir)              ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
+        Check_dir_exist_and_build_new_dir(self.rec_visual_write_dir)             ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
         if(single_see_multiprocess):
             ### see內的任務 有切 multiprocess
             self._draw_matplot_bm_rec_visual_after_train_multiprocess(add_loss, bgr2rgb, core_amount=CORE_AMOUNT_BM_REC_VISUAL, task_amount=self.see_file_amount, print_msg=print_msg)  ### see內的任務 當單位來切，task_amount輸入self.see_file_amount是對的！不用-2變epoch喔！
             ### 後處理讓結果更小 但 又不失視覺品質
-            Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-            Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
+            Find_ltrd_and_crop(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+            Save_as_jpg(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
         else:
             ### see內的任務 不切 multiprocess，和上面幾乎一樣，只差 call 沒 multiprocess 的 method 和 core_amount 指定1
             self._draw_matplot_bm_rec_visual_after_train(0, self.see_file_amount, add_loss, bgr2rgb)
             ### 後處理讓結果更小 但 又不失視覺品質
-            Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-            Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
-        Video_combine_from_dir(self.see_dir, self.see_dir)                                         ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
-        Video_combine_from_dir(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir)     ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
-        Video_combine_from_dir(self.rec_visual_dir, self.rec_visual_dir)     ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
-        print("save_as_matplot_bm_rec_visual_after_train cost_time:", time.time() - start_time)
+            Find_ltrd_and_crop(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+            Save_as_jpg(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
+
+        
+        print(f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}, cost time:{time.time() - start_time}")
 
     def save_as_matplot_bm_rec_visual_after_train_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):   ### 訓練後，對"指定"epoch的 see結果 產生 matplot_bm_rec_visual
-        print(f"doing {self.see_name} save_as_matplot_bm_rec_visual_after_train_at_certain_epoch:{epoch}")
+        print(f"See level: doing save_as_matplot_bm_rec_visual_after_train_at_certain_epoch, Current See:{self.see_name}, at_certain_epoch:{epoch}")
         start_time = time.time()
-        Check_dir_exist_and_build(self.see_dir)
-        Check_dir_exist_and_build(self.matplot_bm_rec_visual_dir)  ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
-        Check_dir_exist_and_build(self.bm_visual_dir)              ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
-        Check_dir_exist_and_build(self.rec_visual_dir)             ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
+        Check_dir_exist_and_build(self.see_write_dir)
+        Check_dir_exist_and_build(self.matplot_bm_rec_visual_write_dir)  ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
+        Check_dir_exist_and_build(self.bm_visual_write_dir)              ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
+        Check_dir_exist_and_build(self.rec_write_visual_dir)             ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
 
         ### 防呆一下
         current_final_epoch = self.see_file_amount - 3   ### epochs是 epoch總數，要減掉：in_img, gt_img 和 epoch0
         if(epoch <= current_final_epoch):
             single_row_imgs = self._Draw_matplot_bm_rec_visual(epoch, add_loss, bgr2rgb)
-            single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+            single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_write_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
             ### 後處理讓結果更小 但 又不失視覺品質
-            # Find_ltrd_and_crop(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 兩次以上有危險可能會 crop錯喔！所以就不crop了~
-            Save_as_jpg(self.matplot_bm_rec_visual_dir, self.matplot_bm_rec_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], multiprocess=True, core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
-            print("cost_time:", time.time() - start_time)
+            # Find_ltrd_and_crop(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 兩次以上有危險可能會 crop錯喔！所以就不crop了~
+            Save_as_jpg(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], multiprocess=True, core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
+            print(f"See level: doing save_as_matplot_bm_rec_visual_after_train_at_certain_epoch, Current See:{self.see_name}, at_certain_epoch:{epoch}, cost_time:{time.time() - start_time}")
         else:
             print("epoch=%i 超過目前exp的epoch數目囉！有可能是還沒train完see還沒產生到該epoch 或者 是輸入的epoch數 超過 epochs囉！" % epoch)
             print("save_as_matplot_bm_rec_visual_after_train_at_certain_epoch不做事情拉~")
@@ -351,14 +346,14 @@ class See_try_npy_to_npz(See_info):
             npys.append(np.load(self.see_dir + "/" + see_npy_name))   ### 344 MB
         start_time = time.time()
         for go_name, npy in enumerate(npys):
-            np.save(self.see_dir + "/" + self.see_npy_names[go_name], npy)
+            np.save(self.see_write_dir + "/" + self.see_npy_names[go_name], npy)
         save_3_time = time.time() - start_time
         print("save_3_save_50_npy ok")
 
         ### save_2_save_50_npz
         start_time = time.time()
         for go_name, npy in enumerate(npys):
-            np.savez_compressed(self.see_dir + "/" + self.see_npy_names[go_name].replace(".npy", ""), npy)
+            np.savez_compressed(self.see_write_dir + "/" + self.see_npy_names[go_name].replace(".npy", ""), npy)
         save_2_time = time.time() - start_time
         print("save_2_save_50_npz ok")
 
@@ -371,7 +366,7 @@ class See_try_npy_to_npz(See_info):
 
         ### save_1_save_1_npz_conatin_50npy
         start_time = time.time()
-        np.savez_compressed(self.see_dir + "/" + "000_try_npz", np.array(npys))
+        np.savez_compressed(self.see_write_dir + "/" + "000_try_npz", np.array(npys))
         save_1_time = time.time() - start_time
         print("save_1_save_1_npz_conatin_50npy ok")
 
@@ -409,7 +404,7 @@ class See_try_npy_to_npz(See_info):
     def _npy_to_npz(self, start_index, amount):
         for see_npy_name in tqdm(self.see_npy_names[start_index:start_index + amount]):
             npy = np.load(self.see_dir + "/" + see_npy_name)
-            np.savez_compressed(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
+            np.savez_compressed(self.see_write_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
             os.remove(self.see_dir + "/" + see_npy_name)
             # print(self.see_dir + "/" + see_npy_name, "delete ok")
             # npz = np.load(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"))  ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
@@ -417,7 +412,6 @@ class See_try_npy_to_npz(See_info):
 
     def _npy_to_npz_multiprocess(self, core_amount=CORE_AMOUNT_NPY_TO_NPZ, task_amount=600, print_msg=False):
         print("processing %s" % self.see_name)
-        from util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._npy_to_npz, print_msg=print_msg)
 
 
@@ -425,7 +419,7 @@ class See_try_npy_to_npz(See_info):
         """
         把 See 資料夾內的.npy改存成.npz，存完會把.npy刪除喔～
         """
-        print(f"doing {self.see_name} turn all npy to npz")
+        print(f"See level: doing all_npy_to_npz, Current See:{self.see_name}")
         start_time = time.time()
         self.get_see_dir_info()
         if(len(self.see_npy_names) > 0):
@@ -436,23 +430,23 @@ class See_try_npy_to_npz(See_info):
 
                 # for see_npy_name in tqdm(self.see_npy_names):
                 #     npy = np.load(self.see_dir + "/" + see_npy_name)
-                #     np.savez_compressed(self.see_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
+                #     np.savez_compressed(self.see_write_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
                 #     os.remove(self.see_dir + "/" + see_npy_name)
-        print("all_npy_to_npz cost time:", time.time() - start_time)
+        print(f"See level: doing all_npy_to_npz, Current See:{self.see_name}, cost time:{time.time() - start_time}")
 
 
 
 
 class See(See_visual, See_bm_rec, See_try_npy_to_npz):
-    def __init__(self, result_dir, see_name):
-        super(See, self).__init__(result_dir, see_name)
+    def __init__(self, result_read_dir, result_write_dir, see_name):
+        super(See, self).__init__(result_read_dir, result_write_dir, see_name)
 
 
 if(__name__ == "__main__"):
     from step0_access_path import result_access_path
-    try_npy_to_npz = See( result_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_3b_4-20210306_231628-flow_unet-ch32_bn_16", see_name="see_001-real")
-    # try_npy_to_npz = See( result_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_001-real")
-    # try_npy_to_npz = See( result_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_005-train")
+    # try_npy_to_npz = See( result_read_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_3b_4-20210306_231628-flow_unet-ch32_bn_16", see_name="see_001-real")
+    # try_npy_to_npz = See( result_read_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_001-real")
+    # try_npy_to_npz = See( result_read_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_005-train")
     # try_npy_to_npz.npy_to_npz_comapre()
-    try_npy_to_npz.all_npy_to_npz(multiprocess=True)
+    # try_npy_to_npz.all_npy_to_npz(multiprocess=True)
     # try_npy_to_npz.all_npy_to_npz(multiprocess=True)

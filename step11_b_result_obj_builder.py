@@ -1,4 +1,4 @@
-from step0_access_path import result_access_path
+from step0_access_path import result_read_path, result_write_path
 from step06_a_datas_obj import DB_C
 from step11_a1_see_obj import See
 from step11_a2_result_obj import Result
@@ -11,38 +11,40 @@ class Result_init_builder:
             self.result = result
 
     def build(self):
-        print(self.result.result_name, "build finish ~~~~~~~~~~~~~~~~~~")
+        print(f"Result build finish, can use {self.result.result_name}")
         return self.result
 
 class Result_sees_builder(Result_init_builder):
     def _build_sees(self, sees_ver, in_use_range, gt_use_range):
         if  (sees_ver == "sees_ver1"):
-            self.result.sees = [See(self.result.result_dir, "see-%03i" % see_num) for see_num in range(32)]
+            self.result.sees = [See(self.result.result_read_dir, self.result.result_write_dir, "see-%03i" % see_num) for see_num in range(32)]
         elif(sees_ver == "sees_ver2"):
-            self.result.sees = [See(self.result.result_dir, "see_000-test_emp"),
-                           See(self.result.result_dir, "see_001-test_img"), See(self.result.result_dir, "see_002-test_img"), See(self.result.result_dir, "see_003-test_img"), See(self.result.result_dir, "see_004-test_img"), See(self.result.result_dir, "see_005-test_img"),
-                           See(self.result.result_dir, "see_006-test_lin"), See(self.result.result_dir, "see_007-test_lin"), See(self.result.result_dir, "see_008-test_lin"), See(self.result.result_dir, "see_009-test_lin"), See(self.result.result_dir, "see_010-test_lin"),
-                           See(self.result.result_dir, "see_011-test_str"), See(self.result.result_dir, "see_012-test_str"), See(self.result.result_dir, "see_013-test_str"), See(self.result.result_dir, "see_014-test_str"), See(self.result.result_dir, "see_015-test_str"),
-                           See(self.result.result_dir, "see_016-train_emp"),
-                           See(self.result.result_dir, "see_017-train_img"), See(self.result.result_dir, "see_018-train_img"), See(self.result.result_dir, "see_019-train_img"), See(self.result.result_dir, "see_020-train_img"), See(self.result.result_dir, "see_021-train_img"),
-                           See(self.result.result_dir, "see_022-train_lin"), See(self.result.result_dir, "see_023-train_lin"), See(self.result.result_dir, "see_024-train_lin"), See(self.result.result_dir, "see_025-train_lin"), See(self.result.result_dir, "see_026-train_lin"),
-                           See(self.result.result_dir, "see_027-train_str"), See(self.result.result_dir, "see_028-train_str"), See(self.result.result_dir, "see_029-train_str"), See(self.result.result_dir, "see_030-train_str"), See(self.result.result_dir, "see_031-train_str")]
+            self.result.sees = [
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_000-test_emp"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_001-test_img"), See(self.result.result_read_dir, self.result.result_write_dir, "see_002-test_img"), See(self.result.result_read_dir, self.result.result_write_dir, "see_003-test_img"), See(self.result.result_read_dir, self.result.result_write_dir, "see_004-test_img"), See(self.result.result_read_dir, self.result.result_write_dir, "see_005-test_img"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_006-test_lin"), See(self.result.result_read_dir, self.result.result_write_dir, "see_007-test_lin"), See(self.result.result_read_dir, self.result.result_write_dir, "see_008-test_lin"), See(self.result.result_read_dir, self.result.result_write_dir, "see_009-test_lin"), See(self.result.result_read_dir, self.result.result_write_dir, "see_010-test_lin"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_011-test_str"), See(self.result.result_read_dir, self.result.result_write_dir, "see_012-test_str"), See(self.result.result_read_dir, self.result.result_write_dir, "see_013-test_str"), See(self.result.result_read_dir, self.result.result_write_dir, "see_014-test_str"), See(self.result.result_read_dir, self.result.result_write_dir, "see_015-test_str"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_016-train_emp"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_017-train_img"), See(self.result.result_read_dir, self.result.result_write_dir, "see_018-train_img"), See(self.result.result_read_dir, self.result.result_write_dir, "see_019-train_img"), See(self.result.result_read_dir, self.result.result_write_dir, "see_020-train_img"), See(self.result.result_read_dir, self.result.result_write_dir, "see_021-train_img"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_022-train_lin"), See(self.result.result_read_dir, self.result.result_write_dir, "see_023-train_lin"), See(self.result.result_read_dir, self.result.result_write_dir, "see_024-train_lin"), See(self.result.result_read_dir, self.result.result_write_dir, "see_025-train_lin"), See(self.result.result_read_dir, self.result.result_write_dir, "see_026-train_lin"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_027-train_str"), See(self.result.result_read_dir, self.result.result_write_dir, "see_028-train_str"), See(self.result.result_read_dir, self.result.result_write_dir, "see_029-train_str"), See(self.result.result_read_dir, self.result.result_write_dir, "see_030-train_str"), See(self.result.result_read_dir, self.result.result_write_dir, "see_031-train_str")]
         elif(sees_ver == "sees_ver3"):
-            self.result.sees = [See(self.result.result_dir, "see_000-test_lt1"), See(self.result.result_dir, "see_001-test_lt2"), See(self.result.result_dir, "see_002-test_lt3"), See(self.result.result_dir, "see_003-test_lt4"),
-                            See(self.result.result_dir, "see_004-test_rt1"), See(self.result.result_dir, "see_005-test_rt2"), See(self.result.result_dir, "see_006-test_rt3"), See(self.result.result_dir, "see_007-test_rt4"),
-                            See(self.result.result_dir, "see_008-test_ld1"), See(self.result.result_dir, "see_009-test_ld2"), See(self.result.result_dir, "see_010-test_ld3"), See(self.result.result_dir, "see_011-test_ld4"),
-                            See(self.result.result_dir, "see_012-test_rd1"), See(self.result.result_dir, "see_013-test_rd2"), See(self.result.result_dir, "see_014-test_rd3"), See(self.result.result_dir, "see_015-test_rd4"),
-                            See(self.result.result_dir, "see_016-train_lt1"), See(self.result.result_dir, "see_017-train_lt2"), See(self.result.result_dir, "see_018-train_lt3"), See(self.result.result_dir, "see_019-train_lt4"),
-                            See(self.result.result_dir, "see_020-train_rt1"), See(self.result.result_dir, "see_021-train_rt2"), See(self.result.result_dir, "see_022-train_rt3"), See(self.result.result_dir, "see_023-train_rt4"),
-                            See(self.result.result_dir, "see_024-train_ld1"), See(self.result.result_dir, "see_025-train_ld2"), See(self.result.result_dir, "see_026-train_ld3"), See(self.result.result_dir, "see_027-train_ld4"),
-                            See(self.result.result_dir, "see_028-train_rd1"), See(self.result.result_dir, "see_029-train_rd2"), See(self.result.result_dir, "see_030-train_rd3"), See(self.result.result_dir, "see_031-train_rd4")]
+            self.result.sees = [
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_000-test_lt1"), See(self.result.result_read_dir, self.result.result_write_dir, "see_001-test_lt2"), See(self.result.result_read_dir, self.result.result_write_dir, "see_002-test_lt3"), See(self.result.result_read_dir, self.result.result_write_dir, "see_003-test_lt4"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_004-test_rt1"), See(self.result.result_read_dir, self.result.result_write_dir, "see_005-test_rt2"), See(self.result.result_read_dir, self.result.result_write_dir, "see_006-test_rt3"), See(self.result.result_read_dir, self.result.result_write_dir, "see_007-test_rt4"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_008-test_ld1"), See(self.result.result_read_dir, self.result.result_write_dir, "see_009-test_ld2"), See(self.result.result_read_dir, self.result.result_write_dir, "see_010-test_ld3"), See(self.result.result_read_dir, self.result.result_write_dir, "see_011-test_ld4"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_012-test_rd1"), See(self.result.result_read_dir, self.result.result_write_dir, "see_013-test_rd2"), See(self.result.result_read_dir, self.result.result_write_dir, "see_014-test_rd3"), See(self.result.result_read_dir, self.result.result_write_dir, "see_015-test_rd4"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_016-train_lt1"), See(self.result.result_read_dir, self.result.result_write_dir, "see_017-train_lt2"), See(self.result.result_read_dir, self.result.result_write_dir, "see_018-train_lt3"), See(self.result.result_read_dir, self.result.result_write_dir, "see_019-train_lt4"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_020-train_rt1"), See(self.result.result_read_dir, self.result.result_write_dir, "see_021-train_rt2"), See(self.result.result_read_dir, self.result.result_write_dir, "see_022-train_rt3"), See(self.result.result_read_dir, self.result.result_write_dir, "see_023-train_rt4"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_024-train_ld1"), See(self.result.result_read_dir, self.result.result_write_dir, "see_025-train_ld2"), See(self.result.result_read_dir, self.result.result_write_dir, "see_026-train_ld3"), See(self.result.result_read_dir, self.result.result_write_dir, "see_027-train_ld4"),
+                See(self.result.result_read_dir, self.result.result_write_dir, "see_028-train_rd1"), See(self.result.result_read_dir, self.result.result_write_dir, "see_029-train_rd2"), See(self.result.result_read_dir, self.result.result_write_dir, "see_030-train_rd3"), See(self.result.result_read_dir, self.result.result_write_dir, "see_031-train_rd4")]
         elif(sees_ver == "sees_ver4_blender"):
-            # self.result.sees = [See(self.result.result_dir, "see_001-real") , See(self.result.result_dir, "see_002-real") , See(self.result.result_dir, "see_003-real"), See(self.result.result_dir , "see_004-real"),
-            #                     See(self.result.result_dir, "see_005-train"), See(self.result.result_dir, "see_006-train"), See(self.result.result_dir, "see_007-train"), See(self.result.result_dir, "see_008-train"),
-            #                     See(self.result.result_dir, "see_009-test") , See(self.result.result_dir, "see_010-test") , See(self.result.result_dir, "see_011-test") , See(self.result.result_dir, "see_012-test")]
-            self.result.sees = [See(self.result.result_dir, "see_001-real") , See(self.result.result_dir, "see_002-real") , See(self.result.result_dir, "see_003-real"), See(self.result.result_dir , "see_004-real"),
-                                See(self.result.result_dir, "see_008-train"),
-                                See(self.result.result_dir, "see_009-test") , See(self.result.result_dir, "see_010-test") ]
+            # self.result.sees = [See(self.result.result_read_dir, self.result.result_write_dir, "see_001-real") , See(self.result.result_read_dir, self.result.result_write_dir, "see_002-real") , See(self.result.result_read_dir, self.result.result_write_dir, "see_003-real"), See(self.result.result_read_dir, self.result.result_write_dir, "see_004-real"),
+            #                     See(self.result.result_read_dir, self.result.result_write_dir, "see_005-train"), See(self.result.result_read_dir, self.result.result_write_dir, "see_006-train"), See(self.result.result_read_dir, self.result.result_write_dir, "see_007-train"), See(self.result.result_read_dir, self.result.result_write_dir, "see_008-train"),
+            #                     See(self.result.result_read_dir, self.result.result_write_dir, "see_009-test") , See(self.result.result_read_dir, self.result.result_write_dir, "see_010-test") , See(self.result.result_read_dir, self.result.result_write_dir, "see_011-test") , See(self.result.result_read_dir, self.result.result_write_dir, "see_012-test")]
+            self.result.sees = [See(self.result.result_read_dir, self.result.result_write_dir, "see_001-real") , See(self.result.result_read_dir, self.result.result_write_dir, "see_002-real") , See(self.result.result_read_dir, self.result.result_write_dir, "see_003-real"), See(self.result.result_read_dir , self.result.result_write_dir, "see_004-real"),
+                                See(self.result.result_read_dir, self.result.result_write_dir, "see_008-train"),
+                                See(self.result.result_read_dir, self.result.result_write_dir, "see_009-test") , See(self.result.result_read_dir, self.result.result_write_dir, "see_010-test") ]
 
         self.result.see_amount = len(self.result.sees)
         # self.result.see_file_amount = self.result.sees[0].see_file_amount   ### 覺得 see 已經有 see_file_amount了，result 就不需要這attr了， 想用 要知道 要去 sees[...] 取 喔！
@@ -96,10 +98,12 @@ class Result_train_builder(Result_sees_builder):
         '''
         ### step3a.用result_name 來設定ckpt, logs 的資料夾
         self.result.result_name = result_name  ### 如果他被包在某個資料夾，該資料夾也算名字喔！ex：5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.35_copy
-        self.result.result_dir  = result_access_path + "result/" + result_name
-        self.result.ckpt_dir = self.result.result_dir + "/ckpt"
-        self.result.logs_dir = self.result.result_dir + "/logs"
-        self.result.test_dir = self.result.result_dir + "/test"
+        self.result.result_read_dir  = result_read_path  + "result/" + result_name
+        self.result.result_write_dir = result_write_path + "result/" + result_name
+        self.result.ckpt_read_dir    = self.result.result_read_dir + "/ckpt"
+        self.result.ckpt_write_dir   = self.result.result_write_dir + "/ckpt"
+        self.result.logs_dir = self.result.result_write_dir + "/logs"
+        self.result.test_dir = self.result.result_write_dir + "/test"
 
         ### step3b. 設定 in/gt_use_range，這步一定要在 建立 sees 前面做喔！這樣 sees 才知道怎麼設 in/gt_use_range
         self.result.in_use_range = in_use_range

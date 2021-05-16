@@ -36,7 +36,7 @@ class Experiment():
         import datetime
         import shutil
         from build_dataset_combine import Check_dir_exist_and_build
-        code_dir = self.result_obj.result_dir + "/" + "train_code_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  ### 定位出 result存code的目的地
+        code_dir = self.result_obj.result_write_dir + "/" + "train_code_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  ### 定位出 result存code的目的地
         Check_dir_exist_and_build(code_dir)                         ### 建立目的地資料夾
         py_file_names = get_dir_certain_file_name(".", certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
         for py_file_name in py_file_names:
@@ -304,7 +304,7 @@ class Experiment():
 
         for see_index, (test_in, test_in_pre, test_gt) in enumerate(tqdm(zip(see_in.take(see_amount), see_in_pre.take(see_amount), see_gt.take(see_amount)))):
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow" not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_dir, result_obj, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                 "flow" not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_write_dir, result_obj, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, training, see_reset_init)
             elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
             elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
@@ -352,7 +352,7 @@ class Experiment():
         print("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))
         print("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1)))))
         print("")
-        with open(self.result_obj.result_dir + "/" + "cost_time.txt", "a") as f:
+        with open(self.result_obj.result_write_dir + "/" + "cost_time.txt", "a") as f:
             f.write(self.phase)                                                                                         ; f.write("\n")
             f.write('epoch %i start at:%s, %s, %s' % (epoch, epoch_start_timestamp, self.machine_ip, self.machine_user)); f.write("\n")
             f.write('epoch cost time:%.2f'         % (epoch_cost_time))                                                 ; f.write("\n")
