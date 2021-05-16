@@ -1,5 +1,8 @@
-data_access_path = "I:/0 data_dir/"  ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
-result_access_path = "D:/0 data_dir/"
+# result_access_path = "D:/0 data_dir/"  ### 放所有training 且 後處理好的 result
+result_read_path   = "D:/0 data_dir/"    ### 放所有training 且 後處理好的 result
+result_write_path  = "G:/0 data_dir/"    ### 放所有training 且 後處理好的 result
+# result_access_path = "G:/0 data_dir/"  ### 放 training 中的 result
+# result_access_path = "I:/0 data_dir/"  ### 整理 舊analyze
 JPG_QUALITY = 30
 CORE_AMOUNT = 8
 CORE_AMOUNT_NPY_TO_NPZ = 4

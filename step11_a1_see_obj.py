@@ -452,10 +452,10 @@ class See(See_visual, See_bm_rec, See_try_npy_to_npz):
 
 
 if(__name__ == "__main__"):
-    from step0_access_path import result_access_path
-    # try_npy_to_npz = See( result_read_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_3b_4-20210306_231628-flow_unet-ch32_bn_16", see_name="see_001-real")
-    # try_npy_to_npz = See( result_read_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_001-real")
-    # try_npy_to_npz = See( result_read_dir=result_access_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_005-train")
+    from step0_access_path import result_read_path
+    # try_npy_to_npz = See( result_read_dir=result_read_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_3b_4-20210306_231628-flow_unet-ch32_bn_16", see_name="see_001-real")
+    # try_npy_to_npz = See( result_read_dir=result_read_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_001-real")
+    # try_npy_to_npz = See( result_read_dir=result_read_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_005-train")
     # try_npy_to_npz.npy_to_npz_comapre()
     # try_npy_to_npz.all_npy_to_npz(multiprocess=True)
     # try_npy_to_npz.all_npy_to_npz(multiprocess=True)
