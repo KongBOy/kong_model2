@@ -95,7 +95,8 @@ class Experiment():
         ### 參數設定結束
         ####################################################################################################################
         self.tf_data      = None
-        self.ckpt_manager = None
+        self.ckpt_read_manager  = None
+        self.ckpt_write_manager = None
 
 ################################################################################################################################################
 ################################################################################################################################################
@@ -114,9 +115,10 @@ class Experiment():
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(in_use_range=self.in_use_range, gt_use_range=self.gt_use_range).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
         ### 3.model
-        self.ckpt_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
+        self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
+        self.ckpt_write_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_write_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
         if(reload_model):  ### 看需不需要reload model
-            self.model_obj.ckpt.restore(self.ckpt_manager.latest_checkpoint)
+            self.model_obj.ckpt.restore(self.ckpt_read_manager.latest_checkpoint)
             self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
             print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
 
@@ -148,7 +150,7 @@ class Experiment():
             max_db_move_x, max_db_move_y = get_max_db_move_xy(db_dir=self.db_obj.category, db_name=self.db_obj.db_name)  ### g生成的結果 做 apply_rec_move用
             self.model_obj.ckpt.max_db_move_x.assign(max_db_move_x)  ### 在test時 rec_img需要，所以要存起來
             self.model_obj.ckpt.max_db_move_y.assign(max_db_move_y)  ### 在test時 rec_img需要，所以要存起來
-            self.ckpt_manager.save()
+            self.ckpt_write_manager.save()
             print("save ok ~~~~~~~~~~~~~~~~~")
 
         current_epoch = self.start_epoch   ### 因為 epoch 的狀態 在 train 前後是不一樣的，所以需要用一個變數來記住，就用這個current_epoch來記錄囉！
@@ -183,7 +185,7 @@ class Experiment():
             if (current_epoch) % self.epoch_save_freq == 0:
                 # print("save epoch_log :", current_epoch)
                 self.model_obj.ckpt.epoch_log.assign(current_epoch)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
-                self.ckpt_manager.save()
+                self.ckpt_write_manager.save()
                 print("save ok ~~~~~~~~~~~~~~~~~")
             ###############################################################################################################################
             ###    step5 紀錄、顯示 訓練相關的時間
