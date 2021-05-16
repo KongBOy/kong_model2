@@ -125,9 +125,9 @@ class Experiment():
         ####################################################################################################################
         ### 4.Loss_info, (5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉)
         ###   loss_info_builder 在 exo build的時候就已經有指定一個了， 那個是要給 step12用的
-        ###   train 用的 是要搭配 這裡才知道的 result 資訊(logs_dir) 後的 loss_info_builder
-        self.loss_info_builder.set_logs_dir(self.result_obj.logs_dir)  ### 所以 loss_info_builder 要 根據 result資訊(logs_dir) 先更新一下
-        self.loss_info_obj = self.loss_info_builder.build()  ### 上面 result_obj 定位出 logs_dir 後 更新 loss_info_obj
+        ###   train 用的 是要搭配 這裡才知道的 result 資訊(logs_read/write_dir) 後的 loss_info_builder
+        self.loss_info_builder.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builder 要 根據 result資訊(logs_read/write_dir) 先更新一下
+        self.loss_info_obj = self.loss_info_builder.build()  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_obj 囉！
 
 
     def train_reload(self):
@@ -318,7 +318,7 @@ class Experiment():
         # print("sample all see time:", time.time()-sample_start_time)
 
     def train_step3_Loss_info_save_loss(self, epoch):
-        if(epoch == 1 or self.phase == "train_reload"): self.loss_info_obj.summary_writer = tf.summary.create_file_writer(self.loss_info_obj.logs_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的，注意 只有第一次 要建立tensorboard喔！
+        if(epoch == 1 or self.phase == "train_reload"): self.loss_info_obj.summary_writer = tf.summary.create_file_writer(self.loss_info_obj.logs_write_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的，注意 只有第一次 要建立tensorboard喔！
         with self.loss_info_obj.summary_writer.as_default():
             for loss_name, loss_containor in self.loss_info_obj.loss_containors.items():
                 ### tensorboard
@@ -328,20 +328,20 @@ class Experiment():
                 ### 自己另存成 npy
                 loss_value = loss_containor.result().numpy()
                 if(epoch == 1):  ### 第一次 直接把值存成np.array
-                    np.save(self.result_obj.logs_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
+                    np.save(self.result_obj.logs_write_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
 
                 else:  ### 第二次後，先把np.array先讀出來append值後 再存進去
-                    loss_array = np.load(self.result_obj.logs_dir + "/" + loss_name + ".npy")
+                    loss_array = np.load(self.result_obj.logs_write_dir + "/" + loss_name + ".npy")  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
                     loss_array = loss_array[:epoch]   ### 這是為了防止 如果程式在 step3,4之間中斷 這種 loss已經存完 但 model還沒存 的狀況，loss 會比想像中的多一步，所以加這行防止這種情況發生喔
                     loss_array = np.append(loss_array, loss_value)
-                    np.save(self.result_obj.logs_dir + "/" + loss_name, np.array(loss_array))
+                    np.save(self.result_obj.logs_write_dir + "/" + loss_name, np.array(loss_array))
                     # print(loss_array)
 
         ###    reset tensorboard 的 loss紀錄容器
         for loss_containor in self.loss_info_obj.loss_containors.values():
             loss_containor.reset_states()
         ###############################################################
-        self.loss_info_obj.see_loss(self.epochs)  ### 把 loss資訊 用 matplot畫出來
+        self.loss_info_obj.see_loss_during_train(self.epochs)  ### 把 loss資訊 用 matplot畫出來
         ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了
         # self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
@@ -386,7 +386,7 @@ class Experiment():
 
     def board_rebuild(self):
         self.exp_init(reload_result=True, reload_model=False)
-        self.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(self, dst_dir=self.result_obj.logs_dir)
+        self.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(self, dst_dir=self.result_obj.logs_write_dir)
         print("board_rebuild finish")
         print("")
 
@@ -469,16 +469,17 @@ class Exp_builder():
 
             ### 寫兩行的話 比較好打註解，寫一行其實也可以下面有補充～～
             self.exp.loss_info_builder = self.exp.loss_info_builder.copy()                                      ### 要做copy的動作， 才不會每個 exp_builder 都用到相同的 loss_info_builder 導致 建出相同的 loss_info_obj
-            self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_dir 的問題啦！
+            self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
             ### 補充：如果寫一行的話：
-            # self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_dir).copy()  ### 先後copy() 都沒差
+            # self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).copy()  ### 先後copy() 都沒差
 
-            ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_dir 的問題啦！
-            # self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_dir 的問題啦！
+            ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
+            # self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
             # self.exp.loss_info_obj = self.exp.loss_info_builder.build()  ### 這裡就要build了喔！為了給 step12 用拉！
 
-            # self.exp.loss_info_obj = Loss_info_builder(self.exp.loss_info_obj, in_obj_copy=True).set_logs_dir(self.exp.result_obj.logs_dir).build()  ### 上面定位出 logs_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
-            # print("self.exp.loss_info_obj.logs_dir", self.exp.loss_info_obj.logs_dir)
+            # self.exp.loss_info_obj = Loss_info_builder(self.exp.loss_info_obj, in_obj_copy=True).set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).build()  ### 上面定位出 logs_read/write_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
+            # print("self.exp.loss_info_obj.logs_read_dir", self.exp.loss_info_obj.logs_read_dir)
+            # print("self.exp.loss_info_obj.logs_write_dir", self.exp.loss_info_obj.logs_write_dir)
             # print()  ### 追蹤see的建立過程
             print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
         return self.exp

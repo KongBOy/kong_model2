@@ -68,7 +68,7 @@ class Col_results_analyzer(Result_analyzer):
                 single_row_imgs.Draw_img()
                 if(add_loss):
                     for go_result, result in enumerate(self.c_results):
-                        single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result + 1], logs_dir=result.logs_dir, cur_epoch=epoch, min_epochs=self.c_min_train_epochs)
+                        single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=epoch, min_epochs=self.c_min_train_epochs)
                 single_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=epoch)
 
 
@@ -139,7 +139,7 @@ class Col_results_analyzer(Result_analyzer):
                 multi_row_imgs.Draw_img()
                 if(add_loss):
                     for go_result, result in enumerate(self.c_results):
-                        multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_result + 1], logs_dir=result.logs_dir, cur_epoch=epoch, min_epochs=self.c_min_train_epochs)
+                        multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=epoch, min_epochs=self.c_min_train_epochs)
                 multi_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=epoch)
 
     def _draw_col_results_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss=False, core_amount=8, task_amount=100):
@@ -366,8 +366,10 @@ class Bm_Rec_exps_analyze(Result_analyzer):
         for exp in self.exps:
             analyze_board_ana_dir = analyze_board_dir + "/" + exp.result_obj.ana_describe   ### D:\0 data_dir\analyze_dir\5_14-bm_rec-2_1-ch_results\boards\exp.result_obj.ana_describe
             exp.loss_info_obj = exp.loss_info_builder.build()
-            print("exp.loss_info_builder.loss_info_obj.logs_dir ~~~~~~~", exp.loss_info_builder.loss_info_obj.logs_dir)
-            print("exp.loss_info_obj.logs_dir ~~~~~~~", exp.loss_info_obj.logs_dir)
+            print("exp.loss_info_builder.loss_info_obj.logs_read_dir ~~~~~~~ ", exp.loss_info_builder.loss_info_obj.logs_read_dir)
+            print("exp.loss_info_builder.loss_info_obj.logs_write_dir ~~~~~~~", exp.loss_info_builder.loss_info_obj.logs_write_dir)
+            print("exp.loss_info_obj.logs_read_dir ~~~~~~~ " , exp.loss_info_obj.logs_read_dir)
+            print("exp.loss_info_obj.logs_write_dir ~~~~~~~", exp.loss_info_obj.logs_write_dir)
             exp.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(exp=exp, dst_dir=analyze_board_ana_dir)
         return self
 

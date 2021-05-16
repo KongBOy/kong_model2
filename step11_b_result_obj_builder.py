@@ -102,7 +102,8 @@ class Result_train_builder(Result_sees_builder):
         self.result.result_write_dir = result_write_path + "result/" + result_name
         self.result.ckpt_read_dir    = self.result.result_read_dir + "/ckpt"
         self.result.ckpt_write_dir   = self.result.result_write_dir + "/ckpt"
-        self.result.logs_dir = self.result.result_write_dir + "/logs"
+        self.result.logs_read_dir  = self.result.result_read_dir + "/logs"
+        self.result.logs_write_dir = self.result.result_write_dir + "/logs"
         self.result.test_dir = self.result.result_write_dir + "/test"
 
         ### step3b. 設定 in/gt_use_range，這步一定要在 建立 sees 前面做喔！這樣 sees 才知道怎麼設 in/gt_use_range

@@ -24,7 +24,8 @@ class Result:
         self.result_write_dir = None
         self.ckpt_read_dir = None
         self.ckpt_write_dir = None
-        self.logs_dir = None
+        self.logs_read_dir  = None
+        self.logs_write_dir = None
         self.sees_ver = None
         self.sees = None
         self.see_amount = None
@@ -160,7 +161,7 @@ class Result:
                                     add_loss  =add_loss)
 
                 multi_row_imgs.Draw_img()
-                if(add_loss): multi_row_imgs.Draw_ax_loss_after_train(multi_row_imgs.ax[-1, 1], self.logs_dir, epoch, self.sees[see_num].see_file_amount - 2)
+                if(add_loss): multi_row_imgs.Draw_ax_loss_after_train(multi_row_imgs.ax[-1, 1], self.logs_read_dir, epoch, self.sees[see_num].see_file_amount - 2)
                 multi_row_imgs.Save_fig(dst_dir=matplot_multi_see_dir, epoch=epoch)
 
                 # fig, ax = matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles,
@@ -168,7 +169,7 @@ class Result:
                 #                               fig_title        = "epoch=%04i"%epoch,   ### 圖上的大標題
                 #                               bgr2rgb          = True,
                 #                               add_loss         = add_loss)
-                # if(add_loss): fig, ax = draw_loss_util(fig, ax[-1,1], self.logs_dir, epoch, self.sees[see_num].see_file_amount-2)
+                # if(add_loss): fig, ax = draw_loss_util(fig, ax[-1,1], self.logs_read_dir, epoch, self.sees[see_num].see_file_amount-2)
                 # plt.savefig(matplot_multi_see_dir+"/"+"epoch=%04i"%epoch )
                 # plt.close()  ### 一定要記得關喔！要不然圖開太多會當掉！
 
