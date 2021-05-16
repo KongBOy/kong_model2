@@ -344,8 +344,8 @@ if(__name__ == "__main__"):
     tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
-    # G_mse_loss_info = Loss_info_builder().build_g_mse_loss_fun_and_containor().build_g_loss_containors().build()
-    G_mae_loss_info = Loss_info_builder().build_g_mae_loss_fun_and_containor().build()
+    # G_mse_loss_info_builder = Loss_info_builder().build_g_mse_loss_fun_and_containor().build_g_loss_containors().build()
+    G_mae_loss_info_builder = Loss_info_builder().build_g_mae_loss_fun_and_containor().build()
     ### 4. 跑起來試試看
     for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
         model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=G_mae_loss_info)

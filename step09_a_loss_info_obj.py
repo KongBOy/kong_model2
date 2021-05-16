@@ -6,6 +6,9 @@ sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
 import copy
 
+import time
+start_time = time.time()
+
 def mse_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
     loss = tf.reduce_mean(tf.math.square(tensor1 - tensor2))
     return loss * lamb
@@ -17,6 +20,7 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
 
 class Loss_info:
     def __init__(self):
+        self.loss_type = None
         self.logs_dir = None
         self.summary_writer = None
         self.loss_funs_dict = {}
@@ -80,56 +84,85 @@ class Loss_info:
 
 ###########################################################################################################
 class Loss_info_init_builder:
-    def __init__(self, loss_info=None, in_obj_copy=True):
+    def __init__(self, loss_info_obj=None):
         '''
         一定要注意需不需要 in_obj_copy喔！
         因為雖然 loss_fun 是共用的， 但是每個exp 算出來的 loss_value是不同的！因此 logs_dir 也是不同的！
         所以還是需要每個 exp 都有自己的 loss_info_obj 喔！才不會 logs_dir 被共用 這樣子！
         所以 step10_a 的 exp_builder.build() 裡面 呼叫 Loss_info_builder() 更新 loss_info_obj時，in_obj_copy 就要指定 True 拉！
         '''
-        if(loss_info is None): self.loss_info = Loss_info()
-        else:
-            self.loss_info = loss_info
-            if(in_obj_copy): self.loss_info = copy.deepcopy(self.loss_info)
+        if(loss_info_obj is None): self.loss_info_obj = Loss_info()
+        else: self.loss_info_obj = loss_info_obj
 
-    def set_logs_dir(self, logs_dir):
-        self.loss_info.logs_dir = logs_dir
+        # self._build = None
+
+    def set_loss_type(self, loss_type):
+        self.loss_info_obj.loss_type = loss_type
         return self
 
+    def set_logs_dir(self, logs_dir):
+        self.loss_info_obj.logs_dir = logs_dir
+        return self
+
+    def copy(self):
+       return copy.deepcopy(self)
+
     def build(self):
-        return self.loss_info
+        if(self.loss_info_obj.loss_type   == "mse"):   return self.build_g_mse_loss_fun_and_containor()
+        elif(self.loss_info_obj.loss_type == "mae"):   return self.build_g_mae_loss_fun_and_containor()
+        elif(self.loss_info_obj.loss_type == "justG"): return self.build_gan_loss()
+        elif(self.loss_info_obj.loss_type == "GAN"):   return self.build_gan_loss_containors()
+    # def build(self):
+    #     # print(f"Loss_info build finish, can use {self.loss_info_obj.logs_dir}")
+    #     return self.loss_info_obj
 
 class Loss_info_G_loss_builder(Loss_info_init_builder):
     '''
     想多加嘗試 G loss 的話 就在這裡多加 method 就好囉！
     '''
     def build_g_mae_loss_fun_and_containor(self):
-        self.loss_info.loss_funs_dict["G"] = mae_kong
-        self.loss_info.loss_containors["gen_mae_loss" ] = tf.keras.metrics.Mean('gen_mae_loss', dtype=tf.float32)
-        return self
+        # def _build_g_mae_loss_fun_and_containor():
+        print("self.loss_info_obj.logs_dir~  ~  ~  ~  ", self.loss_info_obj.logs_dir)
+        self.loss_info_obj.loss_funs_dict["G"] = mae_kong
+        self.loss_info_obj.loss_containors["gen_mae_loss" ] = tf.keras.metrics.Mean('gen_mae_loss', dtype=tf.float32)
+        return self.loss_info_obj
+        # self._build = _build_g_mae_loss_fun_and_containor
+        # return self
 
     def build_g_mse_loss_fun_and_containor(self):
-        self.loss_info.loss_funs_dict["G"] = mse_kong
-        self.loss_info.loss_containors["gen_mse_loss" ] = tf.keras.metrics.Mean('gen_mse_loss', dtype=tf.float32)
-        return self
+        # def _build_g_mse_loss_fun_and_containor():
+        print("self.loss_info_obj.logs_dir~  ~  ~  ~  ", self.loss_info_obj.logs_dir)
+        self.loss_info_obj.loss_funs_dict["G"] = mse_kong
+        self.loss_info_obj.loss_containors["gen_mse_loss" ] = tf.keras.metrics.Mean('gen_mse_loss', dtype=tf.float32)
+        return self.loss_info_obj
+        # self._build = _build_g_mse_loss_fun_and_containor
+        # return self
 
 
 class Loss_info_GAN_loss_builder(Loss_info_G_loss_builder):
     def build_gan_loss(self):
-        self.loss_info.loss_funs_dict["G"] = mae_kong
-        self.loss_info.loss_funs_dict["G_to_D"] = mse_kong
-        self.loss_info.loss_funs_dict["D_Real"] = mse_kong
-        self.loss_info.loss_funs_dict["D_Fake"] = mse_kong
-        return self
+        # def _build_gan_loss():
+        print("self.loss_info_obj.logs_dir~  ~  ~  ~  ", self.loss_info_obj.logs_dir)
+        self.loss_info_obj.loss_funs_dict["G"] = mae_kong
+        self.loss_info_obj.loss_funs_dict["G_to_D"] = mse_kong
+        self.loss_info_obj.loss_funs_dict["D_Real"] = mse_kong
+        self.loss_info_obj.loss_funs_dict["D_Fake"] = mse_kong
+        return self.loss_info_obj
+        # self._build = _build_gan_loss
+        # return self
 
     def build_gan_loss_containors(self):
-        self.loss_info.loss_containors["1_loss_rec"    ] = tf.keras.metrics.Mean('1_loss_rec'    , dtype=tf.float32)
-        self.loss_info.loss_containors["2_loss_g2d"    ] = tf.keras.metrics.Mean('2_loss_g2d'    , dtype=tf.float32)
-        self.loss_info.loss_containors["3_g_total_loss"] = tf.keras.metrics.Mean('3_g_total_loss', dtype=tf.float32)
-        self.loss_info.loss_containors["4_loss_d_fake" ] = tf.keras.metrics.Mean('4_loss_d_fake' , dtype=tf.float32)
-        self.loss_info.loss_containors["5_loss_d_real" ] = tf.keras.metrics.Mean('5_loss_d_real' , dtype=tf.float32)
-        self.loss_info.loss_containors["6_d_total_loss"] = tf.keras.metrics.Mean('6_d_total_loss', dtype=tf.float32)
-        return self
+        # def _build_gan_loss_containors():
+        print("self.loss_info_obj.logs_dir~  ~  ~  ~  ", self.loss_info_obj.logs_dir)
+        self.loss_info_obj.loss_containors["1_loss_rec"    ] = tf.keras.metrics.Mean('1_loss_rec'    , dtype=tf.float32)
+        self.loss_info_obj.loss_containors["2_loss_g2d"    ] = tf.keras.metrics.Mean('2_loss_g2d'    , dtype=tf.float32)
+        self.loss_info_obj.loss_containors["3_g_total_loss"] = tf.keras.metrics.Mean('3_g_total_loss', dtype=tf.float32)
+        self.loss_info_obj.loss_containors["4_loss_d_fake" ] = tf.keras.metrics.Mean('4_loss_d_fake' , dtype=tf.float32)
+        self.loss_info_obj.loss_containors["5_loss_d_real" ] = tf.keras.metrics.Mean('5_loss_d_real' , dtype=tf.float32)
+        self.loss_info_obj.loss_containors["6_d_total_loss"] = tf.keras.metrics.Mean('6_d_total_loss', dtype=tf.float32)
+        return self.loss_info_obj
+        # self._build = _build_gan_loss_containors
+        # return self
 
 
 class Loss_info_builder(Loss_info_GAN_loss_builder):
@@ -144,11 +177,11 @@ class Loss_info_builder(Loss_info_GAN_loss_builder):
 
     ### 這好像有點多餘，直接在上面 寫 method 就好啦
     # def custom_loss_funs_dict(self, loss_funs_dict):
-    #     self.loss_info.loss_funs_dict = loss_funs_dict
+    #     self.loss_info_obj.loss_funs_dict = loss_funs_dict
     #     return self
 
     # def custom_loss_containors(self, loss_containors):
-    #     self.loss_info.loss_containors = loss_containors
+    #     self.loss_info_obj.loss_containors = loss_containors
     #     return self
 
 
@@ -156,13 +189,22 @@ class Loss_info_builder(Loss_info_GAN_loss_builder):
 # 所以 不能只寫 build_by_model_name，也要寫 我自己指定的method
 # 所以 也可以跟 model 一樣 先建好
 # 然後還要在 exp 裡面 再次設定喔！
-G_mse_loss_info = Loss_info_builder().build_g_mse_loss_fun_and_containor().build()
-G_mae_loss_info = Loss_info_builder().build_g_mae_loss_fun_and_containor().build()
-GAN_mae_loss_info = Loss_info_builder().build_gan_loss().build_gan_loss_containors().build()
+G_mse_loss_info_builder   = Loss_info_builder().set_loss_type("mse")  #.build_g_mse_loss_fun_and_containor()
+G_mae_loss_info_builder   = Loss_info_builder().set_loss_type("mae")  #.build_g_mae_loss_fun_and_containor()
+GAN_mae_loss_info         = Loss_info_builder().set_loss_type("justG")  #.build_gan_loss().build_gan_loss_containors()
 
 
 if(__name__ == "__main__"):
     # from step08_e_model_obj import MODEL_NAME
-    loss_info_obj = Loss_info_builder().set_logs_dir(logs_dir="abc").build_g_mse_loss_fun_and_containor().build()
-    print(loss_info_obj.loss_containors)
-    print(loss_info_obj.summary_writer)
+    # loss_info_obj = Loss_info_builder().set_logs_dir(logs_dir="abc").build_g_mse_loss_fun_and_containor().build()
+    # print(Loss_info_builder().set_logs_dir(logs_dir="abc").build_g_mse_loss_fun_and_containor().build())
+    # print(loss_info_obj.loss_containors)
+    # print(loss_info_obj.summary_writer)
+
+    # loss_info_b1 = Loss_info_builder().set_logs_dir(logs_dir="abc").build_g_mse_loss_fun_and_containor()
+    # loss_info_b2 = loss_info_b1.copy().set_logs_dir(logs_dir="def")   ### 如果 不copy() 的話，原本的 "abc" 會被改調喔！
+    # print(loss_info_b1.loss_info_obj.logs_dir)
+    # print(loss_info_b2.loss_info_obj.logs_dir)
+    loss_info_obj = Loss_info_builder().set_logs_dir(logs_dir="abc").set_loss_type("mse").build()  #.build_g_mse_loss_fun_and_containor().build()
+
+    print("cost time:", time.time() - start_time)

@@ -365,6 +365,9 @@ class Bm_Rec_exps_analyze(Result_analyzer):
         else:                Check_dir_exist_and_build(analyze_board_dir)           ### 建立 存結果的資料夾，目前覺的外層的這個 不用 build_new_dir，這樣才可以存筆記在裡面，要小心的是 如果 exps 有刪掉某個exp，就不會自動刪掉囉！
         for exp in self.exps:
             analyze_board_ana_dir = analyze_board_dir + "/" + exp.result_obj.ana_describe   ### D:\0 data_dir\analyze_dir\5_14-bm_rec-2_1-ch_results\boards\exp.result_obj.ana_describe
+            exp.loss_info_obj = exp.loss_info_builder.build()
+            print("exp.loss_info_builder.loss_info_obj.logs_dir ~~~~~~~", exp.loss_info_builder.loss_info_obj.logs_dir)
+            print("exp.loss_info_obj.logs_dir ~~~~~~~", exp.loss_info_obj.logs_dir)
             exp.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(exp=exp, dst_dir=analyze_board_ana_dir)
         return self
 
