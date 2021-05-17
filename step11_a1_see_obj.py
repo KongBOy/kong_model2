@@ -2,7 +2,8 @@ from step0_access_path import JPG_QUALITY, CORE_AMOUNT, CORE_AMOUNT_NPY_TO_NPZ, 
 
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_name, Matplot_single_row_imgs
+from util import get_dir_certain_file_name
+from matplot_fig_ax_util import Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
 from video_from_img import Video_combine_from_dir

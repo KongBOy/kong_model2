@@ -6,7 +6,7 @@ from util import method2
 import matplotlib.pyplot as plt
 import time
 from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg
-from util import matplot_visual_single_row_imgs
+from matplot_fig_ax_util import matplot_visual_single_row_imgs
 import cv2
 from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
 

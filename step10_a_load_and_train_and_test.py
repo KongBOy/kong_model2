@@ -200,7 +200,7 @@ class Experiment():
 
     def testing(self, current_epoch, add_loss=False, bgr2rgb=False):
         from build_dataset_combine import Check_dir_exist_and_build_new_dir,  method1
-        from util import Matplot_single_row_imgs
+        from matplot_fig_ax_util import Matplot_single_row_imgs
         from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
         import matplotlib.pyplot as plt
 

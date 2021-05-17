@@ -5,7 +5,7 @@ from tqdm import tqdm
 import sys
 sys.path.append("kong_util")
 from step0_access_path import analyze_access_path, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
-from util import Matplot_single_row_imgs, Matplot_multi_row_imgs
+from matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop, Save_as_jpg
 from video_from_img import Video_combine_from_dir
 
