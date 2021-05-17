@@ -73,7 +73,7 @@ class Col_results_analyzer(Result_analyzer):
 
 
     def _draw_col_results_single_see_multiprocess(self, see_num, in_imgs, gt_imgs, c_titles, analyze_see_dir, add_loss=False, core_amount=8, task_amount=100):
-        from util import multi_processing_interface
+        from multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see, task_args=[see_num, in_imgs, gt_imgs, c_titles, analyze_see_dir, add_loss])
 
     def analyze_col_results_single_see(self, see_num, add_loss=False, single_see_multiprocess=True, single_see_core_amount=8):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
@@ -110,7 +110,7 @@ class Col_results_analyzer(Result_analyzer):
 
     def analyze_col_results_all_single_see_multiprocess(self, add_loss=False, core_amount=8, task_amount=32, single_see_multiprocess=False, single_see_core_amount=8):
         if(single_see_multiprocess is False):  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
-            from util import multi_processing_interface
+            from multiprocess_util import multi_processing_interface
             multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self.analyze_col_results_all_single_see, task_args=[add_loss, False])
         else:  ### 如果大任務不開multi core，就給小任務開拉！
             self.analyze_col_results_all_single_see(start_see=0, see_amount=32, add_loss=add_loss, single_see_multiprocess=True, single_see_core_amount=single_see_core_amount)
@@ -144,7 +144,7 @@ class Col_results_analyzer(Result_analyzer):
 
     def _draw_col_results_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss=False, core_amount=8, task_amount=100):
         print("use multiprocess")
-        from util import multi_processing_interface
+        from multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_multi_see, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, add_loss])
 
     ### 同col同result，同row同see
@@ -238,7 +238,7 @@ class Row_col_results_analyzer(Result_analyzer):
                 row_col_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=epoch)
 
     def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100):
-        from util import multi_processing_interface
+        from multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_row_col_results_single_see, task_args=[see_num, r_c_titles, analyze_see_dir])
 
 
@@ -277,7 +277,7 @@ class Row_col_results_analyzer(Result_analyzer):
             self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
 
     def analyze_row_col_results_all_single_see_multiprocess(self, core_amount=8, task_amount=32, single_see_multiprocess=False, single_see_core_amount=8):
-        from util import multi_processing_interface
+        from multiprocess_util import multi_processing_interface
         if(single_see_multiprocess):
             self.analyze_row_col_results_all_single_see(16, int(task_amount / 2), single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
             self.analyze_row_col_results_all_single_see(0, int(task_amount / 2), single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
