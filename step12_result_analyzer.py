@@ -50,7 +50,7 @@ class Col_results_analyzer(Result_analyzer):
 
     ########################################################################################################################################
     ### 單一row，同see
-    def _Draw_col_results_single_see(self, start_img, img_amount, see_num, in_img, gt_imgs, c_titles, analyze_see_dir, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False):
+    def _Draw_col_results_single_see(self, start_img, img_amount, see_num, in_img, gt_img, c_titles, analyze_see_dir, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False):
         """
         真的在做事情的地方b
         _Draw_col_results_single_see 是 核心動作：
@@ -65,7 +65,7 @@ class Col_results_analyzer(Result_analyzer):
                 for result in self.c_results:
                     # c_imgs.append(cv2.imread(result.sees[see_num].see_jpg_paths[go_img]))
                     c_imgs.append(cv2.imread(result.sees[see_num].see_read_dir + "/" + result.sees[see_num].see_jpg_names[go_img]))
-                if(show_gt_img): c_imgs += [gt_imgs]
+                if(show_gt_img): c_imgs += [gt_img]
 
                 single_row_imgs = Matplot_single_row_imgs(
                                 imgs       = c_imgs,      ### 把要顯示的每張圖包成list
@@ -80,13 +80,13 @@ class Col_results_analyzer(Result_analyzer):
                 single_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=epoch)
 
 
-    def _draw_col_results_single_see_multiprocess(self, see_num, in_img, gt_imgs, c_titles, analyze_see_dir, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, core_amount=8, task_amount=100):
+    def _draw_col_results_single_see_multiprocess(self, see_num, in_img, gt_img, c_titles, analyze_see_dir, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, core_amount=8, task_amount=100):
         """
         包 multiprocess
         _Draw_col_results_single_see 的 multiprocess 介面
         """
         from multiprocess_util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see, task_args=[see_num, in_img, gt_imgs, c_titles, analyze_see_dir, show_in_img, show_gt_img, bgr2rgb, add_loss])
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see, task_args=[see_num, in_img, gt_img, c_titles, analyze_see_dir, show_in_img, show_gt_img, bgr2rgb, add_loss])
 
     def analyze_col_results_single_see(self, see_num, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, single_see_multiprocess=True, single_see_core_amount=8):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
         print(f"{self.ana_describe} doing analyze_col_results_single_see, see_num:{see_num}, single_see_multiprocess:{single_see_multiprocess}")
@@ -103,8 +103,10 @@ class Col_results_analyzer(Result_analyzer):
         self._c_results_get_see_dir_info(self.c_results)
 
         ### 抓 in/gt imgs， 因為 同個see 內所有epoch 的 in/gt 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see 的外面 ，然後再用 參數傳入
+        in_img = None
+        gt_img = None
         if(show_in_img): in_img = cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[0])
-        if(show_gt_img): gt_imgs = cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[1])
+        if(show_gt_img): gt_img = cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[1])
 
         ### 抓 要顯示的 titles， 同上理， 每個epochs 的 c_title 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see 的外面 ，然後再用 參數傳入
         c_titles = []
@@ -113,8 +115,8 @@ class Col_results_analyzer(Result_analyzer):
         if(show_gt_img): c_titles += ["gt_img"]
 
         ### 抓  每個epoch要顯示的imgs 並且畫出來
-        if(single_see_multiprocess): self._draw_col_results_single_see_multiprocess(see_num, in_img, gt_imgs, c_titles, analyze_see_dir, show_in_img, show_gt_img, bgr2rgb, add_loss, core_amount=single_see_core_amount, task_amount=self.c_min_see_file_amount)
-        else: self._Draw_col_results_single_see(0, self.c_min_see_file_amount, see_num, in_img, gt_imgs, c_titles, analyze_see_dir, show_in_img, show_gt_img, bgr2rgb, add_loss)
+        if(single_see_multiprocess): self._draw_col_results_single_see_multiprocess(see_num, in_img, gt_img, c_titles, analyze_see_dir, show_in_img, show_gt_img, bgr2rgb, add_loss, core_amount=single_see_core_amount, task_amount=self.c_min_see_file_amount)
+        else: self._Draw_col_results_single_see(0, self.c_min_see_file_amount, see_num, in_img, gt_img, c_titles, analyze_see_dir, show_in_img, show_gt_img, bgr2rgb, add_loss)
 
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
@@ -431,7 +433,7 @@ if(__name__ == "__main__"):
     epoch300_500_analyze = Col_results_analyzer(ana_describe="epoch300_500_exps2", col_results=epoch300_500_results)  #;  doing_analyze_2page(epoch300_500_analyze)
     # epoch300_500_analyze.analyze_col_results_single_see(see_num=0, bgr2rgb=True)
     # epoch300_500_analyze.analyze_col_results_all_single_see(bgr2rgb=True, single_see_multiprocess=True, single_see_core_amount=14)
-    epoch300_500_analyze.analyze_col_results_all_single_see_multiprocess(bgr2rgb=True, add_loss=False, core_amount=2, task_amount=7, single_see_multiprocess=True, single_see_core_amount=8)
+    epoch300_500_analyze.analyze_col_results_all_single_see_multiprocess(show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, core_amount=2, task_amount=7, single_see_multiprocess=True, single_see_core_amount=8)
     """
     core_amount == 7 是因為 目前 see_amount == 7 ，想 一個core 一個see
     task_amount == 7 是因為 目前 see_amount == 7
