@@ -160,11 +160,11 @@ class See_bm_rec(See_info):
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See_bm_rec, self).__init__(result_read_dir, result_write_dir, see_name)
 
-        self.matplot_bm_rec_visual_read_dir   = self.see_read_dir       + "/matplot_bm_rec_visual"
+        self.matplot_bm_rec_visual_read_dir   = self.see_read_dir  + "/matplot_bm_rec_visual"
         self.matplot_bm_rec_visual_write_dir  = self.see_write_dir + "/matplot_bm_rec_visual"
-        self.bm_visual_read_dir               = self.see_read_dir       + "/matplot_bm_rec_visual/bm_visual"
+        self.bm_visual_read_dir               = self.see_read_dir  + "/matplot_bm_rec_visual/bm_visual"
         self.bm_visual_write_dir              = self.see_write_dir + "/matplot_bm_rec_visual/bm_visual"
-        self.rec_visual_read_dir              = self.see_read_dir       + "/matplot_bm_rec_visual/rec_visual"
+        self.rec_visual_read_dir              = self.see_read_dir  + "/matplot_bm_rec_visual/rec_visual"
         self.rec_visual_write_dir             = self.see_write_dir + "/matplot_bm_rec_visual/rec_visual"
         self.bm_names  = None
         self.bm_paths  = None
