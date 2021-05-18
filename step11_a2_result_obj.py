@@ -164,6 +164,7 @@ class Result:
                 if(add_loss): multi_row_imgs.Draw_ax_loss_after_train(multi_row_imgs.ax[-1, 1], self.logs_read_dir, epoch, self.sees[see_num].see_file_amount - 2)
                 multi_row_imgs.Save_fig(dst_dir=matplot_multi_see_dir, epoch=epoch)
 
+                ### 已經包成 上面 Matplot_multi_row_imgs 囉！
                 # fig, ax = matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles,
                 #                               rows_cols_imgs   = r_c_imgs,
                 #                               fig_title        = "epoch=%04i"%epoch,   ### 圖上的大標題
