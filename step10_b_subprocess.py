@@ -25,7 +25,7 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"test2.{compress_1}"])
 
 # ### hid_ch=64, 來測試 epoch系列 ##############################
-sb.run(same_command + [f"epoch050_bn_see_arg_T.{run}"])
+# sb.run(same_command + [f"epoch050_bn_see_arg_T.{run}"])
 # sb.run(same_command + [f"epoch100_bn_see_arg_T.{compress_all}"])  ### 636
 # sb.run(same_command + [f"epoch200_bn_see_arg_T.{compress_all}"])
 # sb.run(same_command + [f"epoch300_bn_see_arg_T.{compress_all}"])
@@ -73,6 +73,13 @@ sb.run(same_command + [f"epoch050_bn_see_arg_T.{run}"])
 # sb.run(same_command + [f"ch32_bn08_bn_see_arg_F.{compress_all}"])
 # sb.run(same_command + [f"ch32_bn16_bn_see_arg_F.{compress_all}"])
 
+
+sb.run(same_command + [f"ch64_in_epoch200.{run}"])  ### 測試真的IN
+sb.run(same_command + [f"ch64_in_epoch220.{run}"])  ### 測試真的IN
+sb.run(same_command + [f"ch64_in_epoch240.{run}"])  ### 測試真的IN
+sb.run(same_command + [f"ch64_in_epoch260.{run}"])  ### 測試真的IN
+sb.run(same_command + [f"ch64_in_epoch280.{run}"])  ### 測試真的IN
+sb.run(same_command + [f"ch64_in_epoch300.{run}"])  ### 測試真的IN
 
 # sb.run(same_command + [f"ch64_in_epoch320.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch340.{compress_all}"])  ### 測試真的IN
