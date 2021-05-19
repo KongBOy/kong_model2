@@ -6,7 +6,7 @@ from util import method2
 import matplotlib.pyplot as plt
 import time
 from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg
-from util import matplot_visual_single_row_imgs
+from matplot_fig_ax_util import Matplot_single_row_imgs  # matplot_visual_single_row_imgs
 import cv2
 from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
 
@@ -209,8 +209,12 @@ def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, m
 
     imgs = [in_img_back, move_map_back_visual, gt_move_map_visual, in_rec_img, gt_rec_img]  ### 把 in_img_back, rect_back, gt_img 包成list
     titles = ['Input Image', 'gen_move_map', 'gt_move_map', 'gen_rec_img', 'gt_rec_img', 'Ground Truth']  ### 設定 title要顯示的字
-    matplot_visual_single_row_imgs(img_titles=titles, imgs=imgs, fig_title="epoch_%04i" % epoch, dst_dir=plot_dir, file_name="epoch=%04i" % epoch, bgr2rgb=False)
-    Save_as_jpg(plot_dir, plot_dir, delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
+
+    ### 改完但還沒有測試喔~~
+    single_row_imgs = Matplot_single_row_imgs(imgs=imgs, img_titles=titles, fig_title="epoch_%04i" % epoch, bgr2rgb=False, add_loss=False)
+    single_row_imgs.Save_fig(dst_dir=plot_dir, epoch=epoch, epoch_name="epoch")
+    # matplot_visual_single_row_imgs(img_titles=titles, imgs=imgs, fig_title="epoch_%04i" % epoch, dst_dir=plot_dir, file_name="epoch=%04i" % epoch, bgr2rgb=False)
+    # Save_as_jpg(plot_dir, plot_dir, delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
 
     # result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch)
 
@@ -242,7 +246,6 @@ def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, m
 def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
     from build_dataset_combine import Check_dir_exist_and_build
     import numpy as np
-    import matplotlib.pyplot as plt
     from util import  get_dir_move, get_dir_certain_img
 
 
@@ -329,7 +332,6 @@ def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
 
 #######################################################################################################################################
 if(__name__ == "__main__"):
-    import time
     import numpy as np
 
     generator = Generator512to256()  # 建G

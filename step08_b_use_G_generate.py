@@ -4,7 +4,7 @@ sys.path.append("kong_util")
 import matplotlib.pyplot as plt
 import cv2
 from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg, method1
-from util import matplot_visual_single_row_imgs
+from matplot_fig_ax_util import matplot_visual_single_row_imgs
 import numpy as np
 
 

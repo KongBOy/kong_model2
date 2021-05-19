@@ -25,7 +25,6 @@ from tqdm import tqdm
 import socket    ### 取得 本機 IP   給 train_step5_show_time 紀錄
 import getpass   ### 取得 本機 User 給 train_step5_show_time 紀錄
 
-import time
 start_time = time.time()
 
 class Experiment():
@@ -55,8 +54,9 @@ class Experiment():
         self.machine_ip = None
         self.machine_user = None
         ##############################################################################################################################
-        self.phase        = "train"
-        self.db_obj       = None
+        self.phase         = "train"
+        self.db_builder    = None
+        self.db_obj        = None
         self.model_builder = None
         self.model_obj     = None
         self.loss_info_builder = None
@@ -103,6 +103,7 @@ class Experiment():
     def exp_init(self, reload_result=False, reload_model=False):  ### 共作四件事： 1.result, 2.data, 3.model(reload), 4.Loss_info
         ### 0.真的建立出 model_obj， 在這之前都還是 KModel_builder喔！ 會寫這麼麻煩是為了 想實現 "真的用到的時候再建構出來！" 這樣才省時間！
         self.model_obj = self.model_builder.build()
+        self.db_obj = self.db_builder.build()
         # print("self.model_obj", self.model_obj)  ### 檢查 KModel 有沒有正確的建立出來
 
         ### 1.result
@@ -199,7 +200,7 @@ class Experiment():
 
     def testing(self, current_epoch, add_loss=False, bgr2rgb=False):
         from build_dataset_combine import Check_dir_exist_and_build_new_dir,  method1
-        from util import Matplot_single_row_imgs
+        from matplot_fig_ax_util import Matplot_single_row_imgs
         from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
         import matplotlib.pyplot as plt
 
@@ -412,9 +413,9 @@ class Exp_builder():
 
     def set_com(self, machine="127.35"): return self  ### 只是單純讓我自己能直接看到而已，懶得去翻 cost_time.txt
 
-    def set_basic(self, phase, db_obj, model_builder, loss_info_builder, exp_dir=".", describe_mid=None, describe_end=None, result_name=None):
+    def set_basic(self, phase, db_builder, model_builder, loss_info_builder, exp_dir=".", describe_mid=None, describe_end=None, result_name=None):
         self.exp.phase = phase
-        self.exp.db_obj = db_obj
+        self.exp.db_builder = db_builder
         self.exp.model_builder = model_builder
         self.exp.loss_info_builder = loss_info_builder
         self.exp.exp_dir = exp_dir
