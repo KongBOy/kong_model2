@@ -746,8 +746,9 @@ unet_IN_7l_2to3noC_e180 = Exp_builder().set_com("127.35").set_basic("train", typ
 unet_IN_7l_2to3noC_e200 = Exp_builder().set_com("127.35").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_2to3noC, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_7b_e200", describe_end="unet_IN_7l_2to3noC_e200") .set_train_args(epochs=200, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 
 
-unet_IN_7l_e60_skip_use_cSE = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cSE, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_7b_e60_skip_use_cSE", describe_end="unet_IN_7l_2to3noC_e60_skip_use_cSE") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-unet_IN_7l_e60_skip_use_sSE = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_sSE, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_7b_e60_skip_use_sSE", describe_end="unet_IN_7l_2to3noC_e60_skip_use_sSE") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+ch64_in_e060_cSE  = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cSE,  G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_7b", describe_end="ch64_in_e060_cSE") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7b-20210521_102248-flow_unet-ch64_in_e60_cSE")
+ch64_in_e060_sSE  = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_sSE,  G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_7b", describe_end="ch64_in_e060_sSE") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+ch64_in_e060_scSE = Exp_builder().set_com("127.28").set_basic("train", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_scSE, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_7b", describe_end="ch64_in_e060_scSE").set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 
 ### 7c.學 印度方法 看看skip connection 中間加 cnn 的效果
 unet_IN_7l_skip_use_cnn1_NO_relu    = Exp_builder().set_com("127.35").set_basic("ok   ", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu   ,  G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_7c_1", describe_end="unet_IN_7l_skip_use_cnn1_NO_relu")    .set_train_args(epochs=500, epoch_down_step=250, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7c_1-20210503_214221-flow_unet-unet_IN_7l_skip_use_cnn1_NO_relu")
@@ -836,8 +837,10 @@ if(__name__ == "__main__"):
         # unet_IN_7l_skip_use_cnn1_USEsigmoid.build().run()
         # test1.build().run()
         # unet_IN_7l_2to3noC_e100.build().run()
-        # unet_IN_7l_e60_skip_use_cSE.build().run()
-        unet_IN_7l_e60_skip_use_sSE.build().run()
+        # ch64_in_e060_cSE.build().run()
+        # ch64_in_e060_sSE.build().run()
+        ch64_in_e060_scSE.build().run()
+
         # print('no argument')
         sys.exit()
 
