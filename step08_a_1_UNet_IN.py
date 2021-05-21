@@ -37,82 +37,90 @@ class Generator(tf.keras.models.Model):
             self.lrelu2 = LeakyReLU(alpha=0.2, name="lrelu2")
             self.conv2  = Conv2D(hid_ch * 2, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv2")  #,bias=False) ### in_channel:64
             if(self.depth_level > 2): self.in2    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in2")
-            if(self.skip_use_cSE):  self.skip_cSE2  = cSE(hid_ch * 1, ratio=2 * 2, name="skip_cSE2")
-            if(self.skip_use_sSE):  self.skip_sSE2  = sSE(name="skip_sSE2")
-            if(self.skip_use_scSE): self.skip_scSE2 = scSE(hid_ch * 1, ratio=2 * 2, name="skip_scSE2")
-            if(self.skip_use_cnn):  self.skip_cnn2  = Conv2D(hid_ch * 2, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn2")
-            if(self.skip_use_Acti): self.skip_Acti2 = Activation(self.skip_use_Acti, name="skip_%s2" % self.skip_use_Acti.__name__)
+            if(self.no_concat_layer < 2):
+                if(self.skip_use_cSE):  self.skip_cSE2  = cSE(hid_ch * 1, ratio=2 * 2, name="skip_cSE2")
+                if(self.skip_use_sSE):  self.skip_sSE2  = sSE(name="skip_sSE2")
+                if(self.skip_use_scSE): self.skip_scSE2 = scSE(hid_ch * 1, ratio=2 * 2, name="skip_scSE2")
+                if(self.skip_use_cnn):  self.skip_cnn2  = Conv2D(hid_ch * 2, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn2")
+                if(self.skip_use_Acti): self.skip_Acti2 = Activation(self.skip_use_Acti, name="skip_%s2" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 3):
             self.lrelu3 = LeakyReLU(alpha=0.2, name="lrelu3")
             self.conv3  = Conv2D(hid_ch * 4, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv3")  #,bias=False) ### in_channel:128
             if(self.depth_level > 3): self.in3    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in3")
-            if(self.skip_use_cSE):  self.skip_cSE3  = cSE(hid_ch * 2, ratio=2 * 4, name="skip_cSE3")
-            if(self.skip_use_sSE):  self.skip_sSE3  = sSE(name="skip_sSE3")
-            if(self.skip_use_scSE): self.skip_scSE3 = scSE(hid_ch * 2, ratio=2 * 4, name="skip_scSE3")
-            if(self.skip_use_cnn):  self.skip_cnn3  = Conv2D(hid_ch * 4, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn3")
-            if(self.skip_use_Acti): self.skip_Acti3 = Activation(self.skip_use_Acti, name="skip_%s3" % self.skip_use_Acti.__name__)
+            if(self.no_concat_layer < 3):
+                if(self.skip_use_cSE):  self.skip_cSE3  = cSE(hid_ch * 2, ratio=2 * 4, name="skip_cSE3")
+                if(self.skip_use_sSE):  self.skip_sSE3  = sSE(name="skip_sSE3")
+                if(self.skip_use_scSE): self.skip_scSE3 = scSE(hid_ch * 2, ratio=2 * 4, name="skip_scSE3")
+                if(self.skip_use_cnn):  self.skip_cnn3  = Conv2D(hid_ch * 4, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn3")
+                if(self.skip_use_Acti): self.skip_Acti3 = Activation(self.skip_use_Acti, name="skip_%s3" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 4):
             self.lrelu4 = LeakyReLU(alpha=0.2, name="lrelu4")
             self.conv4  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv4")  #,bias=False) ### in_channel:256
             if(self.depth_level > 4): self.in4    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in4")
-            if(self.skip_use_cSE):  self.skip_cSE4  = cSE(hid_ch * 4, ratio=2 * 8, name="skip_cSE4")
-            if(self.skip_use_sSE):  self.skip_sSE4  = sSE(name="skip_sSE4")
-            if(self.skip_use_scSE): self.skip_scSE4 = scSE(hid_ch * 4, ratio=2 * 8, name="skip_scSE4")
-            if(self.skip_use_cnn):  self.skip_cnn4  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn4")
-            if(self.skip_use_Acti): self.skip_Acti4 = Activation(self.skip_use_Acti, name="skip_%s4" % self.skip_use_Acti.__name__)
+            if(self.no_concat_layer < 4):
+                if(self.skip_use_cSE):  self.skip_cSE4  = cSE(hid_ch * 4, ratio=2 * 8, name="skip_cSE4")
+                if(self.skip_use_sSE):  self.skip_sSE4  = sSE(name="skip_sSE4")
+                if(self.skip_use_scSE): self.skip_scSE4 = scSE(hid_ch * 4, ratio=2 * 8, name="skip_scSE4")
+                if(self.skip_use_cnn):  self.skip_cnn4  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn4")
+                if(self.skip_use_Acti): self.skip_Acti4 = Activation(self.skip_use_Acti, name="skip_%s4" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 5):
             self.lrelu5 = LeakyReLU(alpha=0.2, name="lrelu5")
             self.conv5  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv5")  #,bias=False) ### in_channel:512
             if(self.depth_level > 5): self.in5    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in5")
-            if(self.skip_use_cSE):  self.skip_cSE5  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE5")
-            if(self.skip_use_sSE):  self.skip_sSE5  = sSE(name="skip_sSE5")
-            if(self.skip_use_scSE): self.skip_scSE5 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE5")
-            if(self.skip_use_cnn):  self.skip_cnn5  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn5")
-            if(self.skip_use_Acti): self.skip_Acti5 = Activation(self.skip_use_Acti, name="skip_%s5" % self.skip_use_Acti.__name__)
+            if(self.no_concat_layer < 5):
+                if(self.skip_use_cSE):  self.skip_cSE5  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE5")
+                if(self.skip_use_sSE):  self.skip_sSE5  = sSE(name="skip_sSE5")
+                if(self.skip_use_scSE): self.skip_scSE5 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE5")
+                if(self.skip_use_cnn):  self.skip_cnn5  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn5")
+                if(self.skip_use_Acti): self.skip_Acti5 = Activation(self.skip_use_Acti, name="skip_%s5" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 6):
             self.lrelu6 = LeakyReLU(alpha=0.2, name="lrelu6")
             self.conv6  = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv6")  #,bias=False) ### in_channel:512
             if(self.depth_level > 6): self.in6    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in6")
-            if(self.skip_use_cSE):  self.skip_cSE6  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE6")
-            if(self.skip_use_sSE):  self.skip_sSE6  = sSE(name="skip_sSE6")
-            if(self.skip_use_scSE): self.skip_scSE6 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE6")
-            if(self.skip_use_cnn):  self.skip_cnn6  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn6")
-            if(self.skip_use_Acti): self.skip_Acti6 = Activation(self.skip_use_Acti, name="skip_%s6" % self.skip_use_Acti.__name__)
+            if(self.no_concat_layer < 6):
+                if(self.skip_use_cSE):  self.skip_cSE6  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE6")
+                if(self.skip_use_sSE):  self.skip_sSE6  = sSE(name="skip_sSE6")
+                if(self.skip_use_scSE): self.skip_scSE6 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE6")
+                if(self.skip_use_cnn):  self.skip_cnn6  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn6")
+                if(self.skip_use_Acti): self.skip_Acti6 = Activation(self.skip_use_Acti, name="skip_%s6" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 7):
             self.lrelu7  = LeakyReLU(alpha=0.2, name="lrelu7")
             self.conv7   = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv7")  #,bias=False) ### in_channel:512
             if(self.depth_level > 7): self.in7    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in7")
-            if(self.skip_use_cSE):  self.skip_cSE7  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE7")
-            if(self.skip_use_scSE): self.skip_scSE7 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE7")
-            if(self.skip_use_sSE):  self.skip_sSE7  = sSE(name="skip_sSE7")
-            if(self.skip_use_cnn):  self.skip_cnn7  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn7")
-            if(self.skip_use_Acti): self.skip_Acti7 = Activation(self.skip_use_Acti, name="skip_%s7" % self.skip_use_Acti.__name__)
+            if(self.no_concat_layer < 7):
+                if(self.skip_use_cSE):  self.skip_cSE7  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE7")
+                if(self.skip_use_scSE): self.skip_scSE7 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE7")
+                if(self.skip_use_sSE):  self.skip_sSE7  = sSE(name="skip_sSE7")
+                if(self.skip_use_cnn):  self.skip_cnn7  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn7")
+                if(self.skip_use_Acti): self.skip_Acti7 = Activation(self.skip_use_Acti, name="skip_%s7" % self.skip_use_Acti.__name__)
 
         if(self.depth_level >= 8):
             self.lrelu8  = LeakyReLU(alpha=0.2, name="lrelu8")
             self.conv8   = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv8")  #,bias=False) ### in_channel:512
             if(self.depth_level > 8): self.in8    = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in8")
-            if(self.skip_use_cSE):  self.skip_cSE8  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE8")
-            if(self.skip_use_sSE):  self.skip_sSE8  = sSE(name="skip_sSE8")
-            if(self.skip_use_scSE): self.skip_scSE8 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE8")
-            if(self.skip_use_cnn):  self.skip_cnn8  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn8")
-            if(self.skip_use_Acti): self.skip_Acti8 = Activation(self.skip_use_Acti, name="skip_%s8" % self.skip_use_Acti.__name__)
+            if(self.no_concat_layer < 8):
+                if(self.skip_use_cSE):  self.skip_cSE8  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE8")
+                if(self.skip_use_sSE):  self.skip_sSE8  = sSE(name="skip_sSE8")
+                if(self.skip_use_scSE): self.skip_scSE8 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE8")
+                if(self.skip_use_cnn):  self.skip_cnn8  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn8")
+                if(self.skip_use_Acti): self.skip_Acti8 = Activation(self.skip_use_Acti, name="skip_%s8" % self.skip_use_Acti.__name__)
 
         ###################
         # 最底層
         if(self.depth_level >= 9):
             self.lrelu9  = LeakyReLU(alpha=0.2, name="lrelu9")
             self.conv9   = Conv2D(hid_ch * 8, kernel_size=(4, 4), strides=(2, 2), padding="same", name="conv9")  #,bias=False) ### in_channel:512
-            if(self.skip_use_cSE):  self.skip_cSE9  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE9")
-            if(self.skip_use_sSE):  self.skip_sSE9  = sSE(name="skip_sSE9")
-            if(self.skip_use_scSE): self.skip_scSE9 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE9")
-            if(self.skip_use_cnn):  self.skip_cnn9  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn9")
-            if(self.skip_use_Acti): self.skip_Acti9 = Activation(self.skip_use_Acti, name="skip_%s9" % self.skip_use_Acti.__name__)
+            if(self.no_concat_layer < 9):
+                if(self.skip_use_cSE):  self.skip_cSE9  = cSE(hid_ch * 8, ratio=2 * 8, name="skip_cSE9")
+                if(self.skip_use_sSE):  self.skip_sSE9  = sSE(name="skip_sSE9")
+                if(self.skip_use_scSE): self.skip_scSE9 = scSE(hid_ch * 8, ratio=2 * 8, name="skip_scSE9")
+                if(self.skip_use_cnn):  self.skip_cnn9  = Conv2D(hid_ch * 8, kernel_size=(skip_cnn_k, skip_cnn_k), strides=(1, 1), padding="same", name="skip_cnn9")
+                if(self.skip_use_Acti): self.skip_Acti9 = Activation(self.skip_use_Acti, name="skip_%s9" % self.skip_use_Acti.__name__)
 
 
         if(self.depth_level >= 9):
