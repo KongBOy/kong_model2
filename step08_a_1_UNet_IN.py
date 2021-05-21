@@ -184,90 +184,98 @@ class Generator(tf.keras.models.Model):
         x = self.conv1(input_tensor)
 
         if(self.depth_level >= 2):
-            skip2 = x
-            if(self.skip_use_cSE):  skip2 = self.skip_cSE2(skip2)
-            if(self.skip_use_sSE):  skip2 = self.skip_sSE2(skip2)
-            if(self.skip_use_scSE): skip2 = self.skip_scSE2(skip2)
-            if(self.skip_use_cnn):  skip2 = self.skip_cnn2(skip2)
-            if(self.skip_use_Acti): skip2 = self.skip_Acti2(skip2)
+            if(self.no_concat_layer < 2):
+                skip2 = x
+                if(self.skip_use_cSE):  skip2 = self.skip_cSE2(skip2)
+                if(self.skip_use_sSE):  skip2 = self.skip_sSE2(skip2)
+                if(self.skip_use_scSE): skip2 = self.skip_scSE2(skip2)
+                if(self.skip_use_cnn):  skip2 = self.skip_cnn2(skip2)
+                if(self.skip_use_Acti): skip2 = self.skip_Acti2(skip2)
             x = self.lrelu2(x)
             x = self.conv2(x)
             if(self.depth_level > 2): x = self.in2(x)
 
         if(self.depth_level >= 3):
-            skip3 = x
-            if(self.skip_use_cSE):  skip3 = self.skip_cSE3(skip3)
-            if(self.skip_use_sSE):  skip3 = self.skip_sSE3(skip3)
-            if(self.skip_use_scSE): skip3 = self.skip_scSE3(skip3)
-            if(self.skip_use_cnn):  skip3 = self.skip_cnn3(skip3)
-            if(self.skip_use_Acti): skip3 = self.skip_Acti3(skip3)
+            if(self.no_concat_layer < 3):
+                skip3 = x
+                if(self.skip_use_cSE):  skip3 = self.skip_cSE3(skip3)
+                if(self.skip_use_sSE):  skip3 = self.skip_sSE3(skip3)
+                if(self.skip_use_scSE): skip3 = self.skip_scSE3(skip3)
+                if(self.skip_use_cnn):  skip3 = self.skip_cnn3(skip3)
+                if(self.skip_use_Acti): skip3 = self.skip_Acti3(skip3)
             x = self.lrelu3(x)
             x = self.conv3(x)
             if(self.depth_level > 3): x = self.in3(x)
 
         if(self.depth_level >= 4):
-            skip4 = x
-            if(self.skip_use_cSE):  skip4 = self.skip_cSE4(skip4)
-            if(self.skip_use_sSE):  skip4 = self.skip_sSE4(skip4)
-            if(self.skip_use_scSE): skip4 = self.skip_scSE4(skip4)
-            if(self.skip_use_cnn):  skip4 = self.skip_cnn4(skip4)
-            if(self.skip_use_Acti): skip4 = self.skip_Acti4(skip4)
+            if(self.no_concat_layer < 4):
+                skip4 = x
+                if(self.skip_use_cSE):  skip4 = self.skip_cSE4(skip4)
+                if(self.skip_use_sSE):  skip4 = self.skip_sSE4(skip4)
+                if(self.skip_use_scSE): skip4 = self.skip_scSE4(skip4)
+                if(self.skip_use_cnn):  skip4 = self.skip_cnn4(skip4)
+                if(self.skip_use_Acti): skip4 = self.skip_Acti4(skip4)
             x = self.lrelu4(x)
             x = self.conv4(x)
             if(self.depth_level > 4): x = self.in4(x)
 
         if(self.depth_level >= 5):
-            skip5 = x
-            if(self.skip_use_cSE):  skip5 = self.skip_cSE5(skip5)
-            if(self.skip_use_sSE):  skip5 = self.skip_sSE5(skip5)
-            if(self.skip_use_scSE): skip5 = self.skip_scSE5(skip5)
-            if(self.skip_use_cnn):  skip5 = self.skip_cnn5(skip5)
-            if(self.skip_use_Acti): skip5 = self.skip_Acti5(skip5)
+            if(self.no_concat_layer < 5):
+                skip5 = x
+                if(self.skip_use_cSE):  skip5 = self.skip_cSE5(skip5)
+                if(self.skip_use_sSE):  skip5 = self.skip_sSE5(skip5)
+                if(self.skip_use_scSE): skip5 = self.skip_scSE5(skip5)
+                if(self.skip_use_cnn):  skip5 = self.skip_cnn5(skip5)
+                if(self.skip_use_Acti): skip5 = self.skip_Acti5(skip5)
             x = self.lrelu5(x)
             x = self.conv5(x)
             if(self.depth_level > 5): x = self.in5(x)
 
         if(self.depth_level >= 6):
-            skip6 = x
-            if(self.skip_use_cSE):  skip6 = self.skip_cSE6(skip6)
-            if(self.skip_use_sSE):  skip6 = self.skip_sSE6(skip6)
-            if(self.skip_use_scSE): skip6 = self.skip_scSE6(skip6)
-            if(self.skip_use_cnn):  skip6 = self.skip_cnn6(skip6)
-            if(self.skip_use_Acti): skip6 = self.skip_Acti6(skip6)
+            if(self.no_concat_layer < 6):
+                skip6 = x
+                if(self.skip_use_cSE):  skip6 = self.skip_cSE6(skip6)
+                if(self.skip_use_sSE):  skip6 = self.skip_sSE6(skip6)
+                if(self.skip_use_scSE): skip6 = self.skip_scSE6(skip6)
+                if(self.skip_use_cnn):  skip6 = self.skip_cnn6(skip6)
+                if(self.skip_use_Acti): skip6 = self.skip_Acti6(skip6)
             x = self.lrelu6(x)
             x = self.conv6(x)
             if(self.depth_level > 6): x = self.in6(x)
 
         if(self.depth_level >= 7):
-            skip7 = x
-            if(self.skip_use_cSE):  skip7 = self.skip_cSE7(skip7)
-            if(self.skip_use_sSE):  skip7 = self.skip_sSE7(skip7)
-            if(self.skip_use_scSE): skip7 = self.skip_scSE7(skip7)
-            if(self.skip_use_cnn):  skip7 = self.skip_cnn7(skip7)
-            if(self.skip_use_Acti): skip7 = self.skip_Acti7(skip7)
+            if(self.no_concat_layer < 7):
+                skip7 = x
+                if(self.skip_use_cSE):  skip7 = self.skip_cSE7(skip7)
+                if(self.skip_use_sSE):  skip7 = self.skip_sSE7(skip7)
+                if(self.skip_use_scSE): skip7 = self.skip_scSE7(skip7)
+                if(self.skip_use_cnn):  skip7 = self.skip_cnn7(skip7)
+                if(self.skip_use_Acti): skip7 = self.skip_Acti7(skip7)
             x = self.lrelu7(x)
             x = self.conv7(x)
             if(self.depth_level > 7): x = self.in7(x)
 
         if(self.depth_level >= 8):
-            skip8 = x
-            if(self.skip_use_cSE):  skip8 = self.skip_cSE8(skip8)
-            if(self.skip_use_sSE):  skip8 = self.skip_sSE8(skip8)
-            if(self.skip_use_scSE): skip8 = self.skip_scSE8(skip8)
-            if(self.skip_use_cnn):  skip8 = self.skip_cnn8(skip8)
-            if(self.skip_use_Acti): skip8 = self.skip_Acti8(skip8)
+            if(self.no_concat_layer < 8):
+                skip8 = x
+                if(self.skip_use_cSE):  skip8 = self.skip_cSE8(skip8)
+                if(self.skip_use_sSE):  skip8 = self.skip_sSE8(skip8)
+                if(self.skip_use_scSE): skip8 = self.skip_scSE8(skip8)
+                if(self.skip_use_cnn):  skip8 = self.skip_cnn8(skip8)
+                if(self.skip_use_Acti): skip8 = self.skip_Acti8(skip8)
             x = self.lrelu8(x)
             x = self.conv8(x)
             if(self.depth_level > 8): x = self.in8(x)
 
         ###############################
         if(self.depth_level >= 9):
-            skip9 = x
-            if(self.skip_use_cSE):  skip9 = self.skip_cSE9(skip9)
-            if(self.skip_use_sSE):  skip9 = self.skip_sSE9(skip9)
-            if(self.skip_use_scSE): skip9 = self.skip_scSE9(skip9)
-            if(self.skip_use_cnn):  skip9 = self.skip_cnn9(skip9)
-            if(self.skip_use_Acti): skip9 = self.skip_Acti9(skip9)
+            if(self.no_concat_layer < 9):
+                skip9 = x
+                if(self.skip_use_cSE):  skip9 = self.skip_cSE9(skip9)
+                if(self.skip_use_sSE):  skip9 = self.skip_sSE9(skip9)
+                if(self.skip_use_scSE): skip9 = self.skip_scSE9(skip9)
+                if(self.skip_use_cnn):  skip9 = self.skip_cnn9(skip9)
+                if(self.skip_use_Acti): skip9 = self.skip_Acti9(skip9)
             x = self.lrelu9(x)
             x = self.conv9(x)
 
