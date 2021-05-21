@@ -23,6 +23,8 @@ def train_step_pure_G(model_obj, in_data, gt_data, loss_info_obj=None):
         gen_loss  = loss_info_obj.loss_funs_dict["G"](model_output, gt_data)
 
     generator_gradients               = gen_tape .gradient(gen_loss, model_obj.generator.trainable_variables)
+    # for gradient in generator_gradients:
+    #     print("gradient", gradient)
     model_obj .optimizer_G .apply_gradients(zip(generator_gradients, model_obj.generator.trainable_variables))
 
     ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
