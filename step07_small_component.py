@@ -31,11 +31,11 @@ class sSE(tf.keras.layers.Layer):
         self.excite_sp_sigmoid = Activation(tf.nn.sigmoid, name="excite_sigmoid")
 
     def call(self, input_tensor):
-        print("input_tensor.shape", input_tensor.shape)
+        # print("input_tensor.shape", input_tensor.shape)
         x = self.squeeze_ch_1x1conv(input_tensor)
-        print("x.shape", x.shape)
-        x = self.excite_sp_sigmoid(input_tensor)
-        print("x.shape", x.shape)
+        # print("x.shape", x.shape)
+        x = self.excite_sp_sigmoid(x)
+        # print("x.shape", x.shape)
         return input_tensor * x
 
 class CoordConv(tf.keras.layers.Layer):
