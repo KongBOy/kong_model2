@@ -536,6 +536,10 @@ flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu    = KModel_builder().set_model_name(
 flow_unet_IN_7l_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.sigmoid, true_IN=True)
 
 
+flow_unet_IN_7l_ch64_2to3noC_sk_cSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=2, skip_use_cSE=True,  true_IN=True)
+flow_unet_IN_7l_ch64_2to3noC_sk_sSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=2, skip_use_sSE=True,  true_IN=True)
+flow_unet_IN_7l_ch64_2to3noC_sk_scSE = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=2, skip_use_scSE=True, true_IN=True)
+
 flow_unet_IN_7l_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cSE=True, true_IN=True)
 flow_unet_IN_7l_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_sSE=True, true_IN=True)
 flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_scSE=True, true_IN=True)

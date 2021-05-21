@@ -81,9 +81,13 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"ch64_in_epoch280.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch300.{compress_all}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_e060_cSE.{compress_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_e060_sSE.{compress_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_e060_scSE.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e060 .{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_sSE_e060 .{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e060.{compress_all}"])  ### 測試真的IN
+
+# sb.run(same_command + [f"ch64_in_sk_cSE_e060.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_sSE_e060.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_scSE_e060.{compress_all}"])  ### 測試真的IN
 
 # sb.run(same_command + [f"unet_IN_7l_2to3noC_e020.{compress_all}"])  ### 測試真的IN  127.28
 # sb.run(same_command + [f"unet_IN_7l_2to3noC_e040.{compress_all}"])  ### 測試真的IN  127.55
