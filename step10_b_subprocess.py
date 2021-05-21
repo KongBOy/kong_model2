@@ -74,6 +74,7 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"ch32_bn16_bn_see_arg_F.{compress_all}"])
 
 
+# sb.run(same_command + [f"ch64_in_epoch060.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch200.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch220.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch240.{compress_all}"])  ### 測試真的IN
