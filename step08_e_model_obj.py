@@ -73,15 +73,16 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
                                                    optimizer_G=self.kong_model.optimizer_G,
                                                    epoch_log=self.kong_model.epoch_log)
 
-    def build_flow_unet(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, true_IN=False, concat_Activation=False):
+    def build_flow_unet(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, true_IN=False, concat_Activation=False):
         self.hid_ch = hid_ch
         self.depth_level = depth_level
         self.no_concat_layer = no_concat_layer
-        self.skip_use_add = skip_use_add
-        self.skip_use_cSE = skip_use_cSE
-        self.skip_use_sSE = skip_use_sSE
-        self.skip_use_cnn = skip_use_cnn
-        self.skip_cnn_k = skip_cnn_k
+        self.skip_use_add  = skip_use_add
+        self.skip_use_cSE  = skip_use_cSE
+        self.skip_use_sSE  = skip_use_sSE
+        self.skip_use_scSE = skip_use_scSE
+        self.skip_use_cnn  = skip_use_cnn
+        self.skip_cnn_k    = skip_cnn_k
         self.skip_use_Acti = skip_use_Acti
         self.out_tanh = out_tanh
         self.out_ch = out_ch
@@ -91,8 +92,9 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
         def _build_flow_unet():
             # ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
             # print("hid_ch", hid_ch)
-            # print("skip_use_cSE", skip_use_cSE)
-            # print("skip_use_sSE", skip_use_sSE)
+            # print("skip_use_cSE" , skip_use_cSE)
+            # print("skip_use_sSE" , skip_use_sSE)
+            # print("skip_use_scSE", skip_use_scSE)
             # print("skip_use_cnn", skip_use_cnn)
             # print("skip_cnn_k", skip_cnn_k)
             # print("skip_use_Acti", skip_use_Acti)
@@ -103,7 +105,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
             if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
             elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
             else:                                                   from step08_a_1_UNet_BN                   import Generator
-            self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, no_concat_layer=self.no_concat_layer, skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=skip_use_sSE, skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti, out_tanh=self.out_tanh, out_ch=self.out_ch)
+            self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, no_concat_layer=self.no_concat_layer, skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE, skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti, out_tanh=self.out_tanh, out_ch=self.out_ch)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
             self._build_flow_part()
@@ -536,6 +538,7 @@ flow_unet_IN_7l_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(
 
 flow_unet_IN_7l_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cSE=True, true_IN=True)
 flow_unet_IN_7l_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_sSE=True, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_scSE=True, true_IN=True)
 ########################################################### 15 用 resblock 來試試看
 flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect_fk3_ch64_tfIN_resb_ok9).build_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 

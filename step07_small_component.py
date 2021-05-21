@@ -38,6 +38,20 @@ class sSE(tf.keras.layers.Layer):
         # print("x.shape", x.shape)
         return input_tensor * x
 
+class scSE(tf.keras.layers.Layer):
+    def __init__(self, in_ch, ratio, **kwargs):
+        super(scSE, self).__init__(**kwargs)
+        self.cSE = cSE(in_ch, ratio, **kwargs)
+        self.sSE = sSE(**kwargs)
+
+    def call(self, input_tensor):
+        # print("input_tensor.shape", input_tensor.shape)
+        cse = self.cSE(input_tensor)
+        # print("x.shape", x.shape)
+        sse = self.sSE(input_tensor)
+        # print("x.shape", x.shape)
+        return cse + sse
+
 class CoordConv(tf.keras.layers.Layer):
     def __init__(self, **kwargs):
         super(CoordConv, self).__init__(**kwargs)
@@ -89,3 +103,7 @@ if(__name__ == "__main__"):
     print(out_sse[0, ..., 0])
     print(out_sse[0, 0, 0, :])
     print(out_sse[0, 0, 1, :])
+
+    scse = scSE(in_ch=128, ratio=4)
+    out_scse = scse(data)
+    print(out_scse)
