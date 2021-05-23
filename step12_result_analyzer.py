@@ -13,8 +13,8 @@ from multiprocessing import Process
 class Result_analyzer:
     def __init__(self, ana_describe):
         self.ana_describe = ana_describe
-        self.analyze_dir = analyze_access_path + "analyze_dir" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
-        Check_dir_exist_and_build(self.analyze_dir)
+        self.analyze_dst_dir = analyze_access_path + "analyze_dir" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
+        Check_dir_exist_and_build(self.analyze_dst_dir)
 
     ########################################################################################################################################
     def _step0_c_results_get_see_dir_info(self, c_results):
@@ -144,7 +144,7 @@ class Col_results_analyzer(Result_analyzer):
         _Draw_col_results_single_see_ 的 前置步驟：設定格式
         """
         start_time = time.time()
-        analyze_see_dir = self.analyze_dir + "/" + self.c_results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
+        analyze_see_dir = self.analyze_dst_dir + "/" + self.c_results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                       ### 建立 存結果的資料夾
 
 
@@ -251,7 +251,7 @@ class Col_results_analyzer(Result_analyzer):
             return
         ###############################################################################################
         start_time = time.time()
-        analyze_see_dir = self.analyze_dir + "/" + save_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
+        analyze_see_dir = self.analyze_dst_dir + "/" + save_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                  ### 建立 存結果的資料夾
         print(f"save to {analyze_see_dir}")
 
@@ -384,7 +384,7 @@ class Row_col_results_analyzer(Result_analyzer):
     def analyze_row_col_results_single_see(self, see_num, single_see_multiprocess=False, single_see_core_amount=8):
         print(f"{self.ana_describe} doing analyze_row_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
         start_time = time.time()
-        analyze_see_dir = self.analyze_dir + "/" + self.r_c_results[0][0].sees[see_num].see_name  ### 分析結果存哪裡定位出來
+        analyze_see_dir = self.analyze_dst_dir + "/" + self.r_c_results[0][0].sees[see_num].see_name + "/" + "epoch=all"  ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                          ### 建立 存結果的資料夾
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
@@ -455,18 +455,26 @@ class Bm_Rec_exps_analyze(Result_analyzer):
         super().__init__(ana_describe)
         self.exps = exps
 
-    def _build_analyze_see_bm_rec_dir(self, see_num):
-        analyze_see_dir = self.analyze_dir + "/" + self.exps[0].result_obj.sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來，上面是analyze_see_dir
+    def _build_analyze_see_bm_rec_dir(self, see_num, dst_dir, reset_dir=True):
+        ### { analyze_dir/ana_describe } / {see_001-real} / {dst_dir}
+        ### { analyze_dir/ana_describe } / {see_001-real} / {dst_dir} / bm
+        ### { analyze_dir/ana_describe } / {see_001-real} / {dst_dir} / rec
+        analyze_see_dir = self.analyze_dst_dir + "/" + self.exps[0].result_obj.sees[see_num].see_name + "/" + dst_dir  ### (可以再想想好名字！)分析結果存哪裡定位出來，上面是analyze_see_dir
         analyze_see_bm_dir  = analyze_see_dir + "/" + "bm"       ### 定出 存結果的資料夾
         analyze_see_rec_dir = analyze_see_dir + "/" + "rec"      ### 定出 存結果的資料夾
-        Check_dir_exist_and_build_new_dir(analyze_see_dir)       ### 建立 存結果的資料夾
-        Check_dir_exist_and_build_new_dir(analyze_see_bm_dir)    ### 建立 存結果的資料夾
-        Check_dir_exist_and_build_new_dir(analyze_see_rec_dir)   ### 建立 存結果的資料夾
+        if(reset_dir):
+            Check_dir_exist_and_build_new_dir(analyze_see_dir)       ### 建立 存結果的資料夾
+            Check_dir_exist_and_build_new_dir(analyze_see_bm_dir)    ### 建立 存結果的資料夾
+            Check_dir_exist_and_build_new_dir(analyze_see_rec_dir)   ### 建立 存結果的資料夾
+        else:
+            Check_dir_exist_and_build        (analyze_see_dir)       ### 建立 存結果的資料夾
+            Check_dir_exist_and_build        (analyze_see_bm_dir)    ### 建立 存結果的資料夾
+            Check_dir_exist_and_build        (analyze_see_rec_dir)   ### 建立 存結果的資料夾
         return analyze_see_bm_dir, analyze_see_rec_dir
 
 
-    def single_see_certain_rec_analyze(self, see_num, epoch):
-        analyze_see_bm_dir, analyze_see_rec_dir = self._build_analyze_see_bm_rec_dir(see_num)  ### 定出 存結果的資料夾
+    def single_see_certain_rec_analyze(self, see_num, epoch, reset_dir=True):
+        analyze_see_bm_dir, analyze_see_rec_dir = self._build_analyze_see_bm_rec_dir(see_num, dst_dir="epoch={epoch}", reset_dir=reset_dir)  ### 定出 存結果的資料夾
 
         for exp in self.exps:
             see = exp.result_obj.sees[see_num]      ### 先抓出 要用的物件
@@ -482,9 +490,9 @@ class Bm_Rec_exps_analyze(Result_analyzer):
             cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
         return self
 
-    def single_see_final_rec_analyze(self, see_num):
+    def single_see_final_rec_analyze(self, see_num, reset_dir=True):
         print(f"Bm_Rec_exps_analyze, doing single_see_final_rec_analyze, analyzing see_num:{see_num}")
-        analyze_see_bm_dir, analyze_see_rec_dir = self._build_analyze_see_bm_rec_dir(see_num)  ### 定出 存結果的資料夾
+        analyze_see_bm_dir, analyze_see_rec_dir = self._build_analyze_see_bm_rec_dir(see_num, dst_dir="epoch=final", reset_dir=reset_dir)  ### 定出 存結果的資料夾
 
         for exp in self.exps:
             see = exp.result_obj.sees[see_num]          ### 先抓出 要用的物件
@@ -500,20 +508,20 @@ class Bm_Rec_exps_analyze(Result_analyzer):
             cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
         return self
 
-    def all_single_see_final_rec_analyze(self):
+    def all_single_see_final_rec_analyze(self, reset_dir=True):
         print(f"Bm_Rec_exps_analyze, doing all_single_see_final_rec_analyze, analyzing {self.ana_describe}")
         start_time = time.time()
         for see_num in range(self.exps[0].result_obj.see_amount):
-            self.single_see_final_rec_analyze(see_num=see_num)
+            self.single_see_final_rec_analyze(see_num=see_num, reset_dir=reset_dir)
         print(f"Bm_Rec_exps_analyze, doing all_single_see_final_rec_analyze, analyzing {self.ana_describe}, cost time:{time.time() - start_time}")
         return self
 
-    def analyze_tensorboard(self, reset_board_dir=False):
-        analyze_board_dir = self.analyze_dir + "/" + "boards"  ### 分析結果存哪裡定位出來 例如 D:\0 data_dir\analyze_dir\5_14-bm_rec-2_1-ch_results\boards
-        if(reset_board_dir): Check_dir_exist_and_build_new_dir(analyze_board_dir)    ### 一開始雖然覺得下面較好，但實際用起來發現我也不會存結論在board資料夾，而是直接寫在這裡，所以就多個reset_flag，讓我可控制要不要刪掉上次的board資料夾囉！
-        else:                Check_dir_exist_and_build(analyze_board_dir)           ### 建立 存結果的資料夾，目前覺的外層的這個 不用 build_new_dir，這樣才可以存筆記在裡面，要小心的是 如果 exps 有刪掉某個exp，就不會自動刪掉囉！
+    def analyze_tensorboard(self, reset_dir=False):
+        analyze_board_dir = self.analyze_dst_dir + "/" + "boards"  ### 分析結果存哪裡定位出來 例如 D:/0 data_dir/analyze_dir/5_14-bm_rec-2_1-ch_results/boards
+        if(reset_dir): Check_dir_exist_and_build_new_dir(analyze_board_dir)    ### 一開始雖然覺得下面較好，但實際用起來發現我也不會存結論在board資料夾，而是直接寫在這裡，所以就多個reset_flag，讓我可控制要不要刪掉上次的board資料夾囉！
+        else:          Check_dir_exist_and_build        (analyze_board_dir)           ### 建立 存結果的資料夾，目前覺的外層的這個 不用 build_new_dir，這樣才可以存筆記在裡面，要小心的是 如果 exps 有刪掉某個exp，就不會自動刪掉囉！
         for exp in self.exps:
-            analyze_board_ana_dir = analyze_board_dir + "/" + exp.result_obj.ana_describe   ### D:\0 data_dir\analyze_dir\5_14-bm_rec-2_1-ch_results\boards\exp.result_obj.ana_describe
+            analyze_board_ana_dir = analyze_board_dir + "/" + exp.result_obj.ana_describe   ### D:/0 data_dir/analyze_dir/5_14-bm_rec-2_1-ch_results/boards/exp.result_obj.ana_describe
             exp.loss_info_obj = exp.loss_info_builder.build()
             print("exp.loss_info_builder.loss_info_obj.logs_read_dir ~~~~~~~ ", exp.loss_info_builder.loss_info_obj.logs_read_dir)
             print("exp.loss_info_builder.loss_info_obj.logs_write_dir ~~~~~~~", exp.loss_info_builder.loss_info_obj.logs_write_dir)
