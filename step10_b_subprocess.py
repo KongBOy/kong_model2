@@ -31,10 +31,10 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"epoch300_bn_see_arg_T.{compress_all}"])
 # sb.run(same_command + [f"epoch700_bn_see_arg_T.{compress_all}"])
 
-# sb.run(same_command + [f"ch128_bn_see_arg_T.{compress_all}"])
-# sb.run(same_command + [f"ch032_bn_see_arg_T.{compress_all}"])
-# sb.run(same_command + [f"ch016_bn_see_arg_T.{compress_all}"])
-# sb.run(same_command + [f"ch008_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch128_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch032_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch016_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch008_bn_see_arg_T.{compress_all}"])
 
 # sb.run(same_command + [f"epoch050_new_shuf_bn_see_arg_T.{compress_all}"])  ### 802
 # sb.run(same_command + [f"epoch100_new_shuf_bn_see_arg_T.{compress_all}"])  ### 1275
@@ -45,15 +45,15 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down.{compress_all}"])  ### 看看 lr 都不下降的效果
 # sb.run(same_command + [f"epoch700_new_shuf_bn_see_arg_T.{compress_9te}"])
 
-# sb.run(same_command + [f"ch128_new_shuf_bn_see_arg_F.{compress_all}"])
-# sb.run(same_command + [f"ch032_new_shuf_bn_see_arg_F.{compress_all}"])
-# sb.run(same_command + [f"ch016_new_shuf_bn_see_arg_F.{compress_all}"])
-# sb.run(same_command + [f"ch008_new_shuf_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"old_ch128_new_shuf_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"old_ch032_new_shuf_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"old_ch016_new_shuf_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"old_ch008_new_shuf_bn_see_arg_F.{compress_all}"])
 
-# sb.run(same_command + [f"ch128_new_shuf_bn_see_arg_T.{compress_all}"])
-# sb.run(same_command + [f"ch032_new_shuf_bn_see_arg_T.{compress_all}"])
-# sb.run(same_command + [f"ch016_new_shuf_bn_see_arg_T.{compress_all}"])
-# sb.run(same_command + [f"ch008_new_shuf_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch128_new_shuf_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch032_new_shuf_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch016_new_shuf_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch008_new_shuf_bn_see_arg_T.{compress_all}"])
 
 
 # sb.run(same_command + [f"ch64_bn04_bn_see_arg_F.{compress_all}"])
@@ -62,16 +62,16 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"ch64_bn08_bn_see_arg_T.{compress_all}"])
 
 
-# sb.run(same_command + [f"ch32_bn04_bn_see_arg_T.{compress_all}"])
-# sb.run(same_command + [f"ch32_bn08_bn_see_arg_T.{compress_all}"])
-# sb.run(same_command + [f"ch32_bn16_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch32_bn04_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch32_bn08_bn_see_arg_T.{compress_all}"])
+# sb.run(same_command + [f"old_ch32_bn16_bn_see_arg_T.{compress_all}"])
 # ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn32.{compress_all}"])  ### 失敗
 # ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn64.{compress_all}"])  ### 失敗
 
 
-# sb.run(same_command + [f"ch32_bn04_bn_see_arg_F.{compress_all}"])
-# sb.run(same_command + [f"ch32_bn08_bn_see_arg_F.{compress_all}"])
-# sb.run(same_command + [f"ch32_bn16_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"old_ch32_bn04_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"old_ch32_bn08_bn_see_arg_F.{compress_all}"])
+# sb.run(same_command + [f"old_ch32_bn16_bn_see_arg_F.{compress_all}"])
 
 ##########################################################################################################################################################################################
 ### 4

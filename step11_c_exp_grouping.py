@@ -316,33 +316,33 @@ epoch_old_new_shuf_exps  = [
 
 ### 0_4 ch old_shuffle
 ch_old_shuf_exps = [
-    ch128_bn_see_arg_T.build(),
+    old_ch128_bn_see_arg_T.build(),
     ### jump ch064 真的是失誤， 因為無法重現 old shuffle，所以真的無法
-    ch032_bn_see_arg_T.build(),
-    ch016_bn_see_arg_T.build(),
-    ch008_bn_see_arg_T.build()]
+    old_ch032_bn_see_arg_T.build(),
+    old_ch016_bn_see_arg_T.build(),
+    old_ch008_bn_see_arg_T.build()]
 
 ### 0_5 ch new_shuffle
 ch064_new_shuf_bn_see_arg_T = copy.deepcopy(epoch500_new_shuf_bn_see_arg_T.build()); ch064_new_shuf_bn_see_arg_T.result_obj.ana_describe = "ch064_new_shuf_bn_see_arg_T"
 ch_new_shuf_exps = [
-    ch128_new_shuf_bn_see_arg_T.build(),
+    old_ch128_new_shuf_bn_see_arg_T.build(),
     ch064_new_shuf_bn_see_arg_T,
-    ch032_new_shuf_bn_see_arg_T.build(),
-    ch016_new_shuf_bn_see_arg_T.build(),
-    ch008_new_shuf_bn_see_arg_T.build()]
+    old_ch032_new_shuf_bn_see_arg_T.build(),
+    old_ch016_new_shuf_bn_see_arg_T.build(),
+    old_ch008_new_shuf_bn_see_arg_T.build()]
 
 ### 0_6 ch  old vs new shuffle
 ch_old_new_shuf_exps = [
-    ch128_bn_see_arg_T.build(),
-    ch128_new_shuf_bn_see_arg_T.build(),
+    old_ch128_bn_see_arg_T.build(),
+    old_ch128_new_shuf_bn_see_arg_T.build(),
     ### jump ch064
     ### jump ch064，因為上面jumpg保持統一性，儘管有也jump
-    ch032_bn_see_arg_T.build(),
-    ch032_new_shuf_bn_see_arg_T.build(),
-    ch016_bn_see_arg_T.build(),
-    ch016_new_shuf_bn_see_arg_T.build(),
-    ch008_bn_see_arg_T.build(),
-    ch008_new_shuf_bn_see_arg_T.build()]
+    old_ch032_bn_see_arg_T.build(),
+    old_ch032_new_shuf_bn_see_arg_T.build(),
+    old_ch016_bn_see_arg_T.build(),
+    old_ch016_new_shuf_bn_see_arg_T.build(),
+    old_ch008_bn_see_arg_T.build(),
+    old_ch008_new_shuf_bn_see_arg_T.build()]
 ###################################################################################################
 ###################################################################################################
 ###################################################################################################
@@ -441,21 +441,21 @@ epoch300_500_exps  = [
     ch64_in_epoch500.build(),
     ]
 
-# # ### 1_2 ch，但 bn_see_arg_F，所以結果圖醜，收起來，留 ch032_new_shuf_bn_see_arg_F 是為了給 bn 比較用
-# ch128_new_shuf_bn_see_arg_F
+# # ### 1_2 ch，但 bn_see_arg_F，所以結果圖醜，收起來，留 old_ch032_new_shuf_bn_see_arg_F 是為了給 bn 比較用
+# old_ch128_new_shuf_bn_see_arg_F
 # ch064_new_shuf_bn_see_arg_F = copy.deepcopy(epoch500_new_shuf_bn_see_arg_F.build()); ch064_new_shuf_bn_see_arg_F.result_obj.ana_describe = "ch064_new_shuf_bn_see_arg_F"
-# ch032_new_shuf_bn_see_arg_F
-# ch016_new_shuf_bn_see_arg_F
-# ch008_new_shuf_bn_see_arg_F
+# old_ch032_new_shuf_bn_see_arg_F
+# old_ch016_new_shuf_bn_see_arg_F
+# old_ch008_new_shuf_bn_see_arg_F
 ###################################################################################################
 ###################################################################################################
 ### 2 ch
 ch_exps = [
-    ch128_new_shuf_bn_see_arg_T.build(),
+    old_ch128_new_shuf_bn_see_arg_T.build(),
     ch064_new_shuf_bn_see_arg_T,
-    ch032_new_shuf_bn_see_arg_T.build(),
-    ch016_new_shuf_bn_see_arg_T.build(),
-    ch008_new_shuf_bn_see_arg_T.build(),]
+    old_ch032_new_shuf_bn_see_arg_T.build(),
+    old_ch016_new_shuf_bn_see_arg_T.build(),
+    old_ch008_new_shuf_bn_see_arg_T.build(),]
 
 ### 這 epoch_no_down_vs_ch_exps 真的很重要，
 ### 理解到了 training loss 在 0.000x 上閜跑是沒有什麼差的，
@@ -463,11 +463,11 @@ ch_exps = [
 ### 但是 在 real 影像上 是截然不同的喔！ epoch700_no_down 比 ch008 好很多！
 ### 所以不能只看 training loss，一定要直接看 real影像 處理的效果
 epoch_no_down_vs_ch_exps = [
-    ch128_new_shuf_bn_see_arg_T.build(),
+    old_ch128_new_shuf_bn_see_arg_T.build(),
     ch064_new_shuf_bn_see_arg_T,
-    ch032_new_shuf_bn_see_arg_T.build(),
-    ch016_new_shuf_bn_see_arg_T.build(),
-    ch008_new_shuf_bn_see_arg_T.build(),
+    old_ch032_new_shuf_bn_see_arg_T.build(),
+    old_ch016_new_shuf_bn_see_arg_T.build(),
+    old_ch008_new_shuf_bn_see_arg_T.build(),
     epoch700_bn_see_arg_T_no_down.build(), ]
 ###################################################################################################
 ###################################################################################################
@@ -480,12 +480,12 @@ bn_ch64_exps_bn_see_arg_T = [
     ch64_bn08_bn_see_arg_T.build(), ]
 
 ###   3_2. ch32 就能 bn 1, 4, 8, 16
-ch32_bn01_bn_see_arg_T = copy.deepcopy(ch032_new_shuf_bn_see_arg_T.build()); ch32_bn01_bn_see_arg_T.result_obj.ana_describe = "ch32_bn01_bn_see_arg_T"
+ch32_bn01_bn_see_arg_T = copy.deepcopy(old_ch032_new_shuf_bn_see_arg_T.build()); ch32_bn01_bn_see_arg_T.result_obj.ana_describe = "ch32_bn01_bn_see_arg_T"
 bn_ch32_exps_bn_see_arg_T = [
     ch32_bn01_bn_see_arg_T,
-    ch32_bn04_bn_see_arg_T.build(),
-    ch32_bn08_bn_see_arg_T.build(),
-    ch32_bn16_bn_see_arg_T.build(), ]
+    old_ch32_bn04_bn_see_arg_T.build(),
+    old_ch32_bn08_bn_see_arg_T.build(),
+    old_ch32_bn16_bn_see_arg_T.build(), ]
 
 ###   3_3. ch32 bn1, 4, 8, 16 see_arg 設 True/False 來比較看看，ch64的 bn數比較少就跳過囉~~
 ch64_bn01_bn_see_arg_F = copy.deepcopy(epoch500_new_shuf_bn_see_arg_F.build()); ch64_bn01_bn_see_arg_F.result_obj.ana_describe = "ch64_bn01_bn_see_arg_F"
@@ -498,16 +498,16 @@ bn_ch64_exps_bn_see_arg_F_and_T = [
     ch64_bn08_bn_see_arg_T.build(), ]
 
 ###   3_4. ch32 bn1, 4, 8, 16 see_arg 設 True/False 來比較看看，ch64的 bn數比較少就跳過囉~~
-ch32_bn01_bn_see_arg_F = copy.deepcopy(ch032_new_shuf_bn_see_arg_F.build()); ch32_bn01_bn_see_arg_F.result_obj.ana_describe = "ch32_bn01_bn_see_arg_F"
+ch32_bn01_bn_see_arg_F = copy.deepcopy(old_ch032_new_shuf_bn_see_arg_F.build()); ch32_bn01_bn_see_arg_F.result_obj.ana_describe = "ch32_bn01_bn_see_arg_F"
 bn_ch32_exps_bn_see_arg_F_and_T = [
     ch32_bn01_bn_see_arg_F,
     ch32_bn01_bn_see_arg_T,
-    ch32_bn04_bn_see_arg_F.build(),
-    ch32_bn04_bn_see_arg_T.build(),
-    ch32_bn08_bn_see_arg_F.build(),
-    ch32_bn08_bn_see_arg_T.build(),
-    ch32_bn16_bn_see_arg_F.build(),
-    ch32_bn16_bn_see_arg_T.build(), ]
+    old_ch32_bn04_bn_see_arg_F.build(),
+    old_ch32_bn04_bn_see_arg_T.build(),
+    old_ch32_bn08_bn_see_arg_F.build(),
+    old_ch32_bn08_bn_see_arg_T.build(),
+    old_ch32_bn16_bn_see_arg_F.build(),
+    old_ch32_bn16_bn_see_arg_T.build(), ]
 
 ###################################################################################################
 ###################################################################################################
