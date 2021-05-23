@@ -704,7 +704,7 @@ if(__name__ == "__main__"):
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize( model_obj.model_name).build_by_db_get_method().build()
 
     db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1").set_detail(have_train=True, have_see=True).build()
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet()
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
     print(time.time() - start_time)
