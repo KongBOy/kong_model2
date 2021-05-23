@@ -290,7 +290,7 @@ if(__name__ == "__main__"):
     from step09_a_loss_info_obj import Loss_info_builder
 
     ### 1. model_obj
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level()
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level()
 
     ### 2. db_obj 和 tf_data
     db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book, DB_N.blender_os_hw768 , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy").set_detail(have_train=True, have_see=True).build()

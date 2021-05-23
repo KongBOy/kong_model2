@@ -470,7 +470,7 @@ if(__name__ == "__main__"):
     from step09_a_loss_info_obj import Loss_info_builder
 
     ### 1. model_obj
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.rect).build_rect2(first_k3=False, g_train_many=False)
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.rect).use_rect2(first_k3=False, g_train_many=False)
 
     ### 2. db_obj 和 tf_data
     db_obj = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book , DB_N.os_book_800data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", gt_format="jpg").set_detail(have_train=True, have_see=True).build()

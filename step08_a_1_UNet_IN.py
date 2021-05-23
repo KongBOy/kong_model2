@@ -402,13 +402,13 @@ if(__name__ == "__main__"):
     from step09_a_loss_info_obj import Loss_info_builder
 
     ### 1. model_obj
-    flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu, true_IN=True).build()
-    flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=False, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid, true_IN=True).build()
-    flow_unet_IN_7l_ch64_skip_use_cSE             = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cSE=True, true_IN=True)
-    flow_unet_IN_7l_ch64_skip_use_sSE             = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_sSE=True, true_IN=True)
-    flow_unet_IN_7l_ch64_skip_use_scSE            = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_scSE=True, true_IN=True)
+    flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu, true_IN=True).build()
+    flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=False, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid, true_IN=True).build()
+    flow_unet_IN_7l_ch64_skip_use_cSE             = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cSE=True, true_IN=True)
+    flow_unet_IN_7l_ch64_skip_use_sSE             = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_sSE=True, true_IN=True)
+    flow_unet_IN_7l_ch64_skip_use_scSE            = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_scSE=True, true_IN=True)
     model_obj = flow_unet_IN_7l_ch64_skip_use_scSE.build()  ### 可替換成 上面 想測試的 model
-    # flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True)
+    # flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, out_ch=3, true_IN=True)
     ### 2. db_obj 和 tf_data
     db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy").set_detail(have_train=True, have_see=True).build()
     tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()

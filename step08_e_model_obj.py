@@ -73,7 +73,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
                                                    optimizer_G=self.kong_model.optimizer_G,
                                                    epoch_log=self.kong_model.epoch_log)
 
-    def build_flow_unet(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, true_IN=False, concat_Activation=False):
+    def use_flow_unet(self, hid_ch=64, depth_level=7, no_concat_layer=0, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, true_IN=False, concat_Activation=False):
         self.hid_ch = hid_ch
         self.depth_level = depth_level
         self.no_concat_layer = no_concat_layer
@@ -117,7 +117,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
 
 
 
-    def build_flow_rect_7_level(self, first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=False, use_res_learning=True, resb_num=9, out_ch=3):
+    def use_flow_rect_7_level(self, first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=False, use_res_learning=True, resb_num=9, out_ch=3):
         self.first_k = first_k
         self.hid_ch = hid_ch
         self.depth_level = depth_level
@@ -143,7 +143,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
         self.build = _build_flow_rect_7_level
         return self
 
-    def build_flow_rect(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3):
+    def use_flow_rect(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3):
         self.first_k3 = first_k3
         self.hid_ch = hid_ch
         self.true_IN = true_IN
@@ -189,7 +189,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
                                                    optimizer_D=self.kong_model.optimizer_D,
                                                    epoch_log=self.kong_model.epoch_log)
 
-    def build_rect2(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
+    def use_rect2(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
         self.first_k3 = first_k3
         self.use_res_learning = use_res_learning
         self.resb_num = resb_num
@@ -209,7 +209,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
         self.build = _build_rect2
         return self
 
-    def build_rect2_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
+    def use_rect2_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False, D_first_concat=True, D_kernel_size=4):
         self.first_k3 = first_k3
         self.mrf_replace = mrf_replace
         self.use_res_learning = use_res_learning
@@ -252,7 +252,7 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
                                                    optimizer_G=self.kong_model.optimizer_G,
                                                    epoch_log=self.kong_model.epoch_log)
 
-    def build_justG(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False):
+    def use_justG(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, g_train_many=False):
         self.first_k3 = first_k3
         self.use_res_learning = use_res_learning
         self.resb_num = resb_num
@@ -268,7 +268,7 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
         self.build = _build_justG
         return self
 
-    def build_justG_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False):
+    def use_justG_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, g_train_many=False):
         self.first_k3 = first_k3
         self.mrf_replace = mrf_replace
         self.use_res_learning = use_res_learning
@@ -307,165 +307,161 @@ class MODEL_NAME(Enum):
 ### 直接先建好 obj 給外面import囉！
 unet                     = KModel_builder().set_model_name(MODEL_NAME.unet               ).build_unet()
 #######################################################################################################################
-rect                     = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2(first_k3=False, g_train_many=False)
-rect_firstk3             = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2(first_k3=True)
-rect_Gk4_many_Dk4_concat = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2(first_k3=False, g_train_many=True)  ### 目前G_train幾次要手動改喔！
+rect                     = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(first_k3=False, g_train_many=False)
+rect_firstk3             = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(first_k3=True)
+rect_Gk4_many_Dk4_concat = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(first_k3=False, g_train_many=True)  ### 目前G_train幾次要手動改喔！
 
-rect_mrfall         = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2_mrf(first_k3=False, mrf_replace=False, use1=True, use3=True, use5=True, use7=True, use9=True, g_train_many=False)
-rect_mrf7           = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2_mrf(first_k3=False, mrf_replace=False, use7=True)
-rect_mrf79          = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2_mrf(first_k3=False, mrf_replace=False, use7=True, use9=True)
-rect_replace_mrf7   = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2_mrf(first_k3=False, mrf_replace=True , use7=True, g_train_many=False)
-rect_replace_mrf79  = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2_mrf(first_k3=False, mrf_replace=True , use7=True, use9=True)
+rect_mrfall         = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2_mrf(first_k3=False, mrf_replace=False, use1=True, use3=True, use5=True, use7=True, use9=True, g_train_many=False)
+rect_mrf7           = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2_mrf(first_k3=False, mrf_replace=False, use7=True)
+rect_mrf79          = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2_mrf(first_k3=False, mrf_replace=False, use7=True, use9=True)
+rect_replace_mrf7   = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2_mrf(first_k3=False, mrf_replace=True , use7=True, g_train_many=False)
+rect_replace_mrf79  = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2_mrf(first_k3=False, mrf_replace=True , use7=True, use9=True)
 #######################################################################################################################
-justG               = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=False)
-justG_firstk3       = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True)
+justG               = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=False)
+justG_firstk3       = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True)
 ########################################################### 2
-justG_mrf7          = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=False, mrf_replace=False, use7=True)
-justG_mrf7_k3       = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True , mrf_replace=False, use7=True)
-justG_mrf5_k3       = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True , mrf_replace=False, use5=True)
-justG_mrf3_k3       = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True)
+justG_mrf7          = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=False, mrf_replace=False, use7=True)
+justG_mrf7_k3       = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True , mrf_replace=False, use7=True)
+justG_mrf5_k3       = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True , mrf_replace=False, use5=True)
+justG_mrf3_k3       = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True , mrf_replace=False, use3=True)
 ########################################################### 3
-justG_mrf79         = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=False, mrf_replace=False, use7=True, use9=True)
-justG_mrf79_k3      = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True , mrf_replace=False, use7=True, use9=True)
-justG_mrf57_k3      = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True , mrf_replace=False, use5=True, use7=True)
-justG_mrf35_k3      = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True)
+justG_mrf79         = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=False, mrf_replace=False, use7=True, use9=True)
+justG_mrf79_k3      = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True , mrf_replace=False, use7=True, use9=True)
+justG_mrf57_k3      = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True , mrf_replace=False, use5=True, use7=True)
+justG_mrf35_k3      = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True)
 ########################################################### 4
-justG_mrf_replace7  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True)
-justG_mrf_replace5  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=False, mrf_replace=True, use5=True)
-justG_mrf_replace3  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=False, mrf_replace=True, use3=True)
+justG_mrf_replace7  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=False, mrf_replace=True, use7=True)
+justG_mrf_replace5  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=False, mrf_replace=True, use5=True)
+justG_mrf_replace3  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=False, mrf_replace=True, use3=True)
 ########################################################### 5
-justG_mrf_replace79 = KModel_builder().set_model_name(MODEL_NAME.justG).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use9=True)
-justG_mrf_replace75 = KModel_builder().set_model_name(MODEL_NAME.justG).build_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use5=True)
-justG_mrf_replace35 = KModel_builder().set_model_name(MODEL_NAME.justG).build_justG_mrf(first_k3=False, mrf_replace=True, use3=True, use5=True)
-
+justG_mrf_replace79 = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use9=True)
+justG_mrf_replace75 = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=False, mrf_replace=True, use7=True, use5=True)
+justG_mrf_replace35 = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=False, mrf_replace=True, use3=True, use5=True)
 ########################################################### 2c
-justG_mrf135_k3     = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True , mrf_replace=False, use1=True, use3=True, use5=True)
-justG_mrf357_k3     = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True)
-justG_mrf3579_k3    = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, use9=True)
+justG_mrf135_k3     = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True , mrf_replace=False, use1=True, use3=True, use5=True)
+justG_mrf357_k3     = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True)
+justG_mrf3579_k3    = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, use9=True)
 
-rect_mrf35_Gk3_DnoC_k4     = KModel_builder().set_model_name(MODEL_NAME.rect  ).build_rect2_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, D_first_concat=False, D_kernel_size=4)
-rect_mrf135_Gk3_DnoC_k4    = KModel_builder().set_model_name(MODEL_NAME.rect  ).build_rect2_mrf(first_k3=True , mrf_replace=False, use1=True, use3=True, use5=True, D_first_concat=False, D_kernel_size=4)
-rect_mrf357_Gk3_DnoC_k4    = KModel_builder().set_model_name(MODEL_NAME.rect  ).build_rect2_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, D_first_concat=False, D_kernel_size=4)
-rect_mrf3579_Gk3_DnoC_k4   = KModel_builder().set_model_name(MODEL_NAME.rect  ).build_rect2_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, use9=True, D_first_concat=False, D_kernel_size=4)
-
+rect_mrf35_Gk3_DnoC_k4     = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, D_first_concat=False, D_kernel_size=4)
+rect_mrf135_Gk3_DnoC_k4    = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2_mrf(first_k3=True , mrf_replace=False, use1=True, use3=True, use5=True, D_first_concat=False, D_kernel_size=4)
+rect_mrf357_Gk3_DnoC_k4    = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, D_first_concat=False, D_kernel_size=4)
+rect_mrf3579_Gk3_DnoC_k4   = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2_mrf(first_k3=True , mrf_replace=False, use3=True, use5=True, use7=True, use9=True, D_first_concat=False, D_kernel_size=4)
 ########################################################### 9a
 # rect_D_concat_k4    = "rect_D_concat_k4" ### 原始版本
-rect_Gk4_D_concat_k3       = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2   (D_first_concat=True , D_kernel_size=3)
-rect_Gk4_D_no_concat_k4    = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2(D_first_concat=False, D_kernel_size=4)
-rect_Gk4_D_no_concat_k3    = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2(D_first_concat=False, D_kernel_size=3)
+rect_Gk4_D_concat_k3       = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(D_first_concat=True , D_kernel_size=3)
+rect_Gk4_D_no_concat_k4    = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(D_first_concat=False, D_kernel_size=4)
+rect_Gk4_D_no_concat_k3    = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(D_first_concat=False, D_kernel_size=3)
 ########################################################### 9b
-rect_Gk3_D_concat_k4       = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2   (first_k3=True, D_first_concat=True , D_kernel_size=4)
-rect_Gk3_D_concat_k3       = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2   (first_k3=True, D_first_concat=True , D_kernel_size=3)
-rect_Gk3_D_no_concat_k4    = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4)
-rect_Gk3_D_no_concat_k3    = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=3)
-
+rect_Gk3_D_concat_k4       = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(first_k3=True, D_first_concat=True , D_kernel_size=4)
+rect_Gk3_D_concat_k3       = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(first_k3=True, D_first_concat=True , D_kernel_size=3)
+rect_Gk3_D_no_concat_k4    = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4)
+rect_Gk3_D_no_concat_k3    = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(first_k3=True, D_first_concat=False, D_kernel_size=3)
 ########################################################### 10
-rect_Gk3_train3_Dk4_no_concat    = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4, g_train_many=True)
-rect_Gk3_train5_Dk4_no_concat    = KModel_builder().set_model_name(MODEL_NAME.rect ).build_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4, g_train_many=True)
-
+rect_Gk3_train3_Dk4_no_concat    = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4, g_train_many=True)
+rect_Gk3_train5_Dk4_no_concat    = KModel_builder().set_model_name(MODEL_NAME.rect ).use_rect2(first_k3=True, D_first_concat=False, D_kernel_size=4, g_train_many=True)
 ########################################################### 11
-justG_fk3_no_res             = KModel_builder().set_model_name(MODEL_NAME.justG )            .build_justG(first_k3=True, use_res_learning=False)  ### 127.51
-rect_fk3_no_res_D_no_concat  = KModel_builder().set_model_name(MODEL_NAME.rect ) .build_rect2(first_k3=True, use_res_learning=False, D_first_concat=False, D_kernel_size=4)  ### 127.28
-justG_fk3_no_res_mrf357      = KModel_builder().set_model_name(MODEL_NAME.justG )     .build_justG_mrf(first_k3=True, mrf_replace=False, use_res_learning=False, use3=True, use5=True, use7=True)  ### 128.246
-
-
+justG_fk3_no_res             = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=False)  ### 127.51
+rect_fk3_no_res_D_no_concat  = KModel_builder().set_model_name(MODEL_NAME.rect  ) .use_rect2(first_k3=True, use_res_learning=False, D_first_concat=False, D_kernel_size=4)  ### 127.28
+justG_fk3_no_res_mrf357      = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True, mrf_replace=False, use_res_learning=False, use3=True, use5=True, use7=True)  ### 128.246
 ########################################################### 12
-Gk3_resb00  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True, use_res_learning=True, resb_num=0)  ### 127.48
-Gk3_resb01  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True, use_res_learning=True, resb_num=1)  ### 127.35
-Gk3_resb03  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True, use_res_learning=True, resb_num=3)  ### 127.55
-Gk3_resb05  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True, use_res_learning=True, resb_num=5)  ### 128.246
-Gk3_resb07  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True, use_res_learning=True, resb_num=7)  ### 127.28
-Gk3_resb09  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True, use_res_learning=True, resb_num=9)  ### 127.51
-Gk3_resb11  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True, use_res_learning=True, resb_num=11)  ### 127.51
-Gk3_resb15  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True, use_res_learning=True, resb_num=15)  ### 127.28
-Gk3_resb20  = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG(first_k3=True, use_res_learning=True, resb_num=20)  ### 127.51
+Gk3_resb00  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=True, resb_num=0)  ### 127.48
+Gk3_resb01  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=True, resb_num=1)  ### 127.35
+Gk3_resb03  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=True, resb_num=3)  ### 127.55
+Gk3_resb05  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=True, resb_num=5)  ### 128.246
+Gk3_resb07  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=True, resb_num=7)  ### 127.28
+Gk3_resb09  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=True, resb_num=9)  ### 127.51
+Gk3_resb11  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=True, resb_num=11)  ### 127.51
+Gk3_resb15  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=True, resb_num=15)  ### 127.28
+Gk3_resb20  = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG(first_k3=True, use_res_learning=True, resb_num=20)  ### 127.51
 
 ########################################################### 13 加coord_conv試試看
-justGk3_coord_conv        = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG    (first_k3=True, coord_conv=True)
-justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG ).build_justG_mrf(first_k3=True, coord_conv=True, mrf_replace=False, use3=True, use5=True, use7=True)
+justGk3_coord_conv        = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG    (first_k3=True, coord_conv=True)
+justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG ).use_justG_mrf(first_k3=True, coord_conv=True, mrf_replace=False, use3=True, use5=True, use7=True)
 
+
+###############################################################################################################################################################################################
+###############################################################################################################################################################################################
 ########################################################### 14 快接近IN了
-flow_unet       = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3)
-flow_unet_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=128, out_ch=3)
-flow_unet_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 32, out_ch=3)
-flow_unet_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 16, out_ch=3)
-flow_unet_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch= 8 , out_ch=3)
+flow_unet       = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, out_ch=3)
+flow_unet_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=128, out_ch=3)
+flow_unet_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, out_ch=3)
+flow_unet_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 16, out_ch=3)
+flow_unet_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 8 , out_ch=3)
 
 ########################################################### 14 真的IN
-flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, true_IN=True)
+flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True)
 
 
 ########################################################### 14 測試 subprocess
-flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=4, out_ch=3)
-flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=6, out_ch=3)
-flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=8, out_ch=3)
+flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=4, out_ch=3)
+flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=6, out_ch=3)
+flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=8, out_ch=3)
 
 ########################################################### 14 看 concat Activation 有沒有差
-flow_unet_ch64_in_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_ch=3, true_IN=True, concat_Activation=True)
+flow_unet_ch64_in_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, out_ch=3, true_IN=True, concat_Activation=True)
 
 ########################################################### 14 看 不同level 的效果
-flow_unet_2_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=2,  out_ch=3, true_IN=True)
-flow_unet_3_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=3,  out_ch=3, true_IN=True)
-flow_unet_4_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=4,  out_ch=3, true_IN=True)
-flow_unet_5_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=5,  out_ch=3, true_IN=True)
-flow_unet_6_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=6,  out_ch=3, true_IN=True)
-flow_unet_7_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=7,  out_ch=3, true_IN=True)
-flow_unet_8_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=8,  out_ch=3, true_IN=True)
-
+flow_unet_2_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=2,  out_ch=3, true_IN=True)
+flow_unet_3_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=3,  out_ch=3, true_IN=True)
+flow_unet_4_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=4,  out_ch=3, true_IN=True)
+flow_unet_5_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=5,  out_ch=3, true_IN=True)
+flow_unet_6_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=6,  out_ch=3, true_IN=True)
+flow_unet_7_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=7,  out_ch=3, true_IN=True)
+flow_unet_8_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=8,  out_ch=3, true_IN=True)
 
 ########################################################### 14 看 unet 的 concat 改成 + 會有什麼影響
-flow_unet_8_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=8, skip_use_add=True, out_ch=3, true_IN=True)
-flow_unet_7_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=7, skip_use_add=True, out_ch=3, true_IN=True)
-flow_unet_6_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=6, skip_use_add=True, out_ch=3, true_IN=True)
-flow_unet_5_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=5, skip_use_add=True, out_ch=3, true_IN=True)
-flow_unet_4_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=4, skip_use_add=True, out_ch=3, true_IN=True)
-flow_unet_3_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=3, skip_use_add=True, out_ch=3, true_IN=True)
-flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, depth_level=2, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_8_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=8, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_7_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=7, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_6_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=6, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_5_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=5, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_4_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=4, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_3_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=3, skip_use_add=True, out_ch=3, true_IN=True)
+flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=2, skip_use_add=True, out_ch=3, true_IN=True)
 
 ########################################################### 14 看 unet 的 output 改成sigmoid
-flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, out_tanh=False, true_IN=True)
+flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, out_tanh=False, true_IN=True)
 ########################################################### 14 看 unet 的 第一層試試看 不 concat 效果如何
-flow_unet_IN_7l_ch32_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=32, no_concat_layer=2, true_IN=True)
-flow_unet_IN_7l_ch64_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=2, true_IN=True)
-flow_unet_IN_7l_ch64_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=3, true_IN=True)
-flow_unet_IN_7l_ch64_2to4noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=4, true_IN=True)
-flow_unet_IN_7l_ch64_2to5noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=5, true_IN=True)
-flow_unet_IN_7l_ch64_2to6noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=6, true_IN=True)
-flow_unet_IN_7l_ch64_2to7noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=7, true_IN=True)
-flow_unet_IN_7l_ch64_2to8noC  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=8, true_IN=True)
+flow_unet_IN_7l_ch32_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, no_concat_layer=2, true_IN=True)
+flow_unet_IN_7l_ch64_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=2, true_IN=True)
+flow_unet_IN_7l_ch64_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=3, true_IN=True)
+flow_unet_IN_7l_ch64_2to4noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=4, true_IN=True)
+flow_unet_IN_7l_ch64_2to5noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=5, true_IN=True)
+flow_unet_IN_7l_ch64_2to6noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=6, true_IN=True)
+flow_unet_IN_7l_ch64_2to7noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=7, true_IN=True)
+flow_unet_IN_7l_ch64_2to8noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=8, true_IN=True)
 ########################################################### 14 看 unet 的 output 改成sigmoid
-flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=None, true_IN=True)
-flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu, true_IN=True)
-flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid, true_IN=True)
-flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.relu, true_IN=True)
-flow_unet_IN_7l_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.sigmoid, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=None, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.relu, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.sigmoid, true_IN=True)
 
 
-flow_unet_IN_7l_ch64_2to3noC_sk_cSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=3, skip_use_cSE=True,  true_IN=True)
-flow_unet_IN_7l_ch64_2to3noC_sk_sSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=2, skip_use_sSE=True,  true_IN=True)
-flow_unet_IN_7l_ch64_2to3noC_sk_scSE = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, no_concat_layer=2, skip_use_scSE=True, true_IN=True)
+flow_unet_IN_7l_ch64_2to3noC_sk_cSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=3, skip_use_cSE=True,  true_IN=True)
+flow_unet_IN_7l_ch64_2to3noC_sk_sSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=2, skip_use_sSE=True,  true_IN=True)
+flow_unet_IN_7l_ch64_2to3noC_sk_scSE = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, no_concat_layer=2, skip_use_scSE=True, true_IN=True)
 
-flow_unet_IN_7l_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_cSE=True, true_IN=True)
-flow_unet_IN_7l_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_sSE=True, true_IN=True)
-flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).build_flow_unet(hid_ch=64, skip_use_scSE=True, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cSE=True, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_sSE=True, true_IN=True)
+flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_scSE=True, true_IN=True)
 ########################################################### 15 用 resblock 來試試看
-flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 
-flow_rect_7_level_fk7 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_7_level_fk7 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 
-flow_rect_2_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=2, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_3_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=3, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_4_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=4, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_5_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=5, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_6_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=6, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_7_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_2_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=2, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_3_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=3, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_4_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=4, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_5_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=5, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_6_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=6, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_7_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 
-flow_rect_2_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=2, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_3_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=3, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_4_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=4, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_5_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=5, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_6_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=6, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).build_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_2_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=2, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_3_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=3, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_4_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=4, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_5_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=5, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_6_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=6, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
 
 
 
