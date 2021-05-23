@@ -73,15 +73,91 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"ch32_bn08_bn_see_arg_F.{compress_all}"])
 # sb.run(same_command + [f"ch32_bn16_bn_see_arg_F.{compress_all}"])
 
-
+##########################################################################################################################################################################################
+### 4
 # sb.run(same_command + [f"ch64_in_epoch060.{compress_all}"])  ### 測試真的IN
+
 # sb.run(same_command + [f"ch64_in_epoch200.{compress_all}"])  ### 測試真的IN
+
 # sb.run(same_command + [f"ch64_in_epoch220.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch240.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch260.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch280.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch300.{compress_all}"])  ### 測試真的IN
 
+# sb.run(same_command + [f"ch64_in_epoch320.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch340.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch360.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch380.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch400.{compress_all}"])  ### 測試真的IN
+
+# sb.run(same_command + [f"ch64_in_epoch420.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch440.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch460.{run}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch480.{compress_8te}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch500.{compress_all}"])  ### 測試真的IN
+
+# sb.run(same_command + [f"ch64_in_epoch700.{compress_all}"])  ### 測試真的IN
+
+##########################################################################################################################################################################################
+### 5
+# sb.run(same_command + [f"ch64_in_concat_A.{compress_all}"])  ### 看看Activation 完再concat的效果
+
+##########################################################################################################################################################################################
+### 6
+# sb.run(same_command + [f"unet_2l.{compress_all}"])
+# sb.run(same_command + [f"unet_3l.{compress_all}"])
+# sb.run(same_command + [f"unet_4l.{compress_all}"])
+# sb.run(same_command + [f"unet_5l.{compress_all}"])
+# sb.run(same_command + [f"unet_6l.{compress_all}"])
+# sb.run(same_command + [f"unet_7l.{compress_all}"])
+# sb.run(same_command + [f"unet_8l.{compress_all}"])
+
+#############################################################################################################
+### 7a
+# sb.run(same_command + [f"unet_8l_skip_use_add.{compress_all}"])
+# sb.run(same_command + [f"unet_7l_skip_use_add.{compress_all}"])
+# sb.run(same_command + [f"unet_6l_skip_use_add.{compress_all}"])
+# sb.run(same_command + [f"unet_5l_skip_use_add.{compress_all}"])
+# sb.run(same_command + [f"unet_4l_skip_use_add.{compress_all}"])
+# sb.run(same_command + [f"unet_3l_skip_use_add.{compress_all}"])
+# sb.run(same_command + [f"unet_2l_skip_use_add.{compress_all}"])
+
+#############################################################################################################
+### 7b
+# sb.run(same_command + [f"unet_IN_7l_2to2noC     .{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{compress_all}"])  ### 3254
+# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{compress_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{compress_all}"])  ### 3073
+# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{compress_all}"])  ### 2851
+# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{compress_all}"])  ### 2920
+
+
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e020.{compress_all}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e040.{compress_all}"])  ### 測試真的IN  127.55
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e060.{compress_all}"])  ### 測試真的IN  127.35
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e080.{compress_all}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e100.{compress_all}"])  ### 測試真的IN  127.28
+
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e120.{compress_all}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e140.{compress_all}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e160.{compress_all}"])  ### 測試真的IN  127.55
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e180.{compress_all}"])  ### 測試真的IN  127.55
+
+#############################################################################################################
+### 7c
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_NO_relu.{compress_all}"])   ### 127.35
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USErelu.{compress_all}"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USErelu.{compress_all}"])   ### 127.28
+
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USEsigmoid.{compress_all}"])   ### 127.35
+# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USEsigmoid.{compress_all}"])   ### 127.28
+
+
+#############################################################################################################
+### 7d
 # sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e060 .{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_2to3noC_sk_sSE_e060 .{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e060.{compress_all}"])  ### 測試真的IN
@@ -90,54 +166,9 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"ch64_in_sk_sSE_e060.{compress_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_sk_scSE_e060.{compress_all}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e020.{compress_all}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e040.{compress_all}"])  ### 測試真的IN  127.55
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e060.{compress_all}"])  ### 測試真的IN  127.35
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e080.{compress_all}"])  ### 測試真的IN  127.28
-
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e100.{compress_all}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e120.{compress_all}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e140.{compress_all}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e160.{compress_all}"])  ### 測試真的IN  127.55
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e180.{compress_all}"])  ### 測試真的IN  127.55
 
 
-
-# sb.run(same_command + [f"ch64_in_epoch320.{compress_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch340.{compress_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch360.{compress_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch380.{compress_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch400.{compress_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch420.{compress_all}"])  ### 測試真的IN
-
-# sb.run(same_command + [f"ch64_in_epoch440.{run}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch460.{run}"])  ### 測試真的IN
-
-# sb.run(same_command + [f"ch64_in_epoch480.{compress_8te}"])  ### 測試真的IN ########################
-
-# sb.run(same_command + [f"ch64_in_epoch500.{compress_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch700.{compress_all}"])  ### 測試真的IN
-
-# ######################
-# sb.run(same_command + [f"ch64_in_concat_A.{compress_all}"])  ### 看看Activation 完再concat的效果
-
-# sb.run(same_command + [f"unet_2l.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_3l.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_4l.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_5l.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_6l.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_7l.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_8l.{compress_all}"])  ### 看看Activation 完再concat的效果
-
-# sb.run(same_command + [f"unet_8l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_7l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_6l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_5l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_4l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_3l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
-# sb.run(same_command + [f"unet_2l_skip_use_add.{compress_all}"])  ### 看看Activation 完再concat的效果
-
-#############################################################################################
+##########################################################################################################################################################################################
 ### 8
 ### 之前 都跑錯的 mse 喔！將錯就錯， 下面重跑 正確的 mae 試試看 順便比較 mse/mae的效果
 # sb.run(same_command + [f"t2_in_01_mo_01_gt_01_mse.{compress_all}"])  ### 已確認錯了 , 重train 127.35
@@ -159,28 +190,13 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"t7_in_th_mo_th_gt_th_mae.{compress_all}"])  ### 127.28 ok
 # sb.run(same_command + [f"t4_in_01_mo_01_gt_th_mae.{compress_2te}"])  ### 127.35 ok
 # sb.run(same_command + [f"t8_in_th_mo_01_gt_th_mae.{compress_all}"])  ### 127.35 沒train完
-#############################################################################################
-### 9 的東西
-# sb.run(same_command + [f"unet_IN_7l_2to2noC     .{compress_all}"])
-# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{compress_all}"])
-# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{compress_all}"])  ### 3254
-# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{compress_all}"])
-# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{compress_all}"])
-# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{compress_all}"])  ### 3073
-# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{compress_all}"])  ### 2851
-# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{compress_all}"])  ### 2920
+##########################################################################################################################################################################################
+### 9
+# sb.run(same_command + [f"ch64_in_cnnNoBias_epoch060.{compress_all}"])   ### 127.28
 
-
-#############################################################################################
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_NO_relu.{compress_all}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USErelu.{compress_all}"])   ### 127.28
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USErelu.{compress_all}"])   ### 127.28
-
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USEsigmoid.{compress_all}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USEsigmoid.{compress_all}"])   ### 127.28
-
-
-#######################
+##########################################################################################################################################################################################
+##########################################################################################################################################################################################
+##########################################################################################################################################################################################
 # sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch500.{compress_all}"])
 # sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.{compress_all}"])
 
