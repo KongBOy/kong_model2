@@ -357,6 +357,77 @@ epoch_exps  = [
     epoch700_new_shuf_bn_see_arg_T.build(),
     epoch700_bn_see_arg_T_no_down.build(), ]   ### 如果 lr 都不下降 會怎麼樣
 
+epoch020_500_exps  = [
+    unet_IN_7l_2to3noC_e020.build(),  # 0
+    unet_IN_7l_2to3noC_e040.build(),
+    unet_IN_7l_2to3noC_e060.build(),
+    unet_IN_7l_2to3noC_e080.build(),
+    unet_IN_7l_2to3noC_e100.build(),
+    unet_IN_7l_2to3noC_e120.build(),
+    unet_IN_7l_2to3noC_e140.build(),  ## 6
+    unet_IN_7l_2to3noC_e160.build(),
+    unet_IN_7l_2to3noC_e180.build(),
+    ch64_in_epoch200.build(),
+    ch64_in_epoch220.build(),
+    ch64_in_epoch240.build(),
+    ch64_in_epoch260.build(),  ### 12
+    ch64_in_epoch280.build(),
+    ch64_in_epoch300.build(),
+    ch64_in_epoch320.build(),
+    ch64_in_epoch340.build(),
+    ch64_in_epoch360.build(),
+    ch64_in_epoch380.build(),  ### 18
+    ch64_in_epoch400.build(),
+    ch64_in_epoch420.build(),
+    ch64_in_epoch440.build(),
+    ch64_in_epoch460.build(),
+    ch64_in_epoch480.build(),
+    ch64_in_epoch500.build(),  ### 24
+    ]
+
+epoch100_500_exps  = [
+    unet_IN_7l_2to3noC_e100.build(),  # 0
+    unet_IN_7l_2to3noC_e120.build(),
+    unet_IN_7l_2to3noC_e140.build(),
+    unet_IN_7l_2to3noC_e160.build(),
+    unet_IN_7l_2to3noC_e180.build(),
+    ch64_in_epoch200.build(),
+    ch64_in_epoch220.build(),  ###  6
+    ch64_in_epoch240.build(),
+    ch64_in_epoch260.build(),
+    ch64_in_epoch280.build(),
+    ch64_in_epoch300.build(),
+    ch64_in_epoch320.build(),
+    ch64_in_epoch340.build(),
+    ch64_in_epoch360.build(),  ### 13
+    ch64_in_epoch380.build(),
+    ch64_in_epoch400.build(),
+    ch64_in_epoch420.build(),
+    ch64_in_epoch440.build(),
+    ch64_in_epoch460.build(),
+    ch64_in_epoch480.build(),
+    ch64_in_epoch500.build(),  ### 20
+    ]
+
+epoch200_500_exps  = [
+    ch64_in_epoch200.build(),
+    ch64_in_epoch220.build(),
+    ch64_in_epoch240.build(),
+    ch64_in_epoch260.build(),
+    ch64_in_epoch280.build(),
+    ch64_in_epoch300.build(),
+    ch64_in_epoch320.build(),
+    ch64_in_epoch340.build(),
+    ch64_in_epoch360.build(),
+    ch64_in_epoch380.build(),
+    ch64_in_epoch400.build(),
+    ch64_in_epoch420.build(),
+    ch64_in_epoch440.build(),
+    ch64_in_epoch460.build(),
+    ch64_in_epoch480.build(),
+    ch64_in_epoch500.build(),
+    ]
+
 epoch300_500_exps  = [
     ch64_in_epoch320.build(),
     ch64_in_epoch340.build(),
@@ -368,7 +439,6 @@ epoch300_500_exps  = [
     ch64_in_epoch460.build(),
     ch64_in_epoch480.build(),
     ch64_in_epoch500.build(),
-    ch64_in_epoch700.build(),
     ]
 
 # # ### 1_2 ch，但 bn_see_arg_F，所以結果圖醜，收起來，留 ch032_new_shuf_bn_see_arg_F 是為了給 bn 比較用
@@ -562,6 +632,25 @@ unet_skip_use_cnn = [
     unet_IN_7l_skip_use_cnn1_USEsigmoid,
     unet_IN_7l_skip_use_cnn3_USErelu,
     unet_IN_7l_skip_use_cnn3_USEsigmoid,
+]
+
+
+unet_7l_skip_SE = [
+    ch64_in_epoch060.build(),
+    ch64_in_sk_cSE_e060.build(),
+    ch64_in_sk_sSE_e060.build(),
+    ch64_in_sk_scSE_e060.build(),
+]
+
+ch64_2to3noC_sk_no_e060   = copy.deepcopy(unet_IN_7l_2to3noC_e060.build()); ch64_2to3noC_sk_no_e060.result_obj.ana_describe = "1-ch64_2to3noC_sk_no_e060"  ### 當初的train_code沒寫好沒有存到 model用的 code
+ch64_2to3noC_sk_cSE_e060  = ch64_2to3noC_sk_cSE_e060 .build(); ch64_2to3noC_sk_cSE_e060.result_obj.ana_describe = "2-ch64_2to3noC_sk_cSE_e060"
+ch64_2to3noC_sk_sSE_e060  = ch64_2to3noC_sk_sSE_e060 .build(); ch64_2to3noC_sk_sSE_e060.result_obj.ana_describe = "3-ch64_2to3noC_sk_sSE_e060"
+ch64_2to3noC_sk_scSE_e060 = ch64_2to3noC_sk_scSE_e060.build(); ch64_2to3noC_sk_scSE_e060.result_obj.ana_describe = "4-ch64_2to3noC_sk_scSE_e060"
+unet_7l_2to3noC_skip_SE = [
+    ch64_2to3noC_sk_no_e060,
+    ch64_2to3noC_sk_cSE_e060,
+    ch64_2to3noC_sk_sSE_e060,
+    ch64_2to3noC_sk_scSE_e060,
 ]
 
 ###################################################################################################
