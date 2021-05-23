@@ -219,7 +219,7 @@ os_book_D1G5 = Result_builder().set_by_result_name(dir10 + "/type7b_h500_w332_re
 ##################################################################################################################################################################
 dir11 = "05_11_no_res"
 os_book_Gk3_res        = copy.deepcopy(os_book_G_first_k3);  os_book_Gk3_res.ana_describe = "Gk3_res"
-os_book_Gk3_no_res     = Result_builder().set_by_result_name(dir11 + "/type7b_h500_w332_real_os_book-5_11_1-20200711_000930-justGk3_no_res-127.51finish", in_use_range="-1~1", gt_use_range="-1~1")        .set_ana_describe("Gk3_no_res").build()
+os_book_Gk3_no_res     = Result_builder().set_by_result_name(dir11 + "/type7b_h500_w332_real_os_book-5_11_1-20200711_000930-justGk3_no_res-127.51finish", in_use_range="-1~1", gt_use_range="-1~1")        .set_ana_describe("justG_fk3_no_res").build()
 
 os_book_G_mrf_357_res    = copy.deepcopy(os_book_G_mrf_357);  os_book_G_mrf_357_res.ana_describe = "Gk3_mrf357_res"
 os_book_G_mrf_357_no_res = Result_builder().set_by_result_name(dir11 + "/type7b_h500_w332_real_os_book-5_11_3-20200711_001249-justG_mrf357_no_res-128.246finish", in_use_range="-1~1", gt_use_range="-1~1").set_ana_describe("Gk3_mrf357_no_res").build()
