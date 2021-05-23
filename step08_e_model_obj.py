@@ -383,8 +383,13 @@ justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG ).u
 ###############################################################################################################################################################################################
 ########################################################### 14 快接近IN了
 flow_unet       = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, out_ch=3)
+
 ### 在 git commit bc25e 之前都是 old ch 喔！ 最大都是 32*8=256, 16*8=128, 8*8=64 而已， 而128*8=1024 又有點太大， new_ch 就是根據層 做 2**layer，最大取512 囉！
 ### 如果想回復的話，要用 git 回復到 bc25e 或 之前的版本囉！
+flow_unet_old_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=128, out_ch=3)
+flow_unet_old_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, out_ch=3)  
+flow_unet_old_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 16, out_ch=3)
+flow_unet_old_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 8 , out_ch=3)
 
 ########################################################### 14 測試 subprocess
 flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=4, out_ch=3)
