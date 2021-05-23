@@ -701,6 +701,19 @@ ch64_in_epoch500 = Exp_builder().set_basic("train", type8_blender_os_book_768, f
 
 ch64_in_epoch700 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4_e700", describe_end="ch64_in_epoch700") .set_train_args(epochs=700, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_4_e700-20210310_012428-flow_unet-ch64_in_epoch700")  #
 
+### 4b.new_ch
+in_new_ch004_ep060 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch004, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch004_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+in_new_ch008_ep060 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch008, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch008_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+in_new_ch016_ep060 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch016, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch016_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+in_new_ch032_ep060 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch032, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch032_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+in_new_ch128_ep060 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch128, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch128_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+
+in_new_ch004_ep100 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch004, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch004_ep100") .set_train_args(epochs=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+in_new_ch008_ep100 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch008, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch008_ep100") .set_train_args(epochs=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+in_new_ch016_ep100 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch016, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch016_ep100") .set_train_args(epochs=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+in_new_ch032_ep100 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch032, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch032_ep100") .set_train_args(epochs=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+in_new_ch128_ep100 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_new_ch128, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4b", describe_end="in_new_ch128_ep100") .set_train_args(epochs=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+
 #############################################################################################################################################################################################################
 ### 5.測試 concate 用 Activation 後的 feature map 來 concat, 且 unet 本身已用 IN 的 UNet 沒有設定 training=True/False問題
 ch64_in_concat_A = Exp_builder().set_basic("board_rebuild", type8_blender_os_book_768, flow_unet_ch64_in_concat_A, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_5_1", describe_end="ch64_in_concat_A") .set_train_args(epochs=500, exp_bn_see_arg=None).set_result_name(result_name="type8_blender_os_book-5_14_1_5_1-20210329_212042-flow_unet-ch64_in_concat_A")
@@ -859,7 +872,8 @@ if(__name__ == "__main__"):
         # ch64_in_sk_cSE_e060.build().run()
         # ch64_in_sk_sSE_e060.build().run()
         # ch64_in_sk_scSE_e060.build().run()
-        ch64_in_cnnNoBias_epoch060.build().run()
+        # ch64_in_cnnNoBias_epoch060.build().run()
+        in_new_ch004_ep060.build().run()
 
         # print('no argument')
         sys.exit()

@@ -74,7 +74,7 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"old_ch32_bn16_bn_see_arg_F.{compress_all}"])
 
 ##########################################################################################################################################################################################
-### 4
+### 4. epoch
 # sb.run(same_command + [f"ch64_in_epoch060.{compress_all}"])  ### 測試真的IN
 
 # sb.run(same_command + [f"ch64_in_epoch200.{compress_all}"])  ### 測試真的IN
@@ -98,6 +98,19 @@ compress_10te = f"build().result_obj.save_all_single_see_as_matplot_bm_rec_visua
 # sb.run(same_command + [f"ch64_in_epoch500.{compress_all}"])  ### 測試真的IN
 
 # sb.run(same_command + [f"ch64_in_epoch700.{compress_all}"])  ### 測試真的IN
+
+### 4b.
+# sb.run(same_command + [f"in_new_ch004_ep060.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch008_ep060.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch016_ep060.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch032_ep060.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch128_ep060.{compress_all}"])  ### 測試真的IN
+
+# sb.run(same_command + [f"in_new_ch004_ep100.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch008_ep100.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch016_ep100.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch032_ep100.{compress_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch128_ep100.{compress_all}"])  ### 測試真的IN
 
 ##########################################################################################################################################################################################
 ### 5

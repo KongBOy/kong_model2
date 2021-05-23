@@ -399,6 +399,13 @@ flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flo
 ########################################################### 14 真的IN
 flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True)
 
+
+flow_unet_IN_new_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=128, true_IN=True)
+flow_unet_IN_new_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, true_IN=True)
+flow_unet_IN_new_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 16, true_IN=True)
+flow_unet_IN_new_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  8, true_IN=True)
+flow_unet_IN_new_ch004 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  4, true_IN=True)
+
 ########################################################### 14 真的IN，跟DewarpNet一樣 CNN 不用 bias
 flow_unet_IN_ch64_cnnNoBias = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, cnn_bias=False)
 
