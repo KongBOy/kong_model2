@@ -635,22 +635,23 @@ unet_skip_use_cnn = [
 ]
 
 
+### 7d.看看 UNet 的 skip 用 cSE/ sSE/ csSE 試試看
 unet_7l_skip_SE = [
-    ch64_in_epoch060.build(),
-    ch64_in_sk_cSE_e060.build(),
-    ch64_in_sk_sSE_e060.build(),
-    ch64_in_sk_scSE_e060.build(),
+    ch64_in_epoch060          .build(),
+    ch64_in_sk_cSE_e060_wrong .build(),
+    ch64_in_sk_sSE_e060       .build(),
+    ch64_in_sk_scSE_e060_wrong.build(),
 ]
 
-ch64_2to3noC_sk_no_e060   = copy.deepcopy(unet_IN_7l_2to3noC_e060.build()); ch64_2to3noC_sk_no_e060.result_obj.ana_describe = "1-ch64_2to3noC_sk_no_e060"  ### 當初的train_code沒寫好沒有存到 model用的 code
-ch64_2to3noC_sk_cSE_e060  = ch64_2to3noC_sk_cSE_e060 .build(); ch64_2to3noC_sk_cSE_e060.result_obj.ana_describe = "2-ch64_2to3noC_sk_cSE_e060"
-ch64_2to3noC_sk_sSE_e060  = ch64_2to3noC_sk_sSE_e060 .build(); ch64_2to3noC_sk_sSE_e060.result_obj.ana_describe = "3-ch64_2to3noC_sk_sSE_e060"
-ch64_2to3noC_sk_scSE_e060 = ch64_2to3noC_sk_scSE_e060.build(); ch64_2to3noC_sk_scSE_e060.result_obj.ana_describe = "4-ch64_2to3noC_sk_scSE_e060"
+ch64_2to3noC_sk_no_e060         = copy.deepcopy(unet_IN_7l_2to3noC_e060.build()); ch64_2to3noC_sk_no_e060         .result_obj.ana_describe = "1-ch64_2to3noC_sk_no_e060"  ### 當初的train_code沒寫好沒有存到 model用的 code
+ch64_2to3noC_sk_cSE_e060_wrong  = ch64_2to3noC_sk_cSE_e060_wrong .build();        ch64_2to3noC_sk_cSE_e060_wrong  .result_obj.ana_describe = "2-ch64_2to3noC_sk_cSE_e060_wrong"
+ch64_2to3noC_sk_sSE_e060        = ch64_2to3noC_sk_sSE_e060       .build();        ch64_2to3noC_sk_sSE_e060        .result_obj.ana_describe = "3-ch64_2to3noC_sk_sSE_e060"
+ch64_2to3noC_sk_scSE_e060_wrong = ch64_2to3noC_sk_scSE_e060_wrong.build();        ch64_2to3noC_sk_scSE_e060_wrong .result_obj.ana_describe = "4-ch64_2to3noC_sk_scSE_e060_wrong"
 unet_7l_2to3noC_skip_SE = [
     ch64_2to3noC_sk_no_e060,
-    ch64_2to3noC_sk_cSE_e060,
+    ch64_2to3noC_sk_cSE_e060_wrong,
     ch64_2to3noC_sk_sSE_e060,
-    ch64_2to3noC_sk_scSE_e060,
+    ch64_2to3noC_sk_scSE_e060_wrong,
 ]
 
 ###################################################################################################

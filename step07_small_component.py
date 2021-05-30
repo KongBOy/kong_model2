@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras.layers import GlobalAvgPool2D, Conv2D, Dense, Activation
+from tensorflow.keras.layers import GlobalAvgPool2D, Conv2D, Dense, Activation, ReLU
 
 class cSE(tf.keras.layers.Layer):
     def __init__(self, in_ch, ratio, **kwargs):
@@ -7,6 +7,7 @@ class cSE(tf.keras.layers.Layer):
         # self.in_ch = in_ch
         self.squeeze_sp_avg_pool = GlobalAvgPool2D(name = "squeeze_sp_avg_pool")
         self.excite_1 = Dense(in_ch // ratio, use_bias=False, name="excite_1")
+        self.excite_r = ReLU(                                 name="excite_ReLU")
         self.excite_2 = Dense(in_ch         , use_bias=False, name="excite_2")
         self.excite_ch_sigmoid = Activation(tf.nn.sigmoid, name="excite_sigmoid")
 
@@ -17,6 +18,7 @@ class cSE(tf.keras.layers.Layer):
         # print(x.shape)
         x = self.excite_1(x)
         # print(x.shape)
+        x = self.excite_r(x)
         x = self.excite_2(x)
         # print(x.shape)
         x = self.excite_ch_sigmoid(x)
