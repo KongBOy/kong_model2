@@ -616,9 +616,8 @@ unet_skip_noC = [
 ]
 
 
-### 7c unet 的 第一層不concat 來跟 前面還不錯的結果比較
+### 7c.看看 UNet 的 skip 學 印度方法 看看skip connection 中間加 cnn 的效果
 unet_IN_7l_skip_clean = copy.deepcopy(ch64_in_epoch500.build()); unet_IN_7l_skip_clean.result_obj.ana_describe = "1-unet_IN_7l_skip_clean"  ### 當初的train_code沒寫好沒有存到 model用的 code
-
 unet_IN_7l_skip_use_cnn1_NO_relu     .build().result_obj.ana_describe = "2-unet_IN_7l_skip_use_cnn1_NO_relu"
 unet_IN_7l_skip_use_cnn1_USErelu     .build().result_obj.ana_describe = "3a-unet_IN_7l_skip_use_cnn1_USErelu"
 unet_IN_7l_skip_use_cnn1_USEsigmoid  .build().result_obj.ana_describe = "3b-unet_IN_7l_skip_use_cnn1_USEsigmoid"
@@ -652,6 +651,22 @@ unet_7l_2to3noC_skip_SE = [
     ch64_2to3noC_sk_cSE_e060_wrong,
     ch64_2to3noC_sk_sSE_e060,
     ch64_2to3noC_sk_scSE_e060_wrong,
+]
+
+unet_7l_skip_SE_ep = [
+    ch64_in_sk_cSE_e060_wrong.build(),
+    ch64_in_sk_cSE_e100_wrong.build(),
+    ch64_in_sk_sSE_e060.build(),
+    ch64_in_sk_sSE_e100.build(),
+    ch64_in_sk_scSE_e060_wrong.build(),
+    ch64_in_sk_scSE_e100_wrong.build(),
+
+    ch64_2to3noC_sk_cSE_e060_wrong,
+    ch64_2to3noC_sk_cSE_e100_wrong.build(),
+    ch64_2to3noC_sk_sSE_e060,
+    ch64_2to3noC_sk_sSE_e100.build(),
+    ch64_2to3noC_sk_scSE_e060_wrong,
+    ch64_2to3noC_sk_scSE_e100_wrong.build(),
 ]
 
 ###################################################################################################

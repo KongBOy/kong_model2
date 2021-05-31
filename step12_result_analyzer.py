@@ -606,19 +606,30 @@ if(__name__ == "__main__"):
     unet_7l_skip_SE_analyze = Row_col_results_analyzer(ana_describe="unet_7l_skip_SE",
                                                           row_col_results=[[unet_7l_skip_SE_results[0], unet_7l_skip_SE_results[1]],
                                                                            [unet_7l_skip_SE_results[2], unet_7l_skip_SE_results[3]]], show_in_imgs=False, show_gt_imgs=False, bgr2rgb=True, add_loss=False)
-    unet_7l_skip_SE_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=8)
-    Bm_Rec_exps_analyze("unet_7l_skip_SE", unet_7l_skip_SE).all_single_see_final_rec_analyze(reset_dir=True).analyze_tensorboard(reset_dir=True)
+    # unet_7l_skip_SE_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=8)
+    # Bm_Rec_exps_analyze("unet_7l_skip_SE", unet_7l_skip_SE).all_single_see_final_rec_analyze(reset_dir=True).analyze_tensorboard(reset_dir=True)
 
 
     unet_7l_2to3noC_skip_SE_results = [exp.result_obj for exp in unet_7l_2to3noC_skip_SE]
     unet_7l_2to3noC_skip_SE_analyze = Row_col_results_analyzer(ana_describe="unet_7l_2to3noC_skip_SE",
                                                           row_col_results=[[unet_7l_2to3noC_skip_SE_results[0], unet_7l_2to3noC_skip_SE_results[1]],
                                                                            [unet_7l_2to3noC_skip_SE_results[2], unet_7l_2to3noC_skip_SE_results[3]]], show_in_imgs=False, show_gt_imgs=False, bgr2rgb=True, add_loss=False)
-    unet_7l_2to3noC_skip_SE_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=8)
-    Bm_Rec_exps_analyze("unet_7l_2to3noC_skip_SE", unet_7l_2to3noC_skip_SE).all_single_see_final_rec_analyze(reset_dir=True).analyze_tensorboard(reset_dir=True)
+    # unet_7l_2to3noC_skip_SE_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=8)
+    # Bm_Rec_exps_analyze("unet_7l_2to3noC_skip_SE", unet_7l_2to3noC_skip_SE).all_single_see_final_rec_analyze(reset_dir=True).analyze_tensorboard(reset_dir=True)
+
+    ##################################################################################################################################################################
+    ##################################################################################################################################################################
+    unet_7l_skip_SE_ep_results = [exp.result_obj for exp in unet_7l_skip_SE_ep]
+    unet_7l_skip_SE_ep_analyze = Row_col_results_analyzer(ana_describe="unet_7l_skip_SE_ep",
+                                                          row_col_results=[[unet_7l_skip_SE_ep_results[0], unet_7l_skip_SE_ep_results[2], unet_7l_skip_SE_ep_results[4]],
+                                                                           [unet_7l_skip_SE_ep_results[1], unet_7l_skip_SE_ep_results[3], unet_7l_skip_SE_ep_results[5]]], show_in_imgs=False, show_gt_imgs=False, bgr2rgb=True, add_loss=False)
+
+    unet_7l_skip_SE_ep_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=8)
+    Bm_Rec_exps_analyze("unet_7l_skip_SE_ep", unet_7l_skip_SE_ep).all_single_see_final_rec_analyze(reset_dir=True).analyze_tensorboard(reset_dir=True)
 
 
-    ana_title = "05_14-bm_rec-"
+
+    # ana_title = "05_14-bm_rec-"
     # Bm_Rec_exps_analyze(ana_title + "0_1-epoch_old_shuf_exps",     epoch_old_shuf_exps)    .all_single_see_final_rec_analyze().analyze_tensorboard()
     # Bm_Rec_exps_analyze(ana_title + "0_2-epoch_new_shuf_exps",     epoch_new_shuf_exps)    .all_single_see_final_rec_analyze().analyze_tensorboard()
     # Bm_Rec_exps_analyze(ana_title + "0_3-epoch_old_new_shuf_exps", epoch_old_new_shuf_exps).all_single_see_final_rec_analyze().analyze_tensorboard()
