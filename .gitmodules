@@ -4,3 +4,6 @@
 [submodule "SIFT_dev/SIFTflow"]
 	path = SIFT_dev/SIFTflow
 	url = https://github.com/KongBOy/SIFTflow_try
+[submodule "SIFT_dev/SIFT_dev/SIFTflow"]
+	path = SIFT_dev/SIFT_dev/SIFTflow
+	url = https://github.com/KongBOy/SIFTflow_try.git
