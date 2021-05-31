@@ -1,9 +1,7 @@
 [submodule "kong_util"]
 	path = kong_util
 	url = https://github.com/KongBOy/kong_util.git
+
 [submodule "SIFT_dev/SIFTflow"]
 	path = SIFT_dev/SIFTflow
 	url = https://github.com/KongBOy/SIFTflow_try
-[submodule "SIFT_dev/SIFT_dev/SIFTflow"]
-	path = SIFT_dev/SIFT_dev/SIFTflow
-	url = https://github.com/KongBOy/SIFTflow_try.git
