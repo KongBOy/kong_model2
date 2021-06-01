@@ -298,22 +298,16 @@ class Experiment():
         see_reset_init：是給 test_see 用的，有時候製作 fake_exp 的時候，只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要 重建一份see，這時see_reset_init要設True就會重建一下囉
         """
         # sample_start_time = time.time()
-        see_in     = self.tf_data.test_in_db
-        see_in_pre = self.tf_data.test_in_db_pre
-        see_gt     = self.tf_data.test_gt_db
-        see_amount = 1
-        if(self.db_obj.have_see):
-            see_in     = self.tf_data.see_in_db
-            see_in_pre = self.tf_data.see_in_db_pre
-            see_gt     = self.tf_data.see_gt_db
-            see_amount = self.tf_data.see_amount
 
-        for see_index, (test_in, test_in_pre, test_gt) in enumerate(tqdm(zip(see_in.take(see_amount), see_in_pre.take(see_amount), see_gt.take(see_amount)))):
+        for see_index, (test_in, test_in_pre, test_gt, rec_hope_pre) in enumerate(tqdm(zip(self.tf_data.see_in_db          .take(self.tf_data.see_amount),
+                                                                                           self.tf_data.see_in_db_pre      .take(self.tf_data.see_amount),
+                                                                                           self.tf_data.see_gt_db          .take(self.tf_data.see_amount),
+                                                                                           self.tf_data.rec_hope_see_db_pre.take(self.tf_data.see_amount)))):
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow" not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_write_dir, result_obj, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, training, see_reset_init)
-            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
-            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, epoch, self.result_obj, see_reset_init)
+                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_write_dir, result_obj, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, rec_hope_pre, epoch, self.result_obj, training, see_reset_init)
+            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in, test_in_pre, test_gt, rec_hope_pre, epoch, self.result_obj, see_reset_init)
+            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, rec_hope_pre, epoch, self.result_obj, see_reset_init)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
@@ -846,11 +840,7 @@ rect_7_level_fk3_ReLU = Exp_builder().set_basic("train", type8_blender_os_book_7
 # blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).set_result_name(result_name="")
 
 ### 測試 怎麼樣設定 multiprocess 才較快
-test1 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="", describe_end="test1_copy_from_ch64_in_epoch500").set_train_args(epochs=500, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-test1_copy_from_ch64_in_epoch500")
-test2 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="", describe_end="test2_copy_from_epoch50"         ).set_train_args(epochs= 50, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-test2_copy_from_epoch50")
-
-
-
+testest = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4_e060", describe_end="testest"         ).set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-testest")   ### copy from ch64_in_epoch060
 
 import sys
 if(__name__ == "__main__"):
@@ -882,7 +872,8 @@ if(__name__ == "__main__"):
         # ch64_in_sk_sSE_e060.build().run()
         # ch64_in_sk_scSE_e060_wrong.build().run()
         # ch64_in_cnnNoBias_epoch060.build().run()
-        in_new_ch004_ep060.build().run()
+        # in_new_ch004_ep060.build().run()
+        testest.build().run()
 
         # print('no argument')
         sys.exit()

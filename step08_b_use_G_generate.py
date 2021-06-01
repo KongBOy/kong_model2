@@ -19,7 +19,7 @@ def generate_img_results(model_G, in_img_pre, gt_use_range):
 
 
 ### 這是一張一張進來的，沒有辦法跟 Result 裡面的 see 生成法合併，要的話就是把這裡matplot部分去除，用result裡的see生成matplot圖囉！
-def generate_img_sees(model_G, see_index, in_img, in_img_pre, gt_img, epoch=0, result_obj=None, see_reset_init=False):
+def generate_img_sees(model_G, see_index, in_img, in_img_pre, gt_img, rec_hope, epoch=0, result_obj=None, see_reset_init=False):
     '''
     如果之後有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
     '''
@@ -54,7 +54,7 @@ def generate_flow_results(model_G, in_img_pre, gt_use_range, training=False):  #
     return flow
 
 
-def generate_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_flow, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def generate_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_flow, rec_hope, epoch=0, result_obj=None, training=True, see_reset_init=True):
     '''
     如果有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
     '''
@@ -71,6 +71,7 @@ def generate_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_fl
         Check_dir_exist_and_build(see_write_dir)   ### 建立 see資料夾
         cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg", in_img[0].numpy())   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_flow.jpg", gt_flow_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_write_dir + "/" + "0c-rec_hope.jpg", rec_hope[0].numpy())  ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張
         np.save(see_write_dir + "/" + "0b-gt_a_gt_flow", gt_flow)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
     np.save(    see_write_dir + "/" + "epoch_%04i_a_flow"            % epoch, flow)      ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flow_visual.jpg" % epoch, flow_visual)  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！

@@ -147,7 +147,6 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
 
     ####################################################################################################
     def build_img_db(self):
-        print("here2~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         file_names = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_format, shuffle=False)
         byte_imgs = file_names.map(self.step0a_load_byte_img)
 
@@ -156,10 +155,6 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
         elif(self.img_format == "png"): decoded_imgs = byte_imgs.map(self.step0b_decode_png)
 
         self.ord_db = decoded_imgs.map(self.step1_load_img_uint8)
-        print("self.ord_db~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", self.ord_db)
-        print("self.use_range~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", self.use_range)
-        print("VALUE_RANGE.img_range~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", VALUE_RANGE.img_range)
-        print("self.use_range == VALUE_RANGE.img_range~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", self.use_range == VALUE_RANGE.img_range)
         ### 測試 use_range 有沒有設成功
         # print("self.use_range:", self.use_range)
         # print("VALUE_RANGE.neg_one_to_one.value:", VALUE_RANGE.neg_one_to_one.value, self.use_range == VALUE_RANGE.neg_one_to_one.value)
@@ -547,34 +542,28 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
             self.tf_data.see_amount    = get_db_amount(self.tf_data.db_obj.see_in_dir)
 
         if(self.tf_data.db_obj.have_rec_hope):
-            print("here~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            print("self.tf_data.img_resize", self.tf_data.img_resize)
             rec_hope_train_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.rec_hope_train_dir , self.tf_data.db_obj.rec_hope_format, self.tf_data.img_resize, self.tf_data.db_obj.rec_hope_range, self.tf_data.rec_hope_use_range)
-            print("rec_hope_train_db", rec_hope_train_db)
-            print("rec_hope_train_db.ord_db", rec_hope_train_db.ord_db)
-            print("rec_hope_train_db.pre_db", rec_hope_train_db.pre_db)
-            self.tf_data.rec_hope_train_db     = rec_hope_train_db.ord_db
-            self.tf_data.rec_hope_train_db_pre = rec_hope_train_db.pre_db
+            self.tf_data.rec_hope_train_db     = rec_hope_train_db.ord_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
+            self.tf_data.rec_hope_train_db_pre = rec_hope_train_db.pre_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
             self.tf_data.rec_hope_train_amount    = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
 
             rec_hope_test_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.rec_hope_test_dir  , self.tf_data.db_obj.rec_hope_format, self.tf_data.img_resize, self.tf_data.db_obj.rec_hope_range, self.tf_data.rec_hope_use_range)
-            self.tf_data.rec_hope_test_db     = rec_hope_test_db.ord_db
-            self.tf_data.rec_hope_test_db_pre = rec_hope_test_db.pre_db
+            self.tf_data.rec_hope_test_db     = rec_hope_test_db.ord_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
+            self.tf_data.rec_hope_test_db_pre = rec_hope_test_db.pre_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
             self.tf_data.rec_hope_test_amount    = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
 
             rec_hope_see_db   = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.rec_hope_see_dir   , self.tf_data.db_obj.rec_hope_format, self.tf_data.img_resize, self.tf_data.db_obj.rec_hope_range, self.tf_data.rec_hope_use_range)
-            self.tf_data.rec_hope_see_db     = rec_hope_see_db.ord_db
-            self.tf_data.rec_hope_see_db_pre = rec_hope_see_db.pre_db
+            self.tf_data.rec_hope_see_db     = rec_hope_see_db.ord_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
+            self.tf_data.rec_hope_see_db_pre = rec_hope_see_db.pre_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
             self.tf_data.rec_hope_see_amount    = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
             ##########################################################################################################################################
             ### 勿刪！用來測試寫得對不對！
-            import matplotlib.pyplot as plt
-            from util import method1
-            for i, rec_hope_see in enumerate(self.tf_data.rec_hope_see_db_pre):
-                fig, ax = plt.subplots(nrows=1, ncols=1)
-                ax.imshow(rec_hope_see)
-                plt.show()
-                plt.close()
+            # import matplotlib.pyplot as plt
+            # for i, rec_hope_see in enumerate(self.tf_data.rec_hope_see_db_pre.take(5)):
+            #     fig, ax = plt.subplots(nrows=1, ncols=1)
+            #     ax.imshow(rec_hope_see[0])
+            #     plt.show()
+            #     plt.close()
             ##########################################################################################################################################
 
 
