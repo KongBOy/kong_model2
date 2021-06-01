@@ -43,6 +43,7 @@ class Col_results_analyzer(Result_analyzer):
         self.add_loss = add_loss
 
         self.c_results = col_results
+        self.c_max_see_file_amount = self.step0_get_c_max_see_file_amount()
         self.c_min_see_file_amount = self.step0_get_c_min_see_file_amount()
         self.c_min_train_epochs = self.c_min_see_file_amount  ### 從see_file_name數量來推估 目前result被訓練幾個epoch，-2是減去 in_img, gt_img 兩個檔案
 
@@ -54,6 +55,14 @@ class Col_results_analyzer(Result_analyzer):
             result.sees[0].get_see_dir_info()  ### 先去把 sees[0] 的資訊更新
             see_file_amounts.append(result.sees[0].see_file_amount)   ### 再把 sees[0]的 see_file_amount 抓出來
         return min(see_file_amounts)
+
+    def step0_get_c_max_see_file_amount(self):
+        see_file_amounts = []
+        for result in self.c_results:
+            ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的see_file_amount就好囉～
+            result.sees[0].get_see_dir_info()  ### 先去把 sees[0] 的資訊更新
+            see_file_amounts.append(result.sees[0].see_file_amount)   ### 再把 sees[0]的 see_file_amount 抓出來
+        return max(see_file_amounts)
 
     ########################################################################################################################################
     def step1_get_c_titles(self):
@@ -159,8 +168,8 @@ class Col_results_analyzer(Result_analyzer):
         c_titles = self.step1_get_c_titles()
 
         ### 抓  每個epoch要顯示的imgs 並且畫出來
-        if(single_see_multiprocess): self._Draw_col_results_single_see_multiprocess(see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=single_see_core_amount, task_amount=self.c_min_see_file_amount)
-        else: self._Draw_col_results_single_see_(0, self.c_min_see_file_amount, see_num, in_img, gt_img, c_titles, analyze_see_dir)
+        if(single_see_multiprocess): self._Draw_col_results_single_see_multiprocess(see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=single_see_core_amount, task_amount=self.c_max_see_file_amount)
+        else: self._Draw_col_results_single_see_(0, self.c_max_see_file_amount, see_num, in_img, gt_img, c_titles, analyze_see_dir)
 
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
@@ -274,8 +283,8 @@ class Col_results_analyzer(Result_analyzer):
         r_c_titles = [c_titles]  ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
         ### 抓 row/col 要顯示的imgs 並且畫出來
-        if(multiprocess):       self._Draw_col_results_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=core_amount, task_amount=self.c_min_see_file_amount)
-        else: self._Draw_col_results_multi_see_(0, self.c_min_see_file_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir)
+        if(multiprocess):       self._Draw_col_results_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=core_amount, task_amount=self.c_max_see_file_amount)
+        else: self._Draw_col_results_multi_see_(0, self.c_max_see_file_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir)
 
         ### 後處理，讓資料變得 好看 且 更小 並 串成影片
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
