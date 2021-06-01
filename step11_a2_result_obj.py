@@ -142,37 +142,26 @@ class Result:
     ##############################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
-    def _Draw_multi_see(self, start_img, img_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False):  ### 因為需要看多see，所以提升到Result才的到多see喔！
-        for go_img in tqdm(range(start_img, start_img + img_amount)):
-            if(go_img >= 2):
-                epoch = go_img - 2
-                r_c_imgs = []
-                for go_see_num, see_num in enumerate(see_nums):
-                    c_imgs = [in_imgs[go_see_num]]
-                    c_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_jpg_names[go_img]))
-                    c_imgs += [gt_imgs[go_see_num]]
-                    r_c_imgs.append(c_imgs)
+    def _Draw_multi_see(self, start_epoch, epoch_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False):  ### 因為需要看多see，所以提升到Result才的到多see喔！
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+            r_c_imgs = []
+            for go_see_num, see_num in enumerate(see_nums):
+                c_imgs = [in_imgs[go_see_num]]
+                c_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_epoch_jpg_names[go_epoch]))
+                c_imgs += [gt_imgs[go_see_num]]
+                r_c_imgs.append(c_imgs)
 
-                multi_row_imgs = Matplot_multi_row_imgs(
-                                    rows_cols_imgs=r_c_imgs,
-                                    rows_cols_titles=r_c_titles,
-                                    fig_title ="epoch=%04i" % epoch,   ### 圖上的大標題,
-                                    bgr2rgb   =True,
-                                    add_loss  =add_loss)
+            multi_row_imgs = Matplot_multi_row_imgs(
+                                rows_cols_imgs=r_c_imgs,
+                                rows_cols_titles=r_c_titles,
+                                fig_title ="epoch=%04i" % go_epoch,   ### 圖上的大標題,
+                                bgr2rgb   =True,
+                                add_loss  =add_loss)
 
-                multi_row_imgs.Draw_img()
-                if(add_loss): multi_row_imgs.Draw_ax_loss_after_train(multi_row_imgs.ax[-1, 1], self.logs_read_dir, epoch, self.sees[see_num].see_file_amount - 2)
-                multi_row_imgs.Save_fig(dst_dir=matplot_multi_see_dir, epoch=epoch)
+            multi_row_imgs.Draw_img()
+            if(add_loss): multi_row_imgs.Draw_ax_loss_after_train(multi_row_imgs.ax[-1, 1], self.logs_read_dir, go_epoch, self.sees[see_num].see_file_amount - 2)
+            multi_row_imgs.Save_fig(dst_dir=matplot_multi_see_dir, epoch=go_epoch)
 
-                ### 已經包成 上面 Matplot_multi_row_imgs 囉！
-                # fig, ax = matplot_visual_multi_row_imgs(rows_cols_titles = r_c_titles,
-                #                               rows_cols_imgs   = r_c_imgs,
-                #                               fig_title        = "epoch=%04i"%epoch,   ### 圖上的大標題
-                #                               bgr2rgb          = True,
-                #                               add_loss         = add_loss)
-                # if(add_loss): fig, ax = draw_loss_util(fig, ax[-1,1], self.logs_read_dir, epoch, self.sees[see_num].see_file_amount-2)
-                # plt.savefig(matplot_multi_see_dir+"/"+"epoch=%04i"%epoch )
-                # plt.close()  ### 一定要記得關喔！要不然圖開太多會當掉！
 
     def _draw_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):
         from multiprocess_util import multi_processing_interface

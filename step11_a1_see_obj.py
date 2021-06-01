@@ -40,13 +40,15 @@ class See_info:
         self.gt_use_range = "0~1"
 
     def get_see_dir_info(self):
-        self.see_jpg_names = get_dir_certain_file_name(self.see_read_dir, ".jpg")
-        self.see_npy_names = get_dir_certain_file_name(self.see_read_dir, ".npy")
-        self.see_npz_names = get_dir_certain_file_name(self.see_read_dir, ".npz")
+        self.see_jpg_names   = get_dir_certain_file_name(self.see_read_dir, certain_word=".jpg")
+        self.see_npy_names   = get_dir_certain_file_name(self.see_read_dir, certain_word=".npy")
+        self.see_npz_names   = get_dir_certain_file_name(self.see_read_dir, certain_word=".npz")
         self.see_jpg_paths = [self.see_read_dir + "/" + jpg_name for jpg_name in self.see_jpg_names]
         self.see_npy_paths = [self.see_read_dir + "/" + npy_name for npy_name in self.see_npy_names]
         self.see_npz_paths = [self.see_read_dir + "/" + npz_name for npz_name in self.see_npz_names]
-        self.see_file_amount = len(self.see_jpg_names)
+        self.see_epoch_jpg_names = get_dir_certain_file_name(self.see_read_dir, certain_word="epoch", certain_ext=".jpg")
+        self.see_epoch_npz_names = get_dir_certain_file_name(self.see_read_dir, certain_word="epoch", certain_ext=".npz")
+        self.see_file_amount = len(self.see_epoch_jpg_names)
 
     def save_as_jpg(self):  ### 後來看覺得好像有點多餘
         Check_dir_exist_and_build(self.see_write_dir)
@@ -80,7 +82,7 @@ class See_visual(See_info):
     def _Draw_matplot_visual(self, epoch, add_loss=False, bgr2rgb=False):
         in_img = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[0])       ### 要記得see的第一張存的是 輸入的in影像
         gt_img = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[1])       ### 要記得see的第二張存的是 輸出的gt影像
-        img = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
+        img = cv2.imread(self.see_read_dir + "/" + self.see_epoch_jpg_names[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
         single_row_imgs = Matplot_single_row_imgs(
                                 imgs      =[ in_img ,   img ,      gt_img],    ### 把要顯示的每張圖包成list
                                 img_titles=["in_img", "out_img", "gt_img"],    ### 把每張圖要顯示的字包成list
@@ -111,13 +113,11 @@ class See_visual(See_info):
     ###############################################################################################
     ###############################################################################################
     ### 訓練後，可以走訪所有see_file 並重新產生 matplot_visual
-    def _draw_matplot_visual_after_train(self, start_img, img_amount, add_loss):
-        for go_img in tqdm(range(start_img, start_img + img_amount)):
-            if(go_img >= 2):  ### 第三張 才開始存 epoch影像喔！
-                current_epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
-                single_row_imgs = self._Draw_matplot_visual(current_epoch, add_loss)
-                if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", current_epoch, min_epochs=self.see_file_amount - 2)  ### 如果要畫loss，去呼叫Draw_ax_loss 並輸入 ax 進去畫，還有最後面的參數，是輸入 epochs！所以要-2！
-                single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+    def _draw_matplot_visual_after_train(self, start_epoch, epoch_amount, add_loss):
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+            single_row_imgs = self._Draw_matplot_visual(go_epoch, add_loss)
+            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.see_file_amount)
+            single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     def _draw_matplot_visual_after_train_multiprocess(self, add_loss, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss], print_msg=print_msg)
@@ -189,9 +189,9 @@ class See_bm_rec(See_info):
     def _Draw_matplot_bm_rec_visual(self, epoch, add_loss=False, bgr2rgb=False):
         in_img    = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[0])          ### 要記得see的jpg第一張存的是 輸入的in影像
         gt_flow_v = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
-        flow_v    = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[epoch + 2])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
+        flow_v    = cv2.imread(self.see_read_dir + "/" + self.see_epoch_jpg_names[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
         gt_flow   = np.load(self.see_read_dir + "/" + self.see_npz_names[0])["arr_0"]          ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
-        flow      = np.load(self.see_read_dir + "/" + self.see_npz_names[epoch + 1])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        flow      = np.load(self.see_read_dir + "/" + self.see_epoch_npz_names[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         # gt_flow[..., 1] = 1 - gt_flow[..., 1]
         flow      [..., 1] = 1 - flow[..., 1]
         gt_flow   [..., 1] = 1 - gt_flow[..., 1]
@@ -265,12 +265,10 @@ class See_bm_rec(See_info):
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
-    def _draw_matplot_bm_rec_visual_after_train(self, start_img, img_amount, add_loss, bgr2rgb):
-        for go_img in tqdm(range(start_img, start_img + img_amount)):
-            if(go_img >= 2):        ### 已經有用msdk寫防呆了，所以可以從 第三張開始做囉！
-                current_epoch = go_img - 2  ### 第三張 開始才是 epoch影像喔！所以epoch的數字 是go_img-2
-                single_row_imgs = self._Draw_matplot_bm_rec_visual(current_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
-                single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_write_dir, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+    def _draw_matplot_bm_rec_visual_after_train(self, start_epoch, epoch_amount, add_loss, bgr2rgb):
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+            single_row_imgs = self._Draw_matplot_bm_rec_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
+            single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=CORE_AMOUNT_BM_REC_VISUAL, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
         start_time = time.time()
