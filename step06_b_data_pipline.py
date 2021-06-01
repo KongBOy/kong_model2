@@ -57,6 +57,7 @@ class img_mapping_util(mapping_util):
 
 
     def step1_load_img_uint8(self, img):
+        img = self._resize(img)
         img  = tf.cast(img, tf.uint8)
         return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
 
@@ -146,6 +147,7 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
 
     ####################################################################################################
     def build_img_db(self):
+        print("here2~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         file_names = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_format, shuffle=False)
         byte_imgs = file_names.map(self.step0a_load_byte_img)
 
@@ -154,14 +156,18 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
         elif(self.img_format == "png"): decoded_imgs = byte_imgs.map(self.step0b_decode_png)
 
         self.ord_db = decoded_imgs.map(self.step1_load_img_uint8)
+        print("self.ord_db~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", self.ord_db)
+        print("self.use_range~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", self.use_range)
+        print("VALUE_RANGE.img_range~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", VALUE_RANGE.img_range)
+        print("self.use_range == VALUE_RANGE.img_range~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", self.use_range == VALUE_RANGE.img_range)
         ### 測試 use_range 有沒有設成功
         # print("self.use_range:", self.use_range)
         # print("VALUE_RANGE.neg_one_to_one.value:", VALUE_RANGE.neg_one_to_one.value, self.use_range == VALUE_RANGE.neg_one_to_one.value)
         # print("VALUE_RANGE.zero_to_one.value:", VALUE_RANGE.zero_to_one.value, self.use_range == VALUE_RANGE.zero_to_one.value)
         if  (self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = decoded_imgs.map(self.step1_load_img_float32_resize_and_to_tanh)
         elif(self.use_range == VALUE_RANGE.zero_to_one.value):    self.pre_db = decoded_imgs.map(self.step1_load_img_float32_resize_and_to_01)
-        elif(self.use_range == VALUE_RANGE.img_range): print("img 的 in/gt range 設錯囉！ 不能夠直接用 0~255 的range 來train 模型喔~~")
-        elif(self.use_range is None): print("tf_data 忘記設定 in/gt_use_range 了！，你可能會看到 Dataset.zip() 的錯誤喔 ~ ")
+        elif(self.use_range == VALUE_RANGE.img_range.value):      self.pre_db = decoded_imgs.map(self.step1_load_img_uint8)
+        elif(self.use_range is None): print("tf_data 忘記設定 in/gt_use_range 或 rec_hope_range 了！，你可能會看到 Dataset.zip() 的錯誤喔 ~ ")
 
 
     def build_mov_db(self):
@@ -265,6 +271,7 @@ class tf_Data:   ### 以上 以下 都是為了設定這個物件
 
         self.in_use_range = None
         self.gt_use_range = None
+        self.rec_hope_use_range = None
 
         self.train_in_db      = None
         self.train_in_db_pre  = None
@@ -286,6 +293,13 @@ class tf_Data:   ### 以上 以下 都是為了設定這個物件
         self.see_gt_db_pre    = None
         self.see_amount       = None
 
+        self.rec_hope_train_db     = None
+        self.rec_hope_train_db_pre = None
+        self.rec_hope_test_db      = None
+        self.rec_hope_test_db_pre  = None
+        self.rec_hope_see_db       = None
+        self.rec_hope_see_db_pre   = None
+
         ### 最主要是再 step7 unet generate image 時用到，但我覺得可以改寫！所以先註解掉了！
         # self.in_format          = None
         # self.gt_format          = None
@@ -305,9 +319,10 @@ class tf_Data_init_builder:
         self.tf_data.train_shuffle = train_shuffle
         return self
 
-    def set_data_use_range(self, in_use_range="0~1", gt_use_range="0~1"):
+    def set_data_use_range(self, in_use_range="0~1", gt_use_range="0~1", rec_hope_use_range="0~255"):
         self.tf_data.in_use_range = in_use_range
         self.tf_data.gt_use_range = gt_use_range
+        self.tf_data.rec_hope_use_range = rec_hope_use_range
         return self
 
     def set_img_resize(self, model_name):
@@ -531,6 +546,38 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
             self.tf_data.see_gt_db_pre = see_gt_db.pre_db.batch(1)  ### see 的 batch 就是固定1了，有點懶一次處理多batch的生成see
             self.tf_data.see_amount    = get_db_amount(self.tf_data.db_obj.see_in_dir)
 
+        if(self.tf_data.db_obj.have_rec_hope):
+            print("here~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print("self.tf_data.img_resize", self.tf_data.img_resize)
+            rec_hope_train_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.rec_hope_train_dir , self.tf_data.db_obj.rec_hope_format, self.tf_data.img_resize, self.tf_data.db_obj.rec_hope_range, self.tf_data.rec_hope_use_range)
+            print("rec_hope_train_db", rec_hope_train_db)
+            print("rec_hope_train_db.ord_db", rec_hope_train_db.ord_db)
+            print("rec_hope_train_db.pre_db", rec_hope_train_db.pre_db)
+            self.tf_data.rec_hope_train_db     = rec_hope_train_db.ord_db
+            self.tf_data.rec_hope_train_db_pre = rec_hope_train_db.pre_db
+            self.tf_data.rec_hope_train_amount    = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
+
+            rec_hope_test_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.rec_hope_test_dir  , self.tf_data.db_obj.rec_hope_format, self.tf_data.img_resize, self.tf_data.db_obj.rec_hope_range, self.tf_data.rec_hope_use_range)
+            self.tf_data.rec_hope_test_db     = rec_hope_test_db.ord_db
+            self.tf_data.rec_hope_test_db_pre = rec_hope_test_db.pre_db
+            self.tf_data.rec_hope_test_amount    = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
+
+            rec_hope_see_db   = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.rec_hope_see_dir   , self.tf_data.db_obj.rec_hope_format, self.tf_data.img_resize, self.tf_data.db_obj.rec_hope_range, self.tf_data.rec_hope_use_range)
+            self.tf_data.rec_hope_see_db     = rec_hope_see_db.ord_db
+            self.tf_data.rec_hope_see_db_pre = rec_hope_see_db.pre_db
+            self.tf_data.rec_hope_see_amount    = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+            ##########################################################################################################################################
+            ### 勿刪！用來測試寫得對不對！
+            import matplotlib.pyplot as plt
+            from util import method1
+            for i, rec_hope_see in enumerate(self.tf_data.rec_hope_see_db_pre):
+                fig, ax = plt.subplots(nrows=1, ncols=1)
+                ax.imshow(rec_hope_see)
+                plt.show()
+                plt.close()
+            ##########################################################################################################################################
+
+
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # import matplotlib.pyplot as plt
@@ -601,9 +648,9 @@ if(__name__ == "__main__"):
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_unet()
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize( model_obj.model_name).build_by_db_get_method().build()
 
-    db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1").set_detail(have_train=True, have_see=True).build()
+    db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1", rec_hope_format="jpg", rec_hope_range="0~255").set_detail(have_train=True, have_see=True, have_rec_hope=True).build()
+    print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
-    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
-
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1", rec_hope_use_range="0~255").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
     print(time.time() - start_time)
     print("finish")

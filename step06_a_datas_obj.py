@@ -86,17 +86,24 @@ class Datasets():  ### 以上 以下 都是為了要設定這個物件
         self.test_gt_dir  = None
         self.see_in_dir   = None
         self.see_gt_dir   = None
+
+        self.rec_hope_train_dir = None
+        self.rec_hope_test_dir  = None
+        self.rec_hope_see_dir   = None
         ### (必須)format
         ### 最主要是再 step7 unet generate image 時用到，但我覺得那邊可以改寫！改成記bmp/jpg了！
         self.in_format  = None  ### 本來指定 img/move_map(但因有用get_method，已經可區分img/move_map的動作)，現在覺得指定 bmp/jpg好了
         self.in_range = None
         self.gt_format  = None
         self.gt_range = None
+        self.rec_hope_format  = None
+        self.rec_hope_range = None
         ### (不必須)detail
         self.have_train = True
         self.have_see   = False
+        self.have_rec_hope = False
 
-        ### 這裡的東西我覺得跟 db_obj 相關性 沒有比 tf_data還來的大，所以把這幾個attr一道tf_data裡囉！
+        ### 這裡的東西我覺得跟 db_obj 相關性 沒有比 tf_data還來的大，所以把這幾個attr移到tf_data裡囉！
         ### 一切的一切最後就是要得到這個 data_dict
         ### 這些資訊要從 datapipline 那邊再設定
         # self.batch_size    = 1
@@ -112,7 +119,11 @@ class Datasets():  ### 以上 以下 都是為了要設定這個物件
         print("test_gt_dir:%s," % self.test_gt_dir)
         print("see_in_dir:%s," % self.see_in_dir)
         print("see_gt_dir:%s," % self.see_gt_dir)
-        print("in_format:%s, gt_format:%s" % (self.in_format, self.gt_format))
+
+        print("rec_hope_train_dir:%s," % self.rec_hope_train_dir)
+        print("rec_hope_test_dir :%s," % self.rec_hope_test_dir)
+        print("rec_hope_see_dir  :%s," % self.rec_hope_see_dir)
+        print("in_format:%s, gt_format:%s, rec_hope_format:%s" % (self.in_format, self.gt_format, self.rec_hope_format))
         return ""
 ####################################################################################################################################
 
@@ -136,13 +147,17 @@ class Dataset_basic_builder(Dataset_init_builder):
         return self
 
 class Dataset_dir_builder(Dataset_basic_builder):
-    def set_dir_manually(self, train_in_dir=None, train_gt_dir=None, test_in_dir=None, test_gt_dir=None, see_in_dir=None, see_gt_dir=None):
+    def set_dir_manually(self, train_in_dir=None, train_gt_dir=None, test_in_dir=None, test_gt_dir=None, see_in_dir=None, see_gt_dir=None, rec_hope_train_dir=None, rec_hope_test_dir=None, rec_hope_see_dir=None):
         self.db.train_in_dir = train_in_dir
         self.db.train_gt_dir = train_gt_dir
         self.db.test_in_dir  = test_in_dir
         self.db.test_gt_dir  = test_gt_dir
         self.db.see_in_dir   = see_in_dir
         self.db.see_gt_dir   = see_gt_dir
+
+        self.db.rec_hope_train_dir = rec_hope_train_dir
+        self.db.rec_hope_test_dir  = rec_hope_test_dir
+        self.db.rec_see_hope_dir   = rec_hope_see_dir
         return self
 
     def set_dir_by_basic(self):
@@ -171,10 +186,15 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.test_gt_dir  = self.db.db_dir + "/test/"  + gt_dir_name
         self.db.see_in_dir   = self.db.db_dir + "/see/"   + in_dir_name
         self.db.see_gt_dir   = self.db.db_dir + "/see/"   + gt_dir_name
+        self.db.see_gt_dir   = self.db.db_dir + "/see/"   + gt_dir_name
+
+        self.db.rec_hope_train_dir = self.db.db_dir + "/train/rec_hope"
+        self.db.rec_hope_test_dir  = self.db.db_dir + "/test/rec_hope"
+        self.db.rec_hope_see_dir   = self.db.db_dir + "/see/rec_hope"
         return self
 
 class Dataset_format_builder(Dataset_dir_builder):
-    def set_in_gt_format_and_range(self, in_format="bmp", in_range="0~1", gt_format="bmp", gt_range="0~1"):
+    def set_in_gt_format_and_range(self, in_format="bmp", in_range="0~1", gt_format="bmp", gt_range="0~1", rec_hope_format="jpg", rec_hope_range="0~255"):
         """
         設定 bmp, npy, knpy, ...... 等等的 資料格式
         """
@@ -182,15 +202,19 @@ class Dataset_format_builder(Dataset_dir_builder):
         self.db.in_range   = in_range
         self.db.gt_format  = gt_format
         self.db.gt_range   = gt_range
+
+        self.db.rec_hope_format = rec_hope_format
+        self.db.rec_hope_range  = rec_hope_range
         return self
 
 class Dataset_detail_builder(Dataset_format_builder):
-    def set_detail(self, have_train=True, have_see=False):
+    def set_detail(self, have_train=True, have_see=False, have_rec_hope=False):
         """
         資料集 裡面有沒有 train/see 資料夾，有的時候因為懶所以還沒建就想用了這樣子
         """
         self.db.have_train    = have_train
         self.db.have_see      = have_see
+        self.db.have_rec_hope = have_rec_hope
         return self
 
 class Dataset_builder(Dataset_detail_builder): pass
@@ -210,14 +234,14 @@ type7b_h500_w332_real_os_book_1532data_big   = Dataset_builder().set_basic(DB_C.
 type7b_h500_w332_real_os_book_400data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_400data       , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True)
 type7b_h500_w332_real_os_book_800data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book              , DB_N.os_book_800data       , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True)
 type8_blender_os_book_756                    = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw756      , DB_GM.in_dis_gt_flow, h=756, w=756).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1").set_detail(have_train=True, have_see=True)
-type8_blender_os_book_768                    = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1").set_detail(have_train=True, have_see=True)
+type8_blender_os_book_768                    = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1", rec_hope_format="jpg", rec_hope_range="0~255").set_detail(have_train=True, have_see=True, have_rec_hope=True)
 
 
 if(__name__ == "__main__"):
     db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", in_range="0~255", gt_format="bmp", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
     db = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book,                DB_N.os_book_400data,  DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
     db = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book,               DB_N.os_book_1532data, DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
-    print(type8_blender_os_book_768)
+    print(type8_blender_os_book_768.build())
     # db_complex_1_pure_unet = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_move_map   , h=256, w=256 )
     # db_complex_2_pure_rect = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_dis_gt_ord_pad_img, h=256, w=256 )
     # db_complex_3_pure_rect = Datasets(DB_CATEGORY.type1_h_256_w_256_complex, DB_GET_METHOD.in_rec_gt_ord_img    , h=256, w=256 )
