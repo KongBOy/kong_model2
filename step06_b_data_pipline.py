@@ -75,79 +75,6 @@ class img_mapping_util(mapping_util):
         return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
 
 
-    # ### 以下是 bmp file_name -> tensor  成功！
-    # ### 這種寫法是 img 沒有用 self.img 來寫，有種先在上面組裝好的概念，比較 能夠顯現 img傳遞過程的概念，先用這個好了，想看上一種風格去git 6b63a99 調喔
-    # def _step0_load_one_bmp_img(self, file_name):
-    #     img = tf.io.read_file(file_name)
-    #     img = tf.image.decode_bmp(img)
-    #     img  = tf.cast(img, tf.float32)
-    #     return img
-
-    # def _step1_load_bmp_ord(self, file_name):
-    #     img = self._step0_load_one_bmp_img(file_name)  ### 根據檔名，把圖片讀進來
-    #     img  = tf.cast(img, tf.uint8)  ### 不會拿來訓練，是拿來顯示的，所以轉乘uint8
-    #     return img
-
-    # def _step1_load_bmp_ord_resize_and_to_01(self, file_name):
-    #     img = self._step0_load_one_bmp_img(file_name)  ### 根據檔名，把圖片讀進來
-    #     img = self._resize(img)
-    #     img = self._norm_img_to_01(img)
-    #     return img
-
-    # def _step1_load_bmp_ord_resize_and_to_tanh(self, file_name):
-    #     img = self._step0_load_one_bmp_img(file_name)  ### 根據檔名，把圖片讀進來
-    #     img = self._resize(img)
-    #     img = self._norm_img_to_tanh(img)
-    #     return img
-
-    # ####################################################################################################
-    # def _step0_load_one_jpg_img(self, file_name):
-    #     img = tf.io.read_file(file_name)
-    #     img = tf.image.decode_jpeg(img)
-    #     img  = tf.cast(img, tf.float32)
-    #     return img
-
-    # def _step1_load_jpg_ord(self, file_name):
-    #     img = self._step0_load_one_jpg_img(file_name)  ### 根據檔名，把圖片讀進來
-    #     img = tf.cast(img, tf.uint8)  ### 不會拿來訓練，是拿來顯示的，所以轉乘uint8
-    #     return img
-
-    # def _step1_load_jpg_ord_resize_and_to_01h(self, file_name):
-    #     img = self._step0_load_one_jpg_img(file_name)  ### 根據檔名，把圖片讀進來
-    #     img = self._resize(img)
-    #     img = self._norm_img_to_01(img)
-    #     return img
-
-    # def _step1_load_jpg_ord_resize_and_to_tanh(self, file_name):
-    #     img = self._step0_load_one_jpg_img(file_name)  ### 根據檔名，把圖片讀進來
-    #     img = self._resize(img)
-    #     img = self._norm_img_to_tanh(img)
-    #     return img
-
-    # ####################################################################################################
-    # def _step0_load_one_png_img(self, file_name):
-    #     img = tf.io.read_file(file_name)
-    #     img = tf.image.decode_png(img)
-    #     img  = tf.cast(img, tf.float32)
-    #     return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
-
-    # def _step1_load_png_ord(self, file_name):
-    #     img = self._step0_load_one_png_img(file_name)  ### 根據檔名，把圖片讀進來
-    #     img = tf.cast(img, tf.uint8)  ### 不會拿來訓練，是拿來顯示的，所以轉乘uint8
-    #     return img
-
-    # def _step1_load_png_resize_to_01(self, file_name):
-    #     img = self._step0_load_one_png_img(file_name)  ### 根據檔名，把圖片讀進來
-    #     img = self._resize(img)
-    #     img = self._norm_img_to_01(img)
-    #     return img
-
-    # def _step1_load_png_resize_to_tanh(self, file_name):
-    #     img = self._step0_load_one_png_img(file_name)  ### 根據檔名，把圖片讀進來
-    #     img = self._resize(img)
-    #     img = self._norm_img_to_tanh(img)
-    #     return img
-
 ####################################################################################################
 ####################################################################################################
 class mov_mapping_util(mapping_util):
@@ -235,35 +162,6 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util):
         elif(self.use_range == VALUE_RANGE.zero_to_one.value):    self.pre_db = decoded_imgs.map(self.step1_load_img_float32_resize_and_to_01)
         elif(self.use_range == VALUE_RANGE.img_range): print("img 的 in/gt range 設錯囉！ 不能夠直接用 0~255 的range 來train 模型喔~~")
         elif(self.use_range is None): print("tf_data 忘記設定 in/gt_use_range 了！，你可能會看到 Dataset.zip() 的錯誤喔 ~ ")
-
-
-        # if  (self.img_format == "bmp"):
-        #     self.ord_db = self.ord_db.map(self._step1_load_bmp_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        #     self.pre_db = self.pre_db.map(self._step1_load_bmp_ord_resize_and_to_tanh)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        # elif(self.img_format == "jpg"):
-        #     self.ord_db = self.ord_db.map(self._step1_load_jpg_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        #     self.pre_db = self.pre_db.map(self._step1_load_jpg_ord_resize_and_to_tanh)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        # elif(self.img_format == "png"):
-        #     self.ord_db = self.ord_db.map(self._step1_load_png_ord)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        #     self.pre_db = self.pre_db.map(self._step1_load_png_resize_to_01)  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-
-        # self.ord_db = self.ord_db.prefetch(tf.data.experimental.AUTOTUNE)
-
-
-
-        # self.ord_db = self.ord_db.map(lambda file_name: tf.py_function(self.step1_load_img_ord, inp=[file_name, self.img_format], Tout=tf.uint8))  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        # self.ord_db = self.ord_db.map(lambda file_name: self.step1_load_img_ord(file_name, self.img_format))  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-
-        # self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.img_format, shuffle=False)
-
-        # print("self.use_range", self.use_range)
-        # print("VALUE_RANGE.neg_one_to_one.value", VALUE_RANGE.neg_one_to_one.value, self.use_range == VALUE_RANGE.neg_one_to_one.value)
-        # print("VALUE_RANGE.zero_to_one.value", VALUE_RANGE.zero_to_one.value, self.use_range == VALUE_RANGE.zero_to_one.value)
-        # if  (self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = self.pre_db.map(lambda file_name: self.step1_load_img_ord_resize_and_to_tanh(file_name, self.img_format))  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        # elif(self.use_range == VALUE_RANGE.zero_to_one.value):    self.pre_db = self.pre_db.map(lambda file_name: self.step1_load_img_ord_resize_and_to_01(file_name, self.img_format))  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-
-        # if  (self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = self.pre_db.map(lambda file_name: tf.py_function(self.step1_load_img_ord_resize_and_to_tanh, inp=[file_name, self.img_format], Tout=tf.float32))  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
-        # elif(self.use_range == VALUE_RANGE.zero_to_one.value):    self.pre_db = self.pre_db.map(lambda file_name: tf.py_function(self.step1_load_img_ord_resize_and_to_01,   inp=[file_name, self.img_format], Tout=tf.float32))  #, num_parallel_calls=tf.data.experimental.AUTOTUNE) ### 如果 gpu 記憶體不構，把num_parallew_calls註解掉即可！
 
 
     def build_mov_db(self):
