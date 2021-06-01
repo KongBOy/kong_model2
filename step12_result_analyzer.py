@@ -473,7 +473,7 @@ class Bm_Rec_exps_analyze(Result_analyzer):
 
 
     def single_see_certain_rec_analyze(self, see_num, epoch, reset_dir=True):
-        analyze_see_bm_dir, analyze_see_rec_dir = self._build_analyze_see_bm_rec_dir(see_num, dst_dir="epoch={epoch}", reset_dir=reset_dir)  ### 定出 存結果的資料夾
+        analyze_see_bm_dir, analyze_see_rec_dir = self._build_analyze_see_bm_rec_dir(see_num, dst_dir=f"epoch={epoch}", reset_dir=reset_dir)  ### 定出 存結果的資料夾
 
         for exp in self.exps:
             see = exp.result_obj.sees[see_num]      ### 先抓出 要用的物件
