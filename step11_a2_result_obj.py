@@ -66,8 +66,6 @@ class Result:
         目前覺得不建議使用，因為以sees內的see當單位來切，覺得有點沒效率，且用 see 當單位 ， 用的記憶體大喔！
         """
         print(f"doing {self.result_name}")
-        from multiprocess_util import multi_processing_interface
-        single_see_multiprocess = False  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
         multi_processing_interface(core_amount=CORE_AMOUNT, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_visual, task_args=[add_loss, single_see_multiprocess])
 
     ##############################################################################################################################
@@ -88,8 +86,7 @@ class Result:
         print("Result level: cost_time=", time.time() - result_start)
         print("")
 
-    ## 想刪~~ 再保留一版 用不到就刪了
-    def save_all_single_see_as_matplot_bm_rec_visual_multiprocess(self, add_loss=False, bgr2rgb=False, print_msg=False):  ### 以 sees 的 see當單位來切
+    def save_all_single_see_as_matplot_bm_rec_visual_multiprocess(self, add_loss=False, bgr2rgb=False, single_see_multiprocess=False, print_msg=False):  ### 以 sees 的 see當單位來切
         """
         已經在127.28證實 以  see  為單位比較快, 大約 1549(不含 npy to npz), 設定為：bm/rec core 13, crop 和 jpg core 皆 1
                         以 see內 為單位比較慢, 大約 1973(不含 npy to npz)
@@ -103,10 +100,7 @@ class Result:
         但記憶體會爆的問題還是在，可能只適合在記憶體大的電腦跑這樣子
         """
         result_start = time.time()
-        print(f"doing {self.result_name}")
-        print("result level: doing save_all_single_see_as_matplot_bm_rec_visual_multiprocess")
-        from multiprocess_util import multi_processing_interface
-        single_see_multiprocess = False  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
+        print(f"result level: doing save_all_single_see_as_matplot_bm_rec_visual_multiprocess, Current Result:{self.result_name}")
         multi_processing_interface(core_amount=CORE_AMOUNT, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_bm_rec_visual, task_args=[add_loss, bgr2rgb, single_see_multiprocess], print_msg=print_msg)
         print("result level: finish save_all_single_see_as_matplot_bm_rec_visual_multiprocess")
         print("result level: cost_time=", time.time() - result_start)
@@ -194,7 +188,6 @@ class Result:
 
 
     def _draw_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):
-        from multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_multi_see, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss], print_msg=print_msg)
 
     ### 好像比較少用到
