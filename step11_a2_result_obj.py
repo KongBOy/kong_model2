@@ -13,7 +13,7 @@ from tqdm import tqdm
 # import matplotlib.pyplot as plt
 # import pdb
 
-
+from multiprocess_util import multi_processing_interface
 
 class Result:
     # def __init__(self, result_name=None, r_describe=None):
@@ -112,6 +112,36 @@ class Result:
         print("result level: cost_time=", time.time() - result_start)
         print("")
 
+    ##############################################################################################################################
+    ##############################################################################################################################
+    def calculate_single_see_SSIM_LD(self, see_num, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):
+        if(see_num < self.see_amount):  ### 防呆，以防直接使用 calculate_all_single_see_SSIM_LD 時 start_index 設的比0大 但 amount 設成 see_amount 或 純粹不小心算錯數字(要算準start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
+            print(f"Result level: doing calculate_single_see_SSIM_LD, Current Result:{self.result_name}")
+            self.sees[see_num].Calculate_SSIM_LD(add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+
+    ### 寫成 start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉
+    def calculate_all_single_see_SSIM_LD(self, start_index, amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
+        result_start = time.time()
+        print(f"Result level: doing calculate_all_single_see_SSIM_LD, Current Result:{self.result_name}")
+        for see_num in range(start_index, start_index + amount):
+            self.calculate_single_see_SSIM_LD(see_num, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+            print("")
+        print("Result level: finish calculate_all_single_see_SSIM_LD")
+        print("Result level: cost_time=", time.time() - result_start)
+        print("")
+
+    def calculate_all_single_see_SSIM_LD_multiprocess(self, add_loss=False, bgr2rgb=False, core_amount=7, single_see_multiprocess=False, single_see_core_amount=2, print_msg=False):  ### 以 sees 的 see當單位來切
+        result_start = time.time()
+        print(f"Result level: doing calculate_all_single_see_SSIM_LD_multiprocess, Current Result:{self.result_name}")
+        if(core_amount == 1): self.calculate_all_single_see_SSIM_LD(0, self.see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, core_amount=core_amount, print_msg=print_msg)
+        else: multi_processing_interface(core_amount=core_amount, task_amount=self.see_amount, task=self.calculate_all_single_see_SSIM_LD, task_args=[add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount, print_msg])
+        print("result level: finish calculate_all_single_see_SSIM_LD_multiprocess")
+        print("result level: cost_time=", time.time() - result_start)
+        print("")
+
+
+    #######################################################################################################################################
+    #######################################################################################################################################
     #######################################################################################################################################
     def save_single_see_as_matplot_bm_rec_visual_at_certain_epoch(self, see_num, epoch, add_loss=False, bgr2rgb=False):
         """

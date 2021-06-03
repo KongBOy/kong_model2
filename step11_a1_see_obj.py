@@ -8,13 +8,17 @@ from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_
 from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
 from video_from_img import Video_combine_from_dir
 from multiprocess_util import multi_processing_interface
-from multiprocessing import Process
+from multiprocessing import Process, Manager
 
 import cv2
 import time
 import numpy as np
 from tqdm import tqdm
 import os
+
+sys.path.append("SIFT_dev/SIFTflow")
+from kong_use_evalUnwarp_sucess import use_DewarpNet_eval
+import matplotlib.pyplot as plt
 
 
 # import pdb
@@ -174,68 +178,54 @@ class See_bm_rec(See_info):
     ###############################################################################################
     ###############################################################################################
     def get_bm_rec_info(self):
-        self.bm_names  = get_dir_certain_file_name(self.bm_visual_read_dir , ".jpg")
+        self.bm_names  = get_dir_certain_file_name(self.bm_visual_read_dir , certain_word="bm_epoch", certain_ext=".jpg")
         self.bm_paths  = [self.bm_visual_read_dir + "/" + name for name in self.bm_names]
-        self.rec_names = get_dir_certain_file_name(self.rec_visual_read_dir, ".jpg")
+        self.rec_names = get_dir_certain_file_name(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".jpg")
         self.rec_paths = [self.rec_visual_read_dir + "/" + name for name in self.rec_names]
 
         self.see_file_amount = len(self.rec_names)
 
     ###############################################################################################
     ###############################################################################################
+    def _use_flow_to_rec(self, dis_img, flow):
+        if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
+        h, w = flow.shape[:2]
+        total_pix_amount = h * w
+        valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
+        # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
+        if( valid_mask_pix_amount / total_pix_amount > 0.28):
+            bm  = use_flow_to_get_bm(flow, flow_scale=h)
+            rec = use_bm_to_rec_img (bm  , flow_scale=h, dis_img=dis_img)
+        else:
+            bm  = np.zeros(shape=(h, w, 2))
+            rec = np.zeros(shape=(h, w, 3))
+        return bm, rec
+
+    def _get_bm_rec_and_gt_bm_gt_rec(self, epoch, dis_img):
+        ### pred flow part
+        flow          = np.load(self.see_read_dir + "/" + self.see_epoch_npz_names[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        flow [..., 1] = 1 - flow[..., 1]
+        bm, rec = self._use_flow_to_rec(dis_img=dis_img, flow=flow)
+
+        ### gt flow part
+        gt_flow            = np.load(self.see_read_dir + "/" + self.see_npz_names[0])["arr_0"]          ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        gt_flow   [..., 1] = 1 - gt_flow[..., 1]
+        gt_bm, gt_rec = self._use_flow_to_rec(dis_img=dis_img, flow=gt_flow)
+        return bm, rec, gt_bm, gt_rec
+
+
     ### 我覺得先把 npy 轉成 npz 再來生圖比較好，不要在這邊 邊生圖 邊轉 npz，覺得的原因如下：
     ###     1.這樣這裡做的事情太多了~~
     ###     2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.see_npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
     def _Draw_matplot_bm_rec_visual(self, epoch, add_loss=False, bgr2rgb=False):
         in_img    = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[0])          ### 要記得see的jpg第一張存的是 輸入的in影像
-        gt_flow_v = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
         flow_v    = cv2.imread(self.see_read_dir + "/" + self.see_epoch_jpg_names[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
-        gt_flow   = np.load(self.see_read_dir + "/" + self.see_npz_names[0])["arr_0"]          ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
-        flow      = np.load(self.see_read_dir + "/" + self.see_epoch_npz_names[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
-        # gt_flow[..., 1] = 1 - gt_flow[..., 1]
-        flow      [..., 1] = 1 - flow[..., 1]
-        gt_flow   [..., 1] = 1 - gt_flow[..., 1]
+        gt_flow_v = cv2.imread(self.see_read_dir + "/" + self.see_jpg_names[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
 
-        # import matplotlib.pyplot as plt
-        # fig, ax = plt.subplots(nrows=1, ncols=4)
-        # print(gt_flow.min())
-        # print(gt_flow.max())
-        # ax[0].imshow(gt_flow[..., 0])
-        # ax[1].imshow(gt_flow[..., 1])
-        # ax[2].imshow(gt_flow_y_inv[..., 0])
-        # ax[3].imshow(gt_flow_y_inv[..., 1])
-        # plt.show()
         # print("2. see gt_use_range=", self.gt_use_range)
-        if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
-
-        # breakpoint()
-
-        ### predict flow part
-        valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
-        total_pix_amount = flow.shape[0] * flow.shape[1]
-        # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
-        if( valid_mask_pix_amount / total_pix_amount > 0.28):
-            bm  = use_flow_to_get_bm(flow, flow_scale=768)
-            rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
-        else:
-            bm  = np.zeros(shape=(768, 768, 2))
-            rec = np.zeros(shape=(768, 768, 3))
-
-
-        # import matplotlib.pyplot as plt
-        # gt_valid_mask_pix_amount = (gt_flow[..., 0] >= 0.99).astype(np.int).sum()
-        # gt_total_pix_amount = gt_flow.shape[0] * flow.shape[1]
-        # print("gt_valid_mask_pix_amount", gt_valid_mask_pix_amount)
-        # print("gt_total_pix_amount", gt_total_pix_amount)
-        # print("gt_valid_mask_pix_amount / gt_total_pix_amount:", gt_valid_mask_pix_amount / gt_total_pix_amount)
-        # plt.imshow(gt_flow)
-        # plt.show()
-        if(gt_flow[..., 0].sum() > 0):
-            gt_bm  = use_flow_to_get_bm(gt_flow, flow_scale=768)
-            gt_rec = use_bm_to_rec_img(gt_bm, flow_scale=768, dis_img=in_img)
-        else:
-            gt_bm  = np.zeros(shape=(768, 768, 2))
-            gt_rec = np.zeros(shape=(768, 768, 3))
+        # start_time = time.time()
+        bm, rec, gt_bm, gt_rec = self._get_bm_rec_and_gt_bm_gt_rec(epoch=epoch, dis_img=in_img)  ### 做一次 大約 1~2 秒
+        # print("self._get_bm_rec_and_gt_bm_gt_rec cost time:", time.time() - start_time)
 
         # bm_visual  = method1(bm[...,0], bm[...,1]*-1)
         # gt_bm_visual = method1(gt_bm[...,0], gt_bm[...,1]*-1)
@@ -443,18 +433,154 @@ class See_try_npy_to_npz(See_info):
         print(f"See level: doing all_npy_to_npz, Current See:{self.see_name}, cost time:{time.time() - start_time}")
 
 
+class See_rec_metric(See_bm_rec):
+    """
+    我把它繼承See_bm_rec 的概念是要做完 See_bm_rec 後才能做 See_rec_metric 喔！
+    """
+    def __init__(self, result_read_dir, result_write_dir, see_name):
+        super(See_rec_metric, self).__init__(result_read_dir, result_write_dir, see_name)
+
+        self.matplot_metric_read_dir  = self.see_read_dir  + "/matplot_metric_visual"
+        self.matplot_metric_write_dir = self.see_write_dir + "/matplot_metric_visual"
+        self.metric_names = None
+        self.metric_paths = None
+
+    ###############################################################################################
+    ###############################################################################################
+    def get_metric_info(self):
+        self.metric_names  = get_dir_certain_file_name(self.bm_visual_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
+        self.metric_paths  = [self.matplot_metric_read_dir + "/" + name for name in self.metric_names]
+
+        self.see_file_amount = len(self.metric_names)
+
+    ###############################################################################################
+    ###############################################################################################
+    def Calculate_SSIM_LD(self, add_loss=False,
+                                bgr2rgb =False,
+                                single_see_multiprocess=True,
+                                single_see_core_amount=8,
+                                print_msg=False):
+        """
+        覺得還是要用 path 的方式 在 matlab 裡面 用 imread(path)，
+        path 的方式：8秒左右
+        python內np.array 傳給 matlab：30秒左右
+
+        假設：
+            1.都要 compress_all 完以後
+            2.並把結果都 集中到一起
+        """
+        print(f"See level: doing Calculate_SSIM_LD, Current See:{self.see_name}")
+        start_time = time.time()
+        Check_dir_exist_and_build_new_dir(self.matplot_metric_write_dir)
+
+        self.get_see_dir_info()  ### 暫時寫這邊，到時應該要拉出去到result_level，要不然每做一次就要重新更新一次，但不用這麼頻繁，只需要一開始更新一次即可
+        self.get_bm_rec_info()   ### 暫時寫這邊，到時應該要拉出去到result_level，要不然每做一次就要重新更新一次，但不用這麼頻繁，只需要一開始更新一次即可
+
+        with Manager() as manager:  ### 設定在 multiprocess 裡面 共用的 list
+            ### multiprocess 內的 global 的 list， share memory 的概念了，就算不multiprocess 也可以用喔！
+            SSIMs = manager.list()  # []的概念
+            LDs   = manager.list()  # []的概念
+
+            if(single_see_multiprocess and single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
+                self._do_matlab_SSIM_LD_multiprocess(SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, task_amount=self.see_file_amount)
+            else:  ### 如果沒有要用 multiprocess ， 就重新導向 最原始的function囉！
+                self._do_matlab_SSIM_LD(0, self.see_file_amount, SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb)
+
+            # SSIMs = list(SSIMs)  ### share memory 的list 轉回 python list
+            # LDs   = list(LDs)    ### share memory 的list 轉回 python list
+            SSIMs = sorted(SSIMs, key=lambda ssim : ssim[0])  ### 有轉 list 的功效喔！所以上面兩行可省！
+            LDs   = sorted(LDs,   key=lambda LD   : LD[0])    ### 有轉 list 的功效喔！所以上面兩行可省！
+
+        SSIMs = np.array(SSIMs)[:, 1]
+        LDs   = np.array(LDs)[:, 1]
+        # print("SSIMs", SSIMs)
+        # print("LDs", LDs)
+
+        np.save(f"{self.matplot_metric_write_dir}/SSIMs", SSIMs)
+        np.save(f"{self.matplot_metric_write_dir}/LDs",   LDs)
+        print(f"See level: doing Calculate_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+
+        # start_time = time.time()
+        if(single_see_multiprocess and single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
+            self._visual_SSIM_LD_multiprocess(SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, task_amount=self.see_file_amount)
+            Find_ltrd_and_crop     (self.matplot_metric_write_dir, self.matplot_metric_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+            Save_as_jpg            (self.matplot_metric_write_dir, self.matplot_metric_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，
+            Video_combine_from_dir (self.matplot_metric_write_dir, self.matplot_metric_write_dir)
+        else:  ### 如果沒有要用 multiprocess ， 就重新導向 最原始的function囉！
+            self._visual_SSIM_LD(0, self.see_file_amount, SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb)
+            Find_ltrd_and_crop     (self.matplot_metric_write_dir, self.matplot_metric_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+            Save_as_jpg            (self.matplot_metric_write_dir, self.matplot_metric_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
+            Video_combine_from_dir (self.matplot_metric_write_dir, self.matplot_metric_write_dir)
+        print(f"See level: doing _visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
 
-class See(See_visual, See_bm_rec, See_try_npy_to_npz):
+
+    def _do_matlab_SSIM_LD_multiprocess(self, SSIMs, LDs, add_loss=False, bgr2rgb=False, single_see_core_amount=8, task_amount=60):
+        multi_processing_interface(core_amount=single_see_core_amount, task_amount=task_amount, task=self._do_matlab_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb])
+
+    def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs, add_loss=False, bgr2rgb=False):
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+            path1 = self.rec_paths[go_epoch]  ### matplot_bm_rec_visual/rec_visual/rec_epoch=0000.jpg
+            path2 = self.see_jpg_paths[2]     ### 0c-rec_hope.jpg
+            # print(path1)
+            # print(path2)
+
+            ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
+            os.chdir("SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
+            [[SSIM, LD]] = use_DewarpNet_eval(path1, path2)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
+            os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
+
+            # fig, ax = plt.subplots(nrows=1, ncols=2)
+            # rec_img    = cv2.imread(path1)
+            # rec_gt_img = cv2.imread(path2)
+            # ax[0].imshow(rec_img)
+            # ax[1].imshow(rec_gt_img)
+            # plt.show()
+            # plt.close()
+
+            # print(go_epoch, SSIM, LD)
+            SSIMs.append((go_epoch, SSIM))
+            LDs  .append((go_epoch, LD))
+
+    def _visual_SSIM_LD_multiprocess(self, SSIMs, LDs, add_loss=False, bgr2rgb=False, single_see_core_amount=8, task_amount=60):
+        multi_processing_interface(core_amount=single_see_core_amount, task_amount=task_amount, task=self._visual_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb])
+
+    def _visual_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs, add_loss=False, bgr2rgb=False):
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+            path1 = self.rec_paths[go_epoch]  ### matplot_bm_rec_visual/rec_visual/rec_epoch=0000.jpg
+            path2 = self.see_jpg_paths[2]     ### 0c-rec_hope.jpg
+            SSIM = SSIMs[go_epoch]
+            LD   = LDs  [go_epoch]
+
+            in_img     = cv2.imread(self.see_jpg_paths[0])
+            rec_img    = cv2.imread(path1)
+            rec_gt_img = cv2.imread(path2)
+            single_row_imgs = Matplot_single_row_imgs(
+                        imgs      =[in_img,   rec_img ,   rec_gt_img],    ### 把要顯示的每張圖包成list
+                        img_titles=[ "in_img", "rec"    , "gt_rec"],    ### 把每張圖要顯示的字包成list
+                        fig_title ="epoch=%04i, SSIM=%.2f, LD=%.2f" % (go_epoch, SSIM, LD),   ### 圖上的大標題
+                        add_loss  =add_loss,
+                        bgr2rgb   =bgr2rgb)
+            single_row_imgs.Draw_img()
+            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.matplot_metric_write_dir, go_epoch, min_epochs=self.see_file_amount, ylim=25)
+            single_row_imgs.Save_fig(dst_dir=self.matplot_metric_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+
+
+
+class See(See_visual, See_try_npy_to_npz, See_rec_metric):
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See, self).__init__(result_read_dir, result_write_dir, see_name)
 
 
+
 if(__name__ == "__main__"):
-    from step0_access_path import result_read_path
+    from step0_access_path import result_read_path, result_write_path
     # try_npy_to_npz = See( result_read_dir=result_read_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_3b_4-20210306_231628-flow_unet-ch32_bn_16", see_name="see_001-real")
     # try_npy_to_npz = See( result_read_dir=result_read_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_001-real")
     # try_npy_to_npz = See( result_read_dir=result_read_path + "result/5_14_flow_unet/type8_blender_os_book-5_14_1_6-20210308_100044-flow_unet-new_shuf_epoch700", see_name="see_005-train")
     # try_npy_to_npz.npy_to_npz_comapre()
     # try_npy_to_npz.all_npy_to_npz(multiprocess=True)
     # try_npy_to_npz.all_npy_to_npz(multiprocess=True)
+
+    test_see = See(result_read_dir=result_read_path + "result/5_14_flow_unet/type8_blender_os_book-testest", result_write_dir=result_write_path + "result/5_14_flow_unet/type8_blender_os_book-testest", see_name="see_001-real")
+    test_see.Calculate_SSIM_LD(epoch=0, single_see_core_amount=8)
