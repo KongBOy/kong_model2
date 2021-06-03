@@ -97,29 +97,31 @@ calculate_10te = f"build().result_obj.calculate_all_single_see_SSIM_LD(start_ind
 
 ##########################################################################################################################################################################################
 ### 4. epoch
-sb.run(same_command + [f"ch64_in_epoch060.{calculate_8te}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch060.{calculate_8te}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch080.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch100.{calculate_all}"])  ### 測試真的IN
 
-sb.run(same_command + [f"ch64_in_epoch200.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch200.{calculate_all}"])  ### 測試真的IN
 
-sb.run(same_command + [f"ch64_in_epoch220.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch240.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch260.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch280.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch220.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch240.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch260.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch280.{calculate_all}"])  ### 測試真的IN
 # sb.run(same_command + [f"ch64_in_epoch300.{calculate_all}"])  ### 測試真的IN
 
-sb.run(same_command + [f"ch64_in_epoch320.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch340.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch360.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch380.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch400.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch320.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch340.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch360.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch380.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch400.{calculate_all}"])  ### 測試真的IN
 
-sb.run(same_command + [f"ch64_in_epoch420.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch440.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch460.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch480.{calculate_all}"])  ### 測試真的IN
-sb.run(same_command + [f"ch64_in_epoch500.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch420.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch440.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch460.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch480.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch500.{calculate_all}"])  ### 測試真的IN
 
-sb.run(same_command + [f"ch64_in_epoch700.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch700.{calculate_all}"])  ### 測試真的IN
 
 ## 4b.
 # sb.run(same_command + [f"in_new_ch004_ep060.{run}"])  ### 測試真的IN
