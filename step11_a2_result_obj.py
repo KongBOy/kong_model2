@@ -75,18 +75,18 @@ class Result:
     ##############################################################################################################################
     def save_multiple_single_see_as_matplot_bm_rec_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False, see_core_amount=7, result_print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
         """
-        see_core_amount ==1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
-        see_core_amount ==1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
-        see_core_amount  >1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
-        see_core_amount  >1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
+        see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+        see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+        see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+        see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
         """
         result_start = time.time()
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
 
         if  (see_core_amount == 1):
             """
-            see_core_amount ==1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
-            see_core_amount ==1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+            see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+            see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
             see內 當單位 切 multiprocess
 
             如果 see_file_amount少 這好像比較快
@@ -95,8 +95,8 @@ class Result:
         elif(see_core_amount  > 1):
             multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._save_multiple_single_see_as_matplot_bm_rec_visual, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount, print_msg], print_msg=print_msg)
             """
-            see_core_amount  >1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
-            see_core_amount  >1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
+            see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+            see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
             以 整個see 當單位 切 multiprocess
 
             如果 see_file_amount多 這好像比較快
@@ -132,17 +132,17 @@ class Result:
     ##############################################################################################################################
     def calculate_multiple_single_see_SSIM_LD(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False, see_core_amount=7, result_print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
         """
-        see_core_amount ==1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
-        see_core_amount ==1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
-        see_core_amount  >1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
-        see_core_amount  >1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
+        see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+        see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+        see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+        see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
         """
         result_start = time.time()
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
         if  (see_core_amount == 1):
             """
-            see_core_amount ==1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
-            see_core_amount ==1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+            see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+            see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
             see內 當單位 切 multiprocess
 
             推薦使用：see_core_amount=1, single_see_core_amount=7
@@ -150,8 +150,8 @@ class Result:
             self._calculate_multiple_single_see_SSIM_LD(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         elif(see_core_amount  > 1):
             """
-            see_core_amount  >1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
-            see_core_amount  >1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
+            see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+            see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
             以 整個see 當單位 切 multiprocess
 
             如果要用建議 see_core_amount=7, single_see_core_amount=1
