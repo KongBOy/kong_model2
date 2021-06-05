@@ -57,7 +57,7 @@ class Result:
     def save_multiple_single_see_as_matplot_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=7, see_print_msg=False, see_core_amount=7, result_print_msg=False):
         """
         see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
-        see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+        see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 依序跑， see內的多個任務 同時跑
         see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
         see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
         """
@@ -67,7 +67,7 @@ class Result:
         if  (see_core_amount == 1):
             """
             see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
-            see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+            see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 依序跑， see內的多個任務 同時跑
             see內 當單位 切 multiprocess
 
             如果 see_file_amount少 這好像比較快
@@ -284,12 +284,12 @@ if(__name__ == "__main__"):
     ### 單loss 的情況
     # os_book = Result_builder().set_by_result_name("5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51").set_ana_describe("mae9").build()
     # save_multiple_single_see_as_matplot_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=7, print_msg=False, see_core_amount=7):
-    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=True,  bgr2rgb=True, single_see_core_amount=1, pring_msg=False, see_core_amount=1)
-    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=False, bgr2rgb=True, single_see_core_amount=1, pring_msg=False, see_core_amount=1)
-    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=True,  bgr2rgb=True, single_see_core_amount=8, pring_msg=False, see_core_amount=1)
-    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=False, bgr2rgb=True, single_see_core_amount=8, pring_msg=False, see_core_amount=1)
-    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=True,  bgr2rgb=True, single_see_core_amount=2, pring_msg=False, see_core_amount=7)
-    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=False, bgr2rgb=True, single_see_core_amount=2, pring_msg=False, see_core_amount=7)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=True,  bgr2rgb=True, single_see_core_amount=1, print_msg=False, see_core_amount=1)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=False, bgr2rgb=True, single_see_core_amount=1, print_msg=False, see_core_amount=1)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=True,  bgr2rgb=True, single_see_core_amount=8, print_msg=False, see_core_amount=1)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=False, bgr2rgb=True, single_see_core_amount=8, print_msg=False, see_core_amount=1)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=True,  bgr2rgb=True, single_see_core_amount=2, print_msg=False, see_core_amount=7)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=False, bgr2rgb=True, single_see_core_amount=2, print_msg=False, see_core_amount=7)
     ### 更新到這就懶的更新了，有需要再繼續更新下去吧 反正用法都寫在 setp10b 了！
 
 
