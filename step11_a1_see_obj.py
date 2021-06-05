@@ -72,7 +72,8 @@ class See_visual(See_info):
     """
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See_visual, self).__init__(result_read_dir, result_write_dir, see_name)
-        self.matplot_visual_dir = self.see_write_dir + "/matplot_visual"
+        self.matplot_visual_read_dir  = self.see_read_dir  + "/matplot_visual"
+        self.matplot_visual_write_dir = self.see_write_dir + "/matplot_visual"
 
         ### 不確定要不要，因為在initial就做這麼多事情好嗎~~會不會容易出錯哩~~
         ### 覺得還是不要比較好，要使用到的時候再建立，要不然有時候在analyze只是想要result_obj而已，結果又把see資料夾又重建了一次
@@ -100,53 +101,53 @@ class See_visual(See_info):
     ###############################################################################################
     ###############################################################################################
     def save_as_matplot_visual_during_train(self, epoch, show_msg=False, bgr2rgb=False):  ### 訓練中，一張張 生成matplot_visual(這裡不能後處理，因為後處理需要全局的see_file，這裡都單張單張的會出問題)
-        Check_dir_exist_and_build(self.matplot_visual_dir)
+        Check_dir_exist_and_build(self.matplot_visual_write_dir)
         start_time = time.time()
         # if(epoch==0):
-        #     Check_dir_exist_and_build_new_dir(self.matplot_visual_dir)      ### 建立 存結果的資料夾
+        #     Check_dir_exist_and_build_new_dir(self.matplot_visual_write_dir)      ### 建立 存結果的資料夾
         self.get_see_dir_info()  ### 每次執行都要 update喔！ 取得result內的 某個see資料夾 內的所有影像 檔名 和 數量
         self.single_row_imgs_during_train = self._Draw_matplot_visual(epoch, add_loss=True, bgr2rgb=bgr2rgb)  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
         if(show_msg): print(f"See level: doing save_as_matplot_visual_during_train, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
     ###############################################################################################
     def draw_loss_at_see_during_train(self, epoch, epochs):
-        Check_dir_exist_and_build(self.matplot_visual_dir)  ### 以防matplot_visual資料夾被刪掉，要生圖找不到資料夾
-        self.single_row_imgs_during_train.Draw_ax_loss_during_train(self.single_row_imgs_during_train.ax[-1, 1], self.see_read_dir + "/../logs", epoch, epochs )
-        self.single_row_imgs_during_train.Save_fig(dst_dir=self.matplot_visual_dir, epoch=epoch)
+        Check_dir_exist_and_build(self.matplot_visual_write_dir)  ### 以防matplot_visual資料夾被刪掉，要生圖找不到資料夾
+        self.single_row_imgs_during_train.Draw_ax_loss_during_train(self.single_row_imgs_during_train.ax[-1, 1], self.see_read_dir + "/../logs", epoch, epochs)
+        self.single_row_imgs_during_train.Save_fig(dst_dir=self.matplot_visual_write_dir, epoch=epoch)
 
     ###############################################################################################
     ###############################################################################################
     ### 訓練後，可以走訪所有see_file 並重新產生 matplot_visual
-    def _draw_matplot_visual_after_train(self, start_epoch, epoch_amount, add_loss):
+    def _draw_matplot_visual_after_train(self, start_epoch, epoch_amount, add_loss=False, bgr2rgb=False):
+        """
+        有可能畫完主圖 還要再畫 loss，所以多這個method，多做的事情都在這裡處理
+        處理完後就 Save_fig 囉！
+        """
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
-            single_row_imgs = self._Draw_matplot_visual(go_epoch, add_loss)
-            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.see_file_amount)
-            single_row_imgs.Save_fig(dst_dir=self.matplot_visual_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+            single_row_imgs = self._Draw_matplot_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
+            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.see_file_amount, ylim=0.04)
+            single_row_imgs.Save_fig(dst_dir=self.matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-    def _draw_matplot_visual_after_train_multiprocess(self, add_loss, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss], print_msg=print_msg)
-
-
-    def save_as_matplot_visual_after_train(self, add_loss=False, single_see_multiprocess=True, print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_visual_multiprocess)，傳參數時這要設為false喔！
+    def save_as_matplot_visual_after_train(self, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_visual_multiprocess)，傳參數時這要設為false喔！
         print(f"See level: doing save_as_matplot_visual_after_train, Current See:{self.see_name}")
         start_time = time.time()
         Check_dir_exist_and_build(self.see_write_dir)
-        Check_dir_exist_and_build_new_dir(self.matplot_visual_dir)      ### 建立 存結果的資料夾
+        Check_dir_exist_and_build_new_dir(self.matplot_visual_write_dir)      ### 建立 存結果的資料夾
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
-        if(single_see_multiprocess):
+        if(single_see_multiprocess and single_see_core_amount > 1):
             ### see內的任務 有切 multiprocess
-            self._draw_matplot_visual_after_train_multiprocess(add_loss, core_amount=CORE_AMOUNT, task_amount=self.see_file_amount, print_msg=print_msg)  ### 以 see內的任務 當單位來切，task_amount輸入self.see_file_amount是對的！不用-2變epoch喔！
+            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=print_msg)
             ### 後處理讓結果更小 但 又不失視覺品質
-            Find_ltrd_and_crop(self.matplot_visual_dir, self.matplot_visual_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-            Save_as_jpg(self.matplot_visual_dir, self.matplot_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
+            Find_ltrd_and_crop(self.matplot_visual_write_dir, self.matplot_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+            Save_as_jpg(self.matplot_visual_write_dir, self.matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
         else:  ### see內的任務 不切 multiprocess，和上面幾乎一樣，只差 call 沒 multiprocess 的 method 和 core_amount 指定1
-            self._draw_matplot_visual_after_train(0, self.see_file_amount, add_loss)
+            self._draw_matplot_visual_after_train(0, self.see_file_amount, add_loss=add_loss, bgr2rgb=bgr2rgb)
             ### 後處理讓結果更小 但 又不失視覺品質
-            Find_ltrd_and_crop(self.matplot_visual_dir, self.matplot_visual_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-            Save_as_jpg(self.matplot_visual_dir, self.matplot_visual_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
+            Find_ltrd_and_crop(self.matplot_visual_write_dir, self.matplot_visual_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+            Save_as_jpg(self.matplot_visual_write_dir, self.matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
 
-        # Video_combine_from_dir(self.matplot_visual_dir, self.matplot_visual_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
+        Video_combine_from_dir(self.matplot_visual_write_dir, self.matplot_visual_write_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         print(f"See level: doing save_as_matplot_visual_after_train, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
     ###############################################################################################
     ###############################################################################################
@@ -213,7 +214,6 @@ class See_bm_rec(See_info):
         gt_bm, gt_rec = self._use_flow_to_rec(dis_img=dis_img, flow=gt_flow)
         return bm, rec, gt_bm, gt_rec
 
-
     ### 我覺得先把 npy 轉成 npz 再來生圖比較好，不要在這邊 邊生圖 邊轉 npz，覺得的原因如下：
     ###     1.這樣這裡做的事情太多了~~
     ###     2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.see_npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
@@ -256,6 +256,10 @@ class See_bm_rec(See_info):
     ###############################################################################################
     ###############################################################################################
     def _draw_matplot_bm_rec_visual_after_train(self, start_epoch, epoch_amount, add_loss, bgr2rgb):
+        """
+        有可能畫完主圖 還要再畫 loss，所以多這個method，多做的事情都在這裡處理
+        處理完後就 Save_fig 囉！
+        """
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             single_row_imgs = self._Draw_matplot_bm_rec_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
             single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！

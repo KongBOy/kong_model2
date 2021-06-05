@@ -6,7 +6,29 @@ import subprocess as sb
 same_command = ["python", "step10_a_load_and_train_and_test.py"]
 run = "build().run()"
 
+add_loss = True
+bgr2rgb = True
+see_core_amount = 1
+single_see_core_amount = 2
 single_see_multiprocess = True
+matplot_print_msg = True
+matplot_all  = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=7, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_1    = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_2    = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=1, see_amount=1, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_3    = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=2, see_amount=1, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_4    = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=3, see_amount=1, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_8    = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=4, see_amount=1, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_9    = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=5, see_amount=1, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_10   = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=6, see_amount=1, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+
+matplot_2te  = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=1, see_amount=6, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_3te  = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=2, see_amount=5, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_4te  = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=3, see_amount=4, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_8te  = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=4, see_amount=3, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_9te  = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=5, see_amount=2, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+matplot_10te = f"build().result_obj.save_multiple_single_see_as_matplot_visual(start_see=6, see_amount=1, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_multiprocess={single_see_multiprocess}, single_see_core_amount={single_see_core_amount}, print_msg={matplot_print_msg}, see_core_amount={see_core_amount})"
+
+#####################################################################################################################################################################################################################################################################################################################################
 see_core_amount = 7
 single_see_core_amount = 2
 bm_rec_print_msg = True
