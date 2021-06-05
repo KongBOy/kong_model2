@@ -128,7 +128,7 @@ class See_visual(See_info):
             if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.see_file_amount, ylim=0.04)
             single_row_imgs.Save_fig(dst_dir=self.matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-    def save_as_matplot_visual_after_train(self, add_loss=False, bgr2rgb=False, single_see_core_amount=8, print_msg=False):
+    def save_as_matplot_visual_after_train(self, add_loss=False, bgr2rgb=False, single_see_core_amount=8, see_print_msg=False):
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing save_as_matplot_visual_after_train, Current See:{self.see_name}")
         start_time = time.time()
         Check_dir_exist_and_build(self.see_write_dir)
@@ -137,7 +137,7 @@ class See_visual(See_info):
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
         if(single_see_core_amount > 1):
             ### see內的任務 有切 multiprocess
-            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=print_msg)
+            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=see_print_msg)
             ### 後處理讓結果更小 但 又不失視覺品質
             Find_ltrd_and_crop(self.matplot_visual_write_dir, self.matplot_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg(self.matplot_visual_write_dir, self.matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
@@ -269,7 +269,7 @@ class See_bm_rec(See_info):
                                            add_loss=False,
                                            bgr2rgb =False,
                                            single_see_core_amount=CORE_AMOUNT_BM_REC_VISUAL,
-                                           print_msg=False):
+                                           see_print_msg=False):
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}")
         start_time = time.time()
         Check_dir_exist_and_build(self.see_write_dir)
@@ -280,7 +280,7 @@ class See_bm_rec(See_info):
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
         if(single_see_core_amount > 1):
             ### see內的任務 有切 multiprocess
-            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=print_msg)
+            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=see_print_msg)
             ### 後處理讓結果更小 但 又不失視覺品質
             Find_ltrd_and_crop(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
@@ -411,12 +411,12 @@ class See_try_npy_to_npz(See_info):
             # npz = np.load(self.see_read_dir + "/" + see_npy_name.replace(".npy", ".npz"))  ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
             # print((npy - npz["arr_0"]).sum())                                         ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
 
-    def _npy_to_npz_multiprocess(self, core_amount=CORE_AMOUNT_NPY_TO_NPZ, task_amount=600, print_msg=False):
+    def _npy_to_npz_multiprocess(self, core_amount=CORE_AMOUNT_NPY_TO_NPZ, task_amount=600, see_print_msg=False):
         print("processing %s" % self.see_name)
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._npy_to_npz, print_msg=print_msg)
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._npy_to_npz, print_msg=see_print_msg)
 
 
-    def all_npy_to_npz(self, multiprocess=False, print_msg=False):   ### 因為有刪東西的動作，覺得不要multiprocess比較安全~~
+    def all_npy_to_npz(self, multiprocess=False, see_print_msg=False):   ### 因為有刪東西的動作，覺得不要multiprocess比較安全~~
         """
         把 See 資料夾內的.npy改存成.npz，存完會把.npy刪除喔～
         """
@@ -461,7 +461,7 @@ class See_rec_metric(See_bm_rec):
     def Calculate_SSIM_LD(self, add_loss=False,
                                 bgr2rgb =False,
                                 single_see_core_amount=8,
-                                print_msg=False):
+                                see_print_msg=False):
         """
         覺得還是要用 path 的方式 在 matlab 裡面 用 imread(path)，
         path 的方式：8秒左右
@@ -484,9 +484,9 @@ class See_rec_metric(See_bm_rec):
             LDs   = manager.list()  # []的概念
 
             if(single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
-                multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._do_matlab_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb])
+                multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._do_matlab_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb], print_msg=see_print_msg)
             else:  ### 如果沒有要用 multiprocess ， 就重新導向 最原始的function囉！
-                self._do_matlab_SSIM_LD(0, self.see_file_amount, SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb)
+                self._do_matlab_SSIM_LD(0, self.see_file_amount, SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb, see_print_msg=see_print_msg)
 
             # SSIMs = list(SSIMs)  ### share memory 的list 轉回 python list
             # LDs   = list(LDs)    ### share memory 的list 轉回 python list
@@ -504,7 +504,7 @@ class See_rec_metric(See_bm_rec):
 
         # start_time = time.time()
         if(single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
-            self._visual_SSIM_LD_multiprocess(SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, task_amount=self.see_file_amount)
+            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._visual_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb], print_msg=see_print_msg)
             Find_ltrd_and_crop     (self.matplot_metric_write_dir, self.matplot_metric_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg            (self.matplot_metric_write_dir, self.matplot_metric_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，
             Video_combine_from_dir (self.matplot_metric_write_dir, self.matplot_metric_write_dir)
@@ -539,9 +539,6 @@ class See_rec_metric(See_bm_rec):
             # print(go_epoch, SSIM, LD)
             SSIMs.append((go_epoch, SSIM))
             LDs  .append((go_epoch, LD))
-
-    def _visual_SSIM_LD_multiprocess(self, SSIMs, LDs, add_loss=False, bgr2rgb=False, single_see_core_amount=8, task_amount=60):
-        multi_processing_interface(core_amount=single_see_core_amount, task_amount=task_amount, task=self._visual_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb])
 
     def _visual_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs, add_loss=False, bgr2rgb=False):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
