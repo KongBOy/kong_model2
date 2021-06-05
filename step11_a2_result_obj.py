@@ -62,7 +62,7 @@ class Result:
         see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
         """
         result_start = time.time()
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing save_multiple_single_see_as_matplot_visual, Current Result:{self.result_name}")
 
         if  (see_core_amount == 1):
             """
@@ -81,8 +81,8 @@ class Result:
             see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
             以 整個see 當單位 切 multiprocess
             """
-            print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: finish calculate_multiple_single_see_SSIM_LD")
-            print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: cost_time=", time.time() - result_start)
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: finish save_multiple_single_see_as_matplot_visual")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: cost_time=", time.time() - result_start)
 
     def _save_multiple_single_see_as_matplot_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=7, print_msg=False):
         ### 用 for 迴圈 依序 跑 單個 see， see內 當單位 切 multiprocess
@@ -100,7 +100,7 @@ class Result:
         see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
         """
         result_start = time.time()
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing save_multiple_single_see_as_matplot_bm_rec_visual, Current Result:{self.result_name}")
 
         if  (see_core_amount == 1):
             """
@@ -132,7 +132,7 @@ class Result:
             不過真的試過以後，效率其實還不錯！
             但記憶體會爆的問題還是在，可能只適合在記憶體大的電腦跑這樣子
             """
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: finish calculate_multiple_single_see_SSIM_LD")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: finish save_multiple_single_see_as_matplot_bm_rec_visual")
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: cost_time=", time.time() - result_start)
 
     ### 寫成 start_see + see_amount 真的麻，但是 這是為了 multiprocess 的設計才這樣寫的，只能忍一下囉～
@@ -157,7 +157,7 @@ class Result:
         see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
         """
         result_start = time.time()
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD, Current Result:{self.result_name}")
         if  (see_core_amount == 1):
             """
             see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑

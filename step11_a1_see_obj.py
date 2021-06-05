@@ -19,7 +19,7 @@ import os
 sys.path.append("SIFT_dev/SIFTflow")
 from kong_use_evalUnwarp_sucess import use_DewarpNet_eval
 import matplotlib.pyplot as plt
-
+import datetime
 
 # import pdb
 
@@ -107,7 +107,7 @@ class See_visual(See_info):
         #     Check_dir_exist_and_build_new_dir(self.matplot_visual_write_dir)      ### 建立 存結果的資料夾
         self.get_see_dir_info()  ### 每次執行都要 update喔！ 取得result內的 某個see資料夾 內的所有影像 檔名 和 數量
         self.single_row_imgs_during_train = self._Draw_matplot_visual(epoch, add_loss=True, bgr2rgb=bgr2rgb)  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
-        if(show_msg): print(f"See level: doing save_as_matplot_visual_during_train, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        if(show_msg): print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing save_as_matplot_visual_during_train, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
     ###############################################################################################
     def draw_loss_at_see_during_train(self, epoch, epochs):
@@ -129,6 +129,7 @@ class See_visual(See_info):
             single_row_imgs.Save_fig(dst_dir=self.matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     def save_as_matplot_visual_after_train(self, add_loss=False, bgr2rgb=False, single_see_core_amount=8, print_msg=False):
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing save_as_matplot_visual_after_train, Current See:{self.see_name}")
         start_time = time.time()
         Check_dir_exist_and_build(self.see_write_dir)
         Check_dir_exist_and_build_new_dir(self.matplot_visual_write_dir)      ### 建立 存結果的資料夾
@@ -147,7 +148,7 @@ class See_visual(See_info):
             Save_as_jpg(self.matplot_visual_write_dir, self.matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
 
         Video_combine_from_dir(self.matplot_visual_write_dir, self.matplot_visual_write_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
-        print(f"See level: doing save_as_matplot_visual_after_train, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing save_as_matplot_visual_after_train, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
@@ -268,8 +269,8 @@ class See_bm_rec(See_info):
                                            add_loss=False,
                                            bgr2rgb =False,
                                            single_see_core_amount=CORE_AMOUNT_BM_REC_VISUAL,
-                                           print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_bm_rec_visual_multiprocess)，傳參數時這要設為false喔！
-        print(f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}")
+                                           print_msg=False):
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}")
         start_time = time.time()
         Check_dir_exist_and_build(self.see_write_dir)
         Check_dir_exist_and_build_new_dir(self.matplot_bm_rec_visual_write_dir)  ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
@@ -298,12 +299,13 @@ class See_bm_rec(See_info):
         for video_p in video_processes: video_p.start()
         for video_p in video_processes: video_p.join()
 
-        print(f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}, cost time:{time.time() - start_time}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}, cost time:{time.time() - start_time}")
+
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
     def save_as_matplot_bm_rec_visual_after_train_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):   ### 訓練後，對"指定"epoch的 see結果 產生 matplot_bm_rec_visual
-        print(f"See level: doing save_as_matplot_bm_rec_visual_after_train_at_certain_epoch, Current See:{self.see_name}, at_certain_epoch:{epoch}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing save_as_matplot_bm_rec_visual_after_train_at_certain_epoch, Current See:{self.see_name}, at_certain_epoch:{epoch}")
         start_time = time.time()
         Check_dir_exist_and_build(self.see_write_dir)
         Check_dir_exist_and_build(self.matplot_bm_rec_visual_write_dir)  ### 建立 存結果的資料夾，如果存在 也不需要刪掉重建喔，執行這個通常都是某個epoch有問題想重建，所以不需要把其他epoch的東西也刪掉這樣子
@@ -319,7 +321,7 @@ class See_bm_rec(See_info):
             ### 後處理讓結果更小 但 又不失視覺品質
             # Find_ltrd_and_crop(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 兩次以上有危險可能會 crop錯喔！所以就不crop了~
             Save_as_jpg(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], multiprocess=True, core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
-            print(f"See level: doing save_as_matplot_bm_rec_visual_after_train_at_certain_epoch, Current See:{self.see_name}, at_certain_epoch:{epoch}, cost_time:{time.time() - start_time}")
+            print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing save_as_matplot_bm_rec_visual_after_train_at_certain_epoch, Current See:{self.see_name}, at_certain_epoch:{epoch}, cost_time:{time.time() - start_time}")
         else:
             print("epoch=%i 超過目前exp的epoch數目囉！有可能是還沒train完see還沒產生到該epoch 或者 是輸入的epoch數 超過 epochs囉！" % epoch)
             print("save_as_matplot_bm_rec_visual_after_train_at_certain_epoch不做事情拉~")
@@ -418,7 +420,7 @@ class See_try_npy_to_npz(See_info):
         """
         把 See 資料夾內的.npy改存成.npz，存完會把.npy刪除喔～
         """
-        print(f"See level: doing all_npy_to_npz, Current See:{self.see_name}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing all_npy_to_npz, Current See:{self.see_name}")
         start_time = time.time()
         self.get_see_dir_info()
         if(len(self.see_npy_names) > 0):
@@ -431,7 +433,7 @@ class See_try_npy_to_npz(See_info):
                 #     npy = np.load(self.see_read_dir + "/" + see_npy_name)
                 #     np.savez_compressed(self.see_write_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
                 #     os.remove(self.see_read_dir + "/" + see_npy_name)
-        print(f"See level: doing all_npy_to_npz, Current See:{self.see_name}, cost time:{time.time() - start_time}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing all_npy_to_npz, Current See:{self.see_name}, cost time:{time.time() - start_time}")
 
 
 class See_rec_metric(See_bm_rec):
@@ -469,7 +471,7 @@ class See_rec_metric(See_bm_rec):
             1.都要 compress_all 完以後
             2.並把結果都 集中到一起
         """
-        print(f"See level: doing Calculate_SSIM_LD, Current See:{self.see_name}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Calculate_SSIM_LD, Current See:{self.see_name}")
         start_time = time.time()
         Check_dir_exist_and_build_new_dir(self.matplot_metric_write_dir)
 
@@ -498,7 +500,7 @@ class See_rec_metric(See_bm_rec):
 
         np.save(f"{self.matplot_metric_write_dir}/SSIMs", SSIMs)
         np.save(f"{self.matplot_metric_write_dir}/LDs",   LDs)
-        print(f"See level: doing Calculate_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Calculate_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
         # start_time = time.time()
         if(single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
@@ -511,7 +513,7 @@ class See_rec_metric(See_bm_rec):
             Find_ltrd_and_crop     (self.matplot_metric_write_dir, self.matplot_metric_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg            (self.matplot_metric_write_dir, self.matplot_metric_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
             Video_combine_from_dir (self.matplot_metric_write_dir, self.matplot_metric_write_dir)
-        print(f"See level: doing _visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing _visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
 
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs, add_loss=False, bgr2rgb=False):
