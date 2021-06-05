@@ -51,25 +51,7 @@ class Result:
         for see in self.sees:
             see.draw_loss_at_see_during_train(epoch, epochs)
 
-    ##############################################################################################################################
-    ##############################################################################################################################
-    ##############################################################################################################################
-    def calculate_multiple_single_see_SSIM_LD(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=8, see_print_msg=False, see_core_amount=7, result_print_msg=False):
-        result_start = time.time()
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD, Current Result:{self.result_name}")
-        if  (see_core_amount == 1): self._calculate_multiple_single_see_SSIM_LD(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, see_print_msg=see_print_msg)
-        elif(see_core_amount  > 1): multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._calculate_multiple_single_see_SSIM_LD, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_core_amount, see_print_msg], print_msg=result_print_msg)
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: finish calculate_multiple_single_see_SSIM_LD")
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: cost_time=", time.time() - result_start)
 
-    ### 寫成 start_see + see_amount 真的麻，但是 這是為了 multiprocess 的設計才這樣寫的，只能忍一下囉～
-    def _calculate_multiple_single_see_SSIM_LD(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=8, see_print_msg=False):
-        # print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
-        for see_num in range(start_see, start_see + see_amount):
-            if(see_num < self.see_amount):  ### 防呆，以防直接使用 calculate_multiple_single_see_SSIM_LD 時 start_see 設的比0大 但 see_amount 設成 self.see_amount 或 純粹不小心算錯數字(要算準start_see + see_amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
-                self.sees[see_num].Calculate_SSIM_LD(add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, see_print_msg=see_print_msg)
-
-    #######################################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
