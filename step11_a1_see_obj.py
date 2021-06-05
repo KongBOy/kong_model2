@@ -128,14 +128,13 @@ class See_visual(See_info):
             if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.see_file_amount, ylim=0.04)
             single_row_imgs.Save_fig(dst_dir=self.matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-    def save_as_matplot_visual_after_train(self, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_visual_multiprocess)，傳參數時這要設為false喔！
-        print(f"See level: doing save_as_matplot_visual_after_train, Current See:{self.see_name}")
+    def save_as_matplot_visual_after_train(self, add_loss=False, bgr2rgb=False, single_see_core_amount=8, print_msg=False):
         start_time = time.time()
         Check_dir_exist_and_build(self.see_write_dir)
         Check_dir_exist_and_build_new_dir(self.matplot_visual_write_dir)      ### 建立 存結果的資料夾
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
-        if(single_see_multiprocess and single_see_core_amount > 1):
+        if(single_see_core_amount > 1):
             ### see內的任務 有切 multiprocess
             multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=print_msg)
             ### 後處理讓結果更小 但 又不失視覺品質
@@ -268,7 +267,6 @@ class See_bm_rec(See_info):
     def save_as_matplot_bm_rec_visual_after_train(self,   ### 訓練後，可以走訪所有see_file 並重新產生 matplot_bm_rec_visual
                                            add_loss=False,
                                            bgr2rgb =False,
-                                           single_see_multiprocess=True,
                                            single_see_core_amount=CORE_AMOUNT_BM_REC_VISUAL,
                                            print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_bm_rec_visual_multiprocess)，傳參數時這要設為false喔！
         print(f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}")
@@ -279,7 +277,7 @@ class See_bm_rec(See_info):
         Check_dir_exist_and_build_new_dir(self.rec_visual_write_dir)             ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
-        if(single_see_multiprocess and single_see_core_amount > 1):
+        if(single_see_core_amount > 1):
             ### see內的任務 有切 multiprocess
             multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=print_msg)
             ### 後處理讓結果更小 但 又不失視覺品質
@@ -460,7 +458,6 @@ class See_rec_metric(See_bm_rec):
     ###############################################################################################
     def Calculate_SSIM_LD(self, add_loss=False,
                                 bgr2rgb =False,
-                                single_see_multiprocess=True,
                                 single_see_core_amount=8,
                                 print_msg=False):
         """
@@ -484,7 +481,7 @@ class See_rec_metric(See_bm_rec):
             SSIMs = manager.list()  # []的概念
             LDs   = manager.list()  # []的概念
 
-            if(single_see_multiprocess and single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
+            if(single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
                 multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._do_matlab_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb])
             else:  ### 如果沒有要用 multiprocess ， 就重新導向 最原始的function囉！
                 self._do_matlab_SSIM_LD(0, self.see_file_amount, SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb)
@@ -504,7 +501,7 @@ class See_rec_metric(See_bm_rec):
         print(f"See level: doing Calculate_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
         # start_time = time.time()
-        if(single_see_multiprocess and single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
+        if(single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
             self._visual_SSIM_LD_multiprocess(SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, task_amount=self.see_file_amount)
             Find_ltrd_and_crop     (self.matplot_metric_write_dir, self.matplot_metric_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg            (self.matplot_metric_write_dir, self.matplot_metric_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，

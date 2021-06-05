@@ -54,7 +54,7 @@ class Result:
     ##############################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
-    def save_multiple_single_see_as_matplot_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=7, print_msg=False, see_core_amount=7):
+    def save_multiple_single_see_as_matplot_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=7, print_msg=False, see_core_amount=7):
         """
         see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
         see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
@@ -72,9 +72,9 @@ class Result:
 
             如果 see_file_amount少 這好像比較快
             """
-            self._save_multiple_single_see_as_matplot_visual(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+            self._save_multiple_single_see_as_matplot_visual(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         elif(see_core_amount  > 1):
-            multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._save_multiple_single_see_as_matplot_visual, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount, print_msg], print_msg=print_msg)
+            multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._save_multiple_single_see_as_matplot_visual, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_core_amount, print_msg], print_msg=print_msg)
 
             """
             see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
@@ -84,15 +84,15 @@ class Result:
             print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: finish calculate_multiple_single_see_SSIM_LD")
             print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: cost_time=", time.time() - result_start)
 
-    def _save_multiple_single_see_as_matplot_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=7, print_msg=False):
+    def _save_multiple_single_see_as_matplot_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=7, print_msg=False):
         ### 用 for 迴圈 依序 跑 單個 see， see內 當單位 切 multiprocess
         for see_num in range(start_see, start_see + see_amount):  ### 防呆，以防直接使用 save_all_single_see_as_matplot_visual 時 start_index 設的比0大 但 amount 設成 see_amount 或 純粹不小心算錯數字(要算準start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
-            self.sees[see_num].save_as_matplot_visual_after_train(add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+            self.sees[see_num].save_as_matplot_visual_after_train(add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
 
     ##############################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
-    def save_multiple_single_see_as_matplot_bm_rec_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False, see_core_amount=7, result_print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
+    def save_multiple_single_see_as_matplot_bm_rec_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=8, print_msg=False, see_core_amount=7, result_print_msg=False):
         """
         see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
         see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
@@ -110,9 +110,9 @@ class Result:
 
             如果 see_file_amount少 這好像比較快
             """
-            self._save_multiple_single_see_as_matplot_bm_rec_visual(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+            self._save_multiple_single_see_as_matplot_bm_rec_visual(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         elif(see_core_amount  > 1):
-            multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._save_multiple_single_see_as_matplot_bm_rec_visual, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount, print_msg], print_msg=print_msg)
+            multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._save_multiple_single_see_as_matplot_bm_rec_visual, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_core_amount, print_msg], print_msg=print_msg)
             """
             see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
             see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
@@ -136,20 +136,20 @@ class Result:
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: cost_time=", time.time() - result_start)
 
     ### 寫成 start_see + see_amount 真的麻，但是 這是為了 multiprocess 的設計才這樣寫的，只能忍一下囉～
-    def _save_multiple_single_see_as_matplot_bm_rec_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
+    def _save_multiple_single_see_as_matplot_bm_rec_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=8, print_msg=False):
         """
         用 for 迴圈 依序 跑 單個 see， see內 當單位 切 multiprocess
         """
         for see_num in range(start_see, start_see + see_amount):
             if(see_num < self.see_amount):  ### 防呆，以防直接使用 _save_multiple_single_see_as_matplot_bm_rec_visual 時 start_see 設的比0大 但 see_amount 設成 self.see_amount 或 純粹不小心算錯數字(要算準start_see + see_amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
                 self.sees[see_num].all_npy_to_npz(multiprocess=True)
-                self.sees[see_num].save_as_matplot_bm_rec_visual_after_train(add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+                self.sees[see_num].save_as_matplot_bm_rec_visual_after_train(add_loss, bgr2rgb, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         print("")
 
     ##############################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
-    def calculate_multiple_single_see_SSIM_LD(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False, see_core_amount=7, result_print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
+    def calculate_multiple_single_see_SSIM_LD(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=8, print_msg=False, see_core_amount=7, result_print_msg=False):
         """
         see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
         see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
@@ -166,7 +166,7 @@ class Result:
 
             推薦使用：see_core_amount=1, single_see_core_amount=7
             """
-            self._calculate_multiple_single_see_SSIM_LD(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+            self._calculate_multiple_single_see_SSIM_LD(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         elif(see_core_amount  > 1):
             """
             see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
@@ -177,20 +177,19 @@ class Result:
             如果在epoch數小的時候可使用，
             如果在epoch數大時不建議用，因為 matlab.engine不知為何 很容易當掉，這邊當一個core  感覺很容易就全當，也不知當哪個core，很麻煩
             """
-            multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._calculate_multiple_single_see_SSIM_LD, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount, print_msg], print_msg=print_msg)
+            multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._calculate_multiple_single_see_SSIM_LD, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_core_amount, print_msg], print_msg=print_msg)
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: finish calculate_multiple_single_see_SSIM_LD")
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: cost_time=", time.time() - result_start)
 
     ### 寫成 start_see + see_amount 真的麻，但是 這是為了 multiprocess 的設計才這樣寫的，只能忍一下囉～
-    def _calculate_multiple_single_see_SSIM_LD(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
+    def _calculate_multiple_single_see_SSIM_LD(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=8, print_msg=False):
         """
         用 for 迴圈 依序 跑 單個 see， see內 當單位 切 multiprocess
         """
         # print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
         for see_num in range(start_see, start_see + see_amount):
             if(see_num < self.see_amount):  ### 防呆，以防直接使用 calculate_multiple_single_see_SSIM_LD 時 start_see 設的比0大 但 see_amount 設成 self.see_amount 或 純粹不小心算錯數字(要算準start_see + see_amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
-                self.sees[see_num].Calculate_SSIM_LD(add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
-
+                self.sees[see_num].Calculate_SSIM_LD(add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
 
     #######################################################################################################################################
     #######################################################################################################################################
@@ -254,7 +253,7 @@ class Result:
         ### 防呆 ### 這很重要喔！因為 row 只有一個時，matplot的ax的維度只有一維，但我的操作都兩維 會出錯！所以要切去一維的method喔！
         if(len(see_nums) == 1):
             print("因為 see_nums 的數量只有一個，自動切換成 single 的 method 囉～")
-            self.save_single_see_as_matplot_visual(see_nums[0], add_loss=add_loss)
+            self.save_multiple_single_see_as_matplot_visual(see_nums[0], add_loss=add_loss)
             return
         ###############################################################################################
         start_time = time.time()
@@ -293,16 +292,20 @@ if(__name__ == "__main__"):
     from step11_b_result_obj_builder import Result_builder
 
     ############################################################################################################################################
-    ### matplot visual
+    ### matplot visual  待更新，有需要的時候再弄就好了 反正用法有寫在 step10b囉！
     ############################################################################################################################################
     ## Result 的 各method測試：
     ### 單loss 的情況
     # os_book = Result_builder().set_by_result_name("5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.51").set_ana_describe("mae9").build()
-    # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=False, single_see_multiprocess=False)
-    # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=False)
-    # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=False, single_see_multiprocess=True)
-    # os_book.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=True)
-    # os_book.save_all_single_see_as_matplot_visual_multiprocess( add_loss=True)
+    # save_multiple_single_see_as_matplot_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_core_amount=7, print_msg=False, see_core_amount=7):
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=True,  bgr2rgb=True, single_see_core_amount=1, pring_msg=False, see_core_amount=1)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=False, bgr2rgb=True, single_see_core_amount=1, pring_msg=False, see_core_amount=1)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=True,  bgr2rgb=True, single_see_core_amount=8, pring_msg=False, see_core_amount=1)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=False, bgr2rgb=True, single_see_core_amount=8, pring_msg=False, see_core_amount=1)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=True,  bgr2rgb=True, single_see_core_amount=2, pring_msg=False, see_core_amount=7)
+    # os_book.save_multiple_single_see_as_matplot_visual(start_see=0, see_amount=1, add_loss=False, bgr2rgb=True, single_see_core_amount=2, pring_msg=False, see_core_amount=7)
+    ### 更新到這就懶的更新了，有需要再繼續更新下去吧 反正用法都寫在 setp10b 了！
+
 
     # os_book.save_multi_see_as_matplot_visual([29],"train_rd", add_loss=False, multiprocess=False) ### 看會不會自動跳轉
     # os_book.save_multi_see_as_matplot_visual([29],"train_rd", add_loss=True, multiprocess=False)    ### 看會不會自動跳轉
@@ -312,24 +315,24 @@ if(__name__ == "__main__"):
 
     ### 看多 loss 的情況
     # os_book_lots_loss = Result_builder().set_by_result_name("5_rect_mae136/type7b_h500_w332_real_os_book-20200524-012601-rect-1532data_mae3_127.35").set_ana_describe("see_lots_loss").build()
-    # os_book_lots_loss.save_single_see_as_matplot_visual(see_num=0, add_loss=True, single_see_multiprocess=True)
+    # os_book_lots_loss.save_multiple_single_see_as_matplot_visual(see_num=0, add_loss=True)
 
 
     ############################################################################################################################################
-    ### bm rec
+    ### bm rec  待更新，有需要的時候再弄就好了 反正用法有寫在 step10b囉！
     ############################################################################################################################################
     blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050_try_npz").set_ana_describe("blender").build()
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True)
     # blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
-    blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+    blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True)
 
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=5, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)   ### 如果失敗就單個跑吧~~
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=6, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=7, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=8, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=9, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=10, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=11, add_loss=False, bgr2rgb=True, single_see_multiprocess=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=5, add_loss=False, bgr2rgb=True)   ### 如果失敗就單個跑吧~~
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=6, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=7, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=8, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=9, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=10, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=11, add_loss=False, bgr2rgb=True)
     # print(dir(blender_os_book.sees[0]))
     # print(blender_os_book.sees[0].matplot_visual_dir)
