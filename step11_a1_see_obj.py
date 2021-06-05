@@ -486,7 +486,7 @@ class See_rec_metric(See_bm_rec):
             if(single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
                 multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._do_matlab_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb], print_msg=see_print_msg)
             else:  ### 如果沒有要用 multiprocess ， 就重新導向 最原始的function囉！
-                self._do_matlab_SSIM_LD(0, self.see_file_amount, SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb, see_print_msg=see_print_msg)
+                self._do_matlab_SSIM_LD(0, self.see_file_amount, SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb)
 
             # SSIMs = list(SSIMs)  ### share memory 的list 轉回 python list
             # LDs   = list(LDs)    ### share memory 的list 轉回 python list
