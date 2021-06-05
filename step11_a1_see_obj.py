@@ -260,15 +260,12 @@ class See_bm_rec(See_info):
             single_row_imgs = self._Draw_matplot_bm_rec_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
             single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-    def _draw_matplot_bm_rec_visual_after_train_multiprocess(self, add_loss, bgr2rgb, core_amount=CORE_AMOUNT_BM_REC_VISUAL, task_amount=600, print_msg=False):  ### 以 see內的任務 當單位來切
-        start_time = time.time()
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=print_msg)
-        print("draw_matplot_bm_rec_visual_after_train cost_time:", time.time() - start_time)
 
     def save_as_matplot_bm_rec_visual_after_train(self,   ### 訓練後，可以走訪所有see_file 並重新產生 matplot_bm_rec_visual
                                            add_loss=False,
                                            bgr2rgb =False,
                                            single_see_multiprocess=True,
+                                           single_see_core_amount=CORE_AMOUNT_BM_REC_VISUAL,
                                            print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時(像是result裡面的save_all_single_see_as_matplot_bm_rec_visual_multiprocess)，傳參數時這要設為false喔！
         print(f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}")
         start_time = time.time()
@@ -278,9 +275,9 @@ class See_bm_rec(See_info):
         Check_dir_exist_and_build_new_dir(self.rec_visual_write_dir)             ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
 
         self.get_see_dir_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
-        if(single_see_multiprocess):
+        if(single_see_multiprocess and single_see_core_amount > 1):
             ### see內的任務 有切 multiprocess
-            self._draw_matplot_bm_rec_visual_after_train_multiprocess(add_loss, bgr2rgb, core_amount=CORE_AMOUNT_BM_REC_VISUAL, task_amount=self.see_file_amount, print_msg=print_msg)  ### see內的任務 當單位來切，task_amount輸入self.see_file_amount是對的！不用-2變epoch喔！
+            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._draw_matplot_bm_rec_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=print_msg)
             ### 後處理讓結果更小 但 又不失視覺品質
             Find_ltrd_and_crop(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg(self.matplot_bm_rec_visual_write_dir, self.matplot_bm_rec_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
@@ -300,7 +297,9 @@ class See_bm_rec(See_info):
         for video_p in video_processes: video_p.join()
 
         print(f"See level: doing save_as_matplot_bm_rec_visual_after_train, Current See:{self.see_name}, cost time:{time.time() - start_time}")
-
+    ###############################################################################################
+    ###############################################################################################
+    ###############################################################################################
     def save_as_matplot_bm_rec_visual_after_train_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):   ### 訓練後，對"指定"epoch的 see結果 產生 matplot_bm_rec_visual
         print(f"See level: doing save_as_matplot_bm_rec_visual_after_train_at_certain_epoch, Current See:{self.see_name}, at_certain_epoch:{epoch}")
         start_time = time.time()
@@ -482,7 +481,7 @@ class See_rec_metric(See_bm_rec):
             LDs   = manager.list()  # []的概念
 
             if(single_see_multiprocess and single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
-                self._do_matlab_SSIM_LD_multiprocess(SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, task_amount=self.see_file_amount)
+                multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._do_matlab_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb])
             else:  ### 如果沒有要用 multiprocess ， 就重新導向 最原始的function囉！
                 self._do_matlab_SSIM_LD(0, self.see_file_amount, SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb)
 
@@ -513,10 +512,6 @@ class See_rec_metric(See_bm_rec):
             Video_combine_from_dir (self.matplot_metric_write_dir, self.matplot_metric_write_dir)
         print(f"See level: doing _visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
-
-
-    def _do_matlab_SSIM_LD_multiprocess(self, SSIMs, LDs, add_loss=False, bgr2rgb=False, single_see_core_amount=8, task_amount=60):
-        multi_processing_interface(core_amount=single_see_core_amount, task_amount=task_amount, task=self._do_matlab_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb])
 
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs, add_loss=False, bgr2rgb=False):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):

@@ -15,6 +15,8 @@ from tqdm import tqdm
 
 from multiprocess_util import multi_processing_interface
 
+import datetime
+
 class Result:
     # def __init__(self, result_name=None, r_describe=None):
     def __init__(self):
@@ -70,68 +72,105 @@ class Result:
 
     ##############################################################################################################################
     ##############################################################################################################################
-    def save_single_see_as_matplot_bm_rec_visual(self, see_num, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, print_msg=False):
-        print(f"Result level: doing save_single_see_as_matplot_bm_rec_visual, Current Result:{self.result_name}")
-        if(see_num < self.see_amount):  ### 防呆，以防直接使用 save_all_single_see_as_matplot_visual 時 start_index 設的比0大 但 amount 設成 see_amount 或 純粹不小心算錯數字(要算準start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
-            self.sees[see_num].all_npy_to_npz(multiprocess=True)
-            self.sees[see_num].save_as_matplot_bm_rec_visual_after_train(add_loss, bgr2rgb, single_see_multiprocess, print_msg=print_msg)
-
-    def save_all_single_see_as_matplot_bm_rec_visual(self, start_index, amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
-        result_start = time.time()
-        print(f"Result level: doing save_all_single_see_as_matplot_bm_rec_visual, Current Result:{self.result_name}")
-        for see_num in range(start_index, start_index + amount):  ### 這裡寫 start_index + amount 是為了 multiprocess 的格式！
-            self.save_single_see_as_matplot_bm_rec_visual(see_num, add_loss, bgr2rgb, single_see_multiprocess, print_msg=print_msg)
-            print("")
-        print("Result level: finish save_all_single_see_as_matplot_bm_rec_visual")
-        print("Result level: cost_time=", time.time() - result_start)
-        print("")
-
-    def save_all_single_see_as_matplot_bm_rec_visual_multiprocess(self, add_loss=False, bgr2rgb=False, single_see_multiprocess=False, print_msg=False):  ### 以 sees 的 see當單位來切
+    ##############################################################################################################################
+    def save_multiple_single_see_as_matplot_bm_rec_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False, see_core_amount=7, result_print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
         """
-        已經在127.28證實 以  see  為單位比較快, 大約 1549(不含 npy to npz), 設定為：bm/rec core 13, crop 和 jpg core 皆 1
-                        以 see內 為單位比較慢, 大約 1973(不含 npy to npz)
-
-        雖然 以  see  為單位比較快 ， 但要使用的記憶體超大 50GB 左右 ，
-            127.28 最好別同時做其他事情(training, 開google 之類的)
-            127.35 跑不大起來, 或者core設超大：bm/rec core 20~30 之類的
-
-        目前覺得不建議使用，因為以sees內的see當單位來切，覺得有點沒效率
-        不過真的試過以後，效率其實還不錯！
-        但記憶體會爆的問題還是在，可能只適合在記憶體大的電腦跑這樣子
+        see_core_amount ==1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+        see_core_amount ==1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+        see_core_amount  >1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+        see_core_amount  >1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
         """
         result_start = time.time()
-        print(f"result level: doing save_all_single_see_as_matplot_bm_rec_visual_multiprocess, Current Result:{self.result_name}")
-        multi_processing_interface(core_amount=CORE_AMOUNT, task_amount=self.see_amount, task=self.save_all_single_see_as_matplot_bm_rec_visual, task_args=[add_loss, bgr2rgb, single_see_multiprocess], print_msg=print_msg)
-        print("result level: finish save_all_single_see_as_matplot_bm_rec_visual_multiprocess")
-        print("result level: cost_time=", time.time() - result_start)
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
+
+        if  (see_core_amount == 1):
+            """
+            see_core_amount ==1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+            see_core_amount ==1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+            see內 當單位 切 multiprocess
+
+            如果 see_file_amount少 這好像比較快
+            """
+            self._save_multiple_single_see_as_matplot_bm_rec_visual(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+        elif(see_core_amount  > 1):
+            multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._save_multiple_single_see_as_matplot_bm_rec_visual, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount, print_msg], print_msg=print_msg)
+            """
+            see_core_amount  >1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+            see_core_amount  >1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
+            以 整個see 當單位 切 multiprocess
+
+            如果 see_file_amount多 這好像比較快
+            建議 see_core_amount=7, single_see_core_amount=1
+
+            已經在127.28證實 以  see  為單位比較快, 大約 1549(不含 npy to npz), 設定為：bm/rec core 13, crop 和 jpg core 皆 1
+                            以 see內 為單位比較慢, 大約 1973(不含 npy to npz)
+
+            雖然 以 see 為單位比較快 ， 但要使用的記憶體超大 50GB 左右 ，
+                127.28 最好別同時做其他事情(training, 開google 之類的)
+                127.35 跑不大起來, 或者core設超大：bm/rec core 20~30 之類的
+
+            目前覺得不建議使用，因為以sees內的see當單位來切，覺得有點沒效率
+            不過真的試過以後，效率其實還不錯！
+            但記憶體會爆的問題還是在，可能只適合在記憶體大的電腦跑這樣子
+            """
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: finish calculate_multiple_single_see_SSIM_LD")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: cost_time=", time.time() - result_start)
+
+    ### 寫成 start_see + see_amount 真的麻，但是 這是為了 multiprocess 的設計才這樣寫的，只能忍一下囉～
+    def _save_multiple_single_see_as_matplot_bm_rec_visual(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
+        """
+        用 for 迴圈 依序 跑 單個 see， see內 當單位 切 multiprocess
+        """
+        for see_num in range(start_see, start_see + see_amount):
+            if(see_num < self.see_amount):  ### 防呆，以防直接使用 _save_multiple_single_see_as_matplot_bm_rec_visual 時 start_see 設的比0大 但 see_amount 設成 self.see_amount 或 純粹不小心算錯數字(要算準start_see + see_amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
+                self.sees[see_num].all_npy_to_npz(multiprocess=True)
+                self.sees[see_num].save_as_matplot_bm_rec_visual_after_train(add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         print("")
 
     ##############################################################################################################################
     ##############################################################################################################################
-    def calculate_single_see_SSIM_LD(self, see_num, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):
-        if(see_num < self.see_amount):  ### 防呆，以防直接使用 calculate_all_single_see_SSIM_LD 時 start_index 設的比0大 但 amount 設成 see_amount 或 純粹不小心算錯數字(要算準start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
-            print(f"Result level: doing calculate_single_see_SSIM_LD, Current Result:{self.result_name}")
-            self.sees[see_num].Calculate_SSIM_LD(add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
-
-    ### 寫成 start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉
-    def calculate_all_single_see_SSIM_LD(self, start_index, amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
+    ##############################################################################################################################
+    def calculate_multiple_single_see_SSIM_LD(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False, see_core_amount=7, result_print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
+        """
+        see_core_amount ==1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+        see_core_amount ==1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+        see_core_amount  >1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+        see_core_amount  >1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
+        """
         result_start = time.time()
-        print(f"Result level: doing calculate_all_single_see_SSIM_LD, Current Result:{self.result_name}")
-        for see_num in range(start_index, start_index + amount):
-            self.calculate_single_see_SSIM_LD(see_num, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
-            print("")
-        print("Result level: finish calculate_all_single_see_SSIM_LD")
-        print("Result level: cost_time=", time.time() - result_start)
-        print("")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
+        if  (see_core_amount == 1):
+            """
+            see_core_amount ==1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+            see_core_amount ==1 , single_see_core_amount  > 1：多核心跑， 單個see 同時跑， see內的多個任務 同時跑
+            see內 當單位 切 multiprocess
 
-    def calculate_all_single_see_SSIM_LD_multiprocess(self, add_loss=False, bgr2rgb=False, core_amount=7, single_see_multiprocess=False, single_see_core_amount=2, print_msg=False):  ### 以 sees 的 see當單位來切
-        result_start = time.time()
-        print(f"Result level: doing calculate_all_single_see_SSIM_LD_multiprocess, Current Result:{self.result_name}")
-        if(core_amount == 1): self.calculate_all_single_see_SSIM_LD(0, self.see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, core_amount=core_amount, print_msg=print_msg)
-        else: multi_processing_interface(core_amount=core_amount, task_amount=self.see_amount, task=self.calculate_all_single_see_SSIM_LD, task_args=[add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount, print_msg])
-        print("result level: finish calculate_all_single_see_SSIM_LD_multiprocess")
-        print("result level: cost_time=", time.time() - result_start)
-        print("")
+            推薦使用：see_core_amount=1, single_see_core_amount=7
+            """
+            self._calculate_multiple_single_see_SSIM_LD(start_see, see_amount, add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+        elif(see_core_amount  > 1):
+            """
+            see_core_amount  >1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+            see_core_amount  >1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
+            以 整個see 當單位 切 multiprocess
+
+            如果要用建議 see_core_amount=7, single_see_core_amount=1
+            如果在epoch數小的時候可使用，
+            如果在epoch數大時不建議用，因為 matlab.engine不知為何 很容易當掉，這邊當一個core  感覺很容易就全當，也不知當哪個core，很麻煩
+            """
+            multi_processing_interface(core_amount=see_core_amount, task_amount=see_amount , task=self._calculate_multiple_single_see_SSIM_LD, task_start_index=start_see, task_args=[add_loss, bgr2rgb, single_see_multiprocess, single_see_core_amount, print_msg], print_msg=print_msg)
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: finish calculate_multiple_single_see_SSIM_LD")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "Result level: cost_time=", time.time() - result_start)
+
+    ### 寫成 start_see + see_amount 真的麻，但是 這是為了 multiprocess 的設計才這樣寫的，只能忍一下囉～
+    def _calculate_multiple_single_see_SSIM_LD(self, start_see, see_amount, add_loss=False, bgr2rgb=False, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### 以 see內的任務 當單位來切(如果single_see_multiprocess==True的話)
+        """
+        用 for 迴圈 依序 跑 單個 see， see內 當單位 切 multiprocess
+        """
+        # print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
+        for see_num in range(start_see, start_see + see_amount):
+            if(see_num < self.see_amount):  ### 防呆，以防直接使用 calculate_multiple_single_see_SSIM_LD 時 start_see 設的比0大 但 see_amount 設成 self.see_amount 或 純粹不小心算錯數字(要算準start_see + see_amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
+                self.sees[see_num].Calculate_SSIM_LD(add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
 
 
     #######################################################################################################################################
