@@ -74,6 +74,30 @@ calculate_8te  = f"build().result_obj.calculate_multiple_single_see_SSIM_LD(star
 calculate_9te  = f"build().result_obj.calculate_multiple_single_see_SSIM_LD(start_see=5, see_amount=2, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={calculate_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={calculate_result_print_msg})"
 calculate_10te = f"build().result_obj.calculate_multiple_single_see_SSIM_LD(start_see=6, see_amount=1, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={calculate_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={calculate_result_print_msg})"
 
+#####################################################################################################################################################################################################################################################################################################################################
+see_method_name = '"save_as_matplot_bm_rec_visual_after_train"'  ### 兩層是因為加進去 f"" 會被削掉一層～
+add_loss = True
+bgr2rgb = True
+see_core_amount = 2
+single_see_core_amount = 1
+result_do_result_print_msg = True
+result_do_see_print_msg = True
+result_do_all  = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=7, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_1    = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=1, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_2    = f"build().result_obj.result_do_multiple_single_see(start_see=1, see_amount=1, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_3    = f"build().result_obj.result_do_multiple_single_see(start_see=2, see_amount=1, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_4    = f"build().result_obj.result_do_multiple_single_see(start_see=3, see_amount=1, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_8    = f"build().result_obj.result_do_multiple_single_see(start_see=4, see_amount=1, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_9    = f"build().result_obj.result_do_multiple_single_see(start_see=5, see_amount=1, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_10   = f"build().result_obj.result_do_multiple_single_see(start_see=6, see_amount=1, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+
+result_do_2te  = f"build().result_obj.result_do_multiple_single_see(start_see=1, see_amount=6, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_3te  = f"build().result_obj.result_do_multiple_single_see(start_see=2, see_amount=5, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_4te  = f"build().result_obj.result_do_multiple_single_see(start_see=3, see_amount=4, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_8te  = f"build().result_obj.result_do_multiple_single_see(start_see=4, see_amount=3, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_9te  = f"build().result_obj.result_do_multiple_single_see(start_see=5, see_amount=2, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+result_do_10te = f"build().result_obj.result_do_multiple_single_see(start_see=6, see_amount=1, see_method_name={see_method_name}, add_loss={add_loss}, bgr2rgb={bgr2rgb}, single_see_core_amount={single_see_core_amount}, see_print_msg={result_do_see_print_msg}, see_core_amount={see_core_amount}, result_print_msg={result_do_result_print_msg})"
+
 # sb.run(same_command + [f"test2.{compress_1}"])
 
 # ### hid_ch=64, 來測試 epoch系列 ##############################
@@ -297,4 +321,5 @@ calculate_10te = f"build().result_obj.calculate_multiple_single_see_SSIM_LD(star
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
-sb.run(same_command + [f"testest.{compress_8te}"])   ### 127.28
+sb.run(same_command + [f"testest.{result_do_all}"])   ### 127.28
+# print("result_do_all", result_do_all)

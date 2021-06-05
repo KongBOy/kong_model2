@@ -178,6 +178,69 @@ class Result:
                 self.sees[see_num].Calculate_SSIM_LD(add_loss=add_loss, bgr2rgb=bgr2rgb, single_see_core_amount=single_see_core_amount, see_print_msg=see_print_msg)
 
     #######################################################################################################################################
+    ##############################################################################################################################
+    ##############################################################################################################################
+    ##############################################################################################################################
+    def result_do_multiple_single_see(self, start_see, see_amount, **args):
+        """
+        args舉例大概長相：args == {
+            see_method_name        : str
+            add_loss               : bool
+            bgr2rgb                : bool
+            single_see_core_amount : int
+            see_print_msg          : bool
+            see_corea_amount       : int
+            result_print_msg       : bool
+        }
+        method舉例怎麼呼叫：result_do_multiple_single_see(start_see, see_amount, see_method_name=str, add_loss=bool, bgr2rgb=bool, single_see_core_amount=int, see_print_msg=bool, see_core_amount=int, result_print_msg=bool)
+            see_method_name 目前以下選擇：
+                save_as_matplot_visual_after_train
+                save_as_matplot_bm_rec_visual_after_train
+                Calculate_SSIM_LD
+        """
+
+        result_start = time.time()
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing {args['see_method_name']}, Current Result:{self.result_name}")
+        """
+        see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+        see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 依序跑， see內的多個任務 同時跑
+        see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+        see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
+        """
+        if  (args["see_core_amount"] == 1):
+            """
+            see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
+            see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 依序跑， see內的多個任務 同時跑
+            see內 當單位 切 multiprocess
+            """
+            self._result_do_multiple_single_see(start_see, see_amount, args)
+        elif(args["see_core_amount"]  > 1):
+            """
+            see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
+            see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
+            以 整個see 當單位 切 multiprocess
+            """
+            multi_processing_interface(core_amount=args["see_core_amount"], task_amount=see_amount , task=self._result_do_multiple_single_see, task_start_index=start_see, task_args=[args], print_msg=args["result_print_msg"])
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: {args['see_method_name']} finish")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: {args['see_method_name']}, cost_time = {time.time() - result_start}")
+
+    ### 寫成 start_see + see_amount 真的麻，但是 這是為了 multiprocess 的設計才這樣寫的，只能忍一下囉～
+    def _result_do_multiple_single_see(self, start_see, see_amount, args):
+        """
+        用 for 迴圈 依序 跑 單個 see， see內任務 當單位 切 multiprocess
+        """
+        # print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing calculate_multiple_single_see_SSIM_LD_combine, Current Result:{self.result_name}")
+        for see_num in range(start_see, start_see + see_amount):
+            if(see_num < self.see_amount):  ### 防呆，以防直接使用 calculate_multiple_single_see_SSIM_LD 時 start_see 設的比0大 但 see_amount 設成 self.see_amount 或 純粹不小心算錯數字(要算準start_see + see_amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
+                if(args["see_method_name"] == "save_as_matplot_visual_after_train"):
+                    self.sees[see_num].save_as_matplot_visual_after_train        (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
+                if(args["see_method_name"] == "save_as_matplot_bm_rec_visual_after_train"):
+                    self.sees[see_num].all_npy_to_npz(multiprocess=True)
+                    self.sees[see_num].save_as_matplot_bm_rec_visual_after_train (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
+                if(args["see_method_name"] == "Calculate_SSIM_LD"):
+                    self.sees[see_num].Calculate_SSIM_LD                         (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
+
+    #######################################################################################################################################
     #######################################################################################################################################
     #######################################################################################################################################
     def save_single_see_as_matplot_bm_rec_visual_at_certain_epoch(self, see_num, epoch, add_loss=False, bgr2rgb=False):
