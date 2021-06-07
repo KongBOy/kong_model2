@@ -3,7 +3,7 @@ from step0_access_path import Syn_write_to_read_dir
 
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_name
+from util import get_dir_certain_file_name, remove_dir_certain_file_name
 from matplot_fig_ax_util import Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
@@ -412,6 +412,7 @@ class See_try_npy_to_npz(See_info):
         """
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Npy_to_npz, Current See:{self.see_name}")
         start_time = time.time()
+        ### 不能 build_new_dir ， 所以 下面有一行 os.remove 做完會把 .npy刪掉
         self.get_see_dir_info()
         if(len(self.see_npy_names) > 0):
             if(multiprocess):
@@ -447,8 +448,10 @@ class See_rec_metric(See_bm_rec):
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See_rec_metric, self).__init__(result_read_dir, result_write_dir, see_name)
 
-        self.matplot_metric_read_dir  = self.see_read_dir  + "/matplot_metric_visual"
-        self.matplot_metric_write_dir = self.see_write_dir + "/matplot_metric_visual"
+        self.matplot_metric_read_dir  = self.see_read_dir  + "/metric"
+        self.matplot_metric_write_dir = self.see_write_dir + "/metric"
+        self.matplot_metric_visual_read_dir  = self.see_read_dir  + "/matplot_metric_visual"
+        self.matplot_metric_visual_write_dir = self.see_write_dir + "/matplot_metric_visual"
         self.metric_names = None
         self.metric_paths = None
 
@@ -456,7 +459,7 @@ class See_rec_metric(See_bm_rec):
     ###############################################################################################
     def get_metric_info(self):
         self.metric_names  = get_dir_certain_file_name(self.bm_visual_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
-        self.metric_paths  = [self.matplot_metric_read_dir + "/" + name for name in self.metric_names]
+        self.metric_paths  = [self.matplot_metric_visual_read_dir + "/" + name for name in self.metric_names]
 
         self.see_file_amount = len(self.metric_names)
 
@@ -543,23 +546,25 @@ class See_rec_metric(See_bm_rec):
         # start_time = time.time()
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Visual_SSIM_LD, Current See:{self.see_name}")
         start_time = time.time()
-        Check_dir_exist_and_build(self.matplot_metric_write_dir)  ### 不能build_new_dir 喔！ 要不然會把 SSIM, LD 刪掉呢
-        SSIMs = np.load(f"{self.matplot_metric_write_dir}/SSIMs.npy")
-        LDs   = np.load(f"{self.matplot_metric_write_dir}/LDs.npy")
+        Check_dir_exist_and_build_new_dir(self.matplot_metric_visual_write_dir)  ### 一定要build_new_dir ，才不會有 "中斷後重新執行 或 第二次執行"時 .jpg 和 .png 混再一起 擾亂了 Find_ltrd_and_crop 喔！
+
+
+        SSIMs = np.load(f"{self.matplot_metric_read_dir}/SSIMs.npy")
+        LDs   = np.load(f"{self.matplot_metric_read_dir}/LDs.npy")
         if(single_see_core_amount > 1):  ### 如果要用multiprocess 且 single_see_core_amount 要大於1，如果等於1不就等於 不 multiprocess 了咪～如果不做就用下面的else囉！
             multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_file_amount, task=self._visual_SSIM_LD, task_args=[SSIMs, LDs, add_loss, bgr2rgb], print_msg=see_print_msg)
-            Find_ltrd_and_crop     (self.matplot_metric_write_dir, self.matplot_metric_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-            Save_as_jpg            (self.matplot_metric_write_dir, self.matplot_metric_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，
-            Video_combine_from_dir (self.matplot_metric_write_dir, self.matplot_metric_write_dir)
+            Find_ltrd_and_crop     (self.matplot_metric_visual_write_dir, self.matplot_metric_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+            Save_as_jpg            (self.matplot_metric_visual_write_dir, self.matplot_metric_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，
+            Video_combine_from_dir (self.matplot_metric_visual_write_dir, self.matplot_metric_visual_write_dir)
         else:  ### 如果沒有要用 multiprocess ， 就重新導向 最原始的function囉！
             self._visual_SSIM_LD(0, self.see_file_amount, SSIMs, LDs, add_loss=add_loss, bgr2rgb=bgr2rgb)
-            Find_ltrd_and_crop     (self.matplot_metric_write_dir, self.matplot_metric_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-            Save_as_jpg            (self.matplot_metric_write_dir, self.matplot_metric_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
-            Video_combine_from_dir (self.matplot_metric_write_dir, self.matplot_metric_write_dir)
+            Find_ltrd_and_crop     (self.matplot_metric_visual_write_dir, self.matplot_metric_visual_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+            Save_as_jpg            (self.matplot_metric_visual_write_dir, self.matplot_metric_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
+            Video_combine_from_dir (self.matplot_metric_visual_write_dir, self.matplot_metric_visual_write_dir)
 
         ### 同步 write_dir to read_dir
-        if(self.matplot_metric_write_dir != self.matplot_metric_read_dir):
-            Syn_write_to_read_dir(write_dir=self.matplot_metric_write_dir, read_dir=self.matplot_metric_read_dir)
+        if(self.matplot_metric_visual_write_dir != self.matplot_metric_visual_read_dir):
+            Syn_write_to_read_dir(write_dir=self.matplot_metric_visual_write_dir, read_dir=self.matplot_metric_visual_read_dir)
 
 
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish _visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
@@ -583,8 +588,8 @@ class See_rec_metric(See_bm_rec):
                         add_loss  =add_loss,
                         bgr2rgb   =bgr2rgb)
             single_row_imgs.Draw_img()
-            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.matplot_metric_write_dir, go_epoch, min_epochs=self.see_file_amount, ylim=25)
-            single_row_imgs.Save_fig(dst_dir=self.matplot_metric_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.matplot_metric_read_dir, go_epoch, min_epochs=self.see_file_amount, ylim=25)
+            single_row_imgs.Save_fig(dst_dir=self.matplot_metric_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
 
 
