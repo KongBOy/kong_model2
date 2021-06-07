@@ -21,7 +21,6 @@ sys.path.append("SIFT_dev/SIFTflow")
 from kong_use_evalUnwarp_sucess import use_DewarpNet_eval
 import matplotlib.pyplot as plt
 import datetime
-
 # import pdb
 
 class See_info:
@@ -62,7 +61,6 @@ class See_info:
     def save_as_avi(self):  ### 後來看覺得好像有點多餘
         Check_dir_exist_and_build(self.see_write_dir)
         Video_combine_from_dir(self.see_read_dir, self.see_write_dir, "0-combine_jpg_tail_long.avi", tail_long=True)
-
 
 
 class See_visual(See_info):
@@ -152,7 +150,7 @@ class See_visual(See_info):
             Save_as_jpg(self.matplot_visual_write_dir, self.matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
 
         Video_combine_from_dir(self.matplot_visual_write_dir, self.matplot_visual_write_dir)          ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Save_as_matplot_visual, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Save_as_matplot_visual, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
@@ -213,7 +211,7 @@ class See_bm_rec(See_info):
         bm, rec = self._use_flow_to_rec(dis_img=dis_img, flow=flow)
 
         ### gt flow part
-        gt_flow            = np.load(self.see_read_dir + "/" + self.see_npz_names[0])["arr_0"]          ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        gt_flow            = np.load(self.see_read_dir + "/" + self.see_npz_names[0])["arr_0"]       ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         gt_flow   [..., 1] = 1 - gt_flow[..., 1]
         gt_bm, gt_rec = self._use_flow_to_rec(dis_img=dis_img, flow=gt_flow)
         return bm, rec, gt_bm, gt_rec
@@ -309,6 +307,7 @@ class See_bm_rec(See_info):
             Syn_write_to_read_dir(write_dir=self.matplot_bm_rec_visual_write_dir, read_dir=self.matplot_bm_rec_visual_read_dir)
             Syn_write_to_read_dir(write_dir=self.bm_visual_write_dir,             read_dir=self.bm_visual_read_dir)
             Syn_write_to_read_dir(write_dir=self.rec_visual_write_dir,            read_dir=self.rec_visual_read_dir)
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Save_as_matplot_bm_rec_visual, Current See:{self.see_name}, cost time:{time.time() - start_time}")
 
     ###############################################################################################
     ###############################################################################################
@@ -407,20 +406,6 @@ class See_try_npy_to_npz(See_info):
         """
         print("finish")
 
-    ### 不要想 邊生圖 邊 npy轉npz了，原因寫在 _Draw_matplot_bm_rec_visual 上面
-    # def single_npy_to_npz_by_path(self, npy_path):
-    #     npy = np.load(npy_path)
-    #     np.savez_compressed(npy_path.replace(".npy", ".npz"), npy)
-    #     os.remove(self.see_read_dir + "/" + npy_path)
-    def _npy_to_npz(self, start_index, amount):
-        for see_npy_name in tqdm(self.see_npy_names[start_index:start_index + amount]):
-            npy = np.load(self.see_read_dir + "/" + see_npy_name)
-            np.savez_compressed(self.see_write_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
-            os.remove(self.see_read_dir + "/" + see_npy_name)
-            # print(self.see_read_dir + "/" + see_npy_name, "delete ok")
-            # npz = np.load(self.see_read_dir + "/" + see_npy_name.replace(".npy", ".npz"))  ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
-            # print((npy - npz["arr_0"]).sum())                                         ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
-
     def Npy_to_npz(self, multiprocess=False, see_print_msg=False):   ### 因為有刪東西的動作，覺得不要multiprocess比較安全~~
         """
         把 See 資料夾內的.npy改存成.npz，存完會把.npy刪除喔～
@@ -439,6 +424,21 @@ class See_try_npy_to_npz(See_info):
             ### 因為接下去的任務需要 此任務的結果， 如果 read/write 資料夾位置不一樣， write完的結果 copy 一份 放回read， 才能讓接下去的動作 有 東西 read 喔！
             Syn_write_to_read_dir(write_dir=self.see_write_dir, read_dir=self.see_read_dir)
 
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Npy_to_npz, Current See:{self.see_name}, cost time:{time.time() - start_time}")
+
+    ### 不要想 邊生圖 邊 npy轉npz了，原因寫在 _Draw_matplot_bm_rec_visual 上面
+    # def single_npy_to_npz_by_path(self, npy_path):
+    #     npy = np.load(npy_path)
+    #     np.savez_compressed(npy_path.replace(".npy", ".npz"), npy)
+    #     os.remove(self.see_read_dir + "/" + npy_path)
+    def _npy_to_npz(self, start_index, amount):
+        for see_npy_name in tqdm(self.see_npy_names[start_index:start_index + amount]):
+            npy = np.load(self.see_read_dir + "/" + see_npy_name)
+            np.savez_compressed(self.see_write_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
+            os.remove(self.see_read_dir + "/" + see_npy_name)
+            # print(self.see_read_dir + "/" + see_npy_name, "delete ok")
+            # npz = np.load(self.see_read_dir + "/" + see_npy_name.replace(".npy", ".npz"))  ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
+            # print((npy - npz["arr_0"]).sum())                                         ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
 
 class See_rec_metric(See_bm_rec):
     """
@@ -475,7 +475,7 @@ class See_rec_metric(See_bm_rec):
         """
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Calculate_SSIM_LD, Current See:{self.see_name}")
         start_time = time.time()
-        Check_dir_exist_and_build_new_dir(self.matplot_metric_write_dir)
+        Check_dir_exist_and_build(self.matplot_metric_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
 
         self.get_see_dir_info()  ### 暫時寫這邊，到時應該要拉出去到result_level，要不然每做一次就要重新更新一次，但不用這麼頻繁，只需要一開始更新一次即可
         self.get_bm_rec_info()   ### 暫時寫這邊，到時應該要拉出去到result_level，要不然每做一次就要重新更新一次，但不用這麼頻繁，只需要一開始更新一次即可
@@ -507,6 +507,8 @@ class See_rec_metric(See_bm_rec):
         if(self.matplot_metric_write_dir != self.matplot_metric_read_dir):
             ### 因為接下去的任務需要 此任務的結果， 如果 read/write 資料夾位置不一樣， write完的結果 copy 一份 放回read， 才能讓接下去的動作 有 東西 read 喔！
             Syn_write_to_read_dir(write_dir=self.matplot_metric_write_dir, read_dir=self.matplot_metric_read_dir)
+
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Calculate_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
@@ -558,6 +560,9 @@ class See_rec_metric(See_bm_rec):
         ### 同步 write_dir to read_dir
         if(self.matplot_metric_write_dir != self.matplot_metric_read_dir):
             Syn_write_to_read_dir(write_dir=self.matplot_metric_write_dir, read_dir=self.matplot_metric_read_dir)
+
+
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish _visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
 
 
