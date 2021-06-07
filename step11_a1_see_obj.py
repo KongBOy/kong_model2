@@ -1,4 +1,5 @@
 from step0_access_path import JPG_QUALITY, CORE_AMOUNT, CORE_AMOUNT_NPY_TO_NPZ, CORE_AMOUNT_BM_REC_VISUAL, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
+from step0_access_path import Syn_write_to_read_dir
 
 import sys
 sys.path.append("kong_util")
@@ -303,7 +304,11 @@ class See_bm_rec(See_info):
         for video_p in video_processes: video_p.start()
         for video_p in video_processes: video_p.join()
 
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Save_as_matplot_bm_rec_visual, Current See:{self.see_name}, cost time:{time.time() - start_time}")
+        ### 同步 write_dir to read_dir
+        if(self.matplot_bm_rec_visual_write_dir != self.matplot_bm_rec_visual_read_dir):
+            Syn_write_to_read_dir(write_dir=self.matplot_bm_rec_visual_write_dir, read_dir=self.matplot_bm_rec_visual_read_dir)
+            Syn_write_to_read_dir(write_dir=self.bm_visual_write_dir,             read_dir=self.bm_visual_read_dir)
+            Syn_write_to_read_dir(write_dir=self.rec_visual_write_dir,            read_dir=self.rec_visual_read_dir)
 
     ###############################################################################################
     ###############################################################################################
@@ -429,7 +434,10 @@ class See_try_npy_to_npz(See_info):
             else:
                 self._npy_to_npz(start_index=0, amount=len(self.see_npy_names))
 
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Npy_to_npz, Current See:{self.see_name}, cost time:{time.time() - start_time}")
+        ### 同步 write_dir to read_dir
+        if(self.see_write_dir != self.see_read_dir):
+            ### 因為接下去的任務需要 此任務的結果， 如果 read/write 資料夾位置不一樣， write完的結果 copy 一份 放回read， 才能讓接下去的動作 有 東西 read 喔！
+            Syn_write_to_read_dir(write_dir=self.see_write_dir, read_dir=self.see_read_dir)
 
 
 class See_rec_metric(See_bm_rec):
@@ -494,7 +502,11 @@ class See_rec_metric(See_bm_rec):
 
         np.save(f"{self.matplot_metric_write_dir}/SSIMs", SSIMs)
         np.save(f"{self.matplot_metric_write_dir}/LDs",   LDs)
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Calculate_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+
+        ### 同步 write_dir to read_dir
+        if(self.matplot_metric_write_dir != self.matplot_metric_read_dir):
+            ### 因為接下去的任務需要 此任務的結果， 如果 read/write 資料夾位置不一樣， write完的結果 copy 一份 放回read， 才能讓接下去的動作 有 東西 read 喔！
+            Syn_write_to_read_dir(write_dir=self.matplot_metric_write_dir, read_dir=self.matplot_metric_read_dir)
 
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
@@ -542,7 +554,10 @@ class See_rec_metric(See_bm_rec):
             Find_ltrd_and_crop     (self.matplot_metric_write_dir, self.matplot_metric_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg            (self.matplot_metric_write_dir, self.matplot_metric_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
             Video_combine_from_dir (self.matplot_metric_write_dir, self.matplot_metric_write_dir)
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing _visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+
+        ### 同步 write_dir to read_dir
+        if(self.matplot_metric_write_dir != self.matplot_metric_read_dir):
+            Syn_write_to_read_dir(write_dir=self.matplot_metric_write_dir, read_dir=self.matplot_metric_read_dir)
 
 
 
