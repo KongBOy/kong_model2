@@ -102,7 +102,7 @@ calculate_visual_10te = f"build().result_obj.result_do_multiple_single_see(start
 # sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_T.{run}"])
 # sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_F.{run}"])
 # sb.run(same_command + [f"epoch700_new_shuf_bn_see_arg_T.{run}"])
-# sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down .{calculate_all}"])  ### 看看 lr 都不下降的效果
+# sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down .{calculate_visual_all}"])  ### 看看 lr 都不下降的效果
 
 # sb.run(same_command + [f"old_ch128_new_shuf_bn_see_arg_F.{run}"])
 # sb.run(same_command + [f"old_ch032_new_shuf_bn_see_arg_F.{run}"])
@@ -134,44 +134,44 @@ calculate_visual_10te = f"build().result_obj.result_do_multiple_single_see(start
 
 ##########################################################################################################################################################################################
 ### 4. epoch
-# sb.run(same_command + [f"ch64_in_epoch060.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch080.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch100.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch060.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch080.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch100.{calculate_visual_all}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch200.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch200.{calculate_visual_all}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch220.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch240.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch260.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch280.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch300.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch220.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch240.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch260.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch280.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch300.{calculate_visual_all}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch320.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch340.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch360.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch380.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch400.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch320.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch340.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch360.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch380.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch400.{calculate_visual_all}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch420.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch440.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch460.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch480.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch500.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch420.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch440.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch460.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch480.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch500.{calculate_visual_all}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch700.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_epoch700.{calculate_visual_all}"])  ### 測試真的IN
 
 ## 4b.
-# sb.run(same_command + [f"in_new_ch004_ep060.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch008_ep060.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch016_ep060.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch032_ep060.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch128_ep060.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch004_ep060.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch008_ep060.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch016_ep060.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch032_ep060.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch128_ep060.{calculate_visual_all}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"in_new_ch004_ep100.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch008_ep100.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch016_ep100.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch032_ep100.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch128_ep100.{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch004_ep100.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch008_ep100.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch016_ep100.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch032_ep100.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"in_new_ch128_ep100.{calculate_visual_all}"])  ### 測試真的IN
 
 ##########################################################################################################################################################################################
 ### 5
@@ -209,16 +209,16 @@ calculate_visual_10te = f"build().result_obj.result_do_multiple_single_see(start
 # sb.run(same_command + [f"unet_IN_7l_2to8noC     .{run}"])  ### 2920
 
 
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e020.{calculate_all}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e040.{calculate_all}"])  ### 測試真的IN  127.55
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e060.{calculate_all}"])  ### 測試真的IN  127.35
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e080.{calculate_all}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e100.{calculate_all}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e020.{calculate_visual_all}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e040.{calculate_visual_all}"])  ### 測試真的IN  127.55
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e060.{calculate_visual_all}"])  ### 測試真的IN  127.35
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e080.{calculate_visual_all}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e100.{calculate_visual_all}"])  ### 測試真的IN  127.28
 
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e120.{calculate_all}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e140.{calculate_all}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e160.{calculate_all}"])  ### 測試真的IN  127.55
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e180.{calculate_all}"])  ### 測試真的IN  127.55
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e120.{calculate_visual_all}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e140.{calculate_visual_all}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e160.{calculate_visual_all}"])  ### 測試真的IN  127.55
+# sb.run(same_command + [f"unet_IN_7l_2to3noC_e180.{calculate_visual_all}"])  ### 測試真的IN  127.55
 
 #############################################################################################################
 ### 7c
@@ -231,27 +231,27 @@ calculate_visual_10te = f"build().result_obj.result_do_multiple_single_see(start
 
 #############################################################################################################
 ### 7d
-# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e060_wrong .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e100_wrong .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e060       .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e100       .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_sSE_e060       .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_sSE_e100       .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e060_wrong.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e100_wrong.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e060      .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e100      .{calculate_9te}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e060_wrong .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e100_wrong .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e060       .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e100       .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_sSE_e060       .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_sSE_e100       .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e060_wrong.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e100_wrong.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e060      .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e100      .{calculate_visual_all}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_sk_cSE_e060_wrong .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_cSE_e100_wrong .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_cSE_e060       .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_cSE_e100       .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_sSE_e060       .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_sSE_e100       .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_scSE_e060_wrong.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_scSE_e100_wrong.{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_scSE_e060      .{calculate_all}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_scSE_e100      .{calculate_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_cSE_e060_wrong .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_cSE_e100_wrong .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_cSE_e060       .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_cSE_e100       .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_sSE_e060       .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_sSE_e100       .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_scSE_e060_wrong.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_scSE_e100_wrong.{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_scSE_e060      .{calculate_visual_all}"])  ### 測試真的IN
+# sb.run(same_command + [f"ch64_in_sk_scSE_e100      .{calculate_visual_all}"])  ### 測試真的IN
 
 
 
@@ -304,5 +304,5 @@ calculate_visual_10te = f"build().result_obj.result_do_multiple_single_see(start
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
-sb.run(same_command + [f"testest.{calculate_all}"])   ### 127.28
+# sb.run(same_command + [f"testest.{calculate_visual_all}"])   ### 127.28
 # print("result_do_all", result_do_all)
