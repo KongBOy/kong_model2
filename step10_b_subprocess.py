@@ -7,7 +7,7 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 run = "build().run()"
 
 #####################################################################################################################################################################################################################################################################################################################################
-matplot_method_name = '"save_as_matplot_visual_after_train"'  ### 兩層是因為加進去 f"" 會被削掉一層～
+matplot_method_name = '"Save_as_matplot_visual"'  ### 兩層是因為 sb.run 會削掉一層 "" ～
 matplot_add_loss = True
 matplot_bgr2rgb = True
 matplot_see_core_amount = 7
@@ -31,7 +31,7 @@ matplot_9te  = f"build().result_obj.result_do_multiple_single_see(start_see=5, s
 matplot_10te = f"build().result_obj.result_do_multiple_single_see(start_see=6, see_amount=1, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_result_do_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_do_result_print_msg})"
 
 #####################################################################################################################################################################################################################################################################################################################################
-compress_method_name = '"Save_as_matplot_bm_rec_visual"'  ### 兩層是因為加進去 f"" 會被削掉一層～
+compress_method_name = '"Save_as_matplot_bm_rec_visual"'  ### 兩層是因為 sb.run 會削掉一層 "" ～
 compress_add_loss = True
 compress_bgr2rgb = True
 compress_see_core_amount = 7
@@ -55,7 +55,7 @@ compress_9te  = f"build().result_obj.result_do_multiple_single_see(start_see=5, 
 compress_10te = f"build().result_obj.result_do_multiple_single_see(start_see=6, see_amount=1, see_method_name={compress_method_name}, add_loss={compress_add_loss}, bgr2rgb={compress_bgr2rgb}, single_see_core_amount={compress_single_see_core_amount}, see_print_msg={compress_result_do_see_print_msg}, see_core_amount={compress_see_core_amount}, result_print_msg={compress_result_do_result_print_msg})"
 
 #####################################################################################################################################################################################################################################################################################################################################
-calculate_visual_method_name = '"Calculate_and_Visual_SSIM_LD"'  ### 兩層是因為加進去 f"" 會被削掉一層～
+calculate_visual_method_name = '"Calculate_and_Visual_SSIM_LD"'  ### 兩層是因為 sb.run 會削掉一層 "" ～
 calculate_visual_add_loss = True
 calculate_visual_bgr2rgb = True
 calculate_visual_see_core_amount = 1
