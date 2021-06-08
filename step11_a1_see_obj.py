@@ -3,7 +3,7 @@ from step0_access_path import Syn_write_to_read_dir
 
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_name, remove_dir_certain_file_name
+from util import get_dir_certain_file_name, move_dir_certain_file
 from matplot_fig_ax_util import Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
@@ -35,31 +35,38 @@ class See_info:
     而這邊只是 讀取 training 過程中生成的 See 這樣子囉~~
     '''
     def __init__(self, result_read_dir, result_write_dir, see_name):
-        self.result_read_dir = result_read_dir
+        """
+        __init__：放 Dir：..._read_dir
+                         ..._write_dir
+        """
+        self.see_name = see_name
+
+        self.result_read_dir  = result_read_dir
         self.result_write_dir = result_write_dir
 
-        self.see_name = see_name
-        self.see_read_dir = self.result_read_dir + "/" + self.see_name
+        self.see_read_dir  = self.result_read_dir  + "/" + self.see_name
         self.see_write_dir = self.result_write_dir + "/" + self.see_name
-
-        self.see_jpg_names = None
-        self.see_npy_names = None
-        self.see_file_amount = None
 
         self.in_use_range = "0~1"
         self.gt_use_range = "0~1"
 
     def get_see_dir_info(self):
-        self.see_jpg_names   = get_dir_certain_file_name(self.see_read_dir, certain_word=".jpg")
-        self.see_jpg_paths = [self.see_read_dir + "/" + jpg_name for jpg_name in self.see_jpg_names]
+        """
+        get_info：放 ..._names
+                      ├ ..._read_paths
+                      └ ..._write_paths
+                     see_file_amount
+        """
+        self.see_jpg_names            = get_dir_certain_file_name(self.see_read_dir, certain_word=".jpg")
+        self.see_jpg_read_paths       = [self.see_read_dir + "/" + jpg_name for jpg_name in self.see_jpg_names]  ### 沒有 write_paths，因為這是 predict_flow_visual， 是從model 訓練過程產生的， 後處理不會產生！ 就是不會做ewrite的動作囉！就不用write_path拉！
 
-        self.see_epoch_jpg_names = get_dir_certain_file_name(self.see_read_dir, certain_word="epoch", certain_ext=".jpg")
-        self.see_epoch_jpg_paths = [self.see_read_dir + "/" + epoch_jpg_name for epoch_jpg_name in self.see_epoch_jpg_names]
-        self.see_file_amount     = len(self.see_epoch_jpg_names)
+        self.see_epoch_jpg_names      = get_dir_certain_file_name(self.see_read_dir, certain_word="epoch", certain_ext=".jpg")
+        self.see_epoch_jpg_read_paths = [self.see_read_dir + "/" + epoch_jpg_name for epoch_jpg_name in self.see_epoch_jpg_names]  ### 沒有 write_paths， 同上
 
-        self.see_npy_names   = get_dir_certain_file_name(self.see_read_dir, certain_word=".npy")
-        self.see_npy_read_paths  = [self.see_read_dir  + "/" + npy_name for npy_name in self.see_npy_names]  ### 沒有 write_paths，因為式 npy轉npz， 不會有寫npy的動作， 雖然下面的 compare 會寫一點npy， 但也因為 有用 .replace() 所以用 see_npy_name.replace() 較保險這樣子！
+        self.see_npy_names            = get_dir_certain_file_name(self.see_read_dir, certain_word=".npy")
+        self.see_npy_read_paths       = [self.see_read_dir  + "/" + npy_name for npy_name in self.see_npy_names]  ### 沒有 write_paths，因為式 npy轉npz， 不會有寫npy的動作， 雖然下面的 compare 會寫一點npy， 但也因為 有用 .replace() 所以用 see_npy_name.replace() 較保險這樣子！
 
+        self.see_file_amount          = len(self.see_epoch_jpg_names)
 
     def save_as_jpg(self):  ### 後來看覺得好像有點多餘
         Check_dir_exist_and_build(self.see_write_dir)
@@ -75,15 +82,35 @@ class See_info:
 class See_npy_to_npz(See_info):
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See_npy_to_npz, self).__init__(result_read_dir, result_write_dir, see_name)
+        """
+        __init__：放 Dir：..._read_dir
+                         ..._write_dir
+        """
+        self.see_npz_read_dir  = self.see_read_dir  + "/npz"
+        self.see_npz_write_dir = self.see_write_dir + "/npz"
 
     def get_npz_info(self):
-        self.see_npz_names            = get_dir_certain_file_name(self.see_read_dir, certain_word=".npz")
-        self.see_npz_read_paths       = [self.see_read_dir  + "/" + npz_name for npz_name in self.see_npz_names]  ### 沒有 write_paths，因為有用 .replace() 所以用 see_npy_name.replace() 較保險這樣子！
+        """
+        get_info：放 ..._names
+                      ├ ..._read_paths
+                      └ ..._write_paths
+                     see_file_amount
+        """
+        self.Change_npz_dir(print_msg=True)  ### .npy的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔
 
-        self.see_epoch_npz_names      = get_dir_certain_file_name(self.see_read_dir, certain_word="epoch", certain_ext=".npz")
-        self.see_epoch_npz_read_paths = [self.see_read_dir + "/" + epoch_npz_name for epoch_npz_name in self.see_epoch_npz_names]    ### 沒有 write_paths，同上 ，既然已經沒有 self.see_npz_write_paths， 當然更不會有 self.see_epoch_npz_write_paths 拉！
+        self.see_npz_names            = get_dir_certain_file_name(self.see_npz_read_dir, certain_word=".npz")
+        self.see_npz_read_paths       = [self.see_npz_read_dir   + "/" + npz_name for npz_name in self.see_npz_names]  ### 沒有 write_paths，因為有用 .replace() 所以用 see_npy_name.replace() 較保險這樣子！
+
+        self.see_epoch_npz_names      = get_dir_certain_file_name(self.see_npz_read_dir, certain_word="epoch", certain_ext=".npz")
+        self.see_epoch_npz_read_paths = [self.see_npz_read_dir + "/" + epoch_npz_name for epoch_npz_name in self.see_epoch_npz_names]    ### 沒有 write_paths，同上 ，既然已經沒有 self.see_npz_write_paths， 當然更不會有 self.see_epoch_npz_write_paths 拉！
 
         self.see_file_amount = len(self.see_epoch_npz_read_paths)
+
+    def Change_npz_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_npz_dir, Current See:{self.see_name}")
+        move_dir_certain_file(self.see_read_dir,  certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_read_dir,  print_msg=print_msg)
+        move_dir_certain_file(self.see_write_dir, certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_write_dir, print_msg=print_msg)
+
 
     def Npy_to_npz(self, single_see_core_amount=8, see_print_msg=False):   ### 因為有刪東西的動作，覺得不要multiprocess比較安全~~
         """
@@ -205,22 +232,24 @@ class See_visual(See_info):
     """
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See_visual, self).__init__(result_read_dir, result_write_dir, see_name)
+        """
+        __init__：放 Dir：..._read_dir
+                         ..._write_dir
+        """
         self.matplot_visual_read_dir  = self.see_read_dir  + "/matplot_visual"
         self.matplot_visual_write_dir = self.see_write_dir + "/matplot_visual"
 
-        ### 不確定要不要，因為在initial就做這麼多事情好嗎~~會不會容易出錯哩~~
-        ### 覺得還是不要比較好，要使用到的時候再建立，要不然有時候在analyze只是想要result_obj而已，結果又把see資料夾又重建了一次
-        # Check_dir_exist_and_build(self.see_write_dir)
-        # self.get_see_dir_info()   ### 好像只有在 analyze時會用到！所以用到的時候再抓就好囉！
         self.single_row_imgs_during_train = None  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
+
+    # def get_see_dir_info(self): pass ### 這因為 所有class 都會用到，所以提升到 See_info 裡面囉！
 
     ###############################################################################################
     ###############################################################################################
     ### 主要做的事情，此fun會給 save_as_matplot_visual_during/after train 使用
     def _Draw_matplot_visual(self, epoch, add_loss=False, bgr2rgb=False):
-        in_img = cv2.imread(self.see_jpg_paths[0])            ### 要記得see的第一張存的是 輸入的in影像
-        gt_img = cv2.imread(self.see_jpg_paths[1])            ### 要記得see的第二張存的是 輸出的gt影像
-        img    = cv2.imread(self.see_epoch_jpg_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
+        in_img = cv2.imread(self.see_jpg_read_paths[0])            ### 要記得see的第一張存的是 輸入的in影像
+        gt_img = cv2.imread(self.see_jpg_read_paths[1])            ### 要記得see的第二張存的是 輸出的gt影像
+        img    = cv2.imread(self.see_epoch_jpg_read_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
         single_row_imgs = Matplot_single_row_imgs(
                                 imgs      =[ in_img ,   img ,      gt_img],    ### 把要顯示的每張圖包成list
                                 img_titles=["in_img", "out_img", "gt_img"],    ### 把每張圖要顯示的字包成list
@@ -315,25 +344,29 @@ class See_bm_rec(See_npy_to_npz):
     """
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See_bm_rec, self).__init__(result_read_dir, result_write_dir, see_name)
-
+        """
+        __init__：放 Dir：..._read_dir
+                         ..._write_dir
+        """
         self.matplot_bm_rec_visual_read_dir   = self.see_read_dir  + "/matplot_bm_rec_visual"
         self.matplot_bm_rec_visual_write_dir  = self.see_write_dir + "/matplot_bm_rec_visual"
         self.bm_visual_read_dir               = self.see_read_dir  + "/matplot_bm_rec_visual/bm_visual"
         self.bm_visual_write_dir              = self.see_write_dir + "/matplot_bm_rec_visual/bm_visual"
         self.rec_visual_read_dir              = self.see_read_dir  + "/matplot_bm_rec_visual/rec_visual"
         self.rec_visual_write_dir             = self.see_write_dir + "/matplot_bm_rec_visual/rec_visual"
-        self.bm_names  = None
-        self.bm_paths  = None
-        self.rec_names = None
-        self.rec_paths = None
 
-    ###############################################################################################
-    ###############################################################################################
     def get_bm_rec_info(self):
+        """
+        get_info：放 ..._names
+                      ├ ..._read_paths
+                      └ ..._write_paths
+                     see_file_amount
+        """
         self.bm_names  = get_dir_certain_file_name(self.bm_visual_read_dir , certain_word="bm_epoch", certain_ext=".jpg")
-        self.bm_paths  = [self.bm_visual_read_dir + "/" + name for name in self.bm_names]
+        self.bm_read_paths  = [self.bm_visual_read_dir + "/" + name for name in self.bm_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
+
         self.rec_names = get_dir_certain_file_name(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".jpg")
-        self.rec_paths = [self.rec_visual_read_dir + "/" + name for name in self.rec_names]
+        self.rec_read_paths = [self.rec_visual_read_dir + "/" + name for name in self.rec_names]  ### 沒有 write_path， 因為 bm_rec 只需要指定 write_dir 即可寫入資料夾
 
         self.see_file_amount = len(self.rec_names)
 
@@ -407,9 +440,9 @@ class See_bm_rec(See_npy_to_npz):
     ###         1.這樣這裡做的事情太多了~~
     ###         2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.see_npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
     def _Draw_matplot_bm_rec_visual(self, epoch, add_loss=False, bgr2rgb=False):
-        in_img    = cv2.imread(self.see_jpg_paths[0])          ### 要記得see的jpg第一張存的是 輸入的in影像
-        flow_v    = cv2.imread(self.see_epoch_jpg_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
-        gt_flow_v = cv2.imread(self.see_jpg_paths[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
+        in_img    = cv2.imread(self.see_jpg_read_paths[0])          ### 要記得see的jpg第一張存的是 輸入的in影像
+        flow_v    = cv2.imread(self.see_epoch_jpg_read_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
+        gt_flow_v = cv2.imread(self.see_jpg_read_paths[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
 
         # print("2. see gt_use_range=", self.gt_use_range)
         # start_time = time.time()
@@ -497,21 +530,32 @@ class See_rec_metric(See_bm_rec):
     """
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See_rec_metric, self).__init__(result_read_dir, result_write_dir, see_name)
-
+        """
+        __init__：放 Dir：..._read_dir
+                         ..._write_dir
+        """
         self.matplot_metric_read_dir  = self.see_read_dir  + "/metric"
         self.matplot_metric_write_dir = self.see_write_dir + "/metric"
         self.matplot_metric_visual_read_dir  = self.see_read_dir  + "/matplot_metric_visual"
         self.matplot_metric_visual_write_dir = self.see_write_dir + "/matplot_metric_visual"
-        self.metric_names = None
-        self.metric_paths = None
 
-    ###############################################################################################
-    ###############################################################################################
     def get_metric_info(self):
+        """
+        get_info：放 ..._names
+                      ├ ..._read_paths
+                      └ ..._write_paths
+                     see_file_amount
+        """
         self.metric_names  = get_dir_certain_file_name(self.bm_visual_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
-        self.metric_paths  = [self.matplot_metric_visual_read_dir + "/" + name for name in self.metric_names]
+        self.metric_read_paths  = [self.matplot_metric_visual_read_dir + "/" + name for name in self.metric_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
         self.see_file_amount = len(self.metric_names)
+
+
+    def Change_metric_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_metric_dir, Current See:{self.see_name}")
+        move_dir_certain_file(self.matplot_metric_visual_read_dir,  certain_word=".npy", dst_dir=self.matplot_metric_read_dir, print_msg=print_msg)
+        move_dir_certain_file(self.matplot_metric_visual_write_dir, certain_word=".npy", dst_dir=self.matplot_metric_write_dir, print_msg=print_msg)
 
     ###############################################################################################
     ###############################################################################################
@@ -573,8 +617,8 @@ class See_rec_metric(See_bm_rec):
     ### See_method 第三部分：主要做的事情在這裡
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
-            path1 = self.rec_paths[go_epoch]  ### matplot_bm_rec_visual/rec_visual/rec_epoch=0000.jpg
-            path2 = self.see_jpg_paths[2]     ### 0c-rec_hope.jpg
+            path1 = self.rec_read_paths[go_epoch]  ### matplot_bm_rec_visual/rec_visual/rec_epoch=0000.jpg
+            path2 = self.see_jpg_read_paths[2]     ### 0c-rec_hope.jpg
             # print(path1)
             # print(path2)
 
@@ -612,6 +656,9 @@ class See_rec_metric(See_bm_rec):
         ### See_method 第二部分：取得see資訊
         self.get_see_dir_info()
         self.get_bm_rec_info()
+        
+        self.Change_metric_dir(print_msg=see_print_msg)  ### .npy的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔， 因為沒有用到 self.get_metric_info()，所以只能把 Change_metric_dir 放這裡囉ˊ口ˋ
+
         SSIMs = np.load(f"{self.matplot_metric_read_dir}/SSIMs.npy")
         LDs   = np.load(f"{self.matplot_metric_read_dir}/LDs.npy")
 
@@ -641,12 +688,12 @@ class See_rec_metric(See_bm_rec):
     ### See_method 第三部分：主要做的事情在這裡
     def _visual_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs, add_loss=False, bgr2rgb=False):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
-            path1 = self.rec_paths[go_epoch]  ### matplot_bm_rec_visual/rec_visual/rec_epoch=0000.jpg
-            path2 = self.see_jpg_paths[2]     ### 0c-rec_hope.jpg
+            path1 = self.rec_read_paths[go_epoch]  ### matplot_bm_rec_visual/rec_visual/rec_epoch=0000.jpg
+            path2 = self.see_jpg_read_paths[2]     ### 0c-rec_hope.jpg
             SSIM = SSIMs[go_epoch]
             LD   = LDs  [go_epoch]
 
-            in_img     = cv2.imread(self.see_jpg_paths[0])
+            in_img     = cv2.imread(self.see_jpg_read_paths[0])
             rec_img    = cv2.imread(path1)
             rec_gt_img = cv2.imread(path2)
             single_row_imgs = Matplot_single_row_imgs(
