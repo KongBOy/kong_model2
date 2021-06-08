@@ -64,9 +64,10 @@ class Result:
             see_method_name        : str
             add_loss               : bool
             bgr2rgb                : bool
+
             single_see_core_amount : int
             see_print_msg          : bool
-            see_corea_amount       : int
+            see_core_amount       : int
             result_print_msg       : bool
         }
         method舉例怎麼呼叫：result_do_multiple_single_see(start_see, see_amount, see_method_name=str, add_loss=bool, bgr2rgb=bool, single_see_core_amount=int, see_print_msg=bool, see_core_amount=int, result_print_msg=bool)
@@ -75,7 +76,10 @@ class Result:
                 Save_as_matplot_bm_rec_visual
                 Calculate_SSIM_LD
         """
-
+        if( "single_see_core_amount" not in args.keys()): args["single_see_core_amount"] = 1
+        if( "see_core_amount"        not in args.keys()): args["see_core_amount"       ] = 1
+        if( "see_print_msg"          not in args.keys()): args["see_print_msg"         ] = False
+        if( "result_print_msg"       not in args.keys()): args["result_print_msg"      ] = False
         result_start = time.time()
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing {args['see_method_name']}, Current Result:{self.result_name}")
         """
