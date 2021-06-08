@@ -23,6 +23,12 @@ import matplotlib.pyplot as plt  ### debug用
 import datetime
 # import pdb
 
+'''
+繼承關係(我把它設計成 有一種 做完 前面才能做後面的概念)：
+See_info -> See_npy_to_npz -> See_bm_rec -> See_rec_metric
+          ↘ See_visual
+'''
+
 class See_info:
     '''
     See 是 最直接、最基本 model output的東西，在各個model裡面都應該有寫 自己的 generate_see
@@ -68,7 +74,7 @@ class See_info:
 #############################################################################################################################################################################################################################################################################################
 class See_npy_to_npz(See_info):
     def __init__(self, result_read_dir, result_write_dir, see_name):
-        super(See_bm_rec, self).__init__(result_read_dir, result_write_dir, see_name)
+        super(See_npy_to_npz, self).__init__(result_read_dir, result_write_dir, see_name)
 
     def get_npz_info(self):
         self.see_npz_names            = get_dir_certain_file_name(self.see_read_dir, certain_word=".npz")
@@ -299,7 +305,7 @@ class See_visual(See_info):
 #############################################################################################################################################################################################################################################################################################
 #############################################################################################################################################################################################################################################################################################
 #############################################################################################################################################################################################################################################################################################
-class See_bm_rec(See_info):
+class See_bm_rec(See_npy_to_npz):
     """
     See_bm_rec 是用來 把 模型生成的 See 裡面的 flow，去生成 bm, rec，順便也視覺化出來這樣子囉
        所以裡面會有：
@@ -630,7 +636,7 @@ class See_rec_metric(See_bm_rec):
             Syn_write_to_read_dir(write_dir=self.matplot_metric_visual_write_dir, read_dir=self.matplot_metric_visual_read_dir)
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish _visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
     ### See_method 第三部分：主要做的事情在這裡
     def _visual_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs, add_loss=False, bgr2rgb=False):
@@ -655,7 +661,7 @@ class See_rec_metric(See_bm_rec):
 
 
 
-class See(See_visual, See_npy_to_npz, See_rec_metric):
+class See(See_visual, See_rec_metric):
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See, self).__init__(result_read_dir, result_write_dir, see_name)
 
