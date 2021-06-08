@@ -63,7 +63,9 @@ class See_info:
         Check_dir_exist_and_build(self.see_write_dir)
         Video_combine_from_dir(self.see_read_dir, self.see_write_dir, "0-combine_jpg_tail_long.avi", tail_long=True)
 
-
+#############################################################################################################################################################################################################################################################################################
+#############################################################################################################################################################################################################################################################################################
+#############################################################################################################################################################################################################################################################################################
 class See_npy_to_npz(See_info):
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See_bm_rec, self).__init__(result_read_dir, result_write_dir, see_name)
@@ -186,8 +188,9 @@ class See_npy_to_npz(See_info):
         load_3_load_50_npy: 0.31119656562805176
         """
         print("finish")
-
-
+#############################################################################################################################################################################################################################################################################################
+#############################################################################################################################################################################################################################################################################################
+#############################################################################################################################################################################################################################################################################################
 class See_visual(See_info):
     """
     See_visual 是用來視覺化 See 的物件，因此這個Class我覺得也應該要設計成 training 中可以被使用的這樣子囉
@@ -241,18 +244,6 @@ class See_visual(See_info):
 
     ###############################################################################################
     ###############################################################################################
-    ### 訓練後，可以走訪所有see_file 並重新產生 matplot_visual
-    ### See_method 第三部分：主要做的事情在這裡
-    def _draw_matplot_visual_after_train(self, start_epoch, epoch_amount, add_loss=False, bgr2rgb=False):
-        """
-        有可能畫完主圖 還要再畫 loss，所以多這個method，多做的事情都在這裡處理
-        處理完後就 Save_fig 囉！
-        """
-        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
-            single_row_imgs = self._Draw_matplot_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
-            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.see_file_amount, ylim=0.04)
-            single_row_imgs.Save_fig(dst_dir=self.matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
-
     def Save_as_matplot_visual(self, add_loss=False, bgr2rgb=False, single_see_core_amount=8, see_print_msg=False):
         """
         Save_as_matplot_visual(_after_train) 最後想試試看 省掉他 會不會影響我的理解
@@ -292,11 +283,22 @@ class See_visual(See_info):
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Save_as_matplot_visual, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
-    ###############################################################################################
-    ###############################################################################################
-    ###############################################################################################
 
+    ### See_method 第三部分：主要做的事情在這裡
+    ### 訓練後，可以走訪所有see_file 並重新產生 matplot_visual
+    def _draw_matplot_visual_after_train(self, start_epoch, epoch_amount, add_loss=False, bgr2rgb=False):
+        """
+        有可能畫完主圖 還要再畫 loss，所以多這個method，多做的事情都在這裡處理
+        處理完後就 Save_fig 囉！
+        """
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+            single_row_imgs = self._Draw_matplot_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
+            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.see_file_amount, ylim=0.04)
+            single_row_imgs.Save_fig(dst_dir=self.matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
+#############################################################################################################################################################################################################################################################################################
+#############################################################################################################################################################################################################################################################################################
+#############################################################################################################################################################################################################################################################################################
 class See_bm_rec(See_info):
     """
     See_bm_rec 是用來 把 模型生成的 See 裡面的 flow，去生成 bm, rec，順便也視覺化出來這樣子囉
@@ -331,73 +333,6 @@ class See_bm_rec(See_info):
 
     ###############################################################################################
     ###############################################################################################
-    def _use_flow_to_rec(self, dis_img, flow):
-        if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
-        h, w = flow.shape[:2]
-        total_pix_amount = h * w
-        valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
-        # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
-        if( valid_mask_pix_amount / total_pix_amount > 0.28):
-            bm  = use_flow_to_get_bm(flow, flow_scale=h)
-            rec = use_bm_to_rec_img (bm  , flow_scale=h, dis_img=dis_img)
-        else:
-            bm  = np.zeros(shape=(h, w, 2))
-            rec = np.zeros(shape=(h, w, 3))
-        return bm, rec
-
-    def _get_bm_rec_and_gt_bm_gt_rec(self, epoch, dis_img):
-        ### pred flow part
-        flow          = np.load(self.see_epoch_npz_read_paths[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
-        flow [..., 1] = 1 - flow[..., 1]
-        bm, rec = self._use_flow_to_rec(dis_img=dis_img, flow=flow)
-
-        ### gt flow part
-        gt_flow            = np.load(self.see_npz_read_paths[0])["arr_0"]       ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
-        gt_flow   [..., 1] = 1 - gt_flow[..., 1]
-        gt_bm, gt_rec = self._use_flow_to_rec(dis_img=dis_img, flow=gt_flow)
-        return bm, rec, gt_bm, gt_rec
-
-    ### 我覺得先把 npy 轉成 npz 再來生圖比較好，不要在這邊 邊生圖 邊轉 npz，覺得的原因如下：
-    ###     1.這樣這裡做的事情太多了~~
-    ###     2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.see_npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
-    def _Draw_matplot_bm_rec_visual(self, epoch, add_loss=False, bgr2rgb=False):
-        in_img    = cv2.imread(self.see_jpg_paths[0])          ### 要記得see的jpg第一張存的是 輸入的in影像
-        flow_v    = cv2.imread(self.see_epoch_jpg_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
-        gt_flow_v = cv2.imread(self.see_jpg_paths[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
-
-        # print("2. see gt_use_range=", self.gt_use_range)
-        # start_time = time.time()
-        bm, rec, gt_bm, gt_rec = self._get_bm_rec_and_gt_bm_gt_rec(epoch=epoch, dis_img=in_img)  ### 做一次 大約 1~2 秒
-        # print("self._get_bm_rec_and_gt_bm_gt_rec cost time:", time.time() - start_time)
-
-        # bm_visual  = method1(bm[...,0], bm[...,1]*-1)
-        # gt_bm_visual = method1(gt_bm[...,0], gt_bm[...,1]*-1)
-        single_row_imgs = Matplot_single_row_imgs(
-                                imgs      =[ in_img ,   flow_v ,   gt_flow_v, rec, gt_rec],    ### 把要顯示的每張圖包成list
-                                img_titles=["in_img", "pred_flow_v", "gt_flow_v", "pred_rec", "gt_rec"],    ### 把每張圖要顯示的字包成list
-                                fig_title ="epoch=%04i" % epoch,   ### 圖上的大標題
-                                add_loss  =add_loss,
-                                bgr2rgb   =bgr2rgb)
-        single_row_imgs.Draw_img()
-
-        ### 單獨存大張 bm，有空再弄
-        ### 單獨存大張 rec：
-        if(epoch <= 3): cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
-        cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_epoch=%04i.jpg" % epoch, rec)     ### 存大張rec
-
-        return single_row_imgs
-
-    ### See_method 第三部分：主要做的事情在這裡
-    def _draw_matplot_bm_rec_visual_after_train(self, start_epoch, epoch_amount, add_loss, bgr2rgb):
-        """
-        有可能畫完主圖 還要再畫 loss，所以多這個method，多做的事情都在這裡處理
-        處理完後就 Save_fig 囉！
-        """
-        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
-            single_row_imgs = self._Draw_matplot_bm_rec_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
-            single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
-
-
     def Save_as_matplot_bm_rec_visual(self,   ### 訓練後，可以走訪所有see_file 並重新產生 matplot_bm_rec_visual
                                       add_loss=False,
                                       bgr2rgb =False,
@@ -451,6 +386,76 @@ class See_bm_rec(See_info):
         ### See_method 第零b部分：顯示結束資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Save_as_matplot_bm_rec_visual, Current See:{self.see_name}, cost time:{time.time() - start_time}")
 
+    ### See_method 第三部分：主要做的事情在這裡
+    def _draw_matplot_bm_rec_visual_after_train(self, start_epoch, epoch_amount, add_loss, bgr2rgb):
+        """
+        有可能畫完主圖 還要再畫 loss，所以多這個method，多做的事情都在這裡處理
+        處理完後就 Save_fig 囉！
+        """
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+            single_row_imgs = self._Draw_matplot_bm_rec_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
+            single_row_imgs.Save_fig(dst_dir=self.matplot_bm_rec_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+
+    ### See_method 第三部分a
+    ###     我覺得先把 npy 轉成 npz 再來生圖比較好，不要在這邊 邊生圖 邊轉 npz，覺得的原因如下：
+    ###         1.這樣這裡做的事情太多了~~
+    ###         2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.see_npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
+    def _Draw_matplot_bm_rec_visual(self, epoch, add_loss=False, bgr2rgb=False):
+        in_img    = cv2.imread(self.see_jpg_paths[0])          ### 要記得see的jpg第一張存的是 輸入的in影像
+        flow_v    = cv2.imread(self.see_epoch_jpg_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
+        gt_flow_v = cv2.imread(self.see_jpg_paths[1])          ### 要記得see0的jpg第二張存的是 輸出的gt影像
+
+        # print("2. see gt_use_range=", self.gt_use_range)
+        # start_time = time.time()
+        bm, rec, gt_bm, gt_rec = self._get_bm_rec_and_gt_bm_gt_rec(epoch=epoch, dis_img=in_img)  ### 做一次 大約 1~2 秒
+        # print("self._get_bm_rec_and_gt_bm_gt_rec cost time:", time.time() - start_time)
+
+        # bm_visual  = method1(bm[...,0], bm[...,1]*-1)
+        # gt_bm_visual = method1(gt_bm[...,0], gt_bm[...,1]*-1)
+        single_row_imgs = Matplot_single_row_imgs(
+                                imgs      =[ in_img ,   flow_v ,   gt_flow_v, rec, gt_rec],    ### 把要顯示的每張圖包成list
+                                img_titles=["in_img", "pred_flow_v", "gt_flow_v", "pred_rec", "gt_rec"],    ### 把每張圖要顯示的字包成list
+                                fig_title ="epoch=%04i" % epoch,   ### 圖上的大標題
+                                add_loss  =add_loss,
+                                bgr2rgb   =bgr2rgb)
+        single_row_imgs.Draw_img()
+
+        ### 單獨存大張 bm，有空再弄
+        ### 單獨存大張 rec：
+        if(epoch <= 3): cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
+        cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_epoch=%04i.jpg" % epoch, rec)     ### 存大張rec
+
+        return single_row_imgs
+
+    ### See_method 第三部分b
+    def _get_bm_rec_and_gt_bm_gt_rec(self, epoch, dis_img):
+        ### pred flow part
+        flow          = np.load(self.see_epoch_npz_read_paths[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        flow [..., 1] = 1 - flow[..., 1]
+        bm, rec = self._use_flow_to_rec(dis_img=dis_img, flow=flow)
+
+        ### gt flow part
+        gt_flow            = np.load(self.see_npz_read_paths[0])["arr_0"]       ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        gt_flow   [..., 1] = 1 - gt_flow[..., 1]
+        gt_bm, gt_rec = self._use_flow_to_rec(dis_img=dis_img, flow=gt_flow)
+        return bm, rec, gt_bm, gt_rec
+
+    ### See_method 第三部分c
+    def _use_flow_to_rec(self, dis_img, flow):
+        if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
+        h, w = flow.shape[:2]
+        total_pix_amount = h * w
+        valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
+        # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
+        if( valid_mask_pix_amount / total_pix_amount > 0.28):
+            bm  = use_flow_to_get_bm(flow, flow_scale=h)
+            rec = use_bm_to_rec_img (bm  , flow_scale=h, dis_img=dis_img)
+        else:
+            bm  = np.zeros(shape=(h, w, 2))
+            rec = np.zeros(shape=(h, w, 3))
+        return bm, rec
+
+
     ###############################################################################################
     ###############################################################################################
     ###############################################################################################
@@ -477,10 +482,9 @@ class See_bm_rec(See_info):
     #         print("epoch=%i 超過目前exp的epoch數目囉！有可能是還沒train完see還沒產生到該epoch 或者 是輸入的epoch數 超過 epochs囉！" % epoch)
     #         print("Save_as_matplot_bm_rec_visual_at_certain_epoch不做事情拉~")
 
-    ###############################################################################################
-    ###############################################################################################
-    ###############################################################################################
-
+#############################################################################################################################################################################################################################################################################################
+#############################################################################################################################################################################################################################################################################################
+#############################################################################################################################################################################################################################################################################################
 class See_rec_metric(See_bm_rec):
     """
     我把它繼承See_bm_rec 的概念是要做完 See_bm_rec 後才能做 See_rec_metric 喔！
