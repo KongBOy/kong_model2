@@ -1,4 +1,4 @@
-from step0_access_path import JPG_QUALITY, CORE_AMOUNT
+from step0_access_path import JPG_QUALITY, CORE_AMOUNT, CORE_AMOUNT_NPY_TO_NPZ
 
 import sys
 sys.path.append("kong_util")
@@ -111,11 +111,11 @@ class Result:
                 if(args["see_method_name"] == "Save_as_matplot_visual"):
                     self.sees[see_num].Save_as_matplot_visual        (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
                 if(args["see_method_name"] == "Save_as_matplot_bm_rec_visual"):
-                    self.sees[see_num].Npy_to_npz(multiprocess=True)
+                    self.sees[see_num].Npy_to_npz                    (single_see_core_amount=CORE_AMOUNT_NPY_TO_NPZ, see_print_msg=args["see_print_msg"])
                     self.sees[see_num].Save_as_matplot_bm_rec_visual (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
                     """
                     如果 see_file_amount少，建議 多個see 同時跑， see內的多個任務 同時跑：see_core_amount=7, single_see_core_amount=1
-                    如果 see_file_amount多，建議 單個see 依序跑， see內的多個任務 同時跑：see_core_amount=1, single_see_core_amount=8之類的      
+                    如果 see_file_amount多，建議 單個see 依序跑， see內的多個任務 同時跑：see_core_amount=1, single_see_core_amount=8之類的
 
                     已經在127.28證實處理 500 epoch 左右的case 以  see  為單位比較快, 大約 1549(不含 npy to npz), 設定為：bm/rec core 13, crop 和 jpg core 皆 1
                                                             以 see內 為單位比較慢, 大約 1973(不含 npy to npz)
