@@ -20,6 +20,7 @@ import os
 sys.path.append("SIFT_dev/SIFTflow")
 from kong_use_evalUnwarp_sucess import use_DewarpNet_eval
 import matplotlib.pyplot as plt  ### debug用
+from   matplotlib.gridspec import GridSpec
 import datetime
 # import pdb
 
@@ -656,7 +657,7 @@ class See_rec_metric(See_bm_rec):
         ### See_method 第二部分：取得see資訊
         self.get_see_dir_info()
         self.get_bm_rec_info()
-        
+
         self.Change_metric_dir(print_msg=see_print_msg)  ### .npy的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔， 因為沒有用到 self.get_metric_info()，所以只能把 Change_metric_dir 放這裡囉ˊ口ˋ
 
         SSIMs = np.load(f"{self.matplot_metric_read_dir}/SSIMs.npy")
@@ -700,11 +701,32 @@ class See_rec_metric(See_bm_rec):
                         imgs      =[in_img,   rec_img ,   rec_gt_img],    ### 把要顯示的每張圖包成list
                         img_titles=[ "in_img", "rec"    , "gt_rec"],    ### 把每張圖要顯示的字包成list
                         fig_title ="epoch=%04i, SSIM=%.2f, LD=%.2f" % (go_epoch, SSIM, LD),   ### 圖上的大標題
-                        add_loss  =add_loss,
+                        add_loss  =False,
                         bgr2rgb   =bgr2rgb)
-            single_row_imgs.Draw_img()
-            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.matplot_metric_read_dir, go_epoch, min_epochs=self.see_file_amount, ylim=25)
-            single_row_imgs.Save_fig(dst_dir=self.matplot_metric_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+            if(add_loss):
+                ### step1 先架構好 整張圖的骨架
+                single_row_imgs.step1_add_row_col(add_where="add_row", merge=True)
+                single_row_imgs.step1_add_row_col(add_where="add_col", merge=True, grid_ratio=1.9)
+
+                ### step2 把圖都畫上去
+                single_row_imgs.Draw_img()
+                single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.merged_ax_list[0], self.matplot_metric_read_dir, go_epoch, min_epochs=self.see_file_amount, ylim=25)
+                single_row_imgs.merged_ax_list[1].imshow(rec_img)
+
+                ### step3 重新規劃一下 各個圖 要顯示的 大小比例
+                gs_bass = GridSpec(single_row_imgs.fig_row_amount, single_row_imgs.fig_col_amount, width_ratios=[1, 1, 1, 2], height_ratios=[1, 1])
+                for go_r, r_ax in enumerate(single_row_imgs.ax):
+                    for go_c, r_c_ax in enumerate(r_ax):
+                        # print(f"gs_bass[{go_c}].get_position(single_row_imgs.fig)", gs_bass[go_r, go_c].get_position(single_row_imgs.fig))  ### 可以看到 目前使用的規格的範圍 和 其 對應到 single_row_imgs.fig 上 框出的box是在哪裡
+                        r_c_ax.set_position(gs_bass[go_c].get_position(single_row_imgs.fig))    ### 根據目前的圖(single_row_imgs.fig)， 重新規劃一下 各個圖 要顯示的 大小比例
+
+                # print("gs_bass[1, :3]", gs_bass[1, :3].get_position(single_row_imgs.fig))  ### 可以看到 目前使用的規格的範圍 和 其 對應到 single_row_imgs.fig 上 框出的box是在哪裡
+                # print("gs_bass[:, 3 ]", gs_bass[:, 3 ].get_position(single_row_imgs.fig))  ### 可以看到 目前使用的規格的範圍 和 其 對應到 single_row_imgs.fig 上 框出的box是在哪裡
+                single_row_imgs.merged_ax_list[0].set_position(gs_bass[1, :3].get_position(single_row_imgs.fig))   ### 根據目前的圖(single_row_imgs.fig)， 重新規劃一下 各個圖 要顯示的 大小比例
+                single_row_imgs.merged_ax_list[1].set_position(gs_bass[:, 3 ].get_position(single_row_imgs.fig))   ### 根據目前的圖(single_row_imgs.fig)， 重新規劃一下 各個圖 要顯示的 大小比例
+
+            # plt.show()
+            single_row_imgs.Save_fig(dst_dir=self.matplot_metric_visual_write_dir, epoch=go_epoch)  ### 話完圖就可以存了喔！
 
 
 

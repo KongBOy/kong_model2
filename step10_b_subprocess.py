@@ -32,10 +32,17 @@ matplot_10te = f"build().result_obj.result_do_multiple_single_see(start_see=6, s
 
 #####################################################################################################################################################################################################################################################################################################################################
 compress_method_name = '"Save_as_matplot_bm_rec_visual"'  ### 兩層是因為 sb.run 會削掉一層 "" ～
-compress_add_loss = True
+compress_add_loss = False
 compress_bgr2rgb = True
-compress_see_core_amount = 7
-compress_single_see_core_amount = 2
+### 應該是 CPU吃滿非常快的設定
+# compress_see_core_amount = 7
+# compress_single_see_core_amount = 2
+###別的東西再跑 不佔滿CPU的設定
+compress_see_core_amount = 1
+compress_single_see_core_amount = 8
+### 不multiprocess 依序慢慢做 debug 用 的設定
+# compress_see_core_amount = 1
+# compress_single_see_core_amount = 1
 compress_result_do_result_print_msg = False
 compress_result_do_see_print_msg = True
 compress_all  = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=7, see_method_name={compress_method_name}, add_loss={compress_add_loss}, bgr2rgb={compress_bgr2rgb}, single_see_core_amount={compress_single_see_core_amount}, see_print_msg={compress_result_do_see_print_msg}, see_core_amount={compress_see_core_amount}, result_print_msg={compress_result_do_result_print_msg})"
@@ -330,4 +337,5 @@ sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USEsigmoid.{calculate_visual_a
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
+# sb.run(same_command + [f"testest.{visual_metric_1}"])   ### 127.28
 # sb.run(same_command + [f"testest_big.{compress_10te}"])   ### 127.28
