@@ -37,7 +37,7 @@ compress_bgr2rgb = True
 ### 應該是 CPU吃滿非常快的設定
 # compress_see_core_amount = 7
 # compress_single_see_core_amount = 2
-###別的東西再跑 不佔滿CPU的設定
+### 別的東西再跑 不佔滿CPU的設定
 compress_see_core_amount = 1
 compress_single_see_core_amount = 8
 ### 不multiprocess 依序慢慢做 debug 用 的設定
@@ -91,6 +91,9 @@ visual_metric_add_loss = True
 visual_metric_bgr2rgb = True
 visual_metric_see_core_amount = 1
 visual_metric_single_see_core_amount = 4
+### 不multiprocess 依序慢慢做 debug 用 的設定
+# visual_metric_see_core_amount = 1
+# visual_metric_single_see_core_amount = 1
 visual_metric_result_do_result_print_msg = False
 visual_metric_result_do_see_print_msg = False
 visual_metric_all  = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=7, see_method_name={visual_metric_method_name}, add_loss={visual_metric_add_loss}, bgr2rgb={visual_metric_bgr2rgb}, single_see_core_amount={visual_metric_single_see_core_amount}, see_print_msg={visual_metric_result_do_see_print_msg}, see_core_amount={visual_metric_see_core_amount}, result_print_msg={visual_metric_result_do_result_print_msg})"
