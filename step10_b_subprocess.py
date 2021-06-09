@@ -208,38 +208,38 @@ Change_npz_dir_all  = f"build().result_obj.result_do_multiple_single_see(start_s
 
 ##########################################################################################################################################################################################
 ### 5
-# sb.run(same_command + [f"ch64_in_concat_A.{run}"])  ### 看看Activation 完再concat的效果
+sb.run(same_command + [f"ch64_in_concat_A.{calculate_visual_all}"])  ### 看看Activation 完再concat的效果
 
 ##########################################################################################################################################################################################
 # ### 6
-# sb.run(same_command + [f"unet_2l.{run}"])
-# sb.run(same_command + [f"unet_3l.{run}"])
-# sb.run(same_command + [f"unet_4l.{run}"])
-# sb.run(same_command + [f"unet_5l.{run}"])
-# sb.run(same_command + [f"unet_6l.{run}"])
-# sb.run(same_command + [f"unet_7l.{run}"])
-# sb.run(same_command + [f"unet_8l.{run}"])
+sb.run(same_command + [f"unet_2l.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_3l.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_4l.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_5l.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_6l.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_7l.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_8l.{calculate_visual_all}"])
 
 #############################################################################################################
 ### 7a
-# sb.run(same_command + [f"unet_8l_skip_use_add.{run}"])
-# sb.run(same_command + [f"unet_7l_skip_use_add.{run}"])
-# sb.run(same_command + [f"unet_6l_skip_use_add.{run}"])
-# sb.run(same_command + [f"unet_5l_skip_use_add.{run}"])
-# sb.run(same_command + [f"unet_4l_skip_use_add.{run}"])
-# sb.run(same_command + [f"unet_3l_skip_use_add.{run}"])
-# sb.run(same_command + [f"unet_2l_skip_use_add.{run}"])
+sb.run(same_command + [f"unet_8l_skip_use_add.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_7l_skip_use_add.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_6l_skip_use_add.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_5l_skip_use_add.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_4l_skip_use_add.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_3l_skip_use_add.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_2l_skip_use_add.{calculate_visual_all}"])
 
 #############################################################################################################
 ### 7b
-# sb.run(same_command + [f"unet_IN_7l_2to2noC     .{run}"])
-# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{run}"])
-# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{run}"])  ### 3254
-# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{run}"])
-# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{run}"])
-# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{run}"])  ### 3073
-# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{run}"])  ### 2851
-# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{run}"])  ### 2920
+# sb.run(same_command + [f"unet_IN_7l_2to2noC     .{calculate_visual_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{calculate_visual_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{calculate_visual_4te}"])  ### 3254
+# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{calculate_visual_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{calculate_visual_all}"])
+# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{calculate_visual_all}"])  ### 3073
+# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{calculate_visual_all}"])  ### 2851
+# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{calculate_visual_all}"])  ### 2920
 
 
 # sb.run(same_command + [f"unet_IN_7l_2to3noC_e020.{calculate_visual_all}"])  ### 測試真的IN  127.28
@@ -255,11 +255,11 @@ Change_npz_dir_all  = f"build().result_obj.result_do_multiple_single_see(start_s
 
 #############################################################################################################
 ### 7c
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_NO_relu   .{run}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USErelu   .{run}"])   ### 127.28
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USEsigmoid.{run}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USErelu   .{run}"])   ### 127.28
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USEsigmoid.{run}"])   ### 127.28
+sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_NO_relu   .{calculate_visual_all}"])   ### 127.35
+sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USErelu   .{calculate_visual_all}"])   ### 127.28
+sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USEsigmoid.{calculate_visual_all}"])   ### 127.35
+sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USErelu   .{calculate_visual_all}"])   ### 127.28
+sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USEsigmoid.{calculate_visual_all}"])   ### 127.28
 
 
 #############################################################################################################
