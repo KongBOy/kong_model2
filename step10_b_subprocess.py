@@ -201,12 +201,12 @@ Change_npz_dir_all  = f"build().result_obj.result_do_multiple_single_see(start_s
 
 ##########################################################################################################################################################################################
 ### 5
-sb.run(same_command + [f"ch64_in_concat_A.{calculate_visual_all}"])  ### 看看Activation 完再concat的效果
+# sb.run(same_command + [f"ch64_in_concat_A.{calculate_visual_all}"])  ### 看看Activation 完再concat的效果
 
 ##########################################################################################################################################################################################
 # ### 6
-sb.run(same_command + [f"unet_2l.{calculate_visual_all}"])
-sb.run(same_command + [f"unet_3l.{calculate_visual_all}"])
+# sb.run(same_command + [f"unet_2l.{calculate_visual_all}"])
+sb.run(same_command + [f"unet_3l.{calculate_visual_9te}"])
 sb.run(same_command + [f"unet_4l.{calculate_visual_all}"])
 sb.run(same_command + [f"unet_5l.{calculate_visual_all}"])
 sb.run(same_command + [f"unet_6l.{calculate_visual_all}"])
