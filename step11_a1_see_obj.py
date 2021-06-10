@@ -3,7 +3,7 @@ from step0_access_path import Syn_write_to_read_dir
 
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_name, move_dir_certain_file
+from util import get_dir_certain_file_name, move_dir_certain_file, method2
 from matplot_fig_ax_util import Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
@@ -549,10 +549,13 @@ class See_rec_metric(See_bm_rec):
                       └ ..._write_paths
                      see_file_amount
         """
-        self.metric_names  = get_dir_certain_file_name(self.bm_visual_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
-        self.metric_read_paths  = [self.matplot_metric_visual_read_dir + "/" + name for name in self.metric_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
+        # self.metric_names  = get_dir_certain_file_name(self.matplot_metric_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
+        # self.metric_read_paths  = [self.matplot_metric_visual_read_dir + "/" + name for name in self.metric_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
-        self.see_file_amount = len(self.metric_names)
+        self.ld_visual_names        = get_dir_certain_file_name(self.matplot_metric_read_dir , certain_word="ld_epoch", certain_ext=".jpg")
+        self.ld_visual_read_paths   = [self.matplot_metric_read_dir + "/" + name for name in self.ld_visual_names]  ### 沒有 write_path， 因為 ld_visual 只需要指定 write_dir 即可寫入資料夾
+
+        # self.see_file_amount = len(self.metric_names)
 
 
     def Change_metric_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
@@ -623,14 +626,20 @@ class See_rec_metric(See_bm_rec):
     ### See_method 第三部分：主要做的事情在這裡
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+            ### rec_GT 要怎麼轉成 rec_pred
             path1 = self.rec_read_paths[go_epoch]  ### matplot_bm_rec_visual/rec_visual/rec_epoch=0000.jpg
             path2 = self.see_jpg_read_paths[2]     ### 0c-rec_hope.jpg
+
+            ### rec_pred 要怎麼轉成 rec_GT
+            # path1 = self.see_jpg_read_paths[2]     ### 0c-rec_hope.jpg
+            # path2 = self.rec_read_paths[go_epoch]  ### matplot_bm_rec_visual/rec_visual/rec_epoch=0000.jpg
+
             # print(path1)
             # print(path2)
 
             ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
             os.chdir("SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
-            [[SSIM, LD]] = use_DewarpNet_eval(path1, path2)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
+            [SSIM, LD, vx, vy, d] = use_DewarpNet_eval(path1, path2)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
             os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
 
             # fig, ax = plt.subplots(nrows=1, ncols=2)
@@ -640,6 +649,20 @@ class See_rec_metric(See_bm_rec):
             # ax[1].imshow(rec_gt_img)
             # plt.show()
             # plt.close()
+
+            # single_row_imgs = Matplot_single_row_imgs(
+            #             imgs      =[d],    ### 把要顯示的每張圖包成list
+            #             img_titles=[],
+            #             fig_title ="",   ### 圖上的大標題
+            #             pure_img  =True,
+            #             add_loss  =False,
+            #             bgr2rgb   =False)
+            # single_row_imgs.Draw_img()
+            # plt.show()
+
+            ld_visual = method2(vx, vy, color_shift=3)
+
+            cv2.imwrite(self.matplot_metric_write_dir + "/ld_epoch=%04i.jpg" % go_epoch, ld_visual)
 
             # print(go_epoch, SSIM, LD)
             SSIMs.append((go_epoch, SSIM))
@@ -662,6 +685,7 @@ class See_rec_metric(See_bm_rec):
         ### See_method 第二部分：取得see資訊
         self.get_see_dir_info()
         self.get_bm_rec_info()
+        self.get_metric_info()
 
         self.Change_metric_dir(print_msg=see_print_msg)  ### .npy的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔， 因為沒有用到 self.get_metric_info()，所以只能把 Change_metric_dir 放這裡囉ˊ口ˋ
 
@@ -703,6 +727,7 @@ class See_rec_metric(See_bm_rec):
             in_img     = cv2.imread(self.see_jpg_read_paths[0])
             rec_img    = cv2.imread(path1)
             rec_gt_img = cv2.imread(path2)
+            ld_visual  = cv2.imread(self.ld_visual_read_paths[go_epoch])
             single_row_imgs = Matplot_single_row_imgs(
                         imgs      =[in_img,   rec_img ,   rec_gt_img],    ### 把要顯示的每張圖包成list
                         img_titles=[ "in_img", "rec"    , "gt_rec"],    ### 把每張圖要顯示的字包成list
@@ -710,6 +735,7 @@ class See_rec_metric(See_bm_rec):
                         add_loss  =False,
                         bgr2rgb   =bgr2rgb)
             if(add_loss):
+                ld_visual = ld_visual[..., ::-1]  ### opencv -> matplot
                 ### step1 先架構好 整張圖的骨架
                 single_row_imgs.step1_add_row_col(add_where="add_row", merge=True)
                 single_row_imgs.step1_add_row_col(add_where="add_col", merge=True, grid_ratio=1.9)
@@ -717,7 +743,7 @@ class See_rec_metric(See_bm_rec):
                 ### step2 把圖都畫上去
                 single_row_imgs.Draw_img()
                 single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.merged_ax_list[0], self.matplot_metric_read_dir, go_epoch, min_epochs=self.see_file_amount, ylim=25)
-                single_row_imgs.merged_ax_list[1].imshow(rec_img)
+                single_row_imgs.merged_ax_list[1].imshow(ld_visual)
 
                 ### step3 重新規劃一下 各個圖 要顯示的 大小比例
                 gs_bass = GridSpec(single_row_imgs.fig_row_amount, single_row_imgs.fig_col_amount, width_ratios=[1, 1, 1, 2], height_ratios=[1, 1])
@@ -732,7 +758,7 @@ class See_rec_metric(See_bm_rec):
                 single_row_imgs.merged_ax_list[1].set_position(gs_bass[:, 3 ].get_position(single_row_imgs.fig))   ### 根據目前的圖(single_row_imgs.fig)， 重新規劃一下 各個圖 要顯示的 大小比例
 
             # plt.show()
-            single_row_imgs.Save_fig(dst_dir=self.matplot_metric_visual_write_dir, epoch=go_epoch)  ### 話完圖就可以存了喔！
+            single_row_imgs.Save_fig(dst_dir=self.matplot_metric_visual_write_dir, epoch=go_epoch, epoch_name="metric_epoch")  ### 話完圖就可以存了喔！
 
 
 
