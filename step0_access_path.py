@@ -55,7 +55,6 @@ def Syn_write_to_read_dir(write_dir, read_dir, print_msg=True):
         print("(src)write_dir:", write_dir)
         print("(dst) read_dir:", read_dir)
         print("   use command:", command)
-        print("")
 
     ### 留幾版在刪掉，用一個個檔案複製的方式，但後來發現 用cmd指令 可直接copy 資料夾！且複寫也沒問題～　就用上面的方式了～
     ### 但覺得下面的觀念還不錯，就留一下囉

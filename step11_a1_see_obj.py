@@ -319,6 +319,7 @@ class See_visual(See_info):
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Save_as_matplot_visual, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        print("")
 
     ### See_method 第三部分：主要做的事情在這裡
     ### 訓練後，可以走訪所有see_file 並重新產生 matplot_visual
@@ -425,6 +426,7 @@ class See_bm_rec(See_npy_to_npz):
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Save_as_matplot_bm_rec_visual, Current See:{self.see_name}, cost time:{time.time() - start_time}")
+        print("")
 
     ### See_method 第三部分：主要做的事情在這裡
     def _draw_matplot_bm_rec_visual_after_train(self, start_epoch, epoch_amount, add_loss, bgr2rgb):
@@ -555,8 +557,10 @@ class See_rec_metric(See_bm_rec):
 
     def Change_metric_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_metric_dir, Current See:{self.see_name}")
+        start_time = time.time()
         move_dir_certain_file(self.matplot_metric_visual_read_dir,  certain_word=".npy", dst_dir=self.matplot_metric_read_dir, print_msg=print_msg)
         move_dir_certain_file(self.matplot_metric_visual_write_dir, certain_word=".npy", dst_dir=self.matplot_metric_write_dir, print_msg=print_msg)
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Change_metric_dir, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
     ###############################################################################################
     ###############################################################################################
@@ -614,6 +618,7 @@ class See_rec_metric(See_bm_rec):
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Calculate_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        print("")
 
     ### See_method 第三部分：主要做的事情在這裡
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs):
@@ -685,6 +690,7 @@ class See_rec_metric(See_bm_rec):
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Visual_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        print("")
 
     ### See_method 第三部分：主要做的事情在這裡
     def _visual_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs, add_loss=False, bgr2rgb=False):
