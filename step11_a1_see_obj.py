@@ -739,7 +739,7 @@ class See_rec_metric(See_bm_rec):
             in_img     = cv2.imread(self.see_jpg_read_paths[0])
             rec_img    = cv2.imread(path1)
             rec_gt_img = cv2.imread(path2)
-            ld_visual  = cv2.imread(self.ld_visual_read_paths[go_epoch])
+            ld_visual  = cv2.imread(self.ld_color_visual_read_path[go_epoch])
             single_row_imgs = Matplot_single_row_imgs(
                         imgs      =[in_img,   rec_img ,   rec_gt_img],    ### 把要顯示的每張圖包成list
                         img_titles=[ "in_img", "rec"    , "gt_rec"],    ### 把每張圖要顯示的字包成list
