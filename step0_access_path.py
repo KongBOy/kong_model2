@@ -43,8 +43,13 @@ def Syn_write_to_read_dir(write_dir, read_dir, print_msg=True):
     ###         1.因為 這樣就不會刪到子了
     ###         2.因為 windows 的 copy 不會複製子資料夾， 所以 同步父的時候不會同步子！
     ###         3.同步是在 最後執行的，所以 一定可以覆蓋到 要同步的資料，比如 bm/rec，一定是在全變成.jpg後才會執行同步，不會有.png和.jpg混雜的情形(這情形是在 "data" / "visual" 放一起， "visual" 的 .png轉.jpg＂中斷後重新執行"， "data" 可能會 同步到 "visual" 的.png)
+    # Check_dir_exist_and_build(read_dir)
 
-    Check_dir_exist_and_build(read_dir)
+    ### 但是以上問題其實都可以解
+    ### 1解： data 和 visual 分開存就好啦
+    ### 2解： 同步時要有順序，先從父開始同步，在同步子就行了， 不要先同步子 再同步父喔！這樣 再同步父的時候會把 子已經同步完的結果 刪光光 這樣子拉～
+    Check_dir_exist_and_build_new_dir(read_dir)
+
     write_dir = write_dir.replace("/", "\\") + "\\"
     read_dir  = read_dir .replace("/", "\\") + "\\"
     command   = f'xcopy "{write_dir}" "{read_dir}" /Y /Q'  ### 複製資料夾內的檔案(不包含子資料夾，子資料夾也想複製的話加/E，但我覺得不要，因為如果複製 上層資料夾， 會重複複製到很多次相同子資料夾， 浪費時間)
