@@ -144,6 +144,9 @@ class Result:
                         如果硬要 多see同時做跑 建議 see_core_amount=7, single_see_core_amount=1
                         如果在epoch數小的時候免強可使用
                     """
+                if(args["see_method_name"] == "Calculate_SSIM_LD"):
+                    self.sees[see_num].Calculate_SSIM_LD (single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
+
                 if(args["see_method_name"] == "Visual_SSIM_LD"):
                     self.sees[see_num].Visual_SSIM_LD    (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
 
