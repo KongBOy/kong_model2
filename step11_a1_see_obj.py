@@ -539,6 +539,10 @@ class See_rec_metric(See_bm_rec):
         """
         self.matplot_metric_read_dir  = self.see_read_dir  + "/metric"
         self.matplot_metric_write_dir = self.see_write_dir + "/metric"
+        self.matplot_metric_ld_color_read_dir  = self.see_read_dir  + "/metric/ld_color"
+        self.matplot_metric_ld_color_write_dir = self.see_write_dir + "/metric/ld_color"
+        self.matplot_metric_ld_gray_read_dir   = self.see_read_dir  + "/metric/ld_gray"
+        self.matplot_metric_ld_gray_write_dir  = self.see_write_dir + "/metric/ld_gray"
         self.matplot_metric_visual_read_dir  = self.see_read_dir  + "/matplot_metric_visual"
         self.matplot_metric_visual_write_dir = self.see_write_dir + "/matplot_metric_visual"
 
@@ -552,17 +556,24 @@ class See_rec_metric(See_bm_rec):
         # self.metric_names  = get_dir_certain_file_name(self.matplot_metric_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
         # self.metric_read_paths  = [self.matplot_metric_visual_read_dir + "/" + name for name in self.metric_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
-        self.ld_visual_names        = get_dir_certain_file_name(self.matplot_metric_read_dir , certain_word="ld_epoch", certain_ext=".jpg")
-        self.ld_visual_read_paths   = [self.matplot_metric_read_dir + "/" + name for name in self.ld_visual_names]  ### 沒有 write_path， 因為 ld_visual 只需要指定 write_dir 即可寫入資料夾
+        self.ld_color_visual_names       = get_dir_certain_file_name(self.matplot_metric_ld_color_read_dir , certain_word="ld_epoch", certain_ext=".jpg")
+        self.ld_color_visual_read_path   = [self.matplot_metric_ld_color_read_dir + "/" + name for name in self.ld_color_visual_names]  ### 沒有 write_path， 因為 ld_visual 只需要指定 write_dir 即可寫入資料夾
 
         # self.see_file_amount = len(self.metric_names)
 
 
     def Change_metric_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
+
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_metric_dir, Current See:{self.see_name}")
+        self.Change_metric_dir(print_msg=True)  ### 存圖的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔
+
         start_time = time.time()
         move_dir_certain_file(self.matplot_metric_visual_read_dir,  certain_word=".npy", dst_dir=self.matplot_metric_read_dir, print_msg=print_msg)
         move_dir_certain_file(self.matplot_metric_visual_write_dir, certain_word=".npy", dst_dir=self.matplot_metric_write_dir, print_msg=print_msg)
+
+        move_dir_certain_file(self.matplot_metric_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_ld_color_read_dir, print_msg=print_msg)
+        move_dir_certain_file(self.matplot_metric_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_ld_color_write_dir, print_msg=print_msg)
+
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Change_metric_dir, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
     ###############################################################################################
@@ -617,7 +628,9 @@ class See_rec_metric(See_bm_rec):
 
         ### See_method 第五部分：如果 write 和 read 資料夾不同，把 write完的結果 同步回 read資料夾喔！
         if(self.matplot_metric_write_dir != self.matplot_metric_read_dir):  ### 因為接下去的任務需要 此任務的結果， 如果 read/write 資料夾位置不一樣， write完的結果 copy 一份 放回read， 才能讓接下去的動作 有 東西 read 喔！
-            Syn_write_to_read_dir(write_dir=self.matplot_metric_write_dir, read_dir=self.matplot_metric_read_dir)
+            Syn_write_to_read_dir(write_dir=self.matplot_metric_write_dir,          read_dir=self.matplot_metric_read_dir)
+            Syn_write_to_read_dir(write_dir=self.matplot_metric_ld_color_write_dir, read_dir=self.matplot_metric_ld_color_read_dir)
+            Syn_write_to_read_dir(write_dir=self.matplot_metric_ld_gray_write_dir,  read_dir=self.matplot_metric_ld_gray_read_dir)
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Calculate_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
@@ -660,9 +673,10 @@ class See_rec_metric(See_bm_rec):
             # single_row_imgs.Draw_img()
             # plt.show()
 
-            ld_visual = method2(vx, vy, color_shift=3)
+            ld_visual = method2(vx, vy, color_shift=3)  ### 因為等等是 直接用 cv2 直接寫，所以不用 bgr2rgb喔！
 
-            cv2.imwrite(self.matplot_metric_write_dir + "/ld_epoch=%04i.jpg" % go_epoch, ld_visual)
+            cv2.imwrite(self.matplot_metric_ld_color_write_dir + "/ld_epoch=%04i.jpg" % go_epoch, ld_visual)
+            cv2.imwrite(self.matplot_metric_ld_gray_write_dir  + "/ld_epoch=%04i.jpg" % go_epoch, d.astype(np.uint8))
 
             # print(go_epoch, SSIM, LD)
             SSIMs.append((go_epoch, SSIM))
@@ -686,8 +700,6 @@ class See_rec_metric(See_bm_rec):
         self.get_see_dir_info()
         self.get_bm_rec_info()
         self.get_metric_info()
-
-        self.Change_metric_dir(print_msg=see_print_msg)  ### .npy的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔， 因為沒有用到 self.get_metric_info()，所以只能把 Change_metric_dir 放這裡囉ˊ口ˋ
 
         SSIMs = np.load(f"{self.matplot_metric_read_dir}/SSIMs.npy")
         LDs   = np.load(f"{self.matplot_metric_read_dir}/LDs.npy")
