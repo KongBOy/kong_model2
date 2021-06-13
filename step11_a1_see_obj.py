@@ -1,4 +1,4 @@
-from step0_access_path import JPG_QUALITY, CORE_AMOUNT, CORE_AMOUNT_NPY_TO_NPZ, CORE_AMOUNT_BM_REC_VISUAL, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
+from step0_access_path import JPG_QUALITY, CORE_AMOUNT_NPY_TO_NPZ, CORE_AMOUNT_BM_REC_VISUAL, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
 from step0_access_path import Syn_write_to_read_dir
 
 import sys
@@ -133,7 +133,7 @@ class See_npy_to_npz(See_info):
             if(single_see_core_amount == 1):  ### single_see_core_amount 大於1 代表 單核心跑， 就重新導向 最原始的function囉 把 see內的任務 依序完成！
                 self._npy_to_npz(start_index=0, amount=len(self.see_npy_names))
             elif(single_see_core_amount  > 1):  ### single_see_core_amount 大於1 代表 多核心跑， 丟進 multiprocess_interface 把 see內的任務 切段 平行處理囉
-                multi_processing_interface(core_amount=single_see_core_amount, task_amount=len(self.see_npy_names), task=self._npy_to_npz, print_msg=see_print_msg)
+                multi_processing_interface(core_amount=CORE_AMOUNT_NPY_TO_NPZ, task_amount=len(self.see_npy_names), task=self._npy_to_npz, print_msg=see_print_msg)  ### 因為和 bm_rec 的動作包一起， 外面指定的 single_see_core_amount 是比較適合 bm_rec 的， 所以 npy_to_npz 就用 在 step0 統一指定的 CORE數囉！
             else:
                 print("single_see_core_amount 設定錯誤， 需要 >= 1 的數字才對喔！ == 1 代表see內任務單核心跑， > 1 代表see內任務多核心跑")
 
@@ -594,9 +594,9 @@ class See_rec_metric(See_bm_rec):
         start_time = time.time()
 
         ### See_method 第一部分：建立 存結果的資料夾
-        Check_dir_exist_and_build(self.matplot_metric_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.matplot_metric_write_dir)           ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
         Check_dir_exist_and_build(self.matplot_metric_ld_color_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
-        Check_dir_exist_and_build(self.matplot_metric_ld_gray_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.matplot_metric_ld_gray_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
 
         ### See_method 第二部分：取得see資訊
         self.get_see_dir_info()  ### 暫時寫這邊，到時應該要拉出去到result_level，要不然每做一次就要重新更新一次，但不用這麼頻繁，只需要一開始更新一次即可
