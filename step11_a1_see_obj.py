@@ -595,6 +595,8 @@ class See_rec_metric(See_bm_rec):
 
         ### See_method 第一部分：建立 存結果的資料夾
         Check_dir_exist_and_build(self.matplot_metric_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.matplot_metric_ld_color_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.matplot_metric_ld_gray_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
 
         ### See_method 第二部分：取得see資訊
         self.get_see_dir_info()  ### 暫時寫這邊，到時應該要拉出去到result_level，要不然每做一次就要重新更新一次，但不用這麼頻繁，只需要一開始更新一次即可
