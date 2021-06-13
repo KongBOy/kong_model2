@@ -153,7 +153,7 @@ class Result:
                 if(args["see_method_name"] == "Change_npz_dir"):
                     self.sees[see_num].Change_npz_dir()
 
-            if(args["see_method_name"] == 1):  ### 如果 單核心跑， 單個see 依序跑，顯示這個 see_cost_time 才有用喔！ 如果是 多核心跑， 多個see同時跑， 分配完see 馬上就會到這行， 不會記錄到 see 花的時間喔！
+            if(args["see_core_amount"] == 1):  ### 如果 單核心跑， 單個see 依序跑，顯示這個 see_cost_time 才有用喔！ 如果是 多核心跑， 多個see同時跑， 分配完see 馬上就會到這行， 不會記錄到 see 花的時間喔！
                 print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Current Result:{self.result_name}, doing { self.sees[see_num].see_name} finish, cost_time:{time.time() - start_time}")  ### 這邊也顯示就不用每次都要往上滾很久才知道 現在正處在哪個 result裡囉！
 
 
