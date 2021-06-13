@@ -141,7 +141,7 @@ class See_npy_to_npz(See_info):
 
         ### See_method 第五部分：如果 write 和 read 資料夾不同，把 write完的結果 同步回 read資料夾喔！
         if(self.see_write_dir != self.see_read_dir):  ### 因為接下去的任務需要 此任務的結果， 如果 read/write 資料夾位置不一樣， write完的結果 copy 一份 放回read， 才能讓接下去的動作 有 東西 read 喔！
-            Syn_write_to_read_dir(write_dir=self.see_write_dir, read_dir=self.see_read_dir)
+            Syn_write_to_read_dir(write_dir=self.see_npz_write_dir, read_dir=self.see_npz_read_dir)
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Npy_to_npz, Current See:{self.see_name}, cost time:{time.time() - start_time}")
@@ -150,7 +150,7 @@ class See_npy_to_npz(See_info):
     def _npy_to_npz(self, start_index, amount):
         for see_npy_name in tqdm(self.see_npy_names[start_index:start_index + amount]):  ### 因為有用 .replace()， 對see_npy_name.replace() 較保險， 所以這邊用 see_npy_name 而不用 see_npy_path！
             npy = np.load(self.see_read_dir + "/" + see_npy_name)
-            np.savez_compressed(self.see_write_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
+            np.savez_compressed(self.see_npz_write_dir + "/" + see_npy_name.replace(".npy", ".npz"), npy)
             os.remove(self.see_read_dir + "/" + see_npy_name)
             # print(self.see_read_dir + "/" + see_npy_name, "delete ok")
             # npz = np.load(self.see_read_dir + "/" + see_npy_name.replace(".npy", ".npz"))  ### 已用這兩行確認 npz 壓縮式 無失真的！值完全跟npy一樣喔！
