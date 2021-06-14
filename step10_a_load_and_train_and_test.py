@@ -829,7 +829,7 @@ t8_in_th_mo_01_gt_th_mae = Exp_builder().set_basic("test_see", type8_blender_os_
 
 #############################################################################################################################################################################################################
 ### 9.測試 UNet 的 CNN 跟 DewarpNet一樣 不用 bias 試試看
-ch64_in_cnnNoBias_epoch060 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64_cnnNoBias, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_9_e060", describe_end="ep060_CNN_no_bias") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+ch64_in_cnnNoBias_epoch060 = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64_cnnNoBias, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_9_e060", describe_end="ep060_CNN_no_bias") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_9_e060-20210523_130435-flow_unet-ep060_CNN_no_bias")
 
 #############################################################################################################################################################################################################
 ########################################################### 15
