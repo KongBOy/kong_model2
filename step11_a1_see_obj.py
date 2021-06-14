@@ -96,12 +96,12 @@ class See_npy_to_npz(See_info):
 
     def Change_npz_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_npz_dir, Current See:{self.see_name}")
-        move_dir_certain_file(self.old1_see_npz_read_dir,  certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old1_see_npz_write_dir, certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old1_see_npz_read_dir,  certain_word="0b-gt", certain_ext=".npz", dst_dir=self.see_npz_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old1_see_npz_write_dir, certain_word="0b-gt", certain_ext=".npz", dst_dir=self.see_npz_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old2_see_npz_read_dir,  certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old2_see_npz_write_dir, certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old1_see_npz_read_dir,  certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old1_see_npz_write_dir, certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old1_see_npz_read_dir,  certain_word="0b-gt", certain_ext=".npz", dst_dir=self.see_npz_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old1_see_npz_write_dir, certain_word="0b-gt", certain_ext=".npz", dst_dir=self.see_npz_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old2_see_npz_read_dir,  certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old2_see_npz_write_dir, certain_word="epoch", certain_ext=".npz", dst_dir=self.see_npz_write_dir, print_msg=print_msg)
 
     ### 給自己 npy轉npz 用的
     def get_npy_info(self):
@@ -271,8 +271,8 @@ class See_flow_visual(See_info):
 
     def Change_flow_matplot_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_flow_matplot_dir, Current See:{self.see_name}")
-        move_dir_certain_file(self.old_matplot_visual_read_dir,  certain_word="flow_epoch", certain_ext=".jpg", dst_dir=self.matplot_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_matplot_visual_write_dir, certain_word="flow_epoch", certain_ext=".jpg", dst_dir=self.matplot_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_visual_read_dir,  certain_word="flow_epoch", certain_ext=".jpg", dst_dir=self.matplot_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_visual_write_dir, certain_word="flow_epoch", certain_ext=".jpg", dst_dir=self.matplot_visual_write_dir, print_msg=print_msg)
 
     ### 因為  See_bm_rec 要用到， 所以從 See_flow_visual 提升上去 See_info囉！
     # def get_flow_info(self):
@@ -405,22 +405,22 @@ class See_bm_rec(See_npy_to_npz):
 
     def Change_bm_rec_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_bm_rec_dir, Current See:{self.see_name}")
-        move_dir_certain_file(self.old_matplot_bm_rec_visual_read_dir,  certain_word="epoch", certain_ext=".jpg", dst_dir=self.bm_rec_matplot_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_matplot_bm_rec_visual_write_dir, certain_word="epoch", certain_ext=".jpg", dst_dir=self.bm_rec_matplot_visual_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old_matplot_bm_rec_visual_read_dir,  certain_word="combine", certain_ext=".avi", dst_dir=self.bm_rec_matplot_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_matplot_bm_rec_visual_write_dir, certain_word="combine", certain_ext=".avi", dst_dir=self.bm_rec_matplot_visual_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old_bm_visual_read_dir,   certain_word="bm_epoch",  certain_ext=".jpg", dst_dir=self.bm_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_bm_visual_write_dir,  certain_word="bm_epoch",  certain_ext=".jpg", dst_dir=self.bm_visual_write_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_bm_visual_read_dir,   certain_word="combine",   certain_ext=".avi", dst_dir=self.bm_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_bm_visual_write_dir,  certain_word="combine",   certain_ext=".avi", dst_dir=self.bm_visual_write_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_bm_visual_read_dir,   certain_word="bm_gt",     certain_ext=".jpg", dst_dir=self.bm_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_bm_visual_write_dir,  certain_word="bm_gt",     certain_ext=".jpg", dst_dir=self.bm_visual_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old_rec_visual_read_dir,  certain_word="rec_epoch", certain_ext=".jpg", dst_dir=self.rec_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_rec_visual_write_dir, certain_word="rec_epoch", certain_ext=".jpg", dst_dir=self.rec_visual_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old_rec_visual_read_dir,  certain_word="rec_gt",    certain_ext=".jpg", dst_dir=self.rec_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_rec_visual_write_dir, certain_word="rec_gt",    certain_ext=".jpg", dst_dir=self.rec_visual_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old_rec_visual_read_dir,  certain_word="combine",   certain_ext=".avi", dst_dir=self.rec_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_rec_visual_write_dir, certain_word="combine",   certain_ext=".avi", dst_dir=self.rec_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_bm_rec_visual_read_dir,  certain_word="epoch", certain_ext=".jpg", dst_dir=self.bm_rec_matplot_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_bm_rec_visual_write_dir, certain_word="epoch", certain_ext=".jpg", dst_dir=self.bm_rec_matplot_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_bm_rec_visual_read_dir,  certain_word="combine", certain_ext=".avi", dst_dir=self.bm_rec_matplot_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_bm_rec_visual_write_dir, certain_word="combine", certain_ext=".avi", dst_dir=self.bm_rec_matplot_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_bm_visual_read_dir,   certain_word="bm_epoch",  certain_ext=".jpg", dst_dir=self.bm_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_bm_visual_write_dir,  certain_word="bm_epoch",  certain_ext=".jpg", dst_dir=self.bm_visual_write_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_bm_visual_read_dir,   certain_word="combine",   certain_ext=".avi", dst_dir=self.bm_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_bm_visual_write_dir,  certain_word="combine",   certain_ext=".avi", dst_dir=self.bm_visual_write_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_bm_visual_read_dir,   certain_word="bm_gt",     certain_ext=".jpg", dst_dir=self.bm_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_bm_visual_write_dir,  certain_word="bm_gt",     certain_ext=".jpg", dst_dir=self.bm_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_rec_visual_read_dir,  certain_word="rec_epoch", certain_ext=".jpg", dst_dir=self.rec_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_rec_visual_write_dir, certain_word="rec_epoch", certain_ext=".jpg", dst_dir=self.rec_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_rec_visual_read_dir,  certain_word="rec_gt",    certain_ext=".jpg", dst_dir=self.rec_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_rec_visual_write_dir, certain_word="rec_gt",    certain_ext=".jpg", dst_dir=self.rec_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_rec_visual_read_dir,  certain_word="combine",   certain_ext=".avi", dst_dir=self.rec_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_rec_visual_write_dir, certain_word="combine",   certain_ext=".avi", dst_dir=self.rec_visual_write_dir, print_msg=print_msg)
 
 
     ### 給下一步 metric 用的
@@ -653,35 +653,35 @@ class See_rec_metric(See_bm_rec):
 
     def Change_metric_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_metric_dir, Current See:{self.see_name}")
-        start_time = time.time()
+        # start_time = time.time()
 
-        move_dir_certain_file(self.old1_metric_read_dir,  certain_word=".npy", dst_dir=self.metrec_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old1_metric_write_dir, certain_word=".npy", dst_dir=self.metrec_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old2_metric_read_dir,  certain_word=".npy", dst_dir=self.metrec_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old2_metric_write_dir, certain_word=".npy", dst_dir=self.metrec_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old3_metric_read_dir,  certain_word=".npy", dst_dir=self.metrec_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old3_metric_write_dir, certain_word=".npy", dst_dir=self.metrec_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old1_metric_read_dir,  certain_word=".npy", dst_dir=self.metrec_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old1_metric_write_dir, certain_word=".npy", dst_dir=self.metrec_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old2_metric_read_dir,  certain_word=".npy", dst_dir=self.metrec_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old2_metric_write_dir, certain_word=".npy", dst_dir=self.metrec_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old3_metric_read_dir,  certain_word=".npy", dst_dir=self.metrec_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old3_metric_write_dir, certain_word=".npy", dst_dir=self.metrec_write_dir, print_msg=print_msg)
 
-        move_dir_certain_file(self.old1_metric_ld_color_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old1_metric_ld_color_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old2_metric_ld_color_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old2_metric_ld_color_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old3_metric_ld_color_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old3_metric_ld_color_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old1_metric_ld_color_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old1_metric_ld_color_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old2_metric_ld_color_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old2_metric_ld_color_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old3_metric_ld_color_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old3_metric_ld_color_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_write_dir, print_msg=print_msg)
 
-        move_dir_certain_file(self.old_ld_gray_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_gray_read_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old_ld_gray_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_gray_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old2_ld_gray_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_gray_read_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old2_ld_gray_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_gray_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_ld_gray_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_gray_read_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_ld_gray_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_gray_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old2_ld_gray_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_gray_read_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old2_ld_gray_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_gray_write_dir, print_msg=print_msg)
 
-        move_dir_certain_file(self.old_matplot_metric_visual_read_dir,  certain_word="epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_matplot_metric_visual_write_dir, certain_word="epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_visual_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old_matplot_metric_visual_read_dir,  certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old_matplot_metric_visual_write_dir, certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old2_matplot_metric_visual_read_dir,  certain_word="epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old2_matplot_metric_visual_write_dir, certain_word="epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_visual_write_dir, print_msg=print_msg)
-        move_dir_certain_file(self.old2_matplot_metric_visual_read_dir,  certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_read_dir,  print_msg=print_msg)
-        move_dir_certain_file(self.old2_matplot_metric_visual_write_dir, certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_metric_visual_read_dir,  certain_word="epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_metric_visual_write_dir, certain_word="epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_metric_visual_read_dir,  certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old_matplot_metric_visual_write_dir, certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old2_matplot_metric_visual_read_dir,  certain_word="epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old2_matplot_metric_visual_write_dir, certain_word="epoch", certain_ext=".jpg", dst_dir=self.matplot_metric_visual_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old2_matplot_metric_visual_read_dir,  certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old2_matplot_metric_visual_write_dir, certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_write_dir, print_msg=print_msg)
 
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Change_metric_dir, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
