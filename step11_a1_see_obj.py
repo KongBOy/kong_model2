@@ -637,6 +637,13 @@ class See_rec_metric(See_bm_rec):
         self.metric_ld_color_write_dir = self.see_write_dir + "/3_metric/ld_color"
         self.metric_ld_gray_read_dir   = self.see_read_dir  + "/3_metric/ld_gray"
         self.metric_ld_gray_write_dir  = self.see_write_dir + "/3_metric/ld_gray"
+        self.metric_ld_matplot_read_dir   = self.see_read_dir  + "/3_metric/ld_matplot"
+        self.metric_ld_matplot_write_dir  = self.see_write_dir + "/3_metric/ld_matplot"
+        self.metric_im1_read_dir   = self.see_read_dir  + "/3_metric/im1"
+        self.metric_im1_write_dir  = self.see_write_dir + "/3_metric/im1"
+        self.metric_im2_read_dir   = self.see_read_dir  + "/3_metric/im2"
+        self.metric_im2_write_dir  = self.see_write_dir + "/3_metric/im2"
+        
 
         self.matplot_metric_visual_read_dir  = self.see_read_dir  + "/3_matplot_metric_visual"
         self.matplot_metric_visual_write_dir = self.see_write_dir + "/3_matplot_metric_visual"
@@ -715,6 +722,9 @@ class See_rec_metric(See_bm_rec):
         Check_dir_exist_and_build(self.metrec_write_dir)           ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
         Check_dir_exist_and_build(self.metric_ld_color_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
         Check_dir_exist_and_build(self.metric_ld_gray_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.metric_ld_matplot_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.metric_im1_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.metric_im2_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
 
         ### See_method 第二部分：取得see資訊
         self.get_see_base_info()  ### 暫時寫這邊，到時應該要拉出去到result_level，要不然每做一次就要重新更新一次，但不用這麼頻繁，只需要一開始更新一次即可
@@ -728,8 +738,10 @@ class See_rec_metric(See_bm_rec):
 
             if  (single_see_core_amount == 1):  ### single_see_core_amount 大於1 代表 單核心跑， 就重新導向 最原始的function囉 把 see內的任務 依序完成！
                 self._do_matlab_SSIM_LD(0, self.see_rec_amount, SSIMs, LDs)
+                Save_as_jpg        (self.metric_ld_matplot_write_dir, self.metric_ld_matplot_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
             elif(single_see_core_amount  > 1):  ### single_see_core_amount 大於1 代表 多核心跑， 丟進 multiprocess_interface 把 see內的任務 切段 平行處理囉
                 multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.see_rec_amount, task=self._do_matlab_SSIM_LD, task_args=[SSIMs, LDs], print_msg=see_print_msg)
+                Save_as_jpg        (self.metric_ld_matplot_write_dir, self.metric_ld_matplot_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
             else:
                 print("single_see_core_amount 設定錯誤， 需要 >= 1 的數字才對喔！ == 1 代表see內任務單核心跑， > 1 代表see內任務多核心跑")
 
@@ -774,7 +786,7 @@ class See_rec_metric(See_bm_rec):
 
             ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
             os.chdir("SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
-            [SSIM, LD, vx, vy, d] = use_DewarpNet_eval(path1, path2)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
+            [SSIM, LD, vx, vy, d, im1, im2] = use_DewarpNet_eval(path1, path2)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
             os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
 
             # fig, ax = plt.subplots(nrows=1, ncols=2)
@@ -785,20 +797,24 @@ class See_rec_metric(See_bm_rec):
             # plt.show()
             # plt.close()
 
-            # single_row_imgs = Matplot_single_row_imgs(
-            #             imgs      =[d],    ### 把要顯示的每張圖包成list
-            #             img_titles=[],
-            #             fig_title ="",   ### 圖上的大標題
-            #             pure_img  =True,
-            #             add_loss  =False,
-            #             bgr2rgb   =False)
-            # single_row_imgs.Draw_img()
+            single_row_imgs = Matplot_single_row_imgs(
+                        imgs      =[d],    ### 把要顯示的每張圖包成list
+                        img_titles=[],
+                        fig_title ="",   ### 圖上的大標題
+                        pure_img  =True,
+                        add_loss  =False,
+                        bgr2rgb   =False)
+            single_row_imgs.Draw_img()
+            single_row_imgs.Save_fig(self.metric_ld_matplot_write_dir, epoch=go_epoch, epoch_name="ld_epoch")
+            # print("d.max()~~~~~~~~~~", d.max())  ### 目前手動看 大概就是 epoch=0000 會很大 剩下epoch都很小， 然後epoch=0000 大概都40幾， 所以我設50囉！
             # plt.show()
 
             ld_visual = method2(vx, vy, color_shift=3)  ### 因為等等是 直接用 cv2 直接寫，所以不用 bgr2rgb喔！
 
             cv2.imwrite(self.metric_ld_color_write_dir + "/ld_epoch=%04i.jpg" % go_epoch, ld_visual)
             cv2.imwrite(self.metric_ld_gray_write_dir  + "/ld_epoch=%04i.jpg" % go_epoch, d.astype(np.uint8))
+            cv2.imwrite(self.metric_im1_write_dir  + "/im1_epoch=%04i.jpg" % go_epoch, (im1 * 255).astype(np.uint8))
+            cv2.imwrite(self.metric_im2_write_dir  + "/im1_epoch=%04i.jpg" % go_epoch, (im2 * 255).astype(np.uint8))
 
             # print(go_epoch, SSIM, LD)
             SSIMs.append((go_epoch, SSIM))
