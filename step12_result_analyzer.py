@@ -81,7 +81,7 @@ class Col_results_analyzer(Result_analyzer):
         """
         c_imgs = []
         for result in self.c_results:
-            epochs = len(result.sees[see_num].see_epoch_jpg_names)
+            epochs = len(result.sees[see_num].see_flow_jpg_names)
             # print("len(result.sees[see_num].rec_paths)", len(result.sees[see_num].rec_paths))
             use_epoch = min(epochs, epoch)  ### 超出範圍就取最後一張
 
@@ -161,8 +161,8 @@ class Col_results_analyzer(Result_analyzer):
         ### 抓 in/gt imgs， 因為 同個see 內所有epoch 的 in/gt 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see_ 的外面 ，然後再用 參數傳入
         in_img = None
         gt_img = None
-        if(self.show_in_img): in_img = cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[0])
-        if(self.show_gt_img): gt_img = cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[1])
+        if(self.show_in_img): in_img = cv2.imread(self.c_results[0].sees[see_num].see_in_img_path)
+        if(self.show_gt_img): gt_img = cv2.imread(self.c_results[0].sees[see_num].see_gt_flow_v_path)
 
         ### 抓 要顯示的 titles， 同上理， 每個epochs 的 c_title 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see_ 的外面 ，然後再用 參數傳入
         c_titles = self.step1_get_c_titles()
@@ -219,13 +219,13 @@ class Col_results_analyzer(Result_analyzer):
             for go_see_num, see_num in enumerate(see_nums):
                 c_imgs   = [in_imgs[go_see_num]]
                 for result in self.c_results:
-                    epochs = len(result.sees[see_num].see_epoch_jpg_names)
+                    epochs = len(result.sees[see_num].see_flow_jpg_names)
                     # epochs = len(result.sees[see_num].rec_paths) - 2
                     # print("len(result.sees[see_num].rec_paths)", len(result.sees[see_num].rec_paths))
                     use_epoch = min(epochs, go_epoch)  ### 超出範圍就取最後一張
 
-                    # c_imgs.append(cv2.imread(result.sees[see_num].see_read_dir + "/" + result.sees[see_num].see_jpg_names[use_epoch]))
-                    c_imgs.append(cv2.imread(result.sees[see_num].see_jpg_paths[use_epoch]))
+                    # c_imgs.append(cv2.imread(result.sees[see_num].see_flow_jpg_read_paths[use_epoch]))
+                    c_imgs.append(cv2.imread(result.sees[see_num].see_flow_jpg_read_paths[use_epoch]))
                 c_imgs += [gt_imgs[go_see_num]]
                 r_c_imgs.append(c_imgs)
 
@@ -273,8 +273,8 @@ class Col_results_analyzer(Result_analyzer):
         in_imgs = []
         gt_imgs = []
         for see_num in see_nums:
-            in_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[0]))
-            gt_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_read_dir + "/" + self.c_results[0].sees[see_num].see_jpg_names[1]))
+            in_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_in_img_path))
+            gt_imgs.append(cv2.imread(self.c_results[0].sees[see_num].see_gt_flow_v_path))
 
         ### 抓 第一row的 要顯示的 titles
         c_titles = ["in_img"]
@@ -360,8 +360,8 @@ class Row_col_results_analyzer(Result_analyzer):
     def _draw_row_col_results_single_see(self, start_epoch, epoch_amount, see_num, r_c_titles, analyze_see_dir):
         ### 要記得see的第一張存的是 輸入的in影像，第二張存的是 輸出的gt影像
         ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
-        in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_read_dir + "/" + self.r_c_results[0][0].sees[see_num].see_jpg_names[0])  ### 第一張：in_img
-        gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_read_dir + "/" + self.r_c_results[0][0].sees[see_num].see_jpg_names[1])  ### 第二張：gt_img
+        in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_in_img_path)     ### 第一張：in_img
+        gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_gt_flow_v_path)  ### 第二張：gt_img
         # for go_img in tqdm(range(self.r_c_min_see_file_amount)):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             # print("see_num=", see_num, "go_epoch=", go_epoch)
@@ -479,7 +479,7 @@ class Bm_Rec_exps_analyze(Result_analyzer):
             see = exp.result_obj.sees[see_num]      ### 先抓出 要用的物件
             analyze_describe = result.ana_describe  ### 先抓出 要用的物件，補充一下在step11_c.py 可以自己設定設定每個 每個result的 ana_describe 喔！
 
-            see.get_bm_rec_info()  ### 抓 result/see_.../matplot_bm_rec_visual/bm_visual 和 rec_visual 的 nemas, paths
+            see.get_bm_rec_info()  ### 抓 result/see_.../bm_rec_matplot_visual/bm_visual 和 rec_visual 的 nemas, paths
             analyze_see_rec_final_path = analyze_see_rec_dir + "/" + analyze_describe + ".jpg"  ### 定出存哪：rec_final_path
             analyze_see_rec_gt_path    = analyze_see_rec_dir + "/" + "rec_gt" + ".jpg"          ### 定出存哪：rec_gt_path
             rec_gt    = cv2.imread(see.rec_paths[epoch])  ### 讀圖，倒數第一張 是 gt
@@ -497,7 +497,7 @@ class Bm_Rec_exps_analyze(Result_analyzer):
             see = exp.result_obj.sees[see_num]          ### 先抓出 要用的物件
             analyze_describe = exp.result_obj.ana_describe  ### 先抓出 要用的物件，補充一下在step11_c.py 可以自己設定設定每個 每個result的 ana_describe 喔！
 
-            see.get_bm_rec_info()  ### 抓 result/see_.../matplot_bm_rec_visual/bm_visual 和 rec_visual 的 nemas, paths
+            see.get_bm_rec_info()  ### 抓 result/see_.../bm_rec_matplot_visual/bm_visual 和 rec_visual 的 nemas, paths
             analyze_see_rec_final_path = analyze_see_rec_dir + "/" + analyze_describe + ".jpg"  ### 定出存哪：rec_final_path
             analyze_see_rec_gt_path    = analyze_see_rec_dir + "/" + "rec_gt" + ".jpg"          ### 定出存哪：rec_gt_path
             rec_gt    = cv2.imread(see.rec_paths[-1])  ### 讀圖，倒數第一張 是 gt

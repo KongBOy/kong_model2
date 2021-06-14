@@ -7,31 +7,31 @@ same_command = ["python", "step10_a_load_and_train_and_test.py"]
 run = "build().run()"
 
 #####################################################################################################################################################################################################################################################################################################################################
-matplot_method_name = '"Save_as_matplot_visual"'  ### 兩層是因為 sb.run 會削掉一層 "" ～
-matplot_add_loss = True
-matplot_bgr2rgb = True
-matplot_see_core_amount = 7
-matplot_single_see_core_amount = 2
-matplot_result_print_msg = True
-matplot_see_print_msg = True
-matplot_all  = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=7, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_1    = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=1, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_2    = f"build().result_obj.result_do_multiple_single_see(start_see=1, see_amount=1, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_3    = f"build().result_obj.result_do_multiple_single_see(start_see=2, see_amount=1, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_4    = f"build().result_obj.result_do_multiple_single_see(start_see=3, see_amount=1, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_8    = f"build().result_obj.result_do_multiple_single_see(start_see=4, see_amount=1, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_9    = f"build().result_obj.result_do_multiple_single_see(start_see=5, see_amount=1, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_10   = f"build().result_obj.result_do_multiple_single_see(start_see=6, see_amount=1, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
+flow_matplot_method_name = '"Save_as_flow_matplot_visual"'  ### 兩層是因為 sb.run 會削掉一層 "" ～
+flow_matplot_add_loss = True
+flow_matplot_bgr2rgb = True
+flow_matplot_see_core_amount = 7
+flow_matplot_single_see_core_amount = 2
+flow_matplot_result_print_msg = False
+flow_matplot_see_print_msg = False
+flow_matplot_all  = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=7, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_1    = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=1, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_2    = f"build().result_obj.result_do_multiple_single_see(start_see=1, see_amount=1, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_3    = f"build().result_obj.result_do_multiple_single_see(start_see=2, see_amount=1, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_4    = f"build().result_obj.result_do_multiple_single_see(start_see=3, see_amount=1, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_8    = f"build().result_obj.result_do_multiple_single_see(start_see=4, see_amount=1, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_9    = f"build().result_obj.result_do_multiple_single_see(start_see=5, see_amount=1, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_10   = f"build().result_obj.result_do_multiple_single_see(start_see=6, see_amount=1, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
 
-matplot_2te  = f"build().result_obj.result_do_multiple_single_see(start_see=1, see_amount=6, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_3te  = f"build().result_obj.result_do_multiple_single_see(start_see=2, see_amount=5, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_4te  = f"build().result_obj.result_do_multiple_single_see(start_see=3, see_amount=4, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_8te  = f"build().result_obj.result_do_multiple_single_see(start_see=4, see_amount=3, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_9te  = f"build().result_obj.result_do_multiple_single_see(start_see=5, see_amount=2, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
-matplot_10te = f"build().result_obj.result_do_multiple_single_see(start_see=6, see_amount=1, see_method_name={matplot_method_name}, add_loss={matplot_add_loss}, bgr2rgb={matplot_bgr2rgb}, single_see_core_amount={matplot_single_see_core_amount}, see_print_msg={matplot_see_print_msg}, see_core_amount={matplot_see_core_amount}, result_print_msg={matplot_result_print_msg})"
+flow_matplot_2te  = f"build().result_obj.result_do_multiple_single_see(start_see=1, see_amount=6, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_3te  = f"build().result_obj.result_do_multiple_single_see(start_see=2, see_amount=5, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_4te  = f"build().result_obj.result_do_multiple_single_see(start_see=3, see_amount=4, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_8te  = f"build().result_obj.result_do_multiple_single_see(start_see=4, see_amount=3, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_9te  = f"build().result_obj.result_do_multiple_single_see(start_see=5, see_amount=2, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
+flow_matplot_10te = f"build().result_obj.result_do_multiple_single_see(start_see=6, see_amount=1, see_method_name={flow_matplot_method_name}, add_loss={flow_matplot_add_loss}, bgr2rgb={flow_matplot_bgr2rgb}, single_see_core_amount={flow_matplot_single_see_core_amount}, see_print_msg={flow_matplot_see_print_msg}, see_core_amount={flow_matplot_see_core_amount}, result_print_msg={flow_matplot_result_print_msg})"
 
 #####################################################################################################################################################################################################################################################################################################################################
-compress_method_name = '"Save_as_matplot_bm_rec_visual"'  ### 兩層是因為 sb.run 會削掉一層 "" ～
+compress_method_name = '"Save_as_bm_rec_matplot_visual"'  ### 兩層是因為 sb.run 會削掉一層 "" ～
 compress_add_loss = False
 compress_bgr2rgb = True
 ### 應該是 CPU吃滿非常快的設定
@@ -44,7 +44,7 @@ compress_single_see_core_amount = 8
 # compress_see_core_amount = 1
 # compress_single_see_core_amount = 1
 compress_result_print_msg = False
-compress_see_print_msg = True
+compress_see_print_msg = False
 compress_all  = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=7, see_method_name={compress_method_name}, add_loss={compress_add_loss}, bgr2rgb={compress_bgr2rgb}, single_see_core_amount={compress_single_see_core_amount}, see_print_msg={compress_see_print_msg}, see_core_amount={compress_see_core_amount}, result_print_msg={compress_result_print_msg})"
 compress_1    = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=1, see_method_name={compress_method_name}, add_loss={compress_add_loss}, bgr2rgb={compress_bgr2rgb}, single_see_core_amount={compress_single_see_core_amount}, see_print_msg={compress_see_print_msg}, see_core_amount={compress_see_core_amount}, result_print_msg={compress_result_print_msg})"
 compress_2    = f"build().result_obj.result_do_multiple_single_see(start_see=1, see_amount=1, see_method_name={compress_method_name}, add_loss={compress_add_loss}, bgr2rgb={compress_bgr2rgb}, single_see_core_amount={compress_single_see_core_amount}, see_print_msg={compress_see_print_msg}, see_core_amount={compress_see_core_amount}, result_print_msg={compress_result_print_msg})"
@@ -344,7 +344,7 @@ Change_npz_dir_all  = f"build().result_obj.result_do_multiple_single_see(start_s
 # sb.run(same_command + [f"t8_in_th_mo_01_gt_th_mae.{run}"])  ### 127.35 沒train完
 ##########################################################################################################################################################################################
 ### 9
-# sb.run(same_command + [f"ch64_in_cnnNoBias_epoch060.{run}"])   ### 127.28
+# sb.run(same_command + [f"ch64_in_cnnNoBias_epoch060.{Calculate_and_Visual_SSIM_LD_all}"])   ### 127.28
 
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
@@ -372,6 +372,8 @@ Change_npz_dir_all  = f"build().result_obj.result_do_multiple_single_see(start_s
 sb.run(same_command + [f"testest.{Calculate_and_Visual_SSIM_LD_all}"])   ### 127.28
 # sb.run(same_command + [f"testest_big.{compress_10te}"])   ### 127.28
 
-### Calculate_SSIM_LD_
-### Visual_SSIM_LD_
-### Calculate_and_Visual_SSIM_LD_
+### flow_matplot
+### compress
+### Calculate_SSIM_LD
+### Visual_SSIM_LD
+### Calculate_and_Visual_SSIM_LD

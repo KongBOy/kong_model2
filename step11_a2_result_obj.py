@@ -73,7 +73,7 @@ class Result:
         method舉例怎麼呼叫：result_do_multiple_single_see(start_see, see_amount, see_method_name=str, add_loss=bool, bgr2rgb=bool, single_see_core_amount=int, see_print_msg=bool, see_core_amount=int, result_print_msg=bool)
             see_method_name 目前以下選擇：
                 Save_as_matplot_visual
-                Save_as_matplot_bm_rec_visual
+                Save_as_bm_rec_matplot_visual
                 Calculate_SSIM_LD
         """
         if( "single_see_core_amount" not in args.keys()): args["single_see_core_amount"] = 1
@@ -115,11 +115,12 @@ class Result:
                 print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Current Result:{self.result_name}, doing { self.sees[see_num].see_name}")  ### 這邊也顯示就不用每次都要往上滾很久才知道 現在正處在哪個 result裡囉！
                 see_start = time.time()
 
-                if(args["see_method_name"] == "Save_as_matplot_visual"):
+                if(args["see_method_name"] == "Save_as_flow_matplot_visual"):
                     self.sees[see_num].Save_as_matplot_visual        (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
-                if(args["see_method_name"] == "Save_as_matplot_bm_rec_visual"):
+
+                if(args["see_method_name"] == "Save_as_bm_rec_matplot_visual"):
                     self.sees[see_num].Npy_to_npz                    (single_see_core_amount=CORE_AMOUNT_NPY_TO_NPZ, see_print_msg=args["see_print_msg"])
-                    self.sees[see_num].Save_as_matplot_bm_rec_visual (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
+                    self.sees[see_num].Save_as_bm_rec_matplot_visual (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
                     """
                     如果 see_file_amount少，建議 多個see 同時跑， see內的多個任務 同時跑：see_core_amount=7, single_see_core_amount=1
                     如果 see_file_amount多，建議 單個see 依序跑， see內的多個任務 同時跑：see_core_amount=1, single_see_core_amount=8之類的
@@ -155,7 +156,9 @@ class Result:
                     self.sees[see_num].Change_npz_dir()
 
                 ### 如果 單核心跑， 單個see 依序跑，顯示這個 see_cost_time 才有用喔！ 如果是 多核心跑， 多個see同時跑， 分配完see 馬上就會到這行， 不會記錄到 see 花的時間喔！
-                if(args["see_core_amount"] == 1): print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Current Result:{self.result_name}, doing { self.sees[see_num].see_name} finish, cost_time:{time.time() - see_start}")  ### 這邊也顯示就不用每次都要往上滾很久才知道 現在正處在哪個 result裡囉！
+                if(args["see_core_amount"] == 1):
+                    print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Current Result:{self.result_name}, doing { self.sees[see_num].see_name} finish, cost_time:{time.time() - see_start}")  ### 這邊也顯示就不用每次都要往上滾很久才知道 現在正處在哪個 result裡囉！
+                    print("")
 
 
 
@@ -163,31 +166,31 @@ class Result:
     #######################################################################################################################################
     #######################################################################################################################################
     ### 好像都沒用到，先註解起來吧～再看看要不要刪掉
-    # def save_single_see_as_matplot_bm_rec_visual_at_certain_epoch(self, see_num, epoch, add_loss=False, bgr2rgb=False):
+    # def save_single_see_as_bm_rec_matplot_visual_at_certain_epoch(self, see_num, epoch, add_loss=False, bgr2rgb=False):
     #     """
-    #     單個 see 裡面的 certain_epoch 重做 matplot_bm_rec_visual
+    #     單個 see 裡面的 certain_epoch 重做 bm_rec_matplot_visual
     #     """
     #     if(see_num < self.see_amount):  ### 防呆，以防直接使用 save_all_single_see_as_matplot_visual 時 start_index 設的比0大 但 amount 設成 see_amount 或 純粹不小心算錯數字(要算準start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
     #         print(f"current result:{self.result_name}")
     #         self.sees[see_num].Npy_to_npz(multiprocess=True)
-    #         self.sees[see_num].Save_as_matplot_bm_rec_visual_at_certain_epoch(epoch, add_loss, bgr2rgb)
+    #         self.sees[see_num].Save_as_bm_rec_matplot_visual_at_certain_epoch(epoch, add_loss, bgr2rgb)
 
-    # def save_all_single_see_as_matplot_bm_rec_visual_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):
+    # def save_all_single_see_as_bm_rec_matplot_visual_at_certain_epoch(self, epoch, add_loss=False, bgr2rgb=False):
     #     """
-    #     所有 see 裡面的 certain_epoch 重做 matplot_bm_rec_visual
+    #     所有 see 裡面的 certain_epoch 重做 bm_rec_matplot_visual
     #     """
     #     for see_num in self.see_amount:
-    #         self.save_single_see_as_matplot_bm_rec_visual_at_certain_epoch(see_num, epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
+    #         self.save_single_see_as_bm_rec_matplot_visual_at_certain_epoch(see_num, epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
 
 
-    # def save_all_single_see_as_matplot_bm_rec_visual_at_final_epoch(self, add_loss=False, bgr2rgb=False):
+    # def save_all_single_see_as_bm_rec_matplot_visual_at_final_epoch(self, add_loss=False, bgr2rgb=False):
     #     """
-    #     所有 see 裡面的 final_epoch 重做 matplot_bm_rec_visual
+    #     所有 see 裡面的 final_epoch 重做 bm_rec_matplot_visual
     #     """
     #     for see_num in range(self.see_amount):
     #         self.sees[see_num].get_see_dir_info()  ### 定位出current_final_epochs前，先更新一下 see_dir_info
     #         current_final_epochs = self.sees[see_num].see_file_amount - 3   ### 定位出 current_final_epochs，current的意思是可能目前還沒train完也可以用，epochs是 epoch總數，要減掉：in_img, gt_img 和 epoch0
-    #         self.save_single_see_as_matplot_bm_rec_visual_at_certain_epoch(see_num, current_final_epochs, add_loss=add_loss, bgr2rgb=bgr2rgb)
+    #         self.save_single_see_as_bm_rec_matplot_visual_at_certain_epoch(see_num, current_final_epochs, add_loss=add_loss, bgr2rgb=bgr2rgb)
 
     ##############################################################################################################################
     ##############################################################################################################################
@@ -197,7 +200,7 @@ class Result:
             r_c_imgs = []
             for go_see_num, see_num in enumerate(see_nums):
                 c_imgs = [in_imgs[go_see_num]]
-                c_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_epoch_jpg_names[go_epoch]))
+                c_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_flow_jpg_names[go_epoch]))
                 c_imgs += [gt_imgs[go_see_num]]
                 r_c_imgs.append(c_imgs)
 
@@ -233,8 +236,8 @@ class Result:
         in_imgs = []
         gt_imgs = []
         for see_num in see_nums:
-            in_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_jpg_names[0]))
-            gt_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_jpg_names[1]))
+            in_imgs.append(cv2.imread(self.sees[see_num].see_in_img_path))
+            gt_imgs.append(cv2.imread(self.sees[see_num].see_gt_flow_v_path))
 
         ### 抓 第一row的 要顯示的 titles
         titles = ["in_img", self.ana_describe, "gt_img"]
@@ -291,17 +294,17 @@ if(__name__ == "__main__"):
     ### bm rec  待更新，有需要的時候再弄就好了 反正用法有寫在 step10b囉！
     ############################################################################################################################################
     blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050_try_npz").set_ana_describe("blender").build()
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=0, add_loss=False, bgr2rgb=True)
-    # blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
-    blender_os_book.save_all_single_see_as_matplot_bm_rec_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=0, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=0, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_all_single_see_as_bm_rec_matplot_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
+    blender_os_book.save_all_single_see_as_bm_rec_matplot_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True)
 
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=5, add_loss=False, bgr2rgb=True)   ### 如果失敗就單個跑吧~~
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=6, add_loss=False, bgr2rgb=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=7, add_loss=False, bgr2rgb=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=8, add_loss=False, bgr2rgb=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=9, add_loss=False, bgr2rgb=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=10, add_loss=False, bgr2rgb=True)
-    # blender_os_book.save_single_see_as_matplot_bm_rec_visual(see_num=11, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=5, add_loss=False, bgr2rgb=True)   ### 如果失敗就單個跑吧~~
+    # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=6, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=7, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=8, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=9, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=10, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=11, add_loss=False, bgr2rgb=True)
     # print(dir(blender_os_book.sees[0]))
     # print(blender_os_book.sees[0].matplot_visual_dir)
