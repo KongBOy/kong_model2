@@ -140,9 +140,6 @@ Calculate_and_Visual_SSIM_LD_8te  = f"build().result_obj.result_do_multiple_sing
 Calculate_and_Visual_SSIM_LD_9te  = f"build().result_obj.result_do_multiple_single_see(start_see=5, see_amount=2, see_method_name={Calculate_and_Visual_SSIM_LD_method_name}, add_loss={Calculate_and_Visual_SSIM_LD_add_loss}, bgr2rgb={Calculate_and_Visual_SSIM_LD_bgr2rgb}, single_see_core_amount={Calculate_and_Visual_SSIM_LD_single_see_core_amount}, see_print_msg={Calculate_and_Visual_SSIM_LD_see_print_msg}, see_core_amount={Calculate_and_Visual_SSIM_LD_see_core_amount}, result_print_msg={Calculate_and_Visual_SSIM_LD_result_print_msg})"
 Calculate_and_Visual_SSIM_LD_10te = f"build().result_obj.result_do_multiple_single_see(start_see=6, see_amount=1, see_method_name={Calculate_and_Visual_SSIM_LD_method_name}, add_loss={Calculate_and_Visual_SSIM_LD_add_loss}, bgr2rgb={Calculate_and_Visual_SSIM_LD_bgr2rgb}, single_see_core_amount={Calculate_and_Visual_SSIM_LD_single_see_core_amount}, see_print_msg={Calculate_and_Visual_SSIM_LD_see_print_msg}, see_core_amount={Calculate_and_Visual_SSIM_LD_see_core_amount}, result_print_msg={Calculate_and_Visual_SSIM_LD_result_print_msg})"
 
-#####################################################################################################################################################################################################################################################################################################################################
-Change_npz_dir_method_name = '"Change_npz_dir"'  ### 兩層是因為 sb.run 會削掉一層 "" ～
-Change_npz_dir_all  = f"build().result_obj.result_do_multiple_single_see(start_see=0, see_amount=7, see_method_name={Change_npz_dir_method_name})"
 
 # sb.run(same_command + [f"test2.{compress_1}"])
 
