@@ -683,7 +683,7 @@ class See_rec_metric(See_bm_rec):
         # move_dir_certain_file(self.old2_matplot_metric_visual_read_dir,  certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_read_dir,  print_msg=print_msg)
         # move_dir_certain_file(self.old2_matplot_metric_visual_write_dir, certain_word="combine",      certain_ext=".avi", dst_dir=self.matplot_metric_visual_write_dir, print_msg=print_msg)
 
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Change_metric_dir, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
+        # print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Change_metric_dir, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
 
     ### 給下一步 metric_visual 用的
     def get_metric_info(self):
