@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons, TextBox
 
-from step2_a_distort_curl_and_fold import get_xy_f, get_dis_move_map
+from step2_a_distort_curl_and_fold import get_xy_f_and_m, get_dis_move_map
 
 fig, ax = plt.subplots()
 fig.set_size_inches(6, 8)
@@ -57,7 +57,7 @@ alpha_f_sl  = Slider(alpha_f_ax  , 'alpha_f' , 0.2   , 150 , valinit=0, valstep=
 
 ### 3.Slide功能
 ### 初始化 一些 等等要用到的東西
-xy_f, _ = get_xy_f(x_min=0, x_max=int(col) - 1, y_min=0, y_max=int(row) - 1, w_res=int(col), h_res=int(row))
+xy_f, _ = get_xy_f_and_m(x_min=0, x_max=int(col) - 1, y_min=0, y_max=int(row) - 1, w_res=int(col), h_res=int(row))
 ax_img = ax.scatter(xy_f[:, 0], xy_f[:, 1])
 ax = ax.invert_yaxis()
 # ax_img = ax.scatter(xy_f[:,0], xy_f[:,1], c = np.arange(row*col), cmap="brg") ### 有漸層顏色，但是很慢所以註解掉了
