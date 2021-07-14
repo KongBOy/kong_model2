@@ -429,7 +429,7 @@ def step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_c
 ##################################################################################################################
 ##################################################################################################################
 ''' dis_coord_small_m '''
-def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_small_m, start_xy_m, ord_ratio, img_w, img_h, debug=False):
+def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_small_m, ord_ratio, ord_base, see_base, img_w, img_h, start_xy_m, debug=False):
     '''
     因為是在 dis_coord_small_m 抓 see_coord_m 一定 不會填滿(step6本來就要設定縮小 要在 boundary(see_coord的範圍) 裡面)， 所以 inv_see_coord_m 一定填不滿， 會有nan
 
@@ -447,35 +447,39 @@ def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_va
     # _, see_fm_xy_1_20m = get_xy_f_and_m(x_min=-1.20, x_max=+1.20, y_min=-1.20, y_max=+1.20, w_res=img_w, h_res=img_h)
 
     ### 應該是錯的， 但細想下去好像沒錯， 只是在 轉換成真實座標時 要分 bm(-0.95~0.95) 和 fm(-1.00~1.00) 兩種方式轉換
-    _, see_fm_xy_1_00m = get_xy_f_and_m(x_min=-1.00, x_max=+1.00, y_min=-1.00, y_max=+1.00, w_res=img_w, h_res=img_h)
+    # _, see_fm_xy_1_00m = get_xy_f_and_m(x_min=-1.00, x_max=+1.00, y_min=-1.00, y_max=+1.00, w_res=img_w, h_res=img_h)
 
     ### 應該是對的， 轉換成真實座標時 bm/fm 可以統一用 -0.95~0.95
-    _, see_fm_xy_0_95_m = get_xy_f_and_m(x_min=-0.95, x_max=+0.95, y_min=-0.95, y_max=+0.95, w_res=img_w, h_res=img_h)
+    # _, see_fm_xy_0_95_m = get_xy_f_and_m(x_min=-0.95, x_max=+0.95, y_min=-0.95, y_max=+0.95, w_res=img_w, h_res=img_h)
 
-    _, ord_xy_1_00_m = get_xy_f_and_m(x_min=-1.00, x_max=+1.00, y_min=-1.00, y_max=+1.00, w_res=w_res, h_res=h_res)
-    _, ord_xy_0_95_m = get_xy_f_and_m(x_min=-0.95, x_max=+0.95, y_min=-0.95, y_max=+0.95, w_res=w_res, h_res=h_res)
+    # _, ord_xy_1_00_m = get_xy_f_and_m(x_min=-1.00, x_max=+1.00, y_min=-1.00, y_max=+1.00, w_res=w_res, h_res=h_res)
+    # _, ord_xy_0_95_m = get_xy_f_and_m(x_min=-0.95, x_max=+0.95, y_min=-0.95, y_max=+0.95, w_res=w_res, h_res=h_res)
+    _, ord_xy_m = get_xy_f_and_m(x_min=-ord_base, x_max=+ord_base, y_min=-ord_base, y_max=+ord_base, w_res=w_res, h_res=h_res)
+    _, see_xy_m = get_xy_f_and_m(x_min=-see_base, x_max=+see_base, y_min=-see_base, y_max=+see_base, w_res=w_res, h_res=h_res)
     ##################################################################################################################
     ''' 方法1 ： see 取 -1~1 是錯的'''
     ### 0.95 + move_map -> dis_coord -> back to 0.95, boundary grab 0.95， 因為沒有取新bm， 是直接 回去原本的地方， 原本的地方如果是 0.95， 回去也是0.95， boundary 也是原本的 0.95 囉！
     # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(         dst_coord_m=dis_coord_small_m, ord_ratio=1.00, ord_coord_m=ord_xy_0_95_m, see_coord_m=see_fm_xy_1_00m)
     # fm_nan_mask = 1 - np.isnan(see_inv_coord_m).astype(np.int32)[..., 0]
-    # fm = see_inv_coord_m     ### 放大回 -1~1 才會正確對應
-    # bm = dis_coord_small_m   ### 放大回 -1~1 才會正確對應
+    # fm = see_inv_coord_m
+    # bm = dis_coord_small_m
     # if(debug):
     #     step7_visual_util_b_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask=fm_nan_mask, dst_coord_m=dis_coord_small_m, ord_ratio=1.00, ord_coord_m=ord_xy_0_95_m, see_coord_m=see_fm_xy_1_00m, xy_m=start_xy_m)
 
     ''' 方法2 ： see 取 -0.95~0.95應該才是對的， 最後把 fm, bm 從 0.95 放大回 1.00 '''
     ### 仔細思考這才對， 因為 ord_coord 在 放回原始img_array 是用0.95 當基準來做的， see_coord 如果用1.00當基準來做就不匹配(我猜 fm appearance 用 see用1.0 面積會縮小)， 應該要跟ord_coord用一樣的0.95才對
-    see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(         dst_coord_m=dis_coord_small_m, ord_ratio=1.00, ord_coord_m=ord_xy_0_95_m, see_coord_m=see_fm_xy_0_95_m)
+    see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(         dst_coord_m=dis_coord_small_m, ord_ratio=1.00, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m)
     fm_nan_mask = 1 - np.isnan(see_inv_coord_m).astype(np.int32)[..., 0]
-    fm = see_inv_coord_m   / ord_ratio    ### 放大回 -1~1 才會正確對應
-    bm = dis_coord_small_m / ord_ratio  ### 放大回 -1~1 才會正確對應
+    # fm = see_inv_coord_m   / ord_ratio    ### 放大回 -1~1 才會正確對應
+    # bm = dis_coord_small_m / ord_ratio  ### 放大回 -1~1 才會正確對應
     if(debug):
         debug_spyder_dict["step7 fm_nan_mask"] = fm_nan_mask
         # see_coord_m = fill_nan(fm_nan_mask, see_coord_m)
         # debug_spyder_dict["step7 nan_mask_see_coord_m"] = see_coord_m
-        step7_visual_util_b_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask=fm_nan_mask, dst_coord_m=dis_coord_small_m, ord_ratio=1.00, ord_coord_m=ord_xy_0_95_m, see_coord_m=see_fm_xy_0_95_m, xy_m=start_xy_m)
+        step7_visual_util_b_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask=fm_nan_mask, dst_coord_m=dis_coord_small_m, ord_ratio=1.00, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m, xy_m=start_xy_m)
     ##################################################################################################################
+    fm = see_inv_coord_m
+    bm = dis_coord_small_m
     return fm, bm, fm_nan_mask
 
 def step7_backup():
@@ -558,7 +562,14 @@ if(__name__ == "__main__"):
     '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 small 版本'''
     dis_coord_shifted_scaled_small_m = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="small", adjust_ratio=0.8, move_map_m=move_map_curl_m, start_xy_m=xy_m, boundary_value=ord_ratio, debug=debug_before)  ### 以前的版本 本身 就不適合 套用 step6_util， 因為不需要 在 dis_coord_shifted_scaled_m 上取 新bm 和 找 ord_valid_coord， 而是直接用 dis_coord_shifted_scaled_m(縮小的)的appearance 當fm， 之後會再把 fm 對應回 ord_coord 這樣子， 所以外面 如果 adjust_type==small時 debug 記得設定false
     ''' step7 在做完 縮放 後 的 dis_coord_shifted_scaled_small 上 找valid區域(-ord_ratio~ord_ratio) 當 "Fm"， 並對應回原始move_map '''
-    fm, bm, fm_nan_mask              = step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_shifted_scaled_small_m, xy_m, ord_ratio, img_w, img_h, debug=debug_before)
+    ''' 方法2 ： see 取 -0.95~0.95應該才是對的， 最後把 fm, bm 從 0.95 放大回 1.00 '''
+    ### 仔細思考這才對， 因為 ord_coord 在 放回原始img_array 是用0.95 當基準來做的， see_coord 如果用1.00當基準來做就不匹配(我猜 fm appearance 用 see用1.0 面積會縮小)， 應該要跟ord_coord用一樣的0.95才對
+    fm, bm, fm_nan_mask = step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_shifted_scaled_small_m,
+                                ord_ratio=ord_ratio, ord_base=0.95, see_base=0.95, img_w=img_w, img_h=img_h,
+                                start_xy_m=xy_m, debug=debug_before)
+    fm = fm / ord_ratio  ### 放大回 -1~1 才會正確對應
+    bm = bm / ord_ratio  ### 放大回 -1~1 才會正確對應
+
 
 
 
