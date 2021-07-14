@@ -66,40 +66,51 @@ def step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m
         return fig, ax, ax_c, canvas_mask_xy
     else: return canvas_mask_xy
 
-def apply_flow(img, flow, visual=False, before_title=None, after_title=None, fig=None, ax=None, ax_c=None):
-    '''
-    img： HWC(HW3), dtype == uint8
-    flow: HWC(HW2), dtype == float
-    '''
+def apply_flow(data, flow, visual=False, before_title=None, after_title=None, fig=None, ax=None, ax_c=None):
     if(visual):
         fig, ax, ax_c = check_fig_ax_init(fig=None, ax=None, ax_c=None, fig_rows=1, fig_cols=2, ax_size=5, tight_layout=True)
-        ax[ax_c].imshow(img)
+        ax[ax_c].imshow(data)
         if(before_title is not None): ax[ax_c].set_title(before_title)
         ax_c += 1
+    '''
+    data:
+        img：  HWC(HW3), dtype == uint8
+        mask： HWC(HW1), dtype == float， 可以丟 np.ones() 搭配 fm， 就會得到 fm mask 囉！
+    flow: HWC(HW2), dtype == float
+    '''
+    data_type = ""
+    if  (data.ndim == 2): data = data[..., np.newaxis]
+    if  (data.shape[2] == 1): data_type = "mask"
+    elif(data.shape[2] == 3): data_type = "img"
+    ########################################################################################################
+
+
 
     ########################################################################################################
     ### numpy(進 pytorch 前處理)
-    img_t = img.astype(float).transpose((2, 0, 1))[np.newaxis, ...]  ### NCHW(13HW), dtype == float
+    data_t = data.astype(float).transpose((2, 0, 1))[np.newaxis, ...]  ### NCHW(1CHW), dtype == float
     flow_t = np.expand_dims(flow, 0)  ### NHWC(1HW2), dtype == float
 
     ########################################################################################################
     ### tensor
     import torch.nn.functional as F
     import torch
-    img_t = torch.from_numpy(img_t)
+    data_t = torch.from_numpy(data_t)
     flow_t      = torch.from_numpy(flow_t)
-    result_img_t = F.grid_sample(input=img_t, grid=flow_t)
+    result_t = F.grid_sample(input=data_t, grid=flow_t)
 
     ########################################################################################################
     ### numpy
-    result_img = result_img_t.numpy()[0].transpose(1, 2, 0).astype(np.uint8)  ### HWC, dtype == uint8
+    if  (data_type == "img" ): result = result_t.numpy()[0].transpose(1, 2, 0).astype(np.uint8)  ### HWC, dtype == uint8
+    elif(data_type == "mask"): result = result_t.numpy()[0].transpose(1, 2, 0)                   ### HWC, dtype == float
+
     if(visual):
-        ax[ax_c].imshow(result_img)
+        ax[ax_c].imshow(result)
         if(after_title is not None): ax[ax_c].set_title(after_title)
         ax_c += 1
-        return result_img, fig, ax, ax_c
+        return result, fig, ax, ax_c
     else:
-        return result_img
+        return result
 
 
 def apply_fm_to_get_dis_img(ord_img, fm, visual=False, before_title=None, after_title=None, fig=None, ax=None, ax_c=None):
@@ -108,7 +119,7 @@ def apply_fm_to_get_dis_img(ord_img, fm, visual=False, before_title=None, after_
     fm     ： HWC(HW2), dtype == float
     return dis_img
     '''
-    return apply_flow(img=ord_img, flow=fm, visual=visual, before_title=before_title, after_title=after_title, fig=fig, ax=ax, ax_c=ax_c)
+    return apply_flow(data=ord_img, flow=fm, visual=visual, before_title=before_title, after_title=after_title, fig=fig, ax=ax, ax_c=ax_c)
 
 def apply_bm_to_get_rec_img(dis_img, bm, visual=False, before_title=None, after_title=None, fig=None, ax=None, ax_c=None):
     '''
@@ -116,7 +127,7 @@ def apply_bm_to_get_rec_img(dis_img, bm, visual=False, before_title=None, after_
     bm     ： HWC(HW2), dtype == float
     return rec_img
     '''
-    return apply_flow(img=dis_img, flow=bm, visual=visual, before_title=before_title, after_title=after_title, fig=fig, ax=ax, ax_c=ax_c)
+    return apply_flow(data=dis_img, flow=bm, visual=visual, before_title=before_title, after_title=after_title, fig=fig, ax=ax, ax_c=ax_c)
 
 # def apply_fm_to_get_dis_img(ord_img, fm, visual=False, fig=None, ax=None, ax_c=None):
 #     '''
