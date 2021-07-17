@@ -370,7 +370,7 @@ def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_va
         debug_spyder_dict["step7. fm == see_inv_coord_m"]  = see_inv_coord_m
         debug_spyder_dict["step7. fm_nan_mask"] = fm_nan_mask
         step7_visual_util_c_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask=fm_nan_mask,
-                                    dis_coord_m=dis_coord_small_m, ord_ratio=ord_ratio, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m)
+                                    dis_coord_m=dis_coord_small_m, ord_ratio=ord_ratio, ord_coord_m=ord_coord_m, see_coord_m=see_coord_m)
     return fm, bm, fm_nan_mask
 
 ##########################################################################################################################################################
@@ -422,103 +422,28 @@ if(__name__ == "__main__"):
     ##################################################################################################################
     '''step1~5'''
     _, move_map_curl_m = get_dis_move_map(start_xy_m, vert_x=vert_x, vert_y=vert_y, move_x=move_x, move_y=move_y, dis_type=dis_type, alpha=alpha, debug=debug_1to5)  ### alpha:2~4
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    # '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 big 版本'''
-    # dis_coord_shifted_scaled_big_m   = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="big", adjust_ratio=1.5,  move_map_m=move_map_curl_m, start_xy_m=start_xy_m,
-    #                                                                                            debug=debug_papr17, boundary_value=1.00)  ### 這邊的 step6 要超過boundary_value 值 跟 方2, 3, 4 不一樣， 是要超過 1 這樣子！
-    # ''' Paper17 方法1： 竟然對 (原本以為錯) 直接 對應回 -1~1(boundary) ， 所以 這邊的 step6 要超過boundary_value 值 跟 方2, 3, 4 不一樣， 是要超過 1 這樣子！
-    #     此方法會對的原因是 他是利用 dis_coord_m 的 抽象座標 直接對應回 實際storage座標(-1~1) 才會對的，
-    #     也要搭配使用 pytorch 的 gridsample 是把 img實際storage座標 轉成 -1~1 才會對喔！
 
-    #     dis_coord_big 的 ord_valid_coord 是 用 抽象座標 -ord_ratio ~ ord_ratio(比如 -0.75~+0.75) 當基底，
-    #     找 dis_coord_big 在使用 pytorch gridsample 會有作用的區域( dis_coord_big 值 在 -1~1 的區域)
-    #     ord_valid_coord 可以說是 套用 pytorch gridsample 後會有作用的區域， 我的code內又稱 ord_valid_coord mask(fm mask外觀)，
-    #     因為 dis_coord_big 是用 -ord_ratio ~ ord_ratio 為基底， 直觀來說也會想像到 ord_valid_coord mask 也是如此，
-    #     但是 如果使用 pytorch gridsample 把 dis_coord_big 套用到影像上的話，
-    #     pytorch gridsample 會把 影像的 實際storage座標 轉成 -1~1， 以這個方式來使用 dis_coord_big， 並不是轉成 -ord_ratio ~ ord_ratio
-    #     所以 dis_coord_big的 抽象座標雖然是 -0.75~+0.75為基底，而pytorch gridsampl實際在使用的時候 出現的ord_valid_coord mask(fm mask外觀)是 以 -1~1為基底喔！
-    #     因此此方法 ord_base 和 see_base 就直接設定 1.00 了
-    #     不像方法4  ord_base 和 see_base 都是設定成 ord_ratio(比如0.75) 了
-    # '''
-    # ord_base_paper17  = 1.00
-    # see_base_paper17  = ord_base_paper17
-    # ############################################################################################################
-
-    # '''step7 在做完 縮放 後 的 dis_coord_shifted_scaled_big 上 找valid區域(-1.00~1.00) 當 new"Bm， 之後把 dis_coord_m 的 抽象座標 直接對應回 實際storage座標(-1~1)'''
-    # new_bm, new_fm, ord_valid_mask  = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
-    #                                 ord_base=ord_base_paper17, see_base=see_base_paper17, img_w=img_w, img_h=img_h,
-    #                                 debug=True, start_xy_base=ord_base_paper17)
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ############################################################################################################
-    ''' Paper17 step6 方法2, 3(錯), 4 都是 boundary 只要超過 ord_ratio 就好囉！ 然後再從 -ord_ratio~ord_ratio 做 再次縮放 回 -1~1 '''
-    '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 big 版本'''
+    '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 big 版本， 要超過 ord_ratio 喔！'''
     dis_coord_shifted_scaled_big_m   = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="big", adjust_ratio=1.5,  move_map_m=move_map_curl_m, start_xy_m=start_xy_m,
                                                                                                debug=debug_papr17, boundary_value=ord_ratio)
-    ############################################################################################################
-    ''' Paper17 step7 方法2, 3(錯), 4 ：
-          最直覺的方法是 方法4：直接對應回原來的地方：
-          ord_ratio + move_map -> dis_coord -> back to ord_ratio, boundary grab ord_ratio
-          因為沒有取新bm， 是直接 回去原本的地方， 原本的地方如果是 ord_ratio， 回去也是ord_ratio， boundary 也是原本的 ord_ratio 囉！
-          所以設定
-          ord_base_paper17 = ord_ratio
-          see_base_paper17 = ord_base_paper17
-          以下2, 3(錯), 4 都是往 方法4 的想法去做
-    '''
-    ord_base_paper17 = ord_ratio         ### 如果是往方法1改： 把 ord_base_paper17 值改1.00， 搭配註解掉 下面 dis_rescale_again的東西 和 下面 new_fm = new_fm / ord_ratio 之類的東西喔！
-    see_base_paper17 = ord_base_paper17
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ''' Paper17 方法2(完全相同的話會錯) 學paper17 最原始的方法 把 dis_coord_big(fm) 再次根據 ord_ratio(以下比如0.95) 做縮放(把原始正mesh變回-1~1) 再找 new bm值，錯的原因和改法如下
-            往 方法4方向想方法2錯的原因為： 既然 dis_coord_m 先除0.95放大一點才抓new_bm， 那麼對應的 找 ord_valid_coord 時的 fm 也相應要除0.95 放大一點 才來找 ord_valid_coord，paper17 忘記放大 fm了
-            往 方法4方向的改法     ： 只要把找 ord_valid_coord 時的 fm也放大就對了
-            往 方法1方向想錯的原因為： 如果 dis_coord_big_m 再次縮放後對應 實體storage座標， 那應該要拿 再次縮放後的 dis_coord 重新找 ord_valid_coord 或者 對 ord_valid_coord的結果做縮放
-            往 方法1方向的改法     ： 只要 dis_coord_big_m   直接對應  實際storage座標 -1~1， (dis_coord_big_m不需放大就直接對應就對了)
-            下用 方法4的方向去改
-    '''
-    ''' dis_coord_big 看有沒有需要 "再次縮放"， 通常是想 把 start_coord 的 -ord_ratio~+ord_ratio 轉回 -1~1 '''
-    dis_rescale_again  = ord_ratio  ### 這個就是 方法4方向 的改法囉， 把fm放大就對了， 如果想往方法1改的話就把這行註解掉(不需要 rescale_again) 並搭配把 ord_base_paper17 改成 1.00
-    dis_coord_shifted_scaled_big_m /=  dis_rescale_again  ### 這個就是 方法4方向 的改法囉， 把fm放大就對了
-    ord_base_paper17               /=  dis_rescale_again  ### 這個就是 方法4方向 的改法囉， 對應回的 ord座標 也跟著放大回 -1~1
-    see_base_paper17                =  ord_base_paper17   ### 這個就是 方法4方向 的改法囉， 看的地方跟對應回的 ord座標 一樣
-    '''step7 在做完 縮放 後 的 dis_coord_shifted_scaled_big 上 找valid區域(-1.00~1.00) 當 new"Bm"， 並對應回 再次縮放後的 ord_coord(-1.00~1.00)'''
-    new_bm, new_fm, ord_valid_mask  = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
-                                    ord_base=ord_base_paper17, see_base=see_base_paper17, img_w=img_w, img_h=img_h,
-                                    debug=debug_papr17, start_xy_base=ord_base_paper17, dis_rescale_again=dis_rescale_again)
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ''' Paper17 方法3(錯)： 對應回 -0.95~0.95 但 see_base ==1.00 != ord_base，存一版後刪掉吧
-            直接 對應回 -0.95~0.95， 理論上來說應該是要這樣子， 因為我是從 -0.95~0.95走道 dis_coord， dis_coord應該要走回-0.95~+0.95(這部分對)
-            (錯1)但是 see部分 想學 方法1 see直接用 1.00，錯！ 方法1會對是因為 dis_coord 對應回 -1~1(實際storage座標)， 此時 see -1~1才會對，
-                                                                而這邊是 dis_coord 對應回 -0.95~+0.95(抽象座標)， 此時 see 如果還看 -1~1(實際storage座標) 就錯啦！
-                                                                                                                此時 see 應該要跟 對應回的 抽象座標 一樣 看 -0.95~+0.95 就對了！
-            (錯2)也不保證 move_map_adjust 有沒有把 dis_coord_big 調整超過 -1~1， 如果沒超過用這個方法也GG
+    '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 small 版本 不能超過 ord_ratio 喔！'''
+    dis_coord_shifted_scaled_small_m   = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="small", adjust_ratio=0.8,  move_map_m=move_map_curl_m, start_xy_m=start_xy_m,
+                                                                                                 debug=debug_before, boundary_value=ord_ratio)
 
-    '''
-    ''' dis_coord_big 看有沒有需要 "再次縮放"， 通常是想 把 start_coord 的 -ord_ratio~+ord_ratio 轉回 -1~1， 不過這裡不想縮放， 設定1.00 就不會縮放了'''
-    dis_rescale_again = 1.00  ### 同 方法4 不變
-    dis_coord_shifted_scaled_big_m /= dis_rescale_again
-    ord_base_paper17               /= dis_rescale_again  ### ord_coord 不一定 == start_xy 喔！ 因為 ord_coord 可能被 "再次rescale" 這樣子拉
-    see_base_paper17                = 1.00  ### (錯1)ord_base_paper17 != see_base_paper17 的錯誤示範， see部分 這樣設定是想學 方法1 see直接用 1.00， 而且還有(錯2)的風險 存一版後刪掉吧
-    ############################################################################################################
-    '''step7 在做完 縮放 後 的 dis_coord_shifted_scaled_big 上 找valid區域(-ord_ratio~ord_ratio) 當 new"Bm"， 並對應回原始 ord_coord(-ord_ratio~ord_ratio)'''
-    ### 這個因為 抽象座標 和 實際storage座標 概念完全不同 ，不能用debug(視覺化出來的東西對應應不上 或者 對上了但是也是錯的)
-    new_bm, new_fm, ord_valid_mask  = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
-                                    ord_base=ord_base_paper17, see_base=see_base_paper17, img_w=img_w, img_h=img_h,
-                                    debug=debug_papr17, start_xy_base=ord_base_paper17, dis_rescale_again=dis_rescale_again)
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ''' Paper17 方法4：
-        ord_ratio + move_map -> dis_coord -> back to ord_ratio, boundary grab ord_ratio
-        把方法3 把 see 改==ord 還沒對，
-        最後把 fm, bm 從 0.95 放大回 1.00 就對了 '''
+          最直覺的方法是 直接對應回原來的地方：
+          ord_ratio + move_map -> dis_coord -> back to ord_ratio, boundary grab ord_ratio
+          因為沒有取新bm， 是直接 回去原本的地方， 原本的地方如果是 ord_ratio， 回去也是ord_ratio， boundary 也是原本的 ord_ratio 囉！
+          所以設定：
+            ord_base_paper17 = ord_ratio
+            see_base_paper17 = ord_base_paper17
+          最後別忘了 把 fm, bm 從 ord_ratio 放大回 1.00 才對喔
+    '''
+    ord_base_paper17 = ord_ratio
+    see_base_paper17 = ord_base_paper17
 
     ''' dis_coord_big 看有沒有需要 "再次縮放"， 通常是想 把 start_coord 的 -ord_ratio~+ord_ratio 轉回 -1~1， 不過這裡不想縮放， 設定1.00 就不會縮放了 '''
     dis_rescale_again  = 1.00  ### dis_coord_big 不變
@@ -536,27 +461,10 @@ if(__name__ == "__main__"):
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 big 版本'''
-    dis_coord_shifted_scaled_small_m   = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="small", adjust_ratio=0.8,  move_map_m=move_map_curl_m, start_xy_m=start_xy_m,
-                                                                                                 debug=debug_before, boundary_value=ord_ratio)
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ''' Before 方法1 錯：  '''
-    ord_base_before  = ord_ratio
-    see_base_before  = 1.00  ### see 取 -1~1 是錯的， 當初應該是被 paper17方法1誤導了， 仔細思考應該是方法2才對喔
-
-    ''' step7 在做完 縮放 後 的 dis_coord_shifted_scaled_small 上 找valid區域(-ord_ratio~ord_ratio) 當 "Fm"， 並對應回原始move_map '''
-    fm, bm, fm_nan_mask = step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_shifted_scaled_small_m,
-                                ord_base=ord_base_before, see_base=see_base_before, img_w=img_w, img_h=img_h,
-                                debug=debug_before, ord_ratio=ord_ratio)
-    ########################################################################################################################################################################
-    ########################################################################################################################################################################
-    ''' Before 方法2： see 取 -0.95~0.95應該才是對的， 最後把 fm, bm 從 0.95 放大回 1.00 '''
-    ### 仔細思考這才對， 因為 ord_coord 在 放回原始img_array 是用0.95 當基準來做的， see_coord 如果用1.00當基準來做就不匹配(我猜 fm appearance 用 see用1.0 面積會縮小)， 應該要跟ord_coord用一樣的0.95才對
+    ''' Before 方法2： see 取 -ord_ratio~ord_ratio應該才是對的， 最後還要把 fm, bm 從 0.95 放大回 1.00 才正確'''
     ### 0.95 + move_map -> dis_coord -> back to 0.95, boundary grab 0.95， 因為沒有取新bm， 是直接 回去原本的地方， 原本的地方如果是 0.95， 回去也是0.95， boundary 也是原本的 0.95 囉！
     ord_base_before  = ord_ratio
-    see_base_before  = ord_ratio
+    see_base_before  = ord_base_before
 
     ''' step7 在做完 縮放 後 的 dis_coord_shifted_scaled_small 上 找valid區域(-ord_ratio~ord_ratio) 當 "Fm"， 並對應回原始move_map '''
     fm, bm, fm_nan_mask = step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_shifted_scaled_small_m,
