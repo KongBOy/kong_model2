@@ -7,7 +7,7 @@ from matplot_fig_ax_util import move_map_2D_arrow, move_map_3D_scatter
 def step6_debug_a_Dis_coord_both_Move_map_Boundary_2D3Dvisual(dis_coord_m, move_map_m, start_xy_m,
                                                      current_state = "",
                                                      jump_r=4, jump_c=4,
-                                                     boundary_value=1,
+                                                     boundary_value=0,
                                                      before_alpha = 1.0,
                                                      after_alpha  = 1.0,
                                                      fig=None, ax=None, ax_c=None):

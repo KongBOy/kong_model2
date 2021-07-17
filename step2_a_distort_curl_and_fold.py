@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from util import get_xy_f_and_m
 from matplot_fig_ax_util import check_fig_ax_init, mesh3D_scatter_and_z0_plane, move_map_2D_moving_visual
-from matplot_fig_ax_util import coord_f_2D_scatter, move_map_1D_value, move_map_2D_arrow, move_map_3D_scatter
+from matplot_fig_ax_util import coord_f_2D_scatter, move_map_1D_value, move_map_2D_arrow
 
 
 from step2_a_util                                                         import wt_calculate, step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord, apply_fm_to_get_dis_img, apply_bm_to_get_rec_img
@@ -14,20 +14,20 @@ from step2_a_debug_step5_move_map_simulate                                import
 from step2_a_debug_step6a_dis_coord_adjust_visual                         import step6_debug_a_Dis_coord_both_Move_map_Boundary_2D3Dvisual
 from step2_a_debug_step6b_papr17_dis_coord_big_and_ord_valid_coord_visual import step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual
 from step2_a_debug_step6c_before_dis_coord_small_visual                   import step6_debug_c_Dis_coord_small_Move_map_Boundary_visual
-from step2_a_debug_step7b_papr17_get_bm_value_visual                      import step7_visual_util_a_paper17
-from step2_a_debug_step7c_before_get_fm_value_visual                      import step7_visual_util_b_before
+from step2_a_debug_step7b_papr17_get_bm_value_visual                      import step7_visual_util_b_paper17
+from step2_a_debug_step7c_before_get_fm_value_visual                      import step7_visual_util_c_before
 
 debug_spyder_dict = dict()
 
 
 ''' step1~5 '''
 ### 整個function都是用 image的方式來看(左上角(0,0)，x往右邊走增加，y往上面走增加)
-def get_dis_move_map(xy_m, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50, debug=False):
-    h_res, w_res = xy_m.shape[:2]
-    xy_f = xy_m.reshape(-1, 2)
+def get_dis_move_map(start_xy_m, vert_x, vert_y, move_x, move_y, dis_type="fold", alpha=50, debug=False):
+    h_res, w_res = start_xy_m.shape[:2]
+    start_xy_f = start_xy_m.reshape(-1, 2)
     '''
-    xy_m    ： 正mesh，值域為 0~x_max, 0~y_max , shape 為 (h_res , w_res, 2), m 是 map_form 的意思， xy_f[..., 0]是X座標， xy_f[..., 1]是Y座標
-    xy_f    ： 正mesh，值域為 0~x_max, 0~y_max , shape 為 (h_res * w_res, 2), f 是 flatten  的意思， xy_f[ : , 0]是X座標， xy_f[ : , 1]是Y座標
+    start_xy_m    ： 正mesh，值域為 0~x_max, 0~y_max , shape 為 (h_res , w_res, 2), m 是 map_form 的意思， start_xy_f[..., 0]是X座標， start_xy_f[..., 1]是Y座標
+    start_xy_f    ： 正mesh，值域為 0~x_max, 0~y_max , shape 為 (h_res * w_res, 2), f 是 flatten  的意思， start_xy_f[ : , 0]是X座標， start_xy_f[ : , 1]是Y座標
     vert_x  ： 應該要 x_min <= vert_x <= x_max
     vert_y  ： 應該要 y_min <= vert_y <= y_max
     move_x/y： 雖然是沒有限定， 不過應該也是要在 min ~ max 之間會比較合理
@@ -41,7 +41,7 @@ def get_dis_move_map(xy_m, vert_x, vert_y, move_x, move_y, dis_type="fold", alph
     xy_shifted_f ： 位移到 以 vtex 為(0, 0) 的正mesh                    , shape 為 (h_res * w_res, 2)
     '''
     vtex = np.array([vert_x, vert_y])  ### 指定的扭曲點xy座標
-    xy_shifted_f  = xy_f - vtex        ### 位移整張mesh變成以扭曲點座標為原點
+    xy_shifted_f  = start_xy_f - vtex        ### 位移整張mesh變成以扭曲點座標為原點
 
     ################################################################################################################################
     ''' step2.選一個移動向量 來 決定每個點要怎麼移動
@@ -56,7 +56,7 @@ def get_dis_move_map(xy_m, vert_x, vert_y, move_x, move_y, dis_type="fold", alph
 
     ''' step1,2 視覺化 xy 和 xy_shift 和 move_xy'''
     if(debug):
-        fig, ax, ax_c = coord_f_2D_scatter(xy_f,         h_res, w_res, fig_title="step1.xy_mesh, step2. move_xy",       fig=fig, ax=ax, ax_c=ax_c)
+        fig, ax, ax_c = coord_f_2D_scatter(start_xy_f,         h_res, w_res, fig_title="step1.xy_mesh, step2. move_xy",       fig=fig, ax=ax, ax_c=ax_c)
         ax[ax_c - 1].arrow(vert_x, vert_y, move_x, move_y, color="black", length_includes_head=True, head_width=0.05)  ### 移動向量，然後箭頭化的方式是(x,y,dx,dy)！ 不是(x1,y1,x2,y2)！
         fig, ax, ax_c = coord_f_2D_scatter(xy_shifted_f, h_res, w_res, fig_title="step1.xy_mesh_shift, step2. move_xy", fig=fig, ax=ax, ax_c=ax_c)
         ax[ax_c - 1].arrow(   0  ,    0  , move_x, move_y, color="black", length_includes_head=True, head_width=0.05)  ### 移動向量，然後箭頭化的方式是(x,y,dx,dy)！ 不是(x1,y1,x2,y2)！
@@ -153,10 +153,10 @@ def get_dis_move_map(xy_m, vert_x, vert_y, move_x, move_y, dis_type="fold", alph
         debug_spyder_dict["move_map_m"] = move_map_m
 
         fig, ax, ax_c = move_map_1D_value(move_map_m=move_map_m, move_x=move_x, move_y=move_y, fig_title="step5. see move_map value", fig=fig, ax=ax, ax_c=ax_c)
-        fig, ax, ax_c = move_map_2D_moving_visual(move_map_m=move_map_m, start_xy_m=xy_m, fig_title=f"step5. {dis_type}", fig=fig, ax=ax, ax_c=ax_c)
+        fig, ax, ax_c = move_map_2D_moving_visual(move_map_m=move_map_m, start_xy_m=start_xy_m, fig_title=f"step5. {dis_type}", fig=fig, ax=ax, ax_c=ax_c)
 
         '''simulate wt_fold/curl 兩種都模擬看看長怎樣'''
-        step5_move_map_simulate_visual(xy_m, move_xy, d_abs_norm_m, alpha_fold=0.8, alpha_curl=2.0)
+        step5_move_map_simulate_visual(start_xy_m, move_xy, d_abs_norm_m, alpha_fold=0.8, alpha_curl=2.0)
 
     ### 存debug圖
     if(debug):
@@ -174,7 +174,7 @@ def move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type,
                                                             move_map_m, start_xy_m,
                                                             debug=True,
                                                             jump_r=4, jump_c=4,
-                                                            boundary_value=1,
+                                                            boundary_value=0,
                                                             before_alpha=0.5,
                                                             after_alpha =0.7):
     '''
@@ -185,18 +185,23 @@ def move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type,
     start_xy_m  ： 起始座標點         ， 用來計算 dis_coord_m 用的
     move_map_m  ： 移動的箭頭(不含座標)， 用來計算 dis_coord_m 用的
     adjust_type ：
-        big   ： paper17的方法 ，把 dis_coord_m 值放大(超過 自訂的boundary)， 在 dis_coord_m 上取新的bm， 取 valid_ord_coord 當fm
-        small ： 以前的方法， 原本 dis_coord_m == move_map + ord_coord 直接當bm， 把 dis_coord_m 值縮小(限制在 自訂的boundary 內)， 縮小的dis_coord_m 的 appearance 就當fm， 之後會再把 fm 對應回 ord_coord 這樣子
-    debug ： 建議要搭配 spyder 一起使用， 才能用 Variable Explore 看變數喔！
+         big    ： paper17的方法 ，把 dis_coord_m 值放大(超過 自訂的boundary)， 在 dis_coord_m 上取新的bm， 取 valid_ord_coord 當fm
+        small   ： 以前的方法， 原本 dis_coord_m == move_map + ord_coord 直接當bm， 把 dis_coord_m 值縮小(限制在 自訂的boundary 內)， 縮小的dis_coord_m 的 appearance 就當fm， 之後會再把 fm 對應回 ord_coord 這樣子
+        debug   ： 建議要搭配 spyder 一起使用， 才能用 Variable Explore 看變數喔！
+
+    boundary_value：
+      對paper17方法來說： 是要框出 new bm 要回到哪裡的範圍
+      對before方法來說 ： 是要框出 ord_coord 的範圍， 所以 在製作 dis_coord_small 那邊 visual部分的boundary_value設定應為： boundary_value = ord_base_before
     '''
     if(debug): fig, ax, ax_c = check_fig_ax_init(fig=None, ax=None, ax_c=None, fig_rows=2, fig_cols=5, ax_size=5, tight_layout=True)
     ##########################################################################################################################
     h_res, w_res = start_xy_m.shape[: 2]
 
-    '''算 step6a. start_xy_m 根據 move_map_m 移動， 就會得到 dis_coord_m'''
+    '''
+    step6a. start_xy_m 根據 move_map_m 移動， 就會得到 dis_coord_m， 即 dis_coord_m = start_xy_m + move_map_m
+    '''
     dis_coord_m = start_xy_m + move_map_m  ### dis_coord
     if(debug):
-        ##########################################################################################################################
         '''圖0,0 2D箭頭視覺化 bm裡存的東西'''
         fig, ax[0], ax_c = move_map_2D_arrow(move_map_m, start_xy_m=start_xy_m,
             fig_title="step6 2D view \n storage array is still bm",
@@ -206,23 +211,16 @@ def move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type,
             show_after_move_coord =False, after_alpha=after_alpha,
             fig=fig, ax=ax[0], ax_c=0)
 
-        '''圖0,1 2D箭頭視覺化 bm裡存的東西 模擬移動後的結果'''
-        fig, ax[0], ax_c = move_map_2D_arrow(move_map_m, start_xy_m=start_xy_m,
-            fig_title="step6 2D view \n simulate bm move will get dis coord",
-            arrow_C=None, arrow_cmap="gray",  ### arrow_C 為None 時 預設為 np.zeros(shape=(h_res, w_res))
-            jump_r=jump_r, jump_c=jump_c,
-            show_before_move_coord=True,  before_alpha=before_alpha,
-            show_after_move_coord =True, after_alpha=after_alpha,
-            fig=fig, ax=ax[0], ax_c=1)
-
-        '''圖1,1 3D scatter 分不同平面 比較好看 bm裡存的東西 模擬移動後的結果 '''
-        fig, ax[1], ax_c, _ = move_map_3D_scatter(move_map_m, start_xy_m=start_xy_m,
-            fig_title="step6 3D view\n up: dis_coord appearance is fm,\n bottom: appearance is bm",
-            zticklabels=("bm", "", "", "fm"),
-            jump_r=jump_r, jump_c=jump_c,
-            before_C="orange", before_alpha=before_alpha, before_height=0,
-            after_C = "blue",  after_alpha=after_alpha,   after_height =0.6,
-            fig=fig, ax=ax[1], ax_c=1, ax_r=1, ax_rows=2)
+        '''圖0:1,1 3D scatter 分不同平面 原始dis_coord '''
+        fig, ax, ax_c = step6_debug_a_Dis_coord_both_Move_map_Boundary_2D3Dvisual(dis_coord_m, move_map_m, start_xy_m,
+                                                                              current_state="等等外面個別設定",
+                                                                              jump_r=jump_r, jump_c=jump_c,
+                                                                              boundary_value=0,
+                                                                              before_alpha=before_alpha,
+                                                                              after_alpha = after_alpha,
+                                                                              fig=fig, ax=ax, ax_c=1)
+        ax[0, 1].set_title("step6 2D view \n simulate bm move will get dis coord")
+        ax[1, 1].set_title("step6 3D view\n up: dis_coord appearance is fm,\n bottom: appearance is bm")
 
         '''圖0:1,2 3D scatter 分不同平面 原始dis_coord '''
         fig, ax, ax_c = step6_debug_a_Dis_coord_both_Move_map_Boundary_2D3Dvisual(dis_coord_m, move_map_m, start_xy_m,
@@ -232,18 +230,15 @@ def move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type,
                                                                               before_alpha=before_alpha,
                                                                               after_alpha = after_alpha,
                                                                               fig=fig, ax=ax, ax_c=2)
-
         debug_spyder_dict["step6a. dis_coord_m"] = dis_coord_m
-
-
     #######################################################################################################################
-    '''算 step6b. dis_coord_m 做些 平移， 得到 dis_coord_shifted_m， 如果要用debug視覺化 記得回推一下 move_map_shifted_m 喔！'''
+    '''
+    step6b. dis_coord_m 做些 平移( 平移整張 dis_coord_m 把 他的 中心點移到 原點)， 得到 dis_coord_shifted_m， 如果要用debug視覺化 記得回推一下 move_map_shifted_m 喔！
+    '''
     dis_coord_x_m = dis_coord_m[..., 0]
     dis_coord_y_m = dis_coord_m[..., 1]
-    dis_coord_xmin = dis_coord_x_m.min()
-    dis_coord_xmax = dis_coord_x_m.max()
-    dis_coord_ymin = dis_coord_y_m.min()
-    dis_coord_ymax = dis_coord_y_m.max()
+    dis_coord_xmin = dis_coord_x_m.min(); dis_coord_xmax = dis_coord_x_m.max()
+    dis_coord_ymin = dis_coord_y_m.min(); dis_coord_ymax = dis_coord_y_m.max()
     dis_coord_xcenter = (dis_coord_xmin + dis_coord_xmax) / 2
     dis_coord_ycenter = (dis_coord_ymin + dis_coord_ymax) / 2
     dis_coord_shifted_m = dis_coord_m.copy()
@@ -264,84 +259,44 @@ def move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type,
         debug_spyder_dict["step6b. dis_coord_shifted_m"] = dis_coord_shifted_m
 
     #######################################################################################################################
-    '''算 step6c. dis_coord_shifted_m 做些 縮放， 如果要用debug視覺化 記得回推一下 move_map_shifted_scaled_m 喔！'''
-    ### adjust_type == "big" 是paper17的方法
-    # if(adjust_type == "big"):
-    #     dis_coord_shifted_x_m = dis_coord_shifted_m[..., 0]
-    #     dis_coord_shifted_y_m = dis_coord_shifted_m[..., 1]
-    #     dis_coord_shifted_xmin = dis_coord_shifted_x_m.min()
-    #     dis_coord_shifted_xmax = dis_coord_shifted_x_m.max()
-    #     dis_coord_shifted_ymin = dis_coord_shifted_y_m.min()
-    #     dis_coord_shifted_ymax = dis_coord_shifted_y_m.max()
-    #     raito = max(abs(dis_coord_shifted_xmin), abs(dis_coord_shifted_xmax), abs(dis_coord_shifted_ymin), abs(dis_coord_shifted_ymax))
-    #     ### big， 自己要知道 要超過 see_coord_m
-    #     dis_coord_shifted_scaled_m = dis_coord_shifted_m.copy()
-    #     dis_coord_shifted_scaled_m *= raito * 1.2
-
-    # ### adjust_type == "small" 是before的方法
-    # elif(adjust_type == "small"):
-    #     ### small， 自己要知道 不超過 see_coord_m
-    #     dis_coord_shifted_scaled_m =  dis_coord_shifted_m.copy()
-    #     dis_coord_shifted_scaled_m *= 0.8
+    '''
+    step6c. dis_coord_shifted_m 做些 縮放， 如果要用debug視覺化 記得回推一下 move_map_shifted_scaled_m 喔！
+    '''
     dis_coord_shifted_scaled_m =  dis_coord_shifted_m.copy()
     dis_coord_shifted_scaled_m *= adjust_ratio
 
     if(debug):
-        '''圖0:1,4 3D scatter 分不同平面 原始dis_coord_scaled_shifted_big '''
+        '''圖0:1,4 3D scatter 分不同平面 原始dis_coord_shifted_scaled '''
         debug_spyder_dict["step6c. raito"] = adjust_ratio
         move_map_shifted_scaled_m   = dis_coord_shifted_scaled_m   - start_xy_m
         fig, ax, ax_c = step6_debug_a_Dis_coord_both_Move_map_Boundary_2D3Dvisual(dis_coord_shifted_scaled_m, move_map_shifted_scaled_m, start_xy_m,
-                                                                            current_state="dis_coord_shifted_scaled_big",
+                                                                            current_state=f"dis_coord_shifted_scaled_{adjust_type}",
                                                                             jump_r=jump_r, jump_c=jump_c,
                                                                             boundary_value=boundary_value,
                                                                             before_alpha=before_alpha,
                                                                             after_alpha =after_alpha,
                                                                             fig=fig, ax=ax, ax_c=4)
-
-    if(debug):
         ### adjust_type == "big" 是paper17的方法
         if(adjust_type == "big"):
             debug_spyder_dict[f"step6c. dis_coord_shifted_scaled_big_m"]   = dis_coord_shifted_scaled_m
-
-            # move_map_shifted_scaled_big_m   = dis_coord_shifted_scaled_m   - start_xy_m
-            # '''圖0:1,4 3D scatter 分不同平面 原始dis_coord_scaled_shifted_big '''
-            # fig, ax, ax_c = step6_debug_a_Dis_coord_both_Move_map_Boundary_2D3Dvisual(dis_coord_shifted_scaled_m, move_map_shifted_scaled_big_m, start_xy_m,
-            #                                                                     current_state="dis_coord_shifted_scaled_big",
-            #                                                                     jump_r=jump_r, jump_c=jump_c,
-            #                                                                     boundary_value=boundary_value,
-            #                                                                     before_alpha=before_alpha,
-            #                                                                     after_alpha =after_alpha,
-            #                                                                     fig=fig, ax=ax, ax_c=4)
             step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual(dis_coord_shifted_scaled_m,  move_map_shifted_scaled_m, start_xy_m,
-                                                                                boundary_value=1.00,
+                                                                                boundary_value=boundary_value,
                                                                                 jump_r=4, jump_c=4,
                                                                                 before_alpha=before_alpha,
                                                                                 after_alpha =after_alpha,
                                                                                 fig=None, ax=None, ax_c=None)
-
         ### adjust_type == "small" 是before的方法
+        ###   以前的版本 本身 就不適合 套用 step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual 因為不需要 在 dis_coord_shifted_scaled_m 上取 新bm 和 找 ord_valid_coord，
+        ###   而是直接用 dis_coord_shifted_scaled_m(縮小的)的appearance 當fm， 之後會再把 fm 對應回 ord_coord 這樣子，
+        ###   所以 直接給 small 也寫一個視覺化囉！
         elif(adjust_type == "small"):
             debug_spyder_dict[f"step6c. dis_coord_shifted_scaled_small_m"]   = dis_coord_shifted_scaled_m
-
-            # move_map_shifted_scaled_small_m   = dis_coord_shifted_scaled_m   - start_xy_m
-            # '''圖0:1,4 3D scatter 分不同平面 原始dis_coord_shifted_scaled_small '''
-            # fig, ax, ax_c = step6_debug_a_Dis_coord_both_Move_map_Boundary_2D3Dvisual(dis_coord_shifted_scaled_m, move_map_shifted_scaled_small_m, start_xy_m,
-            #                                                                          current_state="dis_coord_shifted_scaled_small",
-            #                                                                          jump_r=jump_r, jump_c=jump_c,
-            #                                                                          boundary_value=boundary_value,
-            #                                                                          before_alpha=before_alpha,
-            #                                                                          after_alpha =after_alpha,
-            #                                                                          fig=fig, ax=ax, ax_c=4)
-
-            ### 以前的版本 本身 就不適合 套用 step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual 因為不需要 在 dis_coord_shifted_scaled_m 上取 新bm 和 找 ord_valid_coord， 而是直接用 dis_coord_shifted_scaled_m(縮小的)的appearance 當fm， 之後會再把 fm 對應回 ord_coord 這樣子， 所以外面 如果 adjust_type==small時 debug 記得設定false
             step6_debug_c_Dis_coord_small_Move_map_Boundary_visual(dis_coord_shifted_scaled_m, move_map_shifted_scaled_m, start_xy_m,
                                                                   jump_r=jump_r, jump_c=jump_c,
                                                                   boundary_value=boundary_value,
                                                                   before_alpha=before_alpha,
                                                                   after_alpha =after_alpha,
                                                                   fig=None, ax=None, ax_c=None)
-
-    #######################################################################################################################
     return dis_coord_shifted_scaled_m
 
 
@@ -349,174 +304,74 @@ def move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type,
 ##########################################################################################################################################################
 ##########################################################################################################################################################
 ''' step7 繼續編號寫下去 '''
-def step7a_dst_backto_ord_and_see_where(dst_coord_m, ord_ratio, ord_coord_m, see_coord_m):
-    see_h_res, see_w_res = see_coord_m.shape[:2]
-    ord_coord_f = dst_coord_m.reshape(-1, 2)  ### dis
-    dst_coord_f = ord_coord_m.reshape(-1, 2)  ### 0.95
-    see_coord_f = see_coord_m.reshape(-1, 2)  ### 1.00
+def step7a_dis_backto_ord_and_see_where(dis_coord_m, ord_coord_f, see_coord_f, img_w, img_h):
+    dis_coord_f  = dis_coord_m.reshape(-1, 2)
     ##################################################################################################################
     import scipy.interpolate as spin
-    see_inv_coord_f = spin.griddata(ord_coord_f / ord_ratio, dst_coord_f, see_coord_f, method="linear")  ### 計算， dst 為 dis_coord_big 的話 see_inv_coord_f 填滿滿， dst 為 dis_coord_small 的話 see_inv_coord_f 會有 nan
-    see_inv_coord_m = see_inv_coord_f.reshape(see_h_res, see_w_res, 2)                                   ### flatten 轉 map
-    see_inv_move_map_m = see_inv_coord_m - see_coord_m    ### 計算 move_map = dst - start， 如果有nan 減完 仍為 nan
-    return see_inv_coord_m, see_inv_move_map_m            ### dst 為 dis_coord_big 的話 see_inv_coord_f 填滿滿， dst 為 dis_coord_small 的話 see_inv_coord_f 會有 nan
+    see_inv_coord_f = spin.griddata(dis_coord_f, ord_coord_f, see_coord_f, method="cubic")  ### 計算， dst 為 dis_coord_big 的話 see_inv_coord_f 填滿滿， dst 為 dis_coord_small 的話 see_inv_coord_f 會有 nan
+    see_inv_coord_m = see_inv_coord_f.reshape(img_h, img_w, 2)                                           ### flatten 轉 map
+    return see_inv_coord_m
 
 
 ''' dis_coord_big_m '''
-def step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_big_m, ord_ratio, ord_base, see_base, img_w, img_h, start_xy_m, debug=False):
+def step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_big_m, ord_base, see_base, img_w, img_h,
+                                                                                                     debug=False, start_xy_base=1.0, dis_rescale_again=1.0):
     '''
-    因為是在 dis_coord_big_m 抓 see_coord_m 一定會填滿(step6本來就要設定放大要超過 boundary(see_coord的範圍))， 所以 inv_see_coord_m 一定填得滿滿的 不會有nan
-
-    start_xy_m： 視覺化用的
+    start_xy_m ： 視覺化用的， ord_coord 不一定 == start_xy 喔！ 因為 ord_coord 可能被 "再次rescale" 這樣子拉
     valid area(即boundary 、 see_coord的範圍 )： 因為是取 new bm 並反推 new fm， 所以new bm 的範圍可以取我們好處理的範圍， 我們現在是取跟 pytorch grid_sample() 一樣的 -1 ~ +1 的範圍是valid
+    因為是在 dis_coord_big_m 抓 see_coord_m 一定會填滿(step6本來就要設定放大要超過 boundary(see_coord的範圍))， 所以 inv_see_coord_m 一定填得滿滿的 不會有nan
     '''
-    ##################################################################################################################
-    ord_valid_mask = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m, boundary_value=1.0, visual=False)
-    debug_spyder_dict["step7. dis_coord_big_m"] = dis_coord_big_m
-
     h_res, w_res = dis_coord_big_m.shape[:2]
-    # img_w = dis_coord_big_m.shape[1]  ### debug用 先調成跟 一開始 mesh res 一樣大
-    # img_h = dis_coord_big_m.shape[0]  ### debug用 先調成跟 一開始 mesh res 一樣大
-    # _, see_bm_xy_1_00_m = get_xy_f_and_m(x_min=-1.00, x_max=+1.00, y_min=-1.00, y_max=+1.00, w_res=img_w, h_res=img_h)
-    # _, see_bm_xy_0_95_m = get_xy_f_and_m(x_min=-0.95, x_max=+0.95, y_min=-0.95, y_max=+0.95, w_res=img_w, h_res=img_h)
+    ord_coord_f, ord_coord_m   = get_xy_f_and_m(x_min=-ord_base, x_max=+ord_base, y_min=-ord_base, y_max=+ord_base, w_res=w_res, h_res=h_res)  ### w_res, h_res
+    see_coord_f, see_coord_m   = get_xy_f_and_m(x_min=-see_base, x_max=+see_base, y_min=-see_base, y_max=+see_base, w_res=img_w, h_res=img_h)  ### img_w, img_h
+    see_inv_coord_m = step7a_dis_backto_ord_and_see_where(dis_coord_m=dis_coord_big_m, ord_coord_f=ord_coord_f, see_coord_f=see_coord_f, img_w=img_w, img_h=img_h)
+    see_inv_move_map_m = see_inv_coord_m - see_coord_m    ### 計算 move_map = dst - start， 如果有nan 減完 仍為 nan ， dis_coord_big 的話 see_inv_coord_f 填滿滿
 
-    # _, ord_xy_1_00m = get_xy_f_and_m(x_min=-1.00, x_max=+1.00, y_min=-1.00, y_max=+1.00, w_res=w_res, h_res=h_res)
-    # _, ord_xy_0_95 = get_xy_f_and_m(x_min=-0.95, x_max=+0.95, y_min=-0.95, y_max=+0.95, w_res=w_res, h_res=h_res)
-
-    _, ord_xy_m = get_xy_f_and_m(x_min=-ord_base, x_max=+ord_base, y_min=-ord_base, y_max=+ord_base, w_res=w_res, h_res=h_res)  ### w_res, h_res
-    _, see_xy_m = get_xy_f_and_m(x_min=-see_base, x_max=+see_base, y_min=-see_base, y_max=+see_base, w_res=img_w, h_res=img_h)  ### img_w, img_h
-    ##################################################################################################################
-    see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(dst_coord_m=dis_coord_big_m, ord_ratio=ord_ratio, ord_coord_m=ord_xy_m,     see_coord_m=see_xy_m)
-    if(debug):
-       step7_visual_util_a_paper17(see_inv_coord_m, see_inv_move_map_m, dst_coord_m=dis_coord_big_m, ord_ratio=1.00, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m, xy_m=start_xy_m, ord_valid_mask=ord_valid_mask)
-    ##################################################################################################################
-    ### 0.95 + move_map -> dis_coord -> back to 0.95, boundary grab 1.00， 因為這 boundary 是新的bm！ 可以自己取，取完以後要回去找 相對應 符合移動後在boundary 內的 ord 即可！
-    ### 但是前面的這個 0.95 + move_map -> dis_coord -> back to 0.95 必須要對應到， 後面取的 boundary 裡面的值 才正確！
-    ''' 竟然對 方法1 錯的： 直接 對應回 -1~1(boundary) ， not match'''
-    # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(dst_coord_m=dis_coord_big_m, ord_ratio=ord_ratio, ord_coord_m=ord_xy_m,     see_coord_m=see_xy_m)
-    # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(dst_coord_m=dis_coord_big_m, ord_ratio=1.00, ord_coord_m=ord_xy_1_00m, see_coord_m=see_bm_xy_1_00_m)
-    # new_bm = see_inv_coord_m
-    # new_fm = dis_coord_big_m
-    # if(debug):
-    #    step7_visual_util_a_paper17(see_inv_coord_m, see_inv_move_map_m, dst_coord_m=dis_coord_big_m, ord_ratio=1.00, ord_coord_m=ord_xy_1_00m, see_coord_m=see_bm_xy_1_00_m, xy_m=start_xy_m, ord_valid_mask=ord_valid_mask)
-
-    ##################################################################################################################
-    ''' 錯 方法2(paper17) ：把自己除0.95 放大一點 變成boundary的大小 再 對應回 -1~1(boundary) '''
-    # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(dst_coord_m=dis_coord_big_m, ord_ratio=ord_ratio, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m)
-    # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(dst_coord_m=dis_coord_big_m, ord_ratio=0.95, ord_coord_m=ord_xy_1_00m, see_coord_m=see_bm_xy_1_00_m)
-    # new_bm = see_inv_coord_m
-    # new_fm = dis_coord_big_m  / ord_ratio  ### 方法2 改， 把 fm也放大就對了
-    # if(debug):
-    #   step7_visual_util_a_paper17(see_inv_coord_m, see_inv_move_map_m, dst_coord_m=dis_coord_big_m, ord_ratio=0.95, ord_coord_m=ord_xy_1_00m, see_coord_m=see_bm_xy_1_00_m, xy_m=start_xy_m, ord_valid_mask=ord_valid_mask)
-
-    ##################################################################################################################
-    ''' 錯，也許是see 改0.95才會對嗎? (try方法4) 方法3： 直接 對應回 -0.95~0.95， 理論上來說應該是要這樣子， 因為我是從 -0.95~0.95走道 dis_coord， dis_coord應該要走回-0.95~+0.95， 實際上測試也確實如此 '''
-    ### 但不大對，因為我的 valid area/boundary 是設定 -1~1
-    # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(  dst_coord_m=dis_coord_big_m, ord_ratio=ord_ratio, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m)
-    # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(  dst_coord_m=dis_coord_big_m, ord_ratio=1.00, ord_coord_m=ord_xy_0_95, see_coord_m=see_bm_xy_1_00_m)
-    # new_bm = see_inv_coord_m
-    # new_fm = dis_coord_big_m
-    ##################################################################################################################
-    ''' 方法4： 方法3 把 see 改0.95， 最後把 fm, bm 從 0.95 放大回 1.00 就對了 '''
-    ### 但不大對，因為我的 valid area/boundary 是設定 -1~1
-    # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(  dst_coord_m=dis_coord_big_m, ord_ratio=ord_ratio, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m)
-    # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(  dst_coord_m=dis_coord_big_m, ord_ratio=1.00, ord_coord_m=ord_xy_0_95, see_coord_m=see_bm_xy_0_95_m)
-    # new_bm = see_inv_coord_m / ord_ratio
-    # new_fm = dis_coord_big_m / ord_ratio
-    if(debug):
-        step7_visual_util_a_paper17(see_inv_coord_m, see_inv_move_map_m, dst_coord_m=dis_coord_big_m, ord_ratio=1.00, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m, xy_m=start_xy_m, ord_valid_mask=ord_valid_mask)
-        debug_spyder_dict["step7 ord_valid_mask"] = ord_valid_mask
-        debug_spyder_dict["step7 dst_coord_m"] = dis_coord_big_m
-        debug_spyder_dict["step7 ord_coord_m"] = ord_xy_m
-        debug_spyder_dict["step7 see_inv_coord_m"] = see_inv_coord_m
-        debug_spyder_dict["step7 see_inv_move_map_m"] = see_inv_move_map_m
-        debug_spyder_dict["step7 see_inv_move_map_m.isnan()"] = np.isnan(see_inv_move_map_m)
-        debug_spyder_dict["step7 xy_m"] = xy_m
-    ##################################################################################################################
     new_bm = see_inv_coord_m
     new_fm = dis_coord_big_m  ### * ord_valid_mask[:, :, np.newaxis]  ### 就算不用mask遮住， pytorch 的 gridsample 還是可以運作喔！
+    ord_valid_mask = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m, boundary_value=ord_base, visual=False)
+    ##################################################################################################################
+    if(debug):
+        _, start_xy_m = get_xy_f_and_m(x_min=-start_xy_base, x_max=+start_xy_base, y_min=-start_xy_base, y_max=+start_xy_base, w_res=img_w, h_res=img_h)  ### img_w, img_h
+        step7_visual_util_b_paper17(see_inv_coord_m, see_inv_move_map_m,
+                                    dis_coord_m=dis_coord_big_m, ord_coord_m=ord_coord_m, see_coord_m=see_coord_m,
+                                    boundary_value=ord_base,
+                                    start_xy_m=start_xy_m, ord_valid_mask=ord_valid_mask, dis_rescale_again=dis_rescale_again)
+        debug_spyder_dict["step7. dis_coord_big_m"] = dis_coord_big_m
+        debug_spyder_dict["step7. ord_valid_mask"] = ord_valid_mask
+        debug_spyder_dict["step7. ord_coord_m"] = ord_coord_m
+        debug_spyder_dict["step7. see_inv_coord_m"] = see_inv_coord_m
+        debug_spyder_dict["step7. see_inv_move_map_m"] = see_inv_move_map_m
+        debug_spyder_dict["step7. see_inv_move_map_m.isnan()"] = np.isnan(see_inv_move_map_m)
+        debug_spyder_dict["step7. start_xy_m"] = start_xy_m
     return new_bm, new_fm, ord_valid_mask
 
 
 ##################################################################################################################
 ##################################################################################################################
 ''' dis_coord_small_m '''
-def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_small_m, ord_ratio, ord_base, see_base, img_w, img_h, start_xy_m, debug=False):
+def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_small_m, ord_base, see_base, img_w, img_h,
+                                                                                    debug=False, ord_ratio=1.0):
     '''
-    因為是在 dis_coord_small_m 抓 see_coord_m 一定 不會填滿(step6本來就要設定縮小 要在 boundary(see_coord的範圍) 裡面)， 所以 inv_see_coord_m 一定填不滿， 會有nan
-
     valid area(即boundary 、 see_coord的範圍 )： 注意因為不是取new bm， 所以範圍不一定
+    因為是在 dis_coord_small_m 抓 see_coord_m 一定 不會填滿(step6本來就要設定縮小 要在 boundary(see_coord的範圍) 裡面)， 所以 inv_see_coord_m 一定填不滿， 會有nan
     '''
-    ##################################################################################################################
-    debug_spyder_dict["step7. dis_coord_smallm"] = dis_coord_small_m
-
     h_res, w_res = dis_coord_small_m.shape[:2]
-    # fm_w_res  = dis_coord_small_m.shape[1]  ### debug用 先調成跟 一開始 mesh res 一樣大
-    # fm_h_res  = dis_coord_small_m.shape[0]  ### debug用 先調成跟 一開始 mesh res 一樣大
-    ### 之前沒有想到 before 應該要用 dis_coord_small 還在 擴大 see 的範圍
-    # _, see_fm_xy_1_30m = get_xy_f_and_m(x_min=-1.30, x_max=+1.30, y_min=-1.30, y_max=+1.30, w_res=img_w, h_res=img_h)
-    # _, see_fm_xy_1_23m = get_xy_f_and_m(x_min=-1.23, x_max=+1.23, y_min=-1.23, y_max=+1.23, w_res=img_w, h_res=img_h)
-    # _, see_fm_xy_1_20m = get_xy_f_and_m(x_min=-1.20, x_max=+1.20, y_min=-1.20, y_max=+1.20, w_res=img_w, h_res=img_h)
-
-    ### 應該是錯的， 但細想下去好像沒錯， 只是在 轉換成真實座標時 要分 bm(-0.95~0.95) 和 fm(-1.00~1.00) 兩種方式轉換
-    # _, see_fm_xy_1_00m = get_xy_f_and_m(x_min=-1.00, x_max=+1.00, y_min=-1.00, y_max=+1.00, w_res=img_w, h_res=img_h)
-    ### 應該是對的， 轉換成真實座標時 bm/fm 可以統一用 -0.95~0.95
-    # _, see_fm_xy_0_95_m = get_xy_f_and_m(x_min=-0.95, x_max=+0.95, y_min=-0.95, y_max=+0.95, w_res=img_w, h_res=img_h)
-
-    # _, ord_xy_1_00_m = get_xy_f_and_m(x_min=-1.00, x_max=+1.00, y_min=-1.00, y_max=+1.00, w_res=w_res, h_res=h_res)
-    # _, ord_xy_0_95_m = get_xy_f_and_m(x_min=-0.95, x_max=+0.95, y_min=-0.95, y_max=+0.95, w_res=w_res, h_res=h_res)
-
-    _, ord_xy_m = get_xy_f_and_m(x_min=-ord_base, x_max=+ord_base, y_min=-ord_base, y_max=+ord_base, w_res=w_res, h_res=h_res)  ### w_res, h_res
-    _, see_xy_m = get_xy_f_and_m(x_min=-see_base, x_max=+see_base, y_min=-see_base, y_max=+see_base, w_res=img_w, h_res=img_h)  ### img_w, img_h
-    ##################################################################################################################
-    ''' 方法1 ： see 取 -1~1 是錯的'''
-    ### 0.95 + move_map -> dis_coord -> back to 0.95, boundary grab 0.95， 因為沒有取新bm， 是直接 回去原本的地方， 原本的地方如果是 0.95， 回去也是0.95， boundary 也是原本的 0.95 囉！
-    # see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(         dst_coord_m=dis_coord_small_m, ord_ratio=1.00, ord_coord_m=ord_xy_0_95_m, see_coord_m=see_fm_xy_1_00m)
-    # fm_nan_mask = 1 - np.isnan(see_inv_coord_m).astype(np.int32)[..., 0]
-    # fm = see_inv_coord_m
-    # bm = dis_coord_small_m
-    # if(debug):
-    #     step7_visual_util_b_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask=fm_nan_mask, dst_coord_m=dis_coord_small_m, ord_ratio=1.00, ord_coord_m=ord_xy_0_95_m, see_coord_m=see_fm_xy_1_00m, xy_m=start_xy_m)
-
-    ''' 方法2 ： see 取 -0.95~0.95應該才是對的， 最後把 fm, bm 從 0.95 放大回 1.00 '''
-    ### 仔細思考這才對， 因為 ord_coord 在 放回原始img_array 是用0.95 當基準來做的， see_coord 如果用1.00當基準來做就不匹配(我猜 fm appearance 用 see用1.0 面積會縮小)， 應該要跟ord_coord用一樣的0.95才對
-    see_inv_coord_m, see_inv_move_map_m = step7a_dst_backto_ord_and_see_where(         dst_coord_m=dis_coord_small_m, ord_ratio=ord_ratio, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m)
-    fm_nan_mask = 1 - np.isnan(see_inv_coord_m).astype(np.int32)[..., 0]
-    # fm = see_inv_coord_m   / ord_ratio    ### 放大回 -1~1 才會正確對應
-    # bm = dis_coord_small_m / ord_ratio  ### 放大回 -1~1 才會正確對應
-    if(debug):
-        debug_spyder_dict["step7 fm_nan_mask"] = fm_nan_mask
-        # see_coord_m = fill_nan(fm_nan_mask, see_coord_m)
-        # debug_spyder_dict["step7 nan_mask_see_coord_m"] = see_coord_m
-        step7_visual_util_b_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask=fm_nan_mask, dst_coord_m=dis_coord_small_m, ord_ratio=1.00, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m, xy_m=start_xy_m)
-    ##################################################################################################################
+    ord_coord_f, ord_coord_m   = get_xy_f_and_m(x_min=-ord_base, x_max=+ord_base, y_min=-ord_base, y_max=+ord_base, w_res=w_res, h_res=h_res)  ### w_res, h_res
+    see_coord_f, see_coord_m   = get_xy_f_and_m(x_min=-see_base, x_max=+see_base, y_min=-see_base, y_max=+see_base, w_res=img_w, h_res=img_h)  ### img_w, img_h
+    see_inv_coord_m = step7a_dis_backto_ord_and_see_where(dis_coord_m=dis_coord_small_m, ord_coord_f=ord_coord_f, see_coord_f=see_coord_f, img_w=img_w, img_h=img_h)
+    see_inv_move_map_m = see_inv_coord_m - see_coord_m    ### 計算 move_map = dst - start， 如果有nan 減完 仍為 nan ， dis_coord_small 的話 see_inv_coord_f 會有 nan
     fm = see_inv_coord_m
     bm = dis_coord_small_m
+    fm_nan_mask = 1 - np.isnan(see_inv_coord_m).astype(np.int32)[..., 0]
+
+    if(debug):
+        debug_spyder_dict["step7. bm == dis_coord_smallm"] = dis_coord_small_m
+        debug_spyder_dict["step7. fm == see_inv_coord_m"]  = see_inv_coord_m
+        debug_spyder_dict["step7. fm_nan_mask"] = fm_nan_mask
+        step7_visual_util_c_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask=fm_nan_mask,
+                                    dis_coord_m=dis_coord_small_m, ord_ratio=ord_ratio, ord_coord_m=ord_xy_m, see_coord_m=see_xy_m)
     return fm, bm, fm_nan_mask
-
-def step7_backup():
-    pass
-    # inverse_array = np.zeros(shape=(h_res, w_res, 3))  ### mask, x, y
-
-    ### 根據我們定義的 valid area/boundary， 把 valid coord 轉換回 shape 為 (h_res, w_res) 的 array index
-    # valid_min_x = -1
-    # valid_max_x =  1
-    # valid_min_y = -1
-    # valid_max_y =  1
-    # dis_coord_array_m =  dis_coord_m.copy()
-    # dis_coord_array_m[..., 0] = (dis_coord_m[..., 0] - valid_min_x) / (valid_max_x - valid_min_x) * (w_res - 1)  ### (dis_coord_m + 1) / 2 * h_res
-    # dis_coord_array_m[..., 1] = (dis_coord_m[..., 1] - valid_min_y) / (valid_max_y - valid_min_y) * (h_res - 1)  ### (dis_coord_m + 1) / 2 * h_res
-
-
-    # for go_row, dis_coord_array_r in enumerate(dis_coord_array_m):
-    #     for go_col, dis_coord_array_xy in dis_coord_array_r:
-    #         dis_coord_x = dis_coord_array_xy[0]
-    #         dis_coord_y = dis_coord_array_xy[1]
-    #         if( 0 <= dis_coord_x < w_res and 0 <= dis_coord_y < h_res):
-    #             inverse_array[int(dis_coord_y), int(dis_coord_x), 0] = 1
-    #             inverse_array[int(dis_coord_y), int(dis_coord_x), 1] = dis_coord_x - move_map_m[go_row, go_col]
-    #             inverse_array[int(dis_coord_y), int(dis_coord_x), 2] = dis_coord_y - move_map_m[go_row, go_col]
-
 
 ##########################################################################################################################################################
 ##########################################################################################################################################################
@@ -532,7 +387,7 @@ if(__name__ == "__main__"):
     imgs = get_dir_certain_img(img_dir, certain_word="rainbow.png", float_return=False)
     #######################################################################################################
     ord_img = imgs[0, :, :, ::-1]
-    ord_img = cv2.resize(ord_img, (256, 256), interpolation=cv2.INTER_AREA)
+    ord_img = cv2.resize(ord_img, (65, 65), interpolation=cv2.INTER_AREA)
     img_h, img_w = ord_img.shape[:2]
 
     ### 理解用，手動慢慢扭曲
@@ -544,8 +399,8 @@ if(__name__ == "__main__"):
     '''
 
     ### 印度那篇 move_map模擬成功 繼續往下模擬
-    h_res    = 129  ### 77
-    w_res    = 129  ### 77
+    h_res    = img_h  ### 129  ### 77
+    w_res    = img_w  ### 129  ### 77
     ord_ratio = 0.75  ### paper17主要是用來 rescale dis_coord 用的， 自己實作完覺得這個參數沒必要， 直接再 rescale的時候 給一個明確的數字不就好了， 在這邊控制 mesh縮放 的話 使用 LinearNDInterpolator 還要注意 怎麼對應 和 see_coord 超級麻煩， 如果我自己用的話設 1 就好了吧！
     x_min    = -1.00 * ord_ratio
     x_max    = +1.00 * ord_ratio
@@ -557,74 +412,178 @@ if(__name__ == "__main__"):
     move_y   = -0.116832
     dis_type = "curl"
     alpha    = 2.0
-    xy_f, xy_m = get_xy_f_and_m(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, w_res=w_res, h_res=h_res)  ### 拿到map的shape：(..., 2), f 是 flatten 的意思
+    pytorch_gridsample_boundary = 1.00
+    start_xy_f, start_xy_m = get_xy_f_and_m(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, w_res=w_res, h_res=h_res)  ### 拿到map的shape：(..., 2), f 是 flatten 的意思
 
-    #########################################################################
     debug_1to5 = False
-    debug_papr17 = False
-    debug_before = False
+    debug_papr17 = True  ### False
+    debug_before = True  ### False
+    ##################################################################################################################
+    ##################################################################################################################
     '''step1~5'''
-    _, move_map_curl_m = get_dis_move_map(xy_m, vert_x=vert_x, vert_y=vert_y, move_x=move_x, move_y=move_y, dis_type=dis_type, alpha=alpha, debug=debug_1to5)  ### alpha:2~4
+    _, move_map_curl_m = get_dis_move_map(start_xy_m, vert_x=vert_x, vert_y=vert_y, move_x=move_x, move_y=move_y, dis_type=dis_type, alpha=alpha, debug=debug_1to5)  ### alpha:2~4
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    # '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 big 版本'''
+    # dis_coord_shifted_scaled_big_m   = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="big", adjust_ratio=1.5,  move_map_m=move_map_curl_m, start_xy_m=start_xy_m,
+    #                                                                                            debug=debug_papr17, boundary_value=1.00)  ### 這邊的 step6 要超過boundary_value 值 跟 方2, 3, 4 不一樣， 是要超過 1 這樣子！
+    # ''' Paper17 方法1： 竟然對 (原本以為錯) 直接 對應回 -1~1(boundary) ， 所以 這邊的 step6 要超過boundary_value 值 跟 方2, 3, 4 不一樣， 是要超過 1 這樣子！
+    #     此方法會對的原因是 他是利用 dis_coord_m 的 抽象座標 直接對應回 實際storage座標(-1~1) 才會對的，
+    #     也要搭配使用 pytorch 的 gridsample 是把 img實際storage座標 轉成 -1~1 才會對喔！
 
-    ##################################################################################################################
+    #     dis_coord_big 的 ord_valid_coord 是 用 抽象座標 -ord_ratio ~ ord_ratio(比如 -0.75~+0.75) 當基底，
+    #     找 dis_coord_big 在使用 pytorch gridsample 會有作用的區域( dis_coord_big 值 在 -1~1 的區域)
+    #     ord_valid_coord 可以說是 套用 pytorch gridsample 後會有作用的區域， 我的code內又稱 ord_valid_coord mask(fm mask外觀)，
+    #     因為 dis_coord_big 是用 -ord_ratio ~ ord_ratio 為基底， 直觀來說也會想像到 ord_valid_coord mask 也是如此，
+    #     但是 如果使用 pytorch gridsample 把 dis_coord_big 套用到影像上的話，
+    #     pytorch gridsample 會把 影像的 實際storage座標 轉成 -1~1， 以這個方式來使用 dis_coord_big， 並不是轉成 -ord_ratio ~ ord_ratio
+    #     所以 dis_coord_big的 抽象座標雖然是 -0.75~+0.75為基底，而pytorch gridsampl實際在使用的時候 出現的ord_valid_coord mask(fm mask外觀)是 以 -1~1為基底喔！
+    #     因此此方法 ord_base 和 see_base 就直接設定 1.00 了
+    #     不像方法4  ord_base 和 see_base 都是設定成 ord_ratio(比如0.75) 了
+    # '''
+    # ord_base_paper17  = 1.00
+    # see_base_paper17  = ord_base_paper17
+    # ############################################################################################################
+
+    # '''step7 在做完 縮放 後 的 dis_coord_shifted_scaled_big 上 找valid區域(-1.00~1.00) 當 new"Bm， 之後把 dis_coord_m 的 抽象座標 直接對應回 實際storage座標(-1~1)'''
+    # new_bm, new_fm, ord_valid_mask  = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
+    #                                 ord_base=ord_base_paper17, see_base=see_base_paper17, img_w=img_w, img_h=img_h,
+    #                                 debug=True, start_xy_base=ord_base_paper17)
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ############################################################################################################
+    ''' Paper17 step6 方法2, 3(錯), 4 都是 boundary 只要超過 ord_ratio 就好囉！ 然後再從 -ord_ratio~ord_ratio 做 再次縮放 回 -1~1 '''
     '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 big 版本'''
-    dis_coord_shifted_scaled_big_m   = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="big", adjust_ratio=1.5,  move_map_m=move_map_curl_m, start_xy_m=xy_m, boundary_value=1.00     , debug=debug_papr17)
-    ##################################################################################################################
-    # ''' step7 在做完 縮放 後 的 dis_coord_shifted_scaled_big 上 找valid區域(-1.00~1.00) 當 "Bm"， 並對應回原始move_map '''
-    # ''' 竟然對 方法1 錯的： 直接 對應回 -1~1(boundary) ， not match'''
-    # new_bm, new_fm, ord_valid_mask   = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
-    #                                 ord_ratio=1.00, ord_base=1.00, see_base=1.00, img_w=img_w, img_h=img_h, start_xy_m=xy_m, debug=debug_papr17)
-    ##################################################################################################################
-    # ''' 錯 方法2(paper17) ：把自己除0.95 放大一點 變成boundary的大小 再 對應回 -1~1(boundary) '''
-    # new_bm, new_fm, ord_valid_mask   = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
-    #                                 ord_ratio=ord_ratio, ord_base=1.00, see_base=1.00, img_w=img_w, img_h=img_h, start_xy_m=xy_m, debug=debug_papr17)
-    # new_fm = new_fm / ord_ratio  ### 方法2 改， 把 fm也放大就對了
-    ##################################################################################################################
-    # ''' 錯，也許是see 改0.95才會對嗎? (try方法4) 方法3： 直接 對應回 -0.95~0.95， 理論上來說應該是要這樣子， 因為我是從 -0.95~0.95走道 dis_coord， dis_coord應該要走回-0.95~+0.95， 實際上測試也確實如此 '''
-    # new_bm, new_fm, ord_valid_mask   = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
-    #                                 ord_ratio=1.00, ord_base=ord_ratio, see_base=1.00, img_w=img_w, img_h=img_h, start_xy_m=xy_m, debug=debug_papr17)
-    ##################################################################################################################
-    ''' 方法4： 方法3 把 see 改0.95， 最後把 fm, bm 從 0.95 放大回 1.00 就對了 '''
-    ### 但不大對，因為我的 valid area/boundary 是設定 -1~1
-    new_bm, new_fm, ord_valid_mask   = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
-                                    ord_ratio=1.00, ord_base=ord_ratio, see_base=ord_ratio, img_w=img_w, img_h=img_h, start_xy_m=xy_m, debug=debug_papr17)
-    new_bm = new_bm / ord_ratio
-    new_fm = new_fm / ord_ratio
+    dis_coord_shifted_scaled_big_m   = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="big", adjust_ratio=1.5,  move_map_m=move_map_curl_m, start_xy_m=start_xy_m,
+                                                                                               debug=debug_papr17, boundary_value=ord_ratio)
+    ############################################################################################################
+    ''' Paper17 step7 方法2, 3(錯), 4 ：
+          最直覺的方法是 方法4：直接對應回原來的地方：
+          ord_ratio + move_map -> dis_coord -> back to ord_ratio, boundary grab ord_ratio
+          因為沒有取新bm， 是直接 回去原本的地方， 原本的地方如果是 ord_ratio， 回去也是ord_ratio， boundary 也是原本的 ord_ratio 囉！
+          所以設定
+          ord_base_paper17 = ord_ratio
+          see_base_paper17 = ord_base_paper17
+          以下2, 3(錯), 4 都是往 方法4 的想法去做
+    '''
+    ord_base_paper17 = ord_ratio         ### 如果是往方法1改： 把 ord_base_paper17 值改1.00， 搭配註解掉 下面 dis_rescale_again的東西 和 下面 new_fm = new_fm / ord_ratio 之類的東西喔！
+    see_base_paper17 = ord_base_paper17
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ''' Paper17 方法2(完全相同的話會錯) 學paper17 最原始的方法 把 dis_coord_big(fm) 再次根據 ord_ratio(以下比如0.95) 做縮放(把原始正mesh變回-1~1) 再找 new bm值，錯的原因和改法如下
+            往 方法4方向想方法2錯的原因為： 既然 dis_coord_m 先除0.95放大一點才抓new_bm， 那麼對應的 找 ord_valid_coord 時的 fm 也相應要除0.95 放大一點 才來找 ord_valid_coord，paper17 忘記放大 fm了
+            往 方法4方向的改法     ： 只要把找 ord_valid_coord 時的 fm也放大就對了
+            往 方法1方向想錯的原因為： 如果 dis_coord_big_m 再次縮放後對應 實體storage座標， 那應該要拿 再次縮放後的 dis_coord 重新找 ord_valid_coord 或者 對 ord_valid_coord的結果做縮放
+            往 方法1方向的改法     ： 只要 dis_coord_big_m   直接對應  實際storage座標 -1~1， (dis_coord_big_m不需放大就直接對應就對了)
+            下用 方法4的方向去改
+    '''
+    ''' dis_coord_big 看有沒有需要 "再次縮放"， 通常是想 把 start_coord 的 -ord_ratio~+ord_ratio 轉回 -1~1 '''
+    dis_rescale_again  = ord_ratio  ### 這個就是 方法4方向 的改法囉， 把fm放大就對了， 如果想往方法1改的話就把這行註解掉(不需要 rescale_again) 並搭配把 ord_base_paper17 改成 1.00
+    dis_coord_shifted_scaled_big_m /=  dis_rescale_again  ### 這個就是 方法4方向 的改法囉， 把fm放大就對了
+    ord_base_paper17               /=  dis_rescale_again  ### 這個就是 方法4方向 的改法囉， 對應回的 ord座標 也跟著放大回 -1~1
+    see_base_paper17                =  ord_base_paper17   ### 這個就是 方法4方向 的改法囉， 看的地方跟對應回的 ord座標 一樣
+    '''step7 在做完 縮放 後 的 dis_coord_shifted_scaled_big 上 找valid區域(-1.00~1.00) 當 new"Bm"， 並對應回 再次縮放後的 ord_coord(-1.00~1.00)'''
+    new_bm, new_fm, ord_valid_mask  = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
+                                    ord_base=ord_base_paper17, see_base=see_base_paper17, img_w=img_w, img_h=img_h,
+                                    debug=debug_papr17, start_xy_base=ord_base_paper17, dis_rescale_again=dis_rescale_again)
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ''' Paper17 方法3(錯)： 對應回 -0.95~0.95 但 see_base ==1.00 != ord_base，存一版後刪掉吧
+            直接 對應回 -0.95~0.95， 理論上來說應該是要這樣子， 因為我是從 -0.95~0.95走道 dis_coord， dis_coord應該要走回-0.95~+0.95(這部分對)
+            (錯1)但是 see部分 想學 方法1 see直接用 1.00，錯！ 方法1會對是因為 dis_coord 對應回 -1~1(實際storage座標)， 此時 see -1~1才會對，
+                                                                而這邊是 dis_coord 對應回 -0.95~+0.95(抽象座標)， 此時 see 如果還看 -1~1(實際storage座標) 就錯啦！
+                                                                                                                此時 see 應該要跟 對應回的 抽象座標 一樣 看 -0.95~+0.95 就對了！
+            (錯2)也不保證 move_map_adjust 有沒有把 dis_coord_big 調整超過 -1~1， 如果沒超過用這個方法也GG
 
-    ##################################################################################################################
-    ##################################################################################################################
-    ##################################################################################################################
-    '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 small 版本'''
-    dis_coord_shifted_scaled_small_m = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="small", adjust_ratio=0.8, move_map_m=move_map_curl_m, start_xy_m=xy_m, boundary_value=ord_ratio, debug=debug_before)  ### 以前的版本 本身 就不適合 套用 step6_util， 因為不需要 在 dis_coord_shifted_scaled_m 上取 新bm 和 找 ord_valid_coord， 而是直接用 dis_coord_shifted_scaled_m(縮小的)的appearance 當fm， 之後會再把 fm 對應回 ord_coord 這樣子， 所以外面 如果 adjust_type==small時 debug 記得設定false
-    ##################################################################################################################
+    '''
+    ''' dis_coord_big 看有沒有需要 "再次縮放"， 通常是想 把 start_coord 的 -ord_ratio~+ord_ratio 轉回 -1~1， 不過這裡不想縮放， 設定1.00 就不會縮放了'''
+    dis_rescale_again = 1.00  ### 同 方法4 不變
+    dis_coord_shifted_scaled_big_m /= dis_rescale_again
+    ord_base_paper17               /= dis_rescale_again  ### ord_coord 不一定 == start_xy 喔！ 因為 ord_coord 可能被 "再次rescale" 這樣子拉
+    see_base_paper17                = 1.00  ### (錯1)ord_base_paper17 != see_base_paper17 的錯誤示範， see部分 這樣設定是想學 方法1 see直接用 1.00， 而且還有(錯2)的風險 存一版後刪掉吧
+    ############################################################################################################
+    '''step7 在做完 縮放 後 的 dis_coord_shifted_scaled_big 上 找valid區域(-ord_ratio~ord_ratio) 當 new"Bm"， 並對應回原始 ord_coord(-ord_ratio~ord_ratio)'''
+    ### 這個因為 抽象座標 和 實際storage座標 概念完全不同 ，不能用debug(視覺化出來的東西對應應不上 或者 對上了但是也是錯的)
+    new_bm, new_fm, ord_valid_mask  = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
+                                    ord_base=ord_base_paper17, see_base=see_base_paper17, img_w=img_w, img_h=img_h,
+                                    debug=debug_papr17, start_xy_base=ord_base_paper17, dis_rescale_again=dis_rescale_again)
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ''' Paper17 方法4：
+        ord_ratio + move_map -> dis_coord -> back to ord_ratio, boundary grab ord_ratio
+        把方法3 把 see 改==ord 還沒對，
+        最後把 fm, bm 從 0.95 放大回 1.00 就對了 '''
+
+    ''' dis_coord_big 看有沒有需要 "再次縮放"， 通常是想 把 start_coord 的 -ord_ratio~+ord_ratio 轉回 -1~1， 不過這裡不想縮放， 設定1.00 就不會縮放了 '''
+    dis_rescale_again  = 1.00  ### dis_coord_big 不變
+    dis_coord_shifted_scaled_big_m /= dis_rescale_again  ### dis_coord_big 不變
+    ord_base_paper17               /= dis_rescale_again  ### ord_ratio 不變， 代表可以 ord_ratio + move_map -> dis_coord -> back to ord_ratio
+    see_base_paper17               = ord_base_paper17                ### boundary grab ord_ratio
+    ############################################################################################################
+    '''step7 在做完 再次縮放 後 的 dis_coord_shifted_scaled_big 上 找valid區域(-ord_ratio~ord_ratio) 當 new"Bm"， 並對應回原始 ord_coord(-ord_ratio~ord_ratio)'''
+    new_bm, new_fm, ord_valid_mask  = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
+                                    ord_base=ord_base_paper17, see_base=see_base_paper17, img_w=img_w, img_h=img_h,
+                                    debug=debug_papr17, start_xy_base=ord_base_paper17,  dis_rescale_again=dis_rescale_again)
+    new_bm = new_bm / ord_ratio  ### 放大回 -1~1 才正確喔！
+    new_fm = new_fm / ord_ratio  ### 放大回 -1~1 才正確喔！
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    '''step6 dis_coord_m = move_map_m + start_xy_m， 調整 dis_coord_m 變成 big 版本'''
+    dis_coord_shifted_scaled_small_m   = move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type="small", adjust_ratio=0.8,  move_map_m=move_map_curl_m, start_xy_m=start_xy_m,
+                                                                                                 debug=debug_before, boundary_value=ord_ratio)
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ''' Before 方法1 錯：  '''
+    ord_base_before  = ord_ratio
+    see_base_before  = 1.00  ### see 取 -1~1 是錯的， 當初應該是被 paper17方法1誤導了， 仔細思考應該是方法2才對喔
+
     ''' step7 在做完 縮放 後 的 dis_coord_shifted_scaled_small 上 找valid區域(-ord_ratio~ord_ratio) 當 "Fm"， 並對應回原始move_map '''
-    ''' 方法1 ： see 取 -1~1 是錯的'''
-    ### 0.95 + move_map -> dis_coord -> back to 0.95, boundary grab 0.95， 因為沒有取新bm， 是直接 回去原本的地方， 原本的地方如果是 0.95， 回去也是0.95， boundary 也是原本的 0.95 囉！
-    # fm, bm, fm_nan_mask = step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_shifted_scaled_small_m,
-    #                             ord_ratio=1.00, ord_base=ord_ratio, see_base=1.00, img_w=img_w, img_h=img_h,
-    #                             start_xy_m=xy_m, debug=debug_before)
-
-    ''' 方法2 ： see 取 -0.95~0.95應該才是對的， 最後把 fm, bm 從 0.95 放大回 1.00 '''
-    ### 仔細思考這才對， 因為 ord_coord 在 放回原始img_array 是用0.95 當基準來做的， see_coord 如果用1.00當基準來做就不匹配(我猜 fm appearance 用 see用1.0 面積會縮小)， 應該要跟ord_coord用一樣的0.95才對
     fm, bm, fm_nan_mask = step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_shifted_scaled_small_m,
-                                ord_ratio=1.00, ord_base=ord_ratio, see_base=ord_ratio, img_w=img_w, img_h=img_h,
-                                start_xy_m=xy_m, debug=debug_before)
+                                ord_base=ord_base_before, see_base=see_base_before, img_w=img_w, img_h=img_h,
+                                debug=debug_before, ord_ratio=ord_ratio)
+    ########################################################################################################################################################################
+    ########################################################################################################################################################################
+    ''' Before 方法2： see 取 -0.95~0.95應該才是對的， 最後把 fm, bm 從 0.95 放大回 1.00 '''
+    ### 仔細思考這才對， 因為 ord_coord 在 放回原始img_array 是用0.95 當基準來做的， see_coord 如果用1.00當基準來做就不匹配(我猜 fm appearance 用 see用1.0 面積會縮小)， 應該要跟ord_coord用一樣的0.95才對
+    ### 0.95 + move_map -> dis_coord -> back to 0.95, boundary grab 0.95， 因為沒有取新bm， 是直接 回去原本的地方， 原本的地方如果是 0.95， 回去也是0.95， boundary 也是原本的 0.95 囉！
+    ord_base_before  = ord_ratio
+    see_base_before  = ord_ratio
+
+    ''' step7 在做完 縮放 後 的 dis_coord_shifted_scaled_small 上 找valid區域(-ord_ratio~ord_ratio) 當 "Fm"， 並對應回原始move_map '''
+    fm, bm, fm_nan_mask = step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_shifted_scaled_small_m,
+                                ord_base=ord_base_before, see_base=see_base_before, img_w=img_w, img_h=img_h,
+                                debug=debug_before, ord_ratio=ord_ratio)
     fm = fm / ord_ratio  ### 放大回 -1~1 才會正確對應
     bm = bm / ord_ratio  ### 放大回 -1~1 才會正確對應
+    # plt.figure()
+    # plt.imshow(fm_nan_mask)
 
-
-
-
-    ### fm, bm 還要後處理一下 加一個mask channel 進去 就是 blender 的形式囉！
-    ### step7 整理一下 dis_coord, ord_coord, start_coord...
-    ### 測試 paper17/before 覺得錯的case是不是真的錯
-    ### savefig 可以寫一下
-    ''' step8 apply_fm/bm'''
     ########################################################################################################
-    dis_img, fig, ax, ax_i = apply_fm_to_get_dis_img(ord_img, new_fm, visual=True, before_title="Paper17_before_fm", after_title="Paper17_after_fm")
-    rec_img, fig, ax, ax_i = apply_bm_to_get_rec_img(dis_img, new_bm, visual=True, before_title="Paper17_before_bm", after_title="Paper17_after_bm")
-    dis_img, fig, ax, ax_i = apply_fm_to_get_dis_img(ord_img, fm, visual=True, before_title="Before_before_fm", after_title="Before_after_fm")
-    rec_img, fig, ax, ax_i = apply_bm_to_get_rec_img(dis_img, bm, visual=True, before_title="Before_before_bm", after_title="Before_after_bm")
+    ########################################################################################################
+    ########################################################################################################
+    ### 待處理 fm, bm 還要後處理一下 加一個mask channel 進去 就是 blender 的形式囉！
+    ### 處理中 step7 整理一下 dis_coord, ord_coord, start_coord...
+    ### 待處理 savefig 可以寫一下
+    ### 待處理 step8 增加resolution的方法
+    ### 待處理 step7 mask 應該要用 pytorch gridsample 執行完 拿到的mask 才最準確
+    ########################################################################################################
+    ########################################################################################################
+    ########################################################################################################
+    ########################################################################################################
+    ''' step9 apply_fm/bm'''
+    dis_img = apply_fm_to_get_dis_img(ord_img, new_fm, visual=debug_papr17, before_title="Paper17_before_fm", after_title="Paper17_after_fm")
+    rec_img = apply_bm_to_get_rec_img(dis_img, new_bm, visual=debug_papr17, before_title="Paper17_before_bm", after_title="Paper17_after_bm")
+    dis_img = apply_fm_to_get_dis_img(ord_img, fm, visual=debug_before, before_title="Before_before_fm", after_title="Before_after_fm")
+    rec_img = apply_bm_to_get_rec_img(dis_img, bm, visual=debug_before, before_title="Before_before_bm", after_title="Before_after_bm")
 
     ########################################################################################################
     plt.show()

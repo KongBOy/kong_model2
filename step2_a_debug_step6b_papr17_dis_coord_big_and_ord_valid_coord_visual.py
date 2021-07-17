@@ -5,7 +5,7 @@ from matplot_fig_ax_util import check_fig_ax_init, move_map_2D_arrow, move_map_3
 from step2_a_util import step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord
 
 def step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual(dis_coord_big_m, move_map_m, start_xy_m,
-                                                            boundary_value=1,
+                                                            boundary_value=0,
                                                             jump_r=4, jump_c=4,
                                                             before_alpha=0.5,
                                                             after_alpha =0.7,
@@ -23,7 +23,7 @@ def step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual(dis_coo
     # after_alpha  = 0.7
     fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=2, fig_cols=7, ax_size=5.0, tight_layout=True)
     h_res, w_res = start_xy_m.shape[: 2]
-    ord_valid_mask = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m, boundary_value=1.0, visual=False)
+    ord_valid_mask = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m, boundary_value=boundary_value, visual=False)
     ##########################################################################################################################
     # dis_coord_method1_visual = method1(x=dis_coord_big_m[..., 0], y=dis_coord_big_m[..., 1], mask_ch=0)
     # ax[ax_c].imshow(dis_coord_method1_visual)
@@ -108,6 +108,6 @@ def step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual(dis_coo
 
 
     '''圖1,1~1,5 step7 找 dis_coord_big_m valid的地方'''
-    fig, ax[1], ax_c, _ = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m, boundary_value=1.0, visual=True, fig=fig, ax=ax[1], ax_c=1)
+    fig, ax[1], ax_c, _ = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m, boundary_value=boundary_value, visual=True, fig=fig, ax=ax[1], ax_c=1)
 
     return fig, ax, ax_c
