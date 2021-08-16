@@ -6,7 +6,7 @@ import numpy as np
 
 from step2_a_util import wt_calculate
 
-def step4_wt_simulate_visual(xy_shifted_m, d_abs_norm_m, alpha_fold_sim=0.8, alpha_curl_sim=2.0, fig=None, ax=None, ax_c=None):  ### alpha參考 paper17印度 用的 https://github.com/XiyanLiu/AGUN
+def step4_wt_simulate_visual(xy_shifted_m, d_abs_norm_m, alpha_fold_sim=0.8, alpha_curl_sim=2.0, fig=None, ax=None, ax_c=None, tight_layout=False):  ### alpha參考 paper17印度 用的 https://github.com/XiyanLiu/AGUN
     '''
     分析 alpha/d 的關係 和 套用特定alpha(fold/curl都模擬) 看看 目前的 d_abs_norm_m 達到的 wt效果
 
@@ -19,7 +19,7 @@ def step4_wt_simulate_visual(xy_shifted_m, d_abs_norm_m, alpha_fold_sim=0.8, alp
     fig/ax/ax_c ： default 為 None， 代表要 建立新subplots
                    若 不是 None，在 fig上 畫上此function裡產生的圖
     '''
-    fig, ax, ax_c = check_fig_ax_init(fig, ax, ax_c, fig_rows=1, fig_cols=5, ax_size=5, tight_layout=True)
+    fig, ax, ax_c = check_fig_ax_init(fig, ax, ax_c, fig_rows=1, fig_cols=5, ax_size=5, tight_layout=tight_layout)
 
     ##########################################################################################################
     ### 變動alpha， 變動d， 看wt
