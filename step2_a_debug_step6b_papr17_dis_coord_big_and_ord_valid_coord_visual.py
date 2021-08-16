@@ -9,7 +9,7 @@ def step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual(dis_coo
                                                             jump_r=4, jump_c=4,
                                                             before_alpha=0.5,
                                                             after_alpha =0.7,
-                                                            fig=None, ax=None, ax_c=None):
+                                                            fig=None, ax=None, ax_c=None, tight_layout=False):
     '''
     給 paper17方法用的：
         視覺化 paper17 利用調整 dis_coord_m 完後的 dis_coord_big_m 就能從中間抓出滿滿的 new_bm， 這new_bm 對應回的 new_fm 怎麼抓
@@ -21,7 +21,7 @@ def step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual(dis_coo
     '''
     # before_alpha = 0.5
     # after_alpha  = 0.7
-    fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=2, fig_cols=7, ax_size=5.0, tight_layout=True)
+    fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=2, fig_cols=7, ax_size=5.0, tight_layout=tight_layout)
     h_res, w_res = start_xy_m.shape[: 2]
     ord_valid_mask = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m, boundary_value=boundary_value, visual=False)
     ##########################################################################################################################

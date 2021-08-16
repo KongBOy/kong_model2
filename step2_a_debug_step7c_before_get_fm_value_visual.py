@@ -7,8 +7,8 @@ from util import fill_nan_at_mask_zero
 def step7_visual_util_c_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask,
                         dis_coord_m, ord_ratio, ord_coord_m, see_coord_m,
                         jump_r=6, jump_c=6,
-                        fig=None, ax=None, ax_c=None):
-    fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=1, fig_cols=2, ax_size=8, tight_layout=True)
+                        fig=None, ax=None, ax_c=None, tight_layout=False):
+    fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=1, fig_cols=2, ax_size=8, tight_layout=tight_layout)
     ##################################################################################################################
     see_coord_m = fill_nan_at_mask_zero(fm_nan_mask, see_coord_m)
 

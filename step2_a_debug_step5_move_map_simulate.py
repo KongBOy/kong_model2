@@ -4,7 +4,7 @@ sys.path.append("kong_util")
 from matplot_fig_ax_util import check_fig_ax_init, move_map_2D_moving_visual
 from step2_a_util import wt_calculate
 
-def step5_move_map_simulate_visual(start_xy_m, move_xy, d_abs_norm_m, alpha_fold=0.8, alpha_curl=2.0, fig=None, ax=None, ax_c=None):  ### alpha參考 paper17印度 用的 https://github.com/XiyanLiu/AGUN
+def step5_move_map_simulate_visual(start_xy_m, move_xy, d_abs_norm_m, alpha_fold=0.8, alpha_curl=2.0, fig=None, ax=None, ax_c=None, tight_layout=False):  ### alpha參考 paper17印度 用的 https://github.com/XiyanLiu/AGUN
     '''
     用套用 move_map 後的 dis_coord 來 視覺化 move_map
 
@@ -18,7 +18,7 @@ def step5_move_map_simulate_visual(start_xy_m, move_xy, d_abs_norm_m, alpha_fold
     fig/ax/ax_c ： default 為 None， 代表要 建立新subplots
                    若 不是 None，在 fig上 畫上此function裡產生的圖
     '''
-    fig, ax, ax_c = check_fig_ax_init(fig, ax, ax_c, fig_rows=1, fig_cols=10, ax_size=5, tight_layout=True)
+    fig, ax, ax_c = check_fig_ax_init(fig, ax, ax_c, fig_rows=1, fig_cols=10, ax_size=5, tight_layout=tight_layout)
     ##########################################################################################################
     ### 取得 h_res/w_res
     h_res, w_res = start_xy_m.shape[:2]

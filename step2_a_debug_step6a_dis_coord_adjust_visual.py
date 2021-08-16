@@ -10,7 +10,7 @@ def step6_debug_a_Dis_coord_both_Move_map_Boundary_2D3Dvisual(dis_coord_m, move_
                                                      boundary_value=0,
                                                      before_alpha = 1.0,
                                                      after_alpha  = 1.0,
-                                                     fig=None, ax=None, ax_c=None):
+                                                     fig=None, ax=None, ax_c=None, tight_layout=False):
     '''
      給 Before/paper17 兩者都可以用的： 視覺化 dis_coord 調整的過程
     '''

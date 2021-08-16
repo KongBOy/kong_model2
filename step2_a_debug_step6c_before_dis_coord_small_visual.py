@@ -8,14 +8,14 @@ def step6_debug_c_Dis_coord_small_Move_map_Boundary_visual(dis_coord_small_m, mo
                                                  before_alpha=1.0,
                                                  after_alpha=1.0,
                                                  jump_r=4, jump_c=4,
-                                                 fig=None, ax=None, ax_c=None):
+                                                 fig=None, ax=None, ax_c=None, tight_layout=False):
     '''
     給 before方法用的：
         視覺化 Before方法 利用調整 dis_coord_m 完後的 dis_coord_small_m 就能直接當bm， 因為 small 可以確保bm 形成的 dis_img 是可控的能限定在某個範圍內
     '''
     before_alpha = 0.5
     after_alpha  = 0.7
-    fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=1, fig_cols=4, ax_size=5.0, tight_layout=True)
+    fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=1, fig_cols=4, ax_size=5.0, tight_layout=tight_layout)
     h_res, w_res = start_xy_m.shape[: 2]
     ##################################################################################################################
     '''圖0 2D箭頭視覺化 bm裡存的東西'''
