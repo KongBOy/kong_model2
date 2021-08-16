@@ -72,11 +72,11 @@ def apply_move():
     if  (curve_type == "curl"): alpha = alpha_c_sl.val
     elif(curve_type == "fold"): alpha = alpha_f_sl.val
     # global row, col, vert_x, vert_y, move_x, move_y, curve_type, alpha
-    if  (curve_type == "curl"): move = get_dis_move_map(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
-    elif(curve_type == "fold"): move = get_dis_move_map(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
-    proc_xy_f = xy_f + move
+    if  (curve_type == "curl"): move_f, _ = get_dis_move_map(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
+    elif(curve_type == "fold"): move_f, _ = get_dis_move_map(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha=alpha)
+    proc_xy_f = xy_f + move_f
     ax_img.set_offsets(proc_xy_f)  ### 限定要放 flatten的形式喔！ [..., 2]
-    print("move_x_max = ", abs(move[:, 0]).max(), ", move_y_max = ", abs(move[:, 1]).max(), ", curve_type=", curve_type, ", alpha=", alpha)
+    print("move_x_max = ", abs(move_f[:, 0]).max(), ", move_y_max = ", abs(move_f[:, 1]).max(), ", curve_type=", curve_type, ", alpha=", alpha)
 
 def update(val):
     apply_move()
@@ -120,10 +120,10 @@ stick_ax = plt.axes([0.6, 0.01, 0.2, 0.03], facecolor=axcolor)  ### 1.畫圖出�
 stick_btn = Button(stick_ax, "Stick")  ### 1. -> 2. 圖和button做連結
 def Stick(event):  ### 3.定義功能
     global row, col, vert_x, vert_y, move_x, move_y, curve_type, alpha
-    if  (curve_type == "curl"): move = get_dis_move_map(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
-    elif(curve_type == "fold"): move = get_dis_move_map(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
+    if  (curve_type == "curl"): move_f, _ = get_dis_move_map(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
+    elif(curve_type == "fold"): move_f, _ = get_dis_move_map(int(row), int(col), int(vert_x), int(vert_y), move_x, move_y, curve_type, alpha)
     global xy_f
-    xy_f = xy_f + move
+    xy_f = xy_f + move_f
 stick_btn.on_clicked(Stick)  ### 2. -> 3. 把功能和button做連結
 
 ###################################################
