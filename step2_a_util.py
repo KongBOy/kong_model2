@@ -36,7 +36,7 @@ def wt_calculate(dis_type, d_abs_norm, alpha):
 
 
 ''' 給 paper17方法用的 核心： 利用調整後的 dis_coord_m 中間 一個boundary(new_bm)， 這new_bm 對應回的 new_fm 怎麼抓 '''
-def step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m, boundary_value=1.0, visual=False, fig=None, ax=None, ax_c=None):
+def step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord_simulate(dis_coord_big_m, boundary_value=1.0, visual=False, fig=None, ax=None, ax_c=None):
     if(visual): fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=1, fig_cols=5, ax_size=5, tight_layout=True)
     ##################################################################################################################
     h_res, w_res = dis_coord_big_m.shape[: 2]

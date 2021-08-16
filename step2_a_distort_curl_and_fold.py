@@ -8,7 +8,7 @@ from matplot_fig_ax_util import check_fig_ax_init, mesh3D_scatter_and_z0_plane, 
 from matplot_fig_ax_util import coord_f_2D_scatter, move_map_1D_value, move_map_2D_arrow
 
 
-from step2_a_util                                                         import wt_calculate, step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord, apply_fm_to_get_dis_img, apply_bm_to_get_rec_img
+from step2_a_util                                                         import wt_calculate, step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord_simulate, apply_fm_to_get_dis_img, apply_bm_to_get_rec_img, step8_get_denser_fm_by_bm, step8_get_denser_bm_by_bm
 from step2_a_debug_step4_wt_simulate                                      import step4_wt_simulate_visual
 from step2_a_debug_step5_move_map_simulate                                import step5_move_map_simulate_visual
 from step2_a_debug_step6a_dis_coord_adjust_visual                         import step6_debug_a_Dis_coord_both_Move_map_Boundary_2D3Dvisual
@@ -329,7 +329,7 @@ def step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_c
 
     new_bm = see_inv_coord_m
     new_fm = dis_coord_big_m  ### * ord_valid_mask[:, :, np.newaxis]  ### 就算不用mask遮住， pytorch 的 gridsample 還是可以運作喔！
-    ord_valid_mask = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord(dis_coord_big_m, boundary_value=ord_base, visual=False)
+    ord_valid_mask = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord_simulate(dis_coord_big_m, boundary_value=ord_base, visual=False)
     ##################################################################################################################
     if(debug):
         _, start_xy_m = get_xy_f_and_m(x_min=-start_xy_base, x_max=+start_xy_base, y_min=-start_xy_base, y_max=+start_xy_base, w_res=img_w, h_res=img_h)  ### img_w, img_h
