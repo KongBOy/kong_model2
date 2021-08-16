@@ -304,17 +304,17 @@ def move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type,
 ##########################################################################################################################################################
 ##########################################################################################################################################################
 ''' step7 繼續編號寫下去 '''
-def step7a_dis_backto_ord_and_see_where(dis_coord_m, ord_coord_f, see_coord_f, img_w, img_h):
+def step7a_dis_backto_ord_and_see_where(dis_coord_m, ord_coord_f, see_coord_f, see_w, see_h):
     dis_coord_f  = dis_coord_m.reshape(-1, 2)
     ##################################################################################################################
     import scipy.interpolate as spin
     see_inv_coord_f = spin.griddata(dis_coord_f, ord_coord_f, see_coord_f, method="cubic")  ### 計算， dst 為 dis_coord_big 的話 see_inv_coord_f 填滿滿， dst 為 dis_coord_small 的話 see_inv_coord_f 會有 nan
-    see_inv_coord_m = see_inv_coord_f.reshape(img_h, img_w, 2)                                           ### flatten 轉 map
+    see_inv_coord_m = see_inv_coord_f.reshape(see_h, see_w, 2)                                           ### flatten 轉 map
     return see_inv_coord_m
 
 
 ''' dis_coord_big_m '''
-def step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_big_m, ord_base, see_base, img_w, img_h,
+def step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_big_m, ord_base, see_base, see_w, see_h,
                                                                                                      debug=False, start_xy_base=1.0, dis_rescale_again=1.0):
     '''
     start_xy_m ： 視覺化用的， ord_coord 不一定 == start_xy 喔！ 因為 ord_coord 可能被 "再次rescale" 這樣子拉
@@ -323,8 +323,8 @@ def step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_c
     '''
     h_res, w_res = dis_coord_big_m.shape[:2]
     ord_coord_f, ord_coord_m   = get_xy_f_and_m(x_min=-ord_base, x_max=+ord_base, y_min=-ord_base, y_max=+ord_base, w_res=w_res, h_res=h_res)  ### w_res, h_res
-    see_coord_f, see_coord_m   = get_xy_f_and_m(x_min=-see_base, x_max=+see_base, y_min=-see_base, y_max=+see_base, w_res=img_w, h_res=img_h)  ### img_w, img_h
-    see_inv_coord_m = step7a_dis_backto_ord_and_see_where(dis_coord_m=dis_coord_big_m, ord_coord_f=ord_coord_f, see_coord_f=see_coord_f, img_w=img_w, img_h=img_h)
+    see_coord_f, see_coord_m   = get_xy_f_and_m(x_min=-see_base, x_max=+see_base, y_min=-see_base, y_max=+see_base, w_res=see_w, h_res=see_h)  ### see_w, see_h
+    see_inv_coord_m = step7a_dis_backto_ord_and_see_where(dis_coord_m=dis_coord_big_m, ord_coord_f=ord_coord_f, see_coord_f=see_coord_f, see_w=see_w, see_h=see_h)
     see_inv_move_map_m = see_inv_coord_m - see_coord_m    ### 計算 move_map = dst - start， 如果有nan 減完 仍為 nan ， dis_coord_big 的話 see_inv_coord_f 填滿滿
 
     new_bm = see_inv_coord_m
@@ -332,7 +332,7 @@ def step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_c
     ord_valid_mask = step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord_simulate(dis_coord_big_m, boundary_value=ord_base, visual=False)
     ##################################################################################################################
     if(debug):
-        _, start_xy_m = get_xy_f_and_m(x_min=-start_xy_base, x_max=+start_xy_base, y_min=-start_xy_base, y_max=+start_xy_base, w_res=img_w, h_res=img_h)  ### img_w, img_h
+        _, start_xy_m = get_xy_f_and_m(x_min=-start_xy_base, x_max=+start_xy_base, y_min=-start_xy_base, y_max=+start_xy_base, w_res=see_w, h_res=see_h)  ### see_w, see_h
         step7_visual_util_b_paper17(see_inv_coord_m, see_inv_move_map_m,
                                     dis_coord_m=dis_coord_big_m, ord_coord_m=ord_coord_m, see_coord_m=see_coord_m,
                                     boundary_value=ord_base,
@@ -344,13 +344,13 @@ def step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_c
         debug_spyder_dict["step7. see_inv_move_map_m"] = see_inv_move_map_m
         debug_spyder_dict["step7. see_inv_move_map_m.isnan()"] = np.isnan(see_inv_move_map_m)
         debug_spyder_dict["step7. start_xy_m"] = start_xy_m
-    return new_bm, new_fm, ord_valid_mask
+    return new_bm, new_fm
 
 
 ##################################################################################################################
 ##################################################################################################################
 ''' dis_coord_small_m '''
-def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_small_m, ord_base, see_base, img_w, img_h,
+def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_small_m, ord_base, see_base, see_w, see_h,
                                                                                     debug=False, ord_ratio=1.0):
     '''
     valid area(即boundary 、 see_coord的範圍 )： 注意因為不是取new bm， 所以範圍不一定
@@ -358,24 +358,26 @@ def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_va
     '''
     h_res, w_res = dis_coord_small_m.shape[:2]
     ord_coord_f, ord_coord_m   = get_xy_f_and_m(x_min=-ord_base, x_max=+ord_base, y_min=-ord_base, y_max=+ord_base, w_res=w_res, h_res=h_res)  ### w_res, h_res
-    see_coord_f, see_coord_m   = get_xy_f_and_m(x_min=-see_base, x_max=+see_base, y_min=-see_base, y_max=+see_base, w_res=img_w, h_res=img_h)  ### img_w, img_h
-    see_inv_coord_m = step7a_dis_backto_ord_and_see_where(dis_coord_m=dis_coord_small_m, ord_coord_f=ord_coord_f, see_coord_f=see_coord_f, img_w=img_w, img_h=img_h)
+    see_coord_f, see_coord_m   = get_xy_f_and_m(x_min=-see_base, x_max=+see_base, y_min=-see_base, y_max=+see_base, w_res=see_w, h_res=see_h)  ### see_w, see_h
+    see_inv_coord_m = step7a_dis_backto_ord_and_see_where(dis_coord_m=dis_coord_small_m, ord_coord_f=ord_coord_f, see_coord_f=see_coord_f, see_w=see_w, see_h=see_h)
     see_inv_move_map_m = see_inv_coord_m - see_coord_m    ### 計算 move_map = dst - start， 如果有nan 減完 仍為 nan ， dis_coord_small 的話 see_inv_coord_f 會有 nan
     fm = see_inv_coord_m
     bm = dis_coord_small_m
-    fm_nan_mask = 1 - np.isnan(see_inv_coord_m).astype(np.int32)[..., 0]
 
     if(debug):
+        fm_nan_mask = 1 - np.isnan(see_inv_coord_m).astype(np.int32)[..., 0]
         debug_spyder_dict["step7. bm == dis_coord_smallm"] = dis_coord_small_m
         debug_spyder_dict["step7. fm == see_inv_coord_m"]  = see_inv_coord_m
         debug_spyder_dict["step7. fm_nan_mask"] = fm_nan_mask
         step7_visual_util_c_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask=fm_nan_mask,
                                     dis_coord_m=dis_coord_small_m, ord_ratio=ord_ratio, ord_coord_m=ord_coord_m, see_coord_m=see_coord_m)
-    return fm, bm, fm_nan_mask
+    return fm, bm
 
 ##########################################################################################################################################################
 ##########################################################################################################################################################
 ##########################################################################################################################################################
+
+
 
 
 if(__name__ == "__main__"):
@@ -387,7 +389,7 @@ if(__name__ == "__main__"):
     imgs = get_dir_certain_img(img_dir, certain_word="rainbow.png", float_return=False)
     #######################################################################################################
     ord_img = imgs[0, :, :, ::-1]
-    ord_img = cv2.resize(ord_img, (65, 65), interpolation=cv2.INTER_AREA)
+    ord_img = cv2.resize(ord_img, (512, 512), interpolation=cv2.INTER_AREA)
     img_h, img_w = ord_img.shape[:2]
 
     ### 理解用，手動慢慢扭曲
@@ -399,8 +401,8 @@ if(__name__ == "__main__"):
     '''
 
     ### 印度那篇 move_map模擬成功 繼續往下模擬
-    h_res    = img_h  ### 129  ### 77
-    w_res    = img_w  ### 129  ### 77
+    h_res    = 77  ### 129  ### 77
+    w_res    = 77  ### 129  ### 77
     ord_ratio = 0.75  ### paper17主要是用來 rescale dis_coord 用的， 自己實作完覺得這個參數沒必要， 直接再 rescale的時候 給一個明確的數字不就好了， 在這邊控制 mesh縮放 的話 使用 LinearNDInterpolator 還要注意 怎麼對應 和 see_coord 超級麻煩， 如果我自己用的話設 1 就好了吧！
     x_min    = -1.00 * ord_ratio
     x_max    = +1.00 * ord_ratio
@@ -452,11 +454,16 @@ if(__name__ == "__main__"):
     see_base_paper17               = ord_base_paper17                ### boundary grab ord_ratio
     ############################################################################################################
     '''step7 在做完 再次縮放 後 的 dis_coord_shifted_scaled_big 上 找valid區域(-ord_ratio~ord_ratio) 當 new"Bm"， 並對應回原始 ord_coord(-ord_ratio~ord_ratio)'''
-    new_bm, new_fm, ord_valid_mask  = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(dis_coord_shifted_scaled_big_m,
-                                    ord_base=ord_base_paper17, see_base=see_base_paper17, img_w=img_w, img_h=img_h,
+    new_bm, new_fm  = step7b_Paper17_Dis_coord_valid_area_is_new_Bm_and_inverse_backto_Ord_valid_coord_to_get_bm_value(
+                                    dis_coord_shifted_scaled_big_m,
+                                    ord_base=ord_base_paper17, see_base=see_base_paper17, see_w=w_res, see_h=h_res,
                                     debug=debug_papr17, start_xy_base=ord_base_paper17,  dis_rescale_again=dis_rescale_again)
     new_bm = new_bm / ord_ratio  ### 放大回 -1~1 才正確喔！
     new_fm = new_fm / ord_ratio  ### 放大回 -1~1 才正確喔！
+
+
+    new_fm = step8_get_denser_fm_by_bm(new_bm, img_w, img_h)
+    new_bm = step8_get_denser_bm_by_bm(new_bm, img_w, img_h)
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ########################################################################################################################################################################
@@ -467,11 +474,14 @@ if(__name__ == "__main__"):
     see_base_before  = ord_base_before
 
     ''' step7 在做完 縮放 後 的 dis_coord_shifted_scaled_small 上 找valid區域(-ord_ratio~ord_ratio) 當 "Fm"， 並對應回原始move_map '''
-    fm, bm, fm_nan_mask = step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_shifted_scaled_small_m,
-                                ord_base=ord_base_before, see_base=see_base_before, img_w=img_w, img_h=img_h,
+    fm, bm = step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_value(dis_coord_shifted_scaled_small_m,
+                                ord_base=ord_base_before, see_base=see_base_before, see_w=w_res, see_h=h_res,
                                 debug=debug_before, ord_ratio=ord_ratio)
-    fm = fm / ord_ratio  ### 放大回 -1~1 才會正確對應
-    bm = bm / ord_ratio  ### 放大回 -1~1 才會正確對應
+    fm /= ord_ratio  ### 放大回 -1~1 才會正確對應
+    bm /= ord_ratio  ### 放大回 -1~1 才會正確對應
+
+    fm = step8_get_denser_fm_by_bm(bm, img_w, img_h)
+    bm = step8_get_denser_bm_by_bm(bm, img_w, img_h)
     # plt.figure()
     # plt.imshow(fm_nan_mask)
 
@@ -479,9 +489,8 @@ if(__name__ == "__main__"):
     ########################################################################################################
     ########################################################################################################
     ### 待處理 fm, bm 還要後處理一下 加一個mask channel 進去 就是 blender 的形式囉！
-    ### 處理中 step7 整理一下 dis_coord, ord_coord, start_coord...
     ### 待處理 savefig 可以寫一下
-    ### 待處理 step8 增加resolution的方法
+    ### 待處理 step6,7 把以前的方法獨立出來.py
     ### 待處理 step7 mask 應該要用 pytorch gridsample 執行完 拿到的mask 才最準確
     ########################################################################################################
     ########################################################################################################

@@ -67,6 +67,30 @@ def step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord_simulate(dis_co
         return fig, ax, ax_c, canvas_mask_xy
     else: return canvas_mask_xy
 
+
+def _step8_get_denser_coord_f(dis_coord_m, w_d_res, h_d_res):
+    h_res, w_res = dis_coord_m.shape[:2]
+    dis_coord_f = dis_coord_m.reshape(-1, 2)
+    ord_coord_f, _  = get_xy_f_and_m(x_min=-1., x_max=+1., y_min=-1., y_max=+1., w_res=w_res, h_res=h_res)      ### w_res, h_res
+    den_coord_f, _  = get_xy_f_and_m(x_min=-1., x_max=+1., y_min=-1., y_max=+1., w_res=w_d_res, h_res=h_d_res)  ### w_dense_res, h_dense_res
+    return dis_coord_f, ord_coord_f, den_coord_f
+def step8_get_denser_fm_by_bm(dis_coord_m, w_d_res, h_d_res):
+    dis_coord_f, ord_coord_f, den_coord_f = _step8_get_denser_coord_f(dis_coord_m, w_d_res, h_d_res)
+    import scipy.interpolate as spin
+    dense_fm_f = spin.griddata(dis_coord_f, ord_coord_f, den_coord_f, method="cubic")  ### 計算
+    dense_fm_m = dense_fm_f.reshape(h_d_res, w_d_res, 2)                       ### flatten 轉 map
+    return dense_fm_m
+
+def step8_get_denser_bm_by_bm(dis_coord_m, w_d_res, h_d_res):
+    dis_coord_f, ord_coord_f, den_coord_f = _step8_get_denser_coord_f(dis_coord_m, w_d_res, h_d_res)
+    import scipy.interpolate as spin
+    dense_bm_f = spin.griddata(ord_coord_f, dis_coord_f, den_coord_f, method="cubic")  ### 計算
+    dense_bm_m = dense_bm_f.reshape(h_d_res, w_d_res, 2)                       ### flatten 轉 map
+    return dense_bm_m
+
+
+
+
 def apply_flow(data, flow, visual=False, before_title=None, after_title=None, fig=None, ax=None, ax_c=None):
     if(visual):
         fig, ax, ax_c = check_fig_ax_init(fig=None, ax=None, ax_c=None, fig_rows=1, fig_cols=2, ax_size=5, tight_layout=True)
