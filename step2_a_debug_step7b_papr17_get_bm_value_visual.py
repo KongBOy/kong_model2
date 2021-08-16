@@ -10,7 +10,7 @@ def step7_visual_util_b_paper17(see_inv_coord_m, see_inv_move_map_m,
                         dis_coord_m, ord_coord_m, see_coord_m, start_xy_m, ord_valid_mask,
                         boundary_value = 0.0, dis_rescale_again=1.0,
                         fig=None, ax=None, ax_c=None):
-    fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=1, fig_cols=6, ax_size=5, tight_layout=True)
+    fig, ax, ax_c = check_fig_ax_init(fig=fig, ax=ax, ax_c=ax_c, fig_rows=1, fig_cols=6, ax_size=5, tight_layout=False)
     ##################################################################################################################
     h_res, w_res = dis_coord_m.shape[:2]
     '''圖0'''

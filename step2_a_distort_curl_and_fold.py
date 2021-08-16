@@ -141,7 +141,7 @@ def get_dis_move_map(start_xy_m, vert_x, vert_y, move_x, move_y, dis_type="fold"
             fig=fig, ax=ax, ax_c=ax_c )
 
         '''simulate wt_fold/curl 兩種都模擬看看長怎樣'''
-        step4_wt_simulate_visual(xy_shifted_m, d_abs_norm_m, alpha_fold_sim=0.8, alpha_curl_sim=2.0)
+        step4_wt_simulate_visual(xy_shifted_m, d_abs_norm_m, alpha_fold_sim=0.8, alpha_curl_sim=2.0, tight_layout=True)
 
 
     ##########################################################################################################################
@@ -156,7 +156,7 @@ def get_dis_move_map(start_xy_m, vert_x, vert_y, move_x, move_y, dis_type="fold"
         fig, ax, ax_c = move_map_2D_moving_visual(move_map_m=move_map_m, start_xy_m=start_xy_m, fig_title=f"step5. {dis_type}", fig=fig, ax=ax, ax_c=ax_c)
 
         '''simulate wt_fold/curl 兩種都模擬看看長怎樣'''
-        step5_move_map_simulate_visual(start_xy_m, move_xy, d_abs_norm_m, alpha_fold=0.8, alpha_curl=2.0)
+        step5_move_map_simulate_visual(start_xy_m, move_xy, d_abs_norm_m, alpha_fold=0.8, alpha_curl=2.0, tight_layout=True)
 
     ### 存debug圖
     if(debug):
@@ -193,7 +193,7 @@ def move_map_value_adjust_by_dis_coord_and_return_dis_coord(adjust_type,
       對paper17方法來說： 是要框出 new bm 要回到哪裡的範圍
       對before方法來說 ： 是要框出 ord_coord 的範圍， 所以 在製作 dis_coord_small 那邊 visual部分的boundary_value設定應為： boundary_value = ord_base_before
     '''
-    if(debug): fig, ax, ax_c = check_fig_ax_init(fig=None, ax=None, ax_c=None, fig_rows=2, fig_cols=5, ax_size=5, tight_layout=True)
+    if(debug): fig, ax, ax_c = check_fig_ax_init(fig=None, ax=None, ax_c=None, fig_rows=2, fig_cols=5, ax_size=5, tight_layout=False)
     ##########################################################################################################################
     h_res, w_res = start_xy_m.shape[: 2]
 
