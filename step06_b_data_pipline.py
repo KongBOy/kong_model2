@@ -131,6 +131,10 @@ class mov_mapping_util(mapping_util):
 class tf_Datapipline(img_mapping_util, mov_mapping_util):
     def __init__(self):  ### img_format 是 bmp/jpg喔！
         self.ord_dir = None
+        '''
+        db_range: DB 本身的 range(由 db_obj 決定)
+        use_range: 進網路前想用的 range(由 exp_obj 決定)
+        '''
 
         ### img類型要存的
         self.img_format = None
@@ -225,33 +229,6 @@ class tf_Datapipline_builder():
         return self.tf_pipline
 
 
-####################################################################################################
-### 這裡是練習用factory的寫法，如果之後覺得難看要改用builder的寫法也可以喔！
-# class tf_Datapipline_Factory:
-#     @staticmethod
-#     def new_img_pipline(ord_dir, img_format, img_resize, db_range, use_range):
-#         '''
-#         db_range: DB 本身的 range(由 db_obj 決定)
-#         use_range: 進網路前想用的 range(由 exp_obj 決定)
-#         '''
-#         img_pipline = tf_Datapipline_builder().build_img_pipline(ord_dir, img_format=img_format, img_resize=img_resize, db_range=db_range, use_range=use_range)
-#         img_pipline.build_img_db()
-#         return img_pipline
-
-    # @staticmethod
-    # def new_mov_pipline(ord_dir, img_resize, max_train_move, min_train_move, db_range, use_range):
-    #     mov_pipline = tf_Datapipline_builder().build_mov_pipline(ord_dir, img_resize=img_resize, max_train_move=max_train_move, min_train_move=min_train_move, db_range=db_range, use_range=use_range)
-    #     mov_pipline.build_mov_db()
-    #     return mov_pipline
-
-    # @staticmethod
-    # def new_flow_pipline(ord_dir, img_resize, db_range, use_range):
-    #     flow_pipline = tf_Datapipline_builder().build_flow_pipline(ord_dir, img_resize=img_resize, db_range=db_range, use_range=use_range)
-    #     flow_pipline.build_flow_db()
-    #     return flow_pipline
-
-
-
 ########################################################################################################################################
 ########################################################################################################################################
 ########################################################################################################################################
@@ -339,14 +316,12 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
     def build_by_in_dis_gt_move_map(self):
         ### 建db的順序：input, input, output(gt), output(gt)，跟 get_rect2_dataset不一樣喔別混亂了！
         ### 拿到 dis_imgs_db 的 train dataset，從 檔名 → tensor
-        # train_in_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.train_in_dir, self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
         train_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.train_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         train_in_db.build_img_db()
         self.tf_data.train_in_db     = train_in_db.ord_db
         self.tf_data.train_in_db_pre = train_in_db.pre_db
 
         ### 拿到 dis_imgs_db 的 test dataset，從 檔名 → tensor
-        # test_in_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.test_in_dir, self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
         test_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.test_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         test_in_db.build_img_db()
         self.tf_data.test_in_db      = test_in_db.ord_db
@@ -372,11 +347,9 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
             # print("self.tf_data.min_train_move",self.tf_data.min_train_move)
             return
 
-        # train_gt_db = tf_Datapipline_Factory.new_mov_pipline(self.tf_data.db_obj.train_gt_dir, self.tf_data.img_resize, self.tf_data.max_train_move, self.tf_data.min_train_move, self.tf_data.db_obj.gt_range, self.tf_data.gt_use_range)
         train_gt_db = tf_Datapipline_builder().build_mov_pipline(self.tf_data.db_obj.train_gt_dir, img_resize=self.tf_data.img_resize, max_train_move=self.tf_data.max_train_move, min_train_move=self.tf_data.min_train_move, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
         train_gt_db.build_mov_db()
 
-        # test_gt_db  = tf_Datapipline_Factory.new_mov_pipline(self.tf_data.db_obj.test_gt_dir , self.tf_data.img_resize, self.tf_data.max_train_move, self.tf_data.min_train_move, self.tf_data.db_obj.gt_range, self.tf_data.gt_use_range)
         test_gt_db = tf_Datapipline_builder().build_mov_pipline(self.tf_data.db_obj.test_gt_dir, img_resize=self.tf_data.img_resize, max_train_move=self.tf_data.max_train_move, min_train_move=self.tf_data.min_train_move, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
         test_gt_db.build_mov_db()
         self.tf_data.train_gt_db     = train_gt_db.ord_db
@@ -398,12 +371,10 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
         # print('self.tf_data.train_gt_db_pre',self.tf_data.train_gt_db_pre)
 
         if(self.tf_data.db_obj.have_see):
-            # see_in_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.see_in_dir , self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
             see_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.see_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
             see_in_db.build_img_db()
             self.tf_data.see_in_db     = see_in_db.ord_db
             self.tf_data.see_in_db_pre = see_in_db.pre_db
-            # see_gt_db  = tf_Datapipline_Factory.new_mov_pipline(self.tf_data.db_obj.see_gt_dir , self.tf_data.img_resize, self.tf_data.max_train_move, self.tf_data.min_train_move, self.tf_data.db_obj.gt_range, self.tf_data.gt_use_range)
             see_gt_db = tf_Datapipline_builder().build_mov_pipline(self.tf_data.db_obj.see_gt_dir, img_resize=self.tf_data.img_resize, max_train_move=self.tf_data.max_train_move, min_train_move=self.tf_data.min_train_move, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
             see_gt_db.build_mov_db()
             self.tf_data.see_gt_db     = see_gt_db.ord_db
@@ -450,16 +421,12 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
 class tf_Data_in_dis_gt_img_builder(tf_Data_in_dis_gt_move_map_builder):
     def build_by_in_img_and_gt_img_db(self):
         ### 建db的順序：input, output(gt), input , output(gt)，跟 in_dis_gt_move_map不一樣喔別混亂了！
-        # train_in_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.train_in_dir, self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
         train_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.train_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         train_in_db.build_img_db()
-        # train_gt_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.train_gt_dir, self.tf_data.db_obj.gt_format, self.tf_data.img_resize, self.tf_data.db_obj.gt_range, self.tf_data.gt_use_range)
         train_gt_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.train_gt_dir, img_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
         train_gt_db.build_img_db()
-        # test_in_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.test_in_dir , self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
         test_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.test_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         test_in_db.build_img_db()
-        # test_gt_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.test_gt_dir , self.tf_data.db_obj.gt_format, self.tf_data.img_resize, self.tf_data.db_obj.gt_range, self.tf_data.gt_use_range)
         test_gt_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.test_gt_dir, img_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
         test_gt_db.build_img_db()
 
@@ -501,10 +468,8 @@ class tf_Data_in_dis_gt_img_builder(tf_Data_in_dis_gt_move_map_builder):
         #########################################################
 
         if(self.tf_data.db_obj.have_see):
-            # see_in_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.see_in_dir , self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
             see_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.see_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
             see_in_db.build_img_db()
-            # see_gt_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.see_gt_dir , self.tf_data.db_obj.gt_format, self.tf_data.img_resize, self.tf_data.db_obj.gt_range, self.tf_data.gt_use_range)
             see_gt_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.see_gt_dir, img_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
             see_gt_db.build_img_db()
             self.tf_data.see_in_db     = see_in_db.ord_db.batch(1)
@@ -520,26 +485,22 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
     def build_by_in_dis_gt_flow(self):
         ### 建db的順序：input, input, output(gt), output(gt)，跟 get_rect2_dataset不一樣喔別混亂了！
         ### 拿到 dis_imgs_db 的 train dataset，從 檔名 → tensor
-        # train_in_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.train_in_dir, self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
         train_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.train_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         train_in_db.build_img_db()
         self.tf_data.train_in_db     = train_in_db.ord_db
         self.tf_data.train_in_db_pre = train_in_db.pre_db
         ### 拿到 dis_imgs_db 的 test dataset，從 檔名 → tensor
-        # test_in_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.test_in_dir, self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
         test_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.test_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         test_in_db.build_img_db()
         self.tf_data.test_in_db      = test_in_db.ord_db
         self.tf_data.test_in_db_pre  = test_in_db.pre_db
 
         ### 拿到 gt_flows_db 的 train dataset，從 檔名 → tensor
-        # train_gt_db = tf_Datapipline_Factory.new_flow_pipline  (self.tf_data.db_obj.train_gt_dir, self.tf_data.img_resize, self.tf_data.db_obj.gt_range, self.tf_data.gt_use_range)
         train_gt_db = tf_Datapipline_builder().build_flow_pipline(self.tf_data.db_obj.train_gt_dir, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
         train_gt_db.build_flow_db()
         self.tf_data.train_gt_db     = train_gt_db.ord_db
         self.tf_data.train_gt_db_pre = train_gt_db.pre_db
         ### 拿到 gt_flows_db 的 test dataset，從 檔名 → tensor
-        # test_gt_db  = tf_Datapipline_Factory.new_flow_pipline (self.tf_data.db_obj.test_gt_dir, self.tf_data.img_resize, self.tf_data.db_obj.gt_range, self.tf_data.gt_use_range)
         test_gt_db = tf_Datapipline_builder().build_flow_pipline(self.tf_data.db_obj.test_gt_dir, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
         test_gt_db.build_flow_db()
         self.tf_data.test_gt_db      = test_gt_db.ord_db
@@ -566,12 +527,10 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
         # print('self.tf_data.train_gt_db_pre',self.tf_data.train_gt_db_pre)
 
         if(self.tf_data.db_obj.have_see):
-            # see_in_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.see_in_dir , self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)  ### see的batch_size 就是用1
             see_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.see_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
             see_in_db.build_img_db()
             self.tf_data.see_in_db     = see_in_db.ord_db.batch(1)  ### see 的 batch 就是固定1了，有點懶一次處理多batch的生成see
             self.tf_data.see_in_db_pre = see_in_db.pre_db.batch(1)  ### see 的 batch 就是固定1了，有點懶一次處理多batch的生成see
-            # see_gt_db  = tf_Datapipline_Factory.new_flow_pipline(self.tf_data.db_obj.see_gt_dir , self.tf_data.img_resize, self.tf_data.db_obj.gt_range, self.tf_data.gt_use_range)
             see_gt_db = tf_Datapipline_builder().build_flow_pipline(self.tf_data.db_obj.see_gt_dir, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
             see_gt_db.build_flow_db()
             self.tf_data.see_gt_db     = see_gt_db.ord_db.batch(1)  ### see 的 batch 就是固定1了，有點懶一次處理多batch的生成see
@@ -579,21 +538,18 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
             self.tf_data.see_amount    = get_db_amount(self.tf_data.db_obj.see_in_dir)
 
         if(self.tf_data.db_obj.have_rec_hope):
-            # rec_hope_train_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.rec_hope_train_dir , self.tf_data.db_obj.rec_hope_format, self.tf_data.img_resize, self.tf_data.db_obj.rec_hope_range, self.tf_data.rec_hope_use_range)
             rec_hope_train_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.rec_hope_train_dir, img_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.rec_hope_range, use_range=self.tf_data.rec_hope_use_range)
             rec_hope_train_db.build_img_db()
             self.tf_data.rec_hope_train_db     = rec_hope_train_db.ord_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
             self.tf_data.rec_hope_train_db_pre = rec_hope_train_db.pre_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
             self.tf_data.rec_hope_train_amount    = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
 
-            # rec_hope_test_db  = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.rec_hope_test_dir  , self.tf_data.db_obj.rec_hope_format, self.tf_data.img_resize, self.tf_data.db_obj.rec_hope_range, self.tf_data.rec_hope_use_range)
             rec_hope_test_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.rec_hope_test_dir, img_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.rec_hope_range, use_range=self.tf_data.rec_hope_use_range)
             rec_hope_test_db.build_img_db()
             self.tf_data.rec_hope_test_db     = rec_hope_test_db.ord_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
             self.tf_data.rec_hope_test_db_pre = rec_hope_test_db.pre_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
             self.tf_data.rec_hope_test_amount    = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
 
-            # rec_hope_see_db   = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.rec_hope_see_dir   , self.tf_data.db_obj.rec_hope_format, self.tf_data.img_resize, self.tf_data.db_obj.rec_hope_range, self.tf_data.rec_hope_use_range)
             rec_hope_see_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.rec_hope_see_dir, img_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.rec_hope_range, use_range=self.tf_data.rec_hope_use_range)
             rec_hope_see_db.build_img_db()
             self.tf_data.rec_hope_see_db     = rec_hope_see_db.ord_db.batch(1)  ### 不知道要不要取batch，就先跟see一樣取batch=1好了
@@ -655,13 +611,11 @@ class tf_Data_in_img_gt_mask_builder(tf_Data_in_dis_gt_flow_builder):
     def build_by_in_img_gt_mask(self):
         ### 建db的順序：input, input, output(gt), output(gt)，跟 get_rect2_dataset不一樣喔別混亂了！
         ### 拿到 dis_imgs_db 的 train dataset，從 檔名 → tensor
-        # train_in_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.train_in_dir, self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
         train_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.train_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         train_in_db.build_img_db()
         self.tf_data.train_in_db     = train_in_db.ord_db
         self.tf_data.train_in_db_pre = train_in_db.pre_db
         ### 拿到 dis_imgs_db 的 test dataset，從 檔名 → tensor
-        # test_in_db = tf_Datapipline_Factory.new_img_pipline(self.tf_data.db_obj.test_in_dir, self.tf_data.db_obj.in_format, self.tf_data.img_resize, self.tf_data.db_obj.in_range, self.tf_data.in_use_range)
         test_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.test_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         test_in_db.build_img_db()
         self.tf_data.test_in_db      = test_in_db.ord_db
