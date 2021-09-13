@@ -3,8 +3,12 @@
 """
 from step0_access_path import data_access_path
 from enum import Enum
+import copy
 
 class DB_CATEGORY(Enum):
+    '''
+    第一層資料夾的名字
+    '''
     type0_h_384_w_256_page                        = "type0_h=384,w=256_page"
     type1_h_256_w_256_complex                     = "type1_h=256,w=256_complex"
     type2_h_384_w_256_complex                     = "type2_h=384,w=256_complex"
@@ -20,6 +24,9 @@ class DB_CATEGORY(Enum):
 
 
 class DB_NAME(Enum):
+    '''
+    第二層資料夾的名字
+    '''
     complex_move_map       = "complex_move_map"
     complex_gt_ord_pad     = "complex_gt_ord_pad"
     complex_gt_ord         = "complex_gt_ord"
@@ -55,6 +62,7 @@ class DB_NAME(Enum):
     blender_os_hw768       = "blender_os_hw768"
 
     try_segmentation       = "try_segmentation"
+
 
 class DB_GET_METHOD(Enum):
     no_detail = ""
