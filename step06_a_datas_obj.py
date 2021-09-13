@@ -73,6 +73,7 @@ class DB_GET_METHOD(Enum):
     test_indicate      = "test_indicate"
 
     in_dis_gt_flow     = "in_dis_gt_flow"
+    in_dis_gt_flow_mask = "in_dis_gt_flow_mask"
 
     in_img_gt_mask   = "in_img_gt_mask"
 
@@ -252,7 +253,7 @@ type7b_h500_w332_real_os_book_800data        = Dataset_builder().set_basic(DB_C.
 type8_blender_os_book_756                    = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw756      , DB_GM.in_dis_gt_flow, h=756, w=756).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1").set_detail(have_train=True, have_see=True)
 type8_blender_os_book_768                    = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1", rec_hope_format="jpg", rec_hope_range="0~255").set_detail(have_train=True, have_see=True, have_rec_hope=True)
 type9_try_segmentation                       = Dataset_builder().set_basic(DB_C.type9_try_segmentation                     , DB_N.try_segmentation      , DB_GM.in_img_gt_mask, h=1280, w=1918).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="gif", gt_range="0~255").set_detail(have_train=True, have_see=False)
-
+type9_try_flow_mask = copy.deepcopy(type8_blender_os_book_768); type9_try_flow_mask.set_basic(DB_C.type8_blender_os_book   , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow_mask, h=768, w=768)  ### 只有改 DB_GET_METHOD， copy from type8_blender_os_book_768
 if(__name__ == "__main__"):
     db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", in_range="0~255", gt_format="bmp", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
     db = Dataset_builder().set_basic(DB_C.type7_h472_w304_real_os_book,                DB_N.os_book_400data,  DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="jpg", gt_range="0~255").set_detail(have_train=True, have_see=True).build()

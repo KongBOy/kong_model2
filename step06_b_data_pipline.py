@@ -54,6 +54,7 @@ class img_mapping_util(mapping_util):
     def step0b_decode_bmp(self, byte_img): return tf.image.decode_bmp(byte_img)
     def step0b_decode_jpg(self, byte_img): return tf.image.decode_jpeg(byte_img)
     def step0b_decode_png(self, byte_img): return tf.image.decode_png(byte_img)
+    def step0b_decode_gif(self, byte_img): return tf.image.decode_gif(byte_img)[0]  ### gif 好像比較特殊，我猜是 THWC, T是時間
 
 
     def step1_load_img_uint8(self, img):
@@ -131,10 +132,14 @@ class mov_mapping_util(mapping_util):
         # flow = tf.cast(flow, tf.float32)
         return flow
 
+class mask_mapping_util(mapping_util):
+    def _3ch_get_1ch(self, img): return img[..., 0]
+
 ####################################################################################################
 ####################################################################################################
 ### 下面的 tf_Datapipline_builder/Factory 都是為了要建 tf_Datapipline 這個物件喔！
 ### 把img_db 包成class 是因為 tf.data.Dataset().map(f)的這個f，沒有辦法丟參數壓！所以只好包成class，把要傳的參數當 data_member囉！ 另一方面是好管理、好閱讀～
+class tf_Datapipline(img_mapping_util, mov_mapping_util, mask_mapping_util):
     def __init__(self):  ### file_format 是 bmp/jpg喔！
         self.ord_dir = None
         '''
@@ -161,9 +166,10 @@ class mov_mapping_util(mapping_util):
         file_names = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.file_format, shuffle=False)
         byte_imgs = file_names.map(self.step0a_load_byte_img)
 
-        if  (self.img_format == "bmp"): decoded_imgs = byte_imgs.map(self.step0b_decode_bmp)
-        elif(self.img_format == "jpg"): decoded_imgs = byte_imgs.map(self.step0b_decode_jpg)
-        elif(self.img_format == "png"): decoded_imgs = byte_imgs.map(self.step0b_decode_png)
+        if  (self.file_format == "bmp"): decoded_imgs = byte_imgs.map(self.step0b_decode_bmp)
+        elif(self.file_format == "jpg"): decoded_imgs = byte_imgs.map(self.step0b_decode_jpg)
+        elif(self.file_format == "png"): decoded_imgs = byte_imgs.map(self.step0b_decode_png)
+        elif(self.file_format == "gif"): decoded_imgs = byte_imgs.map(self.step0b_decode_gif)
 
         self.ord_db = decoded_imgs.map(self.step1_load_img_uint8)
         ### 測試 use_range 有沒有設成功
@@ -188,13 +194,40 @@ class mov_mapping_util(mapping_util):
 
     def build_flow_db(self):
         self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
-        self.ord_db = self.ord_db.map(self.step1_load_flow_ord_resize)
+        self.ord_db = self.ord_db.map(self.step1_load_flow)
 
         self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
-        if  (self.use_range == self.db_range):                    self.pre_db = self.pre_db.map(self.step1_load_flow_ord_resize)          ### resize而已，值方面blender都幫我們弄好了：值在 0~1 之間，所以不用normalize囉！
-        elif(self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = self.pre_db.map(self.step1_load_flow_ord_resize_and_to_tanh)  ### resize 和 值弄到 -1~1，假設(99%正確拉懶得考慮其他可能ˊ口ˋ)blender 的 flow一定0~1，所以不等於發生時 一定是要弄成 -1~1
+        if  (self.use_range == self.db_range):                    self.pre_db = self.pre_db.map(self.step1_load_flow)          ### resize而已，值方面blender都幫我們弄好了：值在 0~1 之間，所以不用normalize囉！
+        elif(self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = self.pre_db.map(self.step1_load_flow_and_to_tanh)  ### resize 和 值弄到 -1~1，假設(99%正確拉懶得考慮其他可能ˊ口ˋ)blender 的 flow一定0~1，所以不等於發生時 一定是要弄成 -1~1
         elif(self.use_range == VALUE_RANGE.img_range): print("img 的 in/gt range 設錯囉！ 不能夠直接用 0~255 的range 來train 模型喔~~")   ### 防呆一下
         elif(self.use_range is None): print("tf_data 忘記設定 in/gt_use_range 了！，你可能會看到 Dataset.zip() 的錯誤喔 ~ ")              ### 防呆一下
+
+        self.try_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
+        self.try_db = self.try_db.map(self.step1_load_flow_and_mask_and_move)
+
+    def build_flow_mask_db(self):
+        pass
+
+
+    def build_mask_db(self):
+        file_names = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.file_format, shuffle=False)
+        byte_imgs = file_names.map(self.step0a_load_byte_img)
+        ### 處理 format
+        if  (self.file_format == "jpg"): decoded_imgs = byte_imgs.map(self.step0b_decode_jpg)
+        elif(self.file_format == "gif"): decoded_imgs = byte_imgs.map(self.step0b_decode_gif)
+
+        ### 處理 range
+        ### db_range先寫 0~255 的case， 有遇到 db_range 0~1的case的話再去加寫
+        if(self.db_range == VALUE_RANGE.img_range.value):
+            self.ord_db = decoded_imgs.map(self.step1_load_img_uint8)
+            if  (self.use_range == VALUE_RANGE.neg_one_to_one.value): self.pre_db = decoded_imgs.map(self.step1_load_img_float32_resize_and_to_tanh)
+            elif(self.use_range == VALUE_RANGE.zero_to_one.value):    self.pre_db = decoded_imgs.map(self.step1_load_img_float32_resize_and_to_01)
+            elif(self.use_range == VALUE_RANGE.img_range.value):      self.pre_db = decoded_imgs.map(self.step1_load_img_uint8)
+            elif(self.use_range is None): print("tf_data 忘記設定 in/gt_use_range 或 rec_hope_range 了！，你可能會看到 Dataset.zip() 的錯誤喔 ~ ")
+
+        ### 處理channel數
+        if(self.pre_db.element_spec.shape[2] == 3): self.pre_db = self.pre_db.map(self._3ch_get_1ch)
+
 
 ####################################################################################################
 ####################################################################################################
@@ -235,6 +268,25 @@ class tf_Datapipline_builder():
         self.tf_pipline.db_range  = db_range
         self.tf_pipline.use_range = use_range
         self.tf_pipline.build_flow_db()
+        return self.tf_pipline
+
+    ### 建立 flow_mask 的 pipline
+    def build_flow_mask_pipline(self, ord_dir, img_resize, db_range, use_range):
+        self.tf_pipline.ord_dir = ord_dir
+        self.tf_pipline.img_resize = img_resize
+        self.tf_pipline.db_range  = db_range
+        self.tf_pipline.use_range = use_range
+        self.tf_pipline.build_flow_mask_db()
+        return self.tf_pipline
+
+    ### 建立 move_map 的 pipline
+    def build_mask_pipline(self, ord_dir, file_format, img_resize, db_range, use_range):
+        self.tf_pipline.ord_dir = ord_dir
+        self.tf_pipline.file_format  = file_format
+        self.tf_pipline.img_resize = img_resize
+        self.tf_pipline.db_range  = db_range
+        self.tf_pipline.use_range = use_range
+        self.tf_pipline.build_mask_db()
         return self.tf_pipline
 
 
@@ -594,22 +646,82 @@ class tf_Data_in_dis_gt_flow_builder(tf_Data_in_dis_gt_img_builder):
         #########################################################################################################################################
         return self
 
-class tf_Data_in_img_gt_mask_builder(tf_Data_in_dis_gt_flow_builder):
+class tf_Data_in_dis_gt_flow_mask_builder(tf_Data_in_dis_gt_flow_builder):
+    def build_by_in_dis_gt_flow_mask(self):
+        pass
+
+class tf_Data_in_img_gt_mask_builder(tf_Data_in_dis_gt_flow_mask_builder):
     def build_by_in_img_gt_mask(self):
         ### 建db的順序：input, input, output(gt), output(gt)，跟 get_rect2_dataset不一樣喔別混亂了！
-        ### 拿到 dis_imgs_db 的 train dataset，從 檔名 → tensor
-        train_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.train_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
+        ### 拿到 in_imgs_db 的 train dataset，從 檔名 → tensor
+        train_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.train_in_dir, file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         self.tf_data.train_in_db     = train_in_db.ord_db
         self.tf_data.train_in_db_pre = train_in_db.pre_db
-        ### 拿到 dis_imgs_db 的 test dataset，從 檔名 → tensor
-        test_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.test_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
+        ### 拿到 in_imgs_db 的 test dataset，從 檔名 → tensor
+        test_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.test_in_dir, file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         self.tf_data.test_in_db      = test_in_db.ord_db
         self.tf_data.test_in_db_pre  = test_in_db.pre_db
 
-        ### 拿到 gt_flows_db 的 train dataset，從 檔名 → tensor
-        train_gt_db = tf_Datapipline_builder().build_flow_pipline(self.tf_data.db_obj.train_gt_dir, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
+        ### 拿到 gt_masks_db 的 train dataset，從 檔名 → tensor
+        train_gt_db = tf_Datapipline_builder().build_mask_pipline(self.tf_data.db_obj.train_gt_dir, file_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
         self.tf_data.train_gt_db     = train_gt_db.ord_db
         self.tf_data.train_gt_db_pre = train_gt_db.pre_db
+
+        ### 拿到 gt_masks_db 的 train dataset，從 檔名 → tensor
+        test_gt_db = tf_Datapipline_builder().build_mask_pipline(self.tf_data.db_obj.test_gt_dir, file_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.gt_range, use_range=self.tf_data.gt_use_range)
+        self.tf_data.test_gt_db     = test_gt_db.ord_db
+        self.tf_data.test_gt_db_pre = test_gt_db.pre_db
+
+        print("self.tf_data.train_in_db", self.tf_data.train_in_db)
+        print("self.tf_data.train_in_db_pre", self.tf_data.train_in_db_pre)
+        print("self.tf_data.train_gt_db", self.tf_data.train_gt_db)
+        print("self.tf_data.train_gt_db_pre", self.tf_data.train_gt_db_pre)
+
+        ##########################################################################################################################################
+        ### 先 zip 再 batch == 先 batch 再 zip (已經實驗過了，詳細內容看 try_lots 的 try10_資料pipline囉)
+        self.tf_data.train_db_combine = tf.data.Dataset.zip((self.tf_data.train_in_db, self.tf_data.train_in_db_pre,
+                                                             self.tf_data.train_gt_db, self.tf_data.train_gt_db_pre))
+        self.tf_data.test_db_combine  = tf.data.Dataset.zip((self.tf_data.test_in_db, self.tf_data.test_in_db_pre,
+                                                             self.tf_data.test_gt_db, self.tf_data.test_gt_db_pre))
+        ### 先shuffle(只有 train_db 需要) 在 batch
+        if(self.tf_data.train_shuffle): self.tf_data.train_db_combine = self.tf_data.train_db_combine.shuffle(int(self.tf_data.train_amount / 2))  ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
+        self.tf_data.train_db_combine = self.tf_data.train_db_combine.batch(self.tf_data.batch_size)   ### shuffle完 打包成一包包 batch
+        self.tf_data.test_db_combine  = self.tf_data.test_db_combine.batch(self.tf_data.batch_size)   ### shuffle完 打包成一包包 batch
+
+        import matplotlib.pyplot as plt
+        from util import method1
+        for i, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate(self.tf_data.train_db_combine):
+            # print(train_in.numpy().shape)       ### (10, 768, 768, 3)
+            train_in     = train_in[0]          ### 值 0  ~ 255
+            train_in_pre = train_in_pre[0]      ### 值 0. ~ 1.
+            print("train_in", train_in.numpy().dtype)       ### uint8
+            print("train_in", train_in.numpy().shape)       ### (h, w, 3)
+            print("train_in", train_in.numpy().min())       ### 0
+            print("train_in", train_in.numpy().max())       ### 255
+            print("train_in_pre", train_in_pre.numpy().dtype)   ### float32
+            print("train_in_pre", train_in_pre.numpy().shape)   ### (h, w, 3)
+            print("train_in_pre", train_in_pre.numpy().min())   ### 0.0
+            print("train_in_pre", train_in_pre.numpy().max())   ### 1.0
+
+            # print(train_gt.numpy().shape)       ### (10, 768, 768, 3)
+            train_gt     = train_gt[0]          ### 值 0. ~ 1.
+            train_gt_pre = train_gt_pre[0]      ### 值 0. ~ 1.
+            print("train_gt", train_gt.numpy().dtype)       ### float32
+            print("train_gt", train_gt.numpy().shape)       ### (h, w, 3)
+            print("train_gt", train_gt.numpy().min())       ### 0.0
+            print("train_gt", train_gt.numpy().max())       ### 1.0
+            print("train_gt_pre", train_gt_pre.numpy().dtype)   ### float32
+            print("train_gt_pre", train_gt_pre.numpy().min())   ### 0.0
+            print("train_gt_pre", train_gt_pre.numpy().max())   ### 1.0
+
+
+            fig, ax = plt.subplots(1, 4)
+            fig.set_size_inches(15, 5)
+            ax[0].imshow(train_in)
+            ax[1].imshow(train_in_pre)
+            ax[2].imshow(train_gt)
+            ax[3].imshow(train_gt_pre)
+            plt.show()
 
 class tf_Data_builder(tf_Data_in_img_gt_mask_builder):
     def build_by_db_get_method(self):
@@ -623,6 +735,8 @@ class tf_Data_builder(tf_Data_in_img_gt_mask_builder):
             self.build_by_in_dis_gt_flow()
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_img_gt_mask):
             self.build_by_in_img_gt_mask()
+        elif  (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_flow_mask):
+            self.build_by_in_dis_gt_flow_mask()
         return self
 
 ### 因為我們還需要根據 使用的model(其實就是看model_name) 來決定如何resize，所以就不在這邊 先建構好 許多tf_data物件囉！
@@ -642,12 +756,22 @@ if(__name__ == "__main__"):
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_unet()
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize( model_obj.model_name).build_by_db_get_method().build()
 
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1", rec_hope_format="jpg", rec_hope_range="0~255").set_detail(have_train=True, have_see=True, have_rec_hope=True).build()
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1", rec_hope_use_range="0~255").build_by_db_get_method().build()
 
+    '''in_img, gt_mask'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type9_try_segmentation.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(in_use_range="0~1", gt_use_range="0~1").build_by_db_get_method().build()
+
+    '''flow_mask'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    # db_obj = type8_blender_os_book_768.build()
     # print(db_obj)
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(in_use_range="0~1", gt_use_range="0~1").build_by_db_get_method().build()
