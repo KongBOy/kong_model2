@@ -325,12 +325,12 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
     def build_by_in_dis_gt_move_map(self):
         ### 建db的順序：input, input, output(gt), output(gt)，跟 get_rect2_dataset不一樣喔別混亂了！
         ### 拿到 dis_imgs_db 的 train dataset，從 檔名 → tensor
-        train_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.train_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
+        train_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.train_in_dir, file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         self.tf_data.train_in_db     = train_in_db.ord_db
         self.tf_data.train_in_db_pre = train_in_db.pre_db
 
         ### 拿到 dis_imgs_db 的 test dataset，從 檔名 → tensor
-        test_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.test_in_dir, img_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
+        test_in_db = tf_Datapipline_builder().build_img_pipline(self.tf_data.db_obj.test_in_dir, file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.in_range, use_range=self.tf_data.in_use_range)
         self.tf_data.test_in_db      = test_in_db.ord_db
         self.tf_data.test_in_db_pre  = test_in_db.pre_db
 
