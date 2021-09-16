@@ -1,0 +1,5 @@
+參考網頁： https://www.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html
+用 管理員權限開 cmd
+切到 要裝 Matlab python 的 anaconda 環境
+cmd 進入：   C:\Program Files\MATLAB\R2021a\extern\engines\python
+cmd 打指令： python setup.py install
