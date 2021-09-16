@@ -389,6 +389,7 @@ sb.run(same_command + [f"mask_have_bg_ch032_4l_sigmoid_bce_ep060.{run}"])  ### 1
 sb.run(same_command + [f"mask_have_bg_ch032_5l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
 sb.run(same_command + [f"mask_have_bg_ch032_6l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
 sb.run(same_command + [f"mask_have_bg_ch032_7l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_8l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
 ### 3. 7l no-concat
 sb.run(same_command + [f"mask_have_bg_ch032_7l_2to2noC_sigmoid_bce_ep060.{run}"])  ### 127.35跑
 sb.run(same_command + [f"mask_have_bg_ch032_7l_2to3noC_sigmoid_bce_ep060.{run}"])  ### 127.35跑
