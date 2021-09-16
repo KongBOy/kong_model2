@@ -57,7 +57,60 @@ class KModel_Unet_builder(KModel_init_builder):
         self.build = _build_unet
         return self
 
-class KModel_Flow_Generator_builder(KModel_Unet_builder):
+class KModel_Mask_Generator_builder(KModel_Unet_builder):
+    def _build_mask_part(self):
+        ### 生成flow的部分
+        from step08_b_use_G_generate import generate_mask_flow_results, generate_mask_flow_sees_without_rec
+        from step09_b_train_step import train_step_pure_G_split_mask_move
+        # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
+        self.kong_model.generate_results = generate_mask_flow_results             ### 不能checkpoint
+        self.kong_model.generate_sees    = generate_mask_flow_sees_without_rec    ### 不能checkpoint
+        self.kong_model.train_step       = train_step_pure_G_split_mask_move      ### 不能checkpoint
+
+    def use_mask_unet(self, hid_ch=64, depth_level=7, true_IN=False, cnn_bias=True, no_concat_layer=0, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=1, concat_Activation=False):
+        self.hid_ch = hid_ch
+        self.depth_level = depth_level
+        self.no_concat_layer = no_concat_layer
+        self.skip_use_add  = skip_use_add
+        self.skip_use_cSE  = skip_use_cSE
+        self.skip_use_sSE  = skip_use_sSE
+        self.skip_use_scSE = skip_use_scSE
+        self.skip_use_cnn  = skip_use_cnn
+        self.skip_cnn_k    = skip_cnn_k
+        self.skip_use_Acti = skip_use_Acti
+        self.out_tanh = out_tanh
+        self.out_ch = out_ch
+        self.true_IN = true_IN
+        self.concat_Activation = concat_Activation
+
+        def _build_mask_unet():
+            # ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
+            # print("hid_ch", hid_ch)
+            # print("skip_use_cSE" , skip_use_cSE)
+            # print("skip_use_sSE" , skip_use_sSE)
+            # print("skip_use_scSE", skip_use_scSE)
+            # print("skip_use_cnn", skip_use_cnn)
+            # print("skip_cnn_k", skip_cnn_k)
+            # print("skip_use_Acti", skip_use_Acti)
+            # print("true_IN", true_IN)
+            # print()
+
+            ### model_part
+            if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
+            elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
+            else:                                                   from step08_a_1_UNet_BN                   import Generator
+            self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, cnn_bias=True, no_concat_layer=self.no_concat_layer, skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE, skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti, out_tanh=self.out_tanh, out_ch=self.out_ch)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+
+            self._build_flow_part()
+            self._build_ckpt_part()
+            print("build_flow_unet", "finish")
+            return self.kong_model
+        self.build = _build_mask_unet
+        return self
+
+
+class KModel_Flow_Generator_builder(KModel_Mask_Generator_builder):
     def _build_flow_part(self):
         ### 生成flow的部分
         from step08_b_use_G_generate import generate_flow_results, generate_flow_sees_without_rec
@@ -108,7 +161,7 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
             self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, cnn_bias=True, no_concat_layer=self.no_concat_layer, skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE, skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti, out_tanh=self.out_tanh, out_ch=self.out_ch)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-            self._build_flow_part()
+            self._build_mask_part()
             self._build_ckpt_part()
             print("build_flow_unet", "finish")
             return self.kong_model
@@ -170,7 +223,11 @@ class KModel_Flow_Generator_builder(KModel_Unet_builder):
         self.build = _build_flow_rect
         return self
 
-class KModel_GD_and_mrfGD_builder(KModel_Flow_Generator_builder):
+class KModel_Mask_Flow_Generator_builder(KModel_Flow_Generator_builder):
+    def use_mask_flow_unet(self):
+        pass
+
+class KModel_GD_and_mrfGD_builder(KModel_Mask_Flow_Generator_builder):
     def _kong_model_GD_setting(self, g_train_many=False):
         self.kong_model.generator = self.kong_model.rect.generator
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
@@ -302,6 +359,7 @@ class MODEL_NAME(Enum):
     justG = "justG"
     flow_unet = "flow_unet"   ### 包含這flow 關鍵字就沒問題
     flow_rect = "flow_rect"   ### 包含這flow 關鍵字就沒問題
+    mask_flow_unet = "mask_flow_unet"
 
 
 ### 直接先建好 obj 給外面import囉！
@@ -461,6 +519,16 @@ flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAM
 
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
+########################################################### 1 嘗試看看 mask_unet
+mask_unet_ch032_tanh    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, true_IN=True, out_ch=1)
+mask_unet_ch032_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, true_IN=True, out_tanh=False, out_ch=1)
+mask_unet_ch016_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 16, true_IN=True, out_tanh=False, out_ch=1)
+mask_unet_ch008_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  8, true_IN=True, out_tanh=False, out_ch=1)
+mask_unet_ch004_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  4, true_IN=True, out_tanh=False, out_ch=1)
+mask_unet_ch002_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  2, true_IN=True, out_tanh=False, out_ch=1)
+mask_unet_ch001_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  1, true_IN=True, out_tanh=False, out_ch=1)
+###############################################################################################################################################################################################
+###############################################################################################################################################################################################
 ########################################################### 15 用 resblock 來試試看
 flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
 
@@ -484,6 +552,7 @@ flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rec
 
 
 if(__name__ == "__main__"):
-    print(flow_rect_2_level_fk3.build())
+    # print(flow_rect_2_level_fk3.build())
+    print(mask_unet_ch032_tanh.build())
     print("build_model cost time:", time.time() - start_time)
     pass
