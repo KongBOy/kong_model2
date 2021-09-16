@@ -5,6 +5,26 @@ import pdb
 
 
 @tf.function
+def train_step_pure_G_split_mask_move(model_obj, in_data, gt_data, loss_info_obj=None):
+    gt_mask = gt_data[0]
+    gt_move = gt_data[1]
+
+    with tf.GradientTape() as gen_tape:
+        model_output = model_obj.generator(in_data)
+        # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
+        # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
+        gen_loss  = loss_info_obj.loss_funs_dict["G"](gt_mask, model_output)
+
+    generator_gradients               = gen_tape .gradient(gen_loss, model_obj.generator.trainable_variables)
+    # for gradient in generator_gradients:
+    #     print("gradient", gradient)
+    model_obj .optimizer_G .apply_gradients(zip(generator_gradients, model_obj.generator.trainable_variables))
+
+    ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
+    for loss_name in loss_info_obj.loss_containors.keys():
+        loss_info_obj.loss_containors[loss_name](gen_loss)
+
+@tf.function
 def train_step_pure_G(model_obj, in_data, gt_data, loss_info_obj=None):
     # print("gt_data.min()", gt_data.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
     # print("gt_data.max()", gt_data.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
