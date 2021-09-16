@@ -520,6 +520,8 @@ flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAM
 ###############################################################################################################################################################################################
 ########################################################### 1 嘗試看看 mask_unet
 mask_unet_ch032_tanh    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, true_IN=True, out_ch=1)
+mask_unet_ch128_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=128, true_IN=True, out_tanh=False, out_ch=1)
+mask_unet_ch064_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 64, true_IN=True, out_tanh=False, out_ch=1)
 mask_unet_ch032_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, true_IN=True, out_tanh=False, out_ch=1)
 mask_unet_ch016_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 16, true_IN=True, out_tanh=False, out_ch=1)
 mask_unet_ch008_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  8, true_IN=True, out_tanh=False, out_ch=1)
