@@ -3,14 +3,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import tensorflow as tf
 import numpy as np
 import time
-from step06_a_datas_obj import type5c_real_have_see_no_bg_gt_color,\
-                            type7_h472_w304_real_os_book_400data,\
-                            type7b_h500_w332_real_os_book_1532data,\
-                            type7b_h500_w332_real_os_book_1532data_focus,\
-                            type7b_h500_w332_real_os_book_1532data_big,\
-                            type7b_h500_w332_real_os_book_800data,\
-                            type7b_h500_w332_real_os_book_400data,\
-                            type8_blender_os_book_768
+from step06_a_datas_obj import *
 
 from step06_b_data_pipline import tf_Data_builder
 from step08_e_model_obj import *
@@ -441,10 +434,11 @@ class Exp_builder():
         self.exp.gt_use_range = gt_use_range
         return self
 
-    def set_train_args_reload(self, result_name):
-        self.exp.phase = "train_reload"
-        self.result_name = result_name
-        return self
+    ### 整理後發現好像沒用到就註解起來囉～
+    # def set_train_args_reload(self, result_name):
+    #     self.exp.phase = "train_reload"
+    #     self.result_name = result_name
+    #     return self
 
     def set_result_name(self, result_name):
         self.exp.result_name = result_name
@@ -788,8 +782,6 @@ ch64_in_sk_scSE_e100_wrong = Exp_builder().set_com("127.28").set_basic("test_see
 ch64_in_sk_scSE_e060       = Exp_builder().set_com("127.28").set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_scSE, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_7d", describe_end="ch64_in_sk_scSE_e060").set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7d-20210530_193602-flow_unet-ch64_in_sk_scSE_e060")
 ch64_in_sk_scSE_e100       = Exp_builder().set_com("127.28").set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_7l_ch64_skip_use_scSE, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_7d", describe_end="ch64_in_sk_scSE_e100").set_train_args(epochs=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_7d-20210530_234311-flow_unet-ch64_in_sk_scSE_e100")
 
-
-
 #############################################################################################################################################################################################################
 ### 8.測試 UNet 用 output 用 sigmoid 的效果
 # t1_in_01_mo_th_gt_01_mse = Exp_builder().set_basic("train_reload",     type8_blender_os_book_768, flow_unet_IN_ch64        , G_mse_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_8_1", describe_end="t1_01_th_01_mse") .set_train_args(epochs=500, epoch_down_step=250, epoch_stop=500).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5_14_1_8_1-20210423_065645-flow_unet-t1_01_th_01_mse")
@@ -851,6 +843,16 @@ rect_5_level_fk3_ReLU = Exp_builder().set_basic("test_see", type8_blender_os_boo
 rect_6_level_fk3_ReLU = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_rect_6_level_fk3_ReLU, G_mae_loss_info_builder, exp_dir=exp_dir15, describe_mid="5", describe_end="6l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210402_231047-flow_rect-6l_fk3_ReLU")
 rect_7_level_fk3_ReLU = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_rect_7_level_fk3_ReLU, G_mae_loss_info_builder, exp_dir=exp_dir15, describe_mid="5", describe_end="7l_fk3_ReLU").set_train_args(epochs=100, epoch_down_step=100, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5-20210403_003408-flow_rect-7l_fk3_ReLU")
 
+#############################################################################################################################################################################################################
+### 1 試試看 mask
+exp_dir16 = "6_mask_unet"
+mask_ch032_tanh_mae_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask, mask_unet_ch032_tanh, G_mae_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1", describe_end="mask_ch032_tanh_mae_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_ch032_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask, mask_unet_ch032_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1", describe_end="mask_ch032_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_ch016_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask, mask_unet_ch016_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1", describe_end="mask_ch016_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_ch008_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask, mask_unet_ch008_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1", describe_end="mask_ch008_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_ch004_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask, mask_unet_ch004_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1", describe_end="mask_ch004_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_ch002_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask, mask_unet_ch002_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1", describe_end="mask_ch002_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_ch001_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask, mask_unet_ch001_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1", describe_end="mask_ch001_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 
 
 ### 測試subprocessing 有沒有用
