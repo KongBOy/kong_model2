@@ -113,6 +113,7 @@ class Loss_info_init_builder:
     def build(self):
         if(self.loss_info_obj.loss_type   == "mse"):   return self.build_g_mse_loss_fun_and_containor()
         elif(self.loss_info_obj.loss_type == "mae"):   return self.build_g_mae_loss_fun_and_containor()
+        elif(self.loss_info_obj.loss_type == "bce"):   return self.build_g_bce_loss_fun_and_containor()
         elif(self.loss_info_obj.loss_type == "justG"): return self.build_gan_loss()
         elif(self.loss_info_obj.loss_type == "GAN"):   return self.build_gan_loss_containors()
 
@@ -125,6 +126,16 @@ class Loss_info_G_loss_builder(Loss_info_init_builder):
     '''
     想多加嘗試 G loss 的話 就在這裡多加 method 就好囉！
     '''
+    def build_g_bce_loss_fun_and_containor(self):
+        # def _build_g_mae_loss_fun_and_containor():
+        print("self.loss_info_obj.logs_read_dir ~  ~  ~  ~  ", self.loss_info_obj.logs_read_dir)
+        print("self.loss_info_obj.logs_write_dir~  ~  ~  ~  ", self.loss_info_obj.logs_write_dir)
+        self.loss_info_obj.loss_funs_dict["G"] = tf.keras.losses.BinaryCrossentropy(from_logits=False)
+        self.loss_info_obj.loss_containors["gen_bce_loss" ] = tf.keras.metrics.Mean('gen_bce_loss', dtype=tf.float32)
+        return self.loss_info_obj
+        # self._build = _build_g_mae_loss_fun_and_containor
+        # return self
+
     def build_g_mae_loss_fun_and_containor(self):
         # def _build_g_mae_loss_fun_and_containor():
         print("self.loss_info_obj.logs_read_dir ~  ~  ~  ~  ", self.loss_info_obj.logs_read_dir)
@@ -200,6 +211,7 @@ class Loss_info_builder(Loss_info_GAN_loss_builder):
 # 然後還要在 exp 裡面 再次設定喔！
 G_mse_loss_info_builder   = Loss_info_builder().set_loss_type("mse")  #.build_g_mse_loss_fun_and_containor()
 G_mae_loss_info_builder   = Loss_info_builder().set_loss_type("mae")  #.build_g_mae_loss_fun_and_containor()
+G_bce_loss_info_builder   = Loss_info_builder().set_loss_type("bce")  #.build_gan_loss().build_gan_loss_containors()
 GAN_mae_loss_info         = Loss_info_builder().set_loss_type("justG")  #.build_gan_loss().build_gan_loss_containors()
 
 
