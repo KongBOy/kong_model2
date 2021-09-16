@@ -479,6 +479,14 @@ flow_unet_5_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_f
 flow_unet_6_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=6, true_IN=True, out_ch=3)
 flow_unet_7_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=7, true_IN=True, out_ch=3)
 flow_unet_8_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=8, true_IN=True, out_ch=3)
+########################################################### 14 看 不同level 的效果
+flow_unet_2_level_ch32  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=2, true_IN=True, out_ch=3)
+flow_unet_3_level_ch32  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=3, true_IN=True, out_ch=3)
+flow_unet_4_level_ch32  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=4, true_IN=True, out_ch=3)
+flow_unet_5_level_ch32  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=5, true_IN=True, out_ch=3)
+flow_unet_6_level_ch32  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=6, true_IN=True, out_ch=3)
+flow_unet_7_level_ch32  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=7, true_IN=True, out_ch=3)
+flow_unet_8_level_ch32  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=8, true_IN=True, out_ch=3)
 
 ########################################################### 14 看 unet 的 concat 改成 + 會有什麼影響
 flow_unet_8_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_ch=3)
@@ -493,6 +501,12 @@ flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flo
 flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, out_tanh=False, true_IN=True)
 ########################################################### 14 看 unet 的 第一層試試看 不 concat 效果如何
 flow_unet_IN_7l_ch32_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=2)
+flow_unet_IN_7l_ch32_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=3)
+flow_unet_IN_7l_ch32_2to4noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=4)
+flow_unet_IN_7l_ch32_2to5noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=5)
+flow_unet_IN_7l_ch32_2to6noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=6)
+flow_unet_IN_7l_ch32_2to7noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=7)
+flow_unet_IN_7l_ch32_2to8noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=8)
 flow_unet_IN_7l_ch64_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=2)
 flow_unet_IN_7l_ch64_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=3)
 flow_unet_IN_7l_ch64_2to4noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=4)

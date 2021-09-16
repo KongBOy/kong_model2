@@ -365,17 +365,38 @@ Calculate_and_Visual_SSIM_LD_10te = f"build().result_obj.result_do_multiple_sing
 # sb.run(same_command + [f"rect_7_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
 
 ##########################################################################################################################################################################################
-sb.run(same_command + [f"mask_ch001_sigmoid_bce_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_ch002_sigmoid_bce_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_ch004_sigmoid_bce_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_ch008_sigmoid_bce_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_ch016_sigmoid_bce_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_ch032_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+##########################################################################################################################################################################################
+##########################################################################################################################################################################################
+### 1 試試看 mask
+#############################  no-bg  ##################################
+### 1. ch 結果超棒就直接結束了 沒有做其他嘗試
+# sb.run(same_command + [f"mask_ch001_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_ch002_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_ch004_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_ch008_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_ch016_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_ch032_sigmoid_bce_ep060.{run}"])  ### 127.35跑
 
-
-sb.run(same_command + [f"mask_have_bg_ch008_sigmoid_bce_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_have_bg_ch016_sigmoid_bce_ep060.{run}"])  ### 127.35跑
-
+############################  have_bg  #################################
+### 1. ch
+# sb.run(same_command + [f"mask_have_bg_ch008_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_have_bg_ch016_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_have_bg_ch032_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+### 2. level
+sb.run(same_command + [f"mask_have_bg_ch032_2l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_3l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_4l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_5l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_6l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_7l_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+### 3. 7l no-concat
+sb.run(same_command + [f"mask_have_bg_ch032_7l_2to2noC_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_7l_2to3noC_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_7l_2to4noC_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_7l_2to5noC_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_7l_2to6noC_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_7l_2to7noC_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch032_7l_2to8noC_sigmoid_bce_ep060.{run}"])  ### 127.35跑
 
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
