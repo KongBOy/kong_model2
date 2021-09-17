@@ -379,11 +379,14 @@ Calculate_and_Visual_SSIM_LD_10te = f"build().result_obj.result_do_multiple_sing
 
 ############################  have_bg  #################################
 ### 1. ch
-sb.run(same_command + [f"mask_have_bg_ch064_sigmoid_bce_ep060.{run}"])  ### 127.37跑
-sb.run(same_command + [f"mask_have_bg_ch128_sigmoid_bce_ep060.{run}"])  ### 127.37跑
-sb.run(same_command + [f"mask_have_bg_ch032_sigmoid_bce_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_have_bg_ch016_sigmoid_bce_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_have_bg_ch008_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_have_bg_ch064_sigmoid_bce_ep060.{run}"])  ### 127.37跑
+# sb.run(same_command + [f"mask_have_bg_ch128_sigmoid_bce_ep060.{run}"])  ### 127.37跑
+# sb.run(same_command + [f"mask_have_bg_ch032_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_have_bg_ch016_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_have_bg_ch008_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch004_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch002_sigmoid_bce_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_have_bg_ch001_sigmoid_bce_ep060.{run}"])  ### 127.35跑
 ## 2. level
 # sb.run(same_command + [f"mask_have_bg_ch032_2l_sigmoid_bce_ep060.{run}"])  ### 127.37跑
 # sb.run(same_command + [f"mask_have_bg_ch032_3l_sigmoid_bce_ep060.{run}"])  ### 127.37跑
