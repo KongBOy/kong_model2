@@ -191,7 +191,7 @@ class Experiment():
         ### 最後train完 記得也要看結果喔！
         self.train_step1_see_current_img(current_epoch, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
-    def testing(self, current_epoch, add_loss=False, bgr2rgb=False):
+    def testing(self, current_epoch, add_loss=False, bgr2rgb=False, flow_mask=False):
         from build_dataset_combine import Check_dir_exist_and_build_new_dir,  method1
         from matplot_fig_ax_util import Matplot_single_row_imgs
         from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
@@ -210,76 +210,92 @@ class Experiment():
 
         flows = []
         for test_index, (test_in, test_in_pre, test_gt, test_gt_pre) in enumerate(tqdm(self.tf_data.test_db_combine)):
-            print("test_index~~~~~~~~~~~~~~~~", test_index)
-            print("test_in.shape", test_in.shape)
-            print("test_in_pre.shape", test_in_pre.shape)
-            print("test_gt.shape", test_gt.shape)
-            print("test_gt_pre.shape", test_gt_pre.shape)
+            # print("test_index~~~~~~~~~~~~~~~~", test_index)
+            # print("test_in.shape", test_in.shape)
+            # print("test_in_pre.shape", test_in_pre.shape)
+            # print("test_gt.shape", test_gt.shape)
+            # print("test_gt_pre.shape", test_gt_pre.shape)
+            if  (flow_mask is True):
+                in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy
+                pred_mask      = self.model_obj.generate_results(model_G=self.model_obj.generator, in_img_pre=test_in_pre, gt_use_range=self.gt_use_range)  ### BHWC
+                pred_mask      = pred_mask[0].numpy()   ### HWC 和 tensor -> numpy
+                gt_mask    = test_gt[0][0].numpy()
 
-            in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy
-            ax[0].imshow(test_in[0])
+                single_row_imgs = Matplot_single_row_imgs(
+                                        imgs      =[ in_img ,   pred_mask ,        gt_mask],    ### 把要顯示的每張圖包成list
+                                        img_titles=["in_img", "pred_mask", "gt_mask"],    ### 把每張圖要顯示的字包成list
+                                        fig_title ="test_%04i, epoch=%04i" % (test_index, current_epoch),   ### 圖上的大標題
+                                        add_loss  =add_loss,
+                                        bgr2rgb   =bgr2rgb)
+                single_row_imgs.Draw_img()
+                single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-            flow           = self.model_obj.generate_results(model_G=self.model_obj.generator, in_img_pre=test_in_pre, gt_use_range=self.gt_use_range)  ### BHWC
-            flow           = flow[0].numpy()   ### HWC 和 tensor -> numpy
-            # flow           = flow[..., ::-1]
-            flow[..., 1]   = 1 - flow[..., 1]  ### y 上下 flip
-            if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
-            print(" flow.shape", flow.shape)
-            print(" flow.min()", flow.min())
-            print(" flow.max()", flow.max())
-            flow_v    = method1(flow[..., 1], flow[..., 2])  ### [..., ::-1] * 255. ### 如果用opencv存，才需要rgb->bgr 和 range:0~255
-            ax[1].imshow(flow_v)
-            ax2[0].imshow(flow[..., 0])
-            ax2[1].imshow(flow[..., 1])
-            ax2[2].imshow(flow[..., 2])
+                pass
+            elif(flow_mask is False):
+                in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy
+                ax[0].imshow(test_in[0])
 
-            gt_flow        = test_gt[0].numpy()   ### HWC 和 tensor -> numpy
-            gt_flow_visual = method1(gt_flow[..., 2], gt_flow[..., 1])
-            ax[2].imshow(gt_flow_visual)
-            ax3[0].imshow(gt_flow[..., 0])
-            ax3[1].imshow(gt_flow[..., 1])
-            ax3[2].imshow(gt_flow[..., 2])
-            print(" gt_flow.min()", gt_flow.min())
-            print(" gt_flow.max()", gt_flow.max())
+                flow           = self.model_obj.generate_results(model_G=self.model_obj.generator, in_img_pre=test_in_pre, gt_use_range=self.gt_use_range)  ### BHWC
+                flow           = flow[0].numpy()   ### HWC 和 tensor -> numpy
+                # flow           = flow[..., ::-1]
+                flow[..., 1]   = 1 - flow[..., 1]  ### y 上下 flip
+                if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
+                print(" flow.shape", flow.shape)
+                print(" flow.min()", flow.min())
+                print(" flow.max()", flow.max())
+                flow_v    = method1(flow[..., 1], flow[..., 2])  ### [..., ::-1] * 255. ### 如果用opencv存，才需要rgb->bgr 和 range:0~255
+                ax[1].imshow(flow_v)
+                ax2[0].imshow(flow[..., 0])
+                ax2[1].imshow(flow[..., 1])
+                ax2[2].imshow(flow[..., 2])
+
+                gt_flow        = test_gt[0].numpy()   ### HWC 和 tensor -> numpy
+                gt_flow_visual = method1(gt_flow[..., 2], gt_flow[..., 1])
+                ax[2].imshow(gt_flow_visual)
+                ax3[0].imshow(gt_flow[..., 0])
+                ax3[1].imshow(gt_flow[..., 1])
+                ax3[2].imshow(gt_flow[..., 2])
+                print(" gt_flow.min()", gt_flow.min())
+                print(" gt_flow.max()", gt_flow.max())
 
 
-            valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
-            total_pix_amount = flow.shape[0] * flow.shape[1]
-            # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
-            if( valid_mask_pix_amount / total_pix_amount > 0.25):
-                print("flow.shape", flow.shape)
-                print("type(flow)", type(flow))
-                plt.show()
-                print("valid_mask_pix_amount / total_pix_amount~~~~~~~~~~~~~~~~~~~~~~", valid_mask_pix_amount / total_pix_amount)
-                bm  = use_flow_to_get_bm(flow, flow_scale=768)
-                print("finish bm")
-                ax_bm[0].imshow(bm[..., 0])
-                ax_bm[1].imshow(bm[..., 1])
-                # plt.show()
-                plt.close()
-                # rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
-                rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=test_in_pre[0].numpy())
-            else:
-                bm  = np.zeros(shape=(768, 768, 2))
-                rec = np.zeros(shape=(768, 768, 3))
+                valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
+                total_pix_amount = flow.shape[0] * flow.shape[1]
+                # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
+                if( valid_mask_pix_amount / total_pix_amount > 0.25):
+                    print("flow.shape", flow.shape)
+                    print("type(flow)", type(flow))
+                    plt.show()
+                    print("valid_mask_pix_amount / total_pix_amount~~~~~~~~~~~~~~~~~~~~~~", valid_mask_pix_amount / total_pix_amount)
+                    bm  = use_flow_to_get_bm(flow, flow_scale=768)
+                    print("finish bm")
+                    ax_bm[0].imshow(bm[..., 0])
+                    ax_bm[1].imshow(bm[..., 1])
+                    # plt.show()
+                    plt.close()
+                    # rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=in_img)
+                    rec = use_bm_to_rec_img(bm, flow_scale=768, dis_img=test_in_pre[0].numpy())
+                else:
+                    bm  = np.zeros(shape=(768, 768, 2))
+                    rec = np.zeros(shape=(768, 768, 3))
 
-            # if(gt_flow.sum() > 0):
-            #     gt_bm  = use_flow_to_get_bm(gt_flow, flow_scale=768)
-            #     gt_rec = use_bm_to_rec_img(gt_bm, flow_scale=768, dis_img=in_img)
-            # else:
-            #     gt_bm  = np.zeros(shape=(768, 768, 2))
-            #     gt_rec = np.zeros(shape=(768, 768, 3))
+                # if(gt_flow.sum() > 0):
+                #     gt_bm  = use_flow_to_get_bm(gt_flow, flow_scale=768)
+                #     gt_rec = use_bm_to_rec_img(gt_bm, flow_scale=768, dis_img=in_img)
+                # else:
+                #     gt_bm  = np.zeros(shape=(768, 768, 2))
+                #     gt_rec = np.zeros(shape=(768, 768, 3))
 
-            # bm_visual  = method1(bm[...,0], bm[...,1]*-1)
-            # gt_bm_visual = method1(gt_bm[...,0], gt_bm[...,1]*-1)
-            single_row_imgs = Matplot_single_row_imgs(
-                                    imgs      =[ in_img ,   flow_v ,        rec],    ### 把要顯示的每張圖包成list
-                                    img_titles=["in_img", "pred_flow_v", "pred_rec"],    ### 把每張圖要顯示的字包成list
-                                    fig_title ="test_%04i, epoch=%04i" % (test_index, current_epoch),   ### 圖上的大標題
-                                    add_loss  =add_loss,
-                                    bgr2rgb   =bgr2rgb)
-            single_row_imgs.Draw_img()
-            single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
+                # bm_visual  = method1(bm[...,0], bm[...,1]*-1)
+                # gt_bm_visual = method1(gt_bm[...,0], gt_bm[...,1]*-1)
+                single_row_imgs = Matplot_single_row_imgs(
+                                        imgs      =[ in_img ,   flow_v ,        rec],    ### 把要顯示的每張圖包成list
+                                        img_titles=["in_img", "pred_flow_v", "pred_rec"],    ### 把每張圖要顯示的字包成list
+                                        fig_title ="test_%04i, epoch=%04i" % (test_index, current_epoch),   ### 圖上的大標題
+                                        add_loss  =add_loss,
+                                        bgr2rgb   =bgr2rgb)
+                single_row_imgs.Draw_img()
+                single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
 
 
 
@@ -365,11 +381,11 @@ class Experiment():
         self.train_step1_see_current_img(self.start_epoch, training=self.exp_bn_see_arg, see_reset_init=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         print("test see finish")
 
-    def test(self):
+    def test(self, flow_mask=True):  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         """
         """
         self.exp_init(reload_result=True, reload_model=True)
-        self.testing(self.start_epoch)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        self.testing(self.start_epoch, flow_mask=flow_mask)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         print("test finish")
 
     def board_rebuild(self):
@@ -385,7 +401,7 @@ class Experiment():
         elif(self.phase == "train_reload"):   self.train_reload()
         elif(self.phase == "test_see"):       self.test_see()
         elif(self.phase == "board_rebuild"):  self.board_rebuild()
-        elif(self.phase == "test"):           self.test()
+        elif(self.phase == "test"):           self.test()  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         elif(self.phase == "train_indicate"): pass  ### 待完成Z
         elif(self.phase.lower() == "ok"): pass      ### 不做事情，只是個標記而以這樣子
         else: print("ㄘㄋㄇㄉ phase 打錯字了拉~~~")
@@ -858,28 +874,28 @@ mask_ch001_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_m
 
 ############################  have_bg  #################################
 ### 1. ch
-mask_have_bg_ch128_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, mask_unet_ch128_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_1", describe_end="mask_have_bg_ch128_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch064_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, mask_unet_ch064_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_2", describe_end="mask_have_bg_ch064_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, mask_unet_ch032_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_3", describe_end="mask_have_bg_ch032_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch016_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, mask_unet_ch016_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_4", describe_end="mask_have_bg_ch016_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch008_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, mask_unet_ch008_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_5", describe_end="mask_have_bg_ch008_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_have_bg_ch128_sigmoid_bce_ep060 = Exp_builder().set_com("127.55").set_basic("test", type9_try_flow_mask_have_bg, mask_unet_ch128_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_1", describe_end="mask_have_bg_ch128_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_1_1-20210917_072306-flow_unet-mask_have_bg_ch128_sigmoid_bce_ep060")
+mask_have_bg_ch064_sigmoid_bce_ep060 = Exp_builder().set_com("127.55").set_basic("test", type9_try_flow_mask_have_bg, mask_unet_ch064_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_2", describe_end="mask_have_bg_ch064_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_1_2-20210917_063108-flow_unet-mask_have_bg_ch064_sigmoid_bce_ep060")
+mask_have_bg_ch032_sigmoid_bce_ep060 = Exp_builder().set_com("127.35").set_basic("test", type9_try_flow_mask_have_bg, mask_unet_ch032_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_3", describe_end="mask_have_bg_ch032_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_1_3-20210917_071344-flow_unet-mask_have_bg_ch032_sigmoid_bce_ep060")
+mask_have_bg_ch016_sigmoid_bce_ep060 = Exp_builder().set_com("127.35").set_basic("test", type9_try_flow_mask_have_bg, mask_unet_ch016_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_4", describe_end="mask_have_bg_ch016_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_1_4-20210917_063402-flow_unet-mask_have_bg_ch016_sigmoid_bce_ep060")
+mask_have_bg_ch008_sigmoid_bce_ep060 = Exp_builder().set_com("127.35").set_basic("test", type9_try_flow_mask_have_bg, mask_unet_ch008_sigmoid, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_1_5", describe_end="mask_have_bg_ch008_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_1_5-20210917_055830-flow_unet-mask_have_bg_ch008_sigmoid_bce_ep060")
 ### 2. level
-mask_have_bg_ch032_2l_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_2_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_1", describe_end="mask_have_bg_ch032_2l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_3l_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_3_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_2", describe_end="mask_have_bg_ch032_3l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_4l_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_4_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_3", describe_end="mask_have_bg_ch032_4l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_5l_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_5_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_4", describe_end="mask_have_bg_ch032_5l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_6l_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_6_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_5", describe_end="mask_have_bg_ch032_6l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_7l_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_7_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_6", describe_end="mask_have_bg_ch032_7l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_8l_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_8_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_7", describe_end="mask_have_bg_ch032_8l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_have_bg_ch032_2l_sigmoid_bce_ep060 = Exp_builder().set_com("127.37").set_basic("test", type9_try_flow_mask_have_bg, flow_unet_2_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_1", describe_end="mask_have_bg_ch032_2l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_2_1-20210917_064318-flow_unet-mask_have_bg_ch032_2l_sigmoid_bce_ep060")
+mask_have_bg_ch032_3l_sigmoid_bce_ep060 = Exp_builder().set_com("127.37").set_basic("test", type9_try_flow_mask_have_bg, flow_unet_3_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_2", describe_end="mask_have_bg_ch032_3l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_2_2-20210917_071817-flow_unet-mask_have_bg_ch032_3l_sigmoid_bce_ep060")
+mask_have_bg_ch032_4l_sigmoid_bce_ep060 = Exp_builder().set_com("127.37").set_basic("test", type9_try_flow_mask_have_bg, flow_unet_4_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_3", describe_end="mask_have_bg_ch032_4l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_2_3-20210917_075445-flow_unet-mask_have_bg_ch032_4l_sigmoid_bce_ep060")
+mask_have_bg_ch032_5l_sigmoid_bce_ep060 = Exp_builder().set_com("127.37").set_basic("test", type9_try_flow_mask_have_bg, flow_unet_5_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_4", describe_end="mask_have_bg_ch032_5l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_2_4-20210917_083236-flow_unet-mask_have_bg_ch032_5l_sigmoid_bce_ep060")
+mask_have_bg_ch032_6l_sigmoid_bce_ep060 = Exp_builder().set_com("127.37").set_basic("test", type9_try_flow_mask_have_bg, flow_unet_6_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_5", describe_end="mask_have_bg_ch032_6l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_2_5-20210917_091253-flow_unet-mask_have_bg_ch032_6l_sigmoid_bce_ep060")
+mask_have_bg_ch032_7l_sigmoid_bce_ep060 = Exp_builder().set_com("127.37").set_basic("test", type9_try_flow_mask_have_bg, flow_unet_7_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_6", describe_end="mask_have_bg_ch032_7l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_2_6-20210917_095710-flow_unet-mask_have_bg_ch032_7l_sigmoid_bce_ep060")
+mask_have_bg_ch032_8l_sigmoid_bce_ep060 = Exp_builder().set_com("127.37").set_basic("train", type9_try_flow_mask_have_bg, flow_unet_8_level_ch32_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_2_7", describe_end="mask_have_bg_ch032_8l_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 
 ### 3. 7l no-concat
-mask_have_bg_ch032_7l_2to2noC_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to2noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_1", describe_end="mask_have_bg_ch032_7l_2to2noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_7l_2to3noC_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to3noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_2", describe_end="mask_have_bg_ch032_7l_2to3noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_7l_2to4noC_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to4noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_3", describe_end="mask_have_bg_ch032_7l_2to4noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_7l_2to5noC_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to5noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_4", describe_end="mask_have_bg_ch032_7l_2to5noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_7l_2to6noC_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to6noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_5", describe_end="mask_have_bg_ch032_7l_2to6noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_7l_2to7noC_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to7noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_6", describe_end="mask_have_bg_ch032_7l_2to7noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
-mask_have_bg_ch032_8l_2to7noC_sigmoid_bce_ep060 = Exp_builder().set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to8noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_7", describe_end="mask_have_bg_ch032_7l_2to8noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_have_bg_ch032_7l_2to2noC_sigmoid_bce_ep060 = Exp_builder().set_com("127.55").set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to2noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_1", describe_end="mask_have_bg_ch032_7l_2to2noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_have_bg_ch032_7l_2to3noC_sigmoid_bce_ep060 = Exp_builder().set_com("127.55").set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to3noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_2", describe_end="mask_have_bg_ch032_7l_2to3noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_have_bg_ch032_7l_2to4noC_sigmoid_bce_ep060 = Exp_builder().set_com("127.55").set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to4noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_3", describe_end="mask_have_bg_ch032_7l_2to4noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_have_bg_ch032_7l_2to5noC_sigmoid_bce_ep060 = Exp_builder().set_com("127.55").set_basic("train", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to5noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_4", describe_end="mask_have_bg_ch032_7l_2to5noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_have_bg_ch032_7l_2to6noC_sigmoid_bce_ep060 = Exp_builder().set_com("127.35").set_basic("test", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to6noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_5", describe_end="mask_have_bg_ch032_7l_2to6noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_3_5-20210917_085627-flow_unet-mask_have_bg_ch032_7l_2to6noC_sigmoid_bce_ep060")
+mask_have_bg_ch032_7l_2to7noC_sigmoid_bce_ep060 = Exp_builder().set_com("127.35").set_basic("test", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to7noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_6", describe_end="mask_have_bg_ch032_7l_2to7noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_3_6-20210917_094139-flow_unet-mask_have_bg_ch032_7l_2to7noC_sigmoid_bce_ep060")
+mask_have_bg_ch032_7l_2to8noC_sigmoid_bce_ep060 = Exp_builder().set_com("127.35").set_basic("test", type9_try_flow_mask_have_bg, flow_unet_IN_7l_ch32_2to8noC_sig_mask, G_bce_loss_info_builder, exp_dir=exp_dir16, describe_mid="6_3_7", describe_end="mask_have_bg_ch032_7l_2to8noC_sigmoid_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_3_7-20210917_102812-flow_unet-mask_have_bg_ch032_7l_2to8noC_sigmoid_bce_ep060")
 
 ### 測試subprocessing 有沒有用
 # blender_os_book_flow_unet_epoch002 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch2, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch002") .set_train_args(batch_size=30, epochs=1).set_result_name(result_name="")
@@ -925,7 +941,7 @@ if(__name__ == "__main__"):
         # mask_ch032_tanh_mae_ep060.build().run()
         # mask_ch032_sigmoid_bce_ep060.build().run()
         # mask_have_bg_ch032_sigmoid_bce_ep060.build().run()
-
+        mask_have_bg_ch128_sigmoid_bce_ep060.build().run()
         # print('no argument')
         sys.exit()
 
