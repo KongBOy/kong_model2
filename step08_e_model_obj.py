@@ -546,6 +546,15 @@ flow_unet_IN_7l_ch32_2to5noC_sig_mask = KModel_builder().set_model_name(MODEL_NA
 flow_unet_IN_7l_ch32_2to6noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=6, out_tanh=False, out_ch=1)
 flow_unet_IN_7l_ch32_2to7noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=7, out_tanh=False, out_ch=1)
 flow_unet_IN_7l_ch32_2to8noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=8, out_tanh=False, out_ch=1)
+
+flow_unet_8_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
+flow_unet_7_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=7, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
+flow_unet_6_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
+flow_unet_5_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=5, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
+flow_unet_4_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
+flow_unet_3_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
+flow_unet_2_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
+
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
 ########################################################### 15 用 resblock 來試試看
