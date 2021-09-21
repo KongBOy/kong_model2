@@ -28,6 +28,8 @@ class Result:
         self.ckpt_write_dir = None
         self.logs_read_dir  = None
         self.logs_write_dir = None
+        self.train_code_read_dir  = None
+        self.train_code_write_dir = None
         self.sees_ver = None
         self.sees = None
         self.see_amount = None

@@ -3,8 +3,8 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import tensorflow as tf
 import numpy as np
 import time
+from step0_access_path import Syn_write_to_read_dir, result_read_path, result_write_path
 from step06_a_datas_obj import *
-
 from step06_b_data_pipline import tf_Data_builder
 from step08_e_model_obj import *
 from step09_a_loss_info_obj import *
@@ -25,10 +25,9 @@ class Experiment():
         '''
         把 step.py 和 kong_util資料夾 存一份進result
         '''
-        import datetime
         import shutil
         from build_dataset_combine import Check_dir_exist_and_build
-        code_dir = self.result_obj.result_write_dir + "/" + "train_code_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  ### 定位出 result存code的目的地
+        code_dir = self.result_obj.train_code_write_dir  ### 定位出 result存code的目的地
         Check_dir_exist_and_build(code_dir)                         ### 建立目的地資料夾
         py_file_names = get_dir_certain_file_name(".", certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
         for py_file_name in py_file_names:
@@ -39,7 +38,8 @@ class Experiment():
 
         if(os.path.isdir(code_dir + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
             shutil.rmtree(code_dir + "/" + "kong_util")
-        shutil.copytree("kong_util", code_dir + "/" + "kong_util")  
+        shutil.copytree("kong_util", code_dir + "/" + "kong_util")
+
 
 ################################################################################################################################################
 ################################################################################################################################################
@@ -185,6 +185,18 @@ class Experiment():
             ###    step5 紀錄、顯示 訓練相關的時間
             self.train_step5_show_time(current_epoch, e_start, total_start, epoch_start_timestamp)
             # break  ### debug用，看subprocess成不成功
+            ###############################################################################################################################
+            ###    step6 同步 result_write_dir 和 result_read_dir
+            if(result_write_path != result_read_path):  ### 如果要train_reload 或 test  且當 read/write 資料夾位置不一樣時， write完的結果 copy 一份 放回read， 才有 東西 read 喔！
+                print("○同步 cost_time.txt, logs_dir, train_code_dir")
+                Syn_write_to_read_dir(write_dir=self.result_obj.result_write_dir,     read_dir=self.result_obj.result_read_dir,     build_new_dir=False, print_msg=False)
+                Syn_write_to_read_dir(write_dir=self.result_obj.logs_write_dir,       read_dir=self.result_obj.logs_read_dir,       build_new_dir=False, print_msg=False)
+                Syn_write_to_read_dir(write_dir=self.result_obj.train_code_write_dir, read_dir=self.result_obj.train_code_read_dir, build_new_dir=False, copy_sub_dir=True, print_msg=False)
+                print("●完成～")
+                if (current_epoch) % self.epoch_save_freq == 0:
+                    print("○同步 ckpt_dir")
+                    Syn_write_to_read_dir(write_dir=self.result_obj.ckpt_write_dir, read_dir=self.result_obj.ckpt_read_dir, build_new_dir=True, print_msg=False)  ### 只想存最新的model，所以 build_new_dir 設 True
+                    print("●完成～")
 
             if(current_epoch == self.epoch_stop): break   ### 想要有lr 下降，但又不想train滿 中途想離開就 設 epcoh_stop 囉！
 

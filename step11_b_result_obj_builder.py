@@ -2,9 +2,11 @@ from step0_access_path import result_read_path, result_write_path
 from step06_a_datas_obj import DB_C
 from step11_a1_see_obj import See
 from step11_a2_result_obj import Result
+import datetime
 
 class Result_init_builder:
     def __init__(self, result=None):
+        self.current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         if(result is None):
             self.result = Result()
         else:
@@ -79,7 +81,7 @@ class Result_train_builder(Result_sees_builder):
             ### 自動決定 result_name，再去做進一步設定
             result_name_element = [exp.db_obj.category.value]
             if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
-            result_name_element += [datetime.datetime.now().strftime("%Y%m%d_%H%M%S"), exp.model_obj.model_name.value]
+            result_name_element += [self.current_time, exp.model_obj.model_name.value]
             if(exp.describe_end is not None): result_name_element += [exp.describe_end]
             result_name = "-".join(result_name_element)  ### result資料夾，裡面放checkpoint和tensorboard資料夾
             return exp.exp_dir + "/" + result_name
@@ -104,6 +106,8 @@ class Result_train_builder(Result_sees_builder):
         self.result.ckpt_write_dir   = self.result.result_write_dir + "/ckpt"
         self.result.logs_read_dir  = self.result.result_read_dir + "/logs"
         self.result.logs_write_dir = self.result.result_write_dir + "/logs"
+        self.result.train_code_read_dir  = self.result.result_read_dir  + f"/train_code_{self.current_time}"
+        self.result.train_code_write_dir = self.result.result_write_dir + f"/train_code_{self.current_time}"
         self.result.test_dir = self.result.result_write_dir + "/test"
 
         ### step3b. 設定 in/gt_use_range，這步一定要在 建立 sees 前面做喔！這樣 sees 才知道怎麼設 in/gt_use_range
