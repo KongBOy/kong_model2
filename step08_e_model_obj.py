@@ -518,6 +518,27 @@ flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAM
 
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
+########################################################### 15 用 resblock 來試試看
+flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+
+flow_rect_7_level_fk7 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+
+flow_rect_2_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=2, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_3_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=3, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_4_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=4, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_5_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=5, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_6_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=6, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_7_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
+
+flow_rect_2_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=2, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_3_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=3, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_4_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=4, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_5_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=5, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_6_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=6, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
+
+###############################################################################################################################################################################################
+###############################################################################################################################################################################################
 ########################################################### 1 嘗試看看 mask_unet
 mask_unet_ch032_tanh    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, true_IN=True, out_ch=1)
 mask_unet_ch128_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=128, true_IN=True, out_tanh=False, out_ch=1)
@@ -554,29 +575,6 @@ flow_unet_5_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL
 flow_unet_4_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
 flow_unet_3_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
 flow_unet_2_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
-
-###############################################################################################################################################################################################
-###############################################################################################################################################################################################
-########################################################### 15 用 resblock 來試試看
-flow_rect_fk3_ch64_tfIN_resb_ok9 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect(first_k3=True, hid_ch=64, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-
-flow_rect_7_level_fk7 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=7, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-
-flow_rect_2_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=2, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_3_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=3, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_4_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=4, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_5_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=5, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_6_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=6, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_7_level_fk3 = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=7, true_IN=True, use_res_learning=True, resb_num=9, out_ch=3)
-
-flow_rect_2_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=2, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_3_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=3, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_4_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=4, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_5_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=5, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_6_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=6, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level(first_k=3, hid_ch=64, depth_level=7, true_IN=True, use_ReLU=True, use_res_learning=True, resb_num=9, out_ch=3)
-
-
 
 
 if(__name__ == "__main__"):
