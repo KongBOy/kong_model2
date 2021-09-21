@@ -92,7 +92,7 @@ class See_npy_to_npz(See_info):
         self.see_npz_write_dir      = self.see_write_dir + "/1_npz"
 
         ### 資料夾的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔
-        self.Change_npz_dir(print_msg=True)
+        # self.Change_npz_dir(print_msg=True)
 
     def Change_npz_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_npz_dir, Current See:{self.see_name}")
@@ -267,7 +267,7 @@ class See_flow_visual(See_info):
         self.single_row_imgs_during_train = None  ### 要給train的step3畫loss，所以提升成see的attr才能讓外面存取囉！
 
         ### 資料夾的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔
-        self.Change_flow_matplot_dir(print_msg=True)
+        # self.Change_flow_matplot_dir(print_msg=True)
 
     def Change_flow_matplot_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_flow_matplot_dir, Current See:{self.see_name}")
@@ -400,7 +400,8 @@ class See_bm_rec(See_npy_to_npz):
         self.rec_visual_read_dir              = self.see_read_dir  + "/2_bm_rec_matplot_visual/rec_visual"
         self.rec_visual_write_dir             = self.see_write_dir + "/2_bm_rec_matplot_visual/rec_visual"
 
-        self.Change_bm_rec_dir(print_msg=True)
+        ### 資料夾的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔
+        # self.Change_bm_rec_dir(print_msg=True)
 
 
     def Change_bm_rec_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
@@ -643,12 +644,13 @@ class See_rec_metric(See_bm_rec):
         self.metric_im1_write_dir  = self.see_write_dir + "/3_metric/im1"
         self.metric_im2_read_dir   = self.see_read_dir  + "/3_metric/im2"
         self.metric_im2_write_dir  = self.see_write_dir + "/3_metric/im2"
-        
+
 
         self.matplot_metric_visual_read_dir  = self.see_read_dir  + "/3_matplot_metric_visual"
         self.matplot_metric_visual_write_dir = self.see_write_dir + "/3_matplot_metric_visual"
 
-        self.Change_metric_dir(print_msg=True)
+        ### 資料夾的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔
+        # self.Change_metric_dir(print_msg=True)
 
 
     def Change_metric_dir(self, print_msg=False):  ### Change_dir 寫這 而不寫在 外面 是因為 see資訊 是要在 class See 裡面才方便看的到，所以 在這邊寫多個function 比較好寫，外面傳參數 要 exp.result.sees[]..... 很麻煩想到就不想寫ˊ口ˋ
