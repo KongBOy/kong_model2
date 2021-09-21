@@ -174,6 +174,10 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util, mask_mapping_util):
 
     ####################################################################################################
     def build_img_db(self):
+        ### 測map速度用， 這兩行純讀檔 不map， 要用的時候拿掉這兩行註解， 把兩行外有座map動作的地方都註解調， 結論是map不怎麼花時間， 是shuffle 的 buffer_size 設太大 花時間！
+        # self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.file_format, shuffle=False)
+        # self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.file_format, shuffle=False)
+
         file_names = tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.file_format, shuffle=False)
         byte_imgs = file_names.map(self.step0a_load_byte_img)
 
@@ -204,6 +208,9 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util, mask_mapping_util):
 
     ###  mask+flow(先y再x) 3ch合併 的形式 (最原本的)
     def build_flow_db(self):
+        ### 測map速度用， 這兩行純讀檔 不map， 要用的時候拿掉這兩行註解， 把兩行外有座map動作的地方都註解調， 結論是map不怎麼花時間， 是shuffle 的 buffer_size 設太大 花時間！
+        # self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy", shuffle=False)
+        # self.pre_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy", shuffle=False)
         self.ord_db = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy" , shuffle=False)
         self.ord_db = self.ord_db.map(self.step1_load_flow)
 
@@ -229,7 +236,7 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util, mask_mapping_util):
             byte_imgs = file_names.map(self.step0a_load_byte_img)
             ### 處理 format
             if  (self.file_format == "jpg"): decoded_imgs = byte_imgs.map(self.step0b_decode_jpg)
-            elif(self.file_format == "gif"): decoded_imgs = byte_imgs.map(self.step0b_decode_gif)            
+            elif(self.file_format == "gif"): decoded_imgs = byte_imgs.map(self.step0b_decode_gif)
 
             ### 處理 range
             ### db_range先寫 0~255 的case， 有遇到 db_range 0~1的case的話再去加寫
@@ -419,9 +426,13 @@ class tf_Data_init_builder:
                                                              self.tf_data.test_gt_db, self.tf_data.test_gt_db_pre))
         ### 先shuffle(只有 train_db 需要) 再 batch
         ### train shuffle
-        if(self.tf_data.train_shuffle): self.tf_data.train_db_combine = self.tf_data.train_db_combine.shuffle(int(self.tf_data.train_amount / 2))  ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
-        ### train 和 test 取 batch
-        self.tf_data.train_db_combine = self.tf_data.train_db_combine.batch(self.tf_data.batch_size)   ### shuffle完 打包成一包包 batch
+        # if(self.tf_data.train_shuffle): self.tf_data.train_db_combine = self.tf_data.train_db_combine.shuffle(int(self.tf_data.train_amount / 2))  ### shuffle 的 buffer_size 太大會爆記憶體，嘗試了一下大概 /1.8 左右ok這樣子~ 但 /2 應該比較保險！
+        if(self.tf_data.train_shuffle): self.tf_data.train_db_combine = self.tf_data.train_db_combine.shuffle(200)  ### 在 kong_model2_lots_try/try10_資料pipline 有很棒的模擬， 忘記可以去參考看看喔！
+        ### train 取 batch 和 prefetch(因為有做訓練，訓練中就可以先取下個data了)
+        self.tf_data.train_db_combine = self.tf_data.train_db_combine.batch(self.tf_data.batch_size)       ### shuffle完 打包成一包包 batch
+        self.tf_data.train_db_combine = self.tf_data.train_db_combine.prefetch(-1)                         ### -1 代表 AUTOTUNE：https://www.tensorflow.org/api_docs/python/tf/data#AUTOTUNE，我自己的觀察是 他會視系統狀況自動調速度， 所以比較不會 cuda load failed 這樣子 ~~bb
+        # self.tf_data.train_db_combine = self.tf_data.train_db_combine.prefetch(self.tf_data.train_amount)  ### 反正就一個很大的數字， 可以穩定的用最高速跑， 但如果有再做別的事情可能會 cuda load failed 這樣子~ 如果設一個很大的數字， 觀察起來是會盡可能全速跑， 如果再做其他事情(看YT) 可能會　cuda error 喔～
+        ### test 取 batch
         self.tf_data.test_db_combine  = self.tf_data.test_db_combine.batch(self.tf_data.batch_size)   ### shuffle完 打包成一包包 batch
 
 
@@ -684,6 +695,8 @@ class tf_Data_in_dis_gt_flow_mask_builder(tf_Data_in_dis_gt_flow_builder):
         # import matplotlib.pyplot as plt
         # from util import method1
         # for i, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate(self.tf_data.train_db_combine.take(3)):
+        #     if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
+        #     elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)
         #     debug_dict["1-1 train_in"    ] = train_in
         #     debug_dict["1-2 train_in_pre"] = train_in_pre
         #     debug_dict["1-3 train_gt"    ] = train_gt
@@ -876,7 +889,7 @@ if(__name__ == "__main__"):
     db_obj = type9_try_flow_mask.build()
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
-    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(in_use_range="0~1", gt_use_range="0~1").build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=True).set_img_resize(model_obj.model_name).set_data_use_range(in_use_range="0~1", gt_use_range="0~1").build_by_db_get_method().build()
 
     print(time.time() - start_time)
     print("finish")
