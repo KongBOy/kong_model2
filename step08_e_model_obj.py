@@ -67,49 +67,6 @@ class KModel_Mask_Generator_builder(KModel_Unet_builder):
         self.kong_model.generate_sees    = generate_mask_flow_sees_without_rec    ### 不能checkpoint
         self.kong_model.train_step       = train_step_pure_G_split_mask_move      ### 不能checkpoint
 
-    def use_mask_unet(self, hid_ch=64, depth_level=7, true_IN=False, cnn_bias=True, no_concat_layer=0, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=1, concat_Activation=False):
-        self.hid_ch = hid_ch
-        self.depth_level = depth_level
-        self.no_concat_layer = no_concat_layer
-        self.skip_use_add  = skip_use_add
-        self.skip_use_cSE  = skip_use_cSE
-        self.skip_use_sSE  = skip_use_sSE
-        self.skip_use_scSE = skip_use_scSE
-        self.skip_use_cnn  = skip_use_cnn
-        self.skip_cnn_k    = skip_cnn_k
-        self.skip_use_Acti = skip_use_Acti
-        self.out_tanh = out_tanh
-        self.out_ch = out_ch
-        self.true_IN = true_IN
-        self.concat_Activation = concat_Activation
-
-        def _build_mask_unet():
-            # ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-            # print("hid_ch", hid_ch)
-            # print("skip_use_cSE" , skip_use_cSE)
-            # print("skip_use_sSE" , skip_use_sSE)
-            # print("skip_use_scSE", skip_use_scSE)
-            # print("skip_use_cnn", skip_use_cnn)
-            # print("skip_cnn_k", skip_cnn_k)
-            # print("skip_use_Acti", skip_use_Acti)
-            # print("true_IN", true_IN)
-            # print()
-
-            ### model_part
-            if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
-            elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
-            else:                                                   from step08_a_1_UNet_BN                   import Generator
-            self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, cnn_bias=True, no_concat_layer=self.no_concat_layer, skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE, skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti, out_tanh=self.out_tanh, out_ch=self.out_ch)
-            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-
-            self._build_flow_part()
-            self._build_ckpt_part()
-            print("build_flow_unet", "finish")
-            return self.kong_model
-        self.build = _build_mask_unet
-        return self
-
-
 class KModel_Flow_Generator_builder(KModel_Mask_Generator_builder):
     def _build_flow_part(self):
         ### 生成flow的部分
@@ -120,13 +77,8 @@ class KModel_Flow_Generator_builder(KModel_Mask_Generator_builder):
         self.kong_model.generate_sees    = generate_flow_sees_without_rec    ### 不能checkpoint
         self.kong_model.train_step       = train_step_pure_G                 ### 不能checkpoint
 
-    def _build_ckpt_part(self):
-        ### 建立 tf 存模型 的物件： checkpoint物件
-        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
-                                                   optimizer_G=self.kong_model.optimizer_G,
-                                                   epoch_log=self.kong_model.epoch_log)
-
-    def use_flow_unet(self, hid_ch=64, depth_level=7, true_IN=False, cnn_bias=True, no_concat_layer=0, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, concat_Activation=False):
+class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
+    def set_unet(self, hid_ch=64, depth_level=7, true_IN=False, cnn_bias=True, no_concat_layer=0, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, concat_Activation=False):
         self.hid_ch = hid_ch
         self.depth_level = depth_level
         self.no_concat_layer = no_concat_layer
@@ -141,31 +93,54 @@ class KModel_Flow_Generator_builder(KModel_Mask_Generator_builder):
         self.out_ch = out_ch
         self.true_IN = true_IN
         self.concat_Activation = concat_Activation
+        return self
 
+    def _build_unet_part(self):
+        ### model_part
+        ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
+        # print("hid_ch", self.hid_ch)
+        # print("skip_use_cSE" , self.skip_use_cSE)
+        # print("skip_use_sSE" , self.skip_use_sSE)
+        # print("skip_use_scSE", self.skip_use_scSE)
+        # print("skip_use_cnn", self.skip_use_cnn)
+        # print("skip_cnn_k", self.skip_cnn_k)
+        # print("skip_use_Acti", self.skip_use_Acti)
+        # print("true_IN", self.true_IN)
+        # print("out_ch", self.out_ch)
+        # print()
+        if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
+        elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
+        else:                                                   from step08_a_1_UNet_BN                   import Generator
+        self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, cnn_bias=True, no_concat_layer=self.no_concat_layer, skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE, skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti, out_tanh=self.out_tanh, out_ch=self.out_ch)
+        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        print("build_flow_unet", "finish")
+        return self
+
+    def _build_ckpt_part(self):
+        ### 建立 tf 存模型 的物件： checkpoint物件
+        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
+                                                   optimizer_G=self.kong_model.optimizer_G,
+                                                   epoch_log=self.kong_model.epoch_log)
+
+
+    def use_flow_unet(self):
         def _build_flow_unet():
-            # ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-            # print("hid_ch", hid_ch)
-            # print("skip_use_cSE" , skip_use_cSE)
-            # print("skip_use_sSE" , skip_use_sSE)
-            # print("skip_use_scSE", skip_use_scSE)
-            # print("skip_use_cnn", skip_use_cnn)
-            # print("skip_cnn_k", skip_cnn_k)
-            # print("skip_use_Acti", skip_use_Acti)
-            # print("true_IN", true_IN)
-            # print()
-
-            ### model_part
-            if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
-            elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
-            else:                                                   from step08_a_1_UNet_BN                   import Generator
-            self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, cnn_bias=True, no_concat_layer=self.no_concat_layer, skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE, skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti, out_tanh=self.out_tanh, out_ch=self.out_ch)
-            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-
-            self._build_mask_part()
-            self._build_ckpt_part()
+            self._build_flow_part()
+            self._build_unet_part()  ### 先
+            self._build_ckpt_part()  ### 後
             print("build_flow_unet", "finish")
             return self.kong_model
         self.build = _build_flow_unet
+        return self
+
+    def use_mask_unet(self):
+        def _build_mask_unet():
+            self._build_mask_part()
+            self._build_unet_part()  ### 先
+            self._build_ckpt_part()  ### 後
+            print("build_mask_unet", "finish")
+            return self.kong_model
+        self.build = _build_mask_unet
         return self
 
 
@@ -223,7 +198,7 @@ class KModel_Flow_Generator_builder(KModel_Mask_Generator_builder):
         self.build = _build_flow_rect
         return self
 
-class KModel_Mask_Flow_Generator_builder(KModel_Flow_Generator_builder):
+class KModel_Mask_Flow_Generator_builder(KModel_UNet_Generator_builder):
     def use_mask_flow_unet(self):
         pass
 
@@ -440,81 +415,81 @@ justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG ).u
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
 ########################################################### 14 快接近IN了
-flow_unet       = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, out_ch=3)
+flow_unet       = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, out_ch=3).use_flow_unet()
 
 ### 在 git commit bc25e 之前都是 old ch 喔！ 最大都是 32*8=256, 16*8=128, 8*8=64 而已， 而128*8=1024 又有點太大， new_ch 就是根據層 做 2**layer，最大取512 囉！
 ### 如果想回復的話，要用 git 回復到 bc25e 或 之前的版本囉！
-flow_unet_old_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=128, out_ch=3)
-flow_unet_old_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, out_ch=3)  
-flow_unet_old_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 16, out_ch=3)
-flow_unet_old_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 8 , out_ch=3)
+flow_unet_old_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, out_ch=3).use_flow_unet()
+flow_unet_old_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, out_ch=3).use_flow_unet()
+flow_unet_old_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, out_ch=3).use_flow_unet()
+flow_unet_old_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 8 , out_ch=3).use_flow_unet()
 
 ########################################################### 14 測試 subprocess
-flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=4, out_ch=3)
-flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=6, out_ch=3)
-flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=8, out_ch=3)
+flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=4, out_ch=3).use_flow_unet()
+flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=6, out_ch=3).use_flow_unet()
+flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=8, out_ch=3).use_flow_unet()
 
 ########################################################### 14 真的IN
-flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True)
+flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True).use_flow_unet()
 
 
-flow_unet_IN_new_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=128, true_IN=True)
-flow_unet_IN_new_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, true_IN=True)
-flow_unet_IN_new_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 16, true_IN=True)
-flow_unet_IN_new_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  8, true_IN=True)
-flow_unet_IN_new_ch004 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  4, true_IN=True)
+flow_unet_IN_new_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, true_IN=True).use_flow_unet()
+flow_unet_IN_new_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True).use_flow_unet()
+flow_unet_IN_new_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, true_IN=True).use_flow_unet()
+flow_unet_IN_new_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, true_IN=True).use_flow_unet()
+flow_unet_IN_new_ch004 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, true_IN=True).use_flow_unet()
 
 ########################################################### 14 真的IN，跟DewarpNet一樣 CNN 不用 bias
-flow_unet_IN_ch64_cnnNoBias = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, cnn_bias=False)
+flow_unet_IN_ch64_cnnNoBias = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, cnn_bias=False).use_flow_unet()
 
 
 ########################################################### 14 看 concat Activation 有沒有差
-flow_unet_ch64_in_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, out_ch=3, concat_Activation=True)
+flow_unet_ch64_in_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, out_ch=3, concat_Activation=True).use_flow_unet()
 
 ########################################################### 14 看 不同level 的效果
-flow_unet_2_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=2, true_IN=True, out_ch=3)
-flow_unet_3_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=3, true_IN=True, out_ch=3)
-flow_unet_4_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=4, true_IN=True, out_ch=3)
-flow_unet_5_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=5, true_IN=True, out_ch=3)
-flow_unet_6_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=6, true_IN=True, out_ch=3)
-flow_unet_7_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=7, true_IN=True, out_ch=3)
-flow_unet_8_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=8, true_IN=True, out_ch=3)
+flow_unet_2_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=2, true_IN=True, out_ch=3).use_flow_unet()
+flow_unet_3_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=3, true_IN=True, out_ch=3).use_flow_unet()
+flow_unet_4_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=4, true_IN=True, out_ch=3).use_flow_unet()
+flow_unet_5_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=5, true_IN=True, out_ch=3).use_flow_unet()
+flow_unet_6_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, out_ch=3).use_flow_unet()
+flow_unet_7_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=7, true_IN=True, out_ch=3).use_flow_unet()
+flow_unet_8_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=8, true_IN=True, out_ch=3).use_flow_unet()
 ########################################################### 14 看 unet 的 concat 改成 + 會有什麼影響
-flow_unet_8_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_ch=3)
-flow_unet_7_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=7, true_IN=True, skip_use_add=True, out_ch=3)
-flow_unet_6_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_ch=3)
-flow_unet_5_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=5, true_IN=True, skip_use_add=True, out_ch=3)
-flow_unet_4_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_ch=3)
-flow_unet_3_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_ch=3)
-flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_ch=3)
+flow_unet_8_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet()
+flow_unet_7_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=7, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet()
+flow_unet_6_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet()
+flow_unet_5_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=5, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet()
+flow_unet_4_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet()
+flow_unet_3_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet()
+flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet()
 
 ########################################################### 14 看 unet 的 output 改成sigmoid
-flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, out_tanh=False, true_IN=True)
+flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, out_tanh=False, true_IN=True).use_flow_unet()
 ########################################################### 14 看 unet 的 第一層試試看 不 concat 效果如何
-flow_unet_IN_7l_ch64_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=2)
-flow_unet_IN_7l_ch32_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=2)
-flow_unet_IN_7l_ch64_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=3)
-flow_unet_IN_7l_ch64_2to4noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=4)
-flow_unet_IN_7l_ch64_2to5noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=5)
-flow_unet_IN_7l_ch64_2to6noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=6)
-flow_unet_IN_7l_ch64_2to7noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=7)
-flow_unet_IN_7l_ch64_2to8noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=8)
+flow_unet_IN_7l_ch64_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2).use_flow_unet()
+flow_unet_IN_7l_ch32_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=2).use_flow_unet()
+flow_unet_IN_7l_ch64_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3).use_flow_unet()
+flow_unet_IN_7l_ch64_2to4noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=4).use_flow_unet()
+flow_unet_IN_7l_ch64_2to5noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=5).use_flow_unet()
+flow_unet_IN_7l_ch64_2to6noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=6).use_flow_unet()
+flow_unet_IN_7l_ch64_2to7noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=7).use_flow_unet()
+flow_unet_IN_7l_ch64_2to8noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=8).use_flow_unet()
 ########################################################### 14 看 unet 的 skip 中間接 cnn 的效果
-flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=None)
-flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu)
-flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid)
-flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.relu)
-flow_unet_IN_7l_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.sigmoid)
+flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=None).use_flow_unet()
+flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu).use_flow_unet()
+flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid).use_flow_unet()
+flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.relu).use_flow_unet()
+flow_unet_IN_7l_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.sigmoid).use_flow_unet()
 
 
 ########################################################### 14 看 unet 的 skip 中間接 cSE, sSE, csSE 的效果
-flow_unet_IN_7l_ch64_2to3noC_sk_cSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=3, skip_use_cSE=True)
-flow_unet_IN_7l_ch64_2to3noC_sk_sSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_sSE=True)
-flow_unet_IN_7l_ch64_2to3noC_sk_scSE = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_scSE=True)
+flow_unet_IN_7l_ch64_2to3noC_sk_cSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3, skip_use_cSE=True).use_flow_unet()
+flow_unet_IN_7l_ch64_2to3noC_sk_sSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_sSE=True).use_flow_unet()
+flow_unet_IN_7l_ch64_2to3noC_sk_scSE = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_scSE=True).use_flow_unet()
 
-flow_unet_IN_7l_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, skip_use_cSE=True)
-flow_unet_IN_7l_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, skip_use_sSE=True)
-flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, skip_use_scSE=True)
+flow_unet_IN_7l_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cSE=True).use_flow_unet()
+flow_unet_IN_7l_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_sSE=True).use_flow_unet()
+flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_scSE=True).use_flow_unet()
 
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
@@ -540,41 +515,41 @@ flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rec
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
 ########################################################### 1 嘗試看看 mask_unet
-mask_unet_ch032_tanh    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, true_IN=True, out_ch=1)
-mask_unet_ch128_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=128, true_IN=True, out_tanh=False, out_ch=1)
-mask_unet_ch064_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 64, true_IN=True, out_tanh=False, out_ch=1)
-mask_unet_ch032_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 32, true_IN=True, out_tanh=False, out_ch=1)
-mask_unet_ch016_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch= 16, true_IN=True, out_tanh=False, out_ch=1)
-mask_unet_ch008_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  8, true_IN=True, out_tanh=False, out_ch=1)
-mask_unet_ch004_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  4, true_IN=True, out_tanh=False, out_ch=1)
-mask_unet_ch002_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  2, true_IN=True, out_tanh=False, out_ch=1)
-mask_unet_ch001_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=  1, true_IN=True, out_tanh=False, out_ch=1)
+mask_unet_ch032_tanh    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_ch=1).use_mask_unet()
+mask_unet_ch128_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+mask_unet_ch064_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 64, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+mask_unet_ch032_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+mask_unet_ch016_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+mask_unet_ch008_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+mask_unet_ch004_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+mask_unet_ch002_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  2, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+mask_unet_ch001_sigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  1, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
 
 
-flow_unet_2_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=2, true_IN=True, out_tanh=False, out_ch=1)
-flow_unet_3_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=3, true_IN=True, out_tanh=False, out_ch=1)
-flow_unet_4_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=4, true_IN=True, out_tanh=False, out_ch=1)
-flow_unet_5_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=5, true_IN=True, out_tanh=False, out_ch=1)
-flow_unet_6_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=6, true_IN=True, out_tanh=False, out_ch=1)
-flow_unet_7_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=7, true_IN=True, out_tanh=False, out_ch=1)
-flow_unet_8_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, depth_level=8, true_IN=True, out_tanh=False, out_ch=1)
+flow_unet_2_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=2, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_3_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=3, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_4_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=4, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_5_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=5, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_6_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_7_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=7, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_8_level_ch32_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=8, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet()
 
 
-flow_unet_IN_7l_ch32_2to2noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=2, out_tanh=False, out_ch=1)
-flow_unet_IN_7l_ch32_2to3noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=3, out_tanh=False, out_ch=1)
-flow_unet_IN_7l_ch32_2to4noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=4, out_tanh=False, out_ch=1)
-flow_unet_IN_7l_ch32_2to5noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=5, out_tanh=False, out_ch=1)
-flow_unet_IN_7l_ch32_2to6noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=6, out_tanh=False, out_ch=1)
-flow_unet_IN_7l_ch32_2to7noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=7, out_tanh=False, out_ch=1)
-flow_unet_IN_7l_ch32_2to8noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=32, true_IN=True, no_concat_layer=8, out_tanh=False, out_ch=1)
+flow_unet_IN_7l_ch32_2to2noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=2, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_IN_7l_ch32_2to3noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=3, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_IN_7l_ch32_2to4noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=4, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_IN_7l_ch32_2to5noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=5, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_IN_7l_ch32_2to6noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=6, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_IN_7l_ch32_2to7noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=7, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_IN_7l_ch32_2to8noC_sig_mask = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=8, out_tanh=False, out_ch=1).use_mask_unet()
 
-flow_unet_8_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
-flow_unet_7_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=7, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
-flow_unet_6_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
-flow_unet_5_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=5, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
-flow_unet_4_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
-flow_unet_3_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
-flow_unet_2_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1)
+flow_unet_8_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_7_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=7, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_6_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_5_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=5, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_4_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_3_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet()
+flow_unet_2_level_skip_use_add_sig_mask  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet()
 
 
 if(__name__ == "__main__"):
