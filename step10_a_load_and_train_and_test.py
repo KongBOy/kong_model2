@@ -60,6 +60,8 @@ class Experiment():
         self.result_name  = None
         self.result_obj   = None
         ##############################################################################################################################
+        self.board_create_flag = False
+        ##############################################################################################################################
         ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
         ### train, train_reload 參數
         self.batch_size      = 1
@@ -334,7 +336,10 @@ class Experiment():
         # print("sample all see time:", time.time()-sample_start_time)
 
     def train_step3_Loss_info_save_loss(self, epoch):
-        if(epoch == 1 or self.phase == "train_reload"): self.loss_info_obj.summary_writer = tf.summary.create_file_writer(self.loss_info_obj.logs_write_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的，注意 只有第一次 要建立tensorboard喔！
+        if(self.board_create_flag is False):
+            self.loss_info_obj.summary_writer = tf.summary.create_file_writer(self.loss_info_obj.logs_write_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的，注意 只有第一次 要建立tensorboard喔！
+            self.board_create_flag = True
+
         with self.loss_info_obj.summary_writer.as_default():
             for loss_name, loss_containor in self.loss_info_obj.loss_containors.items():
                 ### tensorboard
