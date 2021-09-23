@@ -278,16 +278,29 @@ def build_datasets(src_in_dir,
 
 #####################################################################################################################################################
 ### blender_os_hw512
-build_datasets(src_in_dir   = "J:/kong_render_os_book_all_have_bg_512/0_image",
-               src_gt_dir   = "J:/kong_render_os_book_all_have_bg_512/1_uv_knpy",
+# build_datasets(src_in_dir   = "J:/kong_render_os_book_all_have_bg_512/0_image",
+#                src_gt_dir   = "J:/kong_render_os_book_all_have_bg_512/1_uv_knpy",
+#                src_in_word  = ".png",
+#                src_gt_word  = ".knpy",
+#                dst_db_dir   = "J:/kong_render_os_book_all_have_bg_512",
+#                db_name      = "blender_os_hw512_have_bg",
+#                db_in_name   = "dis_imgs",
+#                db_gt_name   = "flows",
+#                train_amount = 900,
+#                src_rec_hope_dir="J:/kong_render_os_book_all_have_bg_512/0_image_ord",
+#                src_rec_hope_word=".jpg")
+
+### blender_os_hw512
+build_datasets(src_in_dir   = "J:/kong_render_os_book_and_paper_all_have_bg_512/0_image",
+               src_gt_dir   = "J:/kong_render_os_book_and_paper_all_have_bg_512/1_uv_knpy",
                src_in_word  = ".png",
                src_gt_word  = ".knpy",
-               dst_db_dir   = "J:/kong_render_os_book_all_have_bg_512",
-               db_name      = "blender_os_hw512_have_bg",
+               dst_db_dir   = "J:/kong_render_os_book_and_paper_all_have_bg_512",
+               db_name      = "blender_os_and_paper_hw512_have_bg",
                db_in_name   = "dis_imgs",
                db_gt_name   = "flows",
                train_amount = 900,
-               src_rec_hope_dir="J:/kong_render_os_book_all_have_bg_512/0_image_ord",
+               src_rec_hope_dir="J:/kong_render_os_book_and_paper_all_have_bg_512/0_image_ord",
                src_rec_hope_word=".jpg")
 
 
