@@ -37,15 +37,15 @@ def build_datasets(src_in_dir,
 
     ###########################################################################################################
     ### 定位各個 dst資料夾位置
-    dst_train_dir    = dst_db_dir + "/" + "datasets" + "/" + db_name + "/" + "train"  ### 定位 dst_train_dir
-    dst_test_dir     = dst_db_dir + "/" + "datasets" + "/" + db_name + "/" + "test"   ### 定位 dst_test_dir
-    dst_train_in_dir = dst_db_dir + "/" + "datasets" + "/" + db_name + "/" + "train/" + db_in_name
-    dst_train_gt_dir = dst_db_dir + "/" + "datasets" + "/" + db_name + "/" + "train/" + db_gt_name
-    dst_test_in_dir  = dst_db_dir + "/" + "datasets" + "/" + db_name + "/" + "test/"  + db_in_name
-    dst_test_gt_dir  = dst_db_dir + "/" + "datasets" + "/" + db_name + "/" + "test/"  + db_gt_name
+    dst_train_dir    = dst_db_dir + "/" + db_name + "/" + "train"  ### 定位 dst_train_dir
+    dst_test_dir     = dst_db_dir + "/" + db_name + "/" + "test"   ### 定位 dst_test_dir
+    dst_train_in_dir = dst_db_dir + "/" + db_name + "/" + "train/" + db_in_name
+    dst_train_gt_dir = dst_db_dir + "/" + db_name + "/" + "train/" + db_gt_name
+    dst_test_in_dir  = dst_db_dir + "/" + db_name + "/" + "test/"  + db_in_name
+    dst_test_gt_dir  = dst_db_dir + "/" + db_name + "/" + "test/"  + db_gt_name
     if(src_rec_hope_dir is not None):
-        dst_train_rec_hope_dir  = dst_db_dir + "/" + "datasets" + "/" + db_name + "/" + "train/" + "/" + "rec_hope"
-        dst_test_rec_hope_dir   = dst_db_dir + "/" + "datasets" + "/" + db_name + "/" + "test/"  + "/" + "rec_hope"
+        dst_train_rec_hope_dir  = dst_db_dir + "/" + db_name + "/" + "train/" + "/" + "rec_hope"
+        dst_test_rec_hope_dir   = dst_db_dir + "/" + db_name + "/" + "test/"  + "/" + "rec_hope"
 
     ### 建立各個資料夾
     Check_dir_exist_and_build_new_dir(dst_train_dir)
