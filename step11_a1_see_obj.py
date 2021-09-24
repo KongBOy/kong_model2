@@ -18,7 +18,6 @@ from tqdm import tqdm
 import os
 
 sys.path.append("SIFT_dev/SIFTflow")
-from kong_use_evalUnwarp_sucess import use_DewarpNet_eval
 import matplotlib.pyplot as plt  ### debug用
 from   matplotlib.gridspec import GridSpec
 import datetime
@@ -773,6 +772,8 @@ class See_rec_metric(See_bm_rec):
 
     ### See_method 第三部分：主要做的事情在這裡
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs):
+        from kong_use_evalUnwarp_sucess import use_DewarpNet_eval
+
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             ### rec_GT 要怎麼轉成 rec_pred
             path1 = self.rec_read_paths[go_epoch]  ### bm_rec_matplot_visual/rec_visual/rec_epoch=0000.jpg
