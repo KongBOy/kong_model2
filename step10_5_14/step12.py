@@ -1,3 +1,6 @@
+'''
+目前只有 step12 一定需要切換資料夾到 該komg_model所在的資料夾 才能執行喔！
+'''
 if(__name__ == "__main__"):
     #############################################################################################################################################################################################################
     ### 把 current_dir 轉回到 kong_model 裡面
@@ -8,7 +11,8 @@ if(__name__ == "__main__"):
     kong_layer = curr_path.split("\\").index("kong_model2")    ### 看kong_model2 在哪一層
     back_to_kong_layer_amount = curr_layer - kong_layer        ### 看 目前執行python的位置在哪一層 到 kong_model2 差幾層
     for _ in range(back_to_kong_layer_amount): os.chdir("..")  ### 看差幾層 往前跳 幾次dir
-    sys.path.append(".")                                         ### 把 kong_model2 加進 sys.path
+    sys.path.append(".")                                       ### 把 kong_model2 加進 sys.path
+    print("os.getcwd()", os.getcwd())
     #############################################################################################################################################################################################################
     from step12_result_analyzer import Col_results_analyzer, Row_col_results_analyzer, Bm_Rec_exps_analyze
     from step11_c import  *
