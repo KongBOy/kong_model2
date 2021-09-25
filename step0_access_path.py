@@ -4,7 +4,7 @@ data_access_path    = "G:/0 data_dir/"    ### 通常是 讀取速度較快的SSD
 result_read_path    = "D:/0 data_dir/"    ### 通常是 大容量的機械式硬碟，127.35 是 2T 機械式硬碟
 result_write_path   = "G:/0 data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
 
-analyze_access_path = "G:/0 data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
+analyze_write_dir = "X:/0 data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
 
 JPG_QUALITY = 30
 CORE_AMOUNT = 7

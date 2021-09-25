@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 import sys
 sys.path.append("kong_util")
-from step0_access_path import analyze_access_path, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
+from step0_access_path import analyze_write_dir, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
 from matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop, Save_as_jpg
 from video_from_img import Video_combine_from_dir
@@ -13,25 +13,25 @@ from multiprocessing import Process
 class Result_analyzer:
     def __init__(self, ana_describe):
         self.ana_describe = ana_describe
-        self.analyze_dst_dir = analyze_access_path + "analyze_dir" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
+        self.analyze_dst_dir = analyze_write_dir + "analyze_dir_test2" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
         Check_dir_exist_and_build(self.analyze_dst_dir)
 
     ########################################################################################################################################
-    def _step0_c_results_get_see_dir_info(self, c_results):
+    def _step0_c_results_get_see_base_info(self, c_results):
         """
         update 一下 所有 result 的 sees， 這裡是 c_results 的所有 results
         """
         for result in c_results:
             for see in result.sees:
-                see.get_see_dir_info()
+                see.get_see_base_info()
                 see.get_bm_rec_info()
 
-    def _step0_r_c_results_get_see_dir_info(self, r_c_results):
+    def _step0_r_c_results_get_see_base_info(self, r_c_results):
         """
-        update 一下 所有 result 的 sees， 這裡是 r_c_results 的所有 results， 會 一個個 r 去呼叫 _step0_c_results_get_see_dir_info 來 處理 c_results 的 sees 喔！
+        update 一下 所有 result 的 sees， 這裡是 r_c_results 的所有 results， 會 一個個 r 去呼叫 _step0_c_results_get_see_base_info 來 處理 c_results 的 sees 喔！
         """
         for c_results in r_c_results:
-            self._step0_c_results_get_see_dir_info(c_results)
+            self._step0_c_results_get_see_base_info(c_results)
 ########################################################################################################################################
 ########################################################################################################################################
 class Col_results_analyzer(Result_analyzer):
@@ -43,26 +43,26 @@ class Col_results_analyzer(Result_analyzer):
         self.add_loss = add_loss
 
         self.c_results = col_results
-        self.c_max_see_file_amount = self.step0_get_c_max_see_file_amount()
-        self.c_min_see_file_amount = self.step0_get_c_min_see_file_amount()
-        self.c_min_train_epochs = self.c_min_see_file_amount  ### 從see_file_name數量來推估 目前result被訓練幾個epoch，-2是減去 in_img, gt_img 兩個檔案
+        self.c_max_trained_epoch = self.step0_get_c_max_trained_epoch()
+        self.c_min_trained_epoch = self.step0_get_c_min_trained_epoch()
+        self.c_min_train_epochs = self.c_min_trained_epoch  ### 從see_file_name數量來推估 目前result被訓練幾個epoch，-2是減去 in_img, gt_img 兩個檔案
 
 
-    def step0_get_c_min_see_file_amount(self):
-        see_file_amounts = []
+    def step0_get_c_min_trained_epoch(self):
+        trained_epochs = []
         for result in self.c_results:
-            ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的see_file_amount就好囉～
-            result.sees[0].get_see_dir_info()  ### 先去把 sees[0] 的資訊更新
-            see_file_amounts.append(result.sees[0].see_file_amount)   ### 再把 sees[0]的 see_file_amount 抓出來
-        return min(see_file_amounts)
+            ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的trained_epoch就好囉～
+            result.sees[0].get_see_base_info()  ### 先去把 sees[0] 的資訊更新
+            trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
+        return min(trained_epochs)
 
-    def step0_get_c_max_see_file_amount(self):
-        see_file_amounts = []
+    def step0_get_c_max_trained_epoch(self):
+        trained_epochs = []
         for result in self.c_results:
-            ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的see_file_amount就好囉～
-            result.sees[0].get_see_dir_info()  ### 先去把 sees[0] 的資訊更新
-            see_file_amounts.append(result.sees[0].see_file_amount)   ### 再把 sees[0]的 see_file_amount 抓出來
-        return max(see_file_amounts)
+            ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的trained_epoch就好囉～
+            result.sees[0].get_see_base_info()  ### 先去把 sees[0] 的資訊更新
+            trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
+        return max(trained_epochs)
 
     ########################################################################################################################################
     def step1_get_c_titles(self):
@@ -81,11 +81,14 @@ class Col_results_analyzer(Result_analyzer):
         """
         c_imgs = []
         for result in self.c_results:
-            epochs = len(result.sees[see_num].see_flow_jpg_names)
-            # print("len(result.sees[see_num].rec_paths)", len(result.sees[see_num].rec_paths))
-            use_epoch = min(epochs, epoch)  ### 超出範圍就取最後一張
+            trained_epoch = result.sees[see_num].trained_epoch  ### 名字弄短一點，下面 debug 也比較好寫
+            use_epoch = min(trained_epoch, epoch)  ### 超出範圍就取最後一張
 
-            c_imgs.append(cv2.imread(result.sees[see_num].rec_paths[use_epoch]))
+            ### debug 用
+            # print(f"epoch={epoch},    result.trained_epoch={trained_epoch},    use_epoch={use_epoch},    len(rec_read_paths)={len(result.sees[see_num].rec_read_paths)},    result.sees[{see_num}].rec_read_paths[{use_epoch}]={result.sees[see_num].rec_read_paths[use_epoch]}")
+
+            ### 可以直接調整這裡 來決定 analyze 要畫什麼， 當然這是寫死的寫法不大好， 有空再寫得更通用吧～
+            c_imgs.append(cv2.imread(result.sees[see_num].rec_read_paths[use_epoch]))
             # c_imgs.append(cv2.imread(result.sees[see_num].see_jpg_paths[epoch + 2]))
         return c_imgs
 
@@ -101,7 +104,7 @@ class Col_results_analyzer(Result_analyzer):
 
     ########################################################################################################################################
     ### 單一row，同see
-    def _Draw_col_results_single_see_(self, start_img, img_amount, see_num, in_img, gt_img, c_titles, analyze_see_dir):
+    def _Draw_col_results_single_see_(self, start_epoch, epoch_amount, see_num, in_img, gt_img, c_titles, analyze_see_dir):
         """
         真的在做事情的地方b
         _Draw_col_results_single_see_ 是 核心動作：
@@ -121,7 +124,7 @@ class Col_results_analyzer(Result_analyzer):
                 總共：501 個數字 ( epoch1~500 + epoch0)
         """
 
-        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount + 1)):  ### +1 是因為 0~epoch 都要做，  range 只到 end-1， 所以 +1 補回來～
             ### step2 去抓 一行 要 show 的影像
             c_imgs = self.step2b_get_c_imgs(see_num, go_epoch, in_img, gt_img)
 
@@ -137,14 +140,14 @@ class Col_results_analyzer(Result_analyzer):
                     single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_train_epochs)
             single_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=go_epoch)
 
-    def _Draw_col_results_single_see_multiprocess(self, see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=8, task_amount=100):
+    def _Draw_col_results_single_see_multiprocess(self, see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=8, task_amount=100, print_msg=False):
         """
         ### 包 第一層 multiprocess， _Draw_col_results_single_see_ 的 multiprocess 介面
         """
         from multiprocess_util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see_, task_args=[see_num, in_img, gt_img, c_titles, analyze_see_dir])
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see_, task_args=[see_num, in_img, gt_img, c_titles, analyze_see_dir], print_msg=print_msg)
 
-    def analyze_col_results_single_see(self, see_num, single_see_multiprocess=True, single_see_core_amount=8):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
+    def analyze_col_results_single_see(self, see_num, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
         print(f"{self.ana_describe} doing analyze_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
         """
         真的在做事情的地方a
@@ -156,7 +159,7 @@ class Col_results_analyzer(Result_analyzer):
 
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
-        self._step0_c_results_get_see_dir_info(self.c_results)
+        self._step0_c_results_get_see_base_info(self.c_results)
 
         ### 抓 in/gt imgs， 因為 同個see 內所有epoch 的 in/gt 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see_ 的外面 ，然後再用 參數傳入
         in_img = None
@@ -168,8 +171,8 @@ class Col_results_analyzer(Result_analyzer):
         c_titles = self.step1_get_c_titles()
 
         ### 抓  每個epoch要顯示的imgs 並且畫出來
-        if(single_see_multiprocess): self._Draw_col_results_single_see_multiprocess(see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=single_see_core_amount, task_amount=self.c_max_see_file_amount)
-        else: self._Draw_col_results_single_see_(0, self.c_max_see_file_amount, see_num, in_img, gt_img, c_titles, analyze_see_dir)
+        if(single_see_multiprocess): self._Draw_col_results_single_see_multiprocess(see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=single_see_core_amount, task_amount=self.c_max_trained_epoch, print_msg=print_msg)
+        else: self._Draw_col_results_single_see_(0, self.c_max_trained_epoch, see_num, in_img, gt_img, c_titles, analyze_see_dir)
 
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
@@ -214,14 +217,14 @@ class Col_results_analyzer(Result_analyzer):
     ########################################################################################################################################
     ########################################################################################################################################
     def _Draw_col_results_multi_see_(self, start_epoch, epoch_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir):
-        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount + 1)):  ### +1 是因為 0~epoch 都要做，  range 只到 end-1， 所以 +1 補回來～
             r_c_imgs = []
             for go_see_num, see_num in enumerate(see_nums):
                 c_imgs   = [in_imgs[go_see_num]]
                 for result in self.c_results:
-                    epochs = len(result.sees[see_num].see_flow_jpg_names)
-                    # epochs = len(result.sees[see_num].rec_paths) - 2
-                    # print("len(result.sees[see_num].rec_paths)", len(result.sees[see_num].rec_paths))
+                    epochs = len(result.sees[see_num].see_flow_epoch_jpg_names)
+                    # epochs = len(result.sees[see_num].rec_read_paths) - 2
+                    # print("len(result.sees[see_num].rec_read_paths)", len(result.sees[see_num].rec_read_paths))
                     use_epoch = min(epochs, go_epoch)  ### 超出範圍就取最後一張
 
                     # c_imgs.append(cv2.imread(result.sees[see_num].see_flow_jpg_read_paths[use_epoch]))
@@ -267,7 +270,7 @@ class Col_results_analyzer(Result_analyzer):
         print(f"save to {analyze_see_dir}")
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
-        self._step0_c_results_get_see_dir_info(self.c_results)
+        self._step0_c_results_get_see_base_info(self.c_results)
 
         ### 抓 各row的in/gt imgs
         in_imgs = []
@@ -283,8 +286,8 @@ class Col_results_analyzer(Result_analyzer):
         r_c_titles = [c_titles]  ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
         ### 抓 row/col 要顯示的imgs 並且畫出來
-        if(multiprocess):       self._Draw_col_results_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=core_amount, task_amount=self.c_max_see_file_amount)
-        else: self._Draw_col_results_multi_see_(0, self.c_max_see_file_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir)
+        if(multiprocess):       self._Draw_col_results_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=core_amount, task_amount=self.c_max_trained_epoch)
+        else: self._Draw_col_results_multi_see_(0, self.c_max_trained_epoch, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir)
 
         ### 後處理，讓資料變得 好看 且 更小 並 串成影片
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
@@ -306,30 +309,30 @@ class Row_col_results_analyzer(Result_analyzer):
         self.add_loss = add_loss
 
         self.r_c_results = row_col_results
-        self.r_c_min_see_file_amount = self.get_r_c_min_see_file_amount()
-        self.r_c_max_see_file_amount = self.get_r_c_max_see_file_amount()
+        self.r_c_min_trained_epoch = self.get_r_c_min_trained_epoch()
+        self.r_c_max_trained_epoch = self.get_r_c_max_trained_epoch()
 
         self.c_results_list = []
         for c_results in row_col_results:
             self.c_results_list.append(Col_results_analyzer(ana_describe=ana_describe, col_results=c_results, show_in_img=self.show_in_imgs, show_gt_img=self.show_gt_imgs, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss))
 
-    def get_r_c_min_see_file_amount(self):
-        see_file_amounts = []
+    def get_r_c_min_trained_epoch(self):
+        trained_epochs = []
         for row_results in self.r_c_results:
             for result in row_results:
-                ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的see_file_amount就好囉～
-                result.sees[0].get_see_dir_info()  ### 先去把 sees[0] 的資訊更新
-                see_file_amounts.append(result.sees[0].see_file_amount)   ### 再把 sees[0]的 see_file_amount 抓出來
-        return min(see_file_amounts)
+                ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的trained_epoch就好囉～
+                result.sees[0].get_see_base_info()  ### 先去把 sees[0] 的資訊更新
+                trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
+        return min(trained_epochs)
 
-    def get_r_c_max_see_file_amount(self):
-        see_file_amounts = []
+    def get_r_c_max_trained_epoch(self):
+        trained_epochs = []
         for row_results in self.r_c_results:
             for result in row_results:
-                ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的see_file_amount就好囉～
-                result.sees[0].get_see_dir_info()  ### 先去把 sees[0] 的資訊更新
-                see_file_amounts.append(result.sees[0].see_file_amount)   ### 再把 sees[0]的 see_file_amount 抓出來
-        return max(see_file_amounts)
+                ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的trained_epoch就好囉～
+                result.sees[0].get_see_base_info()  ### 先去把 sees[0] 的資訊更新
+                trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
+        return max(trained_epochs)
 
     def step1_get_r_c_titles(self):
         r_c_titles = []  ### r_c_titles 抓出所有要顯示的標題 ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
@@ -362,8 +365,8 @@ class Row_col_results_analyzer(Result_analyzer):
         ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
         in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_in_img_path)     ### 第一張：in_img
         gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].see_gt_flow_v_path)  ### 第二張：gt_img
-        # for go_img in tqdm(range(self.r_c_min_see_file_amount)):
-        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+        # for go_img in tqdm(range(self.r_c_min_trained_epoch)):
+        for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount + 1)):  ### +1 是因為 0~epoch 都要做，  range 只到 end-1， 所以 +1 補回來～
             # print("see_num=", see_num, "go_epoch=", go_epoch)
             r_c_imgs  = self.step2b_get_r_c_imgs(see_num, go_epoch, in_img, gt_img)
             row_col_imgs = Matplot_multi_row_imgs(
@@ -375,19 +378,19 @@ class Row_col_results_analyzer(Result_analyzer):
             row_col_imgs.Draw_img()
             row_col_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=go_epoch)
 
-    def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100):
+    def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100, print_msg=False):
         from multiprocess_util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_row_col_results_single_see, task_args=[see_num, r_c_titles, analyze_see_dir])
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_row_col_results_single_see, task_args=[see_num, r_c_titles, analyze_see_dir], print_msg=print_msg)
 
 
-    def analyze_row_col_results_single_see(self, see_num, single_see_multiprocess=False, single_see_core_amount=8):
+    def analyze_row_col_results_single_see(self, see_num, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
         print(f"{self.ana_describe} doing analyze_row_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
         start_time = time.time()
         analyze_see_dir = self.analyze_dst_dir + "/" + self.r_c_results[0][0].sees[see_num].see_name + "/" + "epoch=all"  ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                          ### 建立 存結果的資料夾
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
-        self._step0_r_c_results_get_see_dir_info(self.r_c_results)
+        self._step0_r_c_results_get_see_base_info(self.r_c_results)
 
         ### 抓 每row 每col 各不同result的 要顯示的 titles
         r_c_titles = self.step1_get_r_c_titles()
@@ -403,8 +406,8 @@ class Row_col_results_analyzer(Result_analyzer):
         print("processing see_num:", see_num)
         ### 抓 每row 每col 各不同result的 要顯示的imgs 並且畫出來
         ### 注意，這analyzer不會有 multi_see 的method喔！因為row被拿去show不同的result了，就沒有空間給 multi_see拉，所以不用寫if/else 來 限制 multi_see時 single_see_multiprocess 要設False這樣子～
-        if(single_see_multiprocess): self._draw_row_col_results_single_see_multiprocess(see_num, r_c_titles, analyze_see_dir, core_amount=single_see_core_amount, task_amount=self.r_c_max_see_file_amount)
-        else: self._draw_row_col_results_single_see(0, self.r_c_max_see_file_amount, see_num, r_c_titles, analyze_see_dir)
+        if(single_see_multiprocess): self._draw_row_col_results_single_see_multiprocess(see_num, r_c_titles, analyze_see_dir, core_amount=single_see_core_amount, task_amount=self.r_c_max_trained_epoch, print_msg=print_msg)
+        else: self._draw_row_col_results_single_see(0, self.r_c_max_trained_epoch, see_num, r_c_titles, analyze_see_dir)
 
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
@@ -414,9 +417,9 @@ class Row_col_results_analyzer(Result_analyzer):
         # Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
-    def analyze_row_col_results_all_single_see(self, single_see_multiprocess=False, single_see_core_amount=8):
+    def analyze_row_col_results_all_single_see(self, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
         for go_see in range(self.r_c_results[0][0].see_amount):
-            self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
+            self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
 
     def _analyze_row_col_results_all_single_see(self, start_see, see_amount, single_see_multiprocess=False, single_see_core_amount=8):
         for go_see in range(start_see, start_see + see_amount):
@@ -482,9 +485,9 @@ class Bm_Rec_exps_analyze(Result_analyzer):
             see.get_bm_rec_info()  ### 抓 result/see_.../bm_rec_matplot_visual/bm_visual 和 rec_visual 的 nemas, paths
             analyze_see_rec_final_path = analyze_see_rec_dir + "/" + analyze_describe + ".jpg"  ### 定出存哪：rec_final_path
             analyze_see_rec_gt_path    = analyze_see_rec_dir + "/" + "rec_gt" + ".jpg"          ### 定出存哪：rec_gt_path
-            rec_gt    = cv2.imread(see.rec_paths[epoch])  ### 讀圖，倒數第一張 是 gt
-            rec_final = cv2.imread(see.rec_paths[epoch])  ### 讀圖，倒數第二張 是 最後一個epoch
-            # print(result.sees[see_num].rec_paths[-2])                   ### debug用
+            rec_gt    = cv2.imread(see.rec_read_paths[epoch])  ### 讀圖，倒數第一張 是 gt
+            rec_final = cv2.imread(see.rec_read_paths[epoch])  ### 讀圖，倒數第二張 是 最後一個epoch
+            # print(result.sees[see_num].rec_read_paths[-2])                   ### debug用
             cv2.imwrite(analyze_see_rec_final_path, rec_final)          ### 根據上面定出的位置存圖
             cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
         return self
@@ -500,9 +503,9 @@ class Bm_Rec_exps_analyze(Result_analyzer):
             see.get_bm_rec_info()  ### 抓 result/see_.../bm_rec_matplot_visual/bm_visual 和 rec_visual 的 nemas, paths
             analyze_see_rec_final_path = analyze_see_rec_dir + "/" + analyze_describe + ".jpg"  ### 定出存哪：rec_final_path
             analyze_see_rec_gt_path    = analyze_see_rec_dir + "/" + "rec_gt" + ".jpg"          ### 定出存哪：rec_gt_path
-            rec_gt    = cv2.imread(see.rec_paths[-1])  ### 讀圖，倒數第一張 是 gt
-            rec_final = cv2.imread(see.rec_paths[-2])  ### 讀圖，倒數第二張 是 最後一個epoch
-            # print(see.rec_paths[-2])                   ### debug用
+            rec_gt    = cv2.imread(see.rec_read_paths[-1])  ### 讀圖，倒數第一張 是 gt
+            rec_final = cv2.imread(see.rec_read_paths[-2])  ### 讀圖，倒數第二張 是 最後一個epoch
+            # print(see.rec_read_paths[-2])                   ### debug用
             cv2.imwrite(analyze_see_rec_final_path, rec_final)          ### 根據上面定出的位置存圖
             cv2.imwrite(analyze_see_rec_gt_path   , rec_gt)             ### 根據上面定出的位置存圖
         return self

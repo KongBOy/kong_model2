@@ -51,11 +51,12 @@ class See_info:
         self.gt_use_range = "0~1"
 
     def get_see_base_info(self):
+        ''' 我有把 see_file_amount 這個attr拿掉囉！ 因為 應用的時候需要一直 -1, -2, -3 很煩， -1, -2, -3 分別代表什麼數字都直接定義清楚這樣子拉！'''
         """
         get_info：放 ..._names
                       ├ ..._read_paths
                       └ ..._write_paths
-                    最上層 不用 see_file_amount
+                     file_amount
         """
         self.see_jpg_names            = get_dir_certain_file_name(self.see_read_dir, certain_word=".jpg")
         self.see_in_img_path          = self.see_read_dir + "/" + self.see_jpg_names[0]
@@ -67,6 +68,8 @@ class See_info:
         self.see_flow_epoch_jpg_read_paths = [self.see_read_dir + "/" + epoch_jpg_name for epoch_jpg_name in self.see_flow_epoch_jpg_names]  ### 沒有 write_paths，因為這是 predict_flow_visual， 是從model 訓練過程產生的， 後處理不會產生！ 就是不會做ewrite的動作囉！就不用write_path拉！
         self.see_flow_epoch_jpg_amount     = len(self.see_flow_epoch_jpg_names)
 
+        ### 不確定合不合理， 目前就先暫時用 see_flow_epoch_jpg_names -1(去掉epoch0) 來代表 現在已經train了幾個epochs囉！ 即 trained_epochs， see_flow_epoch_jpg_names 用了覺得不合理再換吧～
+        self.trained_epoch       = self.see_flow_epoch_jpg_amount - 1  ### 去掉epoch0
 #############################################################################################################################################################################################################################################################################################
 #############################################################################################################################################################################################################################################################################################
 #############################################################################################################################################################################################################################################################################################
@@ -108,7 +111,7 @@ class See_npy_to_npz(See_info):
         get_info：放 ..._names
                       ├ ..._read_paths
                       └ ..._write_paths
-                     see_file_amount
+                     file_amount
         """
         self.see_npy_names            = get_dir_certain_file_name(self.see_npy_read_dir, certain_word=".npy")
         self.see_npy_read_paths       = [self.see_npy_read_dir  + "/" + npy_name for npy_name in self.see_npy_names]  ### 沒有 write_paths，因為式 npy轉npz， 不會有寫npy的動作， 雖然下面的 compare 會寫一點npy， 但也因為 有用 .replace() 所以用 see_npy_name.replace() 較保險這樣子！
@@ -120,7 +123,7 @@ class See_npy_to_npz(See_info):
         get_info：放 ..._names
                       ├ ..._read_paths
                       └ ..._write_paths
-                     see_file_amount
+                     file_amount
         """
         ### 有包含 gt_flow 的 list喔！ 第一個 放的是 gt_flow
         print("self.see_npz_read_dir~~~~~~~~~~~~~~~~~", self.see_npz_read_dir)
@@ -429,7 +432,7 @@ class See_bm_rec(See_npy_to_npz):
         get_info：放 ..._names
                       ├ ..._read_paths
                       └ ..._write_paths
-                     see_file_amount
+                     file_amount
         """
         self.bm_names  = get_dir_certain_file_name(self.bm_visual_read_dir , certain_word="bm_epoch", certain_ext=".jpg")
         self.bm_read_paths  = [self.bm_visual_read_dir + "/" + name for name in self.bm_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
@@ -692,7 +695,7 @@ class See_rec_metric(See_bm_rec):
         get_info：放 ..._names
                       ├ ..._read_paths
                       └ ..._write_paths
-                     see_file_amount
+                     file_amount
         """
         # self.metric_names  = get_dir_certain_file_name(self.metrec_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
         # self.metric_read_paths  = [self.matplot_metric_visual_read_dir + "/" + name for name in self.metric_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！

@@ -188,7 +188,7 @@ class Result:
     #     所有 see 裡面的 final_epoch 重做 bm_rec_matplot_visual
     #     """
     #     for see_num in range(self.see_amount):
-    #         self.sees[see_num].get_see_dir_info()  ### 定位出current_final_epochs前，先更新一下 see_dir_info
+    #         self.sees[see_num].get_see_base_info()  ### 定位出current_final_epochs前，先更新一下 see_dir_info
     #         current_final_epochs = self.sees[see_num].see_file_amount - 3   ### 定位出 current_final_epochs，current的意思是可能目前還沒train完也可以用，epochs是 epoch總數，要減掉：in_img, gt_img 和 epoch0
     #         self.save_single_see_as_bm_rec_matplot_visual_at_certain_epoch(see_num, current_final_epochs, add_loss=add_loss, bgr2rgb=bgr2rgb)
 
@@ -200,7 +200,7 @@ class Result:
             r_c_imgs = []
             for go_see_num, see_num in enumerate(see_nums):
                 c_imgs = [in_imgs[go_see_num]]
-                c_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_flow_jpg_names[go_epoch]))
+                c_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].see_flow_epoch_jpg_names[go_epoch]))
                 c_imgs += [gt_imgs[go_see_num]]
                 r_c_imgs.append(c_imgs)
 
