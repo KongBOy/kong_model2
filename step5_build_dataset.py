@@ -1,11 +1,8 @@
 import sys
 sys.path.append("kong_util")
-from step0_access_path import data_access_path
-import os
 import shutil
-import numpy as np
 from build_dataset_combine import Check_dir_exist_and_build_new_dir
-from util import get_dir_certain_file_name, get_maxmin_train_move_from_path, get_max_db_move_xy
+from util import get_dir_certain_file_name
 
 
 def build_datasets(src_in_dir,
@@ -291,7 +288,7 @@ build_datasets(src_in_dir   = "J:/kong_render_os_book_and_paper_all_have_bg_512/
                src_rec_hope_dir="J:/kong_render_os_book_and_paper_all_have_bg_512/0_image_ord",
                src_rec_hope_word=".jpg")
 
-
+# from util import  get_maxmin_train_move_from_path, get_max_db_move_xy
 # db_name = "1_pure_unet2000-512to256_index"
 # max_train_move, min_train_move = get_maxmin_train_move_from_path(dst_db_dir+"datasets"+"/"+db_name+"/"+"train"+"/"+"move_maps")
 # np.save(dst_db_dir+"datasets"+"/"+db_name+"/"+"max_train_move",max_train_move)
