@@ -1,82 +1,82 @@
 import sys
 sys.path.append("kong_util")
 import shutil
-from build_dataset_combine import Check_dir_exist_and_build_new_dir
+from build_dataset_combine import Check_dir_exist_and_build_new_dir, build_datasets
 from util import get_dir_certain_file_name
 
 
-def build_datasets(src_in_dir,
-                   src_in_word,
-                   src_gt_dir,
-                   src_gt_word,
-                   dst_db_dir,
-                   db_name,
-                   db_in_name,
-                   db_gt_name,
-                   train_amount=None,
-                   src_rec_hope_dir=None,
-                   src_rec_hope_word=None):
-    '''
-    src_in_dir  ： 要拿來建立db的 model輸入資料 的 dir
-    src_in_word ： 要拿來建立db的 model輸入資料 的 dir 內的檔案 要抓什麼關鍵字，比如 ".jpg", ".png" 之類的
-    src_gt_dir  ： 要拿來建立db的 model輸出資料 的 dir
-    src_gt_word ： 要拿來建立db的 model輸出資料 的 dir 內的檔案 要抓什麼關鍵字，比如 ".jpg", ".png" 之類的
-    dst_db_dir  ： 建出來的 db 要放在哪裡
-    db_name,    ： 建出來的 db 要叫啥名字
-    db_in_name  ： 建出來的 db model輸入資料 的 dir 要叫啥名字，例如 dis_imgs
-    db_gt_name  ： 建出來的 db model輸出資料 的 dir 要叫啥名字，例如 flows
-    train_amount： 會自動幫你分train, test， 其中 train 的個數要多少
-    src_rec_hope_dir  ： 要拿來建立db的 model輸出 做完後處理希望達到最理想效果 的 dir
-    src_rec_hope_word ： 要拿來建立db的 model輸出 做完後處理希望達到最理想效果 的 dir 內的檔案 要抓什麼關鍵字，比如 ".jpg", ".png" 之類的
-    '''
-    ###########################################################################################################
-    ### 抓出 src 的檔名
-    in_file_names  = get_dir_certain_file_name(src_in_dir, certain_word=src_in_word)
-    gt_file_names  = get_dir_certain_file_name(src_gt_dir, certain_word=src_gt_word)
-    if(src_rec_hope_dir is not None):
-        rec_hope_list = get_dir_certain_file_name(src_rec_hope_dir, certain_word=src_rec_hope_word)
-    data_amount = len(in_file_names)
-    if(train_amount is None): train_amount = int(data_amount * 0.9)
-    # test_amount = data_amount - train_amount
+# def build_datasets(src_in_dir,
+#                    src_in_word,
+#                    src_gt_dir,
+#                    src_gt_word,
+#                    dst_db_dir,
+#                    db_name,
+#                    db_in_name,
+#                    db_gt_name,
+#                    train_amount=None,
+#                    src_rec_hope_dir=None,
+#                    src_rec_hope_word=None):
+#     '''
+#     src_in_dir  ： 要拿來建立db的 model輸入資料 的 dir
+#     src_in_word ： 要拿來建立db的 model輸入資料 的 dir 內的檔案 要抓什麼關鍵字，比如 ".jpg", ".png" 之類的
+#     src_gt_dir  ： 要拿來建立db的 model輸出資料 的 dir
+#     src_gt_word ： 要拿來建立db的 model輸出資料 的 dir 內的檔案 要抓什麼關鍵字，比如 ".jpg", ".png" 之類的
+#     dst_db_dir  ： 建出來的 db 要放在哪裡
+#     db_name,    ： 建出來的 db 要叫啥名字
+#     db_in_name  ： 建出來的 db model輸入資料 的 dir 要叫啥名字，例如 dis_imgs
+#     db_gt_name  ： 建出來的 db model輸出資料 的 dir 要叫啥名字，例如 flows
+#     train_amount： 會自動幫你分train, test， 其中 train 的個數要多少
+#     src_rec_hope_dir  ： 要拿來建立db的 model輸出 做完後處理希望達到最理想效果 的 dir
+#     src_rec_hope_word ： 要拿來建立db的 model輸出 做完後處理希望達到最理想效果 的 dir 內的檔案 要抓什麼關鍵字，比如 ".jpg", ".png" 之類的
+#     '''
+#     ###########################################################################################################
+#     ### 抓出 src 的檔名
+#     in_file_names  = get_dir_certain_file_name(src_in_dir, certain_word=src_in_word)
+#     gt_file_names  = get_dir_certain_file_name(src_gt_dir, certain_word=src_gt_word)
+#     if(src_rec_hope_dir is not None):
+#         rec_hope_list = get_dir_certain_file_name(src_rec_hope_dir, certain_word=src_rec_hope_word)
+#     data_amount = len(in_file_names)
+#     if(train_amount is None): train_amount = int(data_amount * 0.9)
+#     # test_amount = data_amount - train_amount
 
-    ###########################################################################################################
-    ### 定位各個 dst資料夾位置
-    dst_train_dir    = dst_db_dir + "/" + db_name + "/" + "train"                ### 定位 train 資料夾
-    dst_train_in_dir = dst_db_dir + "/" + db_name + "/" + "train/" + db_in_name  ### 定位 train_in 資料夾
-    dst_train_gt_dir = dst_db_dir + "/" + db_name + "/" + "train/" + db_gt_name  ### 定位 train_gt 資料夾
-    dst_test_dir     = dst_db_dir + "/" + db_name + "/" + "test"                 ### 定位 test 資料夾
-    dst_test_in_dir  = dst_db_dir + "/" + db_name + "/" + "test/"  + db_in_name  ### 定位 test_in 資料夾
-    dst_test_gt_dir  = dst_db_dir + "/" + db_name + "/" + "test/"  + db_gt_name  ### 定位 test_gt 資料夾
-    if(src_rec_hope_dir is not None):
-        dst_train_rec_hope_dir  = dst_db_dir + "/" + db_name + "/" + "train/" + "/" + "rec_hope"  ### 定位 train_rec_hope 資料夾
-        dst_test_rec_hope_dir   = dst_db_dir + "/" + db_name + "/" + "test/"  + "/" + "rec_hope"  ### 定位 test_rec_hope 資料夾
+#     ###########################################################################################################
+#     ### 定位各個 dst資料夾位置
+#     dst_train_dir    = dst_db_dir + "/" + db_name + "/" + "train"                ### 定位 train 資料夾
+#     dst_train_in_dir = dst_db_dir + "/" + db_name + "/" + "train/" + db_in_name  ### 定位 train_in 資料夾
+#     dst_train_gt_dir = dst_db_dir + "/" + db_name + "/" + "train/" + db_gt_name  ### 定位 train_gt 資料夾
+#     dst_test_dir     = dst_db_dir + "/" + db_name + "/" + "test"                 ### 定位 test 資料夾
+#     dst_test_in_dir  = dst_db_dir + "/" + db_name + "/" + "test/"  + db_in_name  ### 定位 test_in 資料夾
+#     dst_test_gt_dir  = dst_db_dir + "/" + db_name + "/" + "test/"  + db_gt_name  ### 定位 test_gt 資料夾
+#     if(src_rec_hope_dir is not None):
+#         dst_train_rec_hope_dir  = dst_db_dir + "/" + db_name + "/" + "train/" + "/" + "rec_hope"  ### 定位 train_rec_hope 資料夾
+#         dst_test_rec_hope_dir   = dst_db_dir + "/" + db_name + "/" + "test/"  + "/" + "rec_hope"  ### 定位 test_rec_hope 資料夾
 
-    ### 建立各個資料夾
-    Check_dir_exist_and_build_new_dir(dst_train_dir)
-    Check_dir_exist_and_build_new_dir(dst_train_in_dir)
-    Check_dir_exist_and_build_new_dir(dst_train_gt_dir)
-    Check_dir_exist_and_build_new_dir(dst_test_dir)
-    Check_dir_exist_and_build_new_dir(dst_test_in_dir)
-    Check_dir_exist_and_build_new_dir(dst_test_gt_dir)
-    if(src_rec_hope_dir is not None):
-        Check_dir_exist_and_build_new_dir(dst_train_rec_hope_dir)
-        Check_dir_exist_and_build_new_dir(dst_test_rec_hope_dir)
+#     ### 建立各個資料夾
+#     Check_dir_exist_and_build_new_dir(dst_train_dir)
+#     Check_dir_exist_and_build_new_dir(dst_train_in_dir)
+#     Check_dir_exist_and_build_new_dir(dst_train_gt_dir)
+#     Check_dir_exist_and_build_new_dir(dst_test_dir)
+#     Check_dir_exist_and_build_new_dir(dst_test_in_dir)
+#     Check_dir_exist_and_build_new_dir(dst_test_gt_dir)
+#     if(src_rec_hope_dir is not None):
+#         Check_dir_exist_and_build_new_dir(dst_train_rec_hope_dir)
+#         Check_dir_exist_and_build_new_dir(dst_test_rec_hope_dir)
 
-    ###########################################################################################################
-    # ### src ---複製--> dst
-    def copy_util(src_dir, dst_dir, file_names, indexes):
-        for i in indexes:
-            src_in_path = src_dir + "/" + file_names[i]    ### 定位 src_in_path
-            dst_in_path = dst_dir + "/" + file_names[i]    ### 定位 dst_in_path
-            shutil.copy(src=src_in_path, dst=dst_in_path)  ### src ---複製--> dst
+#     ###########################################################################################################
+#     # ### src ---複製--> dst
+#     def copy_util(src_dir, dst_dir, file_names, indexes):
+#         for i in indexes:
+#             src_in_path = src_dir + "/" + file_names[i]    ### 定位 src_in_path
+#             dst_in_path = dst_dir + "/" + file_names[i]    ### 定位 dst_in_path
+#             shutil.copy(src=src_in_path, dst=dst_in_path)  ### src ---複製--> dst
 
-    copy_util(src_in_dir, dst_train_in_dir, in_file_names, range(train_amount))   ### in -> train
-    copy_util(src_gt_dir, dst_train_gt_dir, gt_file_names, range(train_amount))   ### gt -> train
-    copy_util(src_in_dir, dst_test_in_dir, in_file_names, range(train_amount, data_amount))  ### in -> test
-    copy_util(src_gt_dir, dst_test_gt_dir, gt_file_names, range(train_amount, data_amount))  ### gt -> test
-    if(src_rec_hope_dir is not None):
-        copy_util(src_rec_hope_dir, dst_train_rec_hope_dir, rec_hope_list, range(train_amount))               ### rec_hope -> train
-        copy_util(src_rec_hope_dir, dst_test_rec_hope_dir,  rec_hope_list, range(train_amount, data_amount))  ### rec_hope -> test
+#     copy_util(src_in_dir, dst_train_in_dir, in_file_names, range(train_amount))   ### in -> train
+#     copy_util(src_gt_dir, dst_train_gt_dir, gt_file_names, range(train_amount))   ### gt -> train
+#     copy_util(src_in_dir, dst_test_in_dir, in_file_names, range(train_amount, data_amount))  ### in -> test
+#     copy_util(src_gt_dir, dst_test_gt_dir, gt_file_names, range(train_amount, data_amount))  ### gt -> test
+#     if(src_rec_hope_dir is not None):
+#         copy_util(src_rec_hope_dir, dst_train_rec_hope_dir, rec_hope_list, range(train_amount))               ### rec_hope -> train
+#         copy_util(src_rec_hope_dir, dst_test_rec_hope_dir,  rec_hope_list, range(train_amount, data_amount))  ### rec_hope -> test
 
 
 #####################################################################################################################################################
