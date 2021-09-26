@@ -1,0 +1,5 @@
+開啟Blender， 開啟 Text Editor
+隨便從電腦 拉個 .txt, .py 之類的 文件 進 Blender 的 Text Editor
+在 Blender 外的編輯器 編輯一下 剛才拉進去的 文件
+回到 Blender 的 Text Editor， 就會出現 conflict 紅色icon
+點一下icon， 在 reload 選項上 點 滑鼠右鍵 ， 選擇設定 short cut， 設定成滑鼠左鍵 即可
