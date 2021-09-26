@@ -18,7 +18,7 @@ sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
 import os
 
-def Syn_write_to_read_dir(write_dir, read_dir, build_new_dir=False, print_msg=True):
+def Syn_write_to_read_dir(write_dir, read_dir, build_new_dir=False, copy_sub_dir=False, print_msg=True):
     """
     為了 HDD 不產生磁碟碎片，
     我在 train完的後處理 會儲存在 SSD 裡面， 此時是 write 在 SSD，
@@ -83,6 +83,7 @@ def Syn_write_to_read_dir(write_dir, read_dir, build_new_dir=False, print_msg=Tr
     write_dir = write_dir.replace("/", "\\") + "\\"
     read_dir  = read_dir .replace("/", "\\") + "\\"
     command   = f'xcopy "{write_dir}" "{read_dir}" /Y /Q'  ### 複製資料夾內的檔案(不包含子資料夾，子資料夾也想複製的話加/E，但我覺得不要，因為如果複製 上層資料夾， 會重複複製到很多次相同子資料夾， 浪費時間)
+    if(copy_sub_dir): command += " /E"  ### 如果有需要複製子資料夾， 再自己把 參數 copy_sub_dir 設True 囉！
     ### /Y 預設覆蓋檔案的複製、/Q 不顯示複製的檔案、/E 子資料夾也會複製過去
     ### 我找了很多資料，就是弄不掉 已複製 ... 個檔案，就算了吧～
     os.system(command)
