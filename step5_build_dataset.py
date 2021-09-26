@@ -1,9 +1,6 @@
 import sys
 sys.path.append("kong_util")
-import shutil
-from build_dataset_combine import Check_dir_exist_and_build_new_dir, build_datasets
-from util import get_dir_certain_file_name
-
+from build_dataset_combine import build_datasets
 
 #####################################################################################################################################################
 # dst_db_dir = "D:/Users/user/Desktop/db/"  ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
@@ -186,46 +183,6 @@ from util import get_dir_certain_file_name
 #                db_in_name   = "unet_rec_img_db",
 #                db_gt_name   = "gt_ord_img_db")
 
-
-#####################################################################################################################################################
-### blender_os_hw512
-# build_datasets(src_in_dir   = "J:/kong_render_os_book_all_have_bg_512/0_image",
-#                src_gt_dir   = "J:/kong_render_os_book_all_have_bg_512/1_uv_knpy",
-#                src_in_word  = ".png",
-#                src_gt_word  = ".knpy",
-#                dst_db_dir   = "J:/kong_render_os_book_all_have_bg_512",
-#                db_name      = "blender_os_hw512_have_bg",
-#                db_in_name   = "dis_imgs",
-#                db_gt_name   = "flows",
-#                train_amount = 900,
-#                src_rec_hope_dir="J:/kong_render_os_book_all_have_bg_512/0_image_ord",
-#                src_rec_hope_word=".jpg")
-
-# ### blender_os_hw512
-# build_datasets(src_in_dir   = "J:/kong_render_os_book_and_paper_all_have_bg_512/0_image",
-#                src_gt_dir   = "J:/kong_render_os_book_and_paper_all_have_bg_512/1_uv_knpy",
-#                src_in_word  = ".png",
-#                src_gt_word  = ".knpy",
-#                dst_db_dir   = "J:/kong_render_os_book_and_paper_all_have_bg_512",
-#                db_name      = "blender_os_and_paper_hw512_have_bg",
-#                db_in_name   = "dis_imgs",
-#                db_gt_name   = "flows",
-#                train_amount = 900,
-#                src_rec_hope_dir="J:/kong_render_os_book_and_paper_all_have_bg_512/0_image_ord",
-#                src_rec_hope_word=".jpg")
-
-### blender_os_hw512
-build_datasets(src_in_dir   = "J:/kong_render_os_book_and_paper_all_have_dtd_bg_512/0_image",
-               src_gt_dir   = "J:/kong_render_os_book_and_paper_all_have_dtd_bg_512/1_uv_knpy",
-               src_in_word  = ".png",
-               src_gt_word  = ".knpy",
-               dst_db_dir   = "J:/kong_render_os_book_and_paper_all_have_dtd_bg_512",
-               db_name      = "blender_os_and_paper_hw512_have_dtd_bg",
-               db_in_name   = "dis_imgs",
-               db_gt_name   = "flows",
-               train_amount = 900,
-               src_rec_hope_dir="J:/kong_render_os_book_and_paper_all_have_dtd_bg_512/0_image_ord",
-               src_rec_hope_word=".jpg")
 
 # from util import  get_maxmin_train_move_from_path, get_max_db_move_xy
 # db_name = "1_pure_unet2000-512to256_index"
