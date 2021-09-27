@@ -63,6 +63,7 @@ class DB_NAME(Enum):
     blender_os_hw512_have_bg = "blender_os_hw512_have_bg"
     blender_os_and_paper_hw512_have_bg = "blender_os_and_paper_hw512_have_bg"
     blender_os_and_paper_hw512_have_dtd_bg = "blender_os_and_paper_hw512_have_dtd_bg"
+    blender_os_and_paper_hw512_have_dtd_hdr_mix_bg = "blender_os_and_paper_hw512_have_dtd_hdr_mix_bg"
 
     try_segmentation       = "try_segmentation"
 
@@ -262,6 +263,7 @@ type8_blender_os_book_768                    = Dataset_builder().set_basic(DB_C.
 type8_blender_os_book_512_have_bg            = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw512_have_bg, DB_GM.in_dis_gt_flow, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1", rec_hope_format="jpg", rec_hope_range="0~255").set_detail(have_train=True, have_see=True, have_rec_hope=True)
 type8_blender_os_and_paper_hw512_have_bg     = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_and_paper_hw512_have_bg, DB_GM.in_dis_gt_flow, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1", rec_hope_format="jpg", rec_hope_range="0~255").set_detail(have_train=True, have_see=True, have_rec_hope=True)
 type8_blender_os_and_paper_hw512_have_dtd_bg = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_and_paper_hw512_have_dtd_bg, DB_GM.in_dis_gt_flow, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1", rec_hope_format="jpg", rec_hope_range="0~255").set_detail(have_train=True, have_see=True, have_rec_hope=True)
+type8_blender_os_and_paper_hw512_have_dtd_hdr_mix_bg = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_and_paper_hw512_have_dtd_hdr_mix_bg, DB_GM.in_dis_gt_flow, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", in_range="0~255", gt_format="knpy", gt_range="0~1", rec_hope_format="jpg", rec_hope_range="0~255").set_detail(have_train=True, have_see=True, have_rec_hope=True)
 type9_try_segmentation                       = Dataset_builder().set_basic(DB_C.type9_try_segmentation                     , DB_N.try_segmentation        , DB_GM.in_img_gt_mask, h=1280, w=1918).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", in_range="0~255", gt_format="gif", gt_range="0~255").set_detail(have_train=True, have_see=False)
 
 type9_try_flow_mask = copy.deepcopy(type8_blender_os_book_768)
@@ -275,6 +277,9 @@ type9_try_flow_mask_have_bg_and_paper.set_get_method(DB_GM.in_dis_gt_flow_mask)
 
 type9_try_flow_mask_have_bg_dtd_and_paper = copy.deepcopy(type8_blender_os_and_paper_hw512_have_dtd_bg)
 type9_try_flow_mask_have_bg_dtd_and_paper.set_get_method(DB_GM.in_dis_gt_flow_mask)
+
+type9_try_flow_mask_have_bg_dtd_hdr_mix_and_paper = copy.deepcopy(type8_blender_os_and_paper_hw512_have_dtd_hdr_mix_bg)
+type9_try_flow_mask_have_bg_dtd_hdr_mix_and_paper.set_get_method(DB_GM.in_dis_gt_flow_mask)
 
 if(__name__ == "__main__"):
     db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", in_range="0~255", gt_format="bmp", gt_range="0~255").set_detail(have_train=True, have_see=True).build()
