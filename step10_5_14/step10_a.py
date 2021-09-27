@@ -7,7 +7,7 @@ curr_layer = len(curr_path.split("\\")) - 1                ### 看 目前執行p
 kong_layer = curr_path.split("\\").index("kong_model2")    ### 看kong_model2 在哪一層
 back_to_kong_layer_amount = curr_layer - kong_layer        ### 看 目前執行python的位置在哪一層 到 kong_model2 差幾層
 for _ in range(back_to_kong_layer_amount): os.chdir("..")  ### 看差幾層 往前跳 幾次dir
-sys.path.append(".")                                         ### 把 kong_model2 加進 sys.path
+sys.path.append(".")                                       ### 把 kong_model2 加進 sys.path
 #############################################################################################################################################################################################################
 
 from step06_a_datas_obj import *
