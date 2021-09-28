@@ -440,7 +440,7 @@ class See_bm_rec(See_npy_to_npz):
         self.rec_names = get_dir_certain_file_name(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".jpg")
         self.rec_read_paths = [self.rec_visual_read_dir + "/" + name for name in self.rec_names]  ### 沒有 write_path， 因為 bm_rec 只需要指定 write_dir 即可寫入資料夾
 
-        self.see_rec_amount = len(self.rec_names)
+        self.see_rec_amount = len(self.rec_read_paths)
 
     ###############################################################################################
     ###############################################################################################
