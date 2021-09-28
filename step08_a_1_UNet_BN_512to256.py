@@ -160,23 +160,7 @@ class Generator512to256(tf.keras.models.Model):
     def model(self, x):  ### 看summary用的
         return tf.keras.models.Model(inputs=[x], outputs=self.call(x))
 
-#######################################################################################################################################
-def generator_loss(gen_output, target):
-    target = tf.cast(target, tf.float32)
-    l1_loss = tf.reduce_mean(tf.abs(target - gen_output))
-    return l1_loss
 
-@tf.function()
-def train_step(model_obj, in_dis_img, gt_move_map, board_obj):
-    with tf.GradientTape() as gen_tape:
-        gen_output = model_obj.generator(in_dis_img, training=True)
-        gen_l1_loss  = generator_loss(gen_output, gt_move_map)
-
-    generator_gradients     = gen_tape.gradient(gen_l1_loss, model_obj.generator.trainable_variables)
-    model_obj.generator_optimizer.apply_gradients(zip(generator_gradients, model_obj.generator.trainable_variables))
-
-    ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
-    board_obj.losses["gen_l1_loss"](gen_l1_loss)
 
 #######################################################################################################################################
 # def generate_results( model, test_input, test_gt, max_train_move, min_train_move,  epoch=0, result_write_dir="."):
