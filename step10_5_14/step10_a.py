@@ -12,7 +12,7 @@ sys.path.append(".")                                       ### æŠŠ kong_model2 å
 
 from step06_a_datas_obj import *
 from step08_e_model_obj import *
-from step09_a_loss_info_obj import *
+from step09_b_loss_info_obj import *
 from step10_a_load_and_train_and_test import Exp_builder
 #############################################################################################################################################################################################################
 ############################################################ 14

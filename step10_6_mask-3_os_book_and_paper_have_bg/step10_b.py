@@ -28,7 +28,7 @@ run = "build().run()"
 # sb.run(same_command + [f"mask_h_bg_ch008_sig_bce_ep200.{run}"])  ### 127.35跑
 # sb.run(same_command + [f"mask_h_bg_ch004_sig_bce_ep200.{run}"])  ### 127.35跑
 # sb.run(same_command + [f"mask_h_bg_ch002_sig_bce_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch001_sig_bce_ep200.{run}"])  ### 127.35跑
+# sb.run(same_command + [f"mask_h_bg_ch001_sig_bce_ep200.{run}"])  ### 127.35跑
 ### 2. level
 # sb.run(same_command + [f"mask_h_bg_ch032_2l_sig_bce_ep060.{run}"])  ### 127.35跑
 # sb.run(same_command + [f"mask_h_bg_ch032_3l_sig_bce_ep060.{run}"])  ### 127.35跑
