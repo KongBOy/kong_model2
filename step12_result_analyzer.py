@@ -25,6 +25,7 @@ class Result_analyzer:
             for see in result.sees:
                 see.get_see_base_info()
                 see.get_bm_rec_info()
+                see.get_mask_info()
 
     def _step0_r_c_results_get_see_base_info(self, r_c_results):
         """
