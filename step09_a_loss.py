@@ -18,33 +18,59 @@ class Sobel_MAE(tf.keras.losses.Loss):
         self.kernel_scale = kernel_scale
         self.stride       = stride
 
-    def create_sobel_kernel(self):
-        if(self.kernel_size == 3):
-            kernels = [ [[-1, -2, -1],
-                         [ 0,  0,  0],
-                         [ 1,  2,  1]],   ### matrix_y, (1, 3, 3)
-                        [[-1,  0,  1],
-                         [-2,  0,  2],
-                         [-1,  0,  1]] ]  ### matrix_x, (1, 3, 3)
-        elif(self.kernel_size == 5):
-            kernels = [ [[-0.25, -0.4, -0.5,  -0.4, -0.25],
-                         [-0.20, -0.5,  -1,   -0.5, -0.20],
-                         [   0,    0,    0,    0,    0   ],
-                         [ 0.20,  0.5,   1,    0.5,  0.20],
-                         [ 0.25,  0.4,  0.5,   0.4,  0.25]],   ### matrix_y, (1, 5, 5)
-                        [[-0.25, -0.2,  0,  0.2, 0.25],
-                         [-0.40, -0.5,  0,  0.5, 0.40],
-                         [-0.50,  -1 ,  0,   1 , 0.50],
-                         [-0.40, -0.5,  0,  0.5, 0.40],
-                         [-0.25, -0.2,  0,  0.2, 0.25]] ]  ### matrix_x, (1, 5, 5)
-        kernels = np.asarray(kernels, dtype=np.float32)  ### (2, 3, 3)
-        kernels = kernels * self.kernel_scale
+    def _create_sobel_kernel_xy(self):
+        print("doing _create_sobel_kernel_xy")
+        # if(self.kernel_size == 3):
+        #     kernels = [ [[-1, -2, -1],
+        #                  [ 0,  0,  0],
+        #                  [ 1,  2,  1]],   ### matrix_y, (1, 3, 3)
+        #                 [[-1,  0,  1],
+        #                  [-2,  0,  2],
+        #                  [-1,  0,  1]] ]  ### matrix_x, (1, 3, 3)
+        # elif(self.kernel_size == 5):
+        #     kernels = [ [[-0.25, -0.4, -0.5,  -0.4, -0.25],
+        #                  [-0.20, -0.5,  -1,   -0.5, -0.20],
+        #                  [   0,    0,    0,    0,    0   ],
+        #                  [ 0.20,  0.5,   1,    0.5,  0.20],
+        #                  [ 0.25,  0.4,  0.5,   0.4,  0.25]],   ### matrix_y, (1, 5, 5)
+        #                 [[-0.25, -0.2,  0,  0.2, 0.25],
+        #                  [-0.40, -0.5,  0,  0.5, 0.40],
+        #                  [-0.50,  -1 ,  0,   1 , 0.50],
+        #                  [-0.40, -0.5,  0,  0.5, 0.40],
+        #                  [-0.25, -0.2,  0,  0.2, 0.25]] ]  ### matrix_x, (1, 5, 5)
+        # kernels = np.asarray(kernels, dtype=np.float32)  ### (2, 3, 3)
+        # print("kernels", kernels)
+        '''
+        超棒參考：https://stackoverflow.com/questions/9567882/sobel-filter-kernel-of-large-size
+
+        x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西， kernel 看起來也會是垂直的，以 kernel_size=3 為例
+            [[-1, -2, -1],
+             [ 0,  0,  0],
+             [ 1,  2,  1]]
+        y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西， kernel 看起來也會是水平的，以 kernel_size=3 為例
+            [[-1, -2, -1],
+             [ 0,  0,  0],
+             [ 1,  2,  1]]
+        '''
+        center_dist_max = (self.kernel_size - 1) / 2  ### 以1維來看，離中心最遠的距離， 比如 kernel_size=5, center_dist_max = 2
+        x_1d = np.arange(-center_dist_max, center_dist_max + 1)  ### 比如 kernel_size=5, x_dir = [-2, -1, 0, 1, 2]
+        x_2d = np.expand_dims(x_1d, 0)               ### shape 從 (5) 變 (1, 5)
+        x_2d = np.tile(x_2d, (self.kernel_size, 1))  ### 結果的 shape 為 (5, 5)
+        y_2d = x_2d.copy().T
+
+        xy_dist_2d = x_2d ** 2 + y_2d ** 2  ### 算一下 各個點 離中心點的距離 平方， 為什麼平方可以看 StackOverflow， 簡單說 是 本身的距離 * 方向帶有的距離， 所以是 距離平方
+        kernel_x = x_2d / xy_dist_2d  ### 距離越遠， 梯度值貢獻越小， 所以用除的， 因為 中心點 會 除以0 變nan， 在下面會統一指定中心算出的nan為0
+        kernel_y = y_2d / xy_dist_2d  ### 距離越遠， 梯度值貢獻越小， 所以用除的， 因為 中心點 會 除以0 變nan， 在下面會統一指定中心算出的nan為0
+        kernels = np.array( [kernel_x, kernel_y] )  ### 我現在就先放 x 再放 y， 代表 前面找垂直， 後面找水平
+        kernels[np.isnan(kernels)] = 0  ### 因為 中心點 會 除以0 變nan， 在這邊統一指定為0喔～
+
+        kernels = kernels * self.kernel_scale  ### * self.kernel_scale 後來根據 StackOverflow 的解釋是說 只是為了方便人看 成一個東西變整數， 其實不需要也沒問題～
         kernels = np.transpose(kernels, (1, 2, 0))  ### (3, 3, 2)
         kernels = np.expand_dims(kernels, -2)       ### (3, 3, 1, 2)
         return kernels
 
     def Calculate_sobel_edges(self, image, stride=1):
-        print("doing sobel_mae_loss")
+        print("doing Calculate_sobel_edges")
         '''
         image：BHWC
         kernel：(2, k_size, k_size)
@@ -52,7 +78,7 @@ class Sobel_MAE(tf.keras.losses.Loss):
         '''
         image_shape = image.get_shape()
 
-        kernels = self.create_sobel_kernel()  ### 寫這邊的主要用意是想要 "有用到的時候再建立"， 如果以平常的寫法的話不好， 因為每次用都要建新的， 但是因注意現在因為有用 @tf.function， 只會在一開始建圖的時候建立一次， 之後不會再建立囉！ 所以這邊可以這樣寫覺得～
+        kernels = self._create_sobel_kernel_xy()  ### 寫這邊的主要用意是想要 "有用到的時候再建立"， 如果以平常的寫法的話不好， 因為每次用都要建新的， 但是因注意現在因為有用 @tf.function， 只會在一開始建圖的時候建立一次， 之後不會再建立囉！ 所以這邊可以這樣寫覺得～
         kernels_num = kernels.shape[-1]
         kernels_tf  = tf.constant(kernels, dtype=tf.float32)
         kernels_tf  = tf.tile(kernels_tf, [1, 1, image_shape[-1], 1], name='sobel_filters')  ### (3, 3, C, 2)
@@ -62,7 +88,7 @@ class Sobel_MAE(tf.keras.losses.Loss):
         padded = tf.pad(image, pad_sizes, mode='REFLECT')
 
         strides = [1, stride, stride, 1]  ### BHWC
-        output = tf.nn.depthwise_conv2d(padded, kernels_tf, strides, 'VALID')  ### (1, 448, 448, 6)
+        output = tf.nn.depthwise_conv2d(padded, kernels_tf, strides, 'VALID')  ### (1, 448, 448, 6=3(C)*2(dx 和 dy))
         output = tf.reshape(output, shape=image_shape + [kernels_num])  ### (1, 448, 448, 3, 2 -> 分別是 dx 和 dy)
         return output
 
@@ -70,12 +96,12 @@ class Sobel_MAE(tf.keras.losses.Loss):
     def call(self, img1, img2):
         print("doing sobel_mae_loss")
         img1_sobel_xy = self.Calculate_sobel_edges(image=img1)
-        img1_sobel_y = img1_sobel_xy[..., 0]
-        img1_sobel_x = img1_sobel_xy[..., 1]
+        img1_sobel_x = img1_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
+        img1_sobel_y = img1_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
 
         img2_sobel_xy = self.Calculate_sobel_edges(image=img2)
-        img2_sobel_y = img2_sobel_xy[..., 0]
-        img2_sobel_x = img2_sobel_xy[..., 1]
+        img2_sobel_x = img2_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
+        img2_sobel_y = img2_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
         grad_loss = mae_kong(img1_sobel_x, img2_sobel_x) + mae_kong(img1_sobel_y, img2_sobel_y)
 
         # import matplotlib.pyplot as plt
@@ -83,15 +109,19 @@ class Sobel_MAE(tf.keras.losses.Loss):
         # nrows = 2
         # ncols = 2
         # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
-        # ax[0, 0].imshow(img1_sobel_y[0])  ### BHWC，所以要 [0]
-        # ax[0, 1].imshow(img1_sobel_x[0])  ### BHWC，所以要 [0]
-        # ax[1, 0].imshow(img2_sobel_y[0])  ### BHWC，所以要 [0]
-        # ax[1, 1].imshow(img2_sobel_x[0])  ### BHWC，所以要 [0]
+        # ax[0, 0].imshow(img1_sobel_x[0])  ### BHWC，所以要 [0]
+        # ax[0, 1].imshow(img1_sobel_y[0])  ### BHWC，所以要 [0]
+        # ax[1, 0].imshow(img2_sobel_x[0])  ### BHWC，所以要 [0]
+        # ax[1, 1].imshow(img2_sobel_y[0])  ### BHWC，所以要 [0]
         # plt.tight_layout()
+        # print("img1_sobel_x.max()", img1_sobel_x.numpy().max())
+        # print("img1_sobel_x.min()", img1_sobel_x.numpy().min())
+        # print("img1_sobel_y.max()", img1_sobel_y.numpy().max())
+        # print("img1_sobel_y.min()", img1_sobel_y.numpy().min())
         # plt.show()
         return grad_loss
 
-# def create_sobel_kernel(kernel_size, kernel_scale):
+# def _create_sobel_kernel_xy(kernel_size, kernel_scale):
 #     if(kernel_size == 3):
 #         kernels = [ [[-1, -2, -1],
 #                      [ 0,  0,  0],
@@ -121,7 +151,7 @@ class Sobel_MAE(tf.keras.losses.Loss):
 #     '''
 #     image_shape = image.get_shape()
 
-#     kernels = create_sobel_kernel(kernel_size, kernel_scale)
+#     kernels = _create_sobel_kernel_xy(kernel_size, kernel_scale)
 #     kernels_num = len(kernels)
 #     kernels     = np.asarray(kernels, dtype=np.float32)               ### (2, 3, 3)
 #     kernels     = np.transpose(kernels, (1, 2, 0))  ### (3, 3, 2)
@@ -171,7 +201,8 @@ if __name__ == '__main__':
     img1 = cv2.imread(img1_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
     img2 = cv2.imread(img2_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
 
-    sobel_k3_mae = Sobel_MAE(kernel_size=5)
+    # sobel_k3_mae = Sobel_MAE(kernel_size=5)
+    sobel_k3_mae = Sobel_MAE(kernel_size=7)
     ############################################################################################################
     img1 = tf.expand_dims(img1, 0)  ### BHWC 這是 丟進 tf_cnn 網路 的標準格式 (1, 448, 448, 3)， 順便直接用 tf.expand_expand_dims 轉成 tensor， 不用 np.expand_dims
     img2 = tf.expand_dims(img2, 0)  ### BHWC 這是 丟進 tf_cnn 網路 的標準格式 (1, 448, 448, 3)， 順便直接用 tf.expand_expand_dims 轉成 tensor， 不用 np.expand_dims

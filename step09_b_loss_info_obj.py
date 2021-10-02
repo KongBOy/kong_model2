@@ -149,6 +149,15 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
         self.loss_info_obj.loss_containors["mask_sobel_MAE_loss" ] = tf.keras.metrics.Mean(name='mask_sobel_k5_MAE_loss', dtype=tf.float32)
         return self.loss_info_obj
 
+    def build_bce_and_sobel_k7_mae_loss_fun_and_containor(self):
+        print("self.loss_info_obj.logs_read_dir ~  ~  ~  ~  ", self.loss_info_obj.logs_read_dir)
+        print("self.loss_info_obj.logs_write_dir~  ~  ~  ~  ", self.loss_info_obj.logs_write_dir)
+        self.loss_info_obj.loss_funs_dict["mask_BCE"]              = tf.keras.losses.BinaryCrossentropy(from_logits=False)
+        self.loss_info_obj.loss_funs_dict["mask_Sobel_MAE"]        = Sobel_MAE(kernel_size=7)
+        self.loss_info_obj.loss_containors["mask_bce_loss" ]       = tf.keras.metrics.Mean(name='mask_bce_loss', dtype=tf.float32)
+        self.loss_info_obj.loss_containors["mask_sobel_MAE_loss" ] = tf.keras.metrics.Mean(name='mask_sobel_k7_MAE_loss', dtype=tf.float32)
+        return self.loss_info_obj
+
     def build_g_bce_loss_fun_and_containor(self):
         print("self.loss_info_obj.logs_read_dir ~  ~  ~  ~  ", self.loss_info_obj.logs_read_dir)
         print("self.loss_info_obj.logs_write_dir~  ~  ~  ~  ", self.loss_info_obj.logs_write_dir)
@@ -176,6 +185,7 @@ class Loss_info_builder(Loss_info_G_loss_builder):
         elif(self.loss_info_obj.loss_type == "mae"):       return self.build_g_mae_loss_fun_and_containor()
         elif(self.loss_info_obj.loss_type == "bce+mae_sobel_k3"): return self.build_bce_and_sobel_k3_mae_loss_fun_and_containor()
         elif(self.loss_info_obj.loss_type == "bce+mae_sobel_k5"): return self.build_bce_and_sobel_k5_mae_loss_fun_and_containor()
+        elif(self.loss_info_obj.loss_type == "bce+mae_sobel_k7"): return self.build_bce_and_sobel_k7_mae_loss_fun_and_containor()
         elif(self.loss_info_obj.loss_type == "bce"):       return self.build_g_bce_loss_fun_and_containor()
         elif(self.loss_info_obj.loss_type == "justG"):     return self.build_gan_loss()
         elif(self.loss_info_obj.loss_type == "GAN"):       return self.build_gan_loss_containors()
@@ -192,6 +202,7 @@ G_mae_loss_info_builder            = Loss_info_builder().set_loss_type("mae")  #
 G_bce_loss_info_builder            = Loss_info_builder().set_loss_type("bce")  #.build_gan_loss().build_gan_loss_containors()
 G_bce_sobel_k3_loss_info_builder   = Loss_info_builder().set_loss_type("bce+mae_sobel_k3")  #.build_gan_loss().build_gan_loss_containors()
 G_bce_sobel_k5_loss_info_builder   = Loss_info_builder().set_loss_type("bce+mae_sobel_k5")  #.build_gan_loss().build_gan_loss_containors()
+G_bce_sobel_k7_loss_info_builder   = Loss_info_builder().set_loss_type("bce+mae_sobel_k7")  #.build_gan_loss().build_gan_loss_containors()
 GAN_mae_loss_info                  = Loss_info_builder().set_loss_type("justG")  #.build_gan_loss().build_gan_loss_containors()
 
 
