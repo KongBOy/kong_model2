@@ -106,13 +106,14 @@ def generate_mask_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, 
     flow 部分還沒寫
     '''
 
-    see_write_dir  = result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-
+    see_write_dir  = result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    mask_write_dir = result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
-        Check_dir_exist_and_build(see_write_dir)   ### 建立 see資料夾
+        Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
+        Check_dir_exist_and_build(mask_write_dir)   ### 建立 model生成的結果 的資料夾
         cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg", in_img[0][:, :, ::-1].numpy())   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_a_mask.bmp", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         # np.save(see_write_dir + "/" + "0b-gt_a_mask", gt_mask)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
     # np.save(    see_write_dir + "/" + "epoch_%04i_a_mask"            % epoch, mask)      ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-    cv2.imwrite(    see_write_dir + "/" + "epoch_%04i_a_mask.bmp"            % epoch, (mask.numpy() * 255).astype(np.uint8))      ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    cv2.imwrite(    mask_write_dir + "/" + "epoch_%04i_a_mask.bmp"            % epoch, (mask.numpy() * 255).astype(np.uint8))      ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
