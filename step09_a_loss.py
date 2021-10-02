@@ -64,6 +64,31 @@ class Sobel_MAE(tf.keras.losses.Loss):
         kernels = np.array( [kernel_x, kernel_y] )  ### 我現在就先放 x 再放 y， 代表 前面找垂直， 後面找水平
         kernels[np.isnan(kernels)] = 0  ### 因為 中心點 會 除以0 變nan， 在這邊統一指定為0喔～
 
+        ##########################################################################################
+        # ### 手動指定
+
+        # ### prewitt
+        # self.kernel_size = 3
+        # kernels = [ [[-1,  0,  1],
+        #              [-1,  0,  1],
+        #              [-1,  0,  1]],   ### matrix_y, (1, 3, 3)
+        #             [[-1, -1, -1],
+        #              [ 0,  0,  0],
+        #              [ 1,  1,  1]] ]  ### matrix_x, (1, 3, 3)
+        # ############################################
+        # ### 模仿 total variance
+        # self.kernel_size = 3
+        # kernels = [ [[ 0,  0,  0],
+        #              [-1,  0,  1],
+        #              [ 0,  0,  0]],   ### matrix_y, (1, 3, 3)
+        #             [[ 0, -1,  0],
+        #              [ 0,  0,  0],
+        #              [ 0,  1,  0]] ]  ### matrix_x, (1, 3, 3)
+        # ############################################
+        # kernels = np.array(kernels, dtype=np.float32)
+        # print("kernels", kernels)
+        ##########################################################################################
+
         kernels = kernels * self.kernel_scale  ### * self.kernel_scale 後來根據 StackOverflow 的解釋是說 只是為了方便人看 成一個東西變整數， 其實不需要也沒問題～
         kernels = np.transpose(kernels, (1, 2, 0))  ### (3, 3, 2)
         kernels = np.expand_dims(kernels, -2)       ### (3, 3, 1, 2)
@@ -104,21 +129,21 @@ class Sobel_MAE(tf.keras.losses.Loss):
         img2_sobel_y = img2_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
         grad_loss = mae_kong(img1_sobel_x, img2_sobel_x) + mae_kong(img1_sobel_y, img2_sobel_y)
 
-        # import matplotlib.pyplot as plt
-        # show_size = 5
-        # nrows = 2
-        # ncols = 2
-        # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
-        # ax[0, 0].imshow(img1_sobel_x[0])  ### BHWC，所以要 [0]
-        # ax[0, 1].imshow(img1_sobel_y[0])  ### BHWC，所以要 [0]
-        # ax[1, 0].imshow(img2_sobel_x[0])  ### BHWC，所以要 [0]
-        # ax[1, 1].imshow(img2_sobel_y[0])  ### BHWC，所以要 [0]
-        # plt.tight_layout()
-        # print("img1_sobel_x.max()", img1_sobel_x.numpy().max())
-        # print("img1_sobel_x.min()", img1_sobel_x.numpy().min())
-        # print("img1_sobel_y.max()", img1_sobel_y.numpy().max())
-        # print("img1_sobel_y.min()", img1_sobel_y.numpy().min())
-        # plt.show()
+        import matplotlib.pyplot as plt
+        show_size = 5
+        nrows = 2
+        ncols = 2
+        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
+        ax[0, 0].imshow(img1_sobel_x[0])  ### BHWC，所以要 [0]
+        ax[0, 1].imshow(img1_sobel_y[0])  ### BHWC，所以要 [0]
+        ax[1, 0].imshow(img2_sobel_x[0])  ### BHWC，所以要 [0]
+        ax[1, 1].imshow(img2_sobel_y[0])  ### BHWC，所以要 [0]
+        plt.tight_layout()
+        print("img1_sobel_x.max()", img1_sobel_x.numpy().max())
+        print("img1_sobel_x.min()", img1_sobel_x.numpy().min())
+        print("img1_sobel_y.max()", img1_sobel_y.numpy().max())
+        print("img1_sobel_y.min()", img1_sobel_y.numpy().min())
+        plt.show()
         return grad_loss
 
 # def _create_sobel_kernel_xy(kernel_size, kernel_scale):
@@ -202,7 +227,7 @@ if __name__ == '__main__':
     img2 = cv2.imread(img2_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
 
     # sobel_k3_mae = Sobel_MAE(kernel_size=5)
-    sobel_k3_mae = Sobel_MAE(kernel_size=7)
+    sobel_k3_mae = Sobel_MAE(kernel_size=3)
     ############################################################################################################
     img1 = tf.expand_dims(img1, 0)  ### BHWC 這是 丟進 tf_cnn 網路 的標準格式 (1, 448, 448, 3)， 順便直接用 tf.expand_expand_dims 轉成 tensor， 不用 np.expand_dims
     img2 = tf.expand_dims(img2, 0)  ### BHWC 這是 丟進 tf_cnn 網路 的標準格式 (1, 448, 448, 3)， 順便直接用 tf.expand_expand_dims 轉成 tensor， 不用 np.expand_dims
