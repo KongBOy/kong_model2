@@ -56,7 +56,7 @@ class Result:
     ##############################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
-    def result_do_multiple_single_see(self, start_see, see_amount, **args):
+    def result_do_all_single_see(self, start_see, see_amount, **args):
         """
         step1： Result的功能是把 See 裡面寫的 專門給單個see 的 method ，用for 走訪所有See 然後都執行一次，
         step2： Result也可以 multiprocess，就是把 See當單位 來做multiprocess了，See 裡面本身就有 multiprocess 處理了
@@ -72,7 +72,7 @@ class Result:
             see_core_amount       : int
             result_print_msg       : bool
         }
-        method舉例怎麼呼叫：result_do_multiple_single_see(start_see, see_amount, see_method_name=str, add_loss=bool, bgr2rgb=bool, single_see_core_amount=int, see_print_msg=bool, see_core_amount=int, result_print_msg=bool)
+        method舉例怎麼呼叫：result_do_all_single_see(start_see, see_amount, see_method_name=str, add_loss=bool, bgr2rgb=bool, single_see_core_amount=int, see_print_msg=bool, see_core_amount=int, result_print_msg=bool)
             see_method_name 目前以下選擇：
                 Save_as_matplot_visual
                 Save_as_bm_rec_matplot_visual
@@ -96,19 +96,19 @@ class Result:
             see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 依序跑， see內的多個任務 同時跑
             see內 當單位 切 multiprocess
             """
-            self._result_do_multiple_single_see(start_see, see_amount, args)
+            self._result_do_all_single_see(start_see, see_amount, args)
         elif(args["see_core_amount"]  > 1):
             """ step2
             see_core_amount  > 1 , single_see_core_amount == 1：多核心跑， 多個see 同時跑， see內的多個任務 依序跑
             see_core_amount  > 1 , single_see_core_amount  > 1：多核心跑， 多個see 同時跑， see內的多個任務 同時跑
             以 整個see 當單位 切 multiprocess
             """
-            multi_processing_interface(core_amount=args["see_core_amount"], task_amount=see_amount , task=self._result_do_multiple_single_see, task_start_index=start_see, task_args=[args], print_msg=args["result_print_msg"])
+            multi_processing_interface(core_amount=args["see_core_amount"], task_amount=see_amount , task=self._result_do_all_single_see, task_start_index=start_see, task_args=[args], print_msg=args["result_print_msg"])
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: {args['see_method_name']} finish")
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: {args['see_method_name']}, cost_time = {time.time() - result_start}")
 
     ### 寫成 start_see + see_amount 真的麻，但是 這是為了 multiprocess 的設計才這樣寫的，只能忍一下囉～
-    def _result_do_multiple_single_see(self, start_see, see_amount, args):
+    def _result_do_all_single_see(self, start_see, see_amount, args):
         """
         用 for 迴圈 依序 跑 單個 see， see內任務 當單位 切 multiprocess
         """
