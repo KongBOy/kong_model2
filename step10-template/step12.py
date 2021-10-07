@@ -40,7 +40,7 @@ if(__name__ == "__main__"):
     ############################################
     # epoch300_500_analyze_2row_all = Row_col_results_analyzer(ana_describe="2row_ep300_500_a020",
     #                                                         row_col_results=[epoch300_500_results[:5],
-    #                                                                         epoch300_500_results[5:10]], show_in_imgs=False, show_gt_imgs=False, bgr2rgb=True, add_loss=False)
+    #                                                                         epoch300_500_results[5:10]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # epoch300_500_analyze_2row_all.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ##################################################################################################################################################################
     # Bm_Rec_exps_analyze("unet_7l_skip_SE", unet_7l_skip_SE).all_single_see_final_rec_analyze(reset_dir=True).analyze_tensorboard(reset_dir=True)
@@ -49,7 +49,7 @@ if(__name__ == "__main__"):
     # unet_7l_2to3noC_skip_SE_results = [exp.result_obj for exp in unet_7l_2to3noC_skip_SE]
     # unet_7l_2to3noC_skip_SE_analyze = Row_col_results_analyzer(ana_describe="unet_7l_2to3noC_skip_SE",
     #                                                         row_col_results=[[unet_7l_2to3noC_skip_SE_results[0], unet_7l_2to3noC_skip_SE_results[1]],
-    #                                                                         [unet_7l_2to3noC_skip_SE_results[2], unet_7l_2to3noC_skip_SE_results[3]]], show_in_imgs=False, show_gt_imgs=False, bgr2rgb=True, add_loss=False)
+    #                                                                         [unet_7l_2to3noC_skip_SE_results[2], unet_7l_2to3noC_skip_SE_results[3]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # unet_7l_2to3noC_skip_SE_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=8)
     # Bm_Rec_exps_analyze("unet_7l_2to3noC_skip_SE", unet_7l_2to3noC_skip_SE).all_single_see_final_rec_analyze(reset_dir=True).analyze_tensorboard(reset_dir=True)
 
