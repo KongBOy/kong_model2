@@ -195,6 +195,8 @@ class Result:
     ##############################################################################################################################
     ##############################################################################################################################
     ##############################################################################################################################
+    ### 好像都沒用到，先註解起來吧～再看看要不要 把功能用其他方式實現出來 再刪掉
+    '''
     def _Draw_multi_see(self, start_epoch, epoch_amount, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False):  ### 因為需要看多see，所以提升到Result才的到多see喔！
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             r_c_imgs = []
@@ -236,8 +238,8 @@ class Result:
         in_imgs = []
         gt_imgs = []
         for see_num in see_nums:
-            in_imgs.append(cv2.imread(self.sees[see_num].see_in_img_path))
-            gt_imgs.append(cv2.imread(self.sees[see_num].see_gt_flow_v_path))
+            in_imgs.append(cv2.imread(self.sees[see_num].in_img_path))
+            gt_imgs.append(cv2.imread(self.sees[see_num].gt_flow_v_path))
 
         ### 抓 第一row的 要顯示的 titles
         titles = ["in_img", self.ana_describe, "gt_img"]
@@ -252,7 +254,7 @@ class Result:
         Save_as_jpg(matplot_multi_see_dir, matplot_multi_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY])  ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(matplot_multi_see_dir, matplot_multi_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
-
+    '''
 
     ##########################################################################################################################
     ##########################################################################################################################
