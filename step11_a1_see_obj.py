@@ -439,6 +439,9 @@ class See_bm_rec(See_npy_to_npz):
         self.rec_names = get_dir_certain_file_name(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".jpg")
         self.rec_read_paths = [self.rec_visual_read_dir + "/" + name for name in self.rec_names]  ### 沒有 write_path， 因為 bm_rec 只需要指定 write_dir 即可寫入資料夾
 
+        self.rec_gt_name = get_dir_certain_file_name(self.rec_visual_read_dir, certain_word="gt", certain_ext=".jpg")
+        self.rec_gt_path = self.rec_visual_read_dir + "/" + self.rec_gt_name[0]  ### 沒有 write_path， 因為 bm_rec 只需要指定 write_dir 即可寫入資料夾
+
         self.see_rec_amount = len(self.rec_read_paths)
 
     ###############################################################################################
@@ -548,7 +551,7 @@ class See_bm_rec(See_npy_to_npz):
         bm, rec = self._use_flow_to_rec(dis_img=dis_img, flow=flow)
 
         ### gt flow part
-        gt_flow            = np.load(self.flow_gt_npz_path)["arr_0"]       ### 要記得see的npz 第一張存的是 gt_flow 喔！   ，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        gt_flow            = np.load(self.flow_gt_npz_path)["arr_0"]       ### npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         gt_flow   [..., 1] = 1 - gt_flow[..., 1]
         gt_bm, gt_rec = self._use_flow_to_rec(dis_img=dis_img, flow=gt_flow)
         return bm, rec, gt_bm, gt_rec
