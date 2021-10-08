@@ -24,7 +24,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
     6_mask_unet/自己命的名字/...
 '''
 
-exp_dir = "6_mask_unet/2_os_book_have_bg"
+exp_dir = "6_mask_unet/2_os_book_have_bg/4 see_bg_more_simple_black_bg - use this"
 use_db_obj = type9_try_flow_mask_have_bg_and_paper
 ############################  have_bg  #################################
 ### 1a. ch
