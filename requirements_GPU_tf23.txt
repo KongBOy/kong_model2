@@ -2,4 +2,4 @@ matplotlib
 opencv-python
 tqdm
 tensorflow-gpu==2.3.0
-tensorflow_addons
+tensorflow_addons==0.11.2
