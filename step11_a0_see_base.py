@@ -41,15 +41,13 @@ class See_info:
                       └ ..._write_paths
                      file_amount
         """
-        self.see_jpg_names        = get_dir_certain_file_name(self.see_read_dir, certain_word=".jpg")
-        self.in_img_path          = self.see_read_dir + "/" + self.see_jpg_names[0]
-        self.gt_flow_v_path       = self.see_read_dir + "/" + self.see_jpg_names[1]
-        self.rec_hope_path        = self.see_read_dir + "/" + self.see_jpg_names[2]
+        # self.see_jpg_names        = get_dir_certain_file_name(self.see_read_dir, certain_word=".jpg")
+        # self.in_img_path          = self.see_read_dir + "/" + self.see_jpg_names[0]
+        self.in_img_path          = self.see_read_dir + "/" + get_dir_certain_file_name(self.see_read_dir, certain_word="in_img")[0]
 
-        ### 因為 See_flow_visual 和 See_bm_rec 要用到， 所以從 See_flow_visual 提升上來囉！
-        self.see_flow_epoch_jpg_names      = get_dir_certain_file_name(self.see_read_dir, certain_word="epoch", certain_ext=".jpg")
-        self.flow_epoch_jpg_read_paths = [self.see_read_dir + "/" + epoch_jpg_name for epoch_jpg_name in self.see_flow_epoch_jpg_names]  ### 沒有 write_paths，因為這是 predict_flow_visual， 是從model 訓練過程產生的， 後處理不會產生！ 就是不會做ewrite的動作囉！就不用write_path拉！
-        self.flow_epoch_jpg_amount     = len(self.see_flow_epoch_jpg_names)
 
-        ### 不確定合不合理， 目前就先暫時用 see_flow_epoch_jpg_names -1(去掉epoch0) 來代表 現在已經train了幾個epochs囉！ 即 trained_epochs， see_flow_epoch_jpg_names 用了覺得不合理再換吧～
-        self.trained_epoch       = self.flow_epoch_jpg_amount - 1  ### 去掉epoch0
+
+
+
+        ### 不確定合不合理， 目前就先暫時用 flow_v_jpg_names -1(去掉epoch0) 來代表 現在已經train了幾個epochs囉！ 即 trained_epochs， flow_v_jpg_names 用了覺得不合理再換吧～
+        # self.trained_epoch       = self.flow_v_jpg_amount - 1  ### 去掉epoch0
