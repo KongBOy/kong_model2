@@ -17,7 +17,10 @@ class Result_analyzer:
 
         self.ana_what = ana_what
         '''
-        mask, flow, bm, rec
+        mask,
+        flow,
+        bm,
+        rec
         '''
         self.show_in_img = show_in_img
         self.show_gt_img = show_gt_img
@@ -33,9 +36,12 @@ class Result_analyzer:
         """
         for result in c_results:
             for see in result.sees:
-                see.get_see_base_info()
-                see.get_bm_rec_info()
-                see.get_mask_info()
+                see.get_see_base_info()  ### 大家都需要拿 in_img
+
+                ### 根據 ana_what 去抓相對應的 see_info
+                if  (self.ana_what == "flow"): see.get_flow_info()
+                elif(self.ana_what == "rec"):  see.get_bm_rec_info()
+                elif(self.ana_what == "mask"): see.get_mask_info()
 
     def _step0_r_c_results_get_see_base_info(self, r_c_results):
         """
@@ -54,22 +60,20 @@ class Col_results_analyzer(Result_analyzer):
         self.c_min_trained_epoch = self.step0_get_c_min_trained_epoch()
         self.c_min_train_epochs = self.c_min_trained_epoch  ### 從see_file_name數量來推估 目前result被訓練幾個epoch，-2是減去 in_img, gt_img 兩個檔案
 
+    def _step0_get_c_trained_epochs(self):
+        ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
+        self._step0_c_results_get_see_base_info(self.c_results)
 
-    def step0_get_c_min_trained_epoch(self):
         trained_epochs = []
         for result in self.c_results:
             ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的trained_epoch就好囉～
-            result.sees[0].get_see_base_info()  ### 先去把 sees[0] 的資訊更新
             trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
-        return min(trained_epochs)
+        return trained_epochs
 
-    def step0_get_c_max_trained_epoch(self):
-        trained_epochs = []
-        for result in self.c_results:
-            ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的trained_epoch就好囉～
-            result.sees[0].get_see_base_info()  ### 先去把 sees[0] 的資訊更新
-            trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
-        return max(trained_epochs)
+    def step0_get_c_min_trained_epoch(self): return min(self._step0_get_c_trained_epochs())
+    def step0_get_c_max_trained_epoch(self): return max(self._step0_get_c_trained_epochs())
+
+
 
     ########################################################################################################################################
     def step1_get_c_titles(self):
@@ -96,7 +100,9 @@ class Col_results_analyzer(Result_analyzer):
 
             ### 可以直接調整這裡 來決定 analyze 要畫什麼， 當然這是寫死的寫法不大好， 有空再寫得更通用吧～
             if  (self.ana_what == "rec"):  c_imgs.append(cv2.imread(result.sees[see_num].rec_read_paths[use_epoch]))
-            elif(self.ana_what == "flow"): c_imgs.append(cv2.imread(result.sees[see_num].flow_epoch_jpg_read_paths[use_epoch]))
+            elif(self.ana_what == "flow"): c_imgs.append(cv2.imread(result.sees[see_num].flow_v_jpg_read_paths[use_epoch]))
+            elif(self.ana_what == "mask"): c_imgs.append(cv2.imread(result.sees[see_num].mask_read_paths[use_epoch]))
+
             # c_imgs.append(cv2.imread(result.sees[see_num].see_jpg_paths[epoch + 2]))
         return c_imgs
 
@@ -231,7 +237,7 @@ class Col_results_analyzer(Result_analyzer):
     #         for go_see_num, see_num in enumerate(see_nums):
     #             c_imgs   = [in_imgs[go_see_num]]
     #             for result in self.c_results:
-    #                 epochs = len(result.sees[see_num].see_flow_epoch_jpg_names)
+    #                 epochs = len(result.sees[see_num].flow_v_jpg_names)
     #                 # epochs = len(result.sees[see_num].rec_read_paths) - 2
     #                 # print("len(result.sees[see_num].rec_read_paths)", len(result.sees[see_num].rec_read_paths))
     #                 use_epoch = min(epochs, go_epoch)  ### 超出範圍就取最後一張
@@ -314,30 +320,25 @@ class Row_col_results_analyzer(Result_analyzer):
         super().__init__(ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss)
 
         self.r_c_results = row_col_results
-        self.r_c_min_trained_epoch = self.get_r_c_min_trained_epoch()
-        self.r_c_max_trained_epoch = self.get_r_c_max_trained_epoch()
+        self.r_c_min_trained_epoch = self.step0_get_r_c_min_trained_epoch()
+        self.r_c_max_trained_epoch = self.step0_get_r_c_max_trained_epoch()
 
         self.c_results_list = []
         for c_results in row_col_results:
             self.c_results_list.append(Col_results_analyzer(ana_describe=ana_describe, ana_what=ana_what, col_results=c_results, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss))
 
-    def get_r_c_min_trained_epoch(self):
-        trained_epochs = []
-        for row_results in self.r_c_results:
-            for result in row_results:
-                ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的trained_epoch就好囉～
-                result.sees[0].get_see_base_info()  ### 先去把 sees[0] 的資訊更新
-                trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
-        return min(trained_epochs)
+    def _step0_get_r_c_trained_epochs(self):
+        ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
+        self._step0_r_c_results_get_see_base_info(self.r_c_results)
 
-    def get_r_c_max_trained_epoch(self):
         trained_epochs = []
         for row_results in self.r_c_results:
             for result in row_results:
-                ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的trained_epoch就好囉～
-                result.sees[0].get_see_base_info()  ### 先去把 sees[0] 的資訊更新
                 trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
-        return max(trained_epochs)
+        return trained_epochs
+
+    def step0_get_r_c_min_trained_epoch(self): return min(self._step0_get_r_c_trained_epochs())
+    def step0_get_r_c_max_trained_epoch(self): return max(self._step0_get_r_c_trained_epochs())
 
     def step1_get_r_c_titles(self):
         r_c_titles = []  ### r_c_titles 抓出所有要顯示的標題 ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
@@ -358,8 +359,13 @@ class Row_col_results_analyzer(Result_analyzer):
     def _draw_row_col_results_single_see(self, start_epoch, epoch_amount, see_num, r_c_titles, analyze_see_dir):
         ### 要記得see的第一張存的是 輸入的in影像，第二張存的是 輸出的gt影像
         ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
-        in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].in_img_path)     ### 第一張：in_img
-        gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].gt_flow_v_path)  ### 第二張：gt_img
+
+        ### 抓 in/gt imgs， 因為 同個see 內所有epoch 的 in/gt 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see_ 的外面 ，然後再用 參數傳入
+        in_img = None
+        gt_img = None
+        if(self.show_in_img): in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].in_img_path)
+        if(self.show_gt_img): gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].gt_flow_v_path)
+
         # for go_img in tqdm(range(self.r_c_min_trained_epoch)):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount + 1)):  ### +1 是因為 0~epoch 都要做，  range 只到 end-1， 所以 +1 補回來～
             # print("see_num=", see_num, "go_epoch=", go_epoch)

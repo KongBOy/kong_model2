@@ -27,10 +27,10 @@ class See_mask(See_info):
         self.old1_mask_read_dir   = self.see_read_dir
         self.old1_mask_write_dir  = self.see_write_dir
         ##########################################################################################
-        self.mask_read_dir      = self.see_read_dir  + "/1_mask"  ### 之後也許東西多起來會需要獨立資料夾， 先寫起來放
-        self.mask_write_dir     = self.see_write_dir + "/1_mask"  ### 之後也許東西多起來會需要獨立資料夾， 先寫起來放
-        # self.mask_read_dir      = self.see_read_dir
-        # self.mask_write_dir     = self.see_write_dir
+        # self.mask_read_dir      = self.see_read_dir  + "/1_mask"  ### 之後也許東西多起來會需要獨立資料夾， 先寫起來放
+        # self.mask_write_dir     = self.see_write_dir + "/1_mask"  ### 之後也許東西多起來會需要獨立資料夾， 先寫起來放
+        self.mask_read_dir      = self.see_read_dir
+        self.mask_write_dir     = self.see_write_dir
 
         ### 資料夾的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔
         # self.Change_mask_dir(print_msg=True)
@@ -53,6 +53,7 @@ class See_mask(See_info):
         self.mask_read_paths  = [self.mask_read_dir + "/" + name for name in self.mask_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
         self.mask_amount = len(self.mask_read_paths)
+        self.trained_epoch  = self.mask_amount - 1  ### 去掉epoch0
 
 # class See(See_flow_visual, See_rec_metric, See_mask):
 # class See(See_flow_visual, See_npy_to_npz, See_bm_rec, See_rec_metric, See_mask):
