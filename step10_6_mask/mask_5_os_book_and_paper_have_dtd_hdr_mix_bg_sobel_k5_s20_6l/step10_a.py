@@ -54,7 +54,7 @@ mask_h_bg_ch032_6l_2to5noC_sig_bce_sobel_k5_s20_ep060 = Exp_builder().set_basic(
 mask_h_bg_ch032_6l_2to6noC_sig_bce_sobel_k5_s20_ep060 = Exp_builder().set_basic("train", use_db_obj, mask_unet_IN_7l_ch32_2to6noC_sig_sobel_6l, G_bce_sobel_k5_s20_loss_info_builder, exp_dir=exp_dir, describe_mid="6_3_5", describe_end="mask_h_bg_ch032_6l_2to6noC_sig_bce_sobel_k5_s20_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 
 ### 4. skip use add
-mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_ep060 = Exp_builder().set_basic("train", use_db_obj, mask_unet_6_level_skip_use_add_sig_sobel_6l, G_bce_sobel_k5_s20_loss_info_builder, exp_dir=exp_dir, describe_mid="6_4_5", describe_end="mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_s20_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_s20_ep060 = Exp_builder().set_basic("train", use_db_obj, mask_unet_6_level_skip_use_add_sig_sobel_6l, G_bce_sobel_k5_s20_loss_info_builder, exp_dir=exp_dir, describe_mid="6_4_5", describe_end="mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_s20_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 
 if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
