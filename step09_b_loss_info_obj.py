@@ -210,6 +210,10 @@ G_bce_sobel_k5_s40_loss_info_builder  = Loss_info_builder().set_loss_type("bce+m
 G_bce_sobel_k5_s60_loss_info_builder  = Loss_info_builder().set_loss_type("bce+mae_sobel_k5", kernel_scale=60)  #.build_gan_loss().build_gan_loss_containors()
 G_bce_sobel_k5_s80_loss_info_builder  = Loss_info_builder().set_loss_type("bce+mae_sobel_k5", kernel_scale=80)  #.build_gan_loss().build_gan_loss_containors()
 G_bce_sobel_k5_s100_loss_info_builder  = Loss_info_builder().set_loss_type("bce+mae_sobel_k5", kernel_scale=100)  #.build_gan_loss().build_gan_loss_containors()
+G_bce_sobel_k5_s120_loss_info_builder  = Loss_info_builder().set_loss_type("bce+mae_sobel_k5", kernel_scale=120)  #.build_gan_loss().build_gan_loss_containors()
+G_bce_sobel_k5_s140_loss_info_builder  = Loss_info_builder().set_loss_type("bce+mae_sobel_k5", kernel_scale=140)  #.build_gan_loss().build_gan_loss_containors()
+G_bce_sobel_k5_s160_loss_info_builder  = Loss_info_builder().set_loss_type("bce+mae_sobel_k5", kernel_scale=160)  #.build_gan_loss().build_gan_loss_containors()
+G_bce_sobel_k5_s180_loss_info_builder  = Loss_info_builder().set_loss_type("bce+mae_sobel_k5", kernel_scale=180)  #.build_gan_loss().build_gan_loss_containors()
 G_bce_sobel_k7_s780_loss_info_builder = Loss_info_builder().set_loss_type("bce+mae_sobel_k7", kernel_scale=780)  #.build_gan_loss().build_gan_loss_containors()
 GAN_mae_loss_info                  = Loss_info_builder().set_loss_type("justG")  #.build_gan_loss().build_gan_loss_containors()
 
