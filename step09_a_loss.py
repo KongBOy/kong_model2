@@ -132,25 +132,25 @@ class Sobel_MAE(tf.keras.losses.Loss):
         img2_sobel_y = img2_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
         grad_loss = mae_kong(img1_sobel_x, img2_sobel_x) + mae_kong(img1_sobel_y, img2_sobel_y)
 
-        import matplotlib.pyplot as plt
-        show_size = 5
-        nrows = 2
-        ncols = 2
-        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
-        ax[0, 0].imshow(norm_to_0_1_by_max_min(img1_sobel_x[0].numpy()))  ### BHWC，所以要 [0]
-        ax[0, 1].imshow(norm_to_0_1_by_max_min(img1_sobel_y[0].numpy()))  ### BHWC，所以要 [0]
-        ax[1, 0].imshow(norm_to_0_1_by_max_min(img2_sobel_x[0].numpy()))  ### BHWC，所以要 [0]
-        ax[1, 1].imshow(norm_to_0_1_by_max_min(img2_sobel_y[0].numpy()))  ### BHWC，所以要 [0]
-        plt.tight_layout()
-        print("img1_sobel_x.max()", img1_sobel_x.numpy().max())
-        print("img1_sobel_x.min()", img1_sobel_x.numpy().min())
-        print("img1_sobel_y.max()", img1_sobel_y.numpy().max())
-        print("img1_sobel_y.min()", img1_sobel_y.numpy().min()) 
-        cv2.imwrite( "temp_img1_sobel_x.jpg", (norm_to_0_1_by_max_min(img1_sobel_x[0].numpy()) * 255).astype(np.uint8))
-        cv2.imwrite( "temp_img1_sobel_y.jpg", (norm_to_0_1_by_max_min(img1_sobel_y[0].numpy()) * 255).astype(np.uint8))
-        cv2.imwrite( "temp_img2_sobel_x.jpg", (norm_to_0_1_by_max_min(img2_sobel_x[0].numpy()) * 255).astype(np.uint8))
-        cv2.imwrite( "temp_img2_sobel_y.jpg", (norm_to_0_1_by_max_min(img2_sobel_y[0].numpy()) * 255).astype(np.uint8))
-        plt.show()
+        # import matplotlib.pyplot as plt
+        # show_size = 5
+        # nrows = 2
+        # ncols = 2
+        # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
+        # ax[0, 0].imshow(norm_to_0_1_by_max_min(img1_sobel_x[0].numpy()))  ### BHWC，所以要 [0]
+        # ax[0, 1].imshow(norm_to_0_1_by_max_min(img1_sobel_y[0].numpy()))  ### BHWC，所以要 [0]
+        # ax[1, 0].imshow(norm_to_0_1_by_max_min(img2_sobel_x[0].numpy()))  ### BHWC，所以要 [0]
+        # ax[1, 1].imshow(norm_to_0_1_by_max_min(img2_sobel_y[0].numpy()))  ### BHWC，所以要 [0]
+        # plt.tight_layout()
+        # print("img1_sobel_x.max()", img1_sobel_x.numpy().max())
+        # print("img1_sobel_x.min()", img1_sobel_x.numpy().min())
+        # print("img1_sobel_y.max()", img1_sobel_y.numpy().max())
+        # print("img1_sobel_y.min()", img1_sobel_y.numpy().min()) 
+        # cv2.imwrite( "temp_img1_sobel_x.jpg", (norm_to_0_1_by_max_min(img1_sobel_x[0].numpy()) * 255).astype(np.uint8))
+        # cv2.imwrite( "temp_img1_sobel_y.jpg", (norm_to_0_1_by_max_min(img1_sobel_y[0].numpy()) * 255).astype(np.uint8))
+        # cv2.imwrite( "temp_img2_sobel_x.jpg", (norm_to_0_1_by_max_min(img2_sobel_x[0].numpy()) * 255).astype(np.uint8))
+        # cv2.imwrite( "temp_img2_sobel_y.jpg", (norm_to_0_1_by_max_min(img2_sobel_y[0].numpy()) * 255).astype(np.uint8))
+        # plt.show()
         return grad_loss
 
 # def _create_sobel_kernel_xy(kernel_size, kernel_scale):
