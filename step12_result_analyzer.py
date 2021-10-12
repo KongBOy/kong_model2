@@ -406,7 +406,7 @@ class Row_col_results_analyzer(Result_analyzer):
         Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
         video_p = Process( target=Video_combine_from_dir, args=(analyze_see_dir, analyze_see_dir) )
         video_p.start()
-        # video_p.join()   ### 還是乖乖join比較好， 雖然不join 可以不用等他結束才跑下個Process， 但因為存Video很耗記憶體， 如果存大圖 或 多epochs 容易爆記憶體！
+        video_p.join()   ### 還是乖乖join比較好， 雖然不join 可以不用等他結束才跑下個Process， 但因為存Video很耗記憶體， 如果存大圖 或 多epochs 容易爆記憶體！
         # Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
 
