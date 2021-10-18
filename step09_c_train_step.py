@@ -16,8 +16,10 @@ def train_step_pure_G_split_mask_move_sobel(model_obj, in_data, gt_data, loss_in
         # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
         losses = []
         total_loss = 0
-        for loss_fun in loss_info_obj.loss_funs_dict.values():
-            losses.append(loss_fun(gt_mask, model_output))
+        for loss_name, loss_fun in loss_info_obj.loss_funs_dict.items():
+            print("loss_name:", loss_name)
+            if(loss_name == "mask_tv_loss"): losses.append(loss_fun(model_output))
+            else:                            losses.append(loss_fun(gt_mask, model_output))
             total_loss += losses[-1]
         # gen_loss = loss_info_obj.loss_funs_dict["mask_BCE"]      (gt_mask, model_output)
         # sob_loss = loss_info_obj.loss_funs_dict["mask_Sobel_MAE"](gt_mask, model_output)
