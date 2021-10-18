@@ -12,7 +12,7 @@ run = "build().run()"
 
 ############################  have_bg  #################################
 ### 1a. ch
-sb.run(same_command + [f"mask_h_bg_ch128_sig_sobel_k5_s040_6l_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch001_sig_sobel_k5_s040_6l_ep060.{run}"])  ### 127.35跑
 sb.run(same_command + [f"mask_h_bg_ch002_sig_sobel_k5_s040_6l_ep060.{run}"])  ### 127.35跑
 sb.run(same_command + [f"mask_h_bg_ch004_sig_sobel_k5_s040_6l_ep060.{run}"])  ### 127.35跑
 sb.run(same_command + [f"mask_h_bg_ch008_sig_sobel_k5_s040_6l_ep060.{run}"])  ### 127.35跑
