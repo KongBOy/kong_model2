@@ -5,14 +5,27 @@ import mask_4_os_book_and_paper_have_dtd_bg                         .step10_a as
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg                 .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_6l              .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k3_6l     .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k3
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_6l     .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_6l     .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_s20_6l .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s20
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_s40_6l .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s40
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_s60_6l .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s60
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_s80_6l .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s80
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_s100_6l.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s100
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_s120_6l.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_s140_6l.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k5_s160_6l.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_sobel_k7_6l     .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k7
 
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_just_sobel_k5_6l     .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_just_sobel_k5_s020_6l.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_just_sobel_k5_s040_6l.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_just_sobel_k5_s060_6l.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_just_sobel_k5_s080_6l.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080
+
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_tv             .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_bce         .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_sobel_k5    .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_bce_sobel_k5.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce_sobel_k5_s001
 
 ### 直接看 dtd_hdr_mix 的狀況
 ############################################
@@ -118,42 +131,42 @@ mask_6l_sobel_k3_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k
 ####################################################################################################################################
 ####################################################################################################################################
 ### 3-6l_sobel_k5-1_ch
-mask_6l_sobel_k5_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch128_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch064_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch032_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch016_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch008_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch004_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch002_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch001_sig_bce_sobel_k5_6l_ep060.build()]
+mask_6l_sobel_k5_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch128_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch064_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch032_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch016_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch008_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch004_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch002_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch001_sig_bce_sobel_k5_6l_ep060.build()]
 
 ############################################
 ### 3-6l_sobel_k5-2_ep
-mask_6l_sobel_k5_ep = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch128_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch064_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch032_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch016_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch008_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch004_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch002_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch001_sig_bce_sobel_k5_6l_ep060.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch128_sig_bce_sobel_k5_6l_ep200.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch064_sig_bce_sobel_k5_6l_ep200.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch032_sig_bce_sobel_k5_6l_ep200.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch016_sig_bce_sobel_k5_6l_ep200.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch008_sig_bce_sobel_k5_6l_ep200.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch004_sig_bce_sobel_k5_6l_ep200.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch002_sig_bce_sobel_k5_6l_ep200.build(),
-                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch001_sig_bce_sobel_k5_6l_ep200.build()]
+mask_6l_sobel_k5_ep = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch128_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch064_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch032_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch016_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch008_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch004_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch002_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch001_sig_bce_sobel_k5_6l_ep060.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch128_sig_bce_sobel_k5_6l_ep200.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch064_sig_bce_sobel_k5_6l_ep200.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch032_sig_bce_sobel_k5_6l_ep200.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch016_sig_bce_sobel_k5_6l_ep200.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch008_sig_bce_sobel_k5_6l_ep200.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch004_sig_bce_sobel_k5_6l_ep200.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch002_sig_bce_sobel_k5_6l_ep200.build(),
+                       os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch001_sig_bce_sobel_k5_6l_ep200.build()]
 
 ############################################
 ### 3-6l_sobel_k5-4_no-concat_and_add
-mask_6l_sobel_k5_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch032_6l_2to2noC_sig_bce_sobel_k5_ep060.build(),
-                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch032_6l_2to3noC_sig_bce_sobel_k5_ep060.build(),
-                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch032_6l_2to4noC_sig_bce_sobel_k5_ep060.build(),
-                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch032_6l_2to5noC_sig_bce_sobel_k5_ep060.build(),
-                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch032_6l_2to6noC_sig_bce_sobel_k5_ep060.build(),
-                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5.mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_ep060.build()]
+mask_6l_sobel_k5_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch032_6l_2to2noC_sig_bce_sobel_k5_ep060.build(),
+                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch032_6l_2to3noC_sig_bce_sobel_k5_ep060.build(),
+                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch032_6l_2to4noC_sig_bce_sobel_k5_ep060.build(),
+                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch032_6l_2to5noC_sig_bce_sobel_k5_ep060.build(),
+                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch032_6l_2to6noC_sig_bce_sobel_k5_ep060.build(),
+                                os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s001.mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_ep060.build()]
 ####################################################################################################################################
 ####################################################################################################################################
 ### 3-6l_sobel_k7-1_ch
@@ -289,6 +302,256 @@ mask_6l_sobel_k5_s100_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_so
                                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s100.mask_h_bg_ch032_6l_2to5noC_sig_bce_sobel_k5_s100_ep060.build(),
                                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s100.mask_h_bg_ch032_6l_2to6noC_sig_bce_sobel_k5_s100_ep060.build(),
                                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s100.mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_s100_ep060.build()]
+####################################################################################################################################
+####################################################################################################################################
+### 5-6l_sobel_k5_s120-1_ch
+mask_6l_sobel_k5_s120_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch128_sig_bce_sobel_k5_s120_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch064_sig_bce_sobel_k5_s120_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch032_sig_bce_sobel_k5_s120_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch016_sig_bce_sobel_k5_s120_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch008_sig_bce_sobel_k5_s120_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch004_sig_bce_sobel_k5_s120_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch002_sig_bce_sobel_k5_s120_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch001_sig_bce_sobel_k5_s120_6l_ep060.build()]
+############################################
+### 5-6l_sobel_k5_s120_no-concat_and_add
+mask_6l_sobel_k5_s120_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch032_6l_2to2noC_sig_bce_sobel_k5_s120_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch032_6l_2to3noC_sig_bce_sobel_k5_s120_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch032_6l_2to4noC_sig_bce_sobel_k5_s120_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch032_6l_2to5noC_sig_bce_sobel_k5_s120_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch032_6l_2to6noC_sig_bce_sobel_k5_s120_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s120.mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_s120_ep060.build()]
+####################################################################################################################################
+####################################################################################################################################
+### 5-6l_sobel_k5_s140-1_ch
+mask_6l_sobel_k5_s140_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch128_sig_bce_sobel_k5_s140_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch064_sig_bce_sobel_k5_s140_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch032_sig_bce_sobel_k5_s140_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch016_sig_bce_sobel_k5_s140_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch008_sig_bce_sobel_k5_s140_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch004_sig_bce_sobel_k5_s140_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch002_sig_bce_sobel_k5_s140_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch001_sig_bce_sobel_k5_s140_6l_ep060.build()]
+############################################
+### 5-6l_sobel_k5_s140_no-concat_and_add
+mask_6l_sobel_k5_s140_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch032_6l_2to2noC_sig_bce_sobel_k5_s140_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch032_6l_2to3noC_sig_bce_sobel_k5_s140_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch032_6l_2to4noC_sig_bce_sobel_k5_s140_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch032_6l_2to5noC_sig_bce_sobel_k5_s140_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch032_6l_2to6noC_sig_bce_sobel_k5_s140_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s140.mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_s140_ep060.build()]
+####################################################################################################################################
+####################################################################################################################################
+### 5-6l_sobel_k5_s160-1_ch
+mask_6l_sobel_k5_s160_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch128_sig_bce_sobel_k5_s160_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch064_sig_bce_sobel_k5_s160_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch032_sig_bce_sobel_k5_s160_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch016_sig_bce_sobel_k5_s160_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch008_sig_bce_sobel_k5_s160_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch004_sig_bce_sobel_k5_s160_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch002_sig_bce_sobel_k5_s160_6l_ep060.build(),
+                           os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch001_sig_bce_sobel_k5_s160_6l_ep060.build()]
+############################################
+### 5-6l_sobel_k5_s160_no-concat_and_add
+mask_6l_sobel_k5_s160_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch032_6l_2to2noC_sig_bce_sobel_k5_s160_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch032_6l_2to3noC_sig_bce_sobel_k5_s160_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch032_6l_2to4noC_sig_bce_sobel_k5_s160_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch032_6l_2to5noC_sig_bce_sobel_k5_s160_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch032_6l_2to6noC_sig_bce_sobel_k5_s160_ep060.build(),
+                                    os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s160.mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_s160_ep060.build()]
+
+####################################################################################################################################
+####################################################################################################################################
+### 5-6l_sobel_k5_s180-1_ch  還沒train
+# mask_6l_sobel_k5_s180_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch128_sig_bce_sobel_k5_s180_6l_ep060.build(),
+#                            os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch064_sig_bce_sobel_k5_s180_6l_ep060.build(),
+#                            os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch032_sig_bce_sobel_k5_s180_6l_ep060.build(),
+#                            os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch016_sig_bce_sobel_k5_s180_6l_ep060.build(),
+#                            os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch008_sig_bce_sobel_k5_s180_6l_ep060.build(),
+#                            os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch004_sig_bce_sobel_k5_s180_6l_ep060.build(),
+#                            os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch002_sig_bce_sobel_k5_s180_6l_ep060.build(),
+#                            os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch001_sig_bce_sobel_k5_s180_6l_ep060.build()]
+# ############################################
+# ### 5-6l_sobel_k5_s180_no-concat_and_add
+# mask_6l_sobel_k5_s180_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch032_6l_2to2noC_sig_bce_sobel_k5_s180_ep060.build(),
+#                                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch032_6l_2to3noC_sig_bce_sobel_k5_s180_ep060.build(),
+#                                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch032_6l_2to4noC_sig_bce_sobel_k5_s180_ep060.build(),
+#                                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch032_6l_2to5noC_sig_bce_sobel_k5_s180_ep060.build(),
+#                                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch032_6l_2to6noC_sig_bce_sobel_k5_s180_ep060.build(),
+#                                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_sobel_k5_s180.mask_h_bg_ch032_6l_skipAdd_sig_bce_sobel_k5_s180_ep060.build()]
+
+####################################################################################################################################
+####################################################################################################################################
+####################################################################################################################################
+####################################################################################################################################
+### 6-6l_just_sobel_k5_s001-1_ch
+mask_6l_just_sobel_k5_s001_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch128_sig_sobel_k5_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch064_sig_sobel_k5_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch032_sig_sobel_k5_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch016_sig_sobel_k5_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch008_sig_sobel_k5_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch004_sig_sobel_k5_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch002_sig_sobel_k5_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch001_sig_sobel_k5_6l_ep060.build()]
+mask_6l_just_sobel_k5_s001_ch = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s001_ch]
+############################################
+### 6-6l_just_sobel_k5_s001_no-concat_and_add
+mask_6l_just_sobel_k5_s001_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch032_6l_2to2noC_sig_sobel_k5_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch032_6l_2to3noC_sig_sobel_k5_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch032_6l_2to4noC_sig_sobel_k5_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch032_6l_2to5noC_sig_sobel_k5_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch032_6l_2to6noC_sig_sobel_k5_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s001.mask_h_bg_ch032_6l_skipAdd_sig_sobel_k5_ep060.build()]
+mask_6l_just_sobel_k5_s001_noC_and_add = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s001_noC_and_add]
+####################################################################################################################################
+####################################################################################################################################
+### 6-6l_just_sobel_k5_s020-1_ch
+mask_6l_just_sobel_k5_s020_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch128_sig_sobel_k5_s020_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch064_sig_sobel_k5_s020_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch032_sig_sobel_k5_s020_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch016_sig_sobel_k5_s020_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch008_sig_sobel_k5_s020_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch004_sig_sobel_k5_s020_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch002_sig_sobel_k5_s020_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch001_sig_sobel_k5_s020_6l_ep060.build()]
+mask_6l_just_sobel_k5_s020_ch = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s020_ch]
+############################################
+### 6-6l_just_sobel_k5_s020_no-concat_and_add
+mask_6l_just_sobel_k5_s020_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch032_6l_2to2noC_sig_sobel_k5_s020_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch032_6l_2to3noC_sig_sobel_k5_s020_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch032_6l_2to4noC_sig_sobel_k5_s020_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch032_6l_2to5noC_sig_sobel_k5_s020_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch032_6l_2to6noC_sig_sobel_k5_s020_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s020.mask_h_bg_ch032_6l_skipAdd_sig_sobel_k5_s020_ep060.build()]
+mask_6l_just_sobel_k5_s020_noC_and_add = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s020_noC_and_add]
+####################################################################################################################################
+####################################################################################################################################
+### 6-6l_just_sobel_k5_s040-1_ch
+mask_6l_just_sobel_k5_s040_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch128_sig_sobel_k5_s040_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch064_sig_sobel_k5_s040_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch032_sig_sobel_k5_s040_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch016_sig_sobel_k5_s040_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch008_sig_sobel_k5_s040_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch004_sig_sobel_k5_s040_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch002_sig_sobel_k5_s040_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch001_sig_sobel_k5_s040_6l_ep060.build()]
+mask_6l_just_sobel_k5_s040_ch = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s040_ch]
+############################################
+### 6-6l_just_sobel_k5_s040_no-concat_and_add
+mask_6l_just_sobel_k5_s040_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch032_6l_2to2noC_sig_sobel_k5_s040_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch032_6l_2to3noC_sig_sobel_k5_s040_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch032_6l_2to4noC_sig_sobel_k5_s040_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch032_6l_2to5noC_sig_sobel_k5_s040_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch032_6l_2to6noC_sig_sobel_k5_s040_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s040.mask_h_bg_ch032_6l_skipAdd_sig_sobel_k5_s040_ep060.build()]
+mask_6l_just_sobel_k5_s040_noC_and_add = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s040_noC_and_add]
+####################################################################################################################################
+####################################################################################################################################
+### 6-6l_just_sobel_k5_s060-1_ch
+mask_6l_just_sobel_k5_s060_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch128_sig_sobel_k5_s060_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch064_sig_sobel_k5_s060_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch032_sig_sobel_k5_s060_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch016_sig_sobel_k5_s060_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch008_sig_sobel_k5_s060_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch004_sig_sobel_k5_s060_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch002_sig_sobel_k5_s060_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch001_sig_sobel_k5_s060_6l_ep060.build()]
+mask_6l_just_sobel_k5_s060_ch = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s060_ch]
+############################################
+### 6-6l_just_sobel_k5_s060_no-concat_and_add
+mask_6l_just_sobel_k5_s060_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch032_6l_2to2noC_sig_sobel_k5_s060_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch032_6l_2to3noC_sig_sobel_k5_s060_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch032_6l_2to4noC_sig_sobel_k5_s060_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch032_6l_2to5noC_sig_sobel_k5_s060_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch032_6l_2to6noC_sig_sobel_k5_s060_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s060.mask_h_bg_ch032_6l_skipAdd_sig_sobel_k5_s060_ep060.build()]
+mask_6l_just_sobel_k5_s060_noC_and_add = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s060_noC_and_add]
+####################################################################################################################################
+####################################################################################################################################
+### 6-6l_just_sobel_k5_s080-1_ch
+mask_6l_just_sobel_k5_s080_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch128_sig_sobel_k5_s080_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch064_sig_sobel_k5_s080_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch032_sig_sobel_k5_s080_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch016_sig_sobel_k5_s080_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch008_sig_sobel_k5_s080_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch004_sig_sobel_k5_s080_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch002_sig_sobel_k5_s080_6l_ep060.build(),
+                                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch001_sig_sobel_k5_s080_6l_ep060.build()]
+mask_6l_just_sobel_k5_s080_ch = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s080_ch]
+############################################
+### 6-6l_just_sobel_k5_s080_no-concat_and_add
+mask_6l_just_sobel_k5_s080_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch032_6l_2to2noC_sig_sobel_k5_s080_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch032_6l_2to3noC_sig_sobel_k5_s080_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch032_6l_2to4noC_sig_sobel_k5_s080_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch032_6l_2to5noC_sig_sobel_k5_s080_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch032_6l_2to6noC_sig_sobel_k5_s080_ep060.build(),
+                                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_just_sobel_k5_s080.mask_h_bg_ch032_6l_skipAdd_sig_sobel_k5_s080_ep060.build()]
+mask_6l_just_sobel_k5_s080_noC_and_add = [ exp.result_obj for exp in mask_6l_just_sobel_k5_s080_noC_and_add]
+####################################################################################################################################
+####################################################################################################################################
+####################################################################################################################################
+####################################################################################################################################
+### 7-6l_tv-1_ch
+mask_6l_tv_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch128_sig_6l_ep060.build(),
+                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch064_sig_6l_ep060.build(),
+                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch032_sig_6l_ep060.build(),
+                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch016_sig_6l_ep060.build(),
+                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch008_sig_6l_ep060.build(),
+                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch004_sig_6l_ep060.build(),
+                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch002_sig_6l_ep060.build(),
+                 os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch001_sig_6l_ep060.build()]
+mask_6l_tv_ch = [ exp.result_obj for exp in mask_6l_tv_ch]
+############################################
+### 7-6l_tv-concat_and_add
+mask_6l_tv_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch032_6l_2to2noC_sig_ep060.build(),
+                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch032_6l_2to3noC_sig_ep060.build(),
+                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch032_6l_2to4noC_sig_ep060.build(),
+                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch032_6l_2to5noC_sig_ep060.build(),
+                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch032_6l_2to6noC_sig_ep060.build(),
+                          os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv.mask_h_bg_ch032_6l_skipAdd_sig_ep060.build()]
+mask_6l_tv_noC_and_add = [ exp.result_obj for exp in mask_6l_tv_noC_and_add]
+####################################################################################################################################
+####################################################################################################################################
+### 7-6l_tv_bce-1_ch
+mask_6l_tv_bce_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch128_sig_6l_ep060.build(),
+                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch064_sig_6l_ep060.build(),
+                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch032_sig_6l_ep060.build(),
+                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch016_sig_6l_ep060.build(),
+                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch008_sig_6l_ep060.build(),
+                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch004_sig_6l_ep060.build(),
+                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch002_sig_6l_ep060.build(),
+                     os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch001_sig_6l_ep060.build()]
+mask_6l_tv_bce_ch = [ exp.result_obj for exp in mask_6l_tv_bce_ch]
+############################################
+### 7-6l_tv_bce-concat_and_add
+mask_6l_tv_bce_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch032_6l_2to2noC_sig_ep060.build(),
+                              os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch032_6l_2to3noC_sig_ep060.build(),
+                              os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch032_6l_2to4noC_sig_ep060.build(),
+                              os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch032_6l_2to5noC_sig_ep060.build(),
+                              os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch032_6l_2to6noC_sig_ep060.build(),
+                              os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_bce.mask_h_bg_ch032_6l_skipAdd_sig_ep060.build()]
+mask_6l_tv_bce_noC_and_add = [ exp.result_obj for exp in mask_6l_tv_bce_noC_and_add]
+####################################################################################################################################
+####################################################################################################################################
+### 7-6l_tv_sobel_k5_s001-1_ch
+mask_6l_tv_sobel_k5_s001_ch = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch128_sig_6l_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch064_sig_6l_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch032_sig_6l_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch016_sig_6l_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch008_sig_6l_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch004_sig_6l_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch002_sig_6l_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch001_sig_6l_ep060.build()]
+mask_6l_tv_sobel_k5_s001_ch = [ exp.result_obj for exp in mask_6l_tv_sobel_k5_s001_ch]
+############################################
+### 7-6l_tv_sobel_k5_s001-concat_and_add
+mask_6l_tv_sobel_noC_and_add = [os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch032_6l_2to2noC_sig_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch032_6l_2to3noC_sig_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch032_6l_2to4noC_sig_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch032_6l_2to5noC_sig_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch032_6l_2to6noC_sig_ep060.build(),
+                               os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_sobel_k5_s001.mask_h_bg_ch032_6l_skipAdd_sig_ep060.build()]
+mask_6l_tv_sobel_noC_and_add = [ exp.result_obj for exp in mask_6l_tv_sobel_noC_and_add]
 
 """
 group寫法2：from step10_a_load_and_train_and_test import * 直接包 exps

@@ -378,6 +378,7 @@ class Row_col_results_analyzer(Result_analyzer):
                                             add_loss         = self.add_loss)
             row_col_imgs.Draw_img()
             row_col_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=go_epoch)
+            # print("analyze_see_dir", analyze_see_dir)  ### 找不到東西存哪時可以打註解
 
     def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100, print_msg=False):
         from multiprocess_util import multi_processing_interface
