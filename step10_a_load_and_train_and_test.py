@@ -36,9 +36,14 @@ class Experiment():
             # if(py_file_name_step >= 6 or py_file_name_step == 0):            ### step06 以上
             shutil.copy(py_file_name, code_dir + "/" + py_file_name)     ### 存起來
 
-        if(os.path.isdir(code_dir + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
-            shutil.rmtree(code_dir + "/" + "kong_util")
+        ### 因為我現在有加 timestamp， 所以 不會有上一版 kong_util的問題， 所以可以註解掉囉～
+        # if(os.path.isdir(code_dir + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
+        #     shutil.rmtree(code_dir + "/" + "kong_util")
+        print("self.exp_dir ~~~~~~~~~~~~:", self.exp_dir )
         shutil.copytree("kong_util", code_dir + "/" + "kong_util")
+        shutil.copytree("kong_Blender", code_dir + "/" + "kong_Blender")
+        shutil.copytree("SIFT_dev", code_dir + "/" + "SIFT_dev")
+        shutil.copytree("step10_6_mask", code_dir + "/" + "step10_6_mask")
 
 
 ################################################################################################################################################

@@ -152,30 +152,35 @@ class Sobel_MAE(tf.keras.losses.Loss):
         # plt.show()
         return grad_loss
 
-def total_variance_loss(image):
-    n, h, w, c = image.get_shape()
-    left  = image[:, :,  : -1, :]
-    right = image[:, :, 1:   , :]
-    top   = image[:,  : -1, :, :]
-    down  = image[:, 1:   , :, :]
 
-    x_change = left - right
-    y_change = top  - down
-    x_variance = tf.reduce_mean( tf.abs(x_change) )
-    y_variance = tf.reduce_mean( tf.abs(y_change) )
+class Total_Variance():
+    def __init__(self, tv_scale=1):
+        self.tv_scale = tv_scale
 
-    tv_loss = x_variance + y_variance
+    def __call__(self, image):
+        n, h, w, c = image.get_shape()
+        left  = image[:, :,  : -1, :]
+        right = image[:, :, 1:   , :]
+        top   = image[:,  : -1, :, :]
+        down  = image[:, 1:   , :, :]
 
-    # import matplotlib.pyplot as plt
-    # show_size = 5
-    # nrows = 2
-    # ncols = 2
-    # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
-    # ax[0, 0].imshow(norm_to_0_1_by_max_min(x_change[0].numpy()))  ### BHWC，所以要 [0]
-    # ax[1, 0].imshow(norm_to_0_1_by_max_min(y_change[0].numpy()))  ### BHWC，所以要 [0]
-    # plt.tight_layout()
-    # plt.show()
-    return tv_loss
+        x_change = left - right
+        y_change = top  - down
+        x_variance = tf.reduce_mean( tf.abs(x_change) )
+        y_variance = tf.reduce_mean( tf.abs(y_change) )
+
+        tv_loss = x_variance + y_variance
+        print("self.tv_scale~~~~~~~~~~~~~", self.tv_scale)
+        # import matplotlib.pyplot as plt
+        # show_size = 5
+        # nrows = 2
+        # ncols = 2
+        # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
+        # ax[0, 0].imshow(norm_to_0_1_by_max_min(x_change[0].numpy()))  ### BHWC，所以要 [0]
+        # ax[1, 0].imshow(norm_to_0_1_by_max_min(y_change[0].numpy()))  ### BHWC，所以要 [0]
+        # plt.tight_layout()
+        # plt.show()
+        return tv_loss * self.tv_scale
 
 if __name__ == '__main__':
     # window_size = 5
@@ -198,6 +203,7 @@ if __name__ == '__main__':
 
     # sobel_mae = Sobel_MAE(kernel_size=3)
     sobel_mae = Sobel_MAE(kernel_size=5)
+    total_variance_loss = Total_Variance()
     ############################################################################################################
     img1 = img1.astype(np.float32)  ### 轉float32
     img2 = img2.astype(np.float32)  ### 轉float32
@@ -209,7 +215,7 @@ if __name__ == '__main__':
 
     with tf.GradientTape() as kong_tape:
         grad_loss_value = sobel_mae(img1, img2)
-        tv_loss_value = total_variance_loss(img1, img2)
+        tv_loss_value = total_variance_loss(img1)
     print("grad_loss_value:", grad_loss_value)
     print("tv_loss_value:", tv_loss_value)
     # generator_gradients = kong_tape .gradient(grad_loss)
