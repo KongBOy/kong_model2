@@ -271,6 +271,10 @@ G_bce_loss_info_builder            = Loss_info_builder().set_loss_type("bce")  #
 
 G_tv_loss_info_builder             = Loss_info_builder().set_loss_type("tv")  #.build_gan_loss().build_gan_loss_containors()
 G_tv_bce_loss_info_builder         = Loss_info_builder().set_loss_type("tv+bce")  #.build_gan_loss().build_gan_loss_containors()
+G_tv_s04_bce_loss_info_builder     = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 4)  #.build_gan_loss().build_gan_loss_containors()
+G_tv_s08_bce_loss_info_builder     = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 8)  #.build_gan_loss().build_gan_loss_containors()
+G_tv_s12_bce_loss_info_builder     = Loss_info_builder().set_loss_type("tv+bce", tv_scale=12)  #.build_gan_loss().build_gan_loss_containors()
+G_tv_s16_bce_loss_info_builder     = Loss_info_builder().set_loss_type("tv+bce", tv_scale=16)  #.build_gan_loss().build_gan_loss_containors()
 G_tv_s20_bce_loss_info_builder     = Loss_info_builder().set_loss_type("tv+bce", tv_scale=20)  #.build_gan_loss().build_gan_loss_containors()
 G_tv_s40_bce_loss_info_builder     = Loss_info_builder().set_loss_type("tv+bce", tv_scale=40)  #.build_gan_loss().build_gan_loss_containors()
 G_tv_s60_bce_loss_info_builder     = Loss_info_builder().set_loss_type("tv+bce", tv_scale=60)  #.build_gan_loss().build_gan_loss_containors()
