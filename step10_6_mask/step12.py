@@ -336,6 +336,19 @@ if(__name__ == "__main__"):
                                                                     mask_6l_tv_sobel_k5_s001_ch
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                                 # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    #################################################################################################################################################################################################################
+    #################################################################################################################################################################################################################
+    ### 7b-6l_tv_s001~80_bce-1_ch
+    mask_6l_tv_vs_tv_bce_vs_tv_sobel_k5_s001_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/7-6l_tv_s001~80_bce-1_ch",
+                                                  ana_what="mask",
+                                                  row_col_results=[ 
+                                                                    mask_6l_tv_bce_ch,
+                                                                    mask_6l_tv_s20_bce_ch,
+                                                                    mask_6l_tv_s40_bce_ch,
+                                                                    mask_6l_tv_s60_bce_ch,
+                                                                    mask_6l_tv_s80_bce_ch
+                                                                    ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
 
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
@@ -351,4 +364,4 @@ if(__name__ == "__main__"):
                                                                     mask_6l_tv_sobel_k5_s001_ch,    ### tv + sobel_k5_s001
                                                                     mask_6l_sobel_k5_ch_results,    ### sobel_k5 + bce
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                                .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                                # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
