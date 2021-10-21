@@ -282,6 +282,10 @@ G_tv_s80_bce_loss_info_builder     = Loss_info_builder().set_loss_type("tv+bce",
 
 G_tv_bce_sobel_k5_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce+sobel_k5")  #.build_gan_loss().build_gan_loss_containors()
 G_tv_sobel_k5_loss_info_builder    = Loss_info_builder().set_loss_type("tv+sobel_k5")  #.build_gan_loss().build_gan_loss_containors()
+G_tv_s01_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("tv+sobel_k5", tv_scale=1, kernel_scale= 80)  #.build_gan_loss().build_gan_loss_containors()
+G_tv_s01_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_loss_type("tv+sobel_k5", tv_scale=1, kernel_scale=100)  #.build_gan_loss().build_gan_loss_containors()
+G_tv_s01_sobel_k5_s120_loss_info_builder = Loss_info_builder().set_loss_type("tv+sobel_k5", tv_scale=1, kernel_scale=120)  #.build_gan_loss().build_gan_loss_containors()
+G_tv_s01_sobel_k5_s140_loss_info_builder = Loss_info_builder().set_loss_type("tv+sobel_k5", tv_scale=1, kernel_scale=140)  #.build_gan_loss().build_gan_loss_containors()
 
 G_sobel_k3_loss_info_builder        = Loss_info_builder().set_loss_type("mae_sobel_k3")  #.build_gan_loss().build_gan_loss_containors()
 G_sobel_k5_loss_info_builder        = Loss_info_builder().set_loss_type("mae_sobel_k5")  #.build_gan_loss().build_gan_loss_containors()

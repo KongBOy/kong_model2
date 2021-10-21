@@ -15,7 +15,7 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
     return loss * lamb
 
 class Sobel_MAE(tf.keras.losses.Loss):
-    def __init__(self, kernel_size, kernel_scale=1, stride=1):
+    def __init__(self, kernel_size, kernel_scale=1, stride=1, **args):
         super().__init__(name="Sobel_MAE")
         self.kernel_size  = kernel_size
         self.kernel_scale = kernel_scale
@@ -121,7 +121,7 @@ class Sobel_MAE(tf.keras.losses.Loss):
         return output
 
     def call(self, img1, img2):
-        print("doing sobel_mae_loss")
+        print("doing sobel_mae_loss, kernel_scale=", self.kernel_scale)
         img1_sobel_xy = self.Calculate_sobel_edges(image=img1)
         img1_sobel_x = img1_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
         img1_sobel_y = img1_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
@@ -154,7 +154,7 @@ class Sobel_MAE(tf.keras.losses.Loss):
 
 
 class Total_Variance():
-    def __init__(self, tv_scale=1):
+    def __init__(self, tv_scale=1, **args):
         self.tv_scale = tv_scale
 
     def __call__(self, image):
