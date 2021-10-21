@@ -338,8 +338,21 @@ if(__name__ == "__main__"):
                                                 # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
-    ### 7b-6l_tv_s001~80_bce-1_ch
-    mask_6l_tv_vs_tv_bce_vs_tv_sobel_k5_s001_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/7-6l_tv_s001~80_bce-1_ch",
+    ### 7b-6l_tv_s01~20_bce-1_ch
+    mask_6l_tv_s01_20_bce_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/7b-6l_tv_s01~20_bce-1_ch",
+                                                  ana_what="mask",
+                                                  row_col_results=[ 
+                                                                    mask_6l_tv_bce_ch,
+                                                                    mask_6l_tv_s04_bce_ch,
+                                                                    mask_6l_tv_s08_bce_ch,
+                                                                    mask_6l_tv_s12_bce_ch,
+                                                                    mask_6l_tv_s16_bce_ch,
+                                                                    mask_6l_tv_s20_bce_ch
+                                                                    ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    #################################################################################################################################################################################################################
+    ### 7b-6l_tv_s01~80_bce-1_ch
+    mask_6l_tv_s01_80_bce_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/7b-6l_tv_s01~80_bce-1_ch",
                                                   ana_what="mask",
                                                   row_col_results=[ 
                                                                     mask_6l_tv_bce_ch,
@@ -348,7 +361,7 @@ if(__name__ == "__main__"):
                                                                     mask_6l_tv_s60_bce_ch,
                                                                     mask_6l_tv_s80_bce_ch
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                                .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                                # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
 
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
