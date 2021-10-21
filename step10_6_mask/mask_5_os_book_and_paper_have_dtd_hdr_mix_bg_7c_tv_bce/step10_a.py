@@ -1,3 +1,8 @@
+import os
+### 自動抓目前的資料夾 當 exp_dir
+print("os.path.realpath(__file__) ", os.path.realpath(__file__)  )  ### 舉例：os.path.realpath(__file__)  C:\Users\TKU\Desktop\kong_model2\step10_6_mask\mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_bce\step10_a.py
+exp_dir = "6_mask_unet/" +  os.path.realpath(__file__).split("\\")[-2][5:]  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
+print("exp_dir~~~~~~~~~~", exp_dir)  ### 舉例：exp_dir~~~~~~~~~~ 6_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_bce
 #############################################################################################################################################################################################################
 ### 把 current_dir 轉回到 kong_model 裡面
 import os
@@ -24,7 +29,6 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
     6_mask_unet/自己命的名字/...
 '''
 
-exp_dir = "6_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_bce_6l"
 use_db_obj = type9_try_flow_mask_have_bg_dtd_hdr_mix_and_paper
 ############################  have_bg  #################################
 ### 1a. ch
