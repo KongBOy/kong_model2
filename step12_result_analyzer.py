@@ -56,9 +56,8 @@ class Col_results_analyzer(Result_analyzer):
         super().__init__(ana_describe, ana_what, show_in_img, show_gt_img)
 
         self.c_results = col_results
-        self.c_max_trained_epoch = self.step0_get_c_max_trained_epoch()
-        self.c_min_trained_epoch = self.step0_get_c_min_trained_epoch()
-        self.c_min_train_epochs = self.c_min_trained_epoch  ### 從see_file_name數量來推估 目前result被訓練幾個epoch，-2是減去 in_img, gt_img 兩個檔案
+        self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
+        self.c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_max_trained_epoch()去抓
 
     def _step0_get_c_trained_epochs(self):
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
@@ -70,8 +69,8 @@ class Col_results_analyzer(Result_analyzer):
             trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
         return trained_epochs
 
-    def step0_get_c_min_trained_epoch(self): return min(self._step0_get_c_trained_epochs())
-    def step0_get_c_max_trained_epoch(self): return max(self._step0_get_c_trained_epochs())
+    def step0_get_c_min_trained_epoch(self): self.c_min_trained_epoch = min(self._step0_get_c_trained_epochs())
+    def step0_get_c_max_trained_epoch(self): self.c_max_trained_epoch = max(self._step0_get_c_trained_epochs())
 
 
 
@@ -151,7 +150,7 @@ class Col_results_analyzer(Result_analyzer):
             single_row_imgs.Draw_img()
             if(self.add_loss):
                 for go_result, result in enumerate(self.c_results):
-                    single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_train_epochs)
+                    single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
             single_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=go_epoch)
 
     def _Draw_col_results_single_see_multiprocess(self, see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=8, task_amount=100, print_msg=False):
@@ -172,8 +171,10 @@ class Col_results_analyzer(Result_analyzer):
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                       ### 建立 存結果的資料夾
 
 
-        ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
+        ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！ 並且抓出各result的trained_epochs
         self._step0_c_results_get_see_base_info(self.c_results)
+        self.step0_get_c_min_trained_epoch()
+        self.step0_get_c_max_trained_epoch()
 
         ### 抓 in/gt imgs， 因為 同個see 內所有epoch 的 in/gt 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see_ 的外面 ，然後再用 參數傳入
         in_img = None
@@ -256,7 +257,7 @@ class Col_results_analyzer(Result_analyzer):
     #         multi_row_imgs.Draw_img()
     #         if(self.add_loss):
     #             for go_result, result in enumerate(self.c_results):
-    #                 multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_train_epochs)
+    #                 multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
     #         multi_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=go_epoch)
 
     # ### 包 multiprocess， _Draw_col_results_multi_see_ 的 multiprocess 介面
@@ -320,8 +321,8 @@ class Row_col_results_analyzer(Result_analyzer):
         super().__init__(ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss)
 
         self.r_c_results = row_col_results
-        self.r_c_min_trained_epoch = self.step0_get_r_c_min_trained_epoch()
-        self.r_c_max_trained_epoch = self.step0_get_r_c_max_trained_epoch()
+        self.r_c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_min_trained_epoch()去抓
+        self.r_c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_max_trained_epoch()去抓
 
         self.c_results_list = []
         for c_results in row_col_results:
@@ -337,8 +338,8 @@ class Row_col_results_analyzer(Result_analyzer):
                 trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
         return trained_epochs
 
-    def step0_get_r_c_min_trained_epoch(self): return min(self._step0_get_r_c_trained_epochs())
-    def step0_get_r_c_max_trained_epoch(self): return max(self._step0_get_r_c_trained_epochs())
+    def step0_get_r_c_min_trained_epoch(self): self.r_c_min_trained_epoch = min(self._step0_get_r_c_trained_epochs())
+    def step0_get_r_c_max_trained_epoch(self): self.r_c_max_trained_epoch = max(self._step0_get_r_c_trained_epochs())
 
     def step1_get_r_c_titles(self):
         r_c_titles = []  ### r_c_titles 抓出所有要顯示的標題 ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
@@ -391,8 +392,10 @@ class Row_col_results_analyzer(Result_analyzer):
         analyze_see_dir = self.analyze_dst_dir + "/" + self.r_c_results[0][0].sees[see_num].see_name + "/" + f"{self.ana_what}_epoch=all"  ### 分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)                                          ### 建立 存結果的資料夾
 
-        ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
+        ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！ 並且抓出各result的trained_epochs
         self._step0_r_c_results_get_see_base_info(self.r_c_results)
+        self.step0_get_r_c_min_trained_epoch()
+        self.step0_get_r_c_max_trained_epoch()
 
         ### 抓 每row 每col 各不同result的 要顯示的 titles
         r_c_titles = self.step1_get_r_c_titles()
