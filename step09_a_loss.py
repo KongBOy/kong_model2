@@ -14,6 +14,17 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
     loss = tf.reduce_mean(tf.math.abs(tensor1 - tensor2))
     return loss * lamb
 
+class BCE():
+    def __init__(self, bce_scale=1, **args):
+        self.bce_scale = bce_scale
+        self.tf_fun = tf.keras.losses.BinaryCrossentropy(from_logits=False)
+
+    def __call__(self, img_true, img_pred):
+        print("self.bce_scale~~~~~~~~~~~~~", self.bce_scale)
+        bce_loss = self.tf_fun(img_true, img_pred)
+        return bce_loss * self.bce_scale
+
+
 class Sobel_MAE(tf.keras.losses.Loss):
     def __init__(self, kernel_size, kernel_scale=1, stride=1, **args):
         super().__init__(name="Sobel_MAE")
