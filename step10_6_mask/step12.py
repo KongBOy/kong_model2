@@ -357,7 +357,7 @@ if(__name__ == "__main__"):
     ### 7-6l_tv_s01_sobel_k5_s01,80~140-1_ch
     mask_6l_tv_s01_sobel_k5_s01_80_140_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/7-6l_tv_s01_sobel_k5_s01,80~140-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[ 
+                                                  row_col_results=[
                                                                     mask_6l_tv_s01_sobel_k5_s001_ch,
                                                                     mask_6l_tv_s01_sobel_k5_s080_ch,
                                                                     mask_6l_tv_s01_sobel_k5_s100_ch,
@@ -368,38 +368,36 @@ if(__name__ == "__main__"):
 
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
-    #################################################################################################################################################################################################################
-    mask_6l_mix_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/8-6l_mix-1_ch",
-                                                  ana_what="mask",
-                                                  row_col_results=[
-                                                                    mask_6l_ch_results,             ### just_bce
-                                                                    mask_6l_just_sobel_k5_s001_ch,  ### just_sobel_k5_s001
-                                                                    mask_6l_tv_ch,                  ### just_tv
-                                                                    mask_6l_tv_bce_ch,              ### tv + bce
-                                                                    mask_6l_tv_s01_sobel_k5_s001_ch,    ### tv + sobel_k5_s001
-                                                                    mask_6l_sobel_k5_ch_results,    ### sobel_k5 + bce
-                                                                    ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                                # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
-    #################################################################################################################################################################################################################
-    mask_6l_mix_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/8-tv_s01,04_bce_sobel_k5_s001,100_ch",
+    mask_6l_tv_mix_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/8-tv_s01,04_bce_sobel_k5_s001,100_ch",
                                                   ana_what="mask",
                                                   row_col_results=[
                                                                     mask_6l_ch_results,               ### just_bce
                                                                     mask_6l_just_sobel_k5_s001_ch,    ### just_sobel_k5_s001
-                                                                    mask_6l_tv_ch,                    ### just_tv
-                                                                    mask_6l_tv_bce_ch,                ### tv + bce
-                                                                    mask_6l_tv_s01_sobel_k5_s001_ch,  ### tv + sobel_k5_s001
-                                                                    mask_6l_sobel_k5_ch_results,      ### sobel_k5 + bce
+                                                                    mask_6l_tv_s01_bce_sobel_k5_s001_ch,  ### just_tv
+                                                                    mask_6l_tv_s01_bce_sobel_k5_s100_ch,  ### tv + bce
+                                                                    mask_6l_tv_s04_bce_sobel_k5_s001_ch,  ### tv + sobel_k5_s001
+                                                                    mask_6l_tv_s04_bce_sobel_k5_s100_ch,  ### sobel_k5 + bce
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                                 # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
-
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
-    ### 8-6l_tv_vs_tv_bce_vs_tv_sobel_k5_s001-1_ch
-    mask_6l_tv_vs_tv_bce_vs_tv_sobel_k5_s001_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/8-6l_tv_vs_tv_bce_vs_tv_sobel_k5_s001-1_ch",
+    mask_6l_mix_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/9-6l_mix-1_ch",
+                                                ana_what="mask",
+                                                row_col_results=[
+                                                                mask_6l_ch_results,               ### just_bce
+                                                                mask_6l_just_sobel_k5_s001_ch,    ### just_sobel_k5_s001
+                                                                mask_6l_tv_ch,                    ### just_tv
+                                                                mask_6l_tv_bce_ch,                ### tv + bce
+                                                                mask_6l_tv_s01_sobel_k5_s001_ch,  ### tv + sobel_k5_s001
+                                                                mask_6l_sobel_k5_ch_results,      ### sobel_k5 + bce
+                                                                ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    #################################################################################################################################################################################################################
+    #################################################################################################################################################################################################################
+    mask_6l_tv_vs_tv_bce_vs_tv_sobel_k5_s001_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/9-6l_tv_vs_tv_bce_vs_tv_sobel_k5_s001-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[ 
+                                                  row_col_results=[
                                                                     mask_6l_tv_ch,
                                                                     mask_6l_tv_bce_ch,
                                                                     mask_6l_tv_s01_sobel_k5_s001_ch
