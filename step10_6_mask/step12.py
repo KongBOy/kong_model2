@@ -31,47 +31,41 @@ if(__name__ == "__main__"):
     ### 直接看 dtd_hdr_mix 的狀況
     #################################################################################################################################################################################################################
     ### 1-7l-1_ch
-    mask_7l_ch_results = [ exp.result_obj for exp in mask_7l_ch]
-    mask_7l_ch_analyze = Col_results_analyzer(ana_describe=f"{mask_ana_dir}/1-7l-1_ch", ana_what="mask", col_results=mask_7l_ch_results, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+    mask_7l_ch_analyze = Col_results_analyzer(ana_describe=f"{mask_ana_dir}/1-7l-1_ch", ana_what="mask", col_results=mask_7l_ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_7l_ch_analyze.analyze_col_results_single_see(see_num=0, single_see_multiprocess=False)
     ############################################
     ### 1-7l-2_layer
-    mask_layer_results = [ exp.result_obj for exp in mask_layer]
+
     mask_layer_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/1-7l-2_layer",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_layer_results[:4],
-                                                                   mask_layer_results[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_layer[:4],
+                                                                   mask_layer[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_layer_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ### 2-6l-1_ch
-    mask_6l_ch_results = [ exp.result_obj for exp in mask_6l_ch]
     mask_6l_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/2-6l-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_ch_results[:4],
-                                                                   mask_6l_ch_results[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_bce_ch[:4],
+                                                                   mask_6l_bce_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_ch_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ### 2-6l-2_ep
-    mask_6l_ep_results = [ exp.result_obj for exp in mask_6l_ep]
     mask_6l_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/2-6l-2_ep",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_ep_results[:8],
-                                                                   mask_6l_ep_results[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_bce_ep[:8],
+                                                                   mask_6l_bce_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_ep_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ### 2-6l-4_no-concat_and_add
-    mask_6l_noC_and_add_results = [ exp.result_obj for exp in mask_6l_noC_and_add]
     mask_6l_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/2-6l-4_no-concat_and_add",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_noC_and_add_results[:3],
-                                                                   mask_6l_noC_and_add_results[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_noC_and_add[:3],
+                                                                   mask_6l_noC_and_add[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_noC_and_add_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ### 3-6l_just_sobel_k5_s001~080-1_ch
-    mask_6l_just_sobel_k5_s001_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s120_ch]
-
     mask_6l_just_sobel_k5_s001_s080_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/3-6l_just_sobel_k5_s001~080-1_ch",
                                                   ana_what="mask",
                                                   row_col_results=[ 
@@ -83,201 +77,178 @@ if(__name__ == "__main__"):
                                                 # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     ### 5_1-6l_bce_sobel_k3-1_ch
-    mask_6l_sobel_k3_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k3_ch]
     mask_6l_sobel_k3_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_1-6l_bce_sobel_k3-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_sobel_k3_ch_results[:4],
-                                                                   mask_6l_sobel_k3_ch_results[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_sobel_k3_ch[:4],
+                                                                   mask_6l_sobel_k3_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k3_ch_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ### 5_1-6l_bce_sobel_k3-2_ep
-    mask_6l_sobel_k3_ep_results = [ exp.result_obj for exp in mask_6l_sobel_k3_ep]
     mask_6l_sobel_k3_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_1-6l_bce_sobel_k3-2_ep",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_sobel_k3_ep_results[:8],
-                                                                   mask_6l_sobel_k3_ep_results[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_sobel_k3_ep[:8],
+                                                                   mask_6l_sobel_k3_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k3_ep_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ### 5_1-6l_bce_sobel_k3-4_no-concat_and_add
-    mask_6l_sobel_k3_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k3_noC_and_add]
     mask_6l_sobel_k3_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_1-6l_bce_sobel_k3-4_no-concat_and_add",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_sobel_k3_noC_and_add_results[:3],
-                                                                   mask_6l_sobel_k3_noC_and_add_results[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_sobel_k3_noC_and_add[:3],
+                                                                   mask_6l_sobel_k3_noC_and_add[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k3_noC_and_add_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ### 5_1-6l_bce_sobel_k5-1_ch
-    mask_6l_sobel_k5_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_ch]
     mask_6l_sobel_k5_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_1-6l_bce_sobel_k5-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_sobel_k5_ch_results[:4],
-                                                                   mask_6l_sobel_k5_ch_results[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_sobel_k5_ch[:4],
+                                                                   mask_6l_sobel_k5_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k5_ch_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ### 5_1-6l_bce_sobel_k5-2_ep
-    mask_6l_sobel_k5_ep_results = [ exp.result_obj for exp in mask_6l_sobel_k5_ep]
     mask_6l_sobel_k5_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_1-6l_bce_sobel_k5-2_ep",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_sobel_k5_ep_results[:8],
-                                                                   mask_6l_sobel_k5_ep_results[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_sobel_k5_ep[:8],
+                                                                   mask_6l_sobel_k5_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k5_ep_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ### 5_1-6l_bce_sobel_k5-4_no-concat_and_add
-    mask_6l_sobel_k5_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_noC_and_add]
     mask_6l_sobel_k5_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_1-6l_bce_sobel_k5-4_no-concat_and_add",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_sobel_k5_noC_and_add_results[:3],
-                                                                   mask_6l_sobel_k5_noC_and_add_results[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_sobel_k5_noC_and_add[:3],
+                                                                   mask_6l_sobel_k5_noC_and_add[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k5_noC_and_add_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ### 5_1-6l_bce_sobel_k7-1_ch
-    mask_6l_sobel_k7_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k7_ch]
     mask_6l_sobel_k7_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_1-6l_bce_sobel_k7-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_sobel_k7_ch_results[:4],
-                                                                   mask_6l_sobel_k7_ch_results[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_sobel_k7_ch[:4],
+                                                                   mask_6l_sobel_k7_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k7_ch_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ### 5_1-6l_bce_sobel_k7-2_ep
-    mask_6l_sobel_k7_ep_results = [ exp.result_obj for exp in mask_6l_sobel_k7_ep]
     mask_6l_sobel_k7_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_1-6l_bce_sobel_k7-2_ep",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_sobel_k7_ep_results[:8],
-                                                                   mask_6l_sobel_k7_ep_results[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_sobel_k7_ep[:8],
+                                                                   mask_6l_sobel_k7_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k7_ep_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ### 5_1-6l_bce_sobel_k7-4_no-concat_and_add
-    mask_6l_sobel_k7_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k7_noC_and_add]
     mask_6l_sobel_k7_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_1-6l_bce_sobel_k7-4_no-concat_and_add",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_sobel_k7_noC_and_add_results[:3],
-                                                                   mask_6l_sobel_k7_noC_and_add_results[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_sobel_k7_noC_and_add[:3],
+                                                                   mask_6l_sobel_k7_noC_and_add[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k7_noC_and_add_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ### 5_2-6l_bce__sobel_k0357-1_ch
     mask_6l_sobel_k7_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_2-6l_bce__sobel_k0357-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[ mask_6l_ch_results,
-                                                                    mask_6l_sobel_k3_ch_results,
-                                                                    mask_6l_sobel_k5_ch_results,
-                                                                    mask_6l_sobel_k7_ch_results], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[ mask_6l_bce_ch,
+                                                                    mask_6l_sobel_k3_ch,
+                                                                    mask_6l_sobel_k5_ch,
+                                                                    mask_6l_sobel_k7_ch], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k7_ch_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ### 5_2-6l_bce__sobel_k0357-2_ep
     mask_6l_sobel_k7_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_2-6l_bce__sobel_k0357-2_ep",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_ep_results[:8],
-                                                                   mask_6l_ep_results[8:],
-                                                                   mask_6l_sobel_k3_ep_results[:8],
-                                                                   mask_6l_sobel_k3_ep_results[8:],
-                                                                   mask_6l_sobel_k5_ep_results[:8],
-                                                                   mask_6l_sobel_k5_ep_results[8:],
-                                                                   mask_6l_sobel_k7_ep_results[:8],
-                                                                   mask_6l_sobel_k7_ep_results[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_bce_ep[:8],
+                                                                   mask_6l_bce_ep[8:],
+                                                                   mask_6l_sobel_k3_ep[:8],
+                                                                   mask_6l_sobel_k3_ep[8:],
+                                                                   mask_6l_sobel_k5_ep[:8],
+                                                                   mask_6l_sobel_k5_ep[8:],
+                                                                   mask_6l_sobel_k7_ep[:8],
+                                                                   mask_6l_sobel_k7_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k7_ep_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ###  5_2-6l_bce__sobel_k0357-4_no-concat_and_add
     mask_6l_sobel_k7_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_2-6l_bce__sobel_k0357-4_no-concat_and_add",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_noC_and_add_results,
-                                                                   mask_6l_sobel_k3_noC_and_add_results,
-                                                                   mask_6l_sobel_k5_noC_and_add_results,
-                                                                   mask_6l_sobel_k7_noC_and_add_results], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_noC_and_add,
+                                                                   mask_6l_sobel_k3_noC_and_add,
+                                                                   mask_6l_sobel_k5_noC_and_add,
+                                                                   mask_6l_sobel_k7_noC_and_add], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k7_noC_and_add_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ### 5_3-6l_bce__sobel_k5_s20~100-1_ch
-    mask_6l_sobel_k5_s20_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s20_ch]
-    mask_6l_sobel_k5_s40_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s40_ch]
-    mask_6l_sobel_k5_s60_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s60_ch]
-    mask_6l_sobel_k5_s80_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s80_ch]
-    mask_6l_sobel_k5_s100_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s100_ch]
     mask_6l_sobel_k5_s20_s100_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_3-6l_bce__sobel_k5_s20~100-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[ mask_6l_ch_results,
-                                                                    mask_6l_sobel_k5_s20_ch_results,
-                                                                    mask_6l_sobel_k5_s40_ch_results,
-                                                                    mask_6l_sobel_k5_s60_ch_results,
-                                                                    mask_6l_sobel_k5_s80_ch_results,
-                                                                    mask_6l_sobel_k5_s100_ch_results], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[ mask_6l_bce_ch,
+                                                                    mask_6l_sobel_k5_s20_ch,
+                                                                    mask_6l_sobel_k5_s40_ch,
+                                                                    mask_6l_sobel_k5_s60_ch,
+                                                                    mask_6l_sobel_k5_s80_ch,
+                                                                    mask_6l_sobel_k5_s100_ch], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k5_s20_s100_ch_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     # ### 5_3-6l_bce__sobel_k5_s20~100-2_ep  ### 生太久且效果好像都差不多，所以先註解掉
     # mask_6l_sobel_k7_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_3-6l_bce__sobel_k5_s20~100-2_ep",
     #                                               ana_what="mask",
-    #                                               row_col_results=[mask_6l_ep_results[:8],
-    #                                                                mask_6l_ep_results[8:],
-    #                                                                mask_6l_sobel_k3_ep_results[:8],
-    #                                                                mask_6l_sobel_k3_ep_results[8:],
-    #                                                                mask_6l_sobel_k5_ep_results[:8],
-    #                                                                mask_6l_sobel_k5_ep_results[8:],
-    #                                                                mask_6l_sobel_k7_ep_results[:8],
-    #                                                                mask_6l_sobel_k7_ep_results[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+    #                                               row_col_results=[mask_6l_bce_ep[:8],
+    #                                                                mask_6l_bce_ep[8:],
+    #                                                                mask_6l_sobel_k3_ep[:8],
+    #                                                                mask_6l_sobel_k3_ep[8:],
+    #                                                                mask_6l_sobel_k5_ep[:8],
+    #                                                                mask_6l_sobel_k5_ep[8:],
+    #                                                                mask_6l_sobel_k7_ep[:8],
+    #                                                                mask_6l_sobel_k7_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k7_ep_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ###  5_3-6l_bce__sobel_k5_s20~100-4_no-concat_and_add
-    mask_6l_sobel_k5_s20_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s20_noC_and_add]
-    mask_6l_sobel_k5_s40_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s40_noC_and_add]
-    mask_6l_sobel_k5_s60_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s60_noC_and_add]
-    mask_6l_sobel_k5_s80_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s80_noC_and_add]
-    mask_6l_sobel_k5_s100_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s100_noC_and_add]
     mask_6l_sobel_k5_s20_s100_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_3-6l_bce__sobel_k5_s20~100-4_no-concat_and_add",
                                                   ana_what="mask",
-                                                  row_col_results=[mask_6l_noC_and_add_results,
-                                                                   mask_6l_sobel_k5_s20_noC_and_add_results,
-                                                                   mask_6l_sobel_k5_s40_noC_and_add_results,
-                                                                   mask_6l_sobel_k5_s60_noC_and_add_results,
-                                                                   mask_6l_sobel_k5_s80_noC_and_add_results,
-                                                                   mask_6l_sobel_k5_s100_noC_and_add_results], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+                                                  row_col_results=[mask_6l_noC_and_add,
+                                                                   mask_6l_sobel_k5_s20_noC_and_add,
+                                                                   mask_6l_sobel_k5_s40_noC_and_add,
+                                                                   mask_6l_sobel_k5_s60_noC_and_add,
+                                                                   mask_6l_sobel_k5_s80_noC_and_add,
+                                                                   mask_6l_sobel_k5_s100_noC_and_add], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k5_s20_s100_noC_and_add_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ### 5_3-6l_bce__sobel_k5_s40~140-1_ch
-    mask_6l_sobel_k5_s120_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s120_ch]
-    mask_6l_sobel_k5_s140_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s140_ch]
-    mask_6l_sobel_k5_s160_ch_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s160_ch]
     mask_6l_sobel_k5_s40_s140_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_3-6l_bce__sobel_k5_s40~140-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[ mask_6l_sobel_k5_s40_ch_results,
-                                                                    mask_6l_sobel_k5_s60_ch_results,
-                                                                    mask_6l_sobel_k5_s80_ch_results,
-                                                                    mask_6l_sobel_k5_s100_ch_results,
-                                                                    mask_6l_sobel_k5_s120_ch_results,
-                                                                    mask_6l_sobel_k5_s140_ch_results], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                  row_col_results=[ mask_6l_sobel_k5_s40_ch,
+                                                                    mask_6l_sobel_k5_s60_ch,
+                                                                    mask_6l_sobel_k5_s80_ch,
+                                                                    mask_6l_sobel_k5_s100_ch,
+                                                                    mask_6l_sobel_k5_s120_ch,
+                                                                    mask_6l_sobel_k5_s140_ch], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
-
     ############################################
     # ### 5_3-6l_bce__sobel_k5_s20~100-2_ep  ### 生太久且效果好像都差不多，所以先註解掉
     # mask_6l_sobel_k7_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_3-6l_bce__sobel_k5_s20~100-2_ep",
     #                                               ana_what="mask",
-    #                                               row_col_results=[mask_6l_ep_results[:8],
-    #                                                                mask_6l_ep_results[8:],
-    #                                                                mask_6l_sobel_k3_ep_results[:8],
-    #                                                                mask_6l_sobel_k3_ep_results[8:],
-    #                                                                mask_6l_sobel_k5_ep_results[:8],
-    #                                                                mask_6l_sobel_k5_ep_results[8:],
-    #                                                                mask_6l_sobel_k7_ep_results[:8],
-    #                                                                mask_6l_sobel_k7_ep_results[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+    #                                               row_col_results=[mask_6l_bce_ep[:8],
+    #                                                                mask_6l_bce_ep[8:],
+    #                                                                mask_6l_sobel_k3_ep[:8],
+    #                                                                mask_6l_sobel_k3_ep[8:],
+    #                                                                mask_6l_sobel_k5_ep[:8],
+    #                                                                mask_6l_sobel_k5_ep[8:],
+    #                                                                mask_6l_sobel_k7_ep[:8],
+    #                                                                mask_6l_sobel_k7_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k7_ep_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ###  5_3-6l_bce__sobel_k5_s20~100-4_no-concat_and_add  ### 直覺就不行，有空再來研究看看 先趕meeting
-    # mask_6l_sobel_k5_s20_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s20_noC_and_add]
-    # mask_6l_sobel_k5_s40_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s40_noC_and_add]
-    # mask_6l_sobel_k5_s60_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s60_noC_and_add]
-    # mask_6l_sobel_k5_s80_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s80_noC_and_add]
-    # mask_6l_sobel_k5_s100_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s100_noC_and_add]
+    # mask_6l_sobel_k5_s20_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s20_noC_and_add]
+    # mask_6l_sobel_k5_s40_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s40_noC_and_add]
+    # mask_6l_sobel_k5_s60_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s60_noC_and_add]
+    # mask_6l_sobel_k5_s80_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s80_noC_and_add]
+    # mask_6l_sobel_k5_s100_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s100_noC_and_add]
     # mask_6l_sobel_k5_s20_s100_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_3-6l_bce__sobel_k5_s20~100-4_no-concat_and_add",
     #                                               ana_what="mask",
-    #                                               row_col_results=[mask_6l_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s20_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s40_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s60_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s80_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s100_noC_and_add_results], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+    #                                               row_col_results=[mask_6l_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s20_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s40_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s60_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s80_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s100_noC_and_add], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k5_s20_s100_noC_and_add_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
@@ -285,42 +256,42 @@ if(__name__ == "__main__"):
     ### 5_3-6l_bce__sobel_k5_s60~160-1_ch
     mask_6l_sobel_k5_s60_s160_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_3-6l_bce__sobel_k5_s60~160-1_ch",
                                                   ana_what="mask",
-                                                  row_col_results=[ mask_6l_sobel_k5_s60_ch_results,
-                                                                    mask_6l_sobel_k5_s80_ch_results,
-                                                                    mask_6l_sobel_k5_s100_ch_results,
-                                                                    mask_6l_sobel_k5_s120_ch_results,
-                                                                    mask_6l_sobel_k5_s140_ch_results,
-                                                                    mask_6l_sobel_k5_s160_ch_results], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                  row_col_results=[ mask_6l_sobel_k5_s60_ch,
+                                                                    mask_6l_sobel_k5_s80_ch,
+                                                                    mask_6l_sobel_k5_s100_ch,
+                                                                    mask_6l_sobel_k5_s120_ch,
+                                                                    mask_6l_sobel_k5_s140_ch,
+                                                                    mask_6l_sobel_k5_s160_ch], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                                 # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
 
     ############################################
     # ### 5_3-6l_bce__sobel_k5_s20~100-2_ep  ### 生太久且效果好像都差不多，所以先註解掉
     # mask_6l_sobel_k7_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_3-6l_bce__sobel_k5_s20~100-2_ep",
     #                                               ana_what="mask",
-    #                                               row_col_results=[mask_6l_ep_results[:8],
-    #                                                                mask_6l_ep_results[8:],
-    #                                                                mask_6l_sobel_k3_ep_results[:8],
-    #                                                                mask_6l_sobel_k3_ep_results[8:],
-    #                                                                mask_6l_sobel_k5_ep_results[:8],
-    #                                                                mask_6l_sobel_k5_ep_results[8:],
-    #                                                                mask_6l_sobel_k7_ep_results[:8],
-    #                                                                mask_6l_sobel_k7_ep_results[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+    #                                               row_col_results=[mask_6l_bce_ep[:8],
+    #                                                                mask_6l_bce_ep[8:],
+    #                                                                mask_6l_sobel_k3_ep[:8],
+    #                                                                mask_6l_sobel_k3_ep[8:],
+    #                                                                mask_6l_sobel_k5_ep[:8],
+    #                                                                mask_6l_sobel_k5_ep[8:],
+    #                                                                mask_6l_sobel_k7_ep[:8],
+    #                                                                mask_6l_sobel_k7_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k7_ep_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ###  5_3-6l_bce__sobel_k5_s20~100-4_no-concat_and_add  ### 直覺就不行，有空再來研究看看 先趕meeting
-    # mask_6l_sobel_k5_s20_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s20_noC_and_add]
-    # mask_6l_sobel_k5_s40_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s40_noC_and_add]
-    # mask_6l_sobel_k5_s60_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s60_noC_and_add]
-    # mask_6l_sobel_k5_s80_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s80_noC_and_add]
-    # mask_6l_sobel_k5_s100_noC_and_add_results = [ exp.result_obj for exp in mask_6l_sobel_k5_s100_noC_and_add]
+    # mask_6l_sobel_k5_s20_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s20_noC_and_add]
+    # mask_6l_sobel_k5_s40_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s40_noC_and_add]
+    # mask_6l_sobel_k5_s60_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s60_noC_and_add]
+    # mask_6l_sobel_k5_s80_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s80_noC_and_add]
+    # mask_6l_sobel_k5_s100_noC_and_add = [ exp.result_obj for exp in mask_6l_sobel_k5_s100_noC_and_add]
     # mask_6l_sobel_k5_s20_s100_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/5_3-6l_bce__sobel_k5_s20~100-4_no-concat_and_add",
     #                                               ana_what="mask",
-    #                                               row_col_results=[mask_6l_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s20_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s40_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s60_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s80_noC_and_add_results,
-    #                                                                mask_6l_sobel_k5_s100_noC_and_add_results], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+    #                                               row_col_results=[mask_6l_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s20_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s40_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s60_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s80_noC_and_add,
+    #                                                                mask_6l_sobel_k5_s100_noC_and_add], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # mask_6l_sobel_k5_s20_s100_noC_and_add_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
@@ -371,7 +342,7 @@ if(__name__ == "__main__"):
     mask_6l_tv_mix_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/8-tv_s01,04_bce_sobel_k5_s001,100_ch",
                                                   ana_what="mask",
                                                   row_col_results=[
-                                                                    mask_6l_ch_results,               ### just_bce
+                                                                    mask_6l_bce_ch,               ### just_bce
                                                                     mask_6l_just_sobel_k5_s001_ch,    ### just_sobel_k5_s001
                                                                     mask_6l_tv_s01_bce_sobel_k5_s001_ch,  ### just_tv
                                                                     mask_6l_tv_s01_bce_sobel_k5_s100_ch,  ### tv + bce
@@ -385,12 +356,12 @@ if(__name__ == "__main__"):
     mask_6l_mix_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/9-6l_mix-1_ch",
                                                 ana_what="mask",
                                                 row_col_results=[
-                                                                mask_6l_ch_results,               ### just_bce
+                                                                mask_6l_bce_ch,               ### just_bce
                                                                 mask_6l_just_sobel_k5_s001_ch,    ### just_sobel_k5_s001
                                                                 mask_6l_tv_ch,                    ### just_tv
                                                                 mask_6l_tv_bce_ch,                ### tv + bce
                                                                 mask_6l_tv_s01_sobel_k5_s001_ch,  ### tv + sobel_k5_s001
-                                                                mask_6l_sobel_k5_ch_results,      ### sobel_k5 + bce
+                                                                mask_6l_sobel_k5_ch,      ### sobel_k5 + bce
                                                                 ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
