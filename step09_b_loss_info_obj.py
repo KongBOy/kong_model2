@@ -265,11 +265,15 @@ class Loss_info_builder(Loss_info_G_loss_builder):
 # 所以 不能只寫 build_by_model_name，也要寫 我自己指定的method
 # 所以 也可以跟 model 一樣 先建好
 # 然後還要在 exp 裡面 再次設定喔！
-G_mse_loss_info_builder            = Loss_info_builder().set_loss_type("mse")  #.build_g_mse_loss_fun_and_containor()
-G_mae_loss_info_builder            = Loss_info_builder().set_loss_type("mae")  #.build_g_mae_loss_fun_and_containor()
-G_bce_loss_info_builder            = Loss_info_builder().set_loss_type("bce", bce_scale=1)  #.build_gan_loss().build_gan_loss_containors()
-G_bce_s10_loss_info_builder            = Loss_info_builder().set_loss_type("bce", bce_scale=10)  #.build_gan_loss().build_gan_loss_containors()
-G_bce_s20_loss_info_builder            = Loss_info_builder().set_loss_type("bce", bce_scale=20)  #.build_gan_loss().build_gan_loss_containors()
+G_mse_loss_info_builder       = Loss_info_builder().set_loss_type("mse")
+G_mae_loss_info_builder       = Loss_info_builder().set_loss_type("mae")
+G_bce_loss_info_builder       = Loss_info_builder().set_loss_type("bce", bce_scale=1) 
+G_bce_s10_loss_info_builder   = Loss_info_builder().set_loss_type("bce", bce_scale=10)
+G_bce_s20_loss_info_builder   = Loss_info_builder().set_loss_type("bce", bce_scale=20)
+G_bce_s40_loss_info_builder   = Loss_info_builder().set_loss_type("bce", bce_scale=40)
+G_bce_s60_loss_info_builder   = Loss_info_builder().set_loss_type("bce", bce_scale=60)
+G_bce_s80_loss_info_builder   = Loss_info_builder().set_loss_type("bce", bce_scale=80)
+G_bce_s100_loss_info_builder  = Loss_info_builder().set_loss_type("bce", bce_scale=100)
 
 G_tv_loss_info_builder             = Loss_info_builder().set_loss_type("tv")  #.build_gan_loss().build_gan_loss_containors()
 G_tv_bce_loss_info_builder         = Loss_info_builder().set_loss_type("tv+bce")  #.build_gan_loss().build_gan_loss_containors()
