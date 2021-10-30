@@ -26,7 +26,7 @@ class Generator(tf.keras.models.Model):
         self.skip_use_cSE  = skip_use_cSE
         self.skip_use_sSE  = skip_use_sSE
         self.skip_use_scSE = skip_use_scSE
-        self.skip_use_add = skip_use_add
+        self.skip_use_add  = skip_use_add
         self.skip_use_cnn  = skip_use_cnn
         self.skip_use_Acti = skip_use_Acti
         self.out_tanh = out_tanh
