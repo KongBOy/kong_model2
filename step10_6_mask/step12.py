@@ -62,7 +62,7 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_6l_bce_s01_noC_and_add[:3] + [mask_6l_bce_s01_ch[2]],
                                                                    mask_6l_bce_s01_noC_and_add[3:] + [mask_6l_bce_s01_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     ana_name = "2_1-6l_bce_s10-1_ch"
     mask_6l_bce_s10_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -83,7 +83,7 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_6l_bce_s10_noC_and_add[:3] + [mask_6l_bce_s10_ch[2]],
                                                                    mask_6l_bce_s10_noC_and_add[3:] + [mask_6l_bce_s10_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     ana_name = "2_1-6l_bce_s20-1_ch"
     mask_6l_bce_s20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -104,7 +104,68 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_6l_bce_s20_noC_and_add[:3] + [mask_6l_bce_s20_ch[2]],
                                                                    mask_6l_bce_s20_noC_and_add[3:] + [mask_6l_bce_s20_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    #################################################################################################################################################################################################################
+    ana_name = "2_1-6l_bce_s40-1_ch"
+    mask_6l_bce_s40_ch_analyze = Col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  col_results=mask_6l_bce_s40_ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    ############################################
+    ana_name = "2_1-6l_bce_s40-2_ep"
+    mask_6l_bce_s40_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[mask_6l_bce_s40_ep[:4],
+                                                                   mask_6l_bce_s40_ep[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    ############################################
+    ana_name = "2_1-6l_bce_s40-4_no_concat_and_add"
+    mask_6l_bce_s40_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[mask_6l_bce_s40_noC_and_add[:3] + [mask_6l_bce_s40_ch[2]],
+                                                                   mask_6l_bce_s40_noC_and_add[3:] + [mask_6l_bce_s40_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    #################################################################################################################################################################################################################
+    ana_name = "2_1-6l_bce_s60-1_ch"
+    mask_6l_bce_s60_ch_analyze = Col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  col_results=mask_6l_bce_s60_ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    ############################################
+    ana_name = "2_1-6l_bce_s60-2_ep"
+    mask_6l_bce_s60_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[mask_6l_bce_s60_ep[:4],
+                                                                   mask_6l_bce_s60_ep[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    ############################################
+    ana_name = "2_1-6l_bce_s60-4_no_concat_and_add"
+    mask_6l_bce_s60_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[mask_6l_bce_s60_noC_and_add[:3] + [mask_6l_bce_s60_ch[2]],
+                                                                   mask_6l_bce_s60_noC_and_add[3:] + [mask_6l_bce_s60_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    #################################################################################################################################################################################################################
+    ana_name = "2_1-6l_bce_s80-1_ch"
+    mask_6l_bce_s80_ch_analyze = Col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  col_results=mask_6l_bce_s80_ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            .analyze_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    ############################################
+    ana_name = "2_1-6l_bce_s80-2_ep"
+    mask_6l_bce_s80_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[mask_6l_bce_s80_ep[:4],
+                                                                   mask_6l_bce_s80_ep[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    ############################################
+    ana_name = "2_1-6l_bce_s80-4_no_concat_and_add"
+    mask_6l_bce_s80_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[mask_6l_bce_s80_noC_and_add[:3] + [mask_6l_bce_s80_ch[2]],
+                                                                   mask_6l_bce_s80_noC_and_add[3:] + [mask_6l_bce_s80_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "2_2-6l_bce_s1,10,20-1_ch"
@@ -132,19 +193,19 @@ if(__name__ == "__main__"):
                                                 row_col_results=[ mask_6l_bce_s01_noC_and_add + [mask_6l_bce_s01_ch[2]],
                                                                   mask_6l_bce_s10_noC_and_add + [mask_6l_bce_s10_ch[2]],
                                                                   mask_6l_bce_s20_noC_and_add + [mask_6l_bce_s20_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3-6l_just_sobel_k5_s001~080-1_ch"
-    mask_6l_just_sobel_k5_s001_s080_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+    mask_sobel_k5_s001_s080_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[
-                                                                    mask_6l_just_sobel_k5_s001_ch,
-                                                                    mask_6l_just_sobel_k5_s020_ch,
-                                                                    mask_6l_just_sobel_k5_s040_ch,
-                                                                    mask_6l_just_sobel_k5_s060_ch,
-                                                                    mask_6l_just_sobel_k5_s080_ch], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                                    mask_sobel_k5_s001_ch,
+                                                                    mask_sobel_k5_s020_ch,
+                                                                    mask_sobel_k5_s040_ch,
+                                                                    mask_sobel_k5_s060_ch,
+                                                                    mask_sobel_k5_s080_ch], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
@@ -406,7 +467,7 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[
                                                                     mask_6l_bce_s01_ch,               ### just_bce
-                                                                    mask_6l_just_sobel_k5_s001_ch,    ### just_sobel_k5_s001
+                                                                    mask_sobel_k5_s001_ch,    ### just_sobel_k5_s001
                                                                     mask_6l_tv_s01_bce_sobel_k5_s001_ch,  ### just_tv
                                                                     mask_6l_tv_s01_bce_sobel_k5_s100_ch,  ### tv + bce
                                                                     mask_6l_tv_s04_bce_sobel_k5_s001_ch,  ### tv + sobel_k5_s001
@@ -421,7 +482,7 @@ if(__name__ == "__main__"):
                                                 ana_what="mask",
                                                 row_col_results=[
                                                                 mask_6l_bce_s01_ch,               ### just_bce
-                                                                mask_6l_just_sobel_k5_s001_ch,    ### just_sobel_k5_s001
+                                                                mask_sobel_k5_s001_ch,    ### just_sobel_k5_s001
                                                                 mask_6l_tv_ch,                    ### just_tv
                                                                 mask_6l_tv_bce_ch,                ### tv + bce
                                                                 mask_6l_tv_s01_sobel_k5_s001_ch,  ### tv + sobel_k5_s001

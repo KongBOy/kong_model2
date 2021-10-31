@@ -4,7 +4,7 @@ import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_3_just_sobel_k5_s040_6l.step
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_3_just_sobel_k5_s060_6l.step10_a as sobel_k5_s060
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_3_just_sobel_k5_s080_6l.step10_a as sobel_k5_s080
 import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_3_just_sobel_k5_s100_6l.step10_a as sobel_k5_s100
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_3_just_sobel_k5_s120_260_6l.step10_a as sobel_k5_s120_260
+import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_3_just_sobel_k5_s120_260_6l_ch032.step10_a as sobel_k5_s120_260_ch032
 ####################################################################################################################################
 ####################################################################################################################################
 ### 3-sobel_k5_s001-1_ch
@@ -253,14 +253,14 @@ mask_ch032_sobel_k5_s1_260 = [
                             sobel_k5_s060.mask_h_bg_ch032_sig_6l_ep060.build(),
                             sobel_k5_s080.mask_h_bg_ch032_sig_6l_ep060.build(),
                             sobel_k5_s100.mask_h_bg_ch032_sig_6l_ep060.build(),
-                            sobel_k5_s120_260.mask_h_bg_ch032_sig_sobel_k5_s120_6l_ep060.build(),
-                            sobel_k5_s120_260.mask_h_bg_ch032_sig_sobel_k5_s140_6l_ep060.build(),
-                            sobel_k5_s120_260.mask_h_bg_ch032_sig_sobel_k5_s160_6l_ep060.build(),
-                            sobel_k5_s120_260.mask_h_bg_ch032_sig_sobel_k5_s180_6l_ep060.build(),
-                            sobel_k5_s120_260.mask_h_bg_ch032_sig_sobel_k5_s200_6l_ep060.build(),
-                            sobel_k5_s120_260.mask_h_bg_ch032_sig_sobel_k5_s220_6l_ep060.build(),
-                            sobel_k5_s120_260.mask_h_bg_ch032_sig_sobel_k5_s240_6l_ep060.build(),
-                            sobel_k5_s120_260.mask_h_bg_ch032_sig_sobel_k5_s260_6l_ep060.build(),
+                            sobel_k5_s120_260_ch032.mask_h_bg_ch032_sig_sobel_k5_s120_6l_ep060.build(),
+                            sobel_k5_s120_260_ch032.mask_h_bg_ch032_sig_sobel_k5_s140_6l_ep060.build(),
+                            sobel_k5_s120_260_ch032.mask_h_bg_ch032_sig_sobel_k5_s160_6l_ep060.build(),
+                            sobel_k5_s120_260_ch032.mask_h_bg_ch032_sig_sobel_k5_s180_6l_ep060.build(),
+                            sobel_k5_s120_260_ch032.mask_h_bg_ch032_sig_sobel_k5_s200_6l_ep060.build(),
+                            sobel_k5_s120_260_ch032.mask_h_bg_ch032_sig_sobel_k5_s220_6l_ep060.build(),
+                            sobel_k5_s120_260_ch032.mask_h_bg_ch032_sig_sobel_k5_s240_6l_ep060.build(),
+                            sobel_k5_s120_260_ch032.mask_h_bg_ch032_sig_sobel_k5_s260_6l_ep060.build(),
                          ]
 mask_ch032_sobel_k5_s1_260 = [ exp.result_obj for exp in mask_ch032_sobel_k5_s1_260]
 ############################################

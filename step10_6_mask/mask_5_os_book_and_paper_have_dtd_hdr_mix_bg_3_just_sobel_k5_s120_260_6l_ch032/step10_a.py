@@ -31,7 +31,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
 
 use_db_obj = type9_try_flow_mask_have_bg_dtd_hdr_mix_and_paper
 ############################  have_bg  #################################
-### 1a. ch
+### ch032
 mask_h_bg_ch032_sig_sobel_k5_s120_6l_ep060 = Exp_builder().set_basic("train", use_db_obj, mask_unet_ch032_sig_sobel_6l, G_sobel_k5_s120_loss_info_builder, exp_dir=exp_dir, describe_mid="6_1_3_1", describe_end="mask_h_bg_ch032_sig_sobel_k5_s120_6l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_1_3_1-20211031_181635-flow_unet-mask_h_bg_ch032_sig_sobel_k5_s120_6l_ep060")
 mask_h_bg_ch032_sig_sobel_k5_s140_6l_ep060 = Exp_builder().set_basic("train", use_db_obj, mask_unet_ch032_sig_sobel_6l, G_sobel_k5_s140_loss_info_builder, exp_dir=exp_dir, describe_mid="6_1_3_2", describe_end="mask_h_bg_ch032_sig_sobel_k5_s140_6l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_1_3_2-20211031_184805-flow_unet-mask_h_bg_ch032_sig_sobel_k5_s140_6l_ep060")
 mask_h_bg_ch032_sig_sobel_k5_s160_6l_ep060 = Exp_builder().set_basic("train", use_db_obj, mask_unet_ch032_sig_sobel_6l, G_sobel_k5_s160_loss_info_builder, exp_dir=exp_dir, describe_mid="6_1_3_3", describe_end="mask_h_bg_ch032_sig_sobel_k5_s160_6l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_1_3_3-20211031_181746-flow_unet-mask_h_bg_ch032_sig_sobel_k5_s160_6l_ep060")
