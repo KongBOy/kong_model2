@@ -18,3 +18,5 @@ sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s160_6l_ep060.{run}"])  ##
 sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s180_6l_ep060.{run}"])  ### 127.35跑
 sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s200_6l_ep060.{run}"])  ### 127.35跑
 sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s220_6l_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s240_6l_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s260_6l_ep060.{run}"])  ### 127.35跑
