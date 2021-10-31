@@ -8,13 +8,13 @@ import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_2_bce_s80_6l .step10_a as bc
 ####################################################################################################################################
 ### 2-6l_bce_s01-1_ch
 mask_6l_bce_s01_ch = [bce_s01_6l.mask_h_bg_ch128_sig_bce_6l_ep060.build(),
-                     bce_s01_6l.mask_h_bg_ch064_sig_bce_6l_ep060.build(),
-                     bce_s01_6l.mask_h_bg_ch032_sig_bce_6l_ep060.build(),
-                     bce_s01_6l.mask_h_bg_ch016_sig_bce_6l_ep060.build(),
-                     bce_s01_6l.mask_h_bg_ch008_sig_bce_6l_ep060.build(),
-                     bce_s01_6l.mask_h_bg_ch004_sig_bce_6l_ep060.build(),
-                     bce_s01_6l.mask_h_bg_ch002_sig_bce_6l_ep060.build(),
-                     bce_s01_6l.mask_h_bg_ch001_sig_bce_6l_ep060.build()]
+                      bce_s01_6l.mask_h_bg_ch064_sig_bce_6l_ep060.build(),
+                      bce_s01_6l.mask_h_bg_ch032_sig_bce_6l_ep060.build(),
+                      bce_s01_6l.mask_h_bg_ch016_sig_bce_6l_ep060.build(),
+                      bce_s01_6l.mask_h_bg_ch008_sig_bce_6l_ep060.build(),
+                      bce_s01_6l.mask_h_bg_ch004_sig_bce_6l_ep060.build(),
+                      bce_s01_6l.mask_h_bg_ch002_sig_bce_6l_ep060.build(),
+                      bce_s01_6l.mask_h_bg_ch001_sig_bce_6l_ep060.build()]
 mask_6l_bce_s01_ch = [ exp.result_obj for exp in mask_6l_bce_s01_ch]
 ############################################
 ### 2-6l_bce_s01-2_ep
