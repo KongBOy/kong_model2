@@ -1,6 +1,7 @@
 import cv2
 import time
 from tqdm import tqdm
+import datetime
 
 import sys
 sys.path.append("kong_util")
@@ -27,8 +28,7 @@ class Result_analyzer:
         self.bgr2rgb = bgr2rgb
         self.add_loss = add_loss
 
-        Check_dir_exist_and_build(self.analyze_dst_dir)
-
+        self.ana_timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     ########################################################################################################################################
     def _step0_c_results_get_see_base_info(self, c_results):
         """
@@ -71,8 +71,6 @@ class Col_results_analyzer(Result_analyzer):
 
     def step0_get_c_min_trained_epoch(self): self.c_min_trained_epoch = min(self._step0_get_c_trained_epochs())
     def step0_get_c_max_trained_epoch(self): self.c_max_trained_epoch = max(self._step0_get_c_trained_epochs())
-
-
 
     ########################################################################################################################################
     def step1_get_c_titles(self):
@@ -167,8 +165,8 @@ class Col_results_analyzer(Result_analyzer):
         _Draw_col_results_single_see_ 的 前置步驟：設定格式
         """
         start_time = time.time()
-        analyze_see_dir = self.analyze_dst_dir + "/" + self.c_results[0].sees[see_num].see_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
-        Check_dir_exist_and_build_new_dir(analyze_see_dir)                                       ### 建立 存結果的資料夾
+        analyze_see_dir = self.analyze_dst_dir + "/" + self.c_results[0].sees[see_num].see_name + "/" + f"{self.ana_what}_epoch=all ({self.ana_timestamp})"  ### (可以再想想好名字！)分析結果存哪裡定位出來
+        Check_dir_exist_and_build_new_dir(analyze_see_dir)  ### 建立 存結果的資料夾
 
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！ 並且抓出各result的trained_epochs
@@ -191,7 +189,7 @@ class Col_results_analyzer(Result_analyzer):
 
         Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
         Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
-        # Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+        Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print(f"{self.ana_describe} doing analyze_col_results_single_see, doing see_num:{see_num} finish, cost_time:{time.time() - start_time}")
 
 
@@ -389,8 +387,8 @@ class Row_col_results_analyzer(Result_analyzer):
     def analyze_row_col_results_single_see(self, see_num, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
         print(f"{self.ana_describe} doing analyze_row_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
         start_time = time.time()
-        analyze_see_dir = self.analyze_dst_dir + "/" + self.r_c_results[0][0].sees[see_num].see_name + "/" + f"{self.ana_what}_epoch=all"  ### 分析結果存哪裡定位出來
-        Check_dir_exist_and_build_new_dir(analyze_see_dir)                                          ### 建立 存結果的資料夾
+        analyze_see_dir = self.analyze_dst_dir + "/" + self.r_c_results[0][0].sees[see_num].see_name + "/" + f"{self.ana_what}_epoch=all ({self.ana_timestamp})"  ### 分析結果存哪裡定位出來
+        Check_dir_exist_and_build_new_dir(analyze_see_dir)  ### 建立 存結果的資料夾
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！ 並且抓出各result的trained_epochs
         self._step0_r_c_results_get_see_base_info(self.r_c_results)
