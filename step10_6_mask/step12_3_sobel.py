@@ -13,8 +13,8 @@ if(__name__ == "__main__"):
     for _ in range(back_to_kong_layer_amount): os.chdir("..")  ### 看差幾層 往前跳 幾次dir
     sys.path.append(".")                                         ### 把 kong_model2 加進 sys.path
     ##########################################################################################################################################################################################################################################################################################
-    from step12_result_analyzer import Col_results_analyzer, Row_col_results_analyzer, Bm_Rec_exps_analyze
-    from step11c import  *
+    from step12_result_analyzer import Col_results_analyzer, Row_col_results_analyzer
+    from step11c_3_sobel import  *
     ##########################################################################################################################################################################################################################################################################################
     mask_ana_dir = "mask"
     """
@@ -171,7 +171,7 @@ if(__name__ == "__main__"):
                                                                   mask_sobel_k5_s020_ch[:3] + mask_sobel_k5_s080_ch[:3],
                                                                   mask_sobel_k5_s040_ch[:3] + mask_sobel_k5_s100_ch[:3],
                                                                   ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
     ############################################
     ana_name = "3_2-sobel_k5_s1,20,40,60,80,100-4_no_concat_and_add"
     mask_6l_bce_s1_10_20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -183,3 +183,13 @@ if(__name__ == "__main__"):
                                                                   [mask_sobel_k5_s080_ch[2]] + mask_sobel_k5_s080_noC_and_add + [mask_sobel_k5_s080_ch[2]],
                                                                   [mask_sobel_k5_s100_ch[2]] + mask_sobel_k5_s100_noC_and_add + [mask_sobel_k5_s100_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                     # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    #################################################################################################################################################################################################################
+    #################################################################################################################################################################################################################
+    ana_name = "3_3_ch032-sobel_k5_s1~260"
+    mask_6l_bce_s1_10_20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                ana_what="mask",
+                                                row_col_results=[ mask_ch032_sobel_k5_s1_260[  : 5],
+                                                                  mask_ch032_sobel_k5_s1_260[ 5:10],
+                                                                  mask_ch032_sobel_k5_s1_260[10:  ],
+                                                                  ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
