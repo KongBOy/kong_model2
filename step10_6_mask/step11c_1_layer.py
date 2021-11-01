@@ -4,7 +4,7 @@
 # import mask_4_os_book_and_paper_have_dtd_bg                         .step10_a as os_book_and_paper_have_dtd_bg
 
 ### 直接看 dtd_hdr_mix 的狀況
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_1                 .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg
+import mask_5_1                 .step10_a as os_book_and_paper_have_dtd_hdr_mix_bg
 
 ############################################
 ### 1-7l-1_ch

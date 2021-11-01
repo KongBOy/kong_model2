@@ -1,9 +1,9 @@
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_2_6l         .step10_a as bce_s01_6l
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_2_bce_s10_6l .step10_a as bce_s10_6l
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_2_bce_s20_6l .step10_a as bce_s20_6l
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_2_bce_s40_6l .step10_a as bce_s40_6l
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_2_bce_s60_6l .step10_a as bce_s60_6l
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_2_bce_s80_6l .step10_a as bce_s80_6l
+import mask_5_2_6l         .step10_a as bce_s01_6l
+import mask_5_2_bce_s10_6l .step10_a as bce_s10_6l
+import mask_5_2_bce_s20_6l .step10_a as bce_s20_6l
+import mask_5_2_bce_s40_6l .step10_a as bce_s40_6l
+import mask_5_2_bce_s60_6l .step10_a as bce_s60_6l
+import mask_5_2_bce_s80_6l .step10_a as bce_s80_6l
 
 ####################################################################################################################################
 ### 2-6l_bce_s01-1_ch

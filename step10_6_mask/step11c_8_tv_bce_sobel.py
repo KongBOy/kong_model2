@@ -1,10 +1,10 @@
 
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_8_tv_s01_bce_sobel_k5_s001.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s01_bce_sobel_k5_s001
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_8_tv_s01_bce_sobel_k5_s100.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s01_bce_sobel_k5_s100
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_8_tv_s04_bce_sobel_k5_s001.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s04_bce_sobel_k5_s001
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_8_tv_s04_bce_sobel_k5_s100.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s04_bce_sobel_k5_s100
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_8_tv_s08_bce_sobel_k5_s100.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s08_bce_sobel_k5_s100
-import mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_8_tv_s12_bce_sobel_k5_s100.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s12_bce_sobel_k5_s100
+import mask_5_8_tv_s01_bce_sobel_k5_s001.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s01_bce_sobel_k5_s001
+import mask_5_8_tv_s01_bce_sobel_k5_s100.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s01_bce_sobel_k5_s100
+import mask_5_8_tv_s04_bce_sobel_k5_s001.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s04_bce_sobel_k5_s001
+import mask_5_8_tv_s04_bce_sobel_k5_s100.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s04_bce_sobel_k5_s100
+import mask_5_8_tv_s08_bce_sobel_k5_s100.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s08_bce_sobel_k5_s100
+import mask_5_8_tv_s12_bce_sobel_k5_s100.step10_a as os_book_and_paper_have_dtd_hdr_mix_bg_6l_tv_s12_bce_sobel_k5_s100
 ####################################################################################################################################
 ####################################################################################################################################
 ### 8-6l_tv_s01_bce_sobel_k5_s001-1_ch
