@@ -29,7 +29,7 @@ class Generator(tf.keras.models.Model):
         self.no_concat_layer = no_concat_layer
         self.unet_out_ch = out_ch
         self.unet_acti = unet_acti
-        kwargs = dict(kernel_size=kernel_size, strides=strides, norm=norm,
+        kwargs = dict(kernel_size=kernel_size, strides=strides, norm=norm, conv_block_num=conv_block_num,
                     #   d_acti=d_acti, u_acti=u_acti,
                     #   cnn_bias=cnn_bias,
                     #   skip_op=skip_op,
