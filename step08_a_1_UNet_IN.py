@@ -380,8 +380,8 @@ class Generator(tf.keras.models.Model):
 #######################################################################################################################################
 if(__name__ == "__main__"):
     ### 直接用 假資料 嘗試 model 跑不跑得過
-    import numpy as np
-
+    # import numpy as np
+    # import time
     # generator = Generator(depth_level=9, out_tanh=False)  # 建G
     # img = np.ones(shape=(1, 512, 512, 3), dtype=np.float32)  # 建 假資料
     # start_time = time.time()  # 看資料跑一次花多少時間
@@ -391,10 +391,9 @@ if(__name__ == "__main__"):
     # print(y.numpy().min())   ### 可以在這裡先看看 out_tanh 有沒有設定成
     # print("cost time", time.time() - start_time)
 
-#######################################################################################################################################
+    #######################################################################################################################################
     ### 嘗試 真的 load tf_data 進來 train 看看
-    import time
-    import numpy as np
+
     from tqdm import tqdm
     from step06_a_datas_obj import DB_C, DB_N, DB_GM
     from step06_b_data_pipline import Dataset_builder, tf_Data_builder
@@ -411,7 +410,7 @@ if(__name__ == "__main__"):
     flow_unet_IN_ch64_cnnNoBias                   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, cnn_bias=False)
     model_obj = flow_unet_IN_ch64_cnnNoBias.build()  ### 可替換成 上面 想測試的 model
     ### 2. db_obj 和 tf_data
-    db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy").set_detail(have_train=True, have_see=True).build()
+    db_obj = Dataset_builder().set_basic(DB_C.type8_blender_os_book, DB_N.blender_os_hw768 , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy").set_detail(have_train=True, have_see=True).build()
     tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
