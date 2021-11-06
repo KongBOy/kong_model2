@@ -42,8 +42,8 @@ class Conv_block(tf.keras.layers.Layer):
 
 class UNet_down(tf.keras.layers.Layer):
     def __init__(self, at_where, out_ch,
-                 kernel_size=4, strides=2,
-                 acti="lrelu", norm="in",
+                 kernel_size=4, strides=2, norm="in",
+                 acti="lrelu",
                  use_bias=True,
                  conv_block_num=0,
                  skip_op = None,
@@ -99,8 +99,8 @@ class UNet_down(tf.keras.layers.Layer):
 
 class UNet_up(tf.keras.layers.Layer):
     def __init__(self, at_where, out_ch,
-                 kernel_size=4, strides=2,
-                 acti="relu", norm="in",
+                 kernel_size=4, strides=2, norm="in",
+                 acti="relu",
                  use_bias=True,
                  conv_block_num=0,
                  skip_merge_op="concat",
