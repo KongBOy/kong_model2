@@ -80,7 +80,10 @@ class KModel_Flow_Generator_builder(KModel_Mask_Generator_builder):
         self.kong_model.train_step       = train_step_pure_G                 ### 不能checkpoint
 
 class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
-    def set_unet(self, hid_ch=64, depth_level=7, true_IN=False, cnn_bias=True, no_concat_layer=0, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, concat_Activation=False):
+    def set_unet(self, hid_ch=64, depth_level=7, true_IN=False, cnn_bias=True, no_concat_layer=0,
+                 skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False,
+                 skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
+                 out_tanh=True, out_ch=3, concat_Activation=False):
         self.hid_ch = hid_ch
         self.depth_level = depth_level
         self.no_concat_layer = no_concat_layer
@@ -95,6 +98,34 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
         self.out_ch = out_ch
         self.true_IN = true_IN
         self.concat_Activation = concat_Activation
+        return self
+
+    def set_unet2(self, hid_ch=64, depth_level=7, out_ch=3, no_concat_layer=0,
+                 kernel_size=4, strides=2,
+                 d_acti="lrelu", u_acti="relu", unet_acti="tanh", norm="in",
+                 cnn_bias=True,
+                 conv_block_num=0,
+                 skip_op=None, skip_merge_op="concat",
+                 #  out_tanh=True,
+                 #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
+                 **kwargs):
+        self.hid_ch          = hid_ch
+        self.depth_level     = depth_level
+        self.out_ch          = out_ch
+        self.no_concat_layer = no_concat_layer
+        self.kernel_size     = kernel_size     ### 多的
+        self.strides         = strides         ### 多的
+
+        self.d_acti          = d_acti          ### 多的
+        self.u_acti          = u_acti          ### 多的
+        self.unet_acti       = unet_acti       ### 對應 out_tanh
+        self.norm            = norm            ### 對應 true_IN
+
+        self.cnn_bias        = cnn_bias        ### 之前漏的
+        self.conv_block_num  = conv_block_num  ### 多的
+        self.skip_op         = skip_op         ### 對應 skip_use_add, skip_use_cSE...
+        self.skip_merge_op   = skip_merge_op   ### 對應 concat_Activation
+
         return self
 
     def _build_unet_part(self):
@@ -113,7 +144,55 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
         if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
         elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
         else:                                                   from step08_a_1_UNet_BN                   import Generator
-        self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, cnn_bias=True, no_concat_layer=self.no_concat_layer, skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE, skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti, out_tanh=self.out_tanh, out_ch=self.out_ch)
+        self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, cnn_bias=True, no_concat_layer=self.no_concat_layer,
+                                                skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE,
+                                                skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti,
+                                                out_tanh=self.out_tanh, out_ch=self.out_ch)
+        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        print("build_flow_unet", "finish")
+        return self
+
+    def _build_unet_part2(self):
+        self.hid_ch          = hid_ch
+        self.depth_level     = depth_level
+        self.out_ch          = out_ch
+        self.no_concat_layer = no_concat_layer
+        self.kernel_size     = kernel_size     ### 多的
+        self.strides         = strides         ### 多的
+
+        self.d_acti          = d_acti          ### 多的
+        self.u_acti          = u_acti          ### 多的
+        self.unet_acti       = unet_acti       ### 對應 out_tanh
+        self.norm            = norm            ### 對應 true_IN
+
+        self.cnn_bias        = cnn_bias        ### 之前漏的
+        self.conv_block_num  = conv_block_num  ### 多的
+        self.skip_op         = skip_op         ### 對應 skip_use_add, skip_use_cSE...
+        self.skip_merge_op   = skip_merge_op   ### 對應 concat_Activation
+
+        ### model_part
+        ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
+        # print("hid_ch         =", self.hid_ch         )
+        # print("depth_level    =", self.depth_level    )
+        # print("out_ch         =", self.out_ch         )
+        # print("no_concat_layer=", self.no_concat_layer)
+        # print("kernel_size    =", self.kernel_size    )
+        # print("strides        =", self.strides        )
+        # print()
+        # print("d_acti         =", self.d_acti          )
+        # print("u_acti         =", self.u_acti          )
+        # print("unet_acti      =", self.unet_acti       )
+        # print("norm           =", self.norm            )
+        # print()
+        # print("cnn_bias       =", self.cnn_bias        )
+        # print("conv_block_num =", self.conv_block_num  )
+        # print("skip_op        =", self.skip_op         )
+        # print("skip_merge_op  =", self.skip_merge_op   )
+        # print()
+
+        self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, out_ch=self.out_ch, no_concat_layer=self.no_concat_layer,
+                                                d_acti=self.d_acti, u_acti=self.u_acti, unet_acti=self.unet_acti, norm=self.norm,
+                                                cnn_bias=self.cnn_bias, conv_block_num=self.conv_block_num, skip_op=self.skip_op, skip_merge_op=self.skip_merge_op)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         print("build_flow_unet", "finish")
         return self
@@ -141,6 +220,16 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
             self._build_unet_part()  ### 先
             self._build_ckpt_part()  ### 後
             print("build_mask_unet", "finish")
+            return self.kong_model
+        self.build = _build_mask_unet
+        return self
+
+    def use_mask_unet2(self):
+        def _build_mask_unet():
+            self._build_mask_part()
+            self._build_unet_part2()  ### 先
+            self._build_ckpt_part()  ### 後
+            print("build_mask_unet2", "finish")
             return self.kong_model
         self.build = _build_mask_unet
         return self
@@ -545,7 +634,7 @@ mask_unet_2_level_skip_use_add_sig = KModel_builder().set_model_name(MODEL_NAME.
 mask_unet_ch032_tanh_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, depth_level=6, true_IN=True, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
 mask_unet_ch128_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
 mask_unet_ch064_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 64, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_ch032_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch032_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
 mask_unet_ch016_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
 mask_unet_ch008_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
 mask_unet_ch004_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
@@ -564,61 +653,61 @@ mask_unet_4_level_skip_use_add_sig_6l = KModel_builder().set_model_name(MODEL_NA
 mask_unet_3_level_skip_use_add_sig_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
 mask_unet_2_level_skip_use_add_sig_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
 ########################################################### 1 嘗試看看 mask_unet 搭配 BCE + Sobel_MAE
-mask_unet_ch032_tanh_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch128_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch064_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 64, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch032_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch016_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch008_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch004_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch002_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  2, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch001_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  1, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
+mask_unet_ch032_tanh_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch128_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch064_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 64, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch032_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch016_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch008_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch004_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch002_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  2, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch001_sig_sobel  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  1, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
 
-mask_unet_2_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=2, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_3_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=3, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_4_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=4, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_5_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=5, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_6_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_7_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=7, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_8_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=8, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
+mask_unet_2_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=2, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_3_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=3, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_4_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=4, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_5_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=5, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_6_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_7_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=7, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_8_level_ch32_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=8, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
 
-mask_unet_IN_7l_ch32_2to2noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=2, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to3noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=3, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to4noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=4, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to5noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=5, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to6noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=6, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to7noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=7, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to8noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=8, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
+mask_unet_IN_7l_ch32_2to2noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=2, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to3noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=3, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to4noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=4, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to5noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=5, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to6noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=6, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to7noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=7, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to8noC_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=8, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
 
-mask_unet_8_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_7_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=7, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_6_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_5_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=5, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_4_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_3_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_2_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
+mask_unet_8_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_7_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=7, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_6_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_5_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=5, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_4_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_3_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_2_level_skip_use_add_sig_sobel = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
 ########################################################### 1 嘗試看看 mask_unet 搭配 BCE + Sobel_MAE, 6level 版本
-mask_unet_ch032_tanh_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, depth_level=6, true_IN=True, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch128_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch064_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 64, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch032_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch016_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch008_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch004_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch002_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  2, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_ch001_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  1, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
+mask_unet_ch032_tanh_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, depth_level=6, true_IN=True, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch128_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch064_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 64, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch032_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch016_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch008_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch004_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch002_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  2, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_ch001_sig_sobel_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  1, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
 
-mask_unet_IN_7l_ch32_2to2noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=2, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to3noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=3, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to4noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=4, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to5noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=5, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_IN_7l_ch32_2to6noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=6, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
+mask_unet_IN_7l_ch32_2to2noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=2, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to3noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=3, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to4noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=4, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to5noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=5, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_IN_7l_ch32_2to6noC_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=6, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
 
-mask_unet_6_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_5_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_4_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_3_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
-mask_unet_2_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_sobel)
+mask_unet_6_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_5_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_4_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_3_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
+mask_unet_2_level_skip_use_add_sig_sobel_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move_can_many_loss)
 
 if(__name__ == "__main__"):
     # print(flow_rect_2_level_fk3.build())

@@ -5,7 +5,7 @@ import pdb
 from step09_a_loss import *
 
 @tf.function
-def train_step_pure_G_split_mask_move_sobel(model_obj, in_data, gt_data, loss_info_obj=None):
+def train_step_pure_G_split_mask_move_can_many_loss(model_obj, in_data, gt_data, loss_info_obj=None):
     gt_mask = gt_data[0]
     gt_move = gt_data[1]
 
