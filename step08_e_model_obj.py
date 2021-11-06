@@ -101,8 +101,8 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
         return self
 
     def set_unet2(self, hid_ch=64, depth_level=7, out_ch=3, no_concat_layer=0,
-                 kernel_size=4, strides=2,
-                 d_acti="lrelu", u_acti="relu", unet_acti="tanh", norm="in",
+                 kernel_size=4, strides=2, norm="in",
+                 d_acti="lrelu", u_acti="relu", unet_acti="tanh",
                  cnn_bias=True,
                  conv_block_num=0,
                  skip_op=None, skip_merge_op="concat",
@@ -149,27 +149,10 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
                                                 skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti,
                                                 out_tanh=self.out_tanh, out_ch=self.out_ch)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-        print("build_flow_unet", "finish")
+        print("build_unet", "finish")
         return self
 
     def _build_unet_part2(self):
-        self.hid_ch          = hid_ch
-        self.depth_level     = depth_level
-        self.out_ch          = out_ch
-        self.no_concat_layer = no_concat_layer
-        self.kernel_size     = kernel_size     ### 多的
-        self.strides         = strides         ### 多的
-
-        self.d_acti          = d_acti          ### 多的
-        self.u_acti          = u_acti          ### 多的
-        self.unet_acti       = unet_acti       ### 對應 out_tanh
-        self.norm            = norm            ### 對應 true_IN
-
-        self.cnn_bias        = cnn_bias        ### 之前漏的
-        self.conv_block_num  = conv_block_num  ### 多的
-        self.skip_op         = skip_op         ### 對應 skip_use_add, skip_use_cSE...
-        self.skip_merge_op   = skip_merge_op   ### 對應 concat_Activation
-
         ### model_part
         ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
         # print("hid_ch         =", self.hid_ch         )
@@ -189,12 +172,12 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
         # print("skip_op        =", self.skip_op         )
         # print("skip_merge_op  =", self.skip_merge_op   )
         # print()
-
+        from step08_a_UNet_combine import Generator
         self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, out_ch=self.out_ch, no_concat_layer=self.no_concat_layer,
                                                 d_acti=self.d_acti, u_acti=self.u_acti, unet_acti=self.unet_acti, norm=self.norm,
                                                 cnn_bias=self.cnn_bias, conv_block_num=self.conv_block_num, skip_op=self.skip_op, skip_merge_op=self.skip_merge_op)
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-        print("build_flow_unet", "finish")
+        print("build_unet", "finish")
         return self
 
     def _build_ckpt_part(self):
@@ -598,15 +581,15 @@ flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rec
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
 ########################################################### 1 嘗試看看 mask_unet 搭配 BCE 這裡try 7l
-mask_unet_ch032_tanh = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_ch128_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_ch064_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 64, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_ch032_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_ch016_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_ch008_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_ch004_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_ch002_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  2, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_ch001_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  1, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch032_tanh_7l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch128_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch064_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 64, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch032_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch016_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch008_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch004_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch002_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  2, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet_ch001_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  1, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
 ### 從這裡 嘗試 2l ~ 7l try出 6l最好
 mask_unet_2_level_ch32_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=2, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
 mask_unet_3_level_ch32_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=3, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
@@ -650,13 +633,66 @@ mask_unet_IN_6l_ch32_2to5noC_sig = KModel_builder().set_model_name(MODEL_NAME.fl
 mask_unet_IN_6l_ch32_2to6noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=6, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
 
 mask_unet_6_level_skip_use_add_sig_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_5_level_skip_use_add_sig_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_4_level_skip_use_add_sig_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_3_level_skip_use_add_sig_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
-mask_unet_2_level_skip_use_add_sig_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet().set_train_step(train_step_pure_G_split_mask_move)
+###############################################################################################################################################################################################
+###############################################################################################################################################################################################
+###############################################################################################################################################################################################
+########################################################### 2 嘗試看看 mask_unet2 搭配 BCE 這裡try 7l
+mask_unet2_ch032_tanh_7l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch= 32, out_ch=1, depth_level=7, unet_acti="tanh").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch128_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=128, out_ch=1, depth_level=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch064_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch= 64, out_ch=1, depth_level=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch032_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch= 32, out_ch=1, depth_level=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch016_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch= 16, out_ch=1, depth_level=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch008_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=  8, out_ch=1, depth_level=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch004_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=  4, out_ch=1, depth_level=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch002_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=  2, out_ch=1, depth_level=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch001_sig_7l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=  1, out_ch=1, depth_level=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+### 從這裡 嘗試 2l ~ 7l try出 6l最好
+mask_unet2_2_level_ch32_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=2, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_3_level_ch32_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=3, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_4_level_ch32_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=4, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_5_level_ch32_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=5, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_6_level_ch32_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=6, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_7_level_ch32_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_8_level_ch32_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=8, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+
+mask_unet2_IN_7l_ch32_2to2noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=7, no_concat_layer=2, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_7l_ch32_2to3noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=7, no_concat_layer=3, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_7l_ch32_2to4noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=7, no_concat_layer=4, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_7l_ch32_2to5noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=7, no_concat_layer=5, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_7l_ch32_2to6noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=7, no_concat_layer=6, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_7l_ch32_2to7noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=7, no_concat_layer=7, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_7l_ch32_2to8noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, out_ch=1, depth_level=7, no_concat_layer=8, unet_acti="sigmoid").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+
+mask_unet2_8_level_skip_use_add_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=64, out_ch=1, depth_level=8, unet_acti="sigmoid", skip_merge_op="add").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_7_level_skip_use_add_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=64, out_ch=1, depth_level=7, unet_acti="sigmoid", skip_merge_op="add").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_6_level_skip_use_add_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=64, out_ch=1, depth_level=6, unet_acti="sigmoid", skip_merge_op="add").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_5_level_skip_use_add_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=64, out_ch=1, depth_level=5, unet_acti="sigmoid", skip_merge_op="add").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_4_level_skip_use_add_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=64, out_ch=1, depth_level=4, unet_acti="sigmoid", skip_merge_op="add").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_3_level_skip_use_add_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=64, out_ch=1, depth_level=3, unet_acti="sigmoid", skip_merge_op="add").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_2_level_skip_use_add_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=64, out_ch=1, depth_level=2, unet_acti="sigmoid", skip_merge_op="add").use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+###############################################################################################################################################################################################
+########################################################### 2  嘗試看看 mask_unet2，從上面已知 6l 最好， 所以下面固定6l
+mask_unet2_ch032_tanh_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch= 32, depth_level=6, true_IN=True, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch128_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=128, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch064_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch= 64, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch032_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch= 32, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch016_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch= 16, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch008_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=  8, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch004_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=  4, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch002_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=  2, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_ch001_sig_6l  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=  1, depth_level=6, true_IN=True, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+
+mask_unet2_IN_6l_ch32_2to2noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=2, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_6l_ch32_2to3noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=3, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_6l_ch32_2to4noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=4, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_6l_ch32_2to5noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=5, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+mask_unet2_IN_6l_ch32_2to6noC_sig = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=32, depth_level=6, true_IN=True, no_concat_layer=6, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
+
+mask_unet2_6_level_skip_use_add_sig_6l = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet2(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_tanh=False, out_ch=1).use_mask_unet2().set_train_step(train_step_pure_G_split_mask_move)
 
 if(__name__ == "__main__"):
     # print(flow_rect_2_level_fk3.build())
-    print(mask_unet_ch032_tanh.build())
+    # print(mask_unet_ch032_tanh_7l.build())
+    print(mask_unet2_ch128_sig_7l.build())
     print("build_model cost time:", time.time() - start_time)
     pass
