@@ -12,7 +12,6 @@ run = "build().run()"
 
 ############################  have_bg  #################################
 ### 1a. ch
-sb.run(same_command + [f"ch128_sig_4l_ep060.{run}"])
 sb.run(same_command + [f"ch064_sig_4l_ep060.{run}"])
 sb.run(same_command + [f"ch032_sig_4l_ep060.{run}"])
 sb.run(same_command + [f"ch016_sig_4l_ep060.{run}"])
@@ -20,8 +19,8 @@ sb.run(same_command + [f"ch008_sig_4l_ep060.{run}"])
 sb.run(same_command + [f"ch004_sig_4l_ep060.{run}"])
 sb.run(same_command + [f"ch002_sig_4l_ep060.{run}"])
 sb.run(same_command + [f"ch001_sig_4l_ep060.{run}"])
+sb.run(same_command + [f"ch128_sig_4l_ep060.{run}"])
 
-sb.run(same_command + [f"ch128_sig_5l_ep060.{run}"])
 sb.run(same_command + [f"ch064_sig_5l_ep060.{run}"])
 sb.run(same_command + [f"ch032_sig_5l_ep060.{run}"])
 sb.run(same_command + [f"ch016_sig_5l_ep060.{run}"])
@@ -29,8 +28,8 @@ sb.run(same_command + [f"ch008_sig_5l_ep060.{run}"])
 sb.run(same_command + [f"ch004_sig_5l_ep060.{run}"])
 sb.run(same_command + [f"ch002_sig_5l_ep060.{run}"])
 sb.run(same_command + [f"ch001_sig_5l_ep060.{run}"])
+sb.run(same_command + [f"ch128_sig_5l_ep060.{run}"])
 
-sb.run(same_command + [f"ch128_sig_6l_ep060.{run}"])
 sb.run(same_command + [f"ch064_sig_6l_ep060.{run}"])
 sb.run(same_command + [f"ch032_sig_6l_ep060.{run}"])
 sb.run(same_command + [f"ch016_sig_6l_ep060.{run}"])
@@ -38,8 +37,8 @@ sb.run(same_command + [f"ch008_sig_6l_ep060.{run}"])
 sb.run(same_command + [f"ch004_sig_6l_ep060.{run}"])
 sb.run(same_command + [f"ch002_sig_6l_ep060.{run}"])
 sb.run(same_command + [f"ch001_sig_6l_ep060.{run}"])
+sb.run(same_command + [f"ch128_sig_6l_ep060.{run}"])
 
-sb.run(same_command + [f"ch128_sig_7l_ep060.{run}"])
 sb.run(same_command + [f"ch064_sig_7l_ep060.{run}"])
 sb.run(same_command + [f"ch032_sig_7l_ep060.{run}"])
 sb.run(same_command + [f"ch016_sig_7l_ep060.{run}"])
@@ -47,8 +46,8 @@ sb.run(same_command + [f"ch008_sig_7l_ep060.{run}"])
 sb.run(same_command + [f"ch004_sig_7l_ep060.{run}"])
 sb.run(same_command + [f"ch002_sig_7l_ep060.{run}"])
 sb.run(same_command + [f"ch001_sig_7l_ep060.{run}"])
+sb.run(same_command + [f"ch128_sig_7l_ep060.{run}"])
 
-sb.run(same_command + [f"ch128_sig_8l_ep060.{run}"])
 sb.run(same_command + [f"ch064_sig_8l_ep060.{run}"])
 sb.run(same_command + [f"ch032_sig_8l_ep060.{run}"])
 sb.run(same_command + [f"ch016_sig_8l_ep060.{run}"])
@@ -56,6 +55,7 @@ sb.run(same_command + [f"ch008_sig_8l_ep060.{run}"])
 sb.run(same_command + [f"ch004_sig_8l_ep060.{run}"])
 sb.run(same_command + [f"ch002_sig_8l_ep060.{run}"])
 sb.run(same_command + [f"ch001_sig_8l_ep060.{run}"])
+sb.run(same_command + [f"ch128_sig_8l_ep060.{run}"])
 
 
 
