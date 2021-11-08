@@ -13,7 +13,7 @@ import time
 ### 參考 DewarpNet 的 train_wc 用的 UNet
 ### 試試看 activation 完 再去 concate
 class Generator(tf.keras.models.Model):
-    def __init__(self, hid_ch=64, depth_level=7, no_concat_layer=0, cnn_bias=True, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, **kwargs):
+    def __init__(self, hid_ch=64, depth_level=7, no_concat_layer=0, use_bias=True, skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None, out_tanh=True, out_ch=3, **kwargs):
         '''
         depth_level, skip_use_add 還沒有實作喔，有用到再做吧~
 

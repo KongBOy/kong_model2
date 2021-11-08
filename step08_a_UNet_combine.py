@@ -8,7 +8,7 @@ class Generator(tf.keras.models.Model):
     def __init__(self, hid_ch=64, depth_level=7, out_ch=3, no_concat_layer=0,
                  kernel_size=4, strides=2, norm="in",
                  d_acti="lrelu", u_acti="relu", unet_acti="tanh",
-                 cnn_bias=True,
+                 use_bias=True,
                  conv_block_num=0,
                  skip_op=None, skip_merge_op="concat",
                  #  out_tanh=True,
@@ -31,7 +31,7 @@ class Generator(tf.keras.models.Model):
         self.unet_acti = unet_acti
         kwargs = dict(kernel_size=kernel_size, strides=strides, norm=norm, conv_block_num=conv_block_num,
                     #   d_acti=d_acti, u_acti=u_acti,
-                    #   cnn_bias=cnn_bias,
+                      use_bias=use_bias,
                     #   skip_op=skip_op,
                     #   skip_merge_op=skip_merge_op
                       )
@@ -110,7 +110,7 @@ if(__name__ == "__main__"):
     import time
     data = np.ones(shape=(1, 768, 768, 128), dtype=np.float32)
     start_time = time.time()  # 看資料跑一次花多少時間
-    test_g = Generator(hid_ch=64, depth_level=7, cnn_bias=False)
+    # test_g = Generator(hid_ch=64, depth_level=7, use_bias=False)
     test_g(data)
     print("cost time", time.time() - start_time)
     test_g.summary()

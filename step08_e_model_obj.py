@@ -80,7 +80,7 @@ class KModel_Flow_Generator_builder(KModel_Mask_Generator_builder):
         self.kong_model.train_step       = train_step_pure_G                 ### 不能checkpoint
 
 class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
-    def set_unet(self, hid_ch=64, depth_level=7, true_IN=False, cnn_bias=True, no_concat_layer=0,
+    def set_unet(self, hid_ch=64, depth_level=7, true_IN=False, use_bias=True, no_concat_layer=0,
                  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False,
                  skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  out_tanh=True, out_ch=3, concat_Activation=False):
@@ -103,7 +103,7 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
     def set_unet2(self, hid_ch=64, depth_level=7, out_ch=3, no_concat_layer=0,
                  kernel_size=4, strides=2, norm="in",
                  d_acti="lrelu", u_acti="relu", unet_acti="tanh",
-                 cnn_bias=True,
+                 use_bias=True,
                  conv_block_num=0,
                  skip_op=None, skip_merge_op="concat",
                  #  out_tanh=True,
@@ -121,7 +121,7 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
         self.unet_acti       = unet_acti       ### 對應 out_tanh
         self.norm            = norm            ### 對應 true_IN
 
-        self.cnn_bias        = cnn_bias        ### 之前漏的
+        self.use_bias        = use_bias        ### 之前漏的
         self.conv_block_num  = conv_block_num  ### 多的
         self.skip_op         = skip_op         ### 對應 skip_use_add, skip_use_cSE...
         self.skip_merge_op   = skip_merge_op   ### 對應 concat_Activation
@@ -144,7 +144,7 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
         if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
         elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
         else:                                                   from step08_a_1_UNet_BN                   import Generator
-        self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, cnn_bias=True, no_concat_layer=self.no_concat_layer,
+        self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, use_bias=True, no_concat_layer=self.no_concat_layer,
                                                 skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE,
                                                 skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti,
                                                 out_tanh=self.out_tanh, out_ch=self.out_ch)
@@ -167,7 +167,7 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
         # print("unet_acti      =", self.unet_acti       )
         # print("norm           =", self.norm            )
         # print()
-        # print("cnn_bias       =", self.cnn_bias        )
+        # print("use_bias       =", self.use_bias        )
         # print("conv_block_num =", self.conv_block_num  )
         # print("skip_op        =", self.skip_op         )
         # print("skip_merge_op  =", self.skip_merge_op   )
@@ -175,7 +175,7 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
         from step08_a_UNet_combine import Generator
         self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, out_ch=self.out_ch, no_concat_layer=self.no_concat_layer,
                                                 d_acti=self.d_acti, u_acti=self.u_acti, unet_acti=self.unet_acti, norm=self.norm,
-                                                cnn_bias=self.cnn_bias, conv_block_num=self.conv_block_num, skip_op=self.skip_op, skip_merge_op=self.skip_merge_op)
+                                                use_bias=self.use_bias, conv_block_num=self.conv_block_num, skip_op=self.skip_op, skip_merge_op=self.skip_merge_op,
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         print("build_unet", "finish")
         return self
@@ -506,7 +506,7 @@ flow_unet_IN_new_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).s
 flow_unet_IN_new_ch004 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, true_IN=True).use_flow_unet().set_train_step(train_step_pure_G)
 
 ########################################################### 14 真的IN，跟DewarpNet一樣 CNN 不用 bias
-flow_unet_IN_ch64_cnnNoBias = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, cnn_bias=False).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_ch64_cnnNoBias = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, use_bias=False).use_flow_unet().set_train_step(train_step_pure_G)
 
 
 ########################################################### 14 看 concat Activation 有沒有差
