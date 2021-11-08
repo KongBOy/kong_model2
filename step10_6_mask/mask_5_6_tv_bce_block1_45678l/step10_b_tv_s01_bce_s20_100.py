@@ -10,10 +10,15 @@ import subprocess as sb
 same_command = ["python", "step10_a.py"]
 run = "build().run()"
 
-############################  have_bg  #################################
-### 1a. ch
-sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s020_ep060.{run}"])
-sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s040_ep060.{run}"])
-sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s060_ep060.{run}"])
-sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s080_ep060.{run}"])
-sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s100_ep060.{run}"])
+
+# sb.run(same_command + [f"ch016_sig_6l_ep060_tv_s001_bce_s020.{run}"])
+# sb.run(same_command + [f"ch016_sig_6l_ep060_tv_s001_bce_s040.{run}"])
+# sb.run(same_command + [f"ch016_sig_6l_ep060_tv_s001_bce_s060.{run}"])
+# sb.run(same_command + [f"ch016_sig_6l_ep060_tv_s001_bce_s080.{run}"])
+# sb.run(same_command + [f"ch016_sig_6l_ep060_tv_s001_bce_s100.{run}"])
+
+# sb.run(same_command + [f"ch032_sig_5l_ep060_tv_s001_bce_s020.{run}"])
+# sb.run(same_command + [f"ch032_sig_5l_ep060_tv_s001_bce_s040.{run}"])
+# sb.run(same_command + [f"ch032_sig_5l_ep060_tv_s001_bce_s060.{run}"])
+# sb.run(same_command + [f"ch032_sig_5l_ep060_tv_s001_bce_s080.{run}"])
+# sb.run(same_command + [f"ch032_sig_5l_ep060_tv_s001_bce_s100.{run}"])
