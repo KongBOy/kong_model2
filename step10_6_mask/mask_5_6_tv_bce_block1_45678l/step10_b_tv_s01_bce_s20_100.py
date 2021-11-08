@@ -12,76 +12,8 @@ run = "build().run()"
 
 ############################  have_bg  #################################
 ### 1a. ch
-sb.run(same_command + [f"ch064_sig_4l_ep060.{run}"])
-sb.run(same_command + [f"ch032_sig_4l_ep060.{run}"])
-sb.run(same_command + [f"ch016_sig_4l_ep060.{run}"])
-sb.run(same_command + [f"ch008_sig_4l_ep060.{run}"])
-sb.run(same_command + [f"ch004_sig_4l_ep060.{run}"])
-sb.run(same_command + [f"ch002_sig_4l_ep060.{run}"])
-sb.run(same_command + [f"ch001_sig_4l_ep060.{run}"])
-sb.run(same_command + [f"ch128_sig_4l_ep060.{run}"])
-
-sb.run(same_command + [f"ch064_sig_5l_ep060.{run}"])
-sb.run(same_command + [f"ch032_sig_5l_ep060.{run}"])
-sb.run(same_command + [f"ch016_sig_5l_ep060.{run}"])
-sb.run(same_command + [f"ch008_sig_5l_ep060.{run}"])
-sb.run(same_command + [f"ch004_sig_5l_ep060.{run}"])
-sb.run(same_command + [f"ch002_sig_5l_ep060.{run}"])
-sb.run(same_command + [f"ch001_sig_5l_ep060.{run}"])
-sb.run(same_command + [f"ch128_sig_5l_ep060.{run}"])
-
-sb.run(same_command + [f"ch064_sig_6l_ep060.{run}"])
-sb.run(same_command + [f"ch032_sig_6l_ep060.{run}"])
-sb.run(same_command + [f"ch016_sig_6l_ep060.{run}"])
-sb.run(same_command + [f"ch008_sig_6l_ep060.{run}"])
-sb.run(same_command + [f"ch004_sig_6l_ep060.{run}"])
-sb.run(same_command + [f"ch002_sig_6l_ep060.{run}"])
-sb.run(same_command + [f"ch001_sig_6l_ep060.{run}"])
-sb.run(same_command + [f"ch128_sig_6l_ep060.{run}"])
-
-sb.run(same_command + [f"ch064_sig_7l_ep060.{run}"])
-sb.run(same_command + [f"ch032_sig_7l_ep060.{run}"])
-sb.run(same_command + [f"ch016_sig_7l_ep060.{run}"])
-sb.run(same_command + [f"ch008_sig_7l_ep060.{run}"])
-sb.run(same_command + [f"ch004_sig_7l_ep060.{run}"])
-sb.run(same_command + [f"ch002_sig_7l_ep060.{run}"])
-sb.run(same_command + [f"ch001_sig_7l_ep060.{run}"])
-sb.run(same_command + [f"ch128_sig_7l_ep060.{run}"])
-
-sb.run(same_command + [f"ch064_sig_8l_ep060.{run}"])
-sb.run(same_command + [f"ch032_sig_8l_ep060.{run}"])
-sb.run(same_command + [f"ch016_sig_8l_ep060.{run}"])
-sb.run(same_command + [f"ch008_sig_8l_ep060.{run}"])
-sb.run(same_command + [f"ch004_sig_8l_ep060.{run}"])
-sb.run(same_command + [f"ch002_sig_8l_ep060.{run}"])
-sb.run(same_command + [f"ch001_sig_8l_ep060.{run}"])
-sb.run(same_command + [f"ch128_sig_8l_ep060.{run}"])
-
-
-
-
-'''
-### 3. no-concat
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to2noC_sig_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to3noC_sig_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to4noC_sig_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to5noC_sig_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to6noC_sig_ep060.{run}"])  ### 127.35跑
-
-### 4. skip use add
-sb.run(same_command + [f"mask_h_bg_ch032_6l_skipAdd_sig_ep060.{run}"])  ### 127.35跑
-
-### 1a. ch
-sb.run(same_command + [f"mask_h_bg_ch001_sig_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch002_sig_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch004_sig_6l_ep060.{run}"])  ### 127.35跑
-### 1b. ch and epoch
-sb.run(same_command + [f"mask_h_bg_ch001_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch002_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch004_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch008_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch016_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch064_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch128_sig_6l_ep200.{run}"])  ### 127.35跑
-'''
+sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s020_ep060.{run}"])
+sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s040_ep060.{run}"])
+sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s060_ep060.{run}"])
+sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s080_ep060.{run}"])
+sb.run(same_command + [f"ch016_sig_6l_tv_s001_bce_s100_ep060.{run}"])
