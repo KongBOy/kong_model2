@@ -28,3 +28,8 @@ run = "build().run()"
 # sb.run(same_command + [f"ch064_sig_4l_ep060_tv_s001_bce_s060.{run}"])
 # sb.run(same_command + [f"ch064_sig_4l_ep060_tv_s001_bce_s080.{run}"])
 # sb.run(same_command + [f"ch064_sig_4l_ep060_tv_s001_bce_s100.{run}"])
+# sb.run(same_command + [f"ch064_sig_4l_ep060_tv_s020_bce_s020.{run}"])
+# sb.run(same_command + [f"ch064_sig_4l_ep060_tv_s020_bce_s040.{run}"])
+# sb.run(same_command + [f"ch064_sig_4l_ep060_tv_s020_bce_s060.{run}"])
+# sb.run(same_command + [f"ch064_sig_4l_ep060_tv_s020_bce_s080.{run}"])
+# sb.run(same_command + [f"ch064_sig_4l_ep060_tv_s020_bce_s100.{run}"])
