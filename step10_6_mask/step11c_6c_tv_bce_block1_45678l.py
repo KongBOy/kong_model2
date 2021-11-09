@@ -47,6 +47,59 @@ tv_bce_block1_4l_ch032_tv_s020_bce_s020_100 = [
     tv_bce_block1.ch032_sig_4l_ep060_tv_s020_bce_s080.build(),
     tv_bce_block1.ch032_sig_4l_ep060_tv_s020_bce_s100.build(), ]
 tv_bce_block1_4l_ch032_tv_s020_bce_s020_100 = [ exp.result_obj for exp in tv_bce_block1_4l_ch032_tv_s020_bce_s020_100]
+
+tv_bce_block1_4l_ch032_tv_s040_bce_s020_140 = [
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s040_bce_s020.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s040_bce_s040.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s040_bce_s060.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s040_bce_s080.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s040_bce_s100.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s040_bce_s120.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s040_bce_s140.build(),
+]
+tv_bce_block1_4l_ch032_tv_s040_bce_s020_140 = [ exp.result_obj for exp in tv_bce_block1_4l_ch032_tv_s040_bce_s020_140]
+
+
+tv_bce_block1_4l_ch032_tv_s060_bce_s020_180 = [
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s060_bce_s020.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s060_bce_s040.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s060_bce_s060.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s060_bce_s080.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s060_bce_s100.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s060_bce_s120.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s060_bce_s140.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s060_bce_s160.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s060_bce_s180.build(),
+]
+tv_bce_block1_4l_ch032_tv_s060_bce_s020_180 = [ exp.result_obj for exp in tv_bce_block1_4l_ch032_tv_s060_bce_s020_180]
+
+
+tv_bce_block1_4l_ch032_tv_s080_bce_s020_180 = [
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s080_bce_s020.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s080_bce_s040.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s080_bce_s060.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s080_bce_s080.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s080_bce_s100.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s080_bce_s120.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s080_bce_s140.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s080_bce_s160.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s080_bce_s180.build(),
+]
+tv_bce_block1_4l_ch032_tv_s080_bce_s020_180 = [ exp.result_obj for exp in tv_bce_block1_4l_ch032_tv_s080_bce_s020_180]
+
+tv_bce_block1_4l_ch032_tv_s100_bce_s020_200 = [
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s020.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s040.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s060.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s080.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s100.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s120.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s140.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s160.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s180.build(),
+    tv_bce_block1.ch032_sig_4l_ep060_tv_s100_bce_s200.build(),
+]
+tv_bce_block1_4l_ch032_tv_s100_bce_s020_200 = [ exp.result_obj for exp in tv_bce_block1_4l_ch032_tv_s100_bce_s020_200]
 ############################################
 ### 5l
 tv_bce_block1_5l_ch = [
