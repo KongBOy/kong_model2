@@ -45,41 +45,41 @@ run = "build().run()"
 # sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s020_bce_s080.{run}"])
 # sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s020_bce_s100.{run}"])
 
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s120.{run}"])  ### 127.35 中
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s120.{run}"])  ### 127.35
 # sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s140.{run}"])  ### 127.35
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s100.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s080.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s060.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s040.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s020.{run}"])  ### 還沒
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s100.{run}"])  ### 127.35
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s080.{run}"])  ### 127.35
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s060.{run}"])  ### 127.35
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s040.{run}"])  ### 127.35
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s040_bce_s020.{run}"])  ### 127.35
 
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s140.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s120.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s100.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s160.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s180.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s080.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s060.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s040.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s020.{run}"])  ### 還沒
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s140.{run}"])  ### 還沒 127.28
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s120.{run}"])  ### 還沒 127.28
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s100.{run}"])  ### 還沒 127.28
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s160.{run}"])  ### 還沒 127.28
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s180.{run}"])  ### 還沒 127.28
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s080.{run}"])  ### 還沒 127.28
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s060.{run}"])  ### 還沒 127.28
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s040.{run}"])  ### 還沒 127.28
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s060_bce_s020.{run}"])  ### 還沒 127.28
 
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s160.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s140.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s120.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s180.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s100.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s080.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s060.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s040.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s020.{run}"])  ### 還沒
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s160.{run}"])  ### 還沒 127.29
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s140.{run}"])  ### 還沒 127.29
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s120.{run}"])  ### 還沒 127.29
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s180.{run}"])  ### 還沒 127.29
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s100.{run}"])  ### 還沒 127.29
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s080.{run}"])  ### 還沒 127.29
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s060.{run}"])  ### 還沒 127.29
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s040.{run}"])  ### 還沒 127.29
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s080_bce_s020.{run}"])  ### 還沒 127.29
 
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s180.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s160.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s140.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s200.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s120.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s100.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s080.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s060.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s040.{run}"])  ### 還沒
-# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s020.{run}"])  ### 還沒
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s180.{run}"])  ### 還沒 127.55
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s160.{run}"])  ### 還沒 127.55
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s140.{run}"])  ### 還沒 127.55
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s200.{run}"])  ### 還沒 127.55
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s120.{run}"])  ### 還沒 127.55
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s100.{run}"])  ### 還沒 127.55
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s080.{run}"])  ### 還沒 127.55
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s060.{run}"])  ### 還沒 127.55
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s040.{run}"])  ### 還沒 127.55
+# sb.run(same_command + [f"ch032_sig_4l_ep060_tv_s100_bce_s020.{run}"])  ### 還沒 127.55
