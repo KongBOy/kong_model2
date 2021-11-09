@@ -10,6 +10,62 @@ import subprocess as sb
 same_command = ["python", "step10_a.py"]
 run = "build().run()"
 
+#### 3l ############################################################################################
+# sb.run(same_command + [f"ch128_sig_3l_ep060_bce_s001.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch128_sig_3l_ep060_bce_s020.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch128_sig_3l_ep060_bce_s040.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch128_sig_3l_ep060_bce_s060.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch128_sig_3l_ep060_bce_s080.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch128_sig_3l_ep060_bce_s100.{run}"])  ### 127.27
+
+# sb.run(same_command + [f"ch064_sig_3l_ep060_bce_s001.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch064_sig_3l_ep060_bce_s020.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch064_sig_3l_ep060_bce_s040.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch064_sig_3l_ep060_bce_s060.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch064_sig_3l_ep060_bce_s080.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch064_sig_3l_ep060_bce_s100.{run}"])  ### 127.27
+
+# sb.run(same_command + [f"ch032_sig_3l_ep060_bce_s001.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch032_sig_3l_ep060_bce_s020.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch032_sig_3l_ep060_bce_s040.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch032_sig_3l_ep060_bce_s060.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch032_sig_3l_ep060_bce_s080.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch032_sig_3l_ep060_bce_s100.{run}"])  ### 127.27
+
+# sb.run(same_command + [f"ch016_sig_3l_ep060_bce_s001.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch016_sig_3l_ep060_bce_s020.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch016_sig_3l_ep060_bce_s040.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch016_sig_3l_ep060_bce_s060.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch016_sig_3l_ep060_bce_s080.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch016_sig_3l_ep060_bce_s100.{run}"])  ### 127.27
+
+# sb.run(same_command + [f"ch008_sig_3l_ep060_bce_s001.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch008_sig_3l_ep060_bce_s020.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch008_sig_3l_ep060_bce_s040.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch008_sig_3l_ep060_bce_s060.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch008_sig_3l_ep060_bce_s080.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch008_sig_3l_ep060_bce_s100.{run}"])  ### 127.27
+
+# sb.run(same_command + [f"ch004_sig_3l_ep060_bce_s001.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch004_sig_3l_ep060_bce_s020.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch004_sig_3l_ep060_bce_s040.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch004_sig_3l_ep060_bce_s060.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch004_sig_3l_ep060_bce_s080.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch004_sig_3l_ep060_bce_s100.{run}"])  ### 127.27
+
+# sb.run(same_command + [f"ch002_sig_3l_ep060_bce_s001.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch002_sig_3l_ep060_bce_s020.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch002_sig_3l_ep060_bce_s040.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch002_sig_3l_ep060_bce_s060.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch002_sig_3l_ep060_bce_s080.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch002_sig_3l_ep060_bce_s100.{run}"])  ### 127.27
+
+# sb.run(same_command + [f"ch001_sig_3l_ep060_bce_s001.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch001_sig_3l_ep060_bce_s020.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch001_sig_3l_ep060_bce_s040.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch001_sig_3l_ep060_bce_s060.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch001_sig_3l_ep060_bce_s080.{run}"])  ### 127.27
+# sb.run(same_command + [f"ch001_sig_3l_ep060_bce_s100.{run}"])  ### 127.27
 #### 4l ############################################################################################
 # sb.run(same_command + [f"ch064_sig_4l_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"ch064_sig_4l_ep060_bce_s020.{run}"])
