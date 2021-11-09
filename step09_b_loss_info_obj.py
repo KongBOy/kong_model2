@@ -389,6 +389,8 @@ G_tv_s020_bce_s040_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce
 G_tv_s020_bce_s060_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 20, bce_scale= 60)
 G_tv_s020_bce_s080_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 20, bce_scale= 80)
 G_tv_s020_bce_s100_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 20, bce_scale=100)
+G_tv_s020_bce_s120_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 20, bce_scale=120)
+G_tv_s020_bce_s140_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 20, bce_scale=140)
 G_tv_s040_bce_s001_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 40, bce_scale=  1)
 G_tv_s040_bce_s020_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 40, bce_scale= 20)
 G_tv_s040_bce_s040_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 40, bce_scale= 40)
