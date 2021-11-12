@@ -10,6 +10,62 @@ import subprocess as sb
 same_command = ["python", "step10_a.py"]
 run = "build().run()"
 
+#### l2 ############################################################################################
+# sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s001.{run}"])
+# sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s020.{run}"])
+# sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s040.{run}"])
+# sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s060.{run}"])
+# sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s080.{run}"])
+# sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s100.{run}"])
+
+# sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s001.{run}"])
+# sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s020.{run}"])
+# sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s040.{run}"])
+# sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s060.{run}"])
+# sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s080.{run}"])
+# sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s100.{run}"])
+
+# sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s001.{run}"])
+# sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s020.{run}"])
+# sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s040.{run}"])
+# sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s060.{run}"])
+# sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s080.{run}"])
+# sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s100.{run}"])
+
+# sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s001.{run}"])
+# sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s020.{run}"])
+# sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s040.{run}"])
+# sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s060.{run}"])
+# sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s080.{run}"])
+# sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s100.{run}"])
+
+# sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s001.{run}"])
+# sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s020.{run}"])
+# sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s040.{run}"])
+# sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s060.{run}"])
+# sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s080.{run}"])
+# sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s100.{run}"])
+
+# sb.run(same_command + [f"l2_ch004_sig_ep060_bce_s001.{run}"])
+# sb.run(same_command + [f"l2_ch004_sig_ep060_bce_s020.{run}"])
+# sb.run(same_command + [f"l2_ch004_sig_ep060_bce_s040.{run}"])
+# sb.run(same_command + [f"l2_ch004_sig_ep060_bce_s060.{run}"])
+# sb.run(same_command + [f"l2_ch004_sig_ep060_bce_s080.{run}"])
+# sb.run(same_command + [f"l2_ch004_sig_ep060_bce_s100.{run}"])
+
+# sb.run(same_command + [f"l2_ch002_sig_ep060_bce_s001.{run}"])
+# sb.run(same_command + [f"l2_ch002_sig_ep060_bce_s020.{run}"])
+# sb.run(same_command + [f"l2_ch002_sig_ep060_bce_s040.{run}"])
+# sb.run(same_command + [f"l2_ch002_sig_ep060_bce_s060.{run}"])
+# sb.run(same_command + [f"l2_ch002_sig_ep060_bce_s080.{run}"])
+# sb.run(same_command + [f"l2_ch002_sig_ep060_bce_s100.{run}"])
+
+# sb.run(same_command + [f"l2_ch001_sig_ep060_bce_s001.{run}"])
+# sb.run(same_command + [f"l2_ch001_sig_ep060_bce_s020.{run}"])
+# sb.run(same_command + [f"l2_ch001_sig_ep060_bce_s040.{run}"])
+# sb.run(same_command + [f"l2_ch001_sig_ep060_bce_s060.{run}"])
+# sb.run(same_command + [f"l2_ch001_sig_ep060_bce_s080.{run}"])
+# sb.run(same_command + [f"l2_ch001_sig_ep060_bce_s100.{run}"])
 #### 3l ############################################################################################
 # sb.run(same_command + [f"l3_ch128_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l3_ch128_sig_ep060_bce_s020.{run}"])
