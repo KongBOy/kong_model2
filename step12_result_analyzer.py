@@ -11,6 +11,11 @@ from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and
 from video_from_img import Video_combine_from_dir
 from multiprocessing import Process
 
+from util import get_dir_certain_file_names, get_dir_dir_names, get_dir_certain_dir_names
+
+import os
+import shutil
+
 class Result_analyzer:
     def __init__(self, ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False):
         self.ana_describe = ana_describe
@@ -29,6 +34,28 @@ class Result_analyzer:
         self.add_loss = add_loss
 
         self.ana_timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+
+    def Gather_all_see_final_img(self, print_msg=False):
+        see_names = get_dir_certain_dir_names(self.analyze_dst_dir, "see")
+        for see_name in see_names:                                               ### 比如：see_001_real
+            see_dir = self.analyze_dst_dir + "/" + see_name                      ### 進去 比如：2c_block1_l3_2-ch128,64,32,16,8,4_bce_s001_100/see_001_real
+            see_ver_dir_names = get_dir_certain_dir_names(see_dir, "epoch=all")  ### 列出 dir中 有哪些 dir
+            see_ver_dir_name  = see_ver_dir_names[-1]                            ### 取最後一個最新的，比如：mask_epoch=all (20211111_231956)
+
+            see_ver_dir_path  = self.analyze_dst_dir + "/" + see_name + "/" + see_ver_dir_name       ### 進去 比如：2c_block1_l3_2-ch128,64,32,16,8,4_bce_s001_100/see_001_real/mask_epoch=all (20211111_231956)
+            see_ver_img_names = get_dir_certain_file_names( see_ver_dir_path, certain_word="epoch")  ### 列出 dir中 有哪些 epoch_imgs
+            see_ver_final_img_name = see_ver_img_names[-1]                            ### 取最後一張 最後epoch的結果 的檔名
+            see_ver_final_img_path = see_ver_dir_path + "/" + see_ver_final_img_name  ### 取最後一張 最後epoch的結果 的 path
+
+            src_path = see_ver_final_img_path
+            dst_path = self.analyze_dst_dir + "/" + see_name + "--" + see_ver_dir_name + "--" + see_ver_final_img_name  ### 把 / 換成 -
+
+            shutil.copy(src_path, dst_path)
+            if(print_msg):
+                print("src_path:", src_path, "  copy to")
+                print("dst_path:", dst_path, "  finish~")
+        return self
+
     ########################################################################################################################################
     def _step0_c_results_get_see_base_info(self, c_results):
         """
@@ -191,7 +218,7 @@ class Col_results_analyzer(Result_analyzer):
         Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
         Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print(f"{self.ana_describe} doing analyze_col_results_single_see, doing see_num:{see_num} finish, cost_time:{time.time() - start_time}")
-
+        return self
 
     def analyze_col_results_all_single_see(self, single_see_multiprocess=False, single_see_core_amount=8):
         print(f"{self.ana_describe} doing analyze_col_results_all_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}")
@@ -202,6 +229,7 @@ class Col_results_analyzer(Result_analyzer):
         for go_see in range(self.c_results[0].see_amount):
             self.analyze_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
         print(f"{self.ana_describe} doing analyze_col_results_all_single_see finish, cost_time:{time.time() - start_time}")
+        return self
 
     ### 包 multiprocess
     ### 本來是懶惰 把 for 走訪 所有 see 包成 fun， 以後只要寫一行 就可處理所有 single_see
@@ -225,6 +253,7 @@ class Col_results_analyzer(Result_analyzer):
         from multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._analyze_col_results_all_single_see_multiprocess, task_args=[single_see_multiprocess, single_see_core_amount])
         print(f"{self.ana_describe} doing analyze_col_results_all_single_see_multiprocess finish, cost_time:{time.time() - start_time}")
+        return self
 
     ########################################################################################################################################
     ########################################################################################################################################
@@ -411,10 +440,12 @@ class Row_col_results_analyzer(Result_analyzer):
         video_p.join()   ### 還是乖乖join比較好， 雖然不join 可以不用等他結束才跑下個Process， 但因為存Video很耗記憶體， 如果存大圖 或 多epochs 容易爆記憶體！
         # Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print("cost_time:", time.time() - start_time)
+        return self
 
     def analyze_row_col_results_all_single_see(self, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
         for go_see in range(self.r_c_results[0][0].see_amount):
             self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
+        return self
 
     ### 好像都沒用到，先註解起來吧～再看看要不要 把功能用其他方式實現出來 再刪掉
     '''
