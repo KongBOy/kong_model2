@@ -480,6 +480,7 @@ class Exp_builder():
 
     def set_result_name(self, result_name):
         self.exp.result_name = result_name
+        # print("0.set_result_name", result_name)  ### 追蹤see的建立過程
         return self
 
     def build(self, result_name=None):
@@ -490,7 +491,7 @@ class Exp_builder():
         也補上 建好result 馬上設定 loss_info_obj 拉，這樣 step11, step12 也能用了！
         '''
         if(self.exp.result_name is not None):
-            # print("1.result_name", result_name, ", self.exp.gt_use_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.gt_use_range)  ### 追蹤see的建立過程
+            # print("1.result_name", self.exp.result_name, ", self.exp.gt_use_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.gt_use_range)  ### 追蹤see的建立過程
             self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
 
 
@@ -510,6 +511,29 @@ class Exp_builder():
             # print()  ### 追蹤see的建立過程
             print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
         return self.exp
+
+    def result_name_v1_to_v2(self):
+        result_name_components = self.exp.result_name.split("-")
+        '''
+        根據 step11_b_result_obj_builder 的 set_by_exp 裡的 _get_result_name_by_exp 決定的喔
+            舉例：6_mask_unet/5_5b_ch032_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-5b_bce_s001_sobel_k5_s001-20211104_150928-flow_unet-mask_h_bg_ch032_sig_6l_ep060
+        '''
+        exp_dir = self.exp.exp_dir
+        db_category  = result_name_components[0]
+        describe_mid = result_name_components[1]
+        timestamp    = result_name_components[2]
+        model_name   = result_name_components[3]
+        describe_end = result_name_components[4]
+        result_name_v1 = f"{exp_dir}/{db_category}-{describe_mid}-{timestamp}-{model_name}-{describe_end}"
+        result_name_v2 = f"{exp_dir}/{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"
+        result_path_v1 = result_read_path  + "result/" + result_name_v1
+        result_path_v2 = result_read_path  + "result/" + result_name_v2
+        os.rename(result_path_v1, result_path_v2)
+        "Y:/0 data_dir/result/6_mask_unet/5_1_7l_unet2/type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
+        "Y:\0 data_dir\result\6_mask_unet\5_1_7l_unet2\type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
+        print(result_path_v1, "  rename to")
+        print(result_path_v2, "  finish~~")
+
 ##########################################################################################################################################
 ### 5_1_GD_Gmae136_epoch700
 # os_book_1532_rect_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_1", describe_end="1532data_mae1_127.28").set_train_args(epochs=700).set_result_name(result_name="")
