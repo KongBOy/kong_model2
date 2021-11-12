@@ -79,10 +79,21 @@ class Result_train_builder(Result_sees_builder):
         def _get_result_name_by_exp(exp):
             import datetime
             ### 自動決定 result_name，再去做進一步設定
+            """
+            v1:f"{exp_dir}/{db_category}-{describe_mid}-{timestamp}-{model_name}-{describe_end}"
             result_name_element = [exp.db_obj.category.value]
             if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
             result_name_element += [self.current_time, exp.model_obj.model_name.value]
+            if(exp.describe_end is not None): result_name_element += [exp.describe_end]"""
+
+            '''
+            v2:f"{exp_dir}/{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"
+            '''
+            result_name_element = [exp.db_obj.category.value]
+            if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
+            result_name_element += [exp.model_obj.model_name.value]
             if(exp.describe_end is not None): result_name_element += [exp.describe_end]
+            result_name_element += [self.current_time]
             result_name = "-".join(result_name_element)  ### result資料夾，裡面放checkpoint和tensorboard資料夾
             return exp.exp_dir + "/" + result_name
 
@@ -120,9 +131,11 @@ class Result_train_builder(Result_sees_builder):
         self._build_sees(self.result.sees_ver, self.result.in_use_range, self.result.gt_use_range)
 
 
-
-        ### 給 ana_describe，這是給 step12 用的，default 直 設 result.describe_end
-        self.result.ana_describe = result_name.split("-")[-1]
+        if("-" in result_name):
+            ### 給 ana_describe，這是給 step12 用的，default 直 設 result.describe_end
+            # self.result.ana_describe = result_name.split("-")[-1]
+            # self.result.ana_describe = result_name.split("-")[-4]
+            self.result.ana_describe = result_name.split("-")[-2]
         return self
 
 class Result_plot_builder(Result_train_builder):
