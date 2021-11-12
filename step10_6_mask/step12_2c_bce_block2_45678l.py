@@ -40,8 +40,8 @@ if(__name__ == "__main__"):
                                                                    bce_block2_3l_ch016,
                                                                    bce_block2_3l_ch008,
                                                                    bce_block2_3l_ch004], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)\
-                                            # .Gather_all_see_final_img()
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)\
+                                            .Gather_all_see_final_img()
 
     #################################################################################################################################################################################################################
     ana_name = "2c_block2_l4_1-ch064_bce_s001_100"
@@ -130,43 +130,43 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[bce_block2_5l_ch032[:3],
                                                                    bce_block2_5l_ch032[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .Gather_all_see_final_img()
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)\
+                                            # .Gather_all_see_final_img()
     ana_name = "2c_block2_l5_1-ch016_bce_s001_100"
     l5_ch016_block2_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[bce_block2_5l_ch016[:3],
                                                                    bce_block2_5l_ch016[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .Gather_all_see_final_img()
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)\
+                                            # .Gather_all_see_final_img()
     ana_name = "2c_block2_l5_1-ch008_bce_s001_100"
     l5_ch008_block2_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[bce_block2_5l_ch008[:3],
                                                                    bce_block2_5l_ch008[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .Gather_all_see_final_img()
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)\
+                                            # .Gather_all_see_final_img()
     ana_name = "2c_block2_l5_1-ch004_bce_s001_100"
     l5_ch004_block2_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[bce_block2_5l_ch004[:3],
                                                                    bce_block2_5l_ch004[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .Gather_all_see_final_img()
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)\
+                                            # .Gather_all_see_final_img()
     ana_name = "2c_block2_l5_1-ch002_bce_s001_100"
     l5_ch002_block2_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[bce_block2_5l_ch002[:3],
                                                                    bce_block2_5l_ch002[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .Gather_all_see_final_img()
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)\
+                                            # .Gather_all_see_final_img()
     ana_name = "2c_block2_l5_1-ch001_bce_s001_100"
     l5_ch001_block2_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[bce_block2_5l_ch001[:3],
                                                                    bce_block2_5l_ch001[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .Gather_all_see_final_img()
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)\
+                                            # .Gather_all_see_final_img()
     ################################################################################
     ana_name = "2c_block2_l5_2-ch32,16,8,4,2,1_bce_s001_100"
     l5_ch32_16_8_4_2_1_block2_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -177,8 +177,8 @@ if(__name__ == "__main__"):
                                                                    bce_block2_5l_ch004,
                                                                    bce_block2_5l_ch002,
                                                                    bce_block2_5l_ch001], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .Gather_all_see_final_img()
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)\
+                                            # .Gather_all_see_final_img()
     #################################################################################################################################################################################################################
     ana_name = "2c_block2_l6_1-ch016_bce_s001_100"
     l6_ch016_block2_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
