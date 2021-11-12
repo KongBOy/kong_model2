@@ -5,7 +5,7 @@ from step0_access_path import Syn_write_to_read_dir
 
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_name, move_dir_certain_file
+from util import get_dir_certain_file_names, move_dir_certain_file
 from matplot_fig_ax_util import Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from video_from_img import Video_combine_from_dir
@@ -60,10 +60,10 @@ class See_flow_visual(See_info):
 
     ### 因為  See_bm_rec 要用到， 所以從 See_flow_visual 提升上去 See_info囉！ 結果還是拉回來了， 因為覺得要用的時候再抓， 否則像只 predict mask 的狀況，就沒有flow拉！
     def get_flow_info(self):
-        self.gt_flow_v_path       = self.flow_v_read_dir  + "/" + get_dir_certain_file_name(self.see_read_dir, certain_word="gt_flow")[0]
-        self.rec_hope_path        = self.flow_v_write_dir + "/" + get_dir_certain_file_name(self.see_read_dir, certain_word="rec_hope")[0]
+        self.gt_flow_v_path       = self.flow_v_read_dir  + "/" + get_dir_certain_file_names(self.see_read_dir, certain_word="gt_flow")[0]
+        self.rec_hope_path        = self.flow_v_write_dir + "/" + get_dir_certain_file_names(self.see_read_dir, certain_word="rec_hope")[0]
 
-        self.flow_v_jpg_names      = get_dir_certain_file_name(self.see_read_dir, certain_word="epoch", certain_ext=".jpg")
+        self.flow_v_jpg_names      = get_dir_certain_file_names(self.see_read_dir, certain_word="epoch", certain_ext=".jpg")
         self.flow_v_jpg_read_paths = [self.see_read_dir + "/" + epoch_jpg_name for epoch_jpg_name in self.flow_v_jpg_names]  ### 沒有 write_paths， 同上
         self.flow_v_jpg_amount     = len(self.flow_v_jpg_names)
 

@@ -11,7 +11,7 @@ from step09_b_loss_info_obj import *
 from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
-from util import time_util, get_dir_certain_file_name
+from util import time_util, get_dir_certain_file_names
 
 from tqdm import tqdm
 
@@ -29,7 +29,7 @@ class Experiment():
         from build_dataset_combine import Check_dir_exist_and_build
         code_dir = self.result_obj.train_code_write_dir  ### 定位出 result存code的目的地
         Check_dir_exist_and_build(code_dir)                         ### 建立目的地資料夾
-        py_file_names = get_dir_certain_file_name(".", certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
+        py_file_names = get_dir_certain_file_names(".", certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
         for py_file_name in py_file_names:
             ### 這兩行可以 抓 step"幾" 然後只存 step"幾".py 喔，但還沒整理以前的code，保險起見還是全存好了，有空再細細處理~~
             # py_file_name_step = int(py_file_name.split("_")[0][4:])          ### 抓出 step "幾"

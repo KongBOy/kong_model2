@@ -5,7 +5,7 @@ from step0_access_path import Syn_write_to_read_dir
 
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_name, move_dir_certain_file
+from util import get_dir_certain_file_names, move_dir_certain_file
 from matplot_fig_ax_util import Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
@@ -90,13 +90,13 @@ class See_bm_rec(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        self.bm_names  = get_dir_certain_file_name(self.bm_visual_read_dir , certain_word="bm_epoch", certain_ext=".jpg")
+        self.bm_names  = get_dir_certain_file_names(self.bm_visual_read_dir , certain_word="bm_epoch", certain_ext=".jpg")
         self.bm_read_paths  = [self.bm_visual_read_dir + "/" + name for name in self.bm_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
-        self.rec_names = get_dir_certain_file_name(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".jpg")
+        self.rec_names = get_dir_certain_file_names(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".jpg")
         self.rec_read_paths = [self.rec_visual_read_dir + "/" + name for name in self.rec_names]  ### 沒有 write_path， 因為 bm_rec 只需要指定 write_dir 即可寫入資料夾
 
-        self.rec_gt_name = get_dir_certain_file_name(self.rec_visual_read_dir, certain_word="gt", certain_ext=".jpg")
+        self.rec_gt_name = get_dir_certain_file_names(self.rec_visual_read_dir, certain_word="gt", certain_ext=".jpg")
         self.rec_gt_path = self.rec_visual_read_dir + "/" + self.rec_gt_name[0]  ### 沒有 write_path， 因為 bm_rec 只需要指定 write_dir 即可寫入資料夾
 
         self.see_rec_amount = len(self.rec_read_paths)

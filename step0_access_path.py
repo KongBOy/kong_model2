@@ -95,18 +95,18 @@ def Syn_write_to_read_dir(write_dir, read_dir, build_new_dir=False, copy_sub_dir
 
     ### 留幾版在刪掉，用一個個檔案複製的方式，但後來發現 用cmd指令 可直接copy 資料夾！且複寫也沒問題～　就用上面的方式了～
     ### 但覺得下面的觀念還不錯，就留一下囉
-    # file_names   = get_dir_certain_file_name(write_dir, ".jpg")
-    # file_names  += get_dir_certain_file_name(write_dir, ".png")
-    # file_names  += get_dir_certain_file_name(write_dir, ".avi")
-    # file_names  += get_dir_certain_file_name(write_dir, ".npy")
-    # file_names  += get_dir_certain_file_name(write_dir, ".npz")
+    # file_names   = get_dir_certain_file_names(write_dir, ".jpg")
+    # file_names  += get_dir_certain_file_names(write_dir, ".png")
+    # file_names  += get_dir_certain_file_names(write_dir, ".avi")
+    # file_names  += get_dir_certain_file_names(write_dir, ".npy")
+    # file_names  += get_dir_certain_file_names(write_dir, ".npz")
 
-    # file_names  += get_dir_certain_file_name(write_dir, "checkpoint")
-    # file_names  += get_dir_certain_file_name(write_dir, "ckpt")
-    # file_names  += get_dir_certain_file_name(write_dir, ".v2")
+    # file_names  += get_dir_certain_file_names(write_dir, "checkpoint")
+    # file_names  += get_dir_certain_file_names(write_dir, "ckpt")
+    # file_names  += get_dir_certain_file_names(write_dir, ".v2")
 
-    # file_names  += get_dir_certain_file_name(write_dir, ".txt")
-    # file_names  += get_dir_certain_file_name(write_dir, ".py")
+    # file_names  += get_dir_certain_file_names(write_dir, ".txt")
+    # file_names  += get_dir_certain_file_names(write_dir, ".py")
 
     # for file_name in file_names:
     #     write_path = write_dir + "/" + file_name

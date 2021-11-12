@@ -5,7 +5,7 @@ from step0_access_path import Syn_write_to_read_dir
 
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_name, move_dir_certain_file
+from util import get_dir_certain_file_names, move_dir_certain_file
 from build_dataset_combine import Check_dir_exist_and_build
 from multiprocess_util import multi_processing_interface
 
@@ -66,7 +66,7 @@ class See_npy_to_npz(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        self.npy_names            = get_dir_certain_file_name(self.npy_read_dir, certain_word=".npy")
+        self.npy_names            = get_dir_certain_file_names(self.npy_read_dir, certain_word=".npy")
         self.npy_read_paths       = [self.npy_read_dir  + "/" + npy_name for npy_name in self.npy_names]  ### 沒有 write_paths，因為式 npy轉npz， 不會有寫npy的動作， 雖然下面的 compare 會寫一點npy， 但也因為 有用 .replace() 所以用 see_npy_name.replace() 較保險這樣子！
         self.npy_amount           = len(self.npy_read_paths)
 
@@ -80,11 +80,11 @@ class See_npy_to_npz(See_info):
         """
         ### 有包含 gt_flow 的 list喔！ 第一個 放的是 gt_flow
         print("self.npz_read_dir~~~~~~~~~~~~~~~~~", self.npz_read_dir)
-        self.npz_names            = get_dir_certain_file_name(self.npz_read_dir, certain_word=".npz")
+        self.npz_names            = get_dir_certain_file_names(self.npz_read_dir, certain_word=".npz")
         self.flow_gt_npz_path         = self.npz_read_dir + "/" + self.npz_names[0]
 
         ### 不包含 gt_flow 的 list喔！
-        self.npz_epoch_names      = get_dir_certain_file_name(self.npz_read_dir, certain_word="epoch", certain_ext=".npz")
+        self.npz_epoch_names      = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_ext=".npz")
         self.npz_epoch_read_paths = [self.npz_read_dir + "/" + epoch_npz_name for epoch_npz_name in self.npz_epoch_names]    ### 沒有 write_paths，同上 ，既然已經沒有 self.see_npz_write_paths， 當然更不會有 self.see_npz_epoch_write_paths 拉！
 
         self.npz_epoch_amount     = len(self.npz_epoch_read_paths)

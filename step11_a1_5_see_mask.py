@@ -3,7 +3,7 @@ from step11_a0_see_base import See_info
 
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_name, move_dir_certain_file
+from util import get_dir_certain_file_names, move_dir_certain_file
 
 import datetime
 # import pdb
@@ -49,7 +49,7 @@ class See_mask(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        self.mask_names  = get_dir_certain_file_name(self.mask_read_dir , certain_word="epoch", certain_ext=".bmp")
+        self.mask_names  = get_dir_certain_file_names(self.mask_read_dir , certain_word="epoch", certain_ext=".bmp")
         self.mask_read_paths  = [self.mask_read_dir + "/" + name for name in self.mask_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
         self.mask_amount = len(self.mask_read_paths)

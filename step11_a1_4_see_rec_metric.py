@@ -5,7 +5,7 @@ from step0_access_path import Syn_write_to_read_dir
 
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_name, move_dir_certain_file, method2
+from util import get_dir_certain_file_names, move_dir_certain_file, method2
 from matplot_fig_ax_util import Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from video_from_img import Video_combine_from_dir
@@ -136,10 +136,10 @@ class See_rec_metric(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        # self.metric_names  = get_dir_certain_file_name(self.metrec_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
+        # self.metric_names  = get_dir_certain_file_names(self.metrec_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
         # self.metric_read_paths  = [self.matplot_metric_visual_read_dir + "/" + name for name in self.metric_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
-        self.ld_color_visual_names       = get_dir_certain_file_name(self.metric_ld_color_read_dir , certain_word="ld_epoch", certain_ext=".jpg")
+        self.ld_color_visual_names       = get_dir_certain_file_names(self.metric_ld_color_read_dir , certain_word="ld_epoch", certain_ext=".jpg")
         self.ld_color_visual_read_path   = [self.metric_ld_color_read_dir + "/" + name for name in self.ld_color_visual_names]  ### 沒有 write_path， 因為 ld_visual 只需要指定 write_dir 即可寫入資料夾
 
         # self.see_file_amount = len(self.metric_names)
