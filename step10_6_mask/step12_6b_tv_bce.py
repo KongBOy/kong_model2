@@ -35,14 +35,14 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=mask_ch032_tv_s001_100_bce_s001_100,
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
 
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
-    ana_name = "6b_ch032_2_step40-tv_s001~100_bce_s001~100"
+    ana_name = "6b_ch032_2-tv_s001~100_bce_s001~100_step40"
     mask_ch032_tv_s001_100_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=mask_ch032_tv_s001_100_bce_s001_100[::2, ::2],
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
