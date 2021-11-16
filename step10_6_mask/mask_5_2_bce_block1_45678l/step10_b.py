@@ -136,6 +136,20 @@ run = "build().run()"
 # sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s060.{run}"])  ### 127.27
 # sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s080.{run}"])  ### 127.27
 # sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s100.{run}"])  ### 127.27
+### E_relu
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s001_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s020_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s040_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s060_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s080_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s100_E_relu .{run}"])  ### 127.27
+### no_Bias
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s001_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s020_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s040_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s060_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s080_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s100_no_Bias.{run}"])  ### 127.27
 ####################
 # sb.run(same_command + [f"l4_ch016_sig_ep060_bce_s001.{run}"])  ### 127.37
 # sb.run(same_command + [f"l4_ch016_sig_ep060_bce_s020.{run}"])  ### 127.37
@@ -164,6 +178,20 @@ run = "build().run()"
 # sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s060.{run}"])  ### 127.49
 # sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s080.{run}"])  ### 127.49
 # sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s100.{run}"])  ### 127.49
+### E_relu
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s001_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s020_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s040_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s060_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s080_E_relu .{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s100_E_relu .{run}"])  ### 127.27
+### no_Bias
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s001_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s020_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s040_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s060_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s080_no_Bias.{run}"])  ### 127.27
+# sb.run(same_command + [f"l4_ch008_sig_ep060_bce_s100_no_Bias.{run}"])  ### 127.27
 ####################
 # sb.run(same_command + [f"l4_ch004_sig_ep060_bce_s001.{run}"])  ### 127.49
 # sb.run(same_command + [f"l4_ch004_sig_ep060_bce_s020.{run}"])  ### 127.49
