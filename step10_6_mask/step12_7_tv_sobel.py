@@ -40,11 +40,11 @@ if(__name__ == "__main__"):
                                                                     mask_6l_tv_s01_sobel_k5_s120_ch,
                                                                     mask_6l_tv_s01_sobel_k5_s140_ch
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                                # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                                # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     ana_name = "7b_ch032_1-tv_s01,20,30_sobel_k5_s001~140"
     mask_ch032_tv_s01_20_30_sobel_k5_s001_140_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=tv_s20_30_sobel_k5_s001_140s,
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)

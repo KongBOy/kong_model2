@@ -41,7 +41,7 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_7l_block1_ch[:4],
                                                                    mask_7l_block1_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ########################################################################################
     ana_name = "1-7l_block1-2_layer-1_row"
     mask_7l_ch_analyze = Col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -54,7 +54,7 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_7l_block1_layer[:4],
                                                                    mask_7l_block1_layer[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ########################################################################################
     ana_name = "1-7l_block1-3_noC-1_row"
     mask_7l_ch_analyze = Col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -67,7 +67,7 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_7l_block1_layer_noC[:4],
                                                                    mask_7l_block1_layer_noC[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ########################################################################################
     ana_name = "1-7l_block1-4_skip_add-1_row"
     mask_7l_ch_analyze = Col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -80,5 +80,5 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_7l_block1_skip_add[:4],
                                                                    mask_7l_block1_skip_add[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
 

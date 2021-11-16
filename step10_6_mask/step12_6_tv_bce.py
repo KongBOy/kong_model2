@@ -41,7 +41,7 @@ if(__name__ == "__main__"):
                                                                     mask_6l_tv_s16_bce_ch,
                                                                     mask_6l_tv_s20_bce_ch
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                                # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                                # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     ana_name = "6-6l_tv_s01~80_bce-1_ch"
     mask_6l_tv_s01_80_bce_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -53,7 +53,7 @@ if(__name__ == "__main__"):
                                                                     mask_6l_tv_s60_bce_ch,
                                                                     mask_6l_tv_s80_bce_ch
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                                # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                                # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "6b_ch032_1-tv_s20,30_bce_k5_s001~080"
@@ -61,4 +61,4 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=mask_tv_s20_30_bce_s001_080s,
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)

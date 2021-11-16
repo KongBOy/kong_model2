@@ -37,21 +37,21 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s001_ch[:4],
                                                                    mask_sobel_k5_s001_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s001-2_ep"
     mask_sobel_k5_s001_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s001_ep[:8],
                                                                    mask_sobel_k5_s001_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s001-4_no_concat_and_add"
     mask_sobel_k5_s001_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s001_noC_and_add[:3] + [mask_sobel_k5_s001_ch[2]],
                                                                    mask_sobel_k5_s001_noC_and_add[3:] + [mask_sobel_k5_s001_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3_1-sobel_k5_s020-1_ch"
@@ -59,21 +59,21 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s020_ch[:4],
                                                                    mask_sobel_k5_s020_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s020-2_ep"
     mask_sobel_k5_s020_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s020_ep[:8],
                                                                    mask_sobel_k5_s020_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s020-4_no_concat_and_add"
     mask_sobel_k5_s020_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s020_noC_and_add[:3] + [mask_sobel_k5_s020_ch[2]],
                                                                    mask_sobel_k5_s020_noC_and_add[3:] + [mask_sobel_k5_s020_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3_1-sobel_k5_s040-1_ch"
@@ -81,21 +81,21 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s040_ch[:4],
                                                                    mask_sobel_k5_s040_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s040-2_ep"
     mask_sobel_k5_s040_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s040_ep[:8],
                                                                    mask_sobel_k5_s040_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s040-4_no_concat_and_add"
     mask_sobel_k5_s040_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s040_noC_and_add[:3] + [mask_sobel_k5_s040_ch[2]],
                                                                    mask_sobel_k5_s040_noC_and_add[3:] + [mask_sobel_k5_s040_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3_1-sobel_k5_s060-1_ch"
@@ -103,21 +103,21 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s060_ch[:4],
                                                                    mask_sobel_k5_s060_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s060-2_ep"
     mask_sobel_k5_s060_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s060_ep[:8],
                                                                    mask_sobel_k5_s060_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s060-4_no_concat_and_add"
     mask_sobel_k5_s060_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s060_noC_and_add[:3] + [mask_sobel_k5_s060_ch[2]],
                                                                    mask_sobel_k5_s060_noC_and_add[3:] + [mask_sobel_k5_s060_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3_1-sobel_k5_s080-1_ch"
@@ -125,21 +125,21 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s080_ch[:4],
                                                                    mask_sobel_k5_s080_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s080-2_ep"
     mask_sobel_k5_s080_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s080_ep[:8],
                                                                    mask_sobel_k5_s080_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s080-4_no_concat_and_add"
     mask_sobel_k5_s080_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s080_noC_and_add[:3] + [mask_sobel_k5_s080_ch[2]],
                                                                    mask_sobel_k5_s080_noC_and_add[3:] + [mask_sobel_k5_s080_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3_1-sobel_k5_s100-1_ch"
@@ -147,21 +147,21 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s100_ch[:4],
                                                                    mask_sobel_k5_s100_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s100-2_ep"
     mask_sobel_k5_s100_ep_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s100_ep[:8],
                                                                    mask_sobel_k5_s100_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_1-sobel_k5_s100-4_no_concat_and_add"
     mask_sobel_k5_s100_noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_sobel_k5_s100_noC_and_add[:3] + [mask_sobel_k5_s100_ch[2]],
                                                                    mask_sobel_k5_s100_noC_and_add[3:] + [mask_sobel_k5_s100_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3_2-sobel_k5_s1,20,40,60,80,100-1_ch"
@@ -171,7 +171,7 @@ if(__name__ == "__main__"):
                                                                   mask_sobel_k5_s020_ch[:3] + mask_sobel_k5_s080_ch[:3],
                                                                   mask_sobel_k5_s040_ch[:3] + mask_sobel_k5_s100_ch[:3],
                                                                   ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_2-sobel_k5_s1,20,40,60,80,100-4_no_concat_and_add"
     mask_6l_bce_s1_10_20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -182,7 +182,7 @@ if(__name__ == "__main__"):
                                                                   [mask_sobel_k5_s060_ch[2]] + mask_sobel_k5_s060_noC_and_add + [mask_sobel_k5_s060_ch[2]],
                                                                   [mask_sobel_k5_s080_ch[2]] + mask_sobel_k5_s080_noC_and_add + [mask_sobel_k5_s080_ch[2]],
                                                                   [mask_sobel_k5_s100_ch[2]] + mask_sobel_k5_s100_noC_and_add + [mask_sobel_k5_s100_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3_3_ch032-sobel_k5_s1~260"
@@ -192,4 +192,4 @@ if(__name__ == "__main__"):
                                                                   mask_ch032_sobel_k5_s1_260[ 5:10],
                                                                   mask_ch032_sobel_k5_s1_260[10:  ],
                                                                   ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)

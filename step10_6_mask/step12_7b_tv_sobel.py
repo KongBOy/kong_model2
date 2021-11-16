@@ -35,7 +35,7 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=mask_ch032_tv_s001_100_sobel_k5_s001_100,
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
 
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
@@ -45,5 +45,5 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=mask_ch032_tv_s001_100_sobel_k5_s001_100[::2, ::2],
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+                                    .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     
