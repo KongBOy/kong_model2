@@ -1,6 +1,79 @@
 import mask_5_2_bce_block1_45678l.step10_a as bce_block1
 
 ############################################
+### 2l
+bce_block1_2l_ch128 = [
+    bce_block1.l2_ch128_sig_ep060_bce_s001.build(),
+    bce_block1.l2_ch128_sig_ep060_bce_s020.build(),
+    bce_block1.l2_ch128_sig_ep060_bce_s040.build(),
+    bce_block1.l2_ch128_sig_ep060_bce_s060.build(),
+    bce_block1.l2_ch128_sig_ep060_bce_s080.build(),
+    bce_block1.l2_ch128_sig_ep060_bce_s100.build()]
+bce_block1_2l_ch128 = [ exp.result_obj for exp in bce_block1_2l_ch128]
+
+bce_block1_2l_ch064 = [
+    bce_block1.l2_ch064_sig_ep060_bce_s001.build(),
+    bce_block1.l2_ch064_sig_ep060_bce_s020.build(),
+    bce_block1.l2_ch064_sig_ep060_bce_s040.build(),
+    bce_block1.l2_ch064_sig_ep060_bce_s060.build(),
+    bce_block1.l2_ch064_sig_ep060_bce_s080.build(),
+    bce_block1.l2_ch064_sig_ep060_bce_s100.build()]
+bce_block1_2l_ch064 = [ exp.result_obj for exp in bce_block1_2l_ch064]
+
+bce_block1_2l_ch032 = [
+    bce_block1.l2_ch032_sig_ep060_bce_s001.build(),
+    bce_block1.l2_ch032_sig_ep060_bce_s020.build(),
+    bce_block1.l2_ch032_sig_ep060_bce_s040.build(),
+    bce_block1.l2_ch032_sig_ep060_bce_s060.build(),
+    bce_block1.l2_ch032_sig_ep060_bce_s080.build(),
+    bce_block1.l2_ch032_sig_ep060_bce_s100.build()]
+bce_block1_2l_ch032 = [ exp.result_obj for exp in bce_block1_2l_ch032]
+
+bce_block1_2l_ch016 = [
+    bce_block1.l2_ch016_sig_ep060_bce_s001.build(),
+    bce_block1.l2_ch016_sig_ep060_bce_s020.build(),
+    bce_block1.l2_ch016_sig_ep060_bce_s040.build(),
+    bce_block1.l2_ch016_sig_ep060_bce_s060.build(),
+    bce_block1.l2_ch016_sig_ep060_bce_s080.build(),
+    bce_block1.l2_ch016_sig_ep060_bce_s100.build()]
+bce_block1_2l_ch016 = [ exp.result_obj for exp in bce_block1_2l_ch016]
+
+bce_block1_2l_ch008 = [
+    bce_block1.l2_ch008_sig_ep060_bce_s001.build(),
+    bce_block1.l2_ch008_sig_ep060_bce_s020.build(),
+    bce_block1.l2_ch008_sig_ep060_bce_s040.build(),
+    bce_block1.l2_ch008_sig_ep060_bce_s060.build(),
+    bce_block1.l2_ch008_sig_ep060_bce_s080.build(),
+    bce_block1.l2_ch008_sig_ep060_bce_s100.build()]
+bce_block1_2l_ch008 = [ exp.result_obj for exp in bce_block1_2l_ch008]
+
+bce_block1_2l_ch004 = [
+    bce_block1.l2_ch004_sig_ep060_bce_s001.build(),
+    bce_block1.l2_ch004_sig_ep060_bce_s020.build(),
+    bce_block1.l2_ch004_sig_ep060_bce_s040.build(),
+    bce_block1.l2_ch004_sig_ep060_bce_s060.build(),
+    bce_block1.l2_ch004_sig_ep060_bce_s080.build(),
+    bce_block1.l2_ch004_sig_ep060_bce_s100.build()]
+bce_block1_2l_ch004 = [ exp.result_obj for exp in bce_block1_2l_ch004]
+
+bce_block1_2l_ch002 = [
+    bce_block1.l2_ch002_sig_ep060_bce_s001.build(),
+    bce_block1.l2_ch002_sig_ep060_bce_s020.build(),
+    bce_block1.l2_ch002_sig_ep060_bce_s040.build(),
+    bce_block1.l2_ch002_sig_ep060_bce_s060.build(),
+    bce_block1.l2_ch002_sig_ep060_bce_s080.build(),
+    bce_block1.l2_ch002_sig_ep060_bce_s100.build()]
+bce_block1_2l_ch002 = [ exp.result_obj for exp in bce_block1_2l_ch002]
+
+bce_block1_2l_ch001 = [
+    bce_block1.l2_ch001_sig_ep060_bce_s001.build(),
+    bce_block1.l2_ch001_sig_ep060_bce_s020.build(),
+    bce_block1.l2_ch001_sig_ep060_bce_s040.build(),
+    bce_block1.l2_ch001_sig_ep060_bce_s060.build(),
+    bce_block1.l2_ch001_sig_ep060_bce_s080.build(),
+    bce_block1.l2_ch001_sig_ep060_bce_s100.build()]
+bce_block1_2l_ch001 = [ exp.result_obj for exp in bce_block1_2l_ch001]
+############################################
 ### 3l
 bce_block1_3l_ch128 = [
     bce_block1.l3_ch128_sig_ep060_bce_s001.build(),
