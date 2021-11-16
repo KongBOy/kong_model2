@@ -17,6 +17,11 @@ run = "build().run()"
 # sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s100.{run}"])
+### E_relu
+# sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l2_ch128_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 
 # sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s020.{run}"])
@@ -24,28 +29,44 @@ run = "build().run()"
 # sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s100.{run}"])
-
+### E_relu
+# sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l2_ch064_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s040.{run}"])
 # sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s100.{run}"])
-
+### E_relu
+# sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l2_ch032_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s040.{run}"])
 # sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s100.{run}"])
-
+### E_relu
+# sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l2_ch016_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s040.{run}"])
 # sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s100.{run}"])
-
+### E_relu
+# sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l2_ch008_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l2_ch004_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l2_ch004_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"l2_ch004_sig_ep060_bce_s040.{run}"])
@@ -73,35 +94,55 @@ run = "build().run()"
 # sb.run(same_command + [f"l3_ch128_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l3_ch128_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l3_ch128_sig_ep060_bce_s100.{run}"])
-
+### E_relu
+# sb.run(same_command + [f"l3_ch128_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l3_ch128_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l3_ch064_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l3_ch064_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"l3_ch064_sig_ep060_bce_s040.{run}"])
 # sb.run(same_command + [f"l3_ch064_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l3_ch064_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l3_ch064_sig_ep060_bce_s100.{run}"])
-
+### E_relu
+# sb.run(same_command + [f"l3_ch064_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l3_ch064_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l3_ch032_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l3_ch032_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"l3_ch032_sig_ep060_bce_s040.{run}"])
 # sb.run(same_command + [f"l3_ch032_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l3_ch032_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l3_ch032_sig_ep060_bce_s100.{run}"])
-
+### E_relu
+# sb.run(same_command + [f"l3_ch032_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l3_ch032_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l3_ch016_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l3_ch016_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"l3_ch016_sig_ep060_bce_s040.{run}"])
 # sb.run(same_command + [f"l3_ch016_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l3_ch016_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l3_ch016_sig_ep060_bce_s100.{run}"])
-
+### E_relu
+# sb.run(same_command + [f"l3_ch016_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l3_ch016_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l3_ch008_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l3_ch008_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"l3_ch008_sig_ep060_bce_s040.{run}"])
 # sb.run(same_command + [f"l3_ch008_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l3_ch008_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l3_ch008_sig_ep060_bce_s100.{run}"])
-
+### E_relu
+# sb.run(same_command + [f"l3_ch008_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l3_ch008_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l3_ch004_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"l3_ch004_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"l3_ch004_sig_ep060_bce_s040.{run}"])
@@ -129,6 +170,10 @@ run = "build().run()"
 # sb.run(same_command + [f"l4_ch064_sig_ep060_bce_s060.{run}"])
 # sb.run(same_command + [f"l4_ch064_sig_ep060_bce_s080.{run}"])
 # sb.run(same_command + [f"l4_ch064_sig_ep060_bce_s100.{run}"])
+### E_relu
+# sb.run(same_command + [f"l4_ch064_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l4_ch064_sig_ep060_bce_s001_no_Bias.{run}"])
 ####################
 # sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s001.{run}"])  ### 127.27
 # sb.run(same_command + [f"l4_ch032_sig_ep060_bce_s020.{run}"])  ### 127.27
@@ -199,6 +244,10 @@ run = "build().run()"
 # sb.run(same_command + [f"l4_ch004_sig_ep060_bce_s060.{run}"])  ### 127.49
 # sb.run(same_command + [f"l4_ch004_sig_ep060_bce_s080.{run}"])  ### 127.49
 # sb.run(same_command + [f"l4_ch004_sig_ep060_bce_s100.{run}"])  ### 127.49
+### E_relu
+# sb.run(same_command + [f"l4_ch004_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l4_ch004_sig_ep060_bce_s001_no_Bias.{run}"])
 ####################
 # sb.run(same_command + [f"l4_ch002_sig_ep060_bce_s001.{run}"])  ### 127.49
 # sb.run(same_command + [f"l4_ch002_sig_ep060_bce_s020.{run}"])  ### 127.49
@@ -221,35 +270,55 @@ run = "build().run()"
 # sb.run(same_command + [f"l5_ch032_sig_ep060_bce_s060.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch032_sig_ep060_bce_s080.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch032_sig_ep060_bce_s100.{run}"])  ### 127.55
-
+### E_relu
+# sb.run(same_command + [f"l5_ch032_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l5_ch032_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l5_ch016_sig_ep060_bce_s001.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch016_sig_ep060_bce_s020.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch016_sig_ep060_bce_s040.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch016_sig_ep060_bce_s060.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch016_sig_ep060_bce_s080.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch016_sig_ep060_bce_s100.{run}"])  ### 127.55
-
+### E_relu
+# sb.run(same_command + [f"l5_ch016_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l5_ch016_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l5_ch008_sig_ep060_bce_s001.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch008_sig_ep060_bce_s020.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch008_sig_ep060_bce_s040.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch008_sig_ep060_bce_s060.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch008_sig_ep060_bce_s080.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch008_sig_ep060_bce_s100.{run}"])  ### 127.55
-
+### E_relu
+# sb.run(same_command + [f"l5_ch008_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l5_ch008_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l5_ch004_sig_ep060_bce_s001.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch004_sig_ep060_bce_s020.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch004_sig_ep060_bce_s040.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch004_sig_ep060_bce_s060.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch004_sig_ep060_bce_s080.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch004_sig_ep060_bce_s100.{run}"])  ### 127.55
-
+### E_relu
+# sb.run(same_command + [f"l5_ch004_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l5_ch004_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l5_ch002_sig_ep060_bce_s001.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch002_sig_ep060_bce_s020.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch002_sig_ep060_bce_s040.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch002_sig_ep060_bce_s060.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch002_sig_ep060_bce_s080.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch002_sig_ep060_bce_s100.{run}"])  ### 127.55
-
+### E_relu
+# sb.run(same_command + [f"l5_ch002_sig_ep060_bce_s001_E_relu.{run}"])
+### no_Bias
+# sb.run(same_command + [f"l5_ch002_sig_ep060_bce_s001_no_Bias.{run}"])
+####################
 # sb.run(same_command + [f"l5_ch001_sig_ep060_bce_s001.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch001_sig_ep060_bce_s020.{run}"])  ### 127.55
 # sb.run(same_command + [f"l5_ch001_sig_ep060_bce_s040.{run}"])  ### 127.55
