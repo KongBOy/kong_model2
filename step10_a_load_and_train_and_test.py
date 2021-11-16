@@ -27,23 +27,31 @@ class Experiment():
         '''
         import shutil
         from build_dataset_combine import Check_dir_exist_and_build
-        code_dir = self.result_obj.train_code_write_dir  ### 定位出 result存code的目的地
-        Check_dir_exist_and_build(code_dir)                         ### 建立目的地資料夾
+        code_save_path = self.result_obj.train_code_write_dir                 ### 定位出 result存code的目的地
+        print("code_save_path:", code_save_path)
+        Check_dir_exist_and_build(code_save_path)                             ### 建立目的地資料夾
+
         py_file_names = get_dir_certain_file_names(".", certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
         for py_file_name in py_file_names:
             ### 這兩行可以 抓 step"幾" 然後只存 step"幾".py 喔，但還沒整理以前的code，保險起見還是全存好了，有空再細細處理~~
             # py_file_name_step = int(py_file_name.split("_")[0][4:])          ### 抓出 step "幾"
             # if(py_file_name_step >= 6 or py_file_name_step == 0):            ### step06 以上
-            shutil.copy(py_file_name, code_dir + "/" + py_file_name)     ### 存起來
+            shutil.copy(py_file_name, code_save_path + "/" + py_file_name)     ### 存起來
 
         ### 因為我現在有加 timestamp， 所以 不會有上一版 kong_util的問題， 所以可以註解掉囉～
-        # if(os.path.isdir(code_dir + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
-        #     shutil.rmtree(code_dir + "/" + "kong_util")
-        print("self.exp_dir ~~~~~~~~~~~~:", self.exp_dir )
-        shutil.copytree("kong_util", code_dir + "/" + "kong_util")
-        shutil.copytree("kong_Blender", code_dir + "/" + "kong_Blender")
-        shutil.copytree("SIFT_dev", code_dir + "/" + "SIFT_dev")
-        shutil.copytree("step10_6_mask", code_dir + "/" + "step10_6_mask")
+        # if(os.path.isdir(code_save_path + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
+        #     shutil.rmtree(code_save_path + "/" + "kong_util")
+        print("self.exp_dir:", self.exp_dir )
+        shutil.copytree("kong_util", code_save_path + "/" + "kong_util")
+        shutil.copytree("kong_Blender", code_save_path + "/" + "kong_Blender")
+        shutil.copytree("SIFT_dev", code_save_path + "/" + "SIFT_dev")
+
+        code_exe_copy_src = "/".join(self.code_exe_path.split("\\")[:-1])
+        code_exe_copy_dst = code_save_path + "/" + "/".join(self.code_exe_path.split("\\")[-3:-1])
+        print("self.code_exe_path:", self.code_exe_path)  ### c:\Users\CVML\Desktop\kong_model2\step10_6_mask\mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100\step10_a.py
+        print("code_exe_copy_src:", code_exe_copy_src)    ### c:/Users/CVML/Desktop/kong_model2/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
+        print("code_exe_copy_dst:", code_exe_copy_dst)    ### data_dir/result/6_mask_unet/5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-8b_6_6-flow_unet-mask_h_bg_ch032_sig_tv_s100_bce_s100_sobel_k5_s100_6l_ep060-20211116_125312/train_code_20211116_125312/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
+        shutil.copytree(code_exe_copy_src, code_exe_copy_dst)
 
 
 ################################################################################################################################################
@@ -428,289 +436,3 @@ class Experiment():
         elif(self.phase.lower() == "ok"): pass      ### 不做事情，只是個標記而以這樣子
         else: print("ㄘㄋㄇㄉ phase 打錯字了拉~~~")
 
-
-
-class Exp_builder():
-    def __init__(self, exp=None):
-        if(exp is None):
-            self.exp = Experiment()
-        else: self.exp = exp
-
-    def set_com(self, machine="127.35"): return self  ### 只是單純讓我自己能直接看到而已，懶得去翻 cost_time.txt
-
-    def set_basic(self, phase, db_builder, model_builder, loss_info_builder, exp_dir=".", describe_mid=None, describe_end=None, result_name=None):
-        self.exp.phase = phase
-        self.exp.db_builder = db_builder
-        self.exp.model_builder = model_builder
-        self.exp.loss_info_builder = loss_info_builder
-        self.exp.exp_dir = exp_dir
-        self.exp.describe_mid = describe_mid
-        self.exp.describe_end = describe_end
-        return self
-
-    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=500, epoch_down_step=None, epoch_stop=500, exp_bn_see_arg=False):
-        """
-        train_shuffle：注意一下，這裡的train_shuffle無法重現 old shuffle 喔
-        epochs：train的 總epoch數， epoch_down_step 設定為 epoch_down_step//2
-        epoch_down_step：第幾個epoch後 lr 下降
-        epoch_stop：想要有lr 下降，但又不想 花時間 train滿 中途想離開就 設 epcoh_stop 囉！
-        exp_bn_see_arg：在 train/test 生成see 的時候， 決定 bn 的 training = True 或 False， 詳情看 train_step1_see_current_img～
-        """
-        # self.exp.phase = "train"
-        self.exp.batch_size = batch_size
-        self.exp.train_shuffle = train_shuffle
-        self.exp.epochs = epochs
-        if(epoch_down_step is None): self.exp.epoch_down_step = epochs // 2
-        else: self.exp.epoch_down_step = epoch_down_step
-        self.exp.epoch_stop = epoch_stop
-        self.exp.start_epoch = 0
-        self.exp.exp_bn_see_arg = exp_bn_see_arg
-        return self
-
-    def set_train_in_gt_use_range(self, in_use_range="0~1", gt_use_range="0~1"):
-        self.exp.in_use_range = in_use_range
-        self.exp.gt_use_range = gt_use_range
-        return self
-
-    ### 整理後發現好像沒用到就註解起來囉～
-    # def set_train_args_reload(self, result_name):
-    #     self.exp.phase = "train_reload"
-    #     self.result_name = result_name
-    #     return self
-
-    def set_result_name(self, result_name):
-        self.exp.result_name = result_name
-        # print("0.set_result_name", result_name)  ### 追蹤see的建立過程
-        return self
-
-    def build(self, result_name=None):
-        '''
-        這邊先建好 result_obj 的話就可以給 step11, step12 用喔，
-        且 因為我有寫 在train時 會自動建新的 result，所以不用怕 用到這邊 給 step11, step12 建立的 default result_obj 囉！
-
-        也補上 建好result 馬上設定 loss_info_obj 拉，這樣 step11, step12 也能用了！
-        '''
-        if(self.exp.result_name is not None):
-            # print("1.result_name", self.exp.result_name, ", self.exp.gt_use_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.gt_use_range)  ### 追蹤see的建立過程
-            self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
-
-
-            ### 寫兩行的話 比較好打註解，寫一行其實也可以下面有補充～～
-            self.exp.loss_info_builder = self.exp.loss_info_builder.copy()                                      ### 要做copy的動作， 才不會每個 exp_builder 都用到相同的 loss_info_builder 導致 建出相同的 loss_info_obj
-            self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
-            ### 補充：如果寫一行的話：
-            # self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).copy()  ### 先後copy() 都沒差
-
-            ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
-            # self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
-            # self.exp.loss_info_obj = self.exp.loss_info_builder.build()  ### 這裡就要build了喔！為了給 step12 用拉！
-
-            # self.exp.loss_info_obj = Loss_info_builder(self.exp.loss_info_obj, in_obj_copy=True).set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).build()  ### 上面定位出 logs_read/write_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
-            # print("self.exp.loss_info_obj.logs_read_dir", self.exp.loss_info_obj.logs_read_dir)
-            # print("self.exp.loss_info_obj.logs_write_dir", self.exp.loss_info_obj.logs_write_dir)
-            # print()  ### 追蹤see的建立過程
-            print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
-        return self.exp
-
-    def result_name_v1_to_v2(self):
-        result_name_components = self.exp.result_name.split("-")
-        '''
-        根據 step11_b_result_obj_builder 的 set_by_exp 裡的 _get_result_name_by_exp 決定的喔
-            舉例：6_mask_unet/5_5b_ch032_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-5b_bce_s001_sobel_k5_s001-20211104_150928-flow_unet-mask_h_bg_ch032_sig_6l_ep060
-        '''
-        exp_dir = self.exp.exp_dir
-        db_category  = result_name_components[0]
-        describe_mid = result_name_components[1]
-        timestamp    = result_name_components[2]
-        model_name   = result_name_components[3]
-        describe_end = result_name_components[4]
-        result_name_v1 = f"{exp_dir}/{db_category}-{describe_mid}-{timestamp}-{model_name}-{describe_end}"
-        result_name_v2 = f"{exp_dir}/{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"
-        result_path_v1 = result_read_path  + "result/" + result_name_v1
-        result_path_v2 = result_read_path  + "result/" + result_name_v2
-        os.rename(result_path_v1, result_path_v2)
-        "Y:/0 data_dir/result/6_mask_unet/5_1_7l_unet2/type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
-        "Y:\0 data_dir\result\6_mask_unet\5_1_7l_unet2\type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
-        print(result_path_v1, "  rename to")
-        print(result_path_v2, "  finish~~")
-
-##########################################################################################################################################
-### 5_1_GD_Gmae136_epoch700
-# os_book_1532_rect_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_1", describe_end="1532data_mae1_127.28").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_2", describe_end="1532data_mae1_127.35").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_1_3", describe_end="1532data_mae1_127.51").set_train_args(epochs=700).set_result_name(result_name="")
-
-##########################################################################################################################################
-### 5_2_GD_vs_justG
-# os_book_1532_rect_D_05  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_2_2", describe_end="1532data_D_0.5_128.245").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_D_025 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_2_3", describe_end="1532data_D_0.25_127.35").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_D_01  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect, describe_mid="5_2_4", describe_end="1532data_D_0.1_127.28").set_train_args(epochs=700).set_result_name(result_name="")
-
-##########################################################################################################################################
-### 5_3_just_G_136920 ### 目前mae部分還是需要手動調(20200626)
-# os_book_1532_justG_mae1 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_1", describe_end="1532data_mae1_127.28").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_2", describe_end="1532data_mae3_127.51").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mae6 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_3", describe_end="1532data_mae6_128.246").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mae9 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG, describe_mid="5_3_4", describe_end="1532data_mae9_127.35").set_train_args(epochs=700).set_result_name(result_name="")
-
-##########################################################################################################################################
-### 5_4_just_G_a_bigger  ### 目前其他 smaller, smaller2 的高度 400, 300 都要手動去調喔 resize大小喔！
-# os_book_1532_justG_mae3_big      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, justG, describe_mid="5_4_1", describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).set_result_name(result_name="type7b_h500_w332_real_os_book-20200615_030658-justG-1532data_mae3_big_127.35")
-# os_book_1532_justG_mae3_smaller  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, justG, describe_mid="5_4_3", describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mae3_smaller2 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_big, justG, describe_mid="5_4_4", describe_end="1532data_mae3_big_127.35").set_train_args(epochs=700).set_result_name(result_name="")
-
-##########################################################################################################################################
-### 5_5_focus_GD_vs_G
-# os_book_1532_rect_mae3_focus     = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect , describe_mid="5_5_2", describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mae3_focus    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, justG, describe_mid="5_5_4", describe_end="1532data_mae3_focus_127.35").set_train_args(epochs=700).set_result_name(result_name="")
-
-
-##########################################################################################################################################
-### 5_6_a_400_page
-# os_book_400_rect_mae3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_400data, rect, describe_mid="5_6_1", describe_end="400data_mae3_127.35").set_train_args(epochs=2681).set_result_name(result_name="")
-# os_book_800_rect_mae3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_800data, rect, describe_mid="no time to train", describe_end="800data_mae3_127.35").set_train_args(epochs=1341).set_result_name(result_name="")
-# os_book_400_justG_mae3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_400data, justG, describe_mid="5_6_2", describe_end="400data_justG_mae3_127.28").set_train_args(epochs=2681).set_result_name(result_name="")
-
-##########################################################################################################################################
-### 5_7_first_k7_vs_k3
-# os_book_1532_rect_firstk3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_firstk3 , describe_mid="5_7_2", describe_end="127.246").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_firstk3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_firstk3, describe_mid="5_7_4", describe_end="128.246").set_train_args(epochs=700).set_result_name(result_name="")
-
-##########################################################################################################################################
-### 5_8a_GD_mrf
-# os_book_1532_rect_mrf7          = Exp_builder().set_com("127.48" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf7         , describe_mid="5_8a_2", describe_end="mrf7")         .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mrf79         = Exp_builder().set_com("128.245").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf79        , describe_mid="5_8a_3", describe_end="mrf79")        .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_replace_mrf7  = Exp_builder().set_com("127.35" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf7 , describe_mid="5_8a_4", describe_end="replace_mrf7") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_replace_mrf79 = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf79, describe_mid="5_8a_5", describe_end="replace_mrf79").set_train_args(epochs=700).set_result_name(result_name="")
-
-### 5_8b_G_mrf
-########################################################### 08b2
-# os_book_1532_justG_mrf7          = Exp_builder().set_com("128.245").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7         , describe_mid="5_8b_2" , describe_end="mrf7").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf7_k3       = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7_k3      , describe_mid="5_8b_2b", describe_end="mrf7_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf5_k3       = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf5_k3      , describe_mid="5_8b_2c", describe_end="mrf5_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf3_k3       = Exp_builder().set_com("127.48" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf3_k3      , describe_mid="5_8b_2d", describe_end="mrf3_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
-
-########################################################### 08b3
-# os_book_1532_justG_mrf79         = Exp_builder().set_com("128.245").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79        , describe_mid="5_8b_3" , describe_end="mrf79").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf79_k3      = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79_k3     , describe_mid="5_8b_3b", describe_end="mrf79_k3").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf57_k3      = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf57_k3     , describe_mid="5_8b_3c", describe_end="mrf57_k3").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf35_k3      = Exp_builder().set_com("127.35" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf35_k3     , describe_mid="5_8b_3d", describe_end="mrf35_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
-
-########################################################### 08b4
-# os_book_1532_justG_mrf_replace7  = Exp_builder().set_com("127.40" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace7 , describe_mid="5_8b_4" , describe_end="mrf_replace7").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf_replace5  = Exp_builder().set_com("127.35" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace5 , describe_mid="5_8b_4b", describe_end="mrf_replace5").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf_replace3  = Exp_builder().set_com("127.48" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace3 , describe_mid="5_8b_4c", describe_end="mrf_replace3").set_train_args(epochs=700).set_result_name(result_name="")
-########################################################### 08b5
-# os_book_1532_justG_mrf_replace79 = Exp_builder().set_com("127.55" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace79, describe_mid="5_8b_5" , describe_end="mrf_replace79").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf_replace75 = Exp_builder().set_com("127.55" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace75, describe_mid="5_8b_5b", describe_end="mrf_replace75").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf_replace35 = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace35, describe_mid="5_8b_5c", describe_end="mrf_replace35").set_train_args(epochs=700).set_result_name(result_name="")
-
-########################################################### 08c
-# os_book_1532_justG_mrf135_k3      = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c1", describe_end="Gk3mrf135" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf357_k3      = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c2", describe_end="Gk3mrf357" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf3579_k3     = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c3", describe_end="Gk3mrf3579").set_train_args(epochs=700).set_result_name(result_name="")
-
-########################################################### 08d
-# os_book_1532_rect_mrf35_Gk3_DnoC_k4   = Exp_builder().set_com("127.55" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf35_Gk3_DnoC_k4    , describe_mid="5_8d1", describe_end="Gmrf35"  ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mrf135_Gk3_DnoC_k4  = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf135_Gk3_DnoC_k4   , describe_mid="5_8d2", describe_end="Gmrf135" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mrf357_Gk3_DnoC_k4  = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf357_Gk3_DnoC_k4   , describe_mid="5_8d3", describe_end="Gmrf357" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mrf3579_Gk3_DnoC_k4 = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf3579_Gk3_DnoC_k4  , describe_mid="5_8d4", describe_end="Gmrf3579").set_train_args(epochs=700).set_result_name(result_name="")
-
-########################################################### 09a
-# os_book_1532_rect_Gk4_D_concat_k3    = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_concat_k3   , describe_mid="5_9a_2", describe_end="Gk4_D_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk4_D_no_concat_k4 = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k4, describe_mid="5_9a_3", describe_end="Gk4_D_no_concat_k4").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk4_D_no_concat_k3 = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k3, describe_mid="5_9a_4", describe_end="Gk4_D_no_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
-
-########################################################### 09b
-# os_book_1532_rect_Gk3_D_concat_k4    = Exp_builder().set_com("no com").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k4   , describe_mid="5_9b_1", describe_end="Gk3_D_concat_k4") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk3_D_concat_k3    = Exp_builder().set_com("no com").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k3   , describe_mid="5_9b_2", describe_end="Gk3_D_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk3_D_no_concat_k4 = Exp_builder().set_com("127.55").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k4   , describe_mid="5_9b_3", describe_end="Gk3_D_no_concat_k4") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk3_D_no_concat_k3 = Exp_builder().set_com("127.48").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k3   , describe_mid="5_9b_4", describe_end="Gk3_D_no_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
-
-########################################################### 10
-### 5_10_GD_D_train1_G_train_135
-### 舊版，如果要重train記得改資料庫喔(拿掉focus)！
-# os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_com("127.35").set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_2", describe_end="1532data_mae3_focus_G03D01").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_com("127.35").set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_3", describe_end="1532data_mae3_focus_G05D01").set_train_args(epochs=700).set_result_name(result_name="")
-
-# ### 新版
-# os_book_1532_rect_Gk3_train3_Dk4_no_concat = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train3_Dk4_no_concat, describe_mid="5_10_2", describe_end="Gk3_train3_Dk4_no_concat").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk3_train5_Dk4_no_concat = Exp_builder().set_com("no com" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train5_Dk4_no_concat, describe_mid="5_10_3", describe_end="Gk3_train5_Dk4_no_concat").set_train_args(epochs=700).set_result_name(result_name="")
-# ########################################################### 11
-# os_book_1532_Gk3_no_res             = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_fk3_no_res            , describe_mid="5_11_1", describe_end="justG_fk3_no_res").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_no_res_D_no_concat = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_fk3_no_res_D_no_concat, describe_mid="5_11_2", describe_end="rect_fk3_no_res_D_no_concat").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_no_res_mrf357      = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_mrf357_no_res     , describe_mid="5_11_3", describe_end="Gk3_mrf357_no_res").set_train_args(epochs=700).set_result_name(result_name="")
-
-# ########################################################### 12
-# exp_dir12 = "5_12_resb_num"
-# os_book_1532_Gk3_resb00 = Exp_builder().set_com("finish").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb00 , exp_dir=exp_dir12, describe_mid="5_12_1", describe_end="Gk3_resb00" ) .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb01 = Exp_builder().set_com("127.48").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb01 , exp_dir=exp_dir12, describe_mid="5_12_2", describe_end="Gk3_resb01" ) .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb03 = Exp_builder().set_com("127.35").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb03 , exp_dir=exp_dir12, describe_mid="5_12_3", describe_end="Gk3_resb03" ) .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb05 = Exp_builder().set_com("no com").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb05 , exp_dir=exp_dir12, describe_mid="5_12_4", describe_end="Gk3_resb05") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb07 = Exp_builder().set_com("no com").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="Gk3_resb07") .set_train_args(epochs=700).set_result_name(result_name="")
-# # os_book_1532_Gk3_resb09 ### 原本已經訓練過了，但為了確保沒train錯，還是建了resb_09來train看看囉
-# os_book_1532_Gk3_resb09 = Exp_builder().set_com("finish") .set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb09 , exp_dir=exp_dir12, describe_mid="5_12_6",   describe_end="Gk3_resb09") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb11 = Exp_builder().set_com("127.55") .set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7",   describe_end="Gk3_resb11") .set_train_args(epochs=700).set_result_name(result_name="")
-# ### 13
-# os_book_1532_Gk3_resb15 = Exp_builder().set_com("127.28") .set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb15 , exp_dir=exp_dir12, describe_mid="5_12_7_3", describe_end="Gk3_resb15") .set_train_args(epochs=700).set_result_name(result_name="")
-# ### 17
-# os_book_1532_Gk3_resb20 = Exp_builder().set_com("128.244").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8",   describe_end="Gk3_resb20") .set_train_args(epochs=700).set_result_name(result_name="")
-
-# ########################################################### 12
-# exp_dir13 = "5_13_coord_conv"
-# os_book_1532_justGk3_coord_conv        = Exp_builder().set_com("127.35").set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_coord_conv        , exp_dir=exp_dir13, describe_mid="5_13_1", describe_end="coord_conv") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justGk3_mrf357_coord_conv = Exp_builder().set_com("127.28").set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_mrf357_coord_conv , exp_dir=exp_dir13, describe_mid="5_13_2", describe_end="mrf357_coord_conv") .set_train_args(epochs=700).set_result_name(result_name="")
-
-
-### 測試subprocessing 有沒有用
-# blender_os_book_flow_unet_epoch002 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch2, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch002") .set_train_args(batch_size=30, epochs=1).set_result_name(result_name="")
-# blender_os_book_flow_unet_epoch003 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch3, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch003") .set_train_args(epochs=3).set_result_name(result_name="")
-# blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).set_result_name(result_name="")
-
-### 測試 怎麼樣設定 multiprocess 才較快
-# testest     = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4_e060", describe_end="testest"         ).set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-testest")      ### copy from ch64_in_epoch060
-# testest_big = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4_e700", describe_end="testest_big"     ).set_train_args(epochs=700, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-testest_big")  ### copy from ch64_in_epoch700
-
-
-import sys
-if(__name__ == "__main__"):
-    print("build exps cost time:", time.time() - start_time)
-    if len(sys.argv) < 2:
-        ############################################################################################################
-        ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        # blender_os_book_flow_unet_new_shuf_ch008_fake.build().run()
-        # rect_fk3_ch64_tfIN_resb_ok9_epoch500.build().run()
-        # rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.build().run()
-        # concat_A.build().run()
-        # flow_rect_7_level_fk7.build().run()
-        # flow_rect_7_level_fk3.build().run()
-        # flow_rect_2_level_fk3.build().run()
-        # unet_2l.build().run()
-        # unet_7l.build().run()
-        # unet_7l_skip_use_add.build().run()
-        # unet_8l.build().run()
-        # rect_2_level_fk3_ReLU.build().run()
-        # ch64_in_epoch500_sigmoid.build().run()
-        # in_th_mo_th_gt_th.build().run()
-        # t3_in_01_mo_th_gt_th_mae.build().run()
-        # unet_IN_7l_2to4noC.build().run()
-        # unet_IN_7l_skip_use_cnn1_NO_relu.build().run()
-        # unet_IN_7l_skip_use_cnn1_USEsigmoid.build().run()
-        # test1.build().run()
-        # unet_IN_7l_2to3noC_e100.build().run()
-        # ch64_in_sk_cSE_e060_wrong.build().run()
-        # ch64_in_sk_sSE_e060.build().run()
-        # ch64_in_sk_scSE_e060_wrong.build().run()
-        # ch64_in_cnnNoBias_epoch060.build().run()
-        # in_new_ch004_ep060.build().run()
-        # testest.build().run()
-        # mask_ch032_tanh_mae_ep060.build().run()
-        # mask_ch032_sigmoid_bce_ep060.build().run()
-        # mask_have_bg_ch032_sigmoid_bce_ep060.build().run()
-        # mask_have_bg_ch128_sigmoid_bce_ep060.build().run()
-        mask_h_bg_ch128_sig_bce_ep060.build().run()
-        # print('no argument')
-        sys.exit()
-
-    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_a_load_and_train_and_test.py 某個exp.build().run()
-    eval(sys.argv[1])
