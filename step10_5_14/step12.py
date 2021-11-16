@@ -40,13 +40,13 @@ if(__name__ == "__main__"):
                                                              ana_what = "flow",
                                                             row_col_results=[epoch300_500_results[:5],
                                                                             epoch300_500_results[5:10]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
-    epoch300_500_analyze_2row_all.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    epoch300_500_analyze_2row_all.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
 
     epoch300_500_analyze_2row_ep300_500_a060 = Row_col_results_analyzer(ana_describe="2row_ep300_500_a060",
                                                                         ana_what = "rec",
                                                             row_col_results=[[epoch300_500_results[0], epoch300_500_results[3]],
                                                                             [epoch300_500_results[6], epoch300_500_results[9]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
-    epoch300_500_analyze_2row_ep300_500_a060.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    epoch300_500_analyze_2row_ep300_500_a060.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ##################################################################################################################################################################
     ##################################################################################################################################################################
     epoch200_500_results = [exp.result_obj for exp in epoch200_500_exps]
@@ -54,7 +54,7 @@ if(__name__ == "__main__"):
                                                                         ana_what = "rec",
                                                             row_col_results=[[epoch200_500_results [0], epoch200_500_results [5]],
                                                                             [epoch200_500_results[10], epoch200_500_results[15]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
-    epoch200_500_analyze_2row_ep200_500_a100.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    epoch200_500_analyze_2row_ep200_500_a100.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
 
     ##################################################################################################################################################################
     ##################################################################################################################################################################
@@ -63,13 +63,13 @@ if(__name__ == "__main__"):
                                                                         ana_what = "rec",
                                                             row_col_results=[[epoch100_500_results [0], epoch100_500_results [6]],
                                                                             [epoch100_500_results[13], epoch100_500_results[20]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
-    epoch100_500_analyze_2row_ep100_500_a120.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    epoch100_500_analyze_2row_ep100_500_a120.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
 
     epoch100_500_analyze_2row_ep100_500_a020 = Row_col_results_analyzer(ana_describe="2row_ep100_500_a020",
                                                                         ana_what = "rec",
                                                             row_col_results=[[epoch100_500_results[0], epoch100_500_results[1]],
                                                                             [epoch100_500_results[2], epoch100_500_results[4]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
-    epoch100_500_analyze_2row_ep100_500_a020.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    epoch100_500_analyze_2row_ep100_500_a020.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ##################################################################################################################################################################
     ##################################################################################################################################################################
     epoch020_500_results = [exp.result_obj for exp in epoch020_500_exps]
@@ -77,19 +77,19 @@ if(__name__ == "__main__"):
                                                                         ana_what = "rec",
                                                             row_col_results=[[epoch020_500_results [0], epoch020_500_results [6]],
                                                                             [epoch020_500_results[12], epoch020_500_results[18]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
-    epoch020_500_analyze_2row_ep020_500_a120.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    epoch020_500_analyze_2row_ep020_500_a120.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
 
     epoch020_500_analyze_2row_ep020_080_a020 = Row_col_results_analyzer(ana_describe="2row_ep020_080_a020",
                                                                         ana_what = "rec",
                                                             row_col_results=[[epoch020_500_results[0], epoch020_500_results[1]],
                                                                             [epoch020_500_results[2], epoch020_500_results[3]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
-    epoch020_500_analyze_2row_ep020_080_a020.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    epoch020_500_analyze_2row_ep020_080_a020.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
 
     epoch020_500_analyze_2row_ep040_100_a020 = Row_col_results_analyzer(ana_describe="2row_ep040_100_a020",
                                                                         ana_what = "rec",
                                                             row_col_results=[[epoch020_500_results[1], epoch020_500_results[2]],
                                                                             [epoch020_500_results[3], epoch020_500_results[4]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
-    epoch020_500_analyze_2row_ep040_100_a020.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=16)
+    epoch020_500_analyze_2row_ep040_100_a020.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
 
     ##################################################################################################################################################################
     ##################################################################################################################################################################
