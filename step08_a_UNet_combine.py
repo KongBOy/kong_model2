@@ -87,32 +87,32 @@ class Generator(tf.keras.models.Model):
 
         #####################################################
         ### Down top
-        print(self.d_top.name)  ### debug 用
+        # print(self.d_top.name)  ### debug 用
         x, skip = self.d_top(input_tensor)
         skips.append(skip)
         ### Down middle
         for name, d_middle in self.d_middles.items():
-            print(name)  ### debug 用
+            # print(name)  ### debug 用
             x, skip = d_middle(x)
             skips.append(skip)
         ### Down bottle
-        print(self.d_bottle.name)  ### debug 用
+        # print(self.d_bottle.name)  ### debug 用
         x = self.d_bottle(x)  ### down 的 bottle沒有 skip
         #####################################################
         ### Up bottle
-        print(self.u_bottle.name)  ### debug 用
+        # print(self.u_bottle.name)  ### debug 用
         if(self.no_concat_layer >= self.depth_level - 1): x = self.u_bottle(x)
         else:                                             x = self.u_bottle(x, skips.pop())
 
         ### Up middle
         for go, (name, u_middle) in enumerate(list(self.u_middles.items())[::-1]):
-            print(name)  ### debug 用
+            # print(name)  ### debug 用
             layer_id = self.depth_level - 1 - go
             if (layer_id <= self.no_concat_layer): x = u_middle(x)
             else:                                  x = u_middle(x, skips.pop())
 
         ### Up top
-        print(self.u_top.name)  ### debug 用
+        # print(self.u_top.name)  ### debug 用
         x = self.u_top(x)  ### up 的 top 沒有 skip
         #####################################################
         ### UNet out
