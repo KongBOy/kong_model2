@@ -46,18 +46,24 @@ class Generator(tf.keras.models.Model):
 
         ### depth_level >=3 以後在 top 和 bottle 之間 加入 middle 層的概念， 連接順序是 D 從 top層 往 bottle層 ， U 從 bottle層 到 top，
         ###     小心 這邊 U的宣告 是 top 到 bottle 和 連接順序相反， 宣告完要記得reverse一下順序喔
-        self.d_middles = []
-        self.u_middles = []
+        # self.d_middles = []
+        # self.u_middles = []
+        self.d_middles = {}
+        self.u_middles = {}
         if(depth_level >= 3):
             for i in range(depth_level - 2):  ### -2 是 -top 和 -bottle 共兩層
                 layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)
-                self.d_middles.append( UNet_down(at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id    , ch_upper_bound=ch_upper_bound), name=f"D_{layer_id-1}->{layer_id}_middle", **kwargs ) )
-                self.u_middles.append( UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), name=f"U_{layer_id}->{layer_id-1}_middle", **kwargs ) )
+                d_middle_name = f"D_{layer_id-1}->{layer_id}_middle"
+                u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
+                self.d_middles[d_middle_name] = UNet_down(at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id    , ch_upper_bound=ch_upper_bound), name=d_middle_name, **kwargs )
+                self.u_middles[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), name=u_middle_name, **kwargs )
+                # self.d_middles.append( UNet_down(at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id    , ch_upper_bound=ch_upper_bound), name=d_middle_name, **kwargs ) )
+                # self.u_middles.append( UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), name=u_middle_name, **kwargs ) )
                 # self.d_middles.append( UNet_down(at_where="middle", out_ch=( min(hid_ch * 2**(layer_id - 1    ), 512) ), name=f"D{layer_id} middle" ) )
                 # self.u_middles.append( UNet_up  (at_where="middle", out_ch=( min(hid_ch * 2**(layer_id - 1 - 1), 512) ), name=f"U{layer_id} middle" ) )
 
         ### 注意 up 的部分是 從bottle層 往top連接， 跟宣告順序相反， 要reverse一下順序喔
-        self.u_middles.reverse()
+        # self.u_middles.reverse()
         ############################################################################################################################################################
         if(self.unet_acti == "tanh"):    self.tanh    = Activation(tf.nn.tanh,    name="out_tanh")
         if(self.unet_acti == "sigmoid"): self.sigmoid = Activation(tf.nn.sigmoid, name="out_sigmoid")
@@ -79,21 +85,25 @@ class Generator(tf.keras.models.Model):
 
         #####################################################
         ### Down top
+        print(self.d_top.name)  ### debug 用
         x, skip = self.d_top(input_tensor)
         skips.append(skip)
         ### Down middle
-        for d_middle in self.d_middles:
+        for name, d_middle in self.d_middles.items():
+            print(name)  ### debug 用
             x, skip = d_middle(x)
             skips.append(skip)
         ### Down bottle
         x = self.d_bottle(x)  ### down 的 bottle沒有 skip
         #####################################################
         ### Up bottle
+        print(self.u_bottle.name)  ### debug 用
         if(self.no_concat_layer >= self.depth_level - 1): x = self.u_bottle(x)
         else:                                             x = self.u_bottle(x, skips.pop())
 
         ### Up middle
-        for go, u_middle in enumerate(self.u_middles):
+        for go, (name, u_middle) in enumerate(list(self.u_middles.items())[::-1]):
+            print(name)  ### debug 用
             layer_id = self.depth_level - 1 - go
             if (layer_id <= self.no_concat_layer): x = u_middle(x)
             else:                                  x = u_middle(x, skips.pop())
@@ -109,13 +119,20 @@ class Generator(tf.keras.models.Model):
 if(__name__ == "__main__"):
     import numpy as np
     import time
-    data = np.ones(shape=(1, 768, 768, 128), dtype=np.float32)
+    data = np.ones(shape=(1, 512, 512, 3), dtype=np.float32)
     start_time = time.time()  # 看資料跑一次花多少時間
     # test_g = Generator(hid_ch=64, depth_level=7, use_bias=False)
+    test_g = Generator(hid_ch= 128, depth_level=4, out_ch=1, unet_acti="sigmoid", conv_block_num=1, ch_upper_bound= 2**14)
     test_g(data)
     print("cost time", time.time() - start_time)
     test_g.summary()
     print(test_g(data))
+
+    for layer in test_g.layers:
+        # print(dir(layer))
+        print(layer.name)
+        for weight in layer.weights:
+            print("   ", weight.shape)
 
 
     ### 嘗試 真的 load tf_data 進來 train 看看
@@ -157,10 +174,12 @@ if(__name__ == "__main__"):
     # model_obj = mask_unet2_8_level_skip_use_add_sig
     # model_obj = mask_unet2_7_level_skip_use_add_sig
     # model_obj = mask_unet2_6_level_skip_use_add_sig
-    model_obj = mask_unet2_5_level_skip_use_add_sig
+    # model_obj = mask_unet2_5_level_skip_use_add_sig
     # model_obj = mask_unet2_4_level_skip_use_add_sig
     # model_obj = mask_unet2_3_level_skip_use_add_sig
     # model_obj = mask_unet2_2_level_skip_use_add_sig
+
+    model_obj = mask_unet2_block1_ch064_sig_4l
 
     model_obj = model_obj.build()  ### 可替換成 上面 想測試的 model
     ### 2. db_obj 和 tf_data
@@ -172,4 +191,6 @@ if(__name__ == "__main__"):
     ### 4. 跑起來試試看
     for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
         model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=G_mae_loss_info)
-        if(n == 0): model_obj.generator.summary()
+        if(n == 0):
+            model_obj.generator.summary()
+            model_obj.generator.save_weights("test_save_weights")
