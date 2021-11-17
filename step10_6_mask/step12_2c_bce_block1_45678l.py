@@ -138,6 +138,31 @@ if(__name__ == "__main__"):
                                                                    bce_block1_4l_ch001], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
+    ################################################################################
+    ana_name = "2c_block1_l4_3_E_relu_no_Bias-ch32_bce_s001_100"
+    l4_ch32_E_relu_no_Bias_block1_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[bce_block1_4l_ch032,
+                                                                   bce_block1_4l_ch032_E_relu,
+                                                                   bce_block1_4l_ch032_no_Bias], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "2c_block1_l4_3_E_relu_no_Bias-ch16_bce_s001_100"
+    l4_ch16_E_relu_no_Bias_block1_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[bce_block1_4l_ch016,
+                                                                   bce_block1_4l_ch016_E_relu,
+                                                                   bce_block1_4l_ch016_no_Bias], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "2c_block1_l4_3_E_relu_no_Bias-ch08_bce_s001_100"
+    l4_ch08_E_relu_no_Bias_block1_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[bce_block1_4l_ch008,
+                                                                   bce_block1_4l_ch008_E_relu,
+                                                                   bce_block1_4l_ch008_no_Bias], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
     #################################################################################################################################################################################################################
     ana_name = "2c_block1_l5_1-ch032_bce_s001_100"
     l5_ch032_block1_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
@@ -240,3 +265,30 @@ if(__name__ == "__main__"):
                                                                    bce_block1_8l_ch004], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
+    ################################################################################
+    ana_name = "2c_block1_L2345_3_E_relu-bce_s001_100"
+    l2345_block1_E_relu_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=bce_block1_l2345_E_relu, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "2c_block1_L2345_3_E_lrelu_vs_E_relu-bce_s001_100"
+    l2345_block1_E_relu_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=bce_block1_l2345__E_lrelu_vs_E_relu, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            .Gather_all_see_final_img()
+
+
+    ana_name = "2c_block1_L2345_4_no_Bias-bce_s001_100"
+    l2345_block1_no_Bias_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=bce_block1_l2345_no_Bias, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            .Gather_all_see_final_img()
+    ana_name = "2c_block1_L2345_4_have_Bias_vs_no_Bias-bce_s001_100"
+    l2345_block1_have_Bias_vs_no_Bias_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=bce_block1_l2345_have_Bias_vs_no_Bias, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            .Gather_all_see_final_img()
