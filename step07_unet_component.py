@@ -20,20 +20,23 @@ def Use_what_skip_op(skip_op):
     elif(skip_op == "scse"): return scSE
 
 class Conv_block(tf.keras.layers.Layer):
-    def __init__(self, out_ch, kernel_size=4, strides=2, acti="lrelu", norm="in", use_bias=True, **kwargs):
+    def __init__(self, out_ch, kernel_size=4, strides=2, acti="lrelu", norm="in", use_bias=True, coord_conv=False, **kwargs):
         """
         acti: lrelu/ relu
         norm: bn/ in
         """
         super(Conv_block, self).__init__(**kwargs)
         self.norm = norm
+        self.CoordConv = None
 
+        if(coord_conv): self.CoordConv = CoordConv()
         self.Conv = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding="same", use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
         self.Acti = Use_what_acti(acti)
         self.Norm = Use_what_nrom(self.norm)
 
-    def call(self, input_tensor, training=None):
-        x = self.Conv(input_tensor)
+    def call(self, x, training=None):
+        if(self.CoordConv is not None): x = self.CoordConv(x)
+        x = self.Conv(x)
         x = self.Acti(x)
         if  (self.norm == "bn"): x = self.Norm(x, training)
         elif(self.norm == "in"): x = self.Norm(x)
@@ -47,12 +50,16 @@ class UNet_down(tf.keras.layers.Layer):
                  use_bias=True,
                  conv_block_num=0,
                  skip_op = None,
+                 coord_conv=False,
                  **kwargs):
         """
         at_where: top/ middle/ bottle
         acti: lrelu/ relu
         norm: bn/ in
+        skip_op: None/ cse/ sse/ scse/ cnn
         """
+        self.CoordConv = None
+        if(coord_conv): self.CoordConv = CoordConv()
         super(UNet_down, self).__init__(**kwargs)
         self.at_where = at_where
         self.norm = norm
@@ -85,6 +92,7 @@ class UNet_down(tf.keras.layers.Layer):
 
         for block in self.Conv_blocks: x = block(x, training)
 
+        if(self.CoordConv is not None): x = self.CoordConv(x)
         x = self.Conv(x)
 
         if(self.at_where == "middle"):
@@ -104,14 +112,16 @@ class UNet_up(tf.keras.layers.Layer):
                  use_bias=True,
                  conv_block_num=0,
                  skip_merge_op="concat",
+                 coord_conv=False,
                  **kwargs):
         """
         at_where: top/ middle/ bottle
         acti: lrelu/ relu
         norm: bn/ in
-        skip_op: None/ cse/ sse/ scse/ cnn
         skip_merge_op: concat/ add
         """
+        self.CoordConv = None
+        if(coord_conv): self.CoordConv = CoordConv()
         super(UNet_up, self).__init__(**kwargs)
         self.at_where = at_where
         self.norm = norm
@@ -131,6 +141,7 @@ class UNet_up(tf.keras.layers.Layer):
     def call(self, x, skip=None, training=None):
         x = self.Acti(x)
         for block in self.Conv_blocks: x = block(x, training)
+        if(self.CoordConv is not None): x = self.CoordConv(x)
         x = self.Conv_T(x)
 
         if(self.at_where != "top"):

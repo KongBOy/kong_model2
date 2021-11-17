@@ -12,6 +12,7 @@ class Generator(tf.keras.models.Model):
                  conv_block_num=0,
                  skip_op=None, skip_merge_op="concat",
                  ch_upper_bound=512,
+                 coord_conv=False,
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
@@ -33,6 +34,7 @@ class Generator(tf.keras.models.Model):
         kwargs = dict(kernel_size=kernel_size, strides=strides, norm=norm, conv_block_num=conv_block_num,
                     #   d_acti=d_acti, u_acti=u_acti,
                       use_bias=use_bias,
+                      coord_conv=coord_conv,
                     #   skip_op=skip_op,
                     #   skip_merge_op=skip_merge_op
                       )
@@ -94,6 +96,7 @@ class Generator(tf.keras.models.Model):
             x, skip = d_middle(x)
             skips.append(skip)
         ### Down bottle
+        print(self.d_bottle.name)  ### debug 用
         x = self.d_bottle(x)  ### down 的 bottle沒有 skip
         #####################################################
         ### Up bottle
@@ -109,6 +112,7 @@ class Generator(tf.keras.models.Model):
             else:                                  x = u_middle(x, skips.pop())
 
         ### Up top
+        print(self.u_top.name)  ### debug 用
         x = self.u_top(x)  ### up 的 top 沒有 skip
         #####################################################
         ### UNet out
@@ -179,7 +183,7 @@ if(__name__ == "__main__"):
     # model_obj = mask_unet2_3_level_skip_use_add_sig
     # model_obj = mask_unet2_2_level_skip_use_add_sig
 
-    model_obj = mask_unet2_block1_ch064_sig_4l
+    model_obj = mask_unet_ch032_sig_6l
 
     model_obj = model_obj.build()  ### 可替換成 上面 想測試的 model
     ### 2. db_obj 和 tf_data
@@ -191,6 +195,5 @@ if(__name__ == "__main__"):
     ### 4. 跑起來試試看
     for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
         model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=G_mae_loss_info)
-        if(n == 0):
-            model_obj.generator.summary()
-            model_obj.generator.save_weights("test_save_weights")
+        if(n ==  0): model_obj.generator.summary()
+        if(n == 10): model_obj.generator.save_weights("test_save_weights")

@@ -66,7 +66,7 @@ class CoordConv(tf.keras.layers.Layer):
         x = tf.tile(x, [height, 1])
         x = tf.expand_dims(x, axis=-1)
         x = x / (width - 1)
-        x = x * 2 - 1
+        x = x * 2 - 1  ### 值域 弄到 -1~1
         # print(x)
 
         y = tf.range(start=0, limit=height, dtype=tf.float32)
@@ -74,8 +74,7 @@ class CoordConv(tf.keras.layers.Layer):
         y = tf.tile(y, [1, width])
         y = tf.expand_dims(y, axis=-1)
         y = y / (height - 1)
-        y = y * 2 - 1
-
+        y = y * 2 - 1  ### 值域 弄到 -1~1
         # print(y)
 
         yx = tf.concat([y, x], axis=-1)
