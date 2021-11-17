@@ -1,7 +1,7 @@
 import sys
 sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build
-from util import get_dir_move, get_dir_img, method2, get_xy_map, get_max_db_move_xy_from_numpy, time_util
+from util import get_dir_moves, get_dir_imgs, method2, get_xy_map, get_max_db_move_xy_from_numpy, time_util
 import numpy as np
 import cv2
 import time
@@ -187,9 +187,9 @@ def load_data_and_apply_move(ord_imgs_dir, move_maps_dir, dst_dir, start_index, 
 
     start_time = time.time()
 
-    ord_imgs        = get_dir_img(data_access_path + ord_imgs_dir)              ### 取得ord_imgs
+    ord_imgs        = get_dir_imgs(data_access_path + ord_imgs_dir)              ### 取得ord_imgs
     ord_imgs_amount = len(ord_imgs)                                             ### 取得ord_imgs個數，等等取隨機時用的到
-    move_maps       = get_dir_move(data_access_path + move_maps_dir)            ### 取得move_maps
+    move_maps       = get_dir_moves(data_access_path + move_maps_dir)            ### 取得move_maps
     max_db_move_x, max_db_move_y = get_max_db_move_xy_from_numpy(move_maps)     ### 取得move_maps 的整體最大移動量 max_db_move_xy
     print("max_db_move_x", max_db_move_x, ", max_db_move_y", max_db_move_y)     ### 看一下 max_db_move_xy 是多少
     Check_dir_exist_and_build(data_access_path + dst_dir)                       ### 建立放結果的資料夾

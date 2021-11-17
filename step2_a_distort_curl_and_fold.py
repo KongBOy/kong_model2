@@ -382,11 +382,11 @@ def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_va
 
 if(__name__ == "__main__"):
     import cv2
-    from util import get_dir_certain_img
+    from util import get_dir_certain_imgs
     # img_dir = "H:/Working/2 Blender/data_dir/0_ord/tex"
-    # imgs = get_dir_certain_img(img_dir, certain_word="pr_Page_001.jpg", float_return=False)
+    # imgs = get_dir_certain_imgs(img_dir, certain_word="pr_Page_001.jpg", float_return=False)
     img_dir = "kong_util/img_data"
-    imgs = get_dir_certain_img(img_dir, certain_word="rainbow.png", float_return=False)
+    imgs = get_dir_certain_imgs(img_dir, certain_word="rainbow.png", float_return=False)
     #######################################################################################################
     ord_img = imgs[0, :, :, ::-1]
     ord_img = cv2.resize(ord_img, (512, 512), interpolation=cv2.INTER_AREA)

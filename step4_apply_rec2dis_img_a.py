@@ -4,13 +4,13 @@ import numpy as np
 import sys
 sys.path.append(r"C:\Users\TKU\Desktop\kong_model2\kong_util")
 from build_dataset_combine import Check_dir_exist_and_build
-from util import method2, get_dir_certain_img, get_dir_certain_move
+from util import method2, get_dir_certain_imgs, get_dir_certain_moves
 from step3_apply_mov2ord_img import apply_move
 
 # data_access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
-dis_imgs = get_dir_certain_img( data_access_path + "step3_apply_flow_result", "3a1-I1-patch.bmp")
-rec_movs = get_dir_certain_move(data_access_path + "step3_apply_flow_result", "3b-rec_mov_map.npy")
+dis_imgs = get_dir_certain_imgs( data_access_path + "step3_apply_flow_result", "3a1-I1-patch.bmp")
+rec_movs = get_dir_certain_moves(data_access_path + "step3_apply_flow_result", "3b-rec_mov_map.npy")
 
 
 result_dir = data_access_path + "step4_apply_rec_flow_result"

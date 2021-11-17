@@ -2,14 +2,14 @@ from step0_access_path import data_access_path
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
-from util import get_dir_move, get_reference_map, method1, method2
+from util import get_dir_moves, get_reference_map, method1, method2
 
 if(__name__ == "__main__"):
     # data_access_path = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
 
     ### rgb bgr 之類的細節還沒確認，先跳過快來不及趕meeting的東西了
     ord_dir = "step2_flow_build/move_map"
-    move_map_list = get_dir_move(ord_dir)
+    move_map_list = get_dir_moves(ord_dir)
 
 
     ### 以下是存 reference_map

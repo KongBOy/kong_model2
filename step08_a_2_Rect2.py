@@ -394,7 +394,7 @@ def test_visual(test_dir_name, data_dict, start_index=0):
 
     from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec
     import matplotlib.pyplot as plt
-    from util import get_dir_img
+    from util import get_dir_imgs
     from build_dataset_combine import Check_dir_exist_and_build
     import numpy as np
 
@@ -403,7 +403,7 @@ def test_visual(test_dir_name, data_dict, start_index=0):
     Check_dir_exist_and_build(test_plot_dir)
 
     ### test已經做好的資料
-    g_imgs  = get_dir_img(test_dir_name)
+    g_imgs  = get_dir_imgs(test_dir_name)
 
 
     col_img_num = 3

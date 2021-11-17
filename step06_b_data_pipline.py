@@ -3,7 +3,7 @@
 """
 import sys
 sys.path.append("kong_util")
-# from util import get_dir_move
+# from util import get_dir_moves
 from util import get_db_amount
 
 
@@ -453,7 +453,7 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
         else:  ### 如果.npy不存在，就去重新找一次 max/min train_move，找完也順便存一份給之後用囉！
             print("因為現在已經存成.knpy，沒辦法抓 max/min train_move 囉！麻煩先去以前的dataset撈出來啦！")
             ### 偷懶可以把 .npy 放同個資料夾，把註解拿掉就可以順便求囉！只是因為這有return，所以還是要重新執行一次才會完整跑完喔～
-            # move_maps = get_dir_move(self.tf_data.db_obj.train_gt_dir)
+            # move_maps = get_dir_moves(self.tf_data.db_obj.train_gt_dir)
             # self.tf_data.max_train_move = move_maps.max()
             # self.tf_data.min_train_move = move_maps.min()
             # np.save(self.tf_data.db_obj.train_gt_dir+"/../max_train_move", self.tf_data.max_train_move)

@@ -230,7 +230,7 @@ def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, m
 def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
     from build_dataset_combine import Check_dir_exist_and_build
     import numpy as np
-    from util import  get_dir_move, get_dir_certain_img
+    from util import  get_dir_moves, get_dir_certain_imgs
 
 
     ### 建立放結果的資料夾
@@ -238,8 +238,8 @@ def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
     Check_dir_exist_and_build(test_plot_dir)
 
     ### test已經做好的資料
-    g_move_maps = get_dir_move       (test_dir_name)
-    g_rec_imgs  = get_dir_certain_img(test_dir_name, "g_rec_img.bmp").astype(np.uint8)
+    g_move_maps = get_dir_moves       (test_dir_name)
+    g_rec_imgs  = get_dir_certain_imgs(test_dir_name, "g_rec_img.bmp").astype(np.uint8)
 
 
     ### 用來給 apply_rec_move的max_db_move_x/y
