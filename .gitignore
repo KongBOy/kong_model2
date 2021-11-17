@@ -4,6 +4,7 @@ __*
 *.rar
 data_dir
 0_data_dir
+0 data_dir
 
 kong_util/.*
 kong_util/__*
