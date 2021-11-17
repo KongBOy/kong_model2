@@ -278,6 +278,12 @@ if(__name__ == "__main__"):
                                                   row_col_results=bce_block1_l2345__E_lrelu_vs_E_relu, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
+    ana_name = "2c_block1_L34_3_E_lrelu_vs_E_relu-bce_s001_100"
+    l34_block1_E_relu_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=bce_block1_l2345__E_lrelu_vs_E_relu[2:6], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
 
 
     ana_name = "2c_block1_L2345_4_no_Bias-bce_s001_100"
@@ -290,5 +296,11 @@ if(__name__ == "__main__"):
     l2345_block1_have_Bias_vs_no_Bias_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=bce_block1_l2345_have_Bias_vs_no_Bias, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "2c_block1_L34_4_have_Bias_vs_no_Bias-bce_s001_100"
+    l34_block1_have_Bias_vs_no_Bias_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=bce_block1_l2345_have_Bias_vs_no_Bias[2:6], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
