@@ -19,7 +19,8 @@ def train_step_pure_G_split_mask_move(model_obj, in_data, gt_data, loss_info_obj
         for loss_name, loss_fun in loss_info_obj.loss_funs_dict.items():
             print("loss_name:", loss_name)
             if(loss_name == "mask_tv_loss"): losses.append(loss_fun(model_output))
-            else:                            losses.append(loss_fun(gt_mask, model_output))
+            else:                            losses.append(loss_fun(gt_move, model_output))
+            # else:                            losses.append(loss_fun(gt_mask, model_output))
             total_loss += losses[-1]
         # gen_loss = loss_info_obj.loss_funs_dict["mask_BCE"]      (gt_mask, model_output)
         # sob_loss = loss_info_obj.loss_funs_dict["mask_Sobel_MAE"](gt_mask, model_output)
