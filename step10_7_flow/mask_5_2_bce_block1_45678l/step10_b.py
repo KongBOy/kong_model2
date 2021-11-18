@@ -24,7 +24,6 @@ run = "build().run()"
 ### coord_conv
 # sb.run(same_command + [f"L2_ch128_sig_ep060_bce_s001_coord_conv.{run}"])
 ####################
-
 # sb.run(same_command + [f"L2_ch064_sig_ep060_bce_s001.{run}"])
 # sb.run(same_command + [f"L2_ch064_sig_ep060_bce_s020.{run}"])
 # sb.run(same_command + [f"L2_ch064_sig_ep060_bce_s040.{run}"])
