@@ -76,7 +76,9 @@ def generate_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_fl
     '''
     flow           = generate_flow_results(model_G, in_img_pre, result_obj.gt_use_range, training=training)
     flow           = flow[0]
-    gt_flow        = gt_flow[0]
+    gt_flow        = gt_flow[1][0]  ### 待思考怎麼修正
+    # print("flow.shape~~~~~~~~~~~", flow.shape)
+    # print("gt_flow.shape~~~~~~~~~~~", gt_flow.shape)
 
     flow_visual    = flow_visual_op(flow)
     gt_flow_visual = flow_visual_op(gt_flow)
