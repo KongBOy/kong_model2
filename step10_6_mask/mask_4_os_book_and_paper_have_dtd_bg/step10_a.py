@@ -12,7 +12,7 @@ sys.path.append(".")                                         ### 把 kong_model2
 
 
 from step06_a_datas_obj import *
-from step09_e_model_obj import *
+from step09_e2_mask_unet2_obj import *
 from step09_b_loss_info_obj import *
 from step10_b_exp_builder import Exp_builder
 #############################################################################################################################################################################################################

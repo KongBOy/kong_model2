@@ -1,3 +1,9 @@
+import os
+### 自動抓目前的資料夾 當 exp_dir
+code_exe_path = os.path.realpath(__file__)
+print("code_exe_path~~~~~~~~~~", code_exe_path  )  ### 舉例：C:\Users\TKU\Desktop\kong_model2\step10_6_mask\mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_bce\step10_a.py
+exp_dir = "6_mask_unet/" +  code_exe_path.split("\\")[-2][5:]  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
+print("exp_dir~~~~~~~~~~", exp_dir)  ### 舉例：exp_dir~~~~~~~~~~ 6_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_bce
 #############################################################################################################################################################################################################
 ### 把 current_dir 轉回到 kong_model 裡面
 import os
@@ -12,7 +18,7 @@ print("os.getcwd()", os.getcwd())
 #############################################################################################################################################################################################################
 
 from step06_a_datas_obj import *
-from step09_e_model_obj import *
+from step09_e2_mask_unet2_obj import *
 from step09_b_loss_info_obj import *
 from step10_b_exp_builder import Exp_builder
 #############################################################################################################################################################################################################
@@ -24,7 +30,6 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
     6_mask_unet/自己命的名字/...
 '''
 
-exp_dir = "6_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg"
 use_db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper
 ############################  have_bg  #################################
 ### 1a. ch
