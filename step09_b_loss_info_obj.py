@@ -265,8 +265,8 @@ class Loss_info_builder(Loss_info_G_loss_builder):
 # 所以 不能只寫 build_by_model_name，也要寫 我自己指定的method
 # 所以 也可以跟 model 一樣 先建好
 # 然後還要在 exp 裡面 再次設定喔！
-G_mse_loss_info_builder       = Loss_info_builder().set_loss_type("mse")
-G_mae_loss_info_builder       = Loss_info_builder().set_loss_type("mae")
+G_mse_s001_loss_info_builder = Loss_info_builder().set_loss_type("mse")
+G_mae_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae")
 ##########################################################################################################################################################################
 ### 2
 G_bce_s001_loss_info_builder       = Loss_info_builder().set_loss_type("bce", bce_scale=1) 
