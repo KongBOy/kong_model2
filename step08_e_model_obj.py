@@ -40,7 +40,7 @@ class KModel_Unet_builder(KModel_init_builder):
     def build_unet(self):
         def _build_unet():
             from step08_a_1_UNet_BN_512to256 import Generator512to256, generate_sees, generate_results
-            self.kong_model.generator           = Generator512to256(out_ch=2)
+            self.kong_model.generator   = Generator512to256(out_ch=2)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
             self.kong_model.max_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
             self.kong_model.min_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
@@ -48,7 +48,7 @@ class KModel_Unet_builder(KModel_init_builder):
             self.kong_model.max_db_move_y  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
 
             self.kong_model.generate_results = generate_results  ### 不能checkpoint
-            self.kong_model.generate_sees   = generate_sees    ### 不能checkpoint
+            self.kong_model.generate_sees    = generate_sees    ### 不能checkpoint
 
             ### 建立 tf 存模型 的物件： checkpoint物件
             self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
@@ -65,14 +65,14 @@ class KModel_Unet_builder(KModel_init_builder):
 
 class KModel_Mask_Generator_builder(KModel_Unet_builder):
     def _build_mask_part(self):
-        ### 生成flow的部分
+        ### 生成 mask 的部分
         from step08_b_use_G_generate import generate_mask_flow_results, generate_mask_flow_sees_without_rec
         # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
         self.kong_model.generate_results = generate_mask_flow_results             ### 不能checkpoint
         self.kong_model.generate_sees    = generate_mask_flow_sees_without_rec    ### 不能checkpoint
 class KModel_Flow_Generator_builder(KModel_Mask_Generator_builder):
     def _build_flow_part(self):
-        ### 生成flow的部分
+        ### 生成 flow 的部分
         from step08_b_use_G_generate import generate_flow_results, generate_flow_sees_without_rec
         # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
         self.kong_model.generate_results = generate_flow_results             ### 不能checkpoint
