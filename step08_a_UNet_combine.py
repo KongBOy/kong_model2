@@ -159,13 +159,13 @@ if(__name__ == "__main__"):
     # model_obj = mask_unet2_ch002_sig_L7
     # model_obj = mask_unet2_ch001_sig_L7
 
-    # model_obj = mask_unet2_2_level_ch32_sig
-    # model_obj = mask_unet2_3_level_ch32_sig
-    # model_obj = mask_unet2_4_level_ch32_sig
-    # model_obj = mask_unet2_5_level_ch32_sig
-    # model_obj = mask_unet2_6_level_ch32_sig
-    # model_obj = mask_unet2_7_level_ch32_sig
-    # model_obj = mask_unet2_8_level_ch32_sig
+    # model_obj = mask_unet2_L2_ch32_sig
+    # model_obj = mask_unet2_L3_ch32_sig
+    # model_obj = mask_unet2_L4_ch32_sig
+    # model_obj = mask_unet2_L5_ch32_sig
+    # model_obj = mask_unet2_L6_ch32_sig
+    # model_obj = mask_unet2_L7_ch32_sig
+    # model_obj = mask_unet2_L8_ch32_sig
 
     # model_obj = mask_unet2_IN_L7_ch32_2to2noC_sig
     # model_obj = mask_unet2_IN_L7_ch32_2to3noC_sig
@@ -175,15 +175,15 @@ if(__name__ == "__main__"):
     # model_obj = mask_unet2_IN_L7_ch32_2to7noC_sig
     # model_obj = mask_unet2_IN_L7_ch32_2to8noC_sig
 
-    # model_obj = mask_unet2_8_level_skip_use_add_sig
-    # model_obj = mask_unet2_7_level_skip_use_add_sig
-    # model_obj = mask_unet2_6_level_skip_use_add_sig
-    # model_obj = mask_unet2_5_level_skip_use_add_sig
-    # model_obj = mask_unet2_4_level_skip_use_add_sig
-    # model_obj = mask_unet2_3_level_skip_use_add_sig
-    # model_obj = mask_unet2_2_level_skip_use_add_sig
+    # model_obj = mask_unet2_L8_skip_use_add_sig
+    # model_obj = mask_unet2_L7_skip_use_add_sig
+    # model_obj = mask_unet2_L6_skip_use_add_sig
+    # model_obj = mask_unet2_L5_skip_use_add_sig
+    # model_obj = mask_unet2_L4_skip_use_add_sig
+    # model_obj = mask_unet2_L3_skip_use_add_sig
+    # model_obj = mask_unet2_L2_skip_use_add_sig
 
-    model_obj = mask_unet_ch032_sig_6l
+    model_obj = mask_unet_ch032_sig_L6
 
     model_obj = model_obj.build()  ### 可替換成 上面 想測試的 model
     ### 2. db_obj 和 tf_data
