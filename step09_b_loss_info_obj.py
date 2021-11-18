@@ -876,7 +876,7 @@ G_tv_s100_bce_s100_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_los
 GAN_mae_loss_info                  = Loss_info_builder().set_loss_type("justG")  #.build_gan_loss().build_gan_loss_containors()
 
 if(__name__ == "__main__"):
-    # from step08_e_model_obj import MODEL_NAME
+    # from step09_e_model_obj import MODEL_NAME
     # loss_info_obj = Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_g_mse_loss_fun_and_containor().build()
     # print(Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_g_mse_loss_fun_and_containor().build())
     # print(loss_info_obj.loss_containors)

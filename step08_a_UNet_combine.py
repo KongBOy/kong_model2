@@ -144,7 +144,7 @@ if(__name__ == "__main__"):
     from tqdm import tqdm
     from step06_a_datas_obj import *
     from step06_b_data_pipline import tf_Data_builder
-    from step08_e_model_obj import *
+    from step09_e_model_obj import *
     from step09_b_loss_info_obj import Loss_info_builder
     from step09_c_train_step import *
 

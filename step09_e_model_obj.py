@@ -36,7 +36,7 @@ class KModel_init_builder:
     # def build(self):
     #     return self.kong_model
 
-class KModel_Unet_builder(KModel_init_builder):
+class Old_512_256_Unet_builder(KModel_init_builder):
     def build_unet(self):
         def _build_unet():
             from step08_a_1_UNet_BN_512to256 import Generator512to256, generate_sees, generate_results
@@ -63,23 +63,29 @@ class KModel_Unet_builder(KModel_init_builder):
         self.build = _build_unet
         return self
 
-class KModel_Mask_Generator_builder(KModel_Unet_builder):
-    def _build_mask_part(self):
-        ### 生成 mask 的部分
+class G_Mask_op_builder(Old_512_256_Unet_builder):
+    def _build_mask_op_part(self):
+        ### 生成 mask 的 operation
         from step08_b_use_G_generate import generate_mask_flow_results, generate_mask_flow_sees_without_rec
         # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
         self.kong_model.generate_results = generate_mask_flow_results             ### 不能checkpoint
         self.kong_model.generate_sees    = generate_mask_flow_sees_without_rec    ### 不能checkpoint
-class KModel_Flow_Generator_builder(KModel_Mask_Generator_builder):
-    def _build_flow_part(self):
-        ### 生成 flow 的部分
+class G_Flow_op_builder(G_Mask_op_builder):
+    def _build_flow_op_part(self):
+        ### 生成 flow 的 operation
         from step08_b_use_G_generate import generate_flow_results, generate_flow_sees_without_rec
         # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
         self.kong_model.generate_results = generate_flow_results             ### 不能checkpoint
         self.kong_model.generate_sees    = generate_flow_sees_without_rec    ### 不能checkpoint
         self.kong_model.train_step       = train_step_pure_G                 ### 不能checkpoint
+class G_Ckpt_op_builder(G_Flow_op_builder):
+    def _build_ckpt_part(self):
+        ### 建立 tf 存模型 的物件： checkpoint物件
+        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
+                                                   optimizer_G=self.kong_model.optimizer_G,
+                                                   epoch_log=self.kong_model.epoch_log)
 
-class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
+class G_Unet_Body_builder(G_Ckpt_op_builder):
     def set_unet(self, hid_ch=64, depth_level=7, true_IN=False, use_bias=True, no_concat_layer=0,
                  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False,
                  skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
@@ -133,7 +139,7 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
 
         return self
 
-    def _build_unet_part(self):
+    def _build_unet_body_part(self):
         ### model_part
         ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
         # print("hid_ch", self.hid_ch)
@@ -186,18 +192,13 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
         print("build_unet", "finish")
         return self
 
-    def _build_ckpt_part(self):
-        ### 建立 tf 存模型 的物件： checkpoint物件
-        self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
-                                                   optimizer_G=self.kong_model.optimizer_G,
-                                                   epoch_log=self.kong_model.epoch_log)
 
-
+class G_Unet_Purpose_builder(G_Unet_Body_builder):
     def use_flow_unet(self):
         def _build_flow_unet():
-            self._build_flow_part()
-            self._build_unet_part()  ### 先
-            self._build_ckpt_part()  ### 後
+            self._build_unet_body_part()  ### 先， 用 step08_a_1_UNet_BN or step08_a_1_UNet_BN or step08_a_1_UNet_IN_concat_Activation or step08_a_1_UNet_IN
+            self._build_ckpt_part()       ### 後
+            self._build_flow_op_part()    ### 用 flow_op
             print("build_flow_unet", "finish")
             return self.kong_model
         self.build = _build_flow_unet
@@ -205,9 +206,9 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
 
     def use_mask_unet(self):
         def _build_mask_unet():
-            self._build_mask_part()
-            self._build_unet_part()  ### 先
-            self._build_ckpt_part()  ### 後
+            self._build_unet_body_part()  ### 先， 用 step08_a_1_UNet_BN or step08_a_1_UNet_BN or step08_a_1_UNet_IN_concat_Activation or step08_a_1_UNet_IN
+            self._build_ckpt_part()       ### 後
+            self._build_mask_op_part()    ### 用 mask_op
             print("build_mask_unet", "finish")
             return self.kong_model
         self.build = _build_mask_unet
@@ -215,10 +216,20 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
 
     def use_mask_unet2(self):
         def _build_mask_unet():
-            self._build_mask_part()
-            self._build_unet_part2()  ### 先
-            self._build_ckpt_part()  ### 後
+            self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
+            self._build_ckpt_part()     ### 後
+            self._build_mask_op_part()  ### 用 mask_op
             print("build_mask_unet2", "finish")
+            return self.kong_model
+        self.build = _build_mask_unet
+        return self
+
+    def use_flow_unet2(self):
+        def _build_mask_unet():
+            self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
+            self._build_ckpt_part()     ### 後
+            self._build_flow_op_part()  ### 用 flow_op
+            print("build_flow_unet2", "finish")
             return self.kong_model
         self.build = _build_mask_unet
         return self
@@ -244,7 +255,7 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
             self.kong_model.generator   = Generator(first_k=self.first_k, hid_ch=self.hid_ch, depth_level=self.depth_level, true_IN=self.true_IN, use_ReLU=self.use_ReLU, use_res_learning=self.use_res_learning, resb_num=self.resb_num, out_ch=self.out_ch)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-            self._build_flow_part()
+            self._build_flow_op_part()
             self._build_ckpt_part()
             print("build_flow_rect_7_level", "finish")
             return self.kong_model
@@ -271,14 +282,14 @@ class KModel_UNet_Generator_builder(KModel_Flow_Generator_builder):
             self.kong_model.generator   = Generator(first_k3=first_k3, hid_ch=hid_ch, true_IN=true_IN, mrfb=mrfb, mrf_replace=mrf_replace, coord_conv=coord_conv, use_res_learning=use_res_learning, resb_num=resb_num, out_ch=out_ch)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-            self._build_flow_part()
+            self._build_flow_op_part()
             self._build_ckpt_part()
             print("build_flow_rect", "finish")
             return self.kong_model
         self.build = _build_flow_rect
         return self
 
-class KModel_Mask_Flow_Generator_builder(KModel_UNet_Generator_builder):
+class KModel_Mask_Flow_Generator_builder(G_Unet_Purpose_builder):
     def use_mask_flow_unet(self):
         pass
 

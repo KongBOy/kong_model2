@@ -6,7 +6,7 @@ import time
 from step0_access_path import Syn_write_to_read_dir, result_read_path, result_write_path
 from step06_a_datas_obj import *
 from step06_b_data_pipline import tf_Data_builder
-from step08_e_model_obj import *
+from step09_e_model_obj import *
 from step09_b_loss_info_obj import *
 from step11_b_result_obj_builder import Result_builder
 import sys
