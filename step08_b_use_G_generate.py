@@ -54,6 +54,8 @@ def generate_flow_results(model_G, in_img_pre, gt_use_range, training=False):  #
 
 def flow_visual_op(flow):
     flow_ch = flow.shape[2]
+    x_ind = 0
+    y_ind = 0
     if  (flow_ch == 3):
         '''
         mask/y/x
