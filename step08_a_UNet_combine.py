@@ -187,7 +187,7 @@ if(__name__ == "__main__"):
 
     model_obj = model_obj.build()  ### 可替換成 上面 想測試的 model
     ### 2. db_obj 和 tf_data
-    db_obj  = type9_try_flow_mask_have_bg_dtd_hdr_mix_and_paper.build()
+    db_obj  = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
     tf_data = tf_Data_builder().set_basic(db_obj, 1, train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
     ### 3. loss_info_obj

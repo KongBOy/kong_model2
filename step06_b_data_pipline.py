@@ -886,7 +886,7 @@ if(__name__ == "__main__"):
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    db_obj = type9_try_flow_mask.build()
+    db_obj = type9_mask_flow.build()
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=True).set_img_resize(model_obj.model_name).set_data_use_range(in_use_range="0~1", gt_use_range="0~1").build_by_db_get_method().build()

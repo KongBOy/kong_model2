@@ -24,7 +24,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
 '''
 
 exp_dir = "6_mask_unet/1_os_book_no_bg"
-use_db_obj = type9_try_flow_mask
+use_db_obj = type9_mask_flow
 #############################  no-bg  ##################################
 ### 1. ch 結果超棒就直接結束了 沒有做其他嘗試
 mask_ch032_tanh_mae_ep060 = Exp_builder().set_basic("train", use_db_obj, mask_unet_ch032_tanh_7l, G_mae_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="6_0_1", describe_end="mask_ch032_tanh_mae_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-6_0_1-20210914_183346-flow_unet-mask_ch032_tanh_mae_ep060")

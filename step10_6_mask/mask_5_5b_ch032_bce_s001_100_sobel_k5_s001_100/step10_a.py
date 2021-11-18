@@ -30,7 +30,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
 '''
 
 
-use_db_obj = type9_try_flow_mask_have_bg_dtd_hdr_mix_and_paper
+use_db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper
 ############################  have_bg  #################################
 mask_h_bg_ch032_sig_6l_ep060_bce_s001_sobel_k5_s001 = Exp_builder().set_basic("train", use_db_obj, mask_unet_ch032_sig_6l, G_bce_s001_sobel_k5_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="5b_bce_s001_sobel_k5_s001", describe_end="mask_h_bg_ch032_sig_6l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5b_bce_s001_sobel_k5_s001-flow_unet-mask_h_bg_ch032_sig_6l_ep060-20211104_150928")  #.result_name_v1_to_v2()
 mask_h_bg_ch032_sig_6l_ep060_bce_s001_sobel_k5_s020 = Exp_builder().set_basic("train", use_db_obj, mask_unet_ch032_sig_6l, G_bce_s001_sobel_k5_s020_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="5b_bce_s001_sobel_k5_s020", describe_end="mask_h_bg_ch032_sig_6l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-5b_bce_s001_sobel_k5_s020-flow_unet-mask_h_bg_ch032_sig_6l_ep060-20211104_154407")  #.result_name_v1_to_v2()

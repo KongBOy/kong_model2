@@ -30,7 +30,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
     6_mask_unet2_block1/自己命的名字/...
 '''
 
-use_db_obj = type9_try_flow_mask_have_bg_dtd_hdr_mix_and_paper
+use_db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper
 ############################  have_bg  #################################
 ### 1a. ch
 mask_h_bg_ch128_sig_ep060 = Exp_builder().set_basic("train", use_db_obj, mask_unet2_block1_ch128_sig_7l, G_bce_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="1_1", describe_end="mask_h_bg_block1_ch128_sig_bce_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-1_1-flow_unet2-mask_h_bg_block1_ch128_sig_bce_ep060-20211107_012545")  #.result_name_v1_to_v2()
