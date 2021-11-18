@@ -402,11 +402,11 @@ if(__name__ == "__main__"):
 
     ### 1. model_obj
     flow_unet_IN_ch64                             = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True)
-    flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu, true_IN=True).build()
-    flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=False, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid, true_IN=True).build()
-    flow_unet_IN_7l_ch64_skip_use_cSE             = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cSE=True, true_IN=True)
-    flow_unet_IN_7l_ch64_skip_use_sSE             = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_sSE=True, true_IN=True)
-    flow_unet_IN_7l_ch64_skip_use_scSE            = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_scSE=True, true_IN=True)
+    flow_unet_IN_L7_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu, true_IN=True).build()
+    flow_unet_IN_L7_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cnn=False, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid, true_IN=True).build()
+    flow_unet_IN_L7_ch64_skip_use_cSE             = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_cSE=True, true_IN=True)
+    flow_unet_IN_L7_ch64_skip_use_sSE             = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_sSE=True, true_IN=True)
+    flow_unet_IN_L7_ch64_skip_use_scSE            = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, skip_use_scSE=True, true_IN=True)
     flow_unet_IN_ch64_cnnNoBias                   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet(hid_ch=64, true_IN=True, use_bias=False)
     model_obj = flow_unet_IN_ch64_cnnNoBias.build()  ### 可替換成 上面 想測試的 model
     ### 2. db_obj 和 tf_data

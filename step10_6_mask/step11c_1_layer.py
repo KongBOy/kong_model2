@@ -8,7 +8,7 @@ import mask_5_1_7l                 .step10_a as os_book_and_paper_have_dtd_hdr_m
 
 ############################################
 ### 1-7l-1_ch
-mask_7l_ch = [os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch128_sig_bce_ep060.build(),
+mask_L7_ch = [os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch128_sig_bce_ep060.build(),
               os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch064_sig_bce_ep060.build(),
               os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_sig_bce_ep060.build(),
               os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch016_sig_bce_ep060.build(),
@@ -16,16 +16,16 @@ mask_7l_ch = [os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch128_sig_bce_ep06
               os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch004_sig_bce_ep060.build(),
               os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch002_sig_bce_ep060.build(),
               os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch001_sig_bce_ep060.build()]
-mask_7l_ch = [ exp.result_obj for exp in mask_7l_ch]
+mask_L7_ch = [ exp.result_obj for exp in mask_L7_ch]
 ############################################
 ### 1-7l-2_layer
-mask_layer = [os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_2l_sig_bce_ep060.build(),
-              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_3l_sig_bce_ep060.build(),
-              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_4l_sig_bce_ep060.build(),
-              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_5l_sig_bce_ep060.build(),
-              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_6l_sig_bce_ep060.build(),
-              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_7l_sig_bce_ep060.build(),
-              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_8l_sig_bce_ep060.build()]
+mask_layer = [os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_L2_sig_bce_ep060.build(),
+              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_L3_sig_bce_ep060.build(),
+              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_L4_sig_bce_ep060.build(),
+              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_L5_sig_bce_ep060.build(),
+              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_L6_sig_bce_ep060.build(),
+              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_L7_sig_bce_ep060.build(),
+              os_book_and_paper_have_dtd_hdr_mix_bg.mask_h_bg_ch032_L8_sig_bce_ep060.build()]
 mask_layer = [ exp.result_obj for exp in mask_layer]
 
 

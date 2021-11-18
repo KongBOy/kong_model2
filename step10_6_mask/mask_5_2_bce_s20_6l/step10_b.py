@@ -12,30 +12,30 @@ run = "build().run()"
 
 ############################  have_bg  #################################
 ### 1a. ch
-sb.run(same_command + [f"mask_h_bg_ch128_sig_6l_ep060.{run}"])  ### 127.37跑
-sb.run(same_command + [f"mask_h_bg_ch064_sig_6l_ep060.{run}"])  ### 127.37跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch016_sig_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch008_sig_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch004_sig_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch002_sig_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch001_sig_6l_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch128_sig_L6_ep060.{run}"])  ### 127.37跑
+sb.run(same_command + [f"mask_h_bg_ch064_sig_L6_ep060.{run}"])  ### 127.37跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch016_sig_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch008_sig_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch004_sig_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch002_sig_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch001_sig_L6_ep060.{run}"])  ### 127.35跑
 ### 1b. ch and epoch
-sb.run(same_command + [f"mask_h_bg_ch128_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch064_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch016_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch008_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch004_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch002_sig_6l_ep200.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch001_sig_6l_ep200.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch128_sig_L6_ep200.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch064_sig_L6_ep200.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep200.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch016_sig_L6_ep200.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch008_sig_L6_ep200.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch004_sig_L6_ep200.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch002_sig_L6_ep200.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch001_sig_L6_ep200.{run}"])  ### 127.35跑
 
 ### 3. no-concat
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to2noC_sig_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to3noC_sig_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to4noC_sig_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to5noC_sig_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_6l_2to6noC_sig_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_L6_2to2noC_sig_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_L6_2to3noC_sig_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_L6_2to4noC_sig_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_L6_2to5noC_sig_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_L6_2to6noC_sig_ep060.{run}"])  ### 127.35跑
 
 ### 4. skip use add
-sb.run(same_command + [f"mask_h_bg_ch032_6l_skipAdd_sig_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_L6_skipAdd_sig_ep060.{run}"])  ### 127.35跑

@@ -132,30 +132,30 @@ flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flo
 ########################################################### 14 看 unet 的 output 改成sigmoid
 flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, out_tanh=False, true_IN=True).use_flow_unet()
 ########################################################### 14 看 unet 的 第一層試試看 不 concat 效果如何
-flow_unet_IN_7l_ch64_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch32_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=2).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_2to4noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=4).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_2to5noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=5).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_2to6noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=6).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_2to7noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=7).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_2to8noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=8).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch32_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=2).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to4noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=4).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to5noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=5).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to6noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=6).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to7noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=7).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to8noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=8).use_flow_unet().set_train_step(train_step_pure_G)
 ########################################################### 14 看 unet 的 skip 中間接 cnn 的效果
-flow_unet_IN_7l_ch64_skip_use_cnn1_NO_relu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=None).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_skip_use_cnn3_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.relu).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.sigmoid).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_skip_use_cnn1_NO_relu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=None).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_skip_use_cnn3_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.relu).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.sigmoid).use_flow_unet().set_train_step(train_step_pure_G)
 
 
 ########################################################### 14 看 unet 的 skip 中間接 cSE, sSE, csSE 的效果
-flow_unet_IN_7l_ch64_2to3noC_sk_cSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3, skip_use_cSE=True).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_2to3noC_sk_sSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_sSE=True).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_2to3noC_sk_scSE = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_scSE=True).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to3noC_sk_cSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3, skip_use_cSE=True).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to3noC_sk_sSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_sSE=True).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_2to3noC_sk_scSE = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_scSE=True).use_flow_unet().set_train_step(train_step_pure_G)
 
-flow_unet_IN_7l_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cSE=True).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_sSE=True).use_flow_unet().set_train_step(train_step_pure_G)
-flow_unet_IN_7l_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_scSE=True).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cSE=True).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_sSE=True).use_flow_unet().set_train_step(train_step_pure_G)
+flow_unet_IN_L7_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_scSE=True).use_flow_unet().set_train_step(train_step_pure_G)
 
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
@@ -182,7 +182,7 @@ flow_rect_7_level_fk3_ReLU = KModel_builder().set_model_name(MODEL_NAME.flow_rec
 
 if(__name__ == "__main__"):
     # print(flow_rect_2_level_fk3.build())
-    # print(mask_unet_ch032_tanh_7l.build())
+    # print(mask_unet_ch032_tanh_L7.build())
     print(flow_rect_7_level_fk3_ReLU.build())
     print("build_model cost time:", time.time() - start_time)
     pass

@@ -12,11 +12,11 @@ run = "build().run()"
 
 ############################  have_bg  #################################
 ### 1a. ch
-sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s120_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s140_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s160_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s180_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s200_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s220_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s240_6l_ep060.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s260_6l_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s120_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s140_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s160_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s180_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s200_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s220_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s240_L6_ep060.{run}"])  ### 127.35跑
+sb.run(same_command + [f"mask_h_bg_ch032_sig_sobel_k5_s260_L6_ep060.{run}"])  ### 127.35跑

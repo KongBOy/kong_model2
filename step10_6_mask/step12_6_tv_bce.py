@@ -31,27 +31,27 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "6-6l_tv_s01~20_bce-1_ch"
-    mask_6l_tv_s01_20_bce_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+    mask_L6_tv_s01_20_bce_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[ 
-                                                                    mask_6l_tv_bce_ch,
-                                                                    mask_6l_tv_s04_bce_ch,
-                                                                    mask_6l_tv_s08_bce_ch,
-                                                                    mask_6l_tv_s12_bce_ch,
-                                                                    mask_6l_tv_s16_bce_ch,
-                                                                    mask_6l_tv_s20_bce_ch
+                                                                    mask_L6_tv_bce_ch,
+                                                                    mask_L6_tv_s04_bce_ch,
+                                                                    mask_L6_tv_s08_bce_ch,
+                                                                    mask_L6_tv_s12_bce_ch,
+                                                                    mask_L6_tv_s16_bce_ch,
+                                                                    mask_L6_tv_s20_bce_ch
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                                 # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     ana_name = "6-6l_tv_s01~80_bce-1_ch"
-    mask_6l_tv_s01_80_bce_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+    mask_L6_tv_s01_80_bce_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[
-                                                                    mask_6l_tv_bce_ch,
-                                                                    mask_6l_tv_s20_bce_ch,
-                                                                    mask_6l_tv_s40_bce_ch,
-                                                                    mask_6l_tv_s60_bce_ch,
-                                                                    mask_6l_tv_s80_bce_ch
+                                                                    mask_L6_tv_bce_ch,
+                                                                    mask_L6_tv_s20_bce_ch,
+                                                                    mask_L6_tv_s40_bce_ch,
+                                                                    mask_L6_tv_s60_bce_ch,
+                                                                    mask_L6_tv_s80_bce_ch
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                                 # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################

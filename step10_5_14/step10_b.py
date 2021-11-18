@@ -243,54 +243,54 @@ Calculate_and_Visual_SSIM_LD_10te = f"build().result_obj.result_do_all_single_se
 
 ##########################################################################################################################################################################################
 ### 6
-# sb.run(same_command + [f"unet_2l.{change_dir}"])
-# sb.run(same_command + [f"unet_3l.{change_dir}"])
-# sb.run(same_command + [f"unet_4l.{change_dir}"])
-# sb.run(same_command + [f"unet_5l.{change_dir}"])
-# sb.run(same_command + [f"unet_6l.{change_dir}"])
-# sb.run(same_command + [f"unet_7l.{change_dir}"])
-# sb.run(same_command + [f"unet_8l.{change_dir}"])
+# sb.run(same_command + [f"unet_L2.{change_dir}"])
+# sb.run(same_command + [f"unet_L3.{change_dir}"])
+# sb.run(same_command + [f"unet_L4.{change_dir}"])
+# sb.run(same_command + [f"unet_L5.{change_dir}"])
+# sb.run(same_command + [f"unet_L6.{change_dir}"])
+# sb.run(same_command + [f"unet_L7.{change_dir}"])
+# sb.run(same_command + [f"unet_L8.{change_dir}"])
 
 #############################################################################################################
 ### 7a
-# sb.run(same_command + [f"unet_8l_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_7l_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_6l_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_5l_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_4l_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_3l_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_2l_skip_use_add.{change_dir}"])
+# sb.run(same_command + [f"unet_L8_skip_use_add.{change_dir}"])
+# sb.run(same_command + [f"unet_L7_skip_use_add.{change_dir}"])
+# sb.run(same_command + [f"unet_L6_skip_use_add.{change_dir}"])
+# sb.run(same_command + [f"unet_L5_skip_use_add.{change_dir}"])
+# sb.run(same_command + [f"unet_L4_skip_use_add.{change_dir}"])
+# sb.run(same_command + [f"unet_L3_skip_use_add.{change_dir}"])
+# sb.run(same_command + [f"unet_L2_skip_use_add.{change_dir}"])
 
 #############################################################################################################
 ### 7b
-# sb.run(same_command + [f"unet_IN_7l_2to2noC     .{change_dir}"])
-# sb.run(same_command + [f"unet_IN_7l_2to2noC_ch32.{change_dir}"])
-# sb.run(same_command + [f"unet_IN_7l_2to3noC     .{change_dir}"])  ### 3254
-# sb.run(same_command + [f"unet_IN_7l_2to4noC     .{change_dir}"])
-# sb.run(same_command + [f"unet_IN_7l_2to5noC     .{change_dir}"])
-# sb.run(same_command + [f"unet_IN_7l_2to6noC     .{change_dir}"])  ### 3073
-# sb.run(same_command + [f"unet_IN_7l_2to7noC     .{change_dir}"])  ### 2851
-# sb.run(same_command + [f"unet_IN_7l_2to8noC     .{change_dir}"])  ### 2920
+# sb.run(same_command + [f"unet_IN_L7_2to2noC     .{change_dir}"])
+# sb.run(same_command + [f"unet_IN_L7_2to2noC_ch32.{change_dir}"])
+# sb.run(same_command + [f"unet_IN_L7_2to3noC     .{change_dir}"])  ### 3254
+# sb.run(same_command + [f"unet_IN_L7_2to4noC     .{change_dir}"])
+# sb.run(same_command + [f"unet_IN_L7_2to5noC     .{change_dir}"])
+# sb.run(same_command + [f"unet_IN_L7_2to6noC     .{change_dir}"])  ### 3073
+# sb.run(same_command + [f"unet_IN_L7_2to7noC     .{change_dir}"])  ### 2851
+# sb.run(same_command + [f"unet_IN_L7_2to8noC     .{change_dir}"])  ### 2920
 
 
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e020.{change_dir}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e040.{change_dir}"])  ### 測試真的IN  127.55
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e060.{change_dir}"])  ### 測試真的IN  127.35
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e080.{change_dir}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e100.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_L7_2to3noC_e020.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_L7_2to3noC_e040.{change_dir}"])  ### 測試真的IN  127.55
+# sb.run(same_command + [f"unet_IN_L7_2to3noC_e060.{change_dir}"])  ### 測試真的IN  127.35
+# sb.run(same_command + [f"unet_IN_L7_2to3noC_e080.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_L7_2to3noC_e100.{change_dir}"])  ### 測試真的IN  127.28
 
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e120.{change_dir}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e140.{change_dir}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e160.{change_dir}"])  ### 測試真的IN  127.55
-# sb.run(same_command + [f"unet_IN_7l_2to3noC_e180.{change_dir}"])  ### 測試真的IN  127.55
+# sb.run(same_command + [f"unet_IN_L7_2to3noC_e120.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_L7_2to3noC_e140.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(same_command + [f"unet_IN_L7_2to3noC_e160.{change_dir}"])  ### 測試真的IN  127.55
+# sb.run(same_command + [f"unet_IN_L7_2to3noC_e180.{change_dir}"])  ### 測試真的IN  127.55
 
 #############################################################################################################
 ### 7c
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_NO_relu   .{change_dir}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USErelu   .{change_dir}"])   ### 127.28
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn1_USEsigmoid.{change_dir}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USErelu   .{change_dir}"])   ### 127.28
-# sb.run(same_command + [f"unet_IN_7l_skip_use_cnn3_USEsigmoid.{change_dir}"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn1_NO_relu   .{change_dir}"])   ### 127.35
+# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn1_USErelu   .{change_dir}"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn1_USEsigmoid.{change_dir}"])   ### 127.35
+# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn3_USErelu   .{change_dir}"])   ### 127.28
+# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn3_USEsigmoid.{change_dir}"])   ### 127.28
 
 
 #############################################################################################################

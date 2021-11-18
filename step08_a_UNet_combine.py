@@ -149,15 +149,15 @@ if(__name__ == "__main__"):
     from step09_c_train_step import *
 
 
-    # model_obj = mask_unet2_ch032_tanh_7l
-    # model_obj = mask_unet2_ch128_sig_7l
-    # model_obj = mask_unet2_ch064_sig_7l
-    # model_obj = mask_unet2_ch032_sig_7l
-    # model_obj = mask_unet2_ch016_sig_7l
-    # model_obj = mask_unet2_ch008_sig_7l
-    # model_obj = mask_unet2_ch004_sig_7l
-    # model_obj = mask_unet2_ch002_sig_7l
-    # model_obj = mask_unet2_ch001_sig_7l
+    # model_obj = mask_unet2_ch032_tanh_L7
+    # model_obj = mask_unet2_ch128_sig_L7
+    # model_obj = mask_unet2_ch064_sig_L7
+    # model_obj = mask_unet2_ch032_sig_L7
+    # model_obj = mask_unet2_ch016_sig_L7
+    # model_obj = mask_unet2_ch008_sig_L7
+    # model_obj = mask_unet2_ch004_sig_L7
+    # model_obj = mask_unet2_ch002_sig_L7
+    # model_obj = mask_unet2_ch001_sig_L7
 
     # model_obj = mask_unet2_2_level_ch32_sig
     # model_obj = mask_unet2_3_level_ch32_sig
@@ -167,13 +167,13 @@ if(__name__ == "__main__"):
     # model_obj = mask_unet2_7_level_ch32_sig
     # model_obj = mask_unet2_8_level_ch32_sig
 
-    # model_obj = mask_unet2_IN_7l_ch32_2to2noC_sig
-    # model_obj = mask_unet2_IN_7l_ch32_2to3noC_sig
-    # model_obj = mask_unet2_IN_7l_ch32_2to4noC_sig
-    # model_obj = mask_unet2_IN_7l_ch32_2to5noC_sig
-    # model_obj = mask_unet2_IN_7l_ch32_2to6noC_sig
-    # model_obj = mask_unet2_IN_7l_ch32_2to7noC_sig
-    # model_obj = mask_unet2_IN_7l_ch32_2to8noC_sig
+    # model_obj = mask_unet2_IN_L7_ch32_2to2noC_sig
+    # model_obj = mask_unet2_IN_L7_ch32_2to3noC_sig
+    # model_obj = mask_unet2_IN_L7_ch32_2to4noC_sig
+    # model_obj = mask_unet2_IN_L7_ch32_2to5noC_sig
+    # model_obj = mask_unet2_IN_L7_ch32_2to6noC_sig
+    # model_obj = mask_unet2_IN_L7_ch32_2to7noC_sig
+    # model_obj = mask_unet2_IN_L7_ch32_2to8noC_sig
 
     # model_obj = mask_unet2_8_level_skip_use_add_sig
     # model_obj = mask_unet2_7_level_skip_use_add_sig

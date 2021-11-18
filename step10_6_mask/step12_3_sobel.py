@@ -165,7 +165,7 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3_2-sobel_k5_s1,20,40,60,80,100-1_ch"
-    mask_6l_bce_s1_10_20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+    mask_L6_bce_s1_10_20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                 ana_what="mask",
                                                 row_col_results=[ mask_sobel_k5_s001_ch[:3] + mask_sobel_k5_s060_ch[:3],
                                                                   mask_sobel_k5_s020_ch[:3] + mask_sobel_k5_s080_ch[:3],
@@ -174,7 +174,7 @@ if(__name__ == "__main__"):
                                     # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_2-sobel_k5_s1,20,40,60,80,100-4_no_concat_and_add"
-    mask_6l_bce_s1_10_20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+    mask_L6_bce_s1_10_20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                 ana_what="mask",
                                                 row_col_results=[ [mask_sobel_k5_s001_ch[2]] + mask_sobel_k5_s001_noC_and_add + [mask_sobel_k5_s001_ch[2]],
                                                                   [mask_sobel_k5_s020_ch[2]] + mask_sobel_k5_s020_noC_and_add + [mask_sobel_k5_s020_ch[2]],
@@ -186,7 +186,7 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "3_3_ch032-sobel_k5_s1~260"
-    mask_6l_bce_s1_10_20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+    mask_L6_bce_s1_10_20_ch_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                 ana_what="mask",
                                                 row_col_results=[ mask_ch032_sobel_k5_s1_260[  : 5],
                                                                   mask_ch032_sobel_k5_s1_260[ 5:10],

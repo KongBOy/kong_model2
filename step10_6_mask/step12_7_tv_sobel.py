@@ -31,14 +31,14 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "7-6l_tv_s01_sobel_k5_s01,80~140-1_ch"
-    mask_6l_tv_s01_sobel_k5_s01_80_140_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
+    mask_L6_tv_s01_sobel_k5_s01_80_140_analyze = Row_col_results_analyzer(ana_describe=f"{mask_ana_dir}/{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[
-                                                                    mask_6l_tv_s01_sobel_k5_s001_ch,
-                                                                    mask_6l_tv_s01_sobel_k5_s080_ch,
-                                                                    mask_6l_tv_s01_sobel_k5_s100_ch,
-                                                                    mask_6l_tv_s01_sobel_k5_s120_ch,
-                                                                    mask_6l_tv_s01_sobel_k5_s140_ch
+                                                                    mask_L6_tv_s01_sobel_k5_s001_ch,
+                                                                    mask_L6_tv_s01_sobel_k5_s080_ch,
+                                                                    mask_L6_tv_s01_sobel_k5_s100_ch,
+                                                                    mask_L6_tv_s01_sobel_k5_s120_ch,
+                                                                    mask_L6_tv_s01_sobel_k5_s140_ch
                                                                     ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                                 # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################

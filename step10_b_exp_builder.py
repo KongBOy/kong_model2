@@ -88,7 +88,7 @@ class Exp_builder():
         result_name_components = self.exp.result_name.split("-")
         '''
         根據 step11_b_result_obj_builder 的 set_by_exp 裡的 _get_result_name_by_exp 決定的喔
-            舉例：6_mask_unet/5_5b_ch032_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-5b_bce_s001_sobel_k5_s001-20211104_150928-flow_unet-mask_h_bg_ch032_sig_6l_ep060
+            舉例：6_mask_unet/5_5b_ch032_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-5b_bce_s001_sobel_k5_s001-20211104_150928-flow_unet-mask_h_bg_ch032_sig_L6_ep060
         '''
         exp_dir = self.exp.exp_dir
         db_category  = result_name_components[0]
@@ -101,8 +101,8 @@ class Exp_builder():
         result_path_v1 = result_read_path  + "result/" + result_name_v1
         result_path_v2 = result_read_path  + "result/" + result_name_v2
         os.rename(result_path_v1, result_path_v2)
-        "Y:/0 data_dir/result/6_mask_unet/5_1_7l_unet2/type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
-        "Y:\0 data_dir\result\6_mask_unet\5_1_7l_unet2\type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
+        "Y:/0 data_dir/result/6_mask_unet/5_1_L7_unet2/type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
+        "Y:\0 data_dir\result\6_mask_unet\5_1_L7_unet2\type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
         print(result_path_v1, "  rename to")
         print(result_path_v2, "  finish~~")
 
@@ -258,18 +258,18 @@ if(__name__ == "__main__"):
         # flow_rect_7_level_fk3.build().run()
         # flow_rect_2_level_fk3.build().run()
         # unet_2l.build().run()
-        # unet_7l.build().run()
-        # unet_7l_skip_use_add.build().run()
+        # unet_L7.build().run()
+        # unet_L7_skip_use_add.build().run()
         # unet_8l.build().run()
         # rect_2_level_fk3_ReLU.build().run()
         # ch64_in_epoch500_sigmoid.build().run()
         # in_th_mo_th_gt_th.build().run()
         # t3_in_01_mo_th_gt_th_mae.build().run()
-        # unet_IN_7l_2to4noC.build().run()
-        # unet_IN_7l_skip_use_cnn1_NO_relu.build().run()
-        # unet_IN_7l_skip_use_cnn1_USEsigmoid.build().run()
+        # unet_IN_L7_2to4noC.build().run()
+        # unet_IN_L7_skip_use_cnn1_NO_relu.build().run()
+        # unet_IN_L7_skip_use_cnn1_USEsigmoid.build().run()
         # test1.build().run()
-        # unet_IN_7l_2to3noC_e100.build().run()
+        # unet_IN_L7_2to3noC_e100.build().run()
         # ch64_in_sk_cSE_e060_wrong.build().run()
         # ch64_in_sk_sSE_e060.build().run()
         # ch64_in_sk_scSE_e060_wrong.build().run()

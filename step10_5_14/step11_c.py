@@ -91,15 +91,15 @@ epoch_exps  = [
     epoch700_bn_see_arg_T_no_down.build(), ]   ### 如果 lr 都不下降 會怎麼樣
 
 epoch020_500_exps  = [
-    unet_IN_7l_2to3noC_e020.build(),  # 0
-    unet_IN_7l_2to3noC_e040.build(),
-    unet_IN_7l_2to3noC_e060.build(),
-    unet_IN_7l_2to3noC_e080.build(),
-    unet_IN_7l_2to3noC_e100.build(),
-    unet_IN_7l_2to3noC_e120.build(),
-    unet_IN_7l_2to3noC_e140.build(),  ## 6
-    unet_IN_7l_2to3noC_e160.build(),
-    unet_IN_7l_2to3noC_e180.build(),
+    unet_IN_L7_2to3noC_e020.build(),  # 0
+    unet_IN_L7_2to3noC_e040.build(),
+    unet_IN_L7_2to3noC_e060.build(),
+    unet_IN_L7_2to3noC_e080.build(),
+    unet_IN_L7_2to3noC_e100.build(),
+    unet_IN_L7_2to3noC_e120.build(),
+    unet_IN_L7_2to3noC_e140.build(),  ## 6
+    unet_IN_L7_2to3noC_e160.build(),
+    unet_IN_L7_2to3noC_e180.build(),
     ch64_in_epoch200.build(),
     ch64_in_epoch220.build(),
     ch64_in_epoch240.build(),
@@ -119,11 +119,11 @@ epoch020_500_exps  = [
     ]
 
 epoch100_500_exps  = [
-    unet_IN_7l_2to3noC_e100.build(),  # 0
-    unet_IN_7l_2to3noC_e120.build(),
-    unet_IN_7l_2to3noC_e140.build(),
-    unet_IN_7l_2to3noC_e160.build(),
-    unet_IN_7l_2to3noC_e180.build(),
+    unet_IN_L7_2to3noC_e100.build(),  # 0
+    unet_IN_L7_2to3noC_e120.build(),
+    unet_IN_L7_2to3noC_e140.build(),
+    unet_IN_L7_2to3noC_e160.build(),
+    unet_IN_L7_2to3noC_e180.build(),
     ch64_in_epoch200.build(),
     ch64_in_epoch220.build(),  ###  6
     ch64_in_epoch240.build(),
@@ -285,36 +285,36 @@ in_concat_AB = [
 ###   想看看 差一層 差多少，先不管 8_layer 表現好 的 相當於 哪種結果
 ###   最後發現 層越少效果越差，但 第8層 效果跟 第7層 差不多， 沒辦法試 第9層 因為要512的倍數
 unet_layers = [
-    unet_2l.build(),
-    unet_3l.build(),
-    unet_4l.build(),
-    unet_5l.build(),
-    unet_6l.build(),
-    unet_7l.build(),
-    unet_8l.build(),
+    unet_L2.build(),
+    unet_L3.build(),
+    unet_L4.build(),
+    unet_L5.build(),
+    unet_L6.build(),
+    unet_L7.build(),
+    unet_L8.build(),
 ]
 
 
 ###################################################################################################
 ### 7a_1 unet 的concat 改成 add 的效果如何，效果超差
 unet_skip_use_add = [
-    unet_8l_skip_use_add.build(),
-    unet_7l_skip_use_add.build(),
-    unet_6l_skip_use_add.build(),
-    unet_5l_skip_use_add.build(),
-    unet_4l_skip_use_add.build(),
-    unet_3l_skip_use_add.build(),
-    unet_2l_skip_use_add.build(),
+    unet_L8_skip_use_add.build(),
+    unet_L7_skip_use_add.build(),
+    unet_L6_skip_use_add.build(),
+    unet_L5_skip_use_add.build(),
+    unet_L4_skip_use_add.build(),
+    unet_L3_skip_use_add.build(),
+    unet_L2_skip_use_add.build(),
 ]
 
 ### 7a_2 unet 的concat vs add 的效果如何，concat好，add不好
 unet_skip_use_concat_vs_add = [
-    unet_7l.build(),
-    unet_7l_skip_use_add.build(),
-    unet_6l.build(),
-    unet_6l_skip_use_add.build(),
-    unet_5l.build(),
-    unet_5l_skip_use_add.build(),
+    unet_L7.build(),
+    unet_L7_skip_use_add.build(),
+    unet_L6.build(),
+    unet_L6_skip_use_add.build(),
+    unet_L5.build(),
+    unet_L5_skip_use_add.build(),
 ]
 
 
@@ -322,71 +322,71 @@ unet_skip_use_concat_vs_add = [
 ###    train loss 在 全接~前兩個skip省略 表現差不多，
 ###    see來看的話 train/test 都差不多，但在 real 前兩個skip 的結果 看起來都比 全接好！ 且 覺得 2to3noC 比 2to2noC 更好些！
 ###    2to4noC 在 real3 表現差，且 2to4noC 之後 邊緣 的部分就越做越差囉～
-unet_IN_7l_all_C_ch64_in_epoch500 = copy.deepcopy(ch64_in_epoch500.build()); unet_IN_7l_all_C_ch64_in_epoch500.result_obj.ana_describe = "1a-unet_IN_7l_all_C_ch64_in_epoch500"  ### 當初的train_code沒寫好沒有存到 model用的 code
-# unet_IN_7l_all_C_ch64_bn_epoch500 = copy.deepcopy(ch64_bn_epoch500.build()); unet_IN_7l_all_C_ch64_bn_epoch500.result_obj.ana_describe = "1b-unet_IN_7l_all_C_ch64_bn_epoch500"  ### 從4_1就知道bn沒有in好，所以就不用這個了
-# unet_IN_7l_all_C_unet_7l          = copy.deepcopy(unet_7l.build()); unet_IN_7l_all_C_unet_7l.result_obj.ana_describe = "1c-unet_IN_7l_all_C_unet_7l"  ### 他的loss好像最低，但沒有train完
-unet_IN_7l_2to2noC       .build().result_obj.ana_describe = "2a-unet_IN_7l_2to2noC"
-# unet_IN_7l_2to2noC_ch32.build().result_obj.ana_describe = "2b-unet_IN_7l_2to2noC_ch32"  ### ch32 效果比較沒那麼好，先註解跳過不看
-unet_IN_7l_2to3noC       .build().result_obj.ana_describe = "3-unet_IN_7l_2to3noC"
-unet_IN_7l_2to4noC       .build().result_obj.ana_describe = "4-unet_IN_7l_2to4noC"
-unet_IN_7l_2to5noC       .build().result_obj.ana_describe = "5-unet_IN_7l_2to5noC"
-unet_IN_7l_2to6noC       .build().result_obj.ana_describe = "6-unet_IN_7l_2to6noC"
-unet_IN_7l_2to7noC       .build().result_obj.ana_describe = "7-unet_IN_7l_2to7noC"
-# unet_IN_7l_2to8noC               .result_obj.ana_describe = "8-unet_IN_7l_2to8noC"   ### 當初訓練就怪怪的，先跳過！
+unet_IN_L7_all_C_ch64_in_epoch500 = copy.deepcopy(ch64_in_epoch500.build()); unet_IN_L7_all_C_ch64_in_epoch500.result_obj.ana_describe = "1a-unet_IN_L7_all_C_ch64_in_epoch500"  ### 當初的train_code沒寫好沒有存到 model用的 code
+# unet_IN_L7_all_C_ch64_bn_epoch500 = copy.deepcopy(ch64_bn_epoch500.build()); unet_IN_L7_all_C_ch64_bn_epoch500.result_obj.ana_describe = "1b-unet_IN_L7_all_C_ch64_bn_epoch500"  ### 從4_1就知道bn沒有in好，所以就不用這個了
+# unet_IN_L7_all_C_unet_L7          = copy.deepcopy(unet_L7.build()); unet_IN_L7_all_C_unet_L7.result_obj.ana_describe = "1c-unet_IN_L7_all_C_unet_L7"  ### 他的loss好像最低，但沒有train完
+unet_IN_L7_2to2noC       .build().result_obj.ana_describe = "2a-unet_IN_L7_2to2noC"
+# unet_IN_L7_2to2noC_ch32.build().result_obj.ana_describe = "2b-unet_IN_L7_2to2noC_ch32"  ### ch32 效果比較沒那麼好，先註解跳過不看
+unet_IN_L7_2to3noC       .build().result_obj.ana_describe = "3-unet_IN_L7_2to3noC"
+unet_IN_L7_2to4noC       .build().result_obj.ana_describe = "4-unet_IN_L7_2to4noC"
+unet_IN_L7_2to5noC       .build().result_obj.ana_describe = "5-unet_IN_L7_2to5noC"
+unet_IN_L7_2to6noC       .build().result_obj.ana_describe = "6-unet_IN_L7_2to6noC"
+unet_IN_L7_2to7noC       .build().result_obj.ana_describe = "7-unet_IN_L7_2to7noC"
+# unet_IN_L7_2to8noC               .result_obj.ana_describe = "8-unet_IN_L7_2to8noC"   ### 當初訓練就怪怪的，先跳過！
 
 unet_skip_noC = [
-    unet_IN_7l_all_C_ch64_in_epoch500,
-    # unet_IN_7l_all_C_ch64_bn_epoch500,
-    # unet_IN_7l_all_C_unet_7l,
-    unet_IN_7l_2to2noC,
-    # unet_IN_7l_2to2noC_ch32,
-    unet_IN_7l_2to3noC,
-    unet_IN_7l_2to4noC,
-    unet_IN_7l_2to5noC,
-    unet_IN_7l_2to6noC,
-    unet_IN_7l_2to7noC,
-    # unet_IN_7l_2to8noC,   ### 好像train壞掉怪怪的
+    unet_IN_L7_all_C_ch64_in_epoch500,
+    # unet_IN_L7_all_C_ch64_bn_epoch500,
+    # unet_IN_L7_all_C_unet_L7,
+    unet_IN_L7_2to2noC,
+    # unet_IN_L7_2to2noC_ch32,
+    unet_IN_L7_2to3noC,
+    unet_IN_L7_2to4noC,
+    unet_IN_L7_2to5noC,
+    unet_IN_L7_2to6noC,
+    unet_IN_L7_2to7noC,
+    # unet_IN_L7_2to8noC,   ### 好像train壞掉怪怪的
 ]
 
 
 ### 7c.看看 UNet 的 skip 學 印度方法 看看skip connection 中間加 cnn 的效果
-unet_IN_7l_skip_clean = copy.deepcopy(ch64_in_epoch500.build()); unet_IN_7l_skip_clean.result_obj.ana_describe = "1-unet_IN_7l_skip_clean"  ### 當初的train_code沒寫好沒有存到 model用的 code
-unet_IN_7l_skip_use_cnn1_NO_relu     .build().result_obj.ana_describe = "2-unet_IN_7l_skip_use_cnn1_NO_relu"
-unet_IN_7l_skip_use_cnn1_USErelu     .build().result_obj.ana_describe = "3a-unet_IN_7l_skip_use_cnn1_USErelu"
-unet_IN_7l_skip_use_cnn1_USEsigmoid  .build().result_obj.ana_describe = "3b-unet_IN_7l_skip_use_cnn1_USEsigmoid"
-unet_IN_7l_skip_use_cnn3_USErelu     .build().result_obj.ana_describe = "4a-unet_IN_7l_skip_use_cnn3_USErelu"
-unet_IN_7l_skip_use_cnn3_USEsigmoid  .build().result_obj.ana_describe = "4b-unet_IN_7l_skip_use_cnn3_USEsigmoid"
+unet_IN_L7_skip_clean = copy.deepcopy(ch64_in_epoch500.build()); unet_IN_L7_skip_clean.result_obj.ana_describe = "1-unet_IN_L7_skip_clean"  ### 當初的train_code沒寫好沒有存到 model用的 code
+unet_IN_L7_skip_use_cnn1_NO_relu     .build().result_obj.ana_describe = "2-unet_IN_L7_skip_use_cnn1_NO_relu"
+unet_IN_L7_skip_use_cnn1_USErelu     .build().result_obj.ana_describe = "3a-unet_IN_L7_skip_use_cnn1_USErelu"
+unet_IN_L7_skip_use_cnn1_USEsigmoid  .build().result_obj.ana_describe = "3b-unet_IN_L7_skip_use_cnn1_USEsigmoid"
+unet_IN_L7_skip_use_cnn3_USErelu     .build().result_obj.ana_describe = "4a-unet_IN_L7_skip_use_cnn3_USErelu"
+unet_IN_L7_skip_use_cnn3_USEsigmoid  .build().result_obj.ana_describe = "4b-unet_IN_L7_skip_use_cnn3_USEsigmoid"
 
 unet_skip_use_cnn = [
-    unet_IN_7l_skip_clean,
-    unet_IN_7l_skip_use_cnn1_NO_relu,
-    unet_IN_7l_skip_use_cnn1_USErelu,
-    unet_IN_7l_skip_use_cnn1_USEsigmoid,
-    unet_IN_7l_skip_use_cnn3_USErelu,
-    unet_IN_7l_skip_use_cnn3_USEsigmoid,
+    unet_IN_L7_skip_clean,
+    unet_IN_L7_skip_use_cnn1_NO_relu,
+    unet_IN_L7_skip_use_cnn1_USErelu,
+    unet_IN_L7_skip_use_cnn1_USEsigmoid,
+    unet_IN_L7_skip_use_cnn3_USErelu,
+    unet_IN_L7_skip_use_cnn3_USEsigmoid,
 ]
 
 
 ### 7d.看看 UNet 的 skip 用 cSE/ sSE/ csSE 試試看
-unet_7l_skip_SE = [
+unet_L7_skip_SE = [
     ch64_in_epoch060          .build(),
     ch64_in_sk_cSE_e060_wrong .build(),
     ch64_in_sk_sSE_e060       .build(),
     ch64_in_sk_scSE_e060_wrong.build(),
 ]
 
-ch64_2to3noC_sk_no_e060         = copy.deepcopy(unet_IN_7l_2to3noC_e060.build()); ch64_2to3noC_sk_no_e060         .result_obj.ana_describe = "1-ch64_2to3noC_sk_no_e060"  ### 當初的train_code沒寫好沒有存到 model用的 code
+ch64_2to3noC_sk_no_e060         = copy.deepcopy(unet_IN_L7_2to3noC_e060.build()); ch64_2to3noC_sk_no_e060         .result_obj.ana_describe = "1-ch64_2to3noC_sk_no_e060"  ### 當初的train_code沒寫好沒有存到 model用的 code
 ch64_2to3noC_sk_cSE_e060_wrong  = ch64_2to3noC_sk_cSE_e060_wrong .build();        ch64_2to3noC_sk_cSE_e060_wrong  .result_obj.ana_describe = "2-ch64_2to3noC_sk_cSE_e060_wrong"
 ch64_2to3noC_sk_sSE_e060        = ch64_2to3noC_sk_sSE_e060       .build();        ch64_2to3noC_sk_sSE_e060        .result_obj.ana_describe = "3-ch64_2to3noC_sk_sSE_e060"
 ch64_2to3noC_sk_scSE_e060_wrong = ch64_2to3noC_sk_scSE_e060_wrong.build();        ch64_2to3noC_sk_scSE_e060_wrong .result_obj.ana_describe = "4-ch64_2to3noC_sk_scSE_e060_wrong"
-unet_7l_2to3noC_skip_SE = [
+unet_L7_2to3noC_skip_SE = [
     ch64_2to3noC_sk_no_e060,
     ch64_2to3noC_sk_cSE_e060_wrong,
     ch64_2to3noC_sk_sSE_e060,
     ch64_2to3noC_sk_scSE_e060_wrong,
 ]
 
-unet_7l_skip_SE_ep = [
+unet_L7_skip_SE_ep = [
     ch64_in_sk_cSE_e060_wrong.build(),
     ch64_in_sk_cSE_e100_wrong.build(),
     ch64_in_sk_sSE_e060.build(),
