@@ -70,12 +70,17 @@ class G_Mask_op_builder(Old_512_256_Unet_builder):
         self.kong_model.generate_results = generate_mask_flow_results             ### 不能checkpoint
         self.kong_model.generate_sees    = generate_mask_flow_sees_without_rec    ### 不能checkpoint
 class G_Flow_op_builder(G_Mask_op_builder):
-    def _build_flow_op_part(self):
+    def _build_flow_op_part(self, M_to_C=False):
         ### 生成 flow 的 operation
-        from step08_b_use_G_generate import generate_flow_results, generate_flow_sees_without_rec
-        # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
-        self.kong_model.generate_results = generate_flow_results             ### 不能checkpoint
-        self.kong_model.generate_sees    = generate_flow_sees_without_rec    ### 不能checkpoint
+        if(M_to_C):
+            from step08_b_use_G_generate import gt_mask_Generate_gt_flow, gt_mask_Generate_gt_flow_see
+            self.kong_model.generate_results = gt_mask_Generate_gt_flow        ### 不能checkpoint
+            self.kong_model.generate_sees    = gt_mask_Generate_gt_flow_see    ### 不能checkpoint
+        else:
+            from step08_b_use_G_generate import generate_flow_results, generate_flow_sees_without_rec
+            # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
+            self.kong_model.generate_results = generate_flow_results             ### 不能checkpoint
+            self.kong_model.generate_sees    = generate_flow_sees_without_rec    ### 不能checkpoint
 class G_Ckpt_op_builder(G_Flow_op_builder):
     def _build_ckpt_part(self):
         ### 建立 tf 存模型 的物件： checkpoint物件
@@ -223,11 +228,11 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
         self.build = _build_mask_unet
         return self
 
-    def use_flow_unet2(self):
+    def use_flow_unet2(self, M_to_C=False):
         def _build_mask_unet():
             self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
             self._build_ckpt_part()     ### 後
-            self._build_flow_op_part()  ### 用 flow_op
+            self._build_flow_op_part(M_to_C=M_to_C)  ### 用 flow_op
             print("build_flow_unet2", "finish")
             return self.kong_model
         self.build = _build_mask_unet
