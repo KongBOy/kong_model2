@@ -219,14 +219,14 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
     def build_g_bce_loss_fun_and_containor(self):
         print("self.loss_info_obj.logs_read_dir ~  ~  ~  ~  ", self.loss_info_obj.logs_read_dir)
         print("self.loss_info_obj.logs_write_dir~  ~  ~  ~  ", self.loss_info_obj.logs_write_dir)
-        self.loss_info_obj.loss_funs_dict["G"] = BCE(**self.args)
+        self.loss_info_obj.loss_funs_dict["G"]              = BCE(**self.args)
         self.loss_info_obj.loss_containors["gen_bce_loss" ] = tf.keras.metrics.Mean('gen_bce_loss', dtype=tf.float32)
         return self.loss_info_obj
 
     def build_g_mae_loss_fun_and_containor(self):
         print("self.loss_info_obj.logs_read_dir ~  ~  ~  ~  ", self.loss_info_obj.logs_read_dir)
         print("self.loss_info_obj.logs_write_dir~  ~  ~  ~  ", self.loss_info_obj.logs_write_dir)
-        self.loss_info_obj.loss_funs_dict["G"] = mae_kong
+        self.loss_info_obj.loss_funs_dict["MAE"]            = MAE(**self.args)
         self.loss_info_obj.loss_containors["gen_mae_loss" ] = tf.keras.metrics.Mean('gen_mae_loss', dtype=tf.float32)
         return self.loss_info_obj
 
