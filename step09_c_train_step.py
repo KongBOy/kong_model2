@@ -5,6 +5,43 @@ import pdb
 from step09_a_loss import *
 
 @tf.function
+def train_step_pure_G_split_mask_move_M_to_C(model_obj, in_data, gt_data, loss_info_obj=None):
+    '''
+    M_to_C 是 Mask_to_Coord 的縮寫
+    '''
+    gt_mask = gt_data[0]
+    gt_move = gt_data[1]
+
+    with tf.GradientTape() as gen_tape:
+        model_output = model_obj.generator(gt_mask)
+        # print("in_data.numpy().shape", in_data.numpy().shape)
+        # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
+        # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
+        losses = []
+        total_loss = 0
+        for loss_name, loss_fun in loss_info_obj.loss_funs_dict.items():
+            print("loss_name:", loss_name)
+            if(loss_name == "mask_tv_loss"): losses.append(loss_fun(model_output))
+            else:                            losses.append(loss_fun(gt_move, model_output))
+            # else:                            losses.append(loss_fun(gt_mask, model_output))
+            total_loss += losses[-1]
+        # gen_loss = loss_info_obj.loss_funs_dict["mask_BCE"]      (gt_mask, model_output)
+        # sob_loss = loss_info_obj.loss_funs_dict["mask_Sobel_MAE"](gt_mask, model_output)
+        # total_loss = gen_loss + sob_loss
+
+    total_gradients = gen_tape .gradient(total_loss, model_obj.generator.trainable_variables)
+    # for gradient in generator_gradients:
+    #     print("gradient", gradient)
+    model_obj .optimizer_G .apply_gradients(zip(total_gradients, model_obj.generator.trainable_variables))
+
+    ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
+    for go_containor, loss_containor in enumerate(loss_info_obj.loss_containors.values()):
+        loss_containor(loss_containor( losses[go_containor] ))
+    # loss_info_obj.loss_containors["mask_bce_loss"]      (gen_loss)
+    # loss_info_obj.loss_containors["mask_sobel_MAE_loss"](sob_loss)
+
+
+@tf.function
 def train_step_pure_G_split_mask_move(model_obj, in_data, gt_data, loss_info_obj=None):
     gt_mask = gt_data[0]
     gt_move = gt_data[1]
