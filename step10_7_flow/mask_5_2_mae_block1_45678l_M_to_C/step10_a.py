@@ -442,6 +442,7 @@ L6_ch001_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow
 ### coord_conv
 L7_ch032_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch032_sig_L7_no_limit_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch032_no_limit_coord_conv", describe_end="block1_L7_ch032_no_limit_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
+L7_ch016_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch016_sig_L7_no_limit, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch016", describe_end="block1_ch016_mae_s001_L7") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ### coord_conv
 L7_ch016_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch016_sig_L7_no_limit_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch016_no_limit_coord_conv", describe_end="block1_L7_ch016_no_limit_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
@@ -454,15 +455,20 @@ L7_ch008_mae_s100 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_bloc
 ### coord_conv
 L7_ch008_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch008_sig_L7_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch008_coord_conv", describe_end="block1_L7_ch008_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
+L7_ch004_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch004_sig_L7, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch004", describe_end="block1_ch004_mae_s001_L7") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ### coord_conv
 L7_ch004_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch004_sig_L7_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch004_coord_conv", describe_end="block1_L7_ch004_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
+L7_ch002_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch002_sig_L7, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch002", describe_end="block1_ch002_mae_s001_L7") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ### coord_conv
 L7_ch002_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch002_sig_L7_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch002_coord_conv", describe_end="block1_L7_ch002_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
+####################
+L7_ch001_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch001_sig_L7, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch001", describe_end="block1_ch001_mae_s001_L7") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ### coord_conv
 L8_ch016_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch016_sig_L8_no_limit_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch016_no_limit_coord_conv", describe_end="block1_L8_ch016_no_limit_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
+L8_ch008_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch008_sig_L8_no_limit, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch008", describe_end="block1_L8_ch008_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ### coord_conv
 L8_ch008_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch008_sig_L8_no_limit_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch008_no_limit_coord_conv", describe_end="block1_L8_ch008_no_limit_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
@@ -475,9 +481,11 @@ L8_ch004_mae_s100 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_bloc
 ### coord_conv
 L8_ch004_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch004_sig_L8_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch004_coord_conv", describe_end="block1_L8_ch004_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
+L8_ch002_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch002_sig_L8, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch002", describe_end="block1_L8_ch002_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ### coord_conv
 L8_ch002_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch002_sig_L8_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch002_coord_conv", describe_end="block1_L8_ch002_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
+L8_ch001_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch001_sig_L8, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch001", describe_end="block1_L8_ch001_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ### coord_conv
 L8_ch001_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch001_sig_L8_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch001_coord_conv", describe_end="block1_L8_ch001_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 

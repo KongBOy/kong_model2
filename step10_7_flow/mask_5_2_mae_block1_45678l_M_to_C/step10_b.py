@@ -421,6 +421,7 @@ run = "build().run()"
 ### coord_conv
 # sb.run(same_command + [f"L7_ch032_mae_s001_coord_conv.{run}"])
 ####################
+# sb.run(same_command + [f"L7_ch016_mae_s001.{run}"])
 ### coord_conv
 # sb.run(same_command + [f"L7_ch016_mae_s001_coord_conv.{run}"])
 ####################
@@ -433,15 +434,20 @@ run = "build().run()"
 ### coord_conv
 # sb.run(same_command + [f"L7_ch008_mae_s001_coord_conv.{run}"])
 ####################
+# sb.run(same_command + [f"L7_ch004_mae_s001.{run}"])
 ### coord_conv
 # sb.run(same_command + [f"L7_ch004_mae_s001_coord_conv.{run}"])
 ####################
+# sb.run(same_command + [f"L7_ch002_mae_s001.{run}"])
 ### coord_conv
 # sb.run(same_command + [f"L7_ch002_mae_s001_coord_conv.{run}"])
+####################
+# sb.run(same_command + [f"L7_ch001_mae_s001.{run}"])
 #### 8l ############################################################################################
 ### coord_conv
 # sb.run(same_command + [f"L8_ch016_mae_s001_coord_conv.{run}"])
 ####################
+# sb.run(same_command + [f"L8_ch008_mae_s001.{run}"])
 ### coord_conv
 # sb.run(same_command + [f"L8_ch008_mae_s001_coord_conv.{run}"])
 ####################
@@ -454,8 +460,10 @@ run = "build().run()"
 ### coord_conv
 # sb.run(same_command + [f"L8_ch004_mae_s001_coord_conv.{run}"])
 ####################
+# sb.run(same_command + [f"L8_ch002_mae_s001.{run}"])
 ### coord_conv
 # sb.run(same_command + [f"L8_ch002_mae_s001_coord_conv.{run}"])
 ####################
+# sb.run(same_command + [f"L8_ch001_mae_s001.{run}"])
 ### coord_conv
 # sb.run(same_command + [f"L8_ch001_mae_s001_coord_conv.{run}"])
