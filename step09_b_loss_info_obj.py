@@ -266,7 +266,12 @@ class Loss_info_builder(Loss_info_G_loss_builder):
 # 所以 也可以跟 model 一樣 先建好
 # 然後還要在 exp 裡面 再次設定喔！
 G_mse_s001_loss_info_builder = Loss_info_builder().set_loss_type("mse")
-G_mae_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae")
+G_mae_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae", mae_scale=  1)
+G_mae_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae", mae_scale= 20)
+G_mae_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae", mae_scale= 40)
+G_mae_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae", mae_scale= 60)
+G_mae_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae", mae_scale= 80)
+G_mae_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae", mae_scale=100)
 ##########################################################################################################################################################################
 ### 2
 G_bce_s001_loss_info_builder = Loss_info_builder().set_loss_type("bce", bce_scale=  1)
