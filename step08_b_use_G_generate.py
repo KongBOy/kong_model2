@@ -134,7 +134,7 @@ def gt_mask_Generate_gt_flow_see(model_G, see_index, in_img, in_img_pre, gt_mask
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(mask_write_dir)   ### 建立 model生成的結果 的資料夾
         # cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg",  in_img[0][:, :, ::-1].numpy())   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(see_write_dir + "/" + "0a-in_gt_mask.jpg", gt_mask.numpy())   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_write_dir + "/" + "0a-in_gt_mask.jpg", gt_mask.numpy().astype(np.uint8) * 255)   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_b_gt_flow.jpg", gt_flow_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(see_write_dir + "/" + "0c-rec_hope.jpg", rec_hope[0][:, :, ::-1].numpy())  ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張
         np.save    (see_write_dir + "/" + "0b-gt_a_gt_flow", gt_flow)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
