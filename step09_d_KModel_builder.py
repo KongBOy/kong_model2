@@ -7,6 +7,7 @@ start_time = time.time()
 class KModel:
     def __init__(self):  ### 共通有的 元件，其實這邊只留model_name好像也可以
         self.model_name = None
+        self.model_describe = ""
         self.epoch_log = tf.Variable(1)  ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
         self.train_step = None
 
@@ -114,6 +115,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
+        self.kong_model.model_describe = "_L%i_ch%03i_block%i_%s" % (depth_level, hid_ch, conv_block_num, unet_acti)
         self.hid_ch          = hid_ch
         self.depth_level     = depth_level
         self.out_ch          = out_ch
