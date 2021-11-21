@@ -43,7 +43,7 @@ class See_info:
         """
         # self.see_jpg_names        = get_dir_certain_file_names(self.see_read_dir, certain_word=".jpg")
         # self.in_img_path          = self.see_read_dir + "/" + self.see_jpg_names[0]
-        self.in_img_path          = self.see_read_dir + "/" + get_dir_certain_file_names(self.see_read_dir, certain_word="in_img")[0]
+        self.in_img_path          = self.see_read_dir + "/" + get_dir_certain_file_names(self.see_read_dir, certain_word="in_")[0]
 
 
 
