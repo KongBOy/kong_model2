@@ -1,4 +1,4 @@
-import mask_5_2_mae_block1_45678l.step10_a as mae_block1
+import mask_5_2_mae_block1_45678l_M_to_C.step10_a as mae_block1
 
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ### 2l
@@ -433,8 +433,16 @@ mae_block1_mae_s001_L2345678 = [
      mae_block1.L6_ch002_mae_s001.build().result_obj,
      mae_block1.L6_ch001_mae_s001.build().result_obj],
 
-    [mae_block1.L7_ch008_mae_s001.build().result_obj],
-    [mae_block1.L8_ch004_mae_s001.build().result_obj],
+    [mae_block1.L7_ch016_mae_s001.build().result_obj,
+     mae_block1.L7_ch008_mae_s001.build().result_obj,
+     mae_block1.L7_ch004_mae_s001.build().result_obj,
+     mae_block1.L7_ch002_mae_s001.build().result_obj,
+     mae_block1.L7_ch001_mae_s001.build().result_obj
+    ],
+    [mae_block1.L8_ch008_mae_s001.build().result_obj,
+     mae_block1.L8_ch004_mae_s001.build().result_obj,
+     mae_block1.L8_ch002_mae_s001.build().result_obj,
+     mae_block1.L8_ch001_mae_s001.build().result_obj],
 ]
 
 ### L2345_E_relu
