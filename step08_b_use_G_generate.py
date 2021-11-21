@@ -76,7 +76,7 @@ def generate_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_fl
     '''
     flow           = generate_flow_results(model_G, in_img_pre, result_obj.gt_use_range, training=training)
     flow           = flow[0]
-    gt_flow        = gt_flow[1][0]  ### 待思考怎麼修正
+    gt_flow        = gt_flow[0]
     # print("flow.shape~~~~~~~~~~~", flow.shape)
     # print("gt_flow.shape~~~~~~~~~~~", gt_flow.shape)
 
@@ -108,7 +108,7 @@ def generate_mask_flow_results(model_G, in_img_pre, gt_use_range, training=False
     return mask
 
 
-def generate_mask_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_mask_flow, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def generate_mask_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_mask_flow, gt_mask_flow_pre, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
     '''
     如果有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
     '''
