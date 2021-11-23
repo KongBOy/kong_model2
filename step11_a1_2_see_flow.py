@@ -63,19 +63,20 @@ class See_flow_visual(See_info):
         self.gt_flow_jpg_path   = self.get_path_savely(self.see_read_dir, certain_word="gt_flow", certain_ext=".jpg")
         self.rec_hope_path        = self.flow_v_write_dir + "/" + get_dir_certain_file_names(self.see_read_dir, certain_word="rec_hope")[0]
 
-        self.flow_v_jpg_names      = get_dir_certain_file_names(self.see_read_dir, certain_word="epoch", certain_ext=".jpg")
-        self.flow_v_jpg_read_paths = [self.see_read_dir + "/" + epoch_jpg_name for epoch_jpg_name in self.flow_v_jpg_names]  ### 沒有 write_paths， 同上
-        self.flow_v_jpg_amount     = len(self.flow_v_jpg_names)
+        self.flow_ep_jpg_names      = get_dir_certain_file_names(self.see_read_dir, certain_word="epoch", certain_word2="flow", certain_ext=".jpg")
+        self.flow_ep_jpg_read_paths = [self.see_read_dir + "/" + epoch_name for epoch_name in self.flow_ep_jpg_names]  ### 沒有 write_paths， 同上
+        self.flow_ep_jpg_amount     = len(self.flow_ep_jpg_names)
 
-        self.trained_epoch       = self.flow_v_jpg_amount - 1  ### 去掉epoch0
+
+        # self.trained_epoch       = self.flow_ep_jpg_amount - 1  ### 去掉epoch0
 
     ###############################################################################################
     ###############################################################################################
     ### 主要做的事情，此fun會給 save_as_matplot_visual_during/after train 使用
     def _Draw_matplot_visual(self, epoch, add_loss=False, bgr2rgb=False):
-        in_img = cv2.imread(self.in_img_path)            ### 要記得see的第一張存的是 輸入的in影像
-        gt_img = cv2.imread(self.gt_flow_v_path )            ### 要記得see的第二張存的是 輸出的gt影像
-        img    = cv2.imread(self.flow_v_jpg_read_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
+        in_img = cv2.imread(self.in_img_path)                    ### 要記得see的第一張存的是 輸入的in影像
+        gt_img = cv2.imread(self.gt_flow_jpg_path )              ### 要記得see的第二張存的是 輸出的gt影像
+        img    = cv2.imread(self.flow_ep_jpg_read_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
         single_row_imgs = Matplot_single_row_imgs(
                                 imgs      =[ in_img ,   img ,      gt_img],    ### 把要顯示的每張圖包成list
                                 img_titles=["in_img", "out_img", "gt_img"],    ### 把每張圖要顯示的字包成list
@@ -122,13 +123,13 @@ class See_flow_visual(See_info):
 
         ### See_method 第三部分：主要做的事情在這裡， 如果要有想設計平行處理的功能 就要有 1.single_see_core_amount 和 2.下面的if/elif/else 和 3._see_method 前兩個參數要為 start_index, task_amount 相關詞喔！
         if(single_see_core_amount == 1):  ### single_see_core_amount 大於1 代表 單核心跑， 就重新導向 最原始的function囉 把 see內的任務 依序完成！
-            self._draw_matplot_visual_after_train(0, self.flow_v_jpg_amount, add_loss=add_loss, bgr2rgb=bgr2rgb)
+            self._draw_matplot_visual_after_train(0, self.flow_ep_jpg_amount, add_loss=add_loss, bgr2rgb=bgr2rgb)
             ### 後處理讓結果更小 但 又不失視覺品質，單核心版
             Find_ltrd_and_crop (self.flow_matplot_visual_write_dir, self.flow_matplot_visual_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg        (self.flow_matplot_visual_write_dir, self.flow_matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
         elif(single_see_core_amount  > 1):  ### single_see_core_amount 大於1 代表 多核心跑， 丟進 multiprocess_interface 把 see內的任務 切段 平行處理囉
             ### see內的任務 有切 multiprocess
-            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.flow_v_jpg_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=see_print_msg)
+            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.flow_ep_jpg_amount, task=self._draw_matplot_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=see_print_msg)
             ### 後處理讓結果更小 但 又不失視覺品質，多核心版(core_amount 在 step0 裡調)
             Find_ltrd_and_crop (self.flow_matplot_visual_write_dir, self.flow_matplot_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg        (self.flow_matplot_visual_write_dir, self.flow_matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
@@ -155,6 +156,6 @@ class See_flow_visual(See_info):
         """
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             single_row_imgs = self._Draw_matplot_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
-            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.flow_v_jpg_amount, ylim=0.04)
+            if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.flow_ep_jpg_amount, ylim=0.04)
             single_row_imgs.Save_fig(dst_dir=self.flow_matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 

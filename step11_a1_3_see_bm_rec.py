@@ -175,9 +175,9 @@ class See_bm_rec(See_info):
     ###         1.這樣這裡做的事情太多了~~
     ###         2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
     def _Draw_bm_rec_matplot_visual(self, epoch, add_loss=False, bgr2rgb=False):
-        in_img    = cv2.imread(self.in_img_path)          ### 要記得see的jpg第一張存的是 輸入的in影像
-        flow_v    = cv2.imread(self.flow_v_jpg_read_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
-        gt_flow_v = cv2.imread(self.gt_flow_v_path )          ### 要記得see0的jpg第二張存的是 輸出的gt影像
+        in_img    = cv2.imread(self.in_img_path)                    ### 要記得see的jpg第一張存的是 輸入的in影像
+        flow_v    = cv2.imread(self.flow_ep_jpg_read_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
+        gt_flow_v = cv2.imread(self.gt_flow_jpg_path )              ### 要記得see0的jpg第二張存的是 輸出的gt影像
 
         # print("2. see gt_use_range=", self.gt_use_range)
         # start_time = time.time()

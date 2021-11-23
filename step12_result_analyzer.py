@@ -124,7 +124,7 @@ class Col_results_analyzer(Result_analyzer):
 
             ### 可以直接調整這裡 來決定 analyze 要畫什麼， 當然這是寫死的寫法不大好， 有空再寫得更通用吧～
             if  (self.ana_what == "rec"):  c_imgs.append(cv2.imread(result.sees[see_num].rec_read_paths[use_epoch]))
-            elif(self.ana_what == "flow"): c_imgs.append(cv2.imread(result.sees[see_num].flow_v_jpg_read_paths[use_epoch]))
+            elif(self.ana_what == "flow"): c_imgs.append(cv2.imread(result.sees[see_num].flow_ep_jpg_read_paths[use_epoch]))
             elif(self.ana_what == "mask"): c_imgs.append(cv2.imread(result.sees[see_num].mask_read_paths[use_epoch]))
 
             # c_imgs.append(cv2.imread(result.sees[see_num].see_jpg_paths[epoch + 2]))
@@ -205,7 +205,7 @@ class Col_results_analyzer(Result_analyzer):
         in_img = None
         gt_img = None
         if(self.show_in_img): in_img = cv2.imread(self.c_results[0].sees[see_num].in_img_path)
-        if(self.show_gt_img): gt_img = cv2.imread(self.c_results[0].sees[see_num].gt_flow_v_path)
+        if(self.show_gt_img): gt_img = cv2.imread(self.c_results[0].sees[see_num].gt_flow_jpg_path)
 
         ### 抓 要顯示的 titles， 同上理， 每個epochs 的 c_title 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see_ 的外面 ，然後再用 參數傳入
         c_titles = self.step1_get_c_titles()
@@ -265,7 +265,7 @@ class Col_results_analyzer(Result_analyzer):
     #         for go_see_num, see_num in enumerate(see_nums):
     #             c_imgs   = [in_imgs[go_see_num]]
     #             for result in self.c_results:
-    #                 epochs = len(result.sees[see_num].flow_v_jpg_names)
+    #                 epochs = len(result.sees[see_num].flow_ep_jpg_names)
     #                 # epochs = len(result.sees[see_num].rec_read_paths) - 2
     #                 # print("len(result.sees[see_num].rec_read_paths)", len(result.sees[see_num].rec_read_paths))
     #                 use_epoch = min(epochs, go_epoch)  ### 超出範圍就取最後一張
@@ -320,7 +320,7 @@ class Col_results_analyzer(Result_analyzer):
     #     gt_imgs = []
     #     for see_num in see_nums:
     #         in_imgs.append(cv2.imread(self.c_results[0].sees[see_num].in_img_path))
-    #         gt_imgs.append(cv2.imread(self.c_results[0].sees[see_num].gt_flow_v_path))
+    #         gt_imgs.append(cv2.imread(self.c_results[0].sees[see_num].gt_flow_jpg_path))
 
     #     ### 抓 第一row的 要顯示的 titles
     #     c_titles = ["in_img"]
@@ -392,7 +392,7 @@ class Row_col_results_analyzer(Result_analyzer):
         in_img = None
         gt_img = None
         if(self.show_in_img): in_img = cv2.imread(self.r_c_results[0][0].sees[see_num].in_img_path)
-        if(self.show_gt_img): gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].gt_flow_v_path)
+        if(self.show_gt_img): gt_img = cv2.imread(self.r_c_results[0][0].sees[see_num].gt_flow_jpg_path)
 
         # for go_img in tqdm(range(self.r_c_min_trained_epoch)):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount + 1)):  ### +1 是因為 0~epoch 都要做，  range 只到 end-1， 所以 +1 補回來～

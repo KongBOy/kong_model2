@@ -202,7 +202,7 @@ class Result:
             r_c_imgs = []
             for go_see_num, see_num in enumerate(see_nums):
                 c_imgs = [in_imgs[go_see_num]]
-                c_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].flow_v_jpg_names[go_epoch]))
+                c_imgs.append(cv2.imread(self.sees[see_num].see_read_dir + "/" + self.sees[see_num].flow_ep_jpg_names[go_epoch]))
                 c_imgs += [gt_imgs[go_see_num]]
                 r_c_imgs.append(c_imgs)
 
@@ -239,7 +239,7 @@ class Result:
         gt_imgs = []
         for see_num in see_nums:
             in_imgs.append(cv2.imread(self.sees[see_num].in_img_path))
-            gt_imgs.append(cv2.imread(self.sees[see_num].gt_flow_v_path))
+            gt_imgs.append(cv2.imread(self.sees[see_num].gt_flow_jpg_path))
 
         ### 抓 第一row的 要顯示的 titles
         titles = ["in_img", self.ana_describe, "gt_img"]
