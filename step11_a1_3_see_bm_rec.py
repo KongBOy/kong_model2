@@ -127,6 +127,7 @@ class See_bm_rec(See_info):
         self.get_see_base_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
         self.get_npz_info()
         self.get_flow_info()
+        # print("here~~~~~~~~~~~~~~~~~~~~~", self.npz_epoch_amount)
 
         ### See_method 第三部分：主要做的事情在這裡， 如果要有想設計平行處理的功能 就要有 1.single_see_core_amount 和 2.下面的if/elif/else 和 3._see_method 前兩個參數要為 start_index, task_amount 相關詞喔！
         if(single_see_core_amount == 1):  ### single_see_core_amount 大於1 代表 單核心跑， 就重新導向 最原始的function囉 把 see內的任務 依序完成！
@@ -211,7 +212,27 @@ class See_bm_rec(See_info):
         flow          = np.load(self.npz_epoch_read_paths[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         flow [..., 1] = 1 - flow[..., 1]
         bm, rec = self._use_flow_to_rec(dis_img=dis_img, flow=flow)
+        # print("dis_img.max():", dis_img.max())
+        # print("flow.max():", flow.max())
+        # print("rec.max():", rec.max())
+        # print("bm.max():", bm.max())
 
+        # from step08_b_use_G_generate import flow_or_coord_visual_op
+        # y_coord = (flow[..., 1] * 255.).astype(np.uint8)
+        # x_coord = (flow[..., 2] * 255.).astype(np.uint8)
+        # bm_visual = flow_or_coord_visual_op(bm)
+        # flow_visual = flow_or_coord_visual_op(flow)
+        # cv2.imshow("y_coord", y_coord)
+        # cv2.imshow("x_coord", x_coord)
+        # cv2.imshow("flow_visual", flow_visual.astype(np.uint8))
+        # cv2.imshow("bm_visual", bm_visual.astype(np.uint8))
+        # cv2.waitKey()
+        # '''
+        # dis_img.max(): 255
+        # flow.max(): 1.0
+        # rec.max(): 0
+        # bm.max(): 0.81640625
+        # '''
         ### gt flow part
         gt_flow            = np.load(self.flow_gt_npz_path)["arr_0"]       ### npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         if("real" in self.see_name):  ### 因為 see-real 沒有gt_flow， 本來全黑沒問題， 不過我後來有玩 fake_see 不是全黑就會出問題， 所以乾脆 see-real 就不要處理
