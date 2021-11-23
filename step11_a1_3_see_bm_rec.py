@@ -198,7 +198,8 @@ class See_bm_rec(See_info):
 
         ### 單獨存大張 bm，有空再弄
         ### 單獨存大張 rec：
-        if(epoch <= 3): cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
+        # if(epoch <= 3): cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
+        cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)                  ### 存大張gt，雖然只要 gt只要存一次即可 同上可以寫個if只存一次， 但也沒省多少時間， 都存算了！ 以防 哪天從中途的epoch開始跑結果沒存到 rec_gt
         cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_epoch=%04i.jpg" % epoch, rec)     ### 存大張rec
 
         return single_row_imgs
