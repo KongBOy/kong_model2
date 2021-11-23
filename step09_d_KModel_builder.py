@@ -65,17 +65,23 @@ class Old_512_256_Unet_builder(KModel_init_builder):
 class G_Mask_op_builder(Old_512_256_Unet_builder):
     def _build_mask_op_part(self):
         ### 生成 mask 的 operation
-        from step08_b_use_G_generate import generate_mask_flow_results, generate_mask_flow_sees_without_rec
+        from step08_b_use_G_generate import in_img_Generate_gt_mask, in_img_Generate_gt_mask_see
         # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
-        self.kong_model.generate_results = generate_mask_flow_results             ### 不能checkpoint
-        self.kong_model.generate_sees    = generate_mask_flow_sees_without_rec    ### 不能checkpoint
+        self.kong_model.generate_results = in_img_Generate_gt_mask             ### 不能checkpoint
+        self.kong_model.generate_sees    = in_img_Generate_gt_mask_see    ### 不能checkpoint
 class G_Flow_op_builder(G_Mask_op_builder):
-    def _build_flow_op_part(self, M_to_C=False):
+    def _build_flow_op_part(self, I_to_C_to_F_with_gt_M=False,
+                                  M_to_C_to_F_with_gt_M=False):
         ### 生成 flow 的 operation
-        if(M_to_C):
-            from step08_b_use_G_generate import gt_mask_Generate_gt_flow, gt_mask_Generate_gt_flow_see
-            self.kong_model.generate_results = gt_mask_Generate_gt_flow        ### 不能checkpoint
+        if(M_to_C_to_F_with_gt_M):
+            from step08_b_use_G_generate import gt_mask_Generate_gt_coord, gt_mask_Generate_gt_flow_see
+            self.kong_model.generate_results = gt_mask_Generate_gt_coord        ### 不能checkpoint
             self.kong_model.generate_sees    = gt_mask_Generate_gt_flow_see    ### 不能checkpoint
+        elif(I_to_C_to_F_with_gt_M):
+            from step08_b_use_G_generate import in_img_Generate_gt_coord, in_img_Generate_gt_flow_see
+            self.kong_model.generate_results = in_img_Generate_gt_coord        ### 不能checkpoint
+            self.kong_model.generate_sees    = in_img_Generate_gt_flow_see    ### 不能checkpoint
+
         else:
             from step08_b_use_G_generate import generate_flow_results, generate_flow_sees_without_rec
             # self.kong_model.generate_results = generate_flow_results           ### 不能checkpoint  ### 好像用不到
@@ -228,11 +234,11 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
         self.build = _build_mask_unet
         return self
 
-    def use_flow_unet2(self, M_to_C=False):
+    def use_flow_unet2(self, M_to_C_to_F_with_gt_M=False):
         def _build_mask_unet():
             self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
             self._build_ckpt_part()     ### 後
-            self._build_flow_op_part(M_to_C=M_to_C)  ### 用 flow_op
+            self._build_flow_op_part(M_to_C_to_F_with_gt_M=M_to_C_to_F_with_gt_M)  ### 用 flow_op
             print("build_flow_unet2", "finish")
             return self.kong_model
         self.build = _build_mask_unet
