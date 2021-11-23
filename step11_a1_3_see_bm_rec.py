@@ -125,7 +125,7 @@ class See_bm_rec(See_info):
         ### See_method 第二部分：取得see資訊
         self.get_see_base_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
         self.get_npz_info()
-        print("here~~~~~~~~~~~~~~~~~~~~~", self.npz_epoch_amount)
+        self.get_flow_info()
 
         ### See_method 第三部分：主要做的事情在這裡， 如果要有想設計平行處理的功能 就要有 1.single_see_core_amount 和 2.下面的if/elif/else 和 3._see_method 前兩個參數要為 start_index, task_amount 相關詞喔！
         if(single_see_core_amount == 1):  ### single_see_core_amount 大於1 代表 單核心跑， 就重新導向 最原始的function囉 把 see內的任務 依序完成！
