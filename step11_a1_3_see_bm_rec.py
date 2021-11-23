@@ -213,8 +213,13 @@ class See_bm_rec(See_info):
 
         ### gt flow part
         gt_flow            = np.load(self.flow_gt_npz_path)["arr_0"]       ### npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
-        gt_flow   [..., 1] = 1 - gt_flow[..., 1]
-        gt_bm, gt_rec = self._use_flow_to_rec(dis_img=dis_img, flow=gt_flow)
+        if("real" in self.see_name):  ### 因為 see-real 沒有gt_flow， 本來全黑沒問題， 不過我後來有玩 fake_see 不是全黑就會出問題， 所以乾脆 see-real 就不要處理
+            h, w = gt_flow.shape[:2]
+            gt_bm  = np.zeros(shape=(h, w, 2))
+            gt_rec = np.zeros(shape=(h, w, 3))
+        else:
+            gt_flow   [..., 1] = 1 - gt_flow[..., 1]
+            gt_bm, gt_rec = self._use_flow_to_rec(dis_img=dis_img, flow=gt_flow)
         return bm, rec, gt_bm, gt_rec
 
     ### See_method 第三部分c
