@@ -269,6 +269,7 @@ class tf_Datapipline_builder():
 
     ### 建立 img 的 pipline
     def build_img_pipline(self, ord_dir, file_format, img_resize, db_range, use_range):  ### 有 bmp, jpg, png 和 gif ， 所以需要 file_format 來指定用哪種
+        print("DB ord_dir:", ord_dir)
         self.tf_pipline.ord_dir      = ord_dir
         self.tf_pipline.file_format  = file_format
         self.tf_pipline.img_resize   = img_resize
@@ -279,6 +280,7 @@ class tf_Datapipline_builder():
 
     ### 建立 move_map 的 pipline
     def build_mov_pipline(self, ord_dir, img_resize, max_train_move, min_train_move, db_range, use_range):  ### 目前只有 knpy ， 所以不淤校 file_format
+        print("DB ord_dir:", ord_dir)
         self.tf_pipline.ord_dir = ord_dir
         self.tf_pipline.img_resize = img_resize
         self.tf_pipline.max_train_move = max_train_move
@@ -290,6 +292,7 @@ class tf_Datapipline_builder():
 
     ### 建立 flow 的 pipline
     def build_flow_pipline(self, ord_dir, img_resize, db_range, use_range):  ### 目前只有 knpy ， 所以不淤校 file_format
+        print("DB ord_dir:", ord_dir)
         self.tf_pipline.ord_dir = ord_dir
         self.tf_pipline.img_resize = img_resize
         self.tf_pipline.db_range  = db_range
@@ -299,6 +302,7 @@ class tf_Datapipline_builder():
 
     ### 建立 flow_mask 的 pipline
     def build_flow_mask_pipline(self, ord_dir, img_resize, db_range, use_range):  ### 目前只有 knpy ， 所以不淤校 file_format
+        print("DB ord_dir:", ord_dir)
         self.tf_pipline.ord_dir = ord_dir
         self.tf_pipline.img_resize = img_resize
         self.tf_pipline.db_range  = db_range
@@ -308,6 +312,7 @@ class tf_Datapipline_builder():
 
     ### 建立 move_map 的 pipline
     def build_mask_pipline(self, ord_dir, file_format, img_resize, db_range, use_range):  ### 有 jpg 和 gif ， 所以需要 file_format 來指定用哪種
+        print("DB ord_dir:", ord_dir)
         self.tf_pipline.ord_dir = ord_dir
         self.tf_pipline.file_format  = file_format
         self.tf_pipline.img_resize = img_resize
