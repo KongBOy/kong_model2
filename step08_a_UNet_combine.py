@@ -123,22 +123,19 @@ class Generator(tf.keras.models.Model):
 if(__name__ == "__main__"):
     import numpy as np
     import time
-    data = np.ones(shape=(1, 512, 512, 3), dtype=np.float32)
-    start_time = time.time()  # 看資料跑一次花多少時間
-    # test_g = Generator(hid_ch=64, depth_level=7, use_bias=False)
-    test_g = Generator(hid_ch= 128, depth_level=4, out_ch=1, unet_acti="sigmoid", conv_block_num=1, ch_upper_bound= 2**14)
-    test_g(data)
-    print("cost time", time.time() - start_time)
-    test_g.summary()
-    print(test_g(data))
+    from kong_util.tf_model_util import Show_model_layer_names
+    # data = np.ones(shape=(1, 512, 512, 3), dtype=np.float32)
+    # start_time = time.time()  # 看資料跑一次花多少時間
+    # # test_g = Generator(hid_ch=64, depth_level=7, use_bias=False)
+    # test_g = Generator(hid_ch= 128, depth_level=4, out_ch=1, unet_acti="sigmoid", conv_block_num=1, ch_upper_bound= 2**14)
+    # test_g(data)
+    # print("cost time", time.time() - start_time)
+    # test_g.summary()
+    # print(test_g(data))
 
-    for layer in test_g.layers:
-        # print(dir(layer))
-        print(layer.name)
-        for weight in layer.weights:
-            print("   ", weight.shape)
+    
 
-
+    ############################################################################################################################
     ### 嘗試 真的 load tf_data 進來 train 看看
     import numpy as np
     from tqdm import tqdm
@@ -183,9 +180,10 @@ if(__name__ == "__main__"):
     # model_obj = mask_unet2_L3_skip_use_add_sig
     # model_obj = mask_unet2_L2_skip_use_add_sig
 
-    model_obj = mask_unet_ch032_sig_L6
+    model_obj = mask_unet2_block2_ch004_sig_8l
 
     model_obj = model_obj.build()  ### 可替換成 上面 想測試的 model
+
     ### 2. db_obj 和 tf_data
     db_obj  = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
     tf_data = tf_Data_builder().set_basic(db_obj, 1, train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
@@ -195,5 +193,16 @@ if(__name__ == "__main__"):
     ### 4. 跑起來試試看
     for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
         model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=G_mae_loss_info)
-        if(n ==  0): model_obj.generator.summary()
-        if(n == 10): model_obj.generator.save_weights("test_save_weights")
+        if(n ==  0):
+            model_obj.generator.summary()
+            Show_model_layer_names(model_obj.generator)
+        if(n == 10):
+            model_obj.generator.save_weights("try_save/weights")
+            iter10 = model_obj.generator.layers[0].weights[1]
+            print(iter10)
+        if(n == 20):
+            iter20 = model_obj.generator.layers[0].weights[1]
+            print(iter20)
+            model_obj.generator.load_weights("try_save/weights")
+            iter20_load10 = model_obj.generator.layers[0].weights[1]
+            print(iter20_load10)
