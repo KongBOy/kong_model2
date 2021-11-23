@@ -8,9 +8,9 @@ from step09_a_loss import *
     因為 有些架構 用 的 train_step 是一樣的， 所以 先只寫成 function， 給各個架構掛上去
 '''
 @tf.function
-def train_step_pure_G_split_mask_move_M_to_C(model_obj, in_data, gt_data, loss_info_obj=None):
+def train_step_pure_G_split_mask_move_M_to_C_to_F_with_gt_M(model_obj, in_data, gt_data, loss_info_obj=None):
     '''
-    M_to_C 是 Mask_to_Coord 的縮寫
+    M_to_C_to_F_with_gt_M 是 Mask_to_Coord 的縮寫
     '''
     gt_mask = gt_data[0]
     gt_move = gt_data[1]
