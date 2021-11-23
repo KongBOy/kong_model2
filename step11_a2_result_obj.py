@@ -78,8 +78,8 @@ class Result:
                 Save_as_bm_rec_matplot_visual
                 Calculate_SSIM_LD
         """
-        if( "single_see_core_amount" not in args.keys()): args["single_see_core_amount"] = 1
         if( "see_core_amount"        not in args.keys()): args["see_core_amount"       ] = 1
+        if( "single_see_core_amount" not in args.keys()): args["single_see_core_amount"] = 1
         if( "see_print_msg"          not in args.keys()): args["see_print_msg"         ] = False
         if( "result_print_msg"       not in args.keys()): args["result_print_msg"      ] = False
         result_start = time.time()
