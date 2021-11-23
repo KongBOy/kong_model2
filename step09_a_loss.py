@@ -15,7 +15,7 @@ def mae_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
     return loss * lamb
 
 class MAE(tf.keras.losses.Loss):
-    def __init__(self, mae_scale, **args):
+    def __init__(self, mae_scale=1, **args):
         super().__init__(name="MAE")
         self.mae_scale = mae_scale
 
