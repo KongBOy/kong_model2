@@ -243,7 +243,7 @@ class Experiment():
             # print("test_gt_pre.shape", test_gt_pre.shape)
             if  (flow_mask is True):
                 in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy
-                pred_mask      = self.model_obj.generate_results(model_G=self.model_obj.generator, in_img_pre=test_in_pre, gt_use_range=self.gt_use_range)  ### BHWC
+                pred_mask      = self.model_obj.generate_results(model_obj.generator, test_in, test_in_pre, test_gt, test_gt_pre, gt_use_range=self.gt_use_range)  ### BHWC
                 pred_mask      = pred_mask[0].numpy()   ### HWC 和 tensor -> numpy
                 gt_mask    = test_gt[0][0].numpy()
 
