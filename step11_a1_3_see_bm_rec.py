@@ -169,14 +169,14 @@ class See_bm_rec(See_info):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             if(go_epoch < jump_to): continue
             # print("current go_epoch:", go_epoch, "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            single_row_imgs = self._Draw_bm_rec_matplot_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
+            single_row_imgs = self._Draw_bm_rec_matplot_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb, jump_to=jump_to)
             single_row_imgs.Save_fig(dst_dir=self.bm_rec_matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     ### See_method 第三部分a
     ###     我覺得先把 npy 轉成 npz 再來生圖比較好，不要在這邊 邊生圖 邊轉 npz，覺得的原因如下：
     ###         1.這樣這裡做的事情太多了~~
     ###         2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
-    def _Draw_bm_rec_matplot_visual(self, epoch, add_loss=False, bgr2rgb=False):
+    def _Draw_bm_rec_matplot_visual(self, epoch, add_loss=False, bgr2rgb=False, jump_to=0):
         in_img    = cv2.imread(self.in_img_path)                    ### 要記得see的jpg第一張存的是 輸入的in影像
         flow_v    = cv2.imread(self.flow_ep_jpg_read_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
         gt_flow_v = cv2.imread(self.gt_flow_jpg_path )              ### 要記得see0的jpg第二張存的是 輸出的gt影像
@@ -198,8 +198,8 @@ class See_bm_rec(See_info):
 
         ### 單獨存大張 bm，有空再弄
         ### 單獨存大張 rec：
-        # if(epoch <= 3): cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
-        cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)                  ### 存大張gt，雖然只要 gt只要存一次即可 同上可以寫個if只存一次， 但也沒省多少時間， 都存算了！ 以防 哪天從中途的epoch開始跑結果沒存到 rec_gt
+        if(epoch <= jump_to): cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)  ### 存大張gt，gt只要存一次即可，所以加個if這樣子，<=3是因為 bm_rec 懶的寫防呆 是從 第四個epoch才開始做~~，要不然epoch==2 就行囉！，所以目前gt會存兩次拉但時間應該多一咪咪而以先這樣吧~~
+        # cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_gt.jpg", gt_rec)                  ### 存大張gt，雖然只要 gt只要存一次即可 同上可以寫個if只存一次， 但也沒省多少時間， 都存算了！ 以防 哪天從中途的epoch開始跑結果沒存到 rec_gt
         cv2.imwrite(self.rec_visual_write_dir + "/" + "rec_epoch=%04i.jpg" % epoch, rec)     ### 存大張rec
 
         return single_row_imgs
