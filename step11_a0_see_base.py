@@ -33,6 +33,15 @@ class See_info:
         self.in_use_range = "0~1"
         self.gt_use_range = "0~1"
 
+    def get_path_savely(self, search_dir, certain_word, certain_ext="."):
+        names = get_dir_certain_file_names(search_dir, certain_word=certain_word, certain_ext=certain_ext)
+        if(len(self.names) > 0):
+            path = f"{search_dir}/{names[0]}"
+            return path
+        else:
+            print(f"{search_dir} 找不到 {certain_word}{certain_ext} 字眼的檔案")
+            return None
+
     def get_see_base_info(self):
         ''' 我有把 see_file_amount 這個attr拿掉囉！ 因為 應用的時候需要一直 -1, -2, -3 很煩， -1, -2, -3 分別代表什麼數字都直接定義清楚這樣子拉！'''
         """
@@ -43,11 +52,15 @@ class See_info:
         """
         # self.see_jpg_names        = get_dir_certain_file_names(self.see_read_dir, certain_word=".jpg")
         # self.in_img_path          = self.see_read_dir + "/" + self.see_jpg_names[0]
-        self.in_img_path          = self.see_read_dir + "/" + get_dir_certain_file_names(self.see_read_dir, certain_word="in_")[0]
+        # print("self.see_read_dir:", self.see_read_dir)
+        self.in_img_path = self.get_path_savely(self.see_read_dir, certain_word="in_img")
+        # self.in_img_names = get_dir_certain_file_names(self.see_read_dir, certain_word="in_img")
+        # if(len(self.in_img_names) > 0): self.in_img_path = f"{self.see_read_dir}/{self.in_img_names[0]}"
+        # else: print(f"{self.see_read_dir} 找不到 gt_flow.npz")
 
 
 
 
 
-        ### 不確定合不合理， 目前就先暫時用 flow_v_jpg_names -1(去掉epoch0) 來代表 現在已經train了幾個epochs囉！ 即 trained_epochs， flow_v_jpg_names 用了覺得不合理再換吧～
-        # self.trained_epoch       = self.flow_v_jpg_amount - 1  ### 去掉epoch0
+        ### 不確定合不合理， 目前就先暫時用 flow_ep_jpg_names -1(去掉epoch0) 來代表 現在已經train了幾個epochs囉！ 即 trained_epochs， flow_ep_jpg_names 用了覺得不合理再換吧～
+        # self.trained_epoch       = self.flow_ep_jpg_amount - 1  ### 去掉epoch0

@@ -66,6 +66,11 @@ class See_npy_to_npz(See_info):
                       └ ..._write_paths
                      file_amount
         """
+        self.flow_gt_npy_path = self.get_path_savely(self.npy_read_dir, certain_word="gt_flow", certain_ext=".npy")
+        # self.gt_flow_names = get_dir_certain_file_names(self.npy_read_dir, certain_word="gt_flow", certain_ext=".npy")
+        # if(len(self.gt_flow_name) > 0): self.flow_gt_npy_path = self.npy_read_dir + "/" + self.gt_flow_names[0]
+        # else: print(f"{self.npy_read_dir} 找不到 gt_flow.npy")
+
         self.npy_names            = get_dir_certain_file_names(self.npy_read_dir, certain_word=".npy")
         self.npy_read_paths       = [self.npy_read_dir  + "/" + npy_name for npy_name in self.npy_names]  ### 沒有 write_paths，因為式 npy轉npz， 不會有寫npy的動作， 雖然下面的 compare 會寫一點npy， 但也因為 有用 .replace() 所以用 see_npy_name.replace() 較保險這樣子！
         self.npy_amount           = len(self.npy_read_paths)
@@ -78,10 +83,10 @@ class See_npy_to_npz(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        ### 有包含 gt_flow 的 list喔！ 第一個 放的是 gt_flow
-        print("self.npz_read_dir~~~~~~~~~~~~~~~~~", self.npz_read_dir)
-        self.npz_names            = get_dir_certain_file_names(self.npz_read_dir, certain_word=".npz")
-        self.flow_gt_npz_path         = self.npz_read_dir + "/" + self.npz_names[0]
+        self.flow_gt_npz_path = self.get_path_savely(self.npz_read_dir, certain_word="gt_flow", certain_ext=".npz")
+        # self.flow_gt_npz_names    = get_dir_certain_file_names(self.npz_read_dir, certain_word="gt_flow", certain_ext=".npz")
+        # if(len(self.flow_gt_npz_names) > 0): self.flow_gt_npz_path = f"{self.npz_read_dir}/{self.flow_gt_npz_names[0]}"
+        # else: print(f"{self.npz_read_dir} 找不到 gt_flow.npz")
 
         ### 不包含 gt_flow 的 list喔！
         self.npz_epoch_names      = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_ext=".npz")
