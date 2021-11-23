@@ -3,7 +3,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import tensorflow as tf
 import numpy as np
 import time
-from step0_access_path import Syn_write_to_read_dir, result_read_path, result_write_path
+from step0_access_path import Syn_write_to_read_dir, result_read_path, result_write_path, kong_model2_dir
 from step06_a_datas_obj import *
 from step06_b_data_pipline import tf_Data_builder
 from step09_b_loss_info_obj import *
@@ -30,20 +30,20 @@ class Experiment():
         print("code_save_path:", code_save_path)
         Check_dir_exist_and_build(code_save_path)                             ### 建立目的地資料夾
 
-        py_file_names = get_dir_certain_file_names(".", certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
+        py_file_names = get_dir_certain_file_names(kong_model2_dir, certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
         for py_file_name in py_file_names:
             ### 這兩行可以 抓 step"幾" 然後只存 step"幾".py 喔，但還沒整理以前的code，保險起見還是全存好了，有空再細細處理~~
             # py_file_name_step = int(py_file_name.split("_")[0][4:])          ### 抓出 step "幾"
             # if(py_file_name_step >= 6 or py_file_name_step == 0):            ### step06 以上
-            shutil.copy(py_file_name, code_save_path + "/" + py_file_name)     ### 存起來
+            shutil.copy(f"{kong_model2_dir}/{py_file_name}", f"{code_save_path}/{py_file_name}")     ### 存起來
 
         ### 因為我現在有加 timestamp， 所以 不會有上一版 kong_util的問題， 所以可以註解掉囉～
         # if(os.path.isdir(code_save_path + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
         #     shutil.rmtree(code_save_path + "/" + "kong_util")
         print("self.exp_dir:", self.exp_dir )
-        shutil.copytree("kong_util", code_save_path + "/" + "kong_util")
-        shutil.copytree("kong_Blender", code_save_path + "/" + "kong_Blender")
-        shutil.copytree("SIFT_dev", code_save_path + "/" + "SIFT_dev")
+        shutil.copytree(f"{kong_model2_dir}/kong_util", code_save_path + "/" + "kong_util")
+        shutil.copytree(f"{kong_model2_dir}/kong_Blender", code_save_path + "/" + "kong_Blender")
+        shutil.copytree(f"{kong_model2_dir}/SIFT_dev", code_save_path + "/" + "SIFT_dev")
 
         code_exe_copy_src = "/".join(self.code_exe_path.split("\\")[:-1])
         code_exe_copy_dst = code_save_path + "/" + "/".join(self.code_exe_path.split("\\")[-3:-1])
