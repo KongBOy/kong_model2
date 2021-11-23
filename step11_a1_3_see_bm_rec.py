@@ -108,7 +108,7 @@ class See_bm_rec(See_info):
                                       add_loss=False,
                                       bgr2rgb =False,
                                       single_see_core_amount=CORE_AMOUNT_BM_REC_VISUAL,
-                                      see_print_msg=False):
+                                      jump_to=0):
         """
         save_as_bm_rec_matplot_visual(_after_train) 最後想試試看 省掉他 會不會影響我的理解
         """
@@ -129,12 +129,12 @@ class See_bm_rec(See_info):
 
         ### See_method 第三部分：主要做的事情在這裡， 如果要有想設計平行處理的功能 就要有 1.single_see_core_amount 和 2.下面的if/elif/else 和 3._see_method 前兩個參數要為 start_index, task_amount 相關詞喔！
         if(single_see_core_amount == 1):  ### single_see_core_amount 大於1 代表 單核心跑， 就重新導向 最原始的function囉 把 see內的任務 依序完成！
-            self._draw_bm_rec_matplot_visual_after_train(0, self.npz_epoch_amount, add_loss, bgr2rgb)
+            self._draw_bm_rec_matplot_visual_after_train(0, self.npz_epoch_amount, add_loss, bgr2rgb, jump_to)
             ### 後處理讓結果更小 但 又不失視覺品質，單核心版
             Find_ltrd_and_crop (self.bm_rec_matplot_visual_write_dir, self.bm_rec_matplot_visual_write_dir, padding=15, search_amount=10, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg        (self.bm_rec_matplot_visual_write_dir, self.bm_rec_matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完是png，改存成jpg省空間
         elif(single_see_core_amount  > 1):  ### single_see_core_amount 大於1 代表 多核心跑， 丟進 multiprocess_interface 把 see內的任務 切段 平行處理囉
-            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.npz_epoch_amount, task=self._draw_bm_rec_matplot_visual_after_train, task_args=[add_loss, bgr2rgb], print_msg=see_print_msg)
+            multi_processing_interface(core_amount=single_see_core_amount, task_amount=self.npz_epoch_amount, task=self._draw_bm_rec_matplot_visual_after_train, task_args=[add_loss, bgr2rgb, jump_to], print_msg=see_print_msg)
             ### 後處理讓結果更小 但 又不失視覺品質，多核心版(core_amount 在 step0 裡調)
             Find_ltrd_and_crop (self.bm_rec_matplot_visual_write_dir, self.bm_rec_matplot_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
             Save_as_jpg        (self.bm_rec_matplot_visual_write_dir, self.bm_rec_matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
@@ -161,12 +161,14 @@ class See_bm_rec(See_info):
         print("")
 
     ### See_method 第三部分：主要做的事情在這裡
-    def _draw_bm_rec_matplot_visual_after_train(self, start_epoch, epoch_amount, add_loss, bgr2rgb):
+    def _draw_bm_rec_matplot_visual_after_train(self, start_epoch, epoch_amount, add_loss, bgr2rgb, jump_to):
         """
         有可能畫完主圖 還要再畫 loss，所以多這個method，多做的事情都在這裡處理
         處理完後就 Save_fig 囉！
         """
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
+            if(go_epoch < jump_to): continue
+            # print("current go_epoch:", go_epoch, "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             single_row_imgs = self._Draw_bm_rec_matplot_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
             single_row_imgs.Save_fig(dst_dir=self.bm_rec_matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
