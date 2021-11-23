@@ -154,6 +154,9 @@ class Result:
                 if(args["see_method_name"] == "Visual_SSIM_LD"):
                     self.sees[see_num].Visual_SSIM_LD    (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
 
+                if(args["see_method_name"] == "Wrong_flow_rename_to_coord"):
+                    self.sees[see_num].Wrong_flow_rename_to_coord()
+
 
                 ### 如果 單核心跑， 單個see 依序跑，顯示這個 see_cost_time 才有用喔！ 如果是 多核心跑， 多個see同時跑， 分配完see 馬上就會到這行， 不會記錄到 see 花的時間喔！
                 if(args["see_core_amount"] == 1):
