@@ -1,11 +1,23 @@
+### 定位出 kong_model2
+import os
+code_exe_path = os.path.realpath(__file__)                   ### 目前執行 step10_b.py 的 path
+code_exe_path_element = code_exe_path.split("\\")            ### 把 path 切分 等等 要找出 kong_model 在第幾層
+kong_layer = code_exe_path_element.index("kong_model2") + 1  ### 找出 kong_model2 在第幾層
+kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer])    ### 定位出 kong_model2 的 dir
+# print("step0")
+# print("    code_exe_path:", code_exe_path)
+# print("    code_exe_path_element:", code_exe_path_element)
+# print("    kong_layer:", kong_layer)
+# print("    kong_model2_dir:", kong_model2_dir)
+######################################################################################################################
 ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
-data_access_path  = "data_dir/"    ### 通常是 讀取速度較快的SSD，127.35 是 400GB SSD
+data_access_path  = f"{kong_model2_dir}/data_dir/"    ### 通常是 讀取速度較快的SSD，127.35 是 400GB SSD
 
 # result_read_path  = "Z:/0 data_dir/"    ### 通常是 大容量的機械式硬碟，127.35 是 2T 機械式硬碟
-result_read_path  = "data_dir/"    ### 通常是 大容量的機械式硬碟，127.35 是 2T 機械式硬碟
-result_write_path = "data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
+result_read_path  = f"{kong_model2_dir}/data_dir/"    ### 通常是 大容量的機械式硬碟，127.35 是 2T 機械式硬碟
+result_write_path = f"{kong_model2_dir}/data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
 
-analyze_write_dir = "data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
+analyze_write_dir = f"{kong_model2_dir}/data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
 
 JPG_QUALITY = 30
 CORE_AMOUNT = 6
