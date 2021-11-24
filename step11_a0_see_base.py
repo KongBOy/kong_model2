@@ -59,8 +59,5 @@ class See_info:
         # else: print(f"{self.see_read_dir} 找不到 gt_flow.npz")
 
 
-
-
-
         ### 不確定合不合理， 目前就先暫時用 flow_ep_jpg_names -1(去掉epoch0) 來代表 現在已經train了幾個epochs囉！ 即 trained_epochs， flow_ep_jpg_names 用了覺得不合理再換吧～
         # self.trained_epoch       = self.flow_ep_jpg_amount - 1  ### 去掉epoch0

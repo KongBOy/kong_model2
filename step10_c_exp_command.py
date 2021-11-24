@@ -2,7 +2,7 @@
 目前只有 step10b 一定需要切換資料夾到 該step10b所在的資料夾 才能執行喔！
 '''
 
-import subprocess as sb
+# import subprocess as sb
 ### 沒有作用~~ 切不過去喔~~
 # sb.run(["conda.bat", "deactivate"])
 # sb.run(["conda.bat", "activate", "tensorflow_cpu"])
