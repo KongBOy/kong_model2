@@ -193,7 +193,7 @@ class Experiment():
             if (current_epoch) % self.epoch_save_freq == 0:
                 # print("save epoch_log :", current_epoch)
                 self.model_obj.ckpt.epoch_log.assign(current_epoch)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
-                # self.ckpt_write_manager.save()
+                self.ckpt_write_manager.save()
                 print("save ok ~~~~~~~~~~~~~~~~~")
             ###############################################################################################################################
             ###    step5 紀錄、顯示 訓練相關的時間
