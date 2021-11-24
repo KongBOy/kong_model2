@@ -4,6 +4,8 @@ code_exe_path = os.path.realpath(__file__)                   ### 目前執行 st
 code_exe_path_element = code_exe_path.split("\\")            ### 把 path 切分 等等 要找出 kong_model 在第幾層
 kong_layer = code_exe_path_element.index("kong_model2") + 1  ### 找出 kong_model2 在第幾層
 kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer])    ### 定位出 kong_model2 的 dir
+import sys
+sys.path.append(kong_model2_dir + "/kong_util")
 # print("step0")
 # print("    code_exe_path:", code_exe_path)
 # print("    code_exe_path_element:", code_exe_path_element)
