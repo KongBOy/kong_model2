@@ -9,7 +9,7 @@ import numpy as np
 import tensorflow as tf
 
 ### 用 網路 生成 影像
-def generate_img_results(model_G, _1, in_img_pre, _3, _4, gt_use_range):
+def in_img_Generate_out_rec(model_G, _1, in_img_pre, _3, _4, gt_use_range):
     rect       = model_G(in_img_pre, training=True)  ### 把影像丟進去model生成還原影像
     # print("rect_back before max, min:", rect_back.numpy().max(), rect_back.numpy().min())  ### 測試 拉range 有沒有拉對
     if  (gt_use_range == "-1~1"): rect_back  = ((rect[0].numpy() + 1) * 125).astype(np.uint8)   ### 把值從 -1~1轉回0~255 且 dtype轉回np.uint8
@@ -19,11 +19,11 @@ def generate_img_results(model_G, _1, in_img_pre, _3, _4, gt_use_range):
 
 
 ### 這是一張一張進來的，沒有辦法跟 Result 裡面的 see 生成法合併，要的話就是把這裡matplot部分去除，用result裡的see生成matplot圖囉！
-def generate_img_sees(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_hope, epoch=0, result_obj=None, see_reset_init=False):
+def in_img_Generate_out_rec_see(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_hope, epoch=0, result_obj=None, see_reset_init=False):
     '''
     如果之後有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
     '''
-    rect_back = generate_img_results(model_G, None, in_img_pre, None, None, result_obj.gt_use_range)
+    rect_back = in_img_Generate_out_rec(model_G, None, in_img_pre, None, None, result_obj.gt_use_range)
 
     see_write_dir  = result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     plot_dir = see_write_dir + "/" + "matplot_visual"    ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
@@ -45,14 +45,9 @@ def generate_img_sees(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_ho
     # Save_as_jpg(plot_dir, plot_dir,delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
 
 
-#######################################################################################################################################
-def generate_flow_results(model_G, _1, in_img_pre, _3, _4, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
-    flow      = model_G(in_img_pre, training=training)
-    # print("flow before max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
-    if(gt_use_range == "-1~1"): flow = (flow + 1) / 2
-    # print("flow after max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
-    return flow
 
+######################################################################################################################################################################################################
+######################################################################################################################################################################################################
 def flow_or_coord_visual_op(data):
     data_ch = data.shape[2]
     x_ind = 0
@@ -70,12 +65,20 @@ def flow_or_coord_visual_op(data):
         x_ind = 1
         y_ind = 0
     return method1(data[..., x_ind], data[..., y_ind])[..., ::-1] * 255.
+######################################################################################################################################################################################################
+######################################################################################################################################################################################################
+def in_img_Generate_out_flow(model_G, _1, in_img_pre, _3, _4, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+    flow      = model_G(in_img_pre, training=training)
+    # print("flow before max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
+    if(gt_use_range == "-1~1"): flow = (flow + 1) / 2
+    # print("flow after max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
+    return flow
 
-def generate_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_hope, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def in_img_Generate_out_flow_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_hope, epoch=0, result_obj=None, training=True, see_reset_init=True):
     '''
     如果有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
     '''
-    flow           = generate_flow_results(model_G, None, in_img_pre, None, None, result_obj.gt_use_range, training=training)
+    flow           = in_img_Generate_out_flow(model_G, None, in_img_pre, None, None, result_obj.gt_use_range, training=training)
     flow           = flow[0]
     gt_flow        = gt_flow[0]
     # print("flow.shape~~~~~~~~~~~", flow.shape)
@@ -100,17 +103,18 @@ def generate_flow_sees_without_rec(model_G, see_index, in_img, in_img_pre, gt_fl
     ### 這部分要記得做！在 train_step3 的 self.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
     ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了
     # result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch, bgr2rgb=True)
-#######################################################################################################################################
-def in_img_Generate_gt_mask(model_G, _1, in_img_pre, _3, _4, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+######################################################################################################################################################################################################
+######################################################################################################################################################################################################
+def in_img_Generate_out_mask(model_G, _1, in_img_pre, _3, _4, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     mask      = model_G(in_img_pre, training=training)
     return mask
 
 
-def in_img_Generate_gt_mask_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def in_img_Generate_out_mask_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
     '''
     如果有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
     '''
-    mask           = in_img_Generate_gt_mask(model_G, None, in_img_pre, None, None, result_obj.gt_use_range, training=training)
+    mask           = in_img_Generate_out_mask(model_G, None, in_img_pre, None, None, result_obj.gt_use_range, training=training)
     mask           = mask[0]
     gt_mask        = gt_mask_coord[0][0]
     # print("gt_mask.dtype:", gt_mask.dtype)
@@ -126,28 +130,30 @@ def in_img_Generate_gt_mask_see(model_G, see_index, in_img, in_img_pre, gt_mask_
         cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg", in_img[0][:, :, ::-1].numpy())   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_a_mask.bmp", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
     cv2.imwrite(    mask_write_dir + "/" + "epoch_%04i_a_mask.bmp"            % epoch, (mask.numpy() * 255).astype(np.uint8))      ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-#######################################################################################################################################
-def in_img_Generate_gt_coord(model_G, _1, in_img_pre, _3, _4, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+######################################################################################################################################################################################################
+######################################################################################################################################################################################################
+def coord_to_flow_by_gt_mask_and_get_visual_img(coord, gt_mask):
+    flow        = tf.concat([gt_mask, coord],    axis=-1)  ### channel concate
+    flow_visual = flow_or_coord_visual_op(flow).astype(np.uint8)
+    return flow, flow_visual
+####################################################################################################
+def in_img_Generate_out_coord(model_G, _1, in_img_pre, _3, _4, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     coord = model_G(in_img_pre, training=training)
     return coord
 
 
-def in_img_Generate_gt_flow_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def in_img_Generate_out_coord_to_flow_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
     '''
     如果有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
+    gt_mask_coord[0] 為 mask  (1, h, w, 1)
+    gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
     '''
-    coord    = in_img_Generate_gt_coord(model_G, None, in_img_pre, None, None, result_obj.gt_use_range, training=training)
+    coord    = in_img_Generate_out_coord(model_G, None, in_img_pre, None, None, result_obj.gt_use_range, training=training)
     coord    = coord[0]
     gt_mask  = gt_mask_coord[0][0]
     gt_coord = gt_mask_coord[1][0]
-    # print("gt_coord.dtype:", gt_coord.dtype)
-    # print("gt_coord.shape:", gt_coord.shape)
-    # print("gt_coord.max():", gt_coord.numpy().max())
-    # print("gt_coord.min():", gt_coord.numpy().min())
-    flow    = tf.concat([gt_mask, coord],    axis=-1)  ### channel concate
-    gt_flow = tf.concat([gt_mask, gt_coord], axis=-1)  ### channel concate
-    flow_visual    = flow_or_coord_visual_op(flow)   .astype(np.uint8)
-    gt_flow_visual = flow_or_coord_visual_op(gt_flow).astype(np.uint8)
+    flow,    flow_visual    = coord_to_flow_by_gt_mask_and_get_visual_img(coord,    gt_mask)
+    gt_flow, gt_flow_visual = coord_to_flow_by_gt_mask_and_get_visual_img(gt_coord, gt_mask)
 
     see_write_dir   = result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
@@ -161,8 +167,8 @@ def in_img_Generate_gt_flow_see(model_G, see_index, in_img, in_img_pre, gt_mask_
     np.save(    see_write_dir + "/" + "epoch_%04i_a_flow"            % epoch, flow)                         ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flow_visual.jpg" % epoch, flow_visual)                  ### 把 生成的 flow_visual 存進相對應的資料夾
 
-#######################################################################################################################################
-def gt_mask_Generate_gt_coord(model_G, _1, _2, _3, gt_mask_coord_pre, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+######################################################################################################################################################################################################
+def in_mask_by_gt_Generate_out_coord(model_G, _1, _2, _3, gt_mask_coord_pre, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     '''
     這邊model 生成的是 ch2 的 coord， 要再跟 mask concate 後才會變成 ch3 的 flow 喔！
     '''
@@ -176,22 +182,18 @@ def gt_mask_Generate_gt_coord(model_G, _1, _2, _3, gt_mask_coord_pre, gt_use_ran
     return coord
 
 
-def gt_mask_Generate_gt_flow_see(model_G, see_index, in_img, _2, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def in_mask_by_gt_Generate_out_coord_to_flow_see(model_G, see_index, in_img, _2, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
     '''
     如果有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
+    gt_mask_coord[0] 為 mask  (1, h, w, 1)
+    gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
     '''
-    coord     = gt_mask_Generate_gt_coord(model_G, None, None, None, gt_mask_coord_pre, result_obj.gt_use_range, training=training)
+    coord     = in_mask_by_gt_Generate_out_coord(model_G, None, None, None, gt_mask_coord_pre, result_obj.gt_use_range, training=training)
     coord     = coord[0]
     gt_mask  = gt_mask_coord[0][0]
     gt_coord = gt_mask_coord[1][0]
-    # print("gt_coord.dtype:", gt_coord.dtype)
-    # print("gt_coord.shape:", gt_coord.shape)
-    # print("gt_coord.max():", gt_coord.numpy().max())
-    # print("gt_coord.min():", gt_coord.numpy().min())
-    flow    = tf.concat([gt_mask, coord],    axis=-1)  ### channel concate
-    gt_flow = tf.concat([gt_mask, gt_coord], axis=-1)  ### channel concate
-    flow_visual    = flow_or_coord_visual_op(flow)   .astype(np.uint8)
-    gt_flow_visual = flow_or_coord_visual_op(gt_flow).astype(np.uint8)
+    flow,    flow_visual    = coord_to_flow_by_gt_mask_and_get_visual_img(coord,    gt_mask)
+    gt_flow, gt_flow_visual = coord_to_flow_by_gt_mask_and_get_visual_img(gt_coord, gt_mask)
 
     see_write_dir  = result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     mask_write_dir = result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
