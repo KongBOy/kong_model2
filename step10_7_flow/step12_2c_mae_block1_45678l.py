@@ -259,8 +259,15 @@ if(__name__ == "__main__"):
     L2345678_ch128_64_32_16_8_4_2_1_block1_mae_s001_analyze = Row_col_results_analyzer(ana_describe=f"{flow_ana_dir}/{ana_name}",
                                                   ana_what="flow",
                                                   row_col_results=mae_block1_mae_s001_L2345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                          #   .Gather_all_see_final_img()
+    ######################################                                          
+    ana_name = "2c_block1_L45678_2-ch128,64,32,16,8,4,2,1_mae_s001"
+    L45678_ch64_32_16_8_4_2_1_block1_mae_s001_analyze = Row_col_results_analyzer(ana_describe=f"{flow_ana_dir}/{ana_name}",
+                                                  ana_what="rec",
+                                                  row_col_results=mae_block1_mae_s001_L2345678[2:], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             .Gather_all_see_final_img()
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
     ################################################################################
     ana_name = "2c_block1_L45678_2-ch64,32,16,8,4_mae_s001_100"
     L45678_ch64_32_16_8_4_block1_mae_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{flow_ana_dir}/{ana_name}",
