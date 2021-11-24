@@ -1,22 +1,21 @@
+#############################################################################################################################################################################################################
+### 把 kong_model2 加入 sys.path
 import os
-### 自動抓目前的資料夾 當 exp_dir
-code_exe_path = os.path.realpath(__file__)
-print("code_exe_path~~~~~~~~~~", code_exe_path  )  ### 舉例：C:\Users\TKU\Desktop\kong_model2\step10_7_mask\mask_5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_mae\step10_a.py
+code_exe_path = os.path.realpath(__file__)                   ### 目前執行 step10_b.py 的 path
+code_exe_path_element = code_exe_path.split("\\")            ### 把 path 切分 等等 要找出 kong_model 在第幾層
+kong_layer = code_exe_path_element.index("kong_model2") + 1  ### 找出 kong_model2 在第幾層
+kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer])    ### 定位出 kong_model2 的 dir
+import sys                                                   ### 把 kong_model2 加入 sys.path
+sys.path.append(kong_model2_dir)
+# print("step10a")
+# print("    code_exe_path:", code_exe_path)
+# print("    code_exe_path_element:", code_exe_path_element)
+# print("    kong_layer:", kong_layer)
+# print("    kong_model2_dir:", kong_model2_dir)
+#############################################################################################################################################################################################################
 exp_dir = "7_mask_unet/" +  code_exe_path.split("\\")[-2][5:]  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
-print("exp_dir~~~~~~~~~~", exp_dir)  ### 舉例：exp_dir~~~~~~~~~~ 7_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_mae
+# print("    exp_dir:", exp_dir)  ### 舉例：exp_dir: 7_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_mae
 #############################################################################################################################################################################################################
-### 把 current_dir 轉回到 kong_model 裡面
-import os
-import sys
-curr_path = os.getcwd()
-curr_layer = len(curr_path.split("\\")) - 1              ### 看 目前執行python的位置在哪一層， -1 是 因為 為了配合下面.index() 從0開始算
-kong_layer = curr_path.split("\\").index("kong_model2")  ### 看kong_model2 在哪一層
-back_to_kong_layer_amount = curr_layer - kong_layer      ### 看 目前執行python的位置在哪一層 到 kong_model2 差幾層
-for _ in range(back_to_kong_layer_amount): os.chdir("..")  ### 看差幾層 往前跳 幾次dir
-sys.path.append(".")                                           ### 把 kong_model2 加進 sys.path
-print("os.getcwd()", os.getcwd())
-#############################################################################################################################################################################################################
-
 from step06_a_datas_obj import *
 from step09_e4_flow_unet2_obj_M_to_C import *
 from step09_b_loss_info_obj import *
@@ -443,6 +442,7 @@ L6_ch001_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow
 L7_ch032_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch032_sig_L7_no_limit_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch032_no_limit_coord_conv", describe_end="block1_L7_ch032_no_limit_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
 L7_ch016_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch016_sig_L7_no_limit, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch016", describe_end="block1_ch016_mae_s001_L7") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-2_L7_ch016-flow_unet2-block1_ch016_mae_s001_L7-20211120_000807")
+L7_ch016_mae_s001_copy = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch016_sig_L7_no_limit, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch016", describe_end="block1_ch016_mae_s001_L7") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-2_L7_ch016-flow_unet2-block1_ch016_mae_s001_L7-20211120_000807_copy")
 ### coord_conv
 L7_ch016_mae_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch016_sig_L7_no_limit_coord_conv, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L7_ch016_no_limit_coord_conv", describe_end="block1_L7_ch016_no_limit_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="")
 ####################
