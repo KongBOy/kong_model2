@@ -7,24 +7,24 @@ import subprocess as sb
 # sb.run(["conda.bat", "deactivate"])
 # sb.run(["conda.bat", "activate", "tensorflow_cpu"])
 
-same_command = ["python", "step10_a.py"]
+cmd_python_step10_a = ["python", "step10_a.py"]
 run = "build().run()"
 
 ############################  have_bg  #################################
 ### 1a. ch
-sb.run(same_command + [f"ch128_no_limit_sig_L4_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch128_no_limit_sig_L4_ep060.{run}"])
 
-sb.run(same_command + [f"ch064_no_limit_sig_L5_ep060.{run}"])
-sb.run(same_command + [f"ch128_no_limit_sig_L5_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch064_no_limit_sig_L5_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch128_no_limit_sig_L5_ep060.{run}"])
 
-sb.run(same_command + [f"ch032_no_limit_sig_L6_ep060.{run}"])
-sb.run(same_command + [f"ch064_no_limit_sig_L6_ep060.{run}"])
-sb.run(same_command + [f"ch128_no_limit_sig_L6_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_no_limit_sig_L6_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch064_no_limit_sig_L6_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch128_no_limit_sig_L6_ep060.{run}"])
 
-sb.run(same_command + [f"ch016_no_limit_sig_L7_ep060.{run}"])
-sb.run(same_command + [f"ch032_no_limit_sig_L7_ep060.{run}"])
-sb.run(same_command + [f"ch064_no_limit_sig_L7_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch016_no_limit_sig_L7_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_no_limit_sig_L7_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch064_no_limit_sig_L7_ep060.{run}"])
 
-sb.run(same_command + [f"ch008_no_limit_sig_L8_ep060.{run}"])
-sb.run(same_command + [f"ch016_no_limit_sig_L8_ep060.{run}"])
-sb.run(same_command + [f"ch032_no_limit_sig_L8_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch008_no_limit_sig_L8_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch016_no_limit_sig_L8_ep060.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_no_limit_sig_L8_ep060.{run}"])

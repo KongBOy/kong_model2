@@ -7,7 +7,7 @@ import subprocess as sb
 # sb.run(["conda.bat", "deactivate"])
 # sb.run(["conda.bat", "activate", "tensorflow_cpu"])
 
-same_command = ["python", "step10_a.py"]
+cmd_python_step10_a = ["python", "step10_a.py"]
 run = "build().run()"
 change_dir = "build()"  ### 因為我在 See 裡面 把 Change_dir 寫在 __init__ 裡， 所以 只要 build() 其實就有 Change_dir 的效果囉！
 
@@ -145,234 +145,234 @@ Calculate_and_Visual_SSIM_LD_9te  = f"build().result_obj.result_do_all_single_se
 Calculate_and_Visual_SSIM_LD_10te = f"build().result_obj.result_do_all_single_see(start_see=6, see_amount=1, see_method_name={Calculate_and_Visual_SSIM_LD_method_name}, add_loss={Calculate_and_Visual_SSIM_LD_add_loss}, bgr2rgb={Calculate_and_Visual_SSIM_LD_bgr2rgb}, single_see_core_amount={Calculate_and_Visual_SSIM_LD_single_see_core_amount}, see_print_msg={Calculate_and_Visual_SSIM_LD_see_print_msg}, see_core_amount={Calculate_and_Visual_SSIM_LD_see_core_amount}, result_print_msg={Calculate_and_Visual_SSIM_LD_result_print_msg})"
 
 
-# sb.run(same_command + [f"test2.{compress_1}"])
+# sb.run(cmd_python_step10_a + [f"test2.{compress_1}"])
 
 ### hid_ch=64, 來測試 epoch系列 ##############################
-# sb.run(same_command + [f"epoch050_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"epoch100_bn_see_arg_T.{change_dir}"])  ### 636
-# sb.run(same_command + [f"epoch200_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"epoch300_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"epoch700_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"epoch050_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"epoch100_bn_see_arg_T.{change_dir}"])  ### 636
+# sb.run(cmd_python_step10_a + [f"epoch200_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"epoch300_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"epoch700_bn_see_arg_T.{change_dir}"])
 
-# sb.run(same_command + [f"old_ch128_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"old_ch032_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"old_ch016_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"old_ch008_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch128_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch032_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch016_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch008_bn_see_arg_T.{change_dir}"])
 
-# sb.run(same_command + [f"epoch050_new_shuf_bn_see_arg_T.{change_dir}"])  ### 802
-# sb.run(same_command + [f"epoch100_new_shuf_bn_see_arg_T.{change_dir}"])  ### 1275
-# sb.run(same_command + [f"epoch200_new_shuf_bn_see_arg_T.{change_dir}"])  ### 1309
-# sb.run(same_command + [f"epoch300_new_shuf_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"epoch500_new_shuf_bn_see_arg_F.{change_dir}"])
-# sb.run(same_command + [f"epoch700_new_shuf_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"epoch700_bn_see_arg_T_no_down .{change_dir}"])  ### 看看 lr 都不下降的效果
+# sb.run(cmd_python_step10_a + [f"epoch050_new_shuf_bn_see_arg_T.{change_dir}"])  ### 802
+# sb.run(cmd_python_step10_a + [f"epoch100_new_shuf_bn_see_arg_T.{change_dir}"])  ### 1275
+# sb.run(cmd_python_step10_a + [f"epoch200_new_shuf_bn_see_arg_T.{change_dir}"])  ### 1309
+# sb.run(cmd_python_step10_a + [f"epoch300_new_shuf_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"epoch500_new_shuf_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"epoch500_new_shuf_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"epoch700_new_shuf_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"epoch700_bn_see_arg_T_no_down .{change_dir}"])  ### 看看 lr 都不下降的效果
 
-# sb.run(same_command + [f"old_ch128_new_shuf_bn_see_arg_F.{change_dir}"])
-# sb.run(same_command + [f"old_ch032_new_shuf_bn_see_arg_F.{change_dir}"])
-# sb.run(same_command + [f"old_ch016_new_shuf_bn_see_arg_F.{change_dir}"])
-# sb.run(same_command + [f"old_ch008_new_shuf_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch128_new_shuf_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch032_new_shuf_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch016_new_shuf_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch008_new_shuf_bn_see_arg_F.{change_dir}"])
 
-# sb.run(same_command + [f"old_ch128_new_shuf_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"old_ch032_new_shuf_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"old_ch016_new_shuf_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"old_ch008_new_shuf_bn_see_arg_T.{change_dir}"])
-
-
-# sb.run(same_command + [f"ch64_bn04_bn_see_arg_F.{change_dir}"])
-# sb.run(same_command + [f"ch64_bn04_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"ch64_bn08_bn_see_arg_F.{change_dir}"])
-# sb.run(same_command + [f"ch64_bn08_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch128_new_shuf_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch032_new_shuf_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch016_new_shuf_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch008_new_shuf_bn_see_arg_T.{change_dir}"])
 
 
-# sb.run(same_command + [f"old_ch32_bn04_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"old_ch32_bn08_bn_see_arg_T.{change_dir}"])
-# sb.run(same_command + [f"old_ch32_bn16_bn_see_arg_T.{change_dir}"])
-# # ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn32.{change_dir}"])  ### 失敗
-# # ### sb.run(same_command + [f"blender_os_book_flow_unet_ch32_bn64.{change_dir}"])  ### 失敗
+# sb.run(cmd_python_step10_a + [f"ch64_bn04_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"ch64_bn04_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"ch64_bn08_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"ch64_bn08_bn_see_arg_T.{change_dir}"])
 
 
-# sb.run(same_command + [f"old_ch32_bn04_bn_see_arg_F.{change_dir}"])
-# sb.run(same_command + [f"old_ch32_bn08_bn_see_arg_F.{change_dir}"])
-# sb.run(same_command + [f"old_ch32_bn16_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch32_bn04_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch32_bn08_bn_see_arg_T.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch32_bn16_bn_see_arg_T.{change_dir}"])
+# # ### sb.run(cmd_python_step10_a + [f"blender_os_book_flow_unet_ch32_bn32.{change_dir}"])  ### 失敗
+# # ### sb.run(cmd_python_step10_a + [f"blender_os_book_flow_unet_ch32_bn64.{change_dir}"])  ### 失敗
+
+
+# sb.run(cmd_python_step10_a + [f"old_ch32_bn04_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch32_bn08_bn_see_arg_F.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"old_ch32_bn16_bn_see_arg_F.{change_dir}"])
 
 ##########################################################################################################################################################################################
 ### 4. epoch
-# sb.run(same_command + [f"ch64_in_epoch060.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch080.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch100.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch060.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch080.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch100.{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch200.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch200.{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch220.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch240.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch260.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch280.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch300.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch220.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch240.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch260.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch280.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch300.{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch320.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch340.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch360.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch380.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch400.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch320.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch340.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch360.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch380.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch400.{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch420.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch440.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch460.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch480.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_epoch500.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch420.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch440.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch460.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch480.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch500.{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_epoch700.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_epoch700.{change_dir}"])  ### 測試真的IN
 
 ### 4b.
-# sb.run(same_command + [f"in_new_ch004_ep060.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch008_ep060.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch016_ep060.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch032_ep060.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch128_ep060.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch004_ep060.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch008_ep060.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch016_ep060.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch032_ep060.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch128_ep060.{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"in_new_ch004_ep100.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch008_ep100.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch016_ep100.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch032_ep100.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"in_new_ch128_ep100.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch004_ep100.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch008_ep100.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch016_ep100.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch032_ep100.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"in_new_ch128_ep100.{change_dir}"])  ### 測試真的IN
 
 ##########################################################################################################################################################################################
 ### 5
-# sb.run(same_command + [f"ch64_in_concat_A.{change_dir}"])  ### 看看Activation 完再concat的效果
+# sb.run(cmd_python_step10_a + [f"ch64_in_concat_A.{change_dir}"])  ### 看看Activation 完再concat的效果
 
 ##########################################################################################################################################################################################
 ### 6
-# sb.run(same_command + [f"unet_L2.{change_dir}"])
-# sb.run(same_command + [f"unet_L3.{change_dir}"])
-# sb.run(same_command + [f"unet_L4.{change_dir}"])
-# sb.run(same_command + [f"unet_L5.{change_dir}"])
-# sb.run(same_command + [f"unet_L6.{change_dir}"])
-# sb.run(same_command + [f"unet_L7.{change_dir}"])
-# sb.run(same_command + [f"unet_L8.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L2.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L3.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L4.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L5.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L6.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L7.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L8.{change_dir}"])
 
 #############################################################################################################
 ### 7a
-# sb.run(same_command + [f"unet_L8_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_L7_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_L6_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_L5_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_L4_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_L3_skip_use_add.{change_dir}"])
-# sb.run(same_command + [f"unet_L2_skip_use_add.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L8_skip_use_add.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L7_skip_use_add.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L6_skip_use_add.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L5_skip_use_add.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L4_skip_use_add.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L3_skip_use_add.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_L2_skip_use_add.{change_dir}"])
 
 #############################################################################################################
 ### 7b
-# sb.run(same_command + [f"unet_IN_L7_2to2noC     .{change_dir}"])
-# sb.run(same_command + [f"unet_IN_L7_2to2noC_ch32.{change_dir}"])
-# sb.run(same_command + [f"unet_IN_L7_2to3noC     .{change_dir}"])  ### 3254
-# sb.run(same_command + [f"unet_IN_L7_2to4noC     .{change_dir}"])
-# sb.run(same_command + [f"unet_IN_L7_2to5noC     .{change_dir}"])
-# sb.run(same_command + [f"unet_IN_L7_2to6noC     .{change_dir}"])  ### 3073
-# sb.run(same_command + [f"unet_IN_L7_2to7noC     .{change_dir}"])  ### 2851
-# sb.run(same_command + [f"unet_IN_L7_2to8noC     .{change_dir}"])  ### 2920
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to2noC     .{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to2noC_ch32.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC     .{change_dir}"])  ### 3254
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to4noC     .{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to5noC     .{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to6noC     .{change_dir}"])  ### 3073
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to7noC     .{change_dir}"])  ### 2851
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to8noC     .{change_dir}"])  ### 2920
 
 
-# sb.run(same_command + [f"unet_IN_L7_2to3noC_e020.{change_dir}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_L7_2to3noC_e040.{change_dir}"])  ### 測試真的IN  127.55
-# sb.run(same_command + [f"unet_IN_L7_2to3noC_e060.{change_dir}"])  ### 測試真的IN  127.35
-# sb.run(same_command + [f"unet_IN_L7_2to3noC_e080.{change_dir}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_L7_2to3noC_e100.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC_e020.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC_e040.{change_dir}"])  ### 測試真的IN  127.55
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC_e060.{change_dir}"])  ### 測試真的IN  127.35
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC_e080.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC_e100.{change_dir}"])  ### 測試真的IN  127.28
 
-# sb.run(same_command + [f"unet_IN_L7_2to3noC_e120.{change_dir}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_L7_2to3noC_e140.{change_dir}"])  ### 測試真的IN  127.28
-# sb.run(same_command + [f"unet_IN_L7_2to3noC_e160.{change_dir}"])  ### 測試真的IN  127.55
-# sb.run(same_command + [f"unet_IN_L7_2to3noC_e180.{change_dir}"])  ### 測試真的IN  127.55
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC_e120.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC_e140.{change_dir}"])  ### 測試真的IN  127.28
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC_e160.{change_dir}"])  ### 測試真的IN  127.55
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_2to3noC_e180.{change_dir}"])  ### 測試真的IN  127.55
 
 #############################################################################################################
 ### 7c
-# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn1_NO_relu   .{change_dir}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn1_USErelu   .{change_dir}"])   ### 127.28
-# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn1_USEsigmoid.{change_dir}"])   ### 127.35
-# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn3_USErelu   .{change_dir}"])   ### 127.28
-# sb.run(same_command + [f"unet_IN_L7_skip_use_cnn3_USEsigmoid.{change_dir}"])   ### 127.28
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_skip_use_cnn1_NO_relu   .{change_dir}"])   ### 127.35
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_skip_use_cnn1_USErelu   .{change_dir}"])   ### 127.28
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_skip_use_cnn1_USEsigmoid.{change_dir}"])   ### 127.35
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_skip_use_cnn3_USErelu   .{change_dir}"])   ### 127.28
+# sb.run(cmd_python_step10_a + [f"unet_IN_L7_skip_use_cnn3_USEsigmoid.{change_dir}"])   ### 127.28
 
 
 #############################################################################################################
 ### 7d
-# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e060_wrong .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e100_wrong .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e060       .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_cSE_e100       .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_sSE_e060       .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_sSE_e100       .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e060_wrong.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e100_wrong.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e060      .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_2to3noC_sk_scSE_e100      .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_cSE_e060_wrong .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_cSE_e100_wrong .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_cSE_e060       .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_cSE_e100       .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_sSE_e060       .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_sSE_e100       .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_scSE_e060_wrong.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_scSE_e100_wrong.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_scSE_e060      .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_2to3noC_sk_scSE_e100      .{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_sk_cSE_e060_wrong .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_cSE_e100_wrong .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_cSE_e060_wrong .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_cSE_e100_wrong .{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_sk_cSE_e060       .{change_dir}"])  ### 測試真的IN  finish
-# sb.run(same_command + [f"ch64_in_sk_cSE_e100       .{change_dir}"])  ### 測試真的IN  finish
-# sb.run(same_command + [f"ch64_in_sk_sSE_e060       .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_sSE_e100       .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_cSE_e060       .{change_dir}"])  ### 測試真的IN  finish
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_cSE_e100       .{change_dir}"])  ### 測試真的IN  finish
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_sSE_e060       .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_sSE_e100       .{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_sk_scSE_e060_wrong.{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_scSE_e100_wrong.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_scSE_e060_wrong.{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_scSE_e100_wrong.{change_dir}"])  ### 測試真的IN
 
-# sb.run(same_command + [f"ch64_in_sk_scSE_e060      .{change_dir}"])  ### 測試真的IN
-# sb.run(same_command + [f"ch64_in_sk_scSE_e100      .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_scSE_e060      .{change_dir}"])  ### 測試真的IN
+# sb.run(cmd_python_step10_a + [f"ch64_in_sk_scSE_e100      .{change_dir}"])  ### 測試真的IN
 
 
 
 ##########################################################################################################################################################################################
 ### 8
 ### 之前 都跑錯的 mse 喔！將錯就錯， 下面重跑 正確的 mae 試試看 順便比較 mse/mae的效果
-# sb.run(same_command + [f"t2_in_01_mo_01_gt_01_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.35
-# sb.run(same_command + [f"t1_in_01_mo_th_gt_01_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.35
-# sb.run(same_command + [f"t7_in_th_mo_th_gt_th_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.28
-# sb.run(same_command + [f"t3_in_01_mo_th_gt_th_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.28
-# sb.run(same_command + [f"t5_in_th_mo_th_gt_01_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.28
-# sb.run(same_command + [f"t6_in_th_mo_01_gt_01_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.28
-# sb.run(same_command + [f"t4_in_01_mo_01_gt_th_mse.{change_dir}"])  ### 圖確認過覺得怪怪的 , 不想重train
-# sb.run(same_command + [f"t8_in_th_mo_01_gt_th_mse.{change_dir}"])  ### 已確認錯了, 隨然沒 train完，但前面的175 epoch 也幾乎一樣囉！, 不想重train
+# sb.run(cmd_python_step10_a + [f"t2_in_01_mo_01_gt_01_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.35
+# sb.run(cmd_python_step10_a + [f"t1_in_01_mo_th_gt_01_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.35
+# sb.run(cmd_python_step10_a + [f"t7_in_th_mo_th_gt_th_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.28
+# sb.run(cmd_python_step10_a + [f"t3_in_01_mo_th_gt_th_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.28
+# sb.run(cmd_python_step10_a + [f"t5_in_th_mo_th_gt_01_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.28
+# sb.run(cmd_python_step10_a + [f"t6_in_th_mo_01_gt_01_mse.{change_dir}"])  ### 已確認錯了 , 重train 127.28
+# sb.run(cmd_python_step10_a + [f"t4_in_01_mo_01_gt_th_mse.{change_dir}"])  ### 圖確認過覺得怪怪的 , 不想重train
+# sb.run(cmd_python_step10_a + [f"t8_in_th_mo_01_gt_th_mse.{change_dir}"])  ### 已確認錯了, 隨然沒 train完，但前面的175 epoch 也幾乎一樣囉！, 不想重train
 
 
 ### 上面 應該是 沒改到loss所以才用mse，現在改用mae試試看
-# sb.run(same_command + [f"t2_in_01_mo_01_gt_01_mae.{change_dir}"])  ### ok
-# sb.run(same_command + [f"t1_in_01_mo_th_gt_01_mae.{change_dir}"])  ### 127.28 ok
-# sb.run(same_command + [f"t3_in_01_mo_th_gt_th_mae.{change_dir}"])  ### 127.28 ok
-# sb.run(same_command + [f"t5_in_th_mo_th_gt_01_mae.{change_dir}"])  ### 127.28 ok
-# sb.run(same_command + [f"t6_in_th_mo_01_gt_01_mae.{change_dir}"])  ### 127.28 ok
-# sb.run(same_command + [f"t7_in_th_mo_th_gt_th_mae.{change_dir}"])  ### 127.28 ok
-# sb.run(same_command + [f"t4_in_01_mo_01_gt_th_mae.{change_dir}"])  ### 127.35 ok
-# sb.run(same_command + [f"t8_in_th_mo_01_gt_th_mae.{change_dir}"])  ### 127.35 沒train完
+# sb.run(cmd_python_step10_a + [f"t2_in_01_mo_01_gt_01_mae.{change_dir}"])  ### ok
+# sb.run(cmd_python_step10_a + [f"t1_in_01_mo_th_gt_01_mae.{change_dir}"])  ### 127.28 ok
+# sb.run(cmd_python_step10_a + [f"t3_in_01_mo_th_gt_th_mae.{change_dir}"])  ### 127.28 ok
+# sb.run(cmd_python_step10_a + [f"t5_in_th_mo_th_gt_01_mae.{change_dir}"])  ### 127.28 ok
+# sb.run(cmd_python_step10_a + [f"t6_in_th_mo_01_gt_01_mae.{change_dir}"])  ### 127.28 ok
+# sb.run(cmd_python_step10_a + [f"t7_in_th_mo_th_gt_th_mae.{change_dir}"])  ### 127.28 ok
+# sb.run(cmd_python_step10_a + [f"t4_in_01_mo_01_gt_th_mae.{change_dir}"])  ### 127.35 ok
+# sb.run(cmd_python_step10_a + [f"t8_in_th_mo_01_gt_th_mae.{change_dir}"])  ### 127.35 沒train完
 ##########################################################################################################################################################################################
 ### 9
-# sb.run(same_command + [f"ch64_in_cnnNoBias_epoch060.{change_dir}"])   ### 127.28
+# sb.run(cmd_python_step10_a + [f"ch64_in_cnnNoBias_epoch060.{change_dir}"])   ### 127.28
 
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
-# sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch500.{change_dir}"])
-# sb.run(same_command + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch500.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.{change_dir}"])
 
-# sb.run(same_command + [f"rect_2_level_fk3.{change_dir}"])
-# sb.run(same_command + [f"rect_3_level_fk3.{change_dir}"])
-# sb.run(same_command + [f"rect_4_level_fk3.{change_dir}"])
-# sb.run(same_command + [f"rect_5_level_fk3.{change_dir}"])
-# sb.run(same_command + [f"rect_6_level_fk3.{change_dir}"])
-# sb.run(same_command + [f"rect_7_level_fk3.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"rect_2_level_fk3.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"rect_3_level_fk3.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"rect_4_level_fk3.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"rect_5_level_fk3.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"rect_6_level_fk3.{change_dir}"])
+# sb.run(cmd_python_step10_a + [f"rect_7_level_fk3.{change_dir}"])
 
-# sb.run(same_command + [f"rect_2_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_3_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_4_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_5_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_6_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
-# sb.run(same_command + [f"rect_7_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
+# sb.run(cmd_python_step10_a + [f"rect_2_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
+# sb.run(cmd_python_step10_a + [f"rect_3_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
+# sb.run(cmd_python_step10_a + [f"rect_4_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
+# sb.run(cmd_python_step10_a + [f"rect_5_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
+# sb.run(cmd_python_step10_a + [f"rect_6_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
+# sb.run(cmd_python_step10_a + [f"rect_7_level_fk3_ReLU.{change_dir}"])  ### 127.28跑
 
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
 ##########################################################################################################################################################################################
-# sb.run(same_command + [f"testest.{change_dir}"])   ### 127.28
-# sb.run(same_command + [f"testest_big.{change_dir}"])   ### 127.28
+# sb.run(cmd_python_step10_a + [f"testest.{change_dir}"])   ### 127.28
+# sb.run(cmd_python_step10_a + [f"testest_big.{change_dir}"])   ### 127.28
 
 ### flow_matplot
 ### compress

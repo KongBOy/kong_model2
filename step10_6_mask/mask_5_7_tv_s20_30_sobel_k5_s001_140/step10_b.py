@@ -7,18 +7,18 @@ import subprocess as sb
 # sb.run(["conda.bat", "deactivate"])
 # sb.run(["conda.bat", "activate", "tensorflow_cpu"])
 
-same_command = ["python", "step10_a.py"]
+cmd_python_step10_a = ["python", "step10_a.py"]
 run = "build().run()"
 
 ############################  have_bg  #################################
-# sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s001.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s080.{run}"])  ### 127.35跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s100.{run}"])  ### 127.37跑
-# sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s120.{run}"])  ### 127.37跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s140.{run}"])  ### 127.37跑
-# sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s001.{run}"])  ### 127.37跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s080.{run}"])  ### 127.37跑
-# sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s100.{run}"])  ### 127.37跑
-sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s120.{run}"])  ### 127.37跑
-# sb.run(same_command + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s140.{run}"])  ### 127.37跑
+# sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s001.{run}"])  ### 127.35跑
+sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s080.{run}"])  ### 127.35跑
+sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s100.{run}"])  ### 127.37跑
+# sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s120.{run}"])  ### 127.37跑
+sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s20_sobel_k5_s140.{run}"])  ### 127.37跑
+# sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s001.{run}"])  ### 127.37跑
+sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s080.{run}"])  ### 127.37跑
+# sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s100.{run}"])  ### 127.37跑
+sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s120.{run}"])  ### 127.37跑
+# sb.run(cmd_python_step10_a + [f"mask_h_bg_ch032_sig_L6_ep060_tv_s30_sobel_k5_s140.{run}"])  ### 127.37跑
 

@@ -7,7 +7,7 @@ import subprocess as sb
 # sb.run(["conda.bat", "deactivate"])
 # sb.run(["conda.bat", "activate", "tensorflow_cpu"])
 
-same_command = ["python", "step10_a.py"]
+cmd_python_step10_a = ["python", "step10_a.py"]
 run = "build().run()"
 
 bm_rec_see_print_msg = False
