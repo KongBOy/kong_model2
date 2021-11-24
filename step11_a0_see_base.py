@@ -35,7 +35,7 @@ class See_info:
 
     def get_path_savely(self, search_dir, certain_word, certain_ext="."):
         names = get_dir_certain_file_names(search_dir, certain_word=certain_word, certain_ext=certain_ext)
-        if(len(self.names) > 0):
+        if(len(names) > 0):
             path = f"{search_dir}/{names[0]}"
             return path
         else:
