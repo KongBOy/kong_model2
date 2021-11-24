@@ -3,9 +3,8 @@ from step11_a1_2_see_flow       import See_flow_visual
 from step11_a1_3_see_bm_rec     import See_bm_rec
 from step11_a1_4_see_rec_metric import See_rec_metric
 from step11_a1_5_see_mask       import See_mask
-from step11_a1_6_see_coord      import See_coord
 # class See(See_flow_visual, See_rec_metric, See_mask):
-class See(See_flow_visual, See_npy_to_npz, See_bm_rec, See_rec_metric, See_mask, See_coord):
+class See(See_flow_visual, See_npy_to_npz, See_bm_rec, See_rec_metric, See_mask):
     def __init__(self, result_read_dir, result_write_dir, see_name):
         super(See, self).__init__(result_read_dir, result_write_dir, see_name)
 
