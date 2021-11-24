@@ -28,458 +28,73 @@ import subprocess as sb
 # exit()
 #### l2 ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L2_ch004_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch004_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch004_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch004_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch004_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch004_mae_s100.{run}"])
-
 # sb.run(cmd_python_step10_a + [f"L2_ch002_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch002_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch002_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch002_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch002_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch002_mae_s100.{run}"])
-
 # sb.run(cmd_python_step10_a + [f"L2_ch001_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch001_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch001_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch001_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch001_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch001_mae_s100.{run}"])
 #### 3l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L3_ch032_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch032_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch032_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch032_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch032_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch032_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L3_ch032_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L3_ch032_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L3_ch032_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L3_ch016_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch016_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch016_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch016_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch016_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch016_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L3_ch016_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L3_ch016_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L3_ch016_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L3_ch008_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch008_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch008_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch008_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch008_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch008_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L3_ch008_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L3_ch008_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L3_ch008_mae_s001_coord_conv.{run}"])
-####################
 # sb.run(cmd_python_step10_a + [f"L3_ch004_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch004_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch004_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch004_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch004_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch004_mae_s100.{run}"])
-
 # sb.run(cmd_python_step10_a + [f"L3_ch002_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch002_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch002_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch002_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch002_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch002_mae_s100.{run}"])
-
 # sb.run(cmd_python_step10_a + [f"L3_ch001_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch001_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch001_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch001_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch001_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch001_mae_s100.{run}"])
 #### 4l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s100.{run}"])
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s001_coord_conv.{run}"])
-####################
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s001.{compress_and_bm_rec_all}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s020.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s040.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s060.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s080.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s100.{run}"])  ### 127.27
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s001_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s020_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s040_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s060_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s080_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s100_E_relu .{run}"])  ### 127.27
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s001_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s020_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s040_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s060_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s080_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s100_no_Bias.{run}"])  ### 127.27
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s001_coord_conv.{run}"])  ### 127.27
-####################
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s001.{compress_and_bm_rec_all}"])  ### 127.37
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s020.{run}"])  ### 127.37
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s040.{run}"])  ### 127.37
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s060.{run}"])  ### 127.37
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s080.{run}"])  ### 127.37
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s100.{run}"])  ### 127.37
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s001_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s020_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s040_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s060_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s080_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s100_E_relu .{run}"])  ### 127.27
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s001_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s020_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s040_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s060_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s080_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s100_no_Bias.{run}"])  ### 127.27
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s001_coord_conv.{run}"])  ### 127.27
-####################
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s001.{compress_and_bm_rec_all}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s020.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s040.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s060.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s080.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s100.{run}"])  ### 127.49
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s001_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s020_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s040_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s060_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s080_E_relu .{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s100_E_relu .{run}"])  ### 127.27
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s001_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s020_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s040_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s060_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s080_no_Bias.{run}"])  ### 127.27
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s100_no_Bias.{run}"])  ### 127.27
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s001_coord_conv.{run}"])  ### 127.27
-####################
-# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s001.{compress_and_bm_rec_all}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s020.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s040.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s060.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s080.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s100.{run}"])  ### 127.49
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s001_coord_conv.{run}"])
-####################
-# sb.run(cmd_python_step10_a + [f"L4_ch002_mae_s001.{compress_and_bm_rec_all}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch002_mae_s020.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch002_mae_s040.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch002_mae_s060.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch002_mae_s080.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch002_mae_s100.{run}"])  ### 127.49
-####################
-# sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s001.{compress_and_bm_rec_all}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s020.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s040.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s060.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s080.{run}"])  ### 127.49
-# sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s100.{run}"])  ### 127.49
-
+# sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch002_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 5l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s001.{compress_and_bm_rec_all}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s020.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s040.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s060.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s080.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s100.{run}"])  ### 127.55
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s001_coord_conv.{run}"])
-####################
-# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s001.{compress_and_bm_rec_all}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s020.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s040.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s060.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s080.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s100.{run}"])  ### 127.55
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s001_coord_conv.{run}"])
-####################
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s001.{compress_and_bm_rec_all}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s020.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s040.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s060.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s080.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s100.{run}"])  ### 127.55
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s001_coord_conv.{run}"])
-####################
-# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s001.{compress_and_bm_rec_all}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s020.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s040.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s060.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s080.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s100.{run}"])  ### 127.55
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s001_coord_conv.{run}"])
-####################
-# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s001.{compress_and_bm_rec_all}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s020.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s040.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s060.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s080.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s100.{run}"])  ### 127.55
-### E_relu
-# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s001_E_relu.{run}"])
-### no_Bias
-# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s001_no_Bias.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s001_coord_conv.{run}"])
-####################
-# sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s001.{compress_and_bm_rec_all}"])  ### 127.55  跑不起來
-# sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s020.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s040.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s060.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s080.{run}"])  ### 127.55
-# sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s100.{run}"])  ### 127.55
-
+# sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 6l ############################################################################################
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L6_ch064_mae_s001_coord_conv.{run}"])
-####################
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L6_ch032_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L6_ch016_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch016_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch016_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch016_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch016_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch016_mae_s100.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L6_ch016_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L6_ch008_mae_s001.{compress_and_bm_rec_all}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch008_mae_s020.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch008_mae_s040.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch008_mae_s060.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch008_mae_s080.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch008_mae_s100.{run}"])  ### 127.28
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L6_ch008_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L6_ch004_mae_s001.{compress_and_bm_rec_all}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch004_mae_s020.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch004_mae_s040.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch004_mae_s060.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch004_mae_s080.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch004_mae_s100.{run}"])  ### 127.28
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L6_ch004_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s001.{compress_and_bm_rec_all}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s020.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s040.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s060.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s080.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s100.{run}"])  ### 127.28
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s001.{compress_and_bm_rec_all}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s020.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s040.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s060.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s080.{run}"])  ### 127.28
-# sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s100.{run}"])  ### 127.28
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s001_coord_conv.{run}"])
-
+# sb.run(cmd_python_step10_a + [f"L6_ch128_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch128_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch064_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch064_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch032_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch032_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch016_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch008_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch004_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 7l ############################################################################################
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L7_ch032_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001.{compress_and_bm_rec_all}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L7_ch008_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch008_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch008_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch008_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch008_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch008_mae_s100.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L7_ch008_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L7_ch004_mae_s001.{compress_and_bm_rec_all}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L7_ch004_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L7_ch002_mae_s001.{compress_and_bm_rec_all}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L7_ch002_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L7_ch001_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch128_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch128_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch064_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch064_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch032_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch032_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001      .{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch008_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch004_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch002_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 8l ############################################################################################
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L8_ch016_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L8_ch008_mae_s001.{compress_and_bm_rec_all}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L8_ch008_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s020.{run}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s040.{run}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s060.{run}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s080.{run}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s100.{run}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L8_ch002_mae_s001.{compress_and_bm_rec_all}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L8_ch002_mae_s001_coord_conv.{run}"])
-####################
-sb.run(cmd_python_step10_a + [f"L8_ch001_mae_s001.{compress_and_bm_rec_all}"])
-### coord_conv
-# sb.run(cmd_python_step10_a + [f"L8_ch001_mae_s001_coord_conv.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch128_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch128_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch064_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch064_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch032_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch032_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch016_mae_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch016_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch008_mae_s001      .{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch008_mae_s001_limit.{run}}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch002_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch001_mae_s001.{compress_and_bm_rec_all}"])
