@@ -354,5 +354,3 @@ class See_rec_metric(See_info):
 
             # plt.show()
             single_row_imgs.Save_fig(dst_dir=self.matplot_metric_visual_write_dir, epoch=go_epoch, epoch_name="metric_epoch")  ### 話完圖就可以存了喔！
-
-
