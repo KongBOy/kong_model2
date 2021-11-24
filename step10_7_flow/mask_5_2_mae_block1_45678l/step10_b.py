@@ -7,11 +7,11 @@ kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer])    ### 定位出
 import sys                                                   ### 把 kong_model2 加入 sys.path
 sys.path.append(kong_model2_dir)
 # print("step10b")
-# print("code_exe_path:", code_exe_path)
-# print("code_exe_path_element:", code_exe_path_element)
-# print("kong_layer:", kong_layer)
-# print("kong_model2_dir:", kong_model2_dir)
-
+# print("    code_exe_path:", code_exe_path)
+# print("    code_exe_path_element:", code_exe_path_element)
+# print("    kong_layer:", kong_layer)
+# print("    kong_model2_dir:", kong_model2_dir)
+######################################################################################################################
 ### 按F5執行時， 如果 不是在 step10_b.py 的資料夾， 自動幫你切過去～ 才可 import step10_a.py 喔！
 code_exe_dir = os.path.dirname(code_exe_path)   ### 目前執行 step10_b.py 的 dir
 if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py 的資料夾， 自動幫你切過去～
