@@ -105,7 +105,7 @@ def train_step_pure_G_split_mask_move_I_to_C(model_obj, in_data, gt_data, loss_i
     gt_mask = gt_data[0]
     gt_coord = gt_data[1]
 
-    _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_obj=loss_info_obj)
+    _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=in_data, gt_data=gt_coord, loss_info_obj=loss_info_obj)
 
     # with tf.GradientTape() as gen_tape:
     #     model_output = model_obj.generator(in_data)
