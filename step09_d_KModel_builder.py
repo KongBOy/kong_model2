@@ -71,12 +71,17 @@ class G_Mask_op_builder(Old_512_256_Unet_builder):
         self.kong_model.generate_sees    = in_img_Generate_out_mask_see    ### 不能checkpoint
 class G_Flow_op_builder(G_Mask_op_builder):
     def _build_flow_op_part(self, I_to_C_to_F_with_gt_M=False,
+                                  I_with_Mgt_to_C_with_Mgt_to_F=False,
                                   M_to_C_to_F_with_gt_M=False):
         ### 生成 flow 的 operation
         if(M_to_C_to_F_with_gt_M):
             from step08_b_use_G_generate import in_mask_by_gt_Generate_out_coord, in_mask_by_gt_Generate_out_coord_to_flow_see
             self.kong_model.generate_results = in_mask_by_gt_Generate_out_coord        ### 不能checkpoint
             self.kong_model.generate_sees    = in_mask_by_gt_Generate_out_coord_to_flow_see    ### 不能checkpoint
+        elif(I_with_Mgt_to_C_with_Mgt_to_F):
+            from step08_b_use_G_generate import in_I_with_Mgt_Generate_out_coord, in_I_with_Mgt_Generate_out_coord_to_flow_see
+            self.kong_model.generate_results = in_I_with_Mgt_Generate_out_coord        ### 不能checkpoint
+            self.kong_model.generate_sees    = in_I_with_Mgt_Generate_out_coord_to_flow_see    ### 不能checkpoint
         elif(I_to_C_to_F_with_gt_M):
             from step08_b_use_G_generate import in_img_Generate_out_coord, in_img_Generate_out_coord_to_flow_see
             self.kong_model.generate_results = in_img_Generate_out_coord        ### 不能checkpoint
@@ -234,11 +239,13 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
         self.build = _build_mask_unet
         return self
 
-    def use_flow_unet2(self, I_to_C_to_F_with_gt_M=False, M_to_C_to_F_with_gt_M=False):
+    def use_flow_unet2(self, I_to_C_to_F_with_gt_M=False, I_with_Mgt_to_C_with_Mgt_to_F=False, M_to_C_to_F_with_gt_M=False):
         def _build_mask_unet():
             self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
             self._build_ckpt_part()     ### 後
-            self._build_flow_op_part(I_to_C_to_F_with_gt_M=I_to_C_to_F_with_gt_M, M_to_C_to_F_with_gt_M=M_to_C_to_F_with_gt_M)  ### 用 flow_op
+            self._build_flow_op_part(I_to_C_to_F_with_gt_M=I_to_C_to_F_with_gt_M,
+                                     I_with_Mgt_to_C_with_Mgt_to_F=I_with_Mgt_to_C_with_Mgt_to_F,
+                                     M_to_C_to_F_with_gt_M=M_to_C_to_F_with_gt_M)  ### 用 flow_op
             print("build_flow_unet2", "finish")
             return self.kong_model
         self.build = _build_mask_unet
