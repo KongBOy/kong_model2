@@ -72,8 +72,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 7l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L7_ch128_mae_s001      .{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch128_mae_s001_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch128_mae_s001      .{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch128_mae_s001_limit.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch064_mae_s001      .{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch064_mae_s001_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch032_mae_s001      .{run}"])
