@@ -7,14 +7,14 @@ kong_layer = code_exe_path_element.index("kong_model2") + 1  ### 找出 kong_mod
 kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer])    ### 定位出 kong_model2 的 dir
 import sys                                                   ### 把 kong_model2 加入 sys.path
 sys.path.append(kong_model2_dir)
-# print("step10a")
-# print("    code_exe_path:", code_exe_path)
-# print("    code_exe_path_element:", code_exe_path_element)
-# print("    kong_layer:", kong_layer)
-# print("    kong_model2_dir:", kong_model2_dir)
+print("step10a")
+print("    code_exe_path:", code_exe_path)
+print("    code_exe_path_element:", code_exe_path_element)
+print("    kong_layer:", kong_layer)
+print("    kong_model2_dir:", kong_model2_dir)
 #############################################################################################################################################################################################################
-exp_dir = "7_mask_unet/" +  code_exe_path.split("\\")[-2][5:]  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
-# print("    exp_dir:", exp_dir)  ### 舉例：exp_dir: 7_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_mae
+exp_dir = code_exe_path_element[5][7:] + "/" + code_exe_path.split("\\")[-2][5:]  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
+print("    exp_dir:", exp_dir)  ### 舉例：exp_dir: 7_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_mae
 #############################################################################################################################################################################################################
 
 from step06_a_datas_obj import *

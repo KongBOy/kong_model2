@@ -109,7 +109,8 @@ class See_bm_rec(See_info):
                                       bgr2rgb =False,
                                       single_see_core_amount=CORE_AMOUNT_BM_REC_VISUAL,
                                       see_print_msg=False,
-                                      jump_to=0):
+                                      jump_to=0,
+                                      **args):
         """
         save_as_bm_rec_matplot_visual(_after_train) 最後想試試看 省掉他 會不會影響我的理解
         """

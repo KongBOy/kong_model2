@@ -23,13 +23,11 @@ analyze_write_dir = f"{kong_model2_dir}/data_dir/"    ### 通常是 有碎片也
 
 JPG_QUALITY = 30
 CORE_AMOUNT = 6
-CORE_AMOUNT_NPY_TO_NPZ = 6
+CORE_AMOUNT_NPY_TO_NPZ = 2
 CORE_AMOUNT_BM_REC_VISUAL = 8  ### 8  ### 14  ### 500
 CORE_AMOUNT_SAVE_AS_JPG = 6  ### 12         ### Save_as_jpg
 CORE_AMOUNT_FIND_LTRD_AND_CROP = 6  ### 12  ### Find_ltrd_and_crop
 
-import sys
-sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
 import os
 

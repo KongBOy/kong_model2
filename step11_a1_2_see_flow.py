@@ -106,7 +106,7 @@ class See_flow_visual(See_info):
 
     ###############################################################################################
     ###############################################################################################
-    def Save_as_matplot_visual(self, add_loss=False, bgr2rgb=False, single_see_core_amount=8, see_print_msg=False):
+    def Save_as_matplot_visual(self, add_loss=False, bgr2rgb=False, single_see_core_amount=8, see_print_msg=False, **args):
         """
         Save_as_matplot_visual(_after_train) 最後想試試看 省掉他 會不會影響我的理解
         """
