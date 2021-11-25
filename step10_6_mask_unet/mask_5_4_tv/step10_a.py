@@ -14,7 +14,7 @@ sys.path.append(kong_model2_dir)
 # print("    kong_model2_dir:", kong_model2_dir)
 #############################################################################################################################################################################################################
 exp_dir = code_exe_path_element[5][7:] + "/" + code_exe_path.split("\\")[-2][5:]  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
-print("    exp_dir:", exp_dir)  ### 舉例：exp_dir: 7_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_mae
+# print("    exp_dir:", exp_dir)  ### 舉例：exp_dir: 7_mask_unet/5_os_book_and_paper_have_dtd_hdr_mix_bg_tv_s04_mae
 #############################################################################################################################################################################################################
 
 from step06_a_datas_obj import *
