@@ -141,57 +141,65 @@ if(__name__ == "__main__"):
     from tqdm import tqdm
     from step06_a_datas_obj import *
     from step06_b_data_pipline import tf_Data_builder
-    from step09_e2_mask_unet2_obj import *
     from step09_b_loss_info_obj import Loss_info_builder
     from step09_c_train_step import *
 
+    # from step09_e2_mask_unet2_obj import *
+    # from step09_e3_flow_unet2_obj import *
+    # from step09_e4_flow_unet2_obj_M_to_C import *
+    # from step09_e4_flow_unet2_obj_I_with_Mgt_to_C import *
 
-    # model_obj = mask_unet2_ch032_tanh_L7
-    # model_obj = mask_unet2_ch128_sig_L7
-    # model_obj = mask_unet2_ch064_sig_L7
-    # model_obj = mask_unet2_ch032_sig_L7
-    # model_obj = mask_unet2_ch016_sig_L7
-    # model_obj = mask_unet2_ch008_sig_L7
-    # model_obj = mask_unet2_ch004_sig_L7
-    # model_obj = mask_unet2_ch002_sig_L7
-    # model_obj = mask_unet2_ch001_sig_L7
 
-    # model_obj = mask_unet2_L2_ch32_sig
-    # model_obj = mask_unet2_L3_ch32_sig
-    # model_obj = mask_unet2_L4_ch32_sig
-    # model_obj = mask_unet2_L5_ch32_sig
-    # model_obj = mask_unet2_L6_ch32_sig
-    # model_obj = mask_unet2_L7_ch32_sig
-    # model_obj = mask_unet2_L8_ch32_sig
+    # model_obj = flow_unet2_ch032_tanh_L7
+    # model_obj = flow_unet2_ch128_sig_L7
+    # model_obj = flow_unet2_ch064_sig_L7
+    # model_obj = flow_unet2_ch032_sig_L7
+    # model_obj = flow_unet2_ch016_sig_L7
+    # model_obj = flow_unet2_ch008_sig_L7
+    # model_obj = flow_unet2_ch004_sig_L7
+    # model_obj = flow_unet2_ch002_sig_L7
+    # model_obj = flow_unet2_ch001_sig_L7
 
-    # model_obj = mask_unet2_IN_L7_ch32_2to2noC_sig
-    # model_obj = mask_unet2_IN_L7_ch32_2to3noC_sig
-    # model_obj = mask_unet2_IN_L7_ch32_2to4noC_sig
-    # model_obj = mask_unet2_IN_L7_ch32_2to5noC_sig
-    # model_obj = mask_unet2_IN_L7_ch32_2to6noC_sig
-    # model_obj = mask_unet2_IN_L7_ch32_2to7noC_sig
-    # model_obj = mask_unet2_IN_L7_ch32_2to8noC_sig
+    # model_obj = flow_unet2_L2_ch32_sig
+    # model_obj = flow_unet2_L3_ch32_sig
+    # model_obj = flow_unet2_L4_ch32_sig
+    # model_obj = flow_unet2_L5_ch32_sig
+    # model_obj = flow_unet2_L6_ch32_sig
+    # model_obj = flow_unet2_L7_ch32_sig
+    # model_obj = flow_unet2_L8_ch32_sig
 
-    # model_obj = mask_unet2_L8_skip_use_add_sig
-    # model_obj = mask_unet2_L7_skip_use_add_sig
-    # model_obj = mask_unet2_L6_skip_use_add_sig
-    # model_obj = mask_unet2_L5_skip_use_add_sig
-    # model_obj = mask_unet2_L4_skip_use_add_sig
-    # model_obj = mask_unet2_L3_skip_use_add_sig
-    # model_obj = mask_unet2_L2_skip_use_add_sig
+    # model_obj = flow_unet2_IN_L7_ch32_2to2noC_sig
+    # model_obj = flow_unet2_IN_L7_ch32_2to3noC_sig
+    # model_obj = flow_unet2_IN_L7_ch32_2to4noC_sig
+    # model_obj = flow_unet2_IN_L7_ch32_2to5noC_sig
+    # model_obj = flow_unet2_IN_L7_ch32_2to6noC_sig
+    # model_obj = flow_unet2_IN_L7_ch32_2to7noC_sig
+    # model_obj = flow_unet2_IN_L7_ch32_2to8noC_sig
 
-    model_obj = mask_unet2_block2_ch004_sig_8l
+    # model_obj = flow_unet2_L8_skip_use_add_sig
+    # model_obj = flow_unet2_L7_skip_use_add_sig
+    # model_obj = flow_unet2_L6_skip_use_add_sig
+    # model_obj = flow_unet2_L5_skip_use_add_sig
+    # model_obj = flow_unet2_L4_skip_use_add_sig
+    # model_obj = flow_unet2_L3_skip_use_add_sig
+    # model_obj = flow_unet2_L2_skip_use_add_sig
+
+    model_obj = flow_unet2_block2_ch004_sig_8l
 
     model_obj = model_obj.build()  ### 可替換成 上面 想測試的 model
 
     ### 2. db_obj 和 tf_data
     db_obj  = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
-    tf_data = tf_Data_builder().set_basic(db_obj, 1, train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1, train_shuffle=False).set_data_use_range(in_use_range="0~1", gt_use_range="0~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
     G_mae_loss_info = Loss_info_builder().set_loss_type("mae").build()
     ### 4. 跑起來試試看
-    for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
+    for n, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate(tqdm(tf_data.train_db_combine)):
+        print("train_in.numpy().min():", train_in.numpy().min())
+        print("train_in.numpy().max():", train_in.numpy().max())
+        print("train_in_pre.numpy().min():", train_in_pre.numpy().min())
+        print("train_in_pre.numpy().max():", train_in_pre.numpy().max())
         model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=G_mae_loss_info)
         if(n ==  0):
             model_obj.generator.summary()

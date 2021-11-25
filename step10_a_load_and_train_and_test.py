@@ -40,16 +40,16 @@ class Experiment():
         ### 因為我現在有加 timestamp， 所以 不會有上一版 kong_util的問題， 所以可以註解掉囉～
         # if(os.path.isdir(code_save_path + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
         #     shutil.rmtree(code_save_path + "/" + "kong_util")
-        print("self.exp_dir:", self.exp_dir )
+        # print("self.exp_dir:", self.exp_dir )
         shutil.copytree(f"{kong_model2_dir}/kong_util", code_save_path + "/" + "kong_util")
         shutil.copytree(f"{kong_model2_dir}/kong_Blender", code_save_path + "/" + "kong_Blender")
         shutil.copytree(f"{kong_model2_dir}/SIFT_dev", code_save_path + "/" + "SIFT_dev")
 
         code_exe_copy_src = "/".join(self.code_exe_path.split("\\")[:-1])
         code_exe_copy_dst = code_save_path + "/" + "/".join(self.code_exe_path.split("\\")[-3:-1])
-        print("self.code_exe_path:", self.code_exe_path)  ### 舉例： c:\Users\CVML\Desktop\kong_model2\step10_6_mask\mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100\step10_a.py
-        print("code_exe_copy_src:", code_exe_copy_src)    ### 舉例： c:/Users/CVML/Desktop/kong_model2/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
-        print("code_exe_copy_dst:", code_exe_copy_dst)    ### 舉例： data_dir/result/6_mask_unet/5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-8b_6_6-flow_unet-mask_h_bg_ch032_sig_tv_s100_bce_s100_sobel_k5_s100_6l_ep060-20211116_125312/train_code_20211116_125312/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
+        # print("self.code_exe_path:", self.code_exe_path)  ### 舉例： c:\Users\CVML\Desktop\kong_model2\step10_6_mask\mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100\step10_a.py
+        # print("code_exe_copy_src:", code_exe_copy_src)    ### 舉例： c:/Users/CVML/Desktop/kong_model2/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
+        # print("code_exe_copy_dst:", code_exe_copy_dst)    ### 舉例： data_dir/result/6_mask_unet/5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-8b_6_6-flow_unet-mask_h_bg_ch032_sig_tv_s100_bce_s100_sobel_k5_s100_6l_ep060-20211116_125312/train_code_20211116_125312/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
         shutil.copytree(code_exe_copy_src, code_exe_copy_dst)
 
 

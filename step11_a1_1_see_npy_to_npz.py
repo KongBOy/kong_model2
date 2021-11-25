@@ -94,7 +94,7 @@ class See_npy_to_npz(See_info):
 
         self.npz_epoch_amount     = len(self.npz_epoch_read_paths)
 
-    def Npy_to_npz(self, single_see_core_amount=8, see_print_msg=False):   ### 因為有刪東西的動作，覺得不要multiprocess比較安全~~
+    def Npy_to_npz(self, single_see_core_amount=8, see_print_msg=False, **args):   ### 因為有刪東西的動作，覺得不要multiprocess比較安全~~
         """
         把 See 資料夾內的.npy改存成.npz，存完會把.npy刪除喔～
         """

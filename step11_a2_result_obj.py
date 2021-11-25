@@ -118,11 +118,11 @@ class Result:
                 see_start = time.time()
 
                 if(args["see_method_name"] == "Save_as_flow_matplot_visual"):
-                    self.sees[see_num].Save_as_matplot_visual        (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
+                    self.sees[see_num].Save_as_matplot_visual        (**args)
 
                 if(args["see_method_name"] == "Save_as_bm_rec_matplot_visual"):
-                    self.sees[see_num].Npy_to_npz                    (single_see_core_amount=CORE_AMOUNT_NPY_TO_NPZ, see_print_msg=args["see_print_msg"])
-                    self.sees[see_num].Save_as_bm_rec_matplot_visual (add_loss=args["add_loss"], bgr2rgb=args["bgr2rgb"], single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])
+                    self.sees[see_num].Npy_to_npz                    (**args)
+                    self.sees[see_num].Save_as_bm_rec_matplot_visual (**args)
                     """
                     如果 see_file_amount少，建議 多個see 同時跑， see內的多個任務 同時跑：see_core_amount=7, single_see_core_amount=1
                     如果 see_file_amount多，建議 單個see 依序跑， see內的多個任務 同時跑：see_core_amount=1, single_see_core_amount=8之類的
