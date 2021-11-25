@@ -41,7 +41,7 @@ def _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_obj
 @tf.function
 def train_step_pure_G_split_mask_move_I_with_Mgt_to_C(model_obj, in_data, gt_data, loss_info_obj=None):
     '''
-    M_to_C_to_F_with_gt_M 是 Mask_to_Coord 的縮寫
+    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
     ### in_img.shape (1, h, w, 3)
     gt_mask = gt_data[0]   ### (1, h, w, 1)
@@ -63,7 +63,7 @@ def train_step_pure_G_split_mask_move_I_with_Mgt_to_C(model_obj, in_data, gt_dat
 @tf.function
 def train_step_pure_G_split_mask_move_Mgt_to_C(model_obj, in_data, gt_data, loss_info_obj=None):
     '''
-    M_to_C_to_F_with_gt_M 是 Mask_to_Coord 的縮寫
+    Mgt_to_C 是 Mask(gt)_to_Coord 的縮寫
     '''
     gt_mask = gt_data[0]
     gt_coord = gt_data[1]
@@ -102,6 +102,9 @@ def train_step_pure_G_split_mask_move_Mgt_to_C(model_obj, in_data, gt_data, loss
 ####################################################
 @tf.function
 def train_step_pure_G_split_mask_move_I_to_C(model_obj, in_data, gt_data, loss_info_obj=None):
+    '''
+    I_to_C 是 Image_to_Coord 的縮寫
+    '''
     gt_mask = gt_data[0]
     gt_coord = gt_data[1]
 
