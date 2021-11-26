@@ -16,7 +16,7 @@ if(__name__ == "__main__"):
     from step12_result_analyzer import Col_results_analyzer, Row_col_results_analyzer, Bm_Rec_exps_analyze
     from step11c_2c_mae_block1_45678l import  *
     ##########################################################################################################################################################################################################################################################################################
-    flow_ana_dir = "flow"
+    flow_ana_dir = "flow/I_to_C_with_Mgt_to_F"
     """
     以下留下一些example這樣子
     core_amount == 7 是因為 目前 see_amount == 7 ，想 一個core 一個see
@@ -266,8 +266,8 @@ if(__name__ == "__main__"):
     L45678_ch64_32_16_8_4_2_1_block1_mae_s001_analyze = Row_col_results_analyzer(ana_describe=f"{flow_ana_dir}/{ana_name}",
                                                   ana_what="rec",
                                                   row_col_results=mae_block1_mae_s001_L2345678[2:], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .Gather_all_see_final_img()
                                           #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                          #   .Gather_all_see_final_img()
     ################################################################################
     ana_name = "2c_block1_L45678_2-ch64,32,16,8,4_mae_s001_100"
     L45678_ch64_32_16_8_4_block1_mae_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{flow_ana_dir}/{ana_name}",
