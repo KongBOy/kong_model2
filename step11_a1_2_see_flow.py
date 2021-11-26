@@ -68,7 +68,7 @@ class See_flow_visual(See_info):
         self.flow_ep_jpg_amount     = len(self.flow_ep_jpg_names)
 
 
-        # self.trained_epoch       = self.flow_ep_jpg_amount - 1  ### 去掉epoch0
+        self.trained_epoch       = self.flow_ep_jpg_amount - 1  ### 去掉epoch0
 
     ###############################################################################################
     ###############################################################################################
