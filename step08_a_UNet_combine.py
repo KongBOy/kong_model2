@@ -145,8 +145,8 @@ if(__name__ == "__main__"):
     from step09_c_train_step import *
 
     # from step09_e2_mask_unet2_obj import *
-    # from step09_e3_flow_unet2_obj_I_to_C import *
-    # from step09_e4_flow_unet2_obj_Mgt_to_C import *
+    # from step09_e3_flow_unet2_obj import *
+    # from step09_e4_flow_unet2_obj_M_to_C import *
     # from step09_e4_flow_unet2_obj_I_with_Mgt_to_C import *
 
 
