@@ -26,15 +26,6 @@ import subprocess as sb
 
 # sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001_copy.{run}"])
 # exit()
-#### l2 ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch004_mae_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch002_mae_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch001_mae_s001.{run}"])
 #### 3l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s001.{compress_and_bm_rec_all}"])
