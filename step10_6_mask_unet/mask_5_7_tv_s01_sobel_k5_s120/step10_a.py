@@ -7,7 +7,7 @@ kong_layer = code_exe_path_element.index("kong_model2") + 1  ### 找出 kong_mod
 kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer])    ### 定位出 kong_model2 的 dir
 import sys                                                   ### 把 kong_model2 加入 sys.path
 sys.path.append(kong_model2_dir)
-# print("step10a")
+# print(__file__.split("\\")[-1])
 # print("    code_exe_path:", code_exe_path)
 # print("    code_exe_path_element:", code_exe_path_element)
 # print("    kong_layer:", kong_layer)
