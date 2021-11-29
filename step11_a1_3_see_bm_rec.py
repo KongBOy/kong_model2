@@ -21,6 +21,8 @@ from tqdm import tqdm
 import datetime
 # import pdb
 
+from step06_a_datas_obj import Range
+
 '''
 繼承關係(我把它設計成 有一種 做完 前面才能做後面的概念)：
 See_info -> See_npy_to_npz -> See_bm_rec -> See_rec_metric
@@ -185,7 +187,7 @@ class See_bm_rec(See_info):
         flow_v    = cv2.imread(self.flow_ep_jpg_read_paths[epoch])  ### see資料夾 內的影像 該epoch產生的影像 讀出來
         gt_flow_v = cv2.imread(self.gt_flow_jpg_path )              ### 要記得see0的jpg第二張存的是 輸出的gt影像
 
-        # print("2. see gt_use_range=", self.gt_use_range)
+        # print("2. see use_gt_range=", self.use_gt_range)
         # start_time = time.time()
         bm, rec, gt_bm, gt_rec = self._get_bm_rec_and_gt_bm_gt_rec(epoch=epoch, dis_img=in_img)  ### 做一次 大約 1~2 秒
         # print("self._get_bm_rec_and_gt_bm_gt_rec cost time:", time.time() - start_time)
@@ -248,7 +250,7 @@ class See_bm_rec(See_info):
 
     ### See_method 第三部分c
     def _use_flow_to_rec(self, dis_img, flow):
-        if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
+        if(self.use_gt_range == Range(-1, 1)): flow = (flow + 1) / 2   ### 如果 use_gt_range 是 -1~1 記得轉回 0~1
         h, w = flow.shape[:2]
         total_pix_amount = h * w
         valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()

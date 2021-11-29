@@ -1,4 +1,5 @@
 from step0_access_path import JPG_QUALITY, CORE_AMOUNT, CORE_AMOUNT_NPY_TO_NPZ
+from step06_a_datas_obj import Range
 
 import sys
 sys.path.append("kong_util")
@@ -35,8 +36,8 @@ class Result:
         self.see_amount = None
         self.test_dir = None
 
-        self.in_use_range = "0~1"
-        self.gt_use_range = "0~1"
+        self.use_in_range = Range(0, 1)
+        self.use_gt_range = Range(0, 1)
 
         ### after train的時候才用的
         self.ana_describe = None  ### 這是給matplot用的title
@@ -298,11 +299,11 @@ if(__name__ == "__main__"):
     ############################################################################################################################################
     ### bm rec  待更新，有需要的時候再弄就好了 反正用法有寫在 step10b囉！
     ############################################################################################################################################
-    blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050_try_npz").set_ana_describe("blender").build()
+    # blender_os_book = Result_builder().set_by_result_name("5_14_flow_unet/type8_blender_os_book-5_14_1-20210228_144200-flow_unet-epoch050_try_npz").set_ana_describe("blender").build()
     # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=0, add_loss=False, bgr2rgb=True)
     # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=0, add_loss=False, bgr2rgb=True)
     # blender_os_book.save_all_single_see_as_bm_rec_matplot_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True, single_see_multiprocess=False)
-    blender_os_book.save_all_single_see_as_bm_rec_matplot_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True)
+    # blender_os_book.save_all_single_see_as_bm_rec_matplot_visual(start_index=0, amount=12, add_loss=False, bgr2rgb=True)
 
     # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=5, add_loss=False, bgr2rgb=True)   ### 如果失敗就單個跑吧~~
     # blender_os_book.save_single_see_as_bm_rec_matplot_visual(see_num=6, add_loss=False, bgr2rgb=True)

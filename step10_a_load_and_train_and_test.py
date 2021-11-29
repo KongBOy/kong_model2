@@ -86,10 +86,10 @@ class Experiment():
 
         self.exp_bn_see_arg = False  ### 本來 bn 在 test 的時候就應該要丟 false，只是 現在batch_size=1， 丟 True 會變 IN ， 所以加這個flag 來控制
 
-        self.in_use_range = "0~1"
-        self.gt_use_range = "0~1"
+        self.use_in_range = Range(min=0, max=1)
+        self.use_gt_range = Range(min=0, max=1)
         '''
-        覺得不要 mo_use_range，因為本來就應該要 model_output 就直接拿來用了呀，所以直接根據 gt_use_range 來做後處理即可
+        覺得不要 mo_use_range，因為本來就應該要 model_output 就直接拿來用了呀，所以直接根據 use_gt_range 來做後處理即可
         output如果不能拿來用 或者 拿來用出問題，代表model設計有問題
         '''
 
@@ -117,11 +117,11 @@ class Experiment():
         if(reload_result):
             # print("self.exp_dir:", self.exp_dir)
             # print("self.result_name:", self.result_name)
-            self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name, self.in_use_range, self.gt_use_range).build()  ### 直接用 自己指定好的 result_name
+            self.result_obj   = Result_builder().set_by_result_name(self.exp_dir + "/" + self.result_name, self.use_in_range, self.use_gt_range, self.db_obj).build()  ### 直接用 自己指定好的 result_name
             print("Reload: %s ok~~" % (self.result_obj.result_name))
         else: self.result_obj = Result_builder().set_by_exp(self).build()  ### exp在train時 要自動建新的 result，才不會覆蓋到之前訓練的result，Result_builder()需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
-        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(in_use_range=self.in_use_range, gt_use_range=self.gt_use_range).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
+        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
         ### 3.model
         self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
         self.ckpt_write_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_write_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
@@ -243,7 +243,7 @@ class Experiment():
             # print("test_gt_pre.shape", test_gt_pre.shape)
             if  (flow_mask is True):
                 in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy
-                pred_mask      = self.model_obj.generate_results(model_obj.generator, test_in, test_in_pre, test_gt, test_gt_pre, gt_use_range=self.gt_use_range)  ### BHWC
+                pred_mask      = self.model_obj.generate_results(model_obj.generator, test_in, test_in_pre, test_gt, test_gt_pre, use_gt_range=self.use_gt_range)  ### BHWC
                 pred_mask      = pred_mask[0].numpy()   ### HWC 和 tensor -> numpy
                 gt_mask    = test_gt[0][0].numpy()
 
@@ -261,11 +261,11 @@ class Experiment():
                 in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy
                 ax[0].imshow(test_in[0])
 
-                flow           = self.model_obj.generate_results(model_G=self.model_obj.generator, in_img_pre=test_in_pre, gt_use_range=self.gt_use_range)  ### BHWC
+                flow           = self.model_obj.generate_results(model_G=self.model_obj.generator, in_img_pre=test_in_pre, use_gt_range=self.use_gt_range)  ### BHWC
                 flow           = flow[0].numpy()   ### HWC 和 tensor -> numpy
                 # flow           = flow[..., ::-1]
                 flow[..., 1]   = 1 - flow[..., 1]  ### y 上下 flip
-                if(self.gt_use_range == "-1~1"): flow = (flow + 1) / 2   ### 如果 gt_use_range 是 -1~1 記得轉回 0~1
+                if(self.use_gt_range == Range(-1, 1)): flow = (flow + 1) / 2   ### 如果 use_gt_range 是 -1~1 記得轉回 0~1
                 print(" flow.shape", flow.shape)
                 print(" flow.min()", flow.min())
                 print(" flow.max()", flow.max())

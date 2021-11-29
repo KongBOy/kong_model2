@@ -464,7 +464,7 @@ if(__name__ == "__main__"):
 #######################################################################################################################################
     ### 嘗試 真的 load tf_data 進來 train 看看
     from tqdm import tqdm
-    from step06_a_datas_obj import DB_C, DB_N, DB_GM
+    from step06_a_datas_obj import DB_C, DB_N, DB_GM, Range
     from step06_b_data_pipline import Dataset_builder, tf_Data_builder
     from step09_d_KModel_builder import KModel_builder, MODEL_NAME
     from step09_b_loss_info_obj import Loss_info_builder
@@ -474,7 +474,7 @@ if(__name__ == "__main__"):
 
     ### 2. db_obj 和 tf_data
     db_obj = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book , DB_N.os_book_800data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", gt_format="jpg").set_detail(have_train=True, have_see=True).build()
-    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(in_use_range="-1~1", gt_use_range="-1~1").set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
     GAN_mae_loss_info = Loss_info_builder().build_gan_loss().build_gan_loss_containors().build()

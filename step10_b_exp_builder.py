@@ -39,9 +39,9 @@ class Exp_builder():
         self.exp.exp_bn_see_arg = exp_bn_see_arg
         return self
 
-    def set_train_in_gt_use_range(self, in_use_range="0~1", gt_use_range="0~1"):
-        self.exp.in_use_range = in_use_range
-        self.exp.gt_use_range = gt_use_range
+    def set_train_in_gt_use_range(self, use_in_range, use_gt_range):
+        self.exp.use_in_range = use_in_range
+        self.exp.use_gt_range = use_gt_range
         return self
 
     ### 整理後發現好像沒用到就註解起來囉～
@@ -62,14 +62,14 @@ class Exp_builder():
 
         也補上 建好result 馬上設定 loss_info_obj 拉，這樣 step11, step12 也能用了！
         '''
-        if(self.exp.result_name is not None):
-            # print("1.result_name", self.exp.result_name, ", self.exp.gt_use_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.gt_use_range)  ### 追蹤see的建立過程
-            self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.in_use_range, self.exp.gt_use_range).build()  ### 直接用 自己指定好的 result_name
+        # if(self.exp.result_name is not None):
+            # print("1.result_name", self.exp.result_name, ", self.exp.use_gt_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.use_gt_range)  ### 追蹤see的建立過程
+            # self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.use_in_range, self.exp.use_gt_range, self.exp.db_obj).build()  ### 直接用 自己指定好的 result_name
 
 
             ### 寫兩行的話 比較好打註解，寫一行其實也可以下面有補充～～
-            self.exp.loss_info_builder = self.exp.loss_info_builder.copy()                                      ### 要做copy的動作， 才不會每個 exp_builder 都用到相同的 loss_info_builder 導致 建出相同的 loss_info_obj
-            self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
+            # self.exp.loss_info_builder = self.exp.loss_info_builder.copy()                                      ### 要做copy的動作， 才不會每個 exp_builder 都用到相同的 loss_info_builder 導致 建出相同的 loss_info_obj
+            # self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
             ### 補充：如果寫一行的話：
             # self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).copy()  ### 先後copy() 都沒差
 
@@ -81,7 +81,7 @@ class Exp_builder():
             # print("self.exp.loss_info_obj.logs_read_dir", self.exp.loss_info_obj.logs_read_dir)
             # print("self.exp.loss_info_obj.logs_write_dir", self.exp.loss_info_obj.logs_write_dir)
             # print()  ### 追蹤see的建立過程
-            print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
+            # print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
         return self.exp
 
     def result_name_v1_to_v2(self):
@@ -240,8 +240,8 @@ class Exp_builder():
 # blender_os_book_flow_unet_epoch004 = Exp_builder().set_basic("train", type8_blender_os_book_768, flow_unet_epoch4, G_mae_s001_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1", describe_end="epoch004") .set_train_args(epochs=4).set_result_name(result_name="")
 
 ### 測試 怎麼樣設定 multiprocess 才較快
-# testest     = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_s001_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4_e060", describe_end="testest"         ).set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-testest")      ### copy from ch64_in_epoch060
-# testest_big = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_s001_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4_e700", describe_end="testest_big"     ).set_train_args(epochs=700, exp_bn_see_arg=None).set_train_in_gt_use_range(in_use_range="0~1", gt_use_range="0~1").set_result_name(result_name="type8_blender_os_book-testest_big")  ### copy from ch64_in_epoch700
+# testest     = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_s001_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4_e060", describe_end="testest"         ).set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender_os_book-testest")      ### copy from ch64_in_epoch060
+# testest_big = Exp_builder().set_basic("test_see", type8_blender_os_book_768, flow_unet_IN_ch64, G_mae_s001_loss_info_builder, exp_dir=exp_dir14, describe_mid="5_14_1_4_e700", describe_end="testest_big"     ).set_train_args(epochs=700, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender_os_book-testest_big")  ### copy from ch64_in_epoch700
 
 
 import sys

@@ -2,6 +2,7 @@ import sys
 sys.path.append("kong_util")
 from util import get_dir_certain_file_names
 
+from step06_a_datas_obj import Range
 
 '''
 繼承關係(我把它設計成 有一種 做完 前面才能做後面的概念)：
@@ -30,8 +31,8 @@ class See_info:
         self.see_read_dir  = self.result_read_dir  + "/" + self.see_name
         self.see_write_dir = self.result_write_dir + "/" + self.see_name
 
-        self.in_use_range = "0~1"
-        self.gt_use_range = "0~1"
+        self.use_in_range = Range(0, 1)
+        self.use_gt_range = Range(0, 1)
 
     def get_path_savely(self, search_dir, certain_word, certain_ext="."):
         names = get_dir_certain_file_names(search_dir, certain_word=certain_word, certain_ext=certain_ext)
