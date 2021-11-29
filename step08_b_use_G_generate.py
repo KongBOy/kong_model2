@@ -173,6 +173,50 @@ def I_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_pre, gt_ma
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flow_visual.jpg" % epoch, flow_visual)                  ### 把 生成的 flow_visual 存進相對應的資料夾
 
 ######################################################################################################################################################################################################
+def Mgt_Generate_C(model_G, _1, _2, _3, gt_mask_coord_pre, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+    '''
+    這邊model 生成的是 ch2 的 coord， 要再跟 mask concate 後才會變成 ch3 的 flow 喔！
+    '''
+    gt_mask_pre  = gt_mask_coord_pre[0]
+    gt_coord_pre = gt_mask_coord_pre[1]
+
+    coord      = model_G(gt_mask_pre, training=training)
+    # print("coord before max, min:", coord.numpy().max(), coord.numpy().min())  ### 測試 拉range 有沒有拉對
+    if(gt_use_range == "-1~1"): coord = (coord + 1) / 2
+    # print("coord after max, min:", coord.numpy().max(), coord.numpy().min())  ### 測試 拉range 有沒有拉對
+    return coord
+
+
+def Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, _2, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
+    '''
+    如果有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
+    gt_mask_coord[0] 為 mask  (1, h, w, 1)
+    gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
+    '''
+    coord     = Mgt_Generate_C(model_G, None, None, None, gt_mask_coord_pre, result_obj.gt_use_range, training=training)
+    coord     = coord[0]
+    gt_mask  = gt_mask_coord[0][0]
+    gt_coord = gt_mask_coord[1][0]
+    flow,    flow_visual    = C_with_Mgt_to_F_and_get_F_visual(coord,    gt_mask)
+    gt_flow, gt_flow_visual = C_with_Mgt_to_F_and_get_F_visual(gt_coord, gt_mask)
+
+    see_write_dir  = result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    mask_write_dir = result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
+        Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
+        Check_dir_exist_and_build(mask_write_dir)   ### 建立 model生成的結果 的資料夾
+        cv2.imwrite(see_write_dir + "/" + "0a1-in_img.jpg",      in_img[0][:, :, ::-1].numpy())             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_write_dir + "/" + "0a2-in_gt_mask.jpg",  (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        np.save    (see_write_dir + "/" + "0b-gt_a_gt_mask",     gt_mask)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_write_dir + "/" + "0b-gt_b_gt_flow.jpg", gt_flow_visual)                            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        np.save    (see_write_dir + "/" + "0b-gt_b_gt_flow",     gt_flow)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_write_dir + "/" + "0c-rec_hope.jpg",     rec_hope[0][:, :, ::-1].numpy())           ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張
+    np.save(    see_write_dir + "/" + "epoch_%04i_a_flow"            % epoch, flow)                         ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flow_visual.jpg" % epoch, flow_visual)                  ### 把 生成的 flow_visual 存進相對應的資料夾
+
+
+######################################################################################################################################################################################################
 def I_with_Mgt_Generate_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     '''
     這邊model 生成的是 ch2 的 coord， 要再跟 mask concate 後才會變成 ch3 的 flow 喔！
