@@ -71,9 +71,14 @@ class G_Mask_op_builder(Old_512_256_Unet_builder):
         self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
 class G_Flow_op_builder(G_Mask_op_builder):
     def _build_flow_op_part(self, I_to_C_with_Mgt_to_F=False,
+                                  I_to_W=False,
                                   I_with_Mgt_to_C_with_Mgt_to_F=False,
                                   Mgt_to_C_with_gt_M_to_F=False):
         ### 生成 flow 的 operation
+        if  (I_to_C_with_Mgt_to_F):
+            from step08_b_use_G_generate import I_Generate_C, I_Generate_C_with_Mgt_to_F_see
+            self.kong_model.generate_results = I_Generate_C        ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
         elif(Mgt_to_C_with_gt_M_to_F):
             from step08_b_use_G_generate import Mgt_Generate_C, Mgt_Generate_C_with_Mgt_to_F_see
             self.kong_model.generate_results = Mgt_Generate_C        ### 不能checkpoint
@@ -82,10 +87,10 @@ class G_Flow_op_builder(G_Mask_op_builder):
             from step08_b_use_G_generate import I_with_Mgt_Generate_C, I_with_Mgt_Generate_C_with_Mgt_to_F_see
             self.kong_model.generate_results = I_with_Mgt_Generate_C        ### 不能checkpoint
             self.kong_model.generate_sees    = I_with_Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
-        elif(I_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate import I_Generate_C, I_Generate_C_with_Mgt_to_F_see
-            self.kong_model.generate_results = I_Generate_C        ### 不能checkpoint
-            self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
+        elif(I_to_W):
+            from step08_b_use_G_generate import I_Generate_W, I_Generate_W_see
+            self.kong_model.generate_results = I_Generate_W        ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_W_see    ### 不能checkpoint
 
         else:
             from step08_b_use_G_generate import I_Generate_F, I_Generate_F_see
@@ -239,11 +244,12 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
         self.build = _build_mask_unet
         return self
 
-    def use_flow_unet2(self, I_to_C_with_Mgt_to_F=False, I_with_Mgt_to_C_with_Mgt_to_F=False, Mgt_to_C_with_gt_M_to_F=False):
+    def use_flow_unet2(self, I_to_C_with_Mgt_to_F=False, I_to_W=False, I_with_Mgt_to_C_with_Mgt_to_F=False, Mgt_to_C_with_gt_M_to_F=False):
         def _build_mask_unet():
             self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
             self._build_ckpt_part()     ### 後
             self._build_flow_op_part(I_to_C_with_Mgt_to_F=I_to_C_with_Mgt_to_F,
+                                     I_to_W=I_to_W,
                                      I_with_Mgt_to_C_with_Mgt_to_F=I_with_Mgt_to_C_with_Mgt_to_F,
                                      Mgt_to_C_with_gt_M_to_F=Mgt_to_C_with_gt_M_to_F)  ### 用 flow_op
             print("build_flow_unet2", "finish")
