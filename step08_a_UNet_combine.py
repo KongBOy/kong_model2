@@ -71,6 +71,7 @@ class Generator(tf.keras.models.Model):
         if(self.unet_acti == "sigmoid"): self.sigmoid = Activation(tf.nn.sigmoid, name="out_sigmoid")
 
     def Get_Layer_hid_ch(self, to_L, ch_upper_bound=512):
+        # print("Get_Layer_hid_ch ch_upper_bound", ch_upper_bound)
         '''
         L_0 (3 或 1),
         L_1 (hid_ch*2**0),
@@ -123,7 +124,7 @@ class Generator(tf.keras.models.Model):
 if(__name__ == "__main__"):
     import numpy as np
     import time
-    from kong_util.tf_model_util import Show_model_layer_names
+    from kong_util.tf_model_util import Show_model_layer_names, Show_model_weights
     # data = np.ones(shape=(1, 512, 512, 3), dtype=np.float32)
     # start_time = time.time()  # 看資料跑一次花多少時間
     # # test_g = Generator(hid_ch=64, depth_level=7, use_bias=False)
@@ -147,7 +148,7 @@ if(__name__ == "__main__"):
     # from step09_e2_mask_unet2_obj import *
     # from step09_e3_flow_unet2_obj_I_to_C import *
     # from step09_e4_flow_unet2_obj_Mgt_to_C import *
-    # from step09_e4_flow_unet2_obj_I_with_Mgt_to_C import *
+    from step09_e5_flow_unet2_obj_I_with_Mgt_to_C import *
 
 
     # model_obj = flow_unet2_ch032_tanh_L7
@@ -184,7 +185,7 @@ if(__name__ == "__main__"):
     # model_obj = flow_unet2_L3_skip_use_add_sig
     # model_obj = flow_unet2_L2_skip_use_add_sig
 
-    model_obj = flow_unet2_block2_ch004_sig_8l
+    model_obj = flow_unet2_block1_ch128_sig_L6
 
     model_obj = model_obj.build()  ### 可替換成 上面 想測試的 model
 
@@ -203,7 +204,7 @@ if(__name__ == "__main__"):
         model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=G_mae_loss_info)
         if(n ==  0):
             model_obj.generator.summary()
-            Show_model_layer_names(model_obj.generator)
+            Show_model_weights(model_obj.generator)
         if(n == 10):
             model_obj.generator.save_weights("try_save/weights")
             iter10 = model_obj.generator.layers[0].weights[1]
