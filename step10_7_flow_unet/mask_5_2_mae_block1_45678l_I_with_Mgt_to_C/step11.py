@@ -52,7 +52,9 @@ mae_block1_flow_s001_L345678 = [
      mae_block1.L6_ch002_mae_s001.build().result_obj,
      mae_block1.L6_ch001_mae_s001.build().result_obj],
 
-    [mae_block1.L5_ch032_mae_s001.build().result_obj,
+    [mae_block1.L5_ch128_mae_s001.build().result_obj,
+     mae_block1.L5_ch064_mae_s001.build().result_obj,
+     mae_block1.L5_ch032_mae_s001.build().result_obj,
      mae_block1.L5_ch016_mae_s001.build().result_obj,
      mae_block1.L5_ch008_mae_s001.build().result_obj,
      mae_block1.L5_ch004_mae_s001.build().result_obj,
@@ -116,6 +118,8 @@ mae_block1_rec_s001_L45678 = [
 
 
     [
+        mae_block1.L5_ch128_mae_s001.build().result_obj,
+        mae_block1.L5_ch064_mae_s001.build().result_obj,
         mae_block1.L5_ch032_mae_s001.build().result_obj,
         mae_block1.L5_ch016_mae_s001.build().result_obj,
         mae_block1.L5_ch008_mae_s001.build().result_obj,
