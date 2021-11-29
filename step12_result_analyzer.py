@@ -192,7 +192,7 @@ class Col_results_analyzer(Result_analyzer):
         _Draw_col_results_single_see_ 的 前置步驟：設定格式
         """
         start_time = time.time()
-        analyze_see_dir = self.analyze_dst_dir + "/" + self.c_results[0].sees[see_num].see_name + "/" + f"{self.ana_what}_epoch=all ({self.ana_timestamp})"  ### (可以再想想好名字！)分析結果存哪裡定位出來
+        analyze_see_dir = self.analyze_dst_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + self.c_results[0].sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)  ### 建立 存結果的資料夾
 
 
@@ -416,7 +416,7 @@ class Row_col_results_analyzer(Result_analyzer):
     def analyze_row_col_results_single_see(self, see_num, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
         print(f"{self.ana_describe} doing analyze_row_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
         start_time = time.time()
-        analyze_see_dir = self.analyze_dst_dir + "/" + self.r_c_results[0][0].sees[see_num].see_name + "/" + f"{self.ana_what}_epoch=all ({self.ana_timestamp})"  ### 分析結果存哪裡定位出來
+        analyze_see_dir = self.analyze_dst_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + self.r_c_results[0][0].sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)  ### 建立 存結果的資料夾
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！ 並且抓出各result的trained_epochs
