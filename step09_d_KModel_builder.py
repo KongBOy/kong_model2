@@ -65,10 +65,10 @@ class Old_512_256_Unet_builder(KModel_init_builder):
 class G_Mask_op_builder(Old_512_256_Unet_builder):
     def _build_mask_op_part(self):
         ### 生成 mask 的 operation
-        from step08_b_use_G_generate import in_img_Generate_out_mask, in_img_Generate_out_mask_see
-        # self.kong_model.generate_results = in_img_Generate_out_flow           ### 不能checkpoint  ### 好像用不到
-        self.kong_model.generate_results = in_img_Generate_out_mask             ### 不能checkpoint
-        self.kong_model.generate_sees    = in_img_Generate_out_mask_see    ### 不能checkpoint
+        from step08_b_use_G_generate import I_Generate_M, I_Generate_M_see
+        # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
+        self.kong_model.generate_results = I_Generate_M             ### 不能checkpoint
+        self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
 class G_Flow_op_builder(G_Mask_op_builder):
     def _build_flow_op_part(self, I_to_C_with_Mgt_to_F=False,
                                   I_with_Mgt_to_C_with_Mgt_to_F=False,
@@ -79,19 +79,19 @@ class G_Flow_op_builder(G_Mask_op_builder):
             self.kong_model.generate_results = in_mask_by_gt_Generate_out_coord        ### 不能checkpoint
             self.kong_model.generate_sees    = in_mask_by_gt_Generate_out_coord_to_flow_see    ### 不能checkpoint
         elif(I_with_Mgt_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate import in_I_with_Mgt_Generate_out_coord, in_I_with_Mgt_Generate_out_coord_to_flow_see
-            self.kong_model.generate_results = in_I_with_Mgt_Generate_out_coord        ### 不能checkpoint
-            self.kong_model.generate_sees    = in_I_with_Mgt_Generate_out_coord_to_flow_see    ### 不能checkpoint
+            from step08_b_use_G_generate import I_with_Mgt_Generate_C, I_with_Mgt_Generate_C_with_Mgt_to_F_see
+            self.kong_model.generate_results = I_with_Mgt_Generate_C        ### 不能checkpoint
+            self.kong_model.generate_sees    = I_with_Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
         elif(I_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate import in_img_Generate_out_coord, in_img_Generate_out_coord_to_flow_see
-            self.kong_model.generate_results = in_img_Generate_out_coord        ### 不能checkpoint
-            self.kong_model.generate_sees    = in_img_Generate_out_coord_to_flow_see    ### 不能checkpoint
+            from step08_b_use_G_generate import I_Generate_C, I_Generate_C_with_Mgt_to_F_see
+            self.kong_model.generate_results = I_Generate_C        ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
 
         else:
-            from step08_b_use_G_generate import in_img_Generate_out_flow, in_img_Generate_out_flow_see
-            # self.kong_model.generate_results = in_img_Generate_out_flow           ### 不能checkpoint  ### 好像用不到
-            self.kong_model.generate_results = in_img_Generate_out_flow             ### 不能checkpoint
-            self.kong_model.generate_sees    = in_img_Generate_out_flow_see    ### 不能checkpoint
+            from step08_b_use_G_generate import I_Generate_F, I_Generate_F_see
+            # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
+            self.kong_model.generate_results = I_Generate_F             ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_F_see    ### 不能checkpoint
 class G_Ckpt_op_builder(G_Flow_op_builder):
     def _build_ckpt_part(self):
         ### 建立 tf 存模型 的物件： checkpoint物件
@@ -316,8 +316,8 @@ class KModel_GD_and_mrfGD_builder(KModel_Mask_Flow_Generator_builder):
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
         self.kong_model.optimizer_D = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-        from step08_b_use_G_generate import  in_img_Generate_out_rec_see
-        self.kong_model.generate_sees  = in_img_Generate_out_rec_see     ### 不能checkpoint
+        from step08_b_use_G_generate import  I_Generate_R_see
+        self.kong_model.generate_sees  = I_Generate_R_see     ### 不能checkpoint
         # from step09_c_train_step import train_step_GAN, train_step_GAN2
 
         ### 建立 tf 存模型 的物件： checkpoint物件
@@ -376,9 +376,9 @@ class KModel_GD_and_mrfGD_builder(KModel_Mask_Flow_Generator_builder):
 class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
     def _kong_model_G_setting(self):
         self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-        from step08_b_use_G_generate import in_img_Generate_out_rec_see, in_img_Generate_out_rec
-        self.kong_model.generate_results = in_img_Generate_out_rec  ### 不能checkpoint
-        self.kong_model.generate_sees  = in_img_Generate_out_rec_see     ### 不能checkpoint
+        from step08_b_use_G_generate import I_Generate_R_see, I_Generate_R
+        self.kong_model.generate_results = I_Generate_R  ### 不能checkpoint
+        self.kong_model.generate_sees  = I_Generate_R_see     ### 不能checkpoint
 
         ### 建立 tf 存模型 的物件： checkpoint物件
         self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator, 
