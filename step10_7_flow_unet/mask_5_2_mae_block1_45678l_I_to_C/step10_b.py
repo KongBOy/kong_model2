@@ -54,8 +54,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L4_ch002_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 5l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L5_ch128_mae_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch064_mae_s001.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch128_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch064_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s001.{compress_and_bm_rec_all}"])
@@ -89,4 +89,4 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s001.     {compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s001_copy.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch002_mae_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch001_mae_s001.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch001_mae_s001.{compress_and_bm_rec_all}"])
