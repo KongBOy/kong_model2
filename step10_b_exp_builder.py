@@ -62,14 +62,15 @@ class Exp_builder():
 
         也補上 建好result 馬上設定 loss_info_obj 拉，這樣 step11, step12 也能用了！
         '''
-        # if(self.exp.result_name is not None):
+        if(self.exp.result_name is not None):
+            self.db_obj = self.exp.db_builder.build()
             # print("1.result_name", self.exp.result_name, ", self.exp.use_gt_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.use_gt_range)  ### 追蹤see的建立過程
-            # self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.use_in_range, self.exp.use_gt_range, self.exp.db_obj).build()  ### 直接用 自己指定好的 result_name
+            self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.use_in_range, self.exp.use_gt_range, self.db_obj).build()  ### 直接用 自己指定好的 result_name
 
 
             ### 寫兩行的話 比較好打註解，寫一行其實也可以下面有補充～～
-            # self.exp.loss_info_builder = self.exp.loss_info_builder.copy()                                      ### 要做copy的動作， 才不會每個 exp_builder 都用到相同的 loss_info_builder 導致 建出相同的 loss_info_obj
-            # self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
+            self.exp.loss_info_builder = self.exp.loss_info_builder.copy()                                      ### 要做copy的動作， 才不會每個 exp_builder 都用到相同的 loss_info_builder 導致 建出相同的 loss_info_obj
+            self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
             ### 補充：如果寫一行的話：
             # self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).copy()  ### 先後copy() 都沒差
 
@@ -81,7 +82,7 @@ class Exp_builder():
             # print("self.exp.loss_info_obj.logs_read_dir", self.exp.loss_info_obj.logs_read_dir)
             # print("self.exp.loss_info_obj.logs_write_dir", self.exp.loss_info_obj.logs_write_dir)
             # print()  ### 追蹤see的建立過程
-            # print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
+            print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
         return self.exp
 
     def result_name_v1_to_v2(self):
