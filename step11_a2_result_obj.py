@@ -117,6 +117,8 @@ class Result:
             if(see_num < self.see_amount):  ### 防呆，以防直接使用 calculate_multiple_single_see_SSIM_LD 時 start_see 設的比0大 但 see_amount 設成 self.see_amount 或 純粹不小心算錯數字(要算準start_see + see_amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
                 print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Current Result:{self.result_name}, doing { self.sees[see_num].see_name}")  ### 這邊也顯示就不用每次都要往上滾很久才知道 現在正處在哪個 result裡囉！
                 see_start = time.time()
+                if(args["see_method_name"] == "Npy_to_npz"):
+                    self.sees[see_num].Npy_to_npz        (**args)
 
                 if(args["see_method_name"] == "Save_as_flow_matplot_visual"):
                     self.sees[see_num].Save_as_matplot_visual        (**args)
