@@ -12,6 +12,8 @@ run = "build().run()"
 
 bm_rec_see_print_msg = False
 bm_rec_result_print_msg = True
+compress_all  = f"build().result_obj.result_do_all_single_see(start_see=0, see_amount=12, see_method_name='Npy_to_npz', see_core_amount=1, single_see_core_amount=6, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg})"
+
 compress_and_bm_rec_all  = f"build().result_obj.result_do_all_single_see(start_see=0, see_amount=12, see_method_name='Save_as_bm_rec_matplot_visual', add_loss=False, bgr2rgb=True, see_core_amount=1, single_see_core_amount=6, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg}, jump_to=11)"
 compress_and_bm_rec_1    = f"build().result_obj.result_do_all_single_see(start_see=0, see_amount=1 , see_method_name='Save_as_bm_rec_matplot_visual', add_loss=False, bgr2rgb=True, see_core_amount=1, single_see_core_amount=6, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg}, jump_to=11)"
 compress_and_bm_rec_2    = f"build().result_obj.result_do_all_single_see(start_see=1, see_amount=1 , see_method_name='Save_as_bm_rec_matplot_visual', add_loss=False, bgr2rgb=True, see_core_amount=1, single_see_core_amount=6, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg}, jump_to=11)"
