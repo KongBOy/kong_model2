@@ -152,12 +152,13 @@ def I_Gen_M_test(model_G, test_index, in_img, in_img_pre, gt_mask_coord, _4, rec
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
 def C_with_Mgt_to_F_and_get_F_visual(coord, gt_mask):
-    flow        = tf.concat([gt_mask, coord],    axis=-1)  ### channel concate
+    flow        = np.concatenate([gt_mask, coord], axis=-1)  ### channel concate
     flow_visual = flow_or_coord_visual_op(flow).astype(np.uint8)
     return flow, flow_visual
 ####################################################################################################
 def I_Generate_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     coord = model_G(in_img_pre, training=training)
+    coord = coord[0].numpy()
     return coord
 
 def I_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
@@ -167,19 +168,18 @@ def I_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_pre, gt_ma
     '''
     # plt.imshow(in_img[0])
     # plt.show()
-
+    in_img   = in_img[0][:, :, ::-1].numpy()
     coord    = I_Generate_C(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
-    coord    = coord[0]
-    gt_mask  = gt_mask_coord[0][0]
-    gt_coord = gt_mask_coord[1][0]
+    gt_mask  = gt_mask_coord[0][0].numpy()
+    gt_coord = gt_mask_coord[1][0].numpy()
     flow,    flow_visual    = C_with_Mgt_to_F_and_get_F_visual(coord,    gt_mask)
     gt_flow, gt_flow_visual = C_with_Mgt_to_F_and_get_F_visual(gt_coord, gt_mask)
 
     see_write_dir   = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
-        cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg",       in_img[0][:, :, ::-1].numpy())             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg",       in_img)             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", (gt_mask * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         np.save    (see_write_dir + "/" + "0b-gt_a_gt_mask",     gt_mask)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_b_gt_flow.jpg", gt_flow_visual)                            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         np.save    (see_write_dir + "/" + "0b-gt_b_gt_flow",     gt_flow)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
