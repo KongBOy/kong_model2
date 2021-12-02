@@ -279,6 +279,8 @@ def I_with_Mgt_Generate_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt
     # print("coord before max, min:", coord.numpy().max(), coord.numpy().min())  ### 測試 拉range 有沒有拉對
     if(use_gt_range == Range(-1, 1)): coord = (coord + 1) / 2
     # print("coord after max, min:", coord.numpy().max(), coord.numpy().min())  ### 測試 拉range 有沒有拉對
+    coord    = coord   [0].numpy()
+    I_with_M = I_with_M[0].numpy()
     return coord, I_with_M
 
 
@@ -288,7 +290,6 @@ def I_with_Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_p
     gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
     '''
     coord, I_with_M = I_with_Mgt_Generate_C(model_G, None, in_img_pre, None, gt_mask_coord_pre, exp_obj.use_gt_range, training=training)
-    coord = coord[0]
     gt_mask  = gt_mask_coord[0][0]
     gt_coord = gt_mask_coord[1][0]
     flow,    flow_visual    = C_with_Mgt_to_F_and_get_F_visual(coord,    gt_mask)
@@ -299,7 +300,7 @@ def I_with_Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_p
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(mask_write_dir)   ### 建立 model生成的結果 的資料夾
-        cv2.imwrite(see_write_dir + "/" + "0a1-in_img_with_Mgt.jpg", (I_with_M[0][:, :, ::-1].numpy() * 255).astype(np.uint8))  ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_write_dir + "/" + "0a1-in_img_with_Mgt.jpg", (I_with_M[:, :, ::-1] * 255).astype(np.uint8))  ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir + "/" + "0a2-in_gt_mask.jpg",  (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         np.save    (see_write_dir + "/" + "0b-gt_a_gt_mask",     gt_mask)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
