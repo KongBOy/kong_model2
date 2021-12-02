@@ -138,6 +138,23 @@ def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, 
         cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg", in_img[0][:, :, ::-1].numpy())   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_a_mask.bmp", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
     cv2.imwrite(    mask_write_dir + "/" + "epoch_%04i_a_mask.bmp"            % epoch, (mask.numpy() * 255).astype(np.uint8))      ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+
+def I_Gen_M_test(model_G, test_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, result_obj=None, training=False, see_reset_init=True):
+    in_img    = in_img[0].numpy()   ### HWC 和 tensor -> numpy
+    pred_mask = I_Generate_M(model_G, None, in_img_pre, None, None, use_gt_range=result_obj.use_gt_range)  ### BHWC
+    pred_mask = pred_mask[0].numpy()   ### HWC 和 tensor -> numpy
+    gt_mask   = test_gt[0][0].numpy()
+
+    single_row_imgs = Matplot_single_row_imgs(
+                            imgs      =[ in_img ,   pred_mask ,        gt_mask],    ### 把要顯示的每張圖包成list
+                            img_titles=["in_img", "pred_mask", "gt_mask"],    ### 把每張圖要顯示的字包成list
+                            fig_title ="test_%04i, epoch=%04i" % (test_index, current_epoch),   ### 圖上的大標題
+                            add_loss  =add_loss,
+                            bgr2rgb   =bgr2rgb)
+    single_row_imgs.Draw_img()
+    single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
+
+    pass
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
 def C_with_Mgt_to_F_and_get_F_visual(coord, gt_mask):
