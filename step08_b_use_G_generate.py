@@ -108,14 +108,16 @@ def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_ho
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
 def I_Generate_M(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
-    mask      = model_G(in_img_pre, training=training)
+    mask = model_G(in_img_pre, training=training)
+    mask = mask[0].numpy()
+    mask = (mask * 255).astype(np.uint8)
     return mask
 
 
 def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
-    mask           = I_Generate_M(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
-    mask           = mask[0]
-    gt_mask        = gt_mask_coord[0][0]
+    in_img  = in_img[0][:, :, ::-1].numpy()
+    mask    = I_Generate_M(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
+    gt_mask = (gt_mask_coord[0][0].numpy() * 255).astype(np.uint8)
     # print("gt_mask.dtype:", gt_mask.dtype)
     # print("gt_mask.shape:", gt_mask.shape)
     # print("gt_mask.max():", gt_mask.numpy().max())
@@ -123,17 +125,18 @@ def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, 
 
     see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     mask_write_dir = exp_obj.result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
-        Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
-        Check_dir_exist_and_build(mask_write_dir)   ### 建立 model生成的結果 的資料夾
-        cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg", in_img[0][:, :, ::-1].numpy())   ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(see_write_dir + "/" + "0b-gt_a_mask.bmp", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-    cv2.imwrite(    mask_write_dir + "/" + "epoch_%04i_a_mask.bmp"            % epoch, (mask.numpy() * 255).astype(np.uint8))      ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    print("mask_write_dir:", mask_write_dir)
+    if(epoch == 0 or see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
+        Check_dir_exist_and_build(see_write_dir)                                   ### 建立 放輔助檔案 的資料夾
+        Check_dir_exist_and_build(mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
+        cv2.imwrite(see_write_dir  + "/" + "0a-in_img.jpg", in_img)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_write_dir  + "/" + "0b-gt_a_mask.bmp", gt_mask)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+    cv2.imwrite(    mask_write_dir + "/" + "epoch_%04i_a_mask.bmp" % epoch, mask)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
 def I_Gen_M_test(model_G, test_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=False, see_reset_init=True):
-    in_img    = in_img[0].numpy()   ### HWC 和 tensor -> numpy
     pred_mask = I_Generate_M(model_G, None, in_img_pre, None, None, use_gt_range=exp_obj.use_gt_range)  ### BHWC
-    pred_mask = pred_mask[0].numpy()   ### HWC 和 tensor -> numpy
+    pred_mask = pred_mask.numpy()   ### HWC 和 tensor -> numpy
+    in_img    = in_img[0].numpy()   ### HWC 和 tensor -> numpy
     gt_mask   = test_gt[0][0].numpy()
 
     single_row_imgs = Matplot_single_row_imgs(
