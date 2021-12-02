@@ -31,9 +31,6 @@ class See_info:
         self.see_read_dir  = self.result_read_dir  + "/" + self.see_name
         self.see_write_dir = self.result_write_dir + "/" + self.see_name
 
-        self.use_in_range = Range(0, 1)
-        self.use_gt_range = Range(0, 1)
-
     def get_path_savely(self, search_dir, certain_word, certain_ext="."):
         names = get_dir_certain_file_names(search_dir, certain_word=certain_word, certain_ext=certain_ext)
         if(len(names) > 0):

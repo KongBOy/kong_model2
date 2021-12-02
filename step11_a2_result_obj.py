@@ -36,9 +36,6 @@ class Result:
         self.see_amount = None
         self.test_dir = None
 
-        self.use_in_range = Range(0, 1)
-        self.use_gt_range = Range(0, 1)
-
         ### after train的時候才用的
         self.ana_describe = None  ### 這是給matplot用的title
 

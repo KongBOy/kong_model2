@@ -17,7 +17,7 @@ class Result_init_builder:
         return self.result
 
 class Result_sees_builder(Result_init_builder):
-    def _build_sees(self, sees_ver, use_in_range, use_gt_range):
+    def _build_sees(self, sees_ver):
         if  (sees_ver == "sees_ver1"):
             self.result.sees = [See(self.result.result_read_dir, self.result.result_write_dir, "see-%03i" % see_num) for see_num in range(32)]
         elif(sees_ver == "sees_ver2"):
@@ -51,9 +51,7 @@ class Result_sees_builder(Result_init_builder):
         self.result.see_amount = len(self.result.sees)
         # self.result.see_file_amount = self.result.sees[0].see_file_amount   ### 覺得 see 已經有 see_file_amount了，result 就不需要這attr了， 想用 要知道 要去 sees[...] 取 喔！
         # print("3. at see", self.result.result_name, ", self.result.use_gt_range~~~~~~~~~~~~~~~", self.result.use_gt_range)
-        for see in self.result.sees:  ### 設定 in/use_gt_range，生圖 才會跟 gt 的前處理一致喔！
-            see.use_in_range = use_in_range
-            see.use_gt_range = use_gt_range
+
 
 class Result_train_builder(Result_sees_builder):
     ###     3b.用result_name 裡面的 DB_CATEGORY 來決定sees_ver
@@ -102,11 +100,11 @@ class Result_train_builder(Result_sees_builder):
         self.result.result_name  = _get_result_name_by_exp(exp)
 
         ### step2.決定好 result_name 後，用result_name來設定Result，
-        self.set_by_result_name(self.result.result_name, use_in_range=exp.use_in_range, use_gt_range=exp.use_gt_range, db_obj=exp.db_obj)
+        self.set_by_result_name(self.result.result_name, db_obj=exp.db_obj)
         return self
 
     ### 設定方式二：直接給 result_name來設定( result_name格式可以參考 _get_result_name_by_exp )
-    def set_by_result_name(self, result_name, use_in_range, use_gt_range, db_obj):
+    def set_by_result_name(self, result_name, db_obj):
         '''
         step3abc. 完全手動設定 result_name 和 result細節(ckpt/logs dir、see_version/sees、in/use_gt_range)
         '''
@@ -122,15 +120,18 @@ class Result_train_builder(Result_sees_builder):
         self.result.train_code_write_dir = self.result.result_write_dir + f"/train_code_{self.current_time}"
         self.result.test_dir = self.result.result_write_dir + "/test"
 
+        '''
+        後來覺得 use_range 應該要從 exp 裡面 抓， 所以就把 Result 和 See 的 use_range 拿掉囉～～
         ### step3b. 設定 in/use_gt_range，這步一定要在 建立 sees 前面做喔！這樣 sees 才知道怎麼設 in/use_gt_range
-        self.result.use_in_range = use_in_range
-        self.result.use_gt_range = use_gt_range
+        # self.result.use_in_range = use_in_range
+        # self.result.use_gt_range = use_gt_range
         # print("2. self.result.use_gt_range", self.result.use_gt_range)
 
         ### step3c.用result_name 來決定sees_ver， 再用 in/use_gt_range 去建立sees
         # self.result.sees_ver = self._use_result_name_find_sees_ver()
+        '''
         self.result.sees_ver = db_obj.see_version
-        self._build_sees(self.result.sees_ver, self.result.use_in_range, self.result.use_gt_range)
+        self._build_sees(self.result.sees_ver)
 
 
         if("-" in result_name):

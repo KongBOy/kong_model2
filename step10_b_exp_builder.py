@@ -65,7 +65,7 @@ class Exp_builder():
         if(self.exp.result_name is not None):
             self.db_obj = self.exp.db_builder.build()
             # print("1.result_name", self.exp.result_name, ", self.exp.use_gt_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.use_gt_range)  ### 追蹤see的建立過程
-            self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.exp.use_in_range, self.exp.use_gt_range, self.db_obj).build()  ### 直接用 自己指定好的 result_name
+            self.exp.result_obj    = Result_builder().set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.db_obj).build()  ### 直接用 自己指定好的 result_name
 
 
             ### 寫兩行的話 比較好打註解，寫一行其實也可以下面有補充～～

@@ -21,13 +21,10 @@ def I_Generate_R(model_G, _1, in_img_pre, _3, _4, use_gt_range):
 
 
 ### 這是一張一張進來的，沒有辦法跟 Result 裡面的 see 生成法合併，要的話就是把這裡matplot部分去除，用result裡的see生成matplot圖囉！
-def I_Generate_R_see(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_hope, epoch=0, result_obj=None, see_reset_init=False):
-    '''
-    如果之後有需要 in/use_gt_range，可以從result_obj裡面拿喔，就用 result_obj.in/use_gt_range 即可
-    '''
-    rect_back = I_Generate_R(model_G, None, in_img_pre, None, None, result_obj.use_gt_range)
+def I_Generate_R_see(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_hope, epoch=0, exp_obj=None, see_reset_init=False):
+    rect_back = I_Generate_R(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range)
 
-    see_write_dir  = result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     plot_dir = see_write_dir + "/" + "matplot_visual"    ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果
 
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
@@ -38,8 +35,8 @@ def I_Generate_R_see(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_hop
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i.jpg" % epoch, rect_back[:, :, ::-1])  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
 
     ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
-    ### 這部分要記得做！在 train_step3 的 self.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
-    result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch)
+    ### 這部分要記得做！在 train_step3 的 exp_obj.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
+    exp_obj.result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch)
 
     # imgs = [in_img, rect_back, gt_img]  ### 把 in_img, rect_back, gt_img 包成list
     # titles = ['Input Image', 'rect Image', 'Ground Truth']  ### 設定 title要顯示的字
@@ -82,11 +79,8 @@ def I_Generate_F(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):
     # print("flow after max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
     return flow
 
-def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_hope, epoch=0, result_obj=None, training=True, see_reset_init=True):
-    '''
-    如果有需要 in/use_gt_range，可以從result_obj裡面拿喔，就用 result_obj.in/use_gt_range 即可
-    '''
-    flow           = I_Generate_F(model_G, None, in_img_pre, None, None, result_obj.use_gt_range, training=training)
+def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_hope, epoch=0, exp_obj=None, training=True, see_reset_init=True):
+    flow           = I_Generate_F(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
     flow           = flow[0]
     gt_flow        = gt_flow[0]
     # print("flow.shape~~~~~~~~~~~", flow.shape)
@@ -95,7 +89,7 @@ def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_ho
     flow_visual    = flow_or_coord_visual_op(flow)   .astype(np.uint8)
     gt_flow_visual = flow_or_coord_visual_op(gt_flow).astype(np.uint8)
 
-    see_write_dir  = result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
 
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)   ### 建立 see資料夾
@@ -108,9 +102,9 @@ def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_ho
     # cv2.imwrite(see_write_dir + "/" + "epoch_%04i_b_in_rec_img.jpg" % epoch     , in_rec_img)  ### 把 生成影像存進相對應的資料夾，因為 tf訓練時是rgb，生成也是rgb，所以用cv2操作要轉bgr存才對！
 
     ### matplot_visual的部分，記得因為用 matplot 所以要 bgr轉rgb，但是因為有用matplot_visual_single_row_imgs，裡面會bgr轉rgb了，所以這裡不用轉囉！
-    ### 這部分要記得做！在 train_step3 的 self.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
+    ### 這部分要記得做！在 train_step3 的 exp_obj.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
     ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了
-    # result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch, bgr2rgb=True)
+    # exp_obj.result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch, bgr2rgb=True)
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
 def I_Generate_M(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -118,11 +112,8 @@ def I_Generate_M(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):
     return mask
 
 
-def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
-    '''
-    如果有需要 in/use_gt_range，可以從result_obj裡面拿喔，就用 result_obj.in/use_gt_range 即可
-    '''
-    mask           = I_Generate_M(model_G, None, in_img_pre, None, None, result_obj.use_gt_range, training=training)
+def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
+    mask           = I_Generate_M(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
     mask           = mask[0]
     gt_mask        = gt_mask_coord[0][0]
     # print("gt_mask.dtype:", gt_mask.dtype)
@@ -130,8 +121,8 @@ def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, 
     # print("gt_mask.max():", gt_mask.numpy().max())
     # print("gt_mask.min():", gt_mask.numpy().min())
 
-    see_write_dir  = result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
-    mask_write_dir = result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    mask_write_dir = exp_obj.result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(mask_write_dir)   ### 建立 model生成的結果 的資料夾
@@ -139,9 +130,9 @@ def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, 
         cv2.imwrite(see_write_dir + "/" + "0b-gt_a_mask.bmp", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
     cv2.imwrite(    mask_write_dir + "/" + "epoch_%04i_a_mask.bmp"            % epoch, (mask.numpy() * 255).astype(np.uint8))      ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
-def I_Gen_M_test(model_G, test_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, result_obj=None, training=False, see_reset_init=True):
+def I_Gen_M_test(model_G, test_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=False, see_reset_init=True):
     in_img    = in_img[0].numpy()   ### HWC 和 tensor -> numpy
-    pred_mask = I_Generate_M(model_G, None, in_img_pre, None, None, use_gt_range=result_obj.use_gt_range)  ### BHWC
+    pred_mask = I_Generate_M(model_G, None, in_img_pre, None, None, use_gt_range=exp_obj.use_gt_range)  ### BHWC
     pred_mask = pred_mask[0].numpy()   ### HWC 和 tensor -> numpy
     gt_mask   = test_gt[0][0].numpy()
 
@@ -152,7 +143,7 @@ def I_Gen_M_test(model_G, test_index, in_img, in_img_pre, gt_mask_coord, _4, rec
                             add_loss  =add_loss,
                             bgr2rgb   =bgr2rgb)
     single_row_imgs.Draw_img()
-    single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
+    single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     pass
 ######################################################################################################################################################################################################
@@ -166,23 +157,22 @@ def I_Generate_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):
     coord = model_G(in_img_pre, training=training)
     return coord
 
-def I_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def I_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
     '''
-    如果有需要 in/use_gt_range，可以從result_obj裡面拿喔，就用 result_obj.in/use_gt_range 即可
     gt_mask_coord[0] 為 mask  (1, h, w, 1)
     gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
     '''
     # plt.imshow(in_img[0])
     # plt.show()
 
-    coord    = I_Generate_C(model_G, None, in_img_pre, None, None, result_obj.use_gt_range, training=training)
+    coord    = I_Generate_C(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
     coord    = coord[0]
     gt_mask  = gt_mask_coord[0][0]
     gt_coord = gt_mask_coord[1][0]
     flow,    flow_visual    = C_with_Mgt_to_F_and_get_F_visual(coord,    gt_mask)
     gt_flow, gt_flow_visual = C_with_Mgt_to_F_and_get_F_visual(gt_coord, gt_mask)
 
-    see_write_dir   = result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    see_write_dir   = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
         cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg",       in_img[0][:, :, ::-1].numpy())             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
@@ -199,15 +189,14 @@ def I_Generate_W(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):
     wc = model_G(in_img_pre, training=training)
     return wc
 
-def I_Generate_W_see(model_G, see_index, in_img, in_img_pre, gt_wc, _4, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def I_Generate_W_see(model_G, see_index, in_img, in_img_pre, gt_wc, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
     '''
-    如果有需要 in/use_gt_range，可以從result_obj裡面拿喔，就用 result_obj.in/use_gt_range 即可
     gt_mask_coord[0] 為 mask  (1, h, w, 1)
     gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
     '''
     # plt.imshow(in_img[0])
     # plt.show()
-    wc    = I_Generate_W(model_G, None, in_img_pre, None, None, result_obj.use_gt_range, training=training)
+    wc    = I_Generate_W(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
     wc    = wc[0].numpy()
 
     gt_wc = gt_wc[0].numpy()
@@ -220,7 +209,7 @@ def I_Generate_W_see(model_G, see_index, in_img, in_img_pre, gt_wc, _4, rec_hope
     # print("gt_wc.shape:       ", gt_wc.shape)
     # print("gt_wc_visual.shape:", gt_wc_visual.shape)
 
-    see_write_dir   = result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    see_write_dir   = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
         cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg",       in_img[0][:, :, ::-1].numpy())             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
@@ -246,21 +235,20 @@ def Mgt_Generate_C(model_G, _1, _2, _3, gt_mask_coord_pre, gt_use_range, trainin
     return coord
 
 
-def Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, _2, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, _2, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
     '''
-    如果有需要 in/gt_use_range，可以從result_obj裡面拿喔，就用 result_obj.in/gt_use_range 即可
     gt_mask_coord[0] 為 mask  (1, h, w, 1)
     gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
     '''
-    coord     = Mgt_Generate_C(model_G, None, None, None, gt_mask_coord_pre, result_obj.gt_use_range, training=training)
+    coord     = Mgt_Generate_C(model_G, None, None, None, gt_mask_coord_pre, exp_obj.gt_use_range, training=training)
     coord     = coord[0]
     gt_mask  = gt_mask_coord[0][0]
     gt_coord = gt_mask_coord[1][0]
     flow,    flow_visual    = C_with_Mgt_to_F_and_get_F_visual(coord,    gt_mask)
     gt_flow, gt_flow_visual = C_with_Mgt_to_F_and_get_F_visual(gt_coord, gt_mask)
 
-    see_write_dir  = result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
-    mask_write_dir = result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    mask_write_dir = exp_obj.result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(mask_write_dir)   ### 建立 model生成的結果 的資料夾
@@ -291,21 +279,20 @@ def I_with_Mgt_Generate_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt
     return coord, I_with_M
 
 
-def I_with_Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, epoch=0, result_obj=None, training=True, see_reset_init=True):
+def I_with_Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
     '''
-    如果有需要 in/use_gt_range，可以從result_obj裡面拿喔，就用 result_obj.in/use_gt_range 即可
     gt_mask_coord[0] 為 mask  (1, h, w, 1)
     gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
     '''
-    coord, I_with_M = I_with_Mgt_Generate_C(model_G, None, in_img_pre, None, gt_mask_coord_pre, result_obj.use_gt_range, training=training)
+    coord, I_with_M = I_with_Mgt_Generate_C(model_G, None, in_img_pre, None, gt_mask_coord_pre, exp_obj.use_gt_range, training=training)
     coord = coord[0]
     gt_mask  = gt_mask_coord[0][0]
     gt_coord = gt_mask_coord[1][0]
     flow,    flow_visual    = C_with_Mgt_to_F_and_get_F_visual(coord,    gt_mask)
     gt_flow, gt_flow_visual = C_with_Mgt_to_F_and_get_F_visual(gt_coord, gt_mask)
 
-    see_write_dir  = result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
-    mask_write_dir = result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
+    see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    mask_write_dir = exp_obj.result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(mask_write_dir)   ### 建立 model生成的結果 的資料夾
