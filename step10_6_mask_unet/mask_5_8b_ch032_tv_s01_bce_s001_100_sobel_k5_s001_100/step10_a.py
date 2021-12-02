@@ -69,13 +69,14 @@ mask_h_bg_ch032_sig_L6_ep060_tv_s01_bce_s100_sobel_k5_s040 = Exp_builder().set_b
 mask_h_bg_ch032_sig_L6_ep060_tv_s01_bce_s100_sobel_k5_s060 = Exp_builder().set_basic("train", use_db_obj, mask_unet_ch032_sig_L6, G_tv_s01_bce_s100_sobel_k5_s060_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="8b_6_4", describe_end="mask_h_bg_ch032_sig_tv_s01_bce_s100_sobel_k5_s060_6l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender_os_book-8b_6_4-20211101_173516-flow_unet-mask_h_bg_ch032_sig_tv_s01_bce_s100_sobel_k5_s060_6l_ep060")
 mask_h_bg_ch032_sig_L6_ep060_tv_s01_bce_s100_sobel_k5_s080 = Exp_builder().set_basic("train", use_db_obj, mask_unet_ch032_sig_L6, G_tv_s01_bce_s100_sobel_k5_s080_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="8b_6_5", describe_end="mask_h_bg_ch032_sig_tv_s01_bce_s100_sobel_k5_s080_6l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender_os_book-8b_6_5-20211101_180656-flow_unet-mask_h_bg_ch032_sig_tv_s01_bce_s100_sobel_k5_s080_6l_ep060")
 mask_h_bg_ch032_sig_L6_ep060_tv_s01_bce_s100_sobel_k5_s100 = Exp_builder().set_basic("train", use_db_obj, mask_unet_ch032_sig_L6, G_tv_s01_bce_s100_sobel_k5_s100_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="8b_6_6", describe_end="mask_h_bg_ch032_sig_tv_s01_bce_s100_sobel_k5_s100_6l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender_os_book-8b_6_6-20211101_183838-flow_unet-mask_h_bg_ch032_sig_tv_s01_bce_s100_sobel_k5_s100_6l_ep060")
+mask_h_bg_ch032_sig_L6_ep060_tv_s01_bce_s100_sobel_k5_s100_copy = Exp_builder().set_basic("test_see", use_db_obj, mask_unet_ch032_sig_L6, G_tv_s01_bce_s100_sobel_k5_s100_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="8b_6_6", describe_end="mask_h_bg_ch032_sig_tv_s01_bce_s100_sobel_k5_s100_6l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender_os_book-8b_6_6-20211101_183838-flow_unet-mask_h_bg_ch032_sig_tv_s01_bce_s100_sobel_k5_s100_6l_ep060_copy")
 
 if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        mask_h_bg_ch032_sig_L6_ep060_tv_s01_bce_s100_sobel_k5_s100.build().run()
+        mask_h_bg_ch032_sig_L6_ep060_tv_s01_bce_s100_sobel_k5_s100_copy.build().run()
         # print('no argument')
         sys.exit()
 
