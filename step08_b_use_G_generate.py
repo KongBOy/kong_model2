@@ -190,6 +190,7 @@ def I_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_pre, gt_ma
 ####################################################################################################
 def I_Generate_W(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     wc = model_G(in_img_pre, training=training)
+    wc = wc[0].numpy()
     return wc
 
 def I_Generate_W_see(model_G, see_index, in_img, in_img_pre, gt_wc, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
@@ -200,7 +201,6 @@ def I_Generate_W_see(model_G, see_index, in_img, in_img_pre, gt_wc, _4, rec_hope
     # plt.imshow(in_img[0])
     # plt.show()
     wc    = I_Generate_W(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
-    wc    = wc[0].numpy()
 
     gt_wc = gt_wc[0].numpy()
     gt_wc = gt_wc[..., :3]
