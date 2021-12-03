@@ -196,7 +196,7 @@ def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, m
 
     ### 改完但還沒有測試喔~~
     single_row_imgs = Matplot_single_row_imgs(imgs=imgs, img_titles=titles, fig_title="epoch_%04i" % epoch, bgr2rgb=False, add_loss=False)
-    single_row_imgs.Save_fig(dst_dir=plot_dir, epoch=epoch, epoch_name="epoch")
+    single_row_imgs.Save_fig(dst_dir=plot_dir, name="epoch", epoch=epoch)
     # matplot_visual_single_row_imgs(img_titles=titles, imgs=imgs, fig_title="epoch_%04i" % epoch, dst_dir=plot_dir, file_name="epoch=%04i" % epoch, bgr2rgb=False)
     # Save_as_jpg(plot_dir, plot_dir, delete_ord_file=True)   ### matplot圖存完是png，改存成jpg省空間
 

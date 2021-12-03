@@ -176,7 +176,7 @@ class Col_results_analyzer(Result_analyzer):
             if(self.add_loss):
                 for go_result, result in enumerate(self.c_results):
                     single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
-            single_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=go_epoch)
+            single_row_imgs.Save_fig(dst_dir=analyze_see_dir, name="epoch", epoch=go_epoch)
 
     def _Draw_col_results_single_see_multiprocess(self, see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=8, task_amount=100, print_msg=False):
         """
@@ -285,7 +285,7 @@ class Col_results_analyzer(Result_analyzer):
     #         if(self.add_loss):
     #             for go_result, result in enumerate(self.c_results):
     #                 multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
-    #         multi_row_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=go_epoch)
+    #         multi_row_imgs.Save_fig(dst_dir=analyze_see_dir, name="epoch", epoch=go_epoch)
 
     # ### 包 multiprocess， _Draw_col_results_multi_see_ 的 multiprocess 介面
     # def _Draw_col_results_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100):
@@ -405,7 +405,7 @@ class Row_col_results_analyzer(Result_analyzer):
                                             bgr2rgb          = self.bgr2rgb,
                                             add_loss         = self.add_loss)
             row_col_imgs.Draw_img()
-            row_col_imgs.Save_fig(dst_dir=analyze_see_dir, epoch=go_epoch)
+            row_col_imgs.Save_fig(dst_dir=analyze_see_dir, name="epoch", epoch=go_epoch)
             # print("analyze_see_dir", analyze_see_dir)  ### 找不到東西存哪時可以打註解
 
     def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100, print_msg=False):

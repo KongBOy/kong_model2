@@ -254,7 +254,7 @@ class Experiment():
                                         add_loss  =add_loss,
                                         bgr2rgb   =bgr2rgb)
                 single_row_imgs.Draw_img()
-                single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
+                single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, name="test_%04i" % test_index, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
                 pass
             elif(flow_mask is False):
@@ -321,7 +321,7 @@ class Experiment():
                                         add_loss  =add_loss,
                                         bgr2rgb   =bgr2rgb)
                 single_row_imgs.Draw_img()
-                single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
+                single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, name="test_%04i" % test_index, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
 
 
@@ -341,7 +341,7 @@ class Experiment():
                                                                                                            self.tf_data.see_name_db        .take(self.tf_data.see_amount),
                                                                                                            self.tf_data.rec_hope_see_db_pre.take(self.tf_data.see_amount)))):
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_write_dir, self, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_write_dir, self, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, epoch, self, training, see_reset_init)
             elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, epoch, self, see_reset_init)
             elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, epoch, self, see_reset_init)

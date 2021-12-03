@@ -176,7 +176,7 @@ class See_bm_rec(See_info):
             if(go_epoch < jump_to): continue
             # print("current go_epoch:", go_epoch, "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             single_row_imgs = self._Draw_bm_rec_matplot_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb, jump_to=jump_to)
-            single_row_imgs.Save_fig(dst_dir=self.bm_rec_matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+            single_row_imgs.Save_fig(dst_dir=self.bm_rec_matplot_visual_write_dir, name="epoch", epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
     ### See_method 第三部分a
     ###     我覺得先把 npy 轉成 npz 再來生圖比較好，不要在這邊 邊生圖 邊轉 npz，覺得的原因如下：
@@ -281,7 +281,7 @@ class See_bm_rec(See_info):
     #     current_final_epoch = self.see_file_amount - 3   ### epochs是 epoch總數，要減掉：in_img, gt_img 和 epoch0
     #     if(epoch <= current_final_epoch):
     #         single_row_imgs = self._Draw_bm_rec_matplot_visual(epoch, add_loss, bgr2rgb)
-    #         single_row_imgs.Save_fig(dst_dir=self.bm_rec_matplot_visual_write_dir, epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+    #         single_row_imgs.Save_fig(dst_dir=self.bm_rec_matplot_visual_write_dir, epoch_name="epoch", epoch=epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
     #         ### 後處理讓結果更小 但 又不失視覺品質
     #         # Find_ltrd_and_crop(self.bm_rec_matplot_visual_write_dir, self.bm_rec_matplot_visual_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 兩次以上有危險可能會 crop錯喔！所以就不crop了~
     #         Save_as_jpg(self.bm_rec_matplot_visual_write_dir, self.bm_rec_matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], multiprocess=True, core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間

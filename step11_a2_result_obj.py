@@ -218,7 +218,7 @@ class Result:
 
             multi_row_imgs.Draw_img()
             if(add_loss): multi_row_imgs.Draw_ax_loss_after_train(multi_row_imgs.ax[-1, 1], self.logs_read_dir, go_epoch, self.sees[see_num].see_file_amount - 2)
-            multi_row_imgs.Save_fig(dst_dir=matplot_multi_see_dir, epoch=go_epoch)
+            multi_row_imgs.Save_fig(dst_dir=matplot_multi_see_dir, name="epoch", epoch=go_epoch)
 
 
     def _draw_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, matplot_multi_see_dir, add_loss=False, core_amount=CORE_AMOUNT, task_amount=600, print_msg=False):

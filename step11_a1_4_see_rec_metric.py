@@ -250,7 +250,7 @@ class See_rec_metric(See_info):
                         add_loss  =False,
                         bgr2rgb   =False)
             single_row_imgs.Draw_img()
-            single_row_imgs.Save_fig(self.metric_ld_matplot_write_dir, epoch=go_epoch, epoch_name="ld_epoch")
+            single_row_imgs.Save_fig(self.metric_ld_matplot_write_dir, name="ld_epoch", epoch=go_epoch)
             # print("d.max()~~~~~~~~~~", d.max())  ### 目前手動看 大概就是 epoch=0000 會很大 剩下epoch都很小， 然後epoch=0000 大概都40幾， 所以我設50囉！
             # plt.show()
 
@@ -353,4 +353,4 @@ class See_rec_metric(See_info):
                 single_row_imgs.merged_ax_list[1].set_position(gs_bass[:, 3 ].get_position(single_row_imgs.fig))   ### 根據目前的圖(single_row_imgs.fig)， 重新規劃一下 各個圖 要顯示的 大小比例
 
             # plt.show()
-            single_row_imgs.Save_fig(dst_dir=self.matplot_metric_visual_write_dir, epoch=go_epoch, epoch_name="metric_epoch")  ### 話完圖就可以存了喔！
+            single_row_imgs.Save_fig(dst_dir=self.matplot_metric_visual_write_dir, name="metric_epoch", epoch=go_epoch)  ### 話完圖就可以存了喔！

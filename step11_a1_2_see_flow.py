@@ -102,7 +102,7 @@ class See_flow_visual(See_info):
     def draw_loss_at_see_during_train(self, epoch, epochs):
         Check_dir_exist_and_build(self.flow_matplot_visual_write_dir)  ### 以防matplot_visual資料夾被刪掉，要生圖找不到資料夾
         self.single_row_imgs_during_train.Draw_ax_loss_during_train(self.single_row_imgs_during_train.ax[-1, 1], self.see_read_dir + "/../logs", epoch, epochs)
-        self.single_row_imgs_during_train.Save_fig(dst_dir=self.flow_matplot_visual_write_dir, epoch=epoch)
+        self.single_row_imgs_during_train.Save_fig(dst_dir=self.flow_matplot_visual_write_dir, name="epoch", epoch=epoch)
 
     ###############################################################################################
     ###############################################################################################
@@ -158,5 +158,5 @@ class See_flow_visual(See_info):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             single_row_imgs = self._Draw_matplot_visual(go_epoch, add_loss=add_loss, bgr2rgb=bgr2rgb)
             if(add_loss)   : single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.ax[-1, 1], self.see_read_dir + "/../logs", go_epoch, min_epochs=self.flow_ep_jpg_amount, ylim=0.04)
-            single_row_imgs.Save_fig(dst_dir=self.flow_matplot_visual_write_dir, epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+            single_row_imgs.Save_fig(dst_dir=self.flow_matplot_visual_write_dir, name="epoch", epoch=go_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
 
