@@ -180,7 +180,7 @@ class Experiment():
             ###############################################################################################################################
             ### 以上 current_epoch = epoch   ### 代表還沒訓練
             ###     step2 訓練
-            for n, (_, train_in_pre, _, train_gt_pre) in enumerate(tqdm(self.tf_data.train_db_combine)):
+            for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
                 self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=self.loss_info_obj)
                 # break   ### debug用，看subprocess成不成功
             current_epoch += 1  ### 超重要！別忘了加呀！
@@ -235,7 +235,7 @@ class Experiment():
         test_gt     = self.tf_data.test_gt_db
 
         flows = []
-        for test_index, (test_in, test_in_pre, test_gt, test_gt_pre) in enumerate(tqdm(self.tf_data.test_db_combine)):
+        for test_index, (test_in, test_in_pre, test_gt, test_gt_pre, test_name) in enumerate(tqdm(self.tf_data.test_db_combine)):
             # print("test_index~~~~~~~~~~~~~~~~", test_index)
             # print("test_in.shape", test_in.shape)
             # print("test_in_pre.shape", test_in_pre.shape)
@@ -334,11 +334,12 @@ class Experiment():
         """
         # sample_start_time = time.time()
 
-        for see_index, (test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre) in enumerate(tqdm(zip(self.tf_data.see_in_db          .take(self.tf_data.see_amount),
-                                                                                           self.tf_data.see_in_db_pre      .take(self.tf_data.see_amount),
-                                                                                           self.tf_data.see_gt_db          .take(self.tf_data.see_amount),
-                                                                                           self.tf_data.see_gt_db_pre      .take(self.tf_data.see_amount),
-                                                                                           self.tf_data.rec_hope_see_db_pre.take(self.tf_data.see_amount)))):
+        for see_index, (test_in, test_in_pre, test_gt, test_gt_pre, _, rec_hope_pre) in enumerate(tqdm(zip(self.tf_data.see_in_db          .take(self.tf_data.see_amount),
+                                                                                                           self.tf_data.see_in_db_pre      .take(self.tf_data.see_amount),
+                                                                                                           self.tf_data.see_gt_db          .take(self.tf_data.see_amount),
+                                                                                                           self.tf_data.see_gt_db_pre      .take(self.tf_data.see_amount),
+                                                                                                           self.tf_data.see_name_db        .take(self.tf_data.see_amount),
+                                                                                                           self.tf_data.rec_hope_see_db_pre.take(self.tf_data.see_amount)))):
             if  ("unet"  in self.model_obj.model_name.value and
                  "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_write_dir, self, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, epoch, self, training, see_reset_init)
