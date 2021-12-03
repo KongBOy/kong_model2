@@ -224,17 +224,18 @@ def I_Generate_W_see(model_G, see_index, in_img, in_img_pre, gt_wc, _4, rec_hope
     np.save(    see_write_dir + "/" + "epoch_%04i_a_wc"            % epoch, wc)                         ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_wc_visual.jpg" % epoch, wc_visual)                  ### 把 生成的 flow_visual 存進相對應的資料夾
 ######################################################################################################################################################################################################
-def Mgt_Generate_C(model_G, _1, _2, _3, gt_mask_coord_pre, gt_use_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+def Mgt_Generate_C(model_G, _1, _2, _3, gt_mask_coord_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     '''
     這邊model 生成的是 ch2 的 coord， 要再跟 mask concate 後才會變成 ch3 的 flow 喔！
     '''
     gt_mask_pre  = gt_mask_coord_pre[0]
     gt_coord_pre = gt_mask_coord_pre[1]
 
-    coord      = model_G(gt_mask_pre, training=training)
+    coord = model_G(gt_mask_pre, training=training)
     # print("coord before max, min:", coord.numpy().max(), coord.numpy().min())  ### 測試 拉range 有沒有拉對
-    if(gt_use_range == "-1~1"): coord = (coord + 1) / 2
+    if(use_gt_range == "-1~1"): coord = (coord + 1) / 2
     # print("coord after max, min:", coord.numpy().max(), coord.numpy().min())  ### 測試 拉range 有沒有拉對
+    coord = coord[0].numpy()
     return coord
 
 
@@ -243,8 +244,7 @@ def Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, _2, gt_mask_coo
     gt_mask_coord[0] 為 mask  (1, h, w, 1)
     gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
     '''
-    coord     = Mgt_Generate_C(model_G, None, None, None, gt_mask_coord_pre, exp_obj.gt_use_range, training=training)
-    coord     = coord[0]
+    coord     = Mgt_Generate_C(model_G, None, None, None, gt_mask_coord_pre, exp_obj.use_gt_range, training=training)
     gt_mask  = gt_mask_coord[0][0]
     gt_coord = gt_mask_coord[1][0]
     flow,    flow_visual    = C_with_Mgt_to_F_and_get_F_visual(coord,    gt_mask)
