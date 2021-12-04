@@ -154,9 +154,14 @@ class tf_Datapipline(img_mapping_util, mov_mapping_util, mask_mapping_util):
     ####################################################################################################
     def _get_tf_file_names(self): return tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.file_format, shuffle=False)
 
+    def step1_file_paths_to_names(self, file_path):
+        return (tf.strings.split(file_path, "\\")[-1])
+
     def build_name_db(self):
-        self.ord_db = self._get_tf_file_names()
+        file_names = self._get_tf_file_names()
+        self.ord_db = file_names.map(self.step1_file_paths_to_names)
         self.pre_db = self.ord_db  ### 好像用不到不過為求統一性，還是指定一下好了
+
     ####################################################################################################
     def build_img_db(self):
         ### 測map速度用， 這兩行純讀檔 不map， 要用的時候拿掉這兩行註解， 把兩行外有座map動作的地方都註解調， 結論是map不怎麼花時間， 是shuffle 的 buffer_size 設太大 花時間！
@@ -313,7 +318,7 @@ class tf_Datapipline_builder():
 
 
     ### 建立 flow_mask 的 pipline
-    def build_mask_coord_pipline(self, file_format, ord_dir, img_resize, db_range, use_range):  ### 目前只有 knpy ， 所以不淤校 file_format
+    def build_mask_coord_pipline(self, ord_dir, file_format, img_resize, db_range, use_range):  ### 目前只有 knpy ， 所以不淤校 file_format
         print("DB ord_dir:", ord_dir)
         self.tf_pipline.ord_dir = ord_dir
         self.tf_pipline.file_format  = file_format
