@@ -219,7 +219,7 @@ class Experiment():
         ### 最後train完 記得也要看結果喔！
         self.train_step1_see_current_img(current_ep=self.current_ep, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
-    def testing(self, current_epoch, add_loss=False, bgr2rgb=False, flow_mask=False):
+    def testing(self, current_ep, add_loss=False, bgr2rgb=False, flow_mask=False):
         from build_dataset_combine import Check_dir_exist_and_build_new_dir,  method1
         from matplot_fig_ax_util import Matplot_single_row_imgs
         from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
@@ -232,33 +232,11 @@ class Experiment():
 
         print("self.result_obj.test_dir", self.result_obj.test_dir)
         Check_dir_exist_and_build_new_dir(self.result_obj.test_dir)
-        test_in     = self.tf_data.test_in_db
-        test_in_pre = self.tf_data.test_in_db_pre
-        test_gt     = self.tf_data.test_gt_db
 
-        flows = []
         for test_index, (test_in, test_in_pre, test_gt, test_gt_pre, test_name) in enumerate(tqdm(self.tf_data.test_db_combine)):
-            # print("test_index~~~~~~~~~~~~~~~~", test_index)
-            # print("test_in.shape", test_in.shape)
-            # print("test_in_pre.shape", test_in_pre.shape)
-            # print("test_gt.shape", test_gt.shape)
-            # print("test_gt_pre.shape", test_gt_pre.shape)
             if  (flow_mask is True):
-                in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy
-                pred_mask      = self.model_obj.generate_results(model_obj.generator, test_in, test_in_pre, test_gt, test_gt_pre, use_gt_range=self.use_gt_range)  ### BHWC
-                pred_mask      = pred_mask[0].numpy()   ### HWC 和 tensor -> numpy
-                gt_mask    = test_gt[0][0].numpy()
+                self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=None, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
 
-                single_row_imgs = Matplot_single_row_imgs(
-                                        imgs      =[ in_img ,   pred_mask ,        gt_mask],    ### 把要顯示的每張圖包成list
-                                        img_titles=["in_img", "pred_mask", "gt_mask"],    ### 把每張圖要顯示的字包成list
-                                        fig_title ="test_%04i, epoch=%04i" % (test_index, current_epoch),   ### 圖上的大標題
-                                        add_loss  =add_loss,
-                                        bgr2rgb   =bgr2rgb)
-                single_row_imgs.Draw_img()
-                single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, name="test_%04i" % test_index, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
-
-                pass
             elif(flow_mask is False):
                 in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy
                 ax[0].imshow(test_in[0])

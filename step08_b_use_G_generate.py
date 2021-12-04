@@ -111,20 +111,23 @@ def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_ho
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
 def I_Generate_M(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
-    mask = model_G(in_img_pre, training=training)
-    mask = mask[0].numpy()
-    mask = (mask * 255).astype(np.uint8)
-    return mask
+    pred_mask = model_G(in_img_pre, training=training)
+    pred_mask = pred_mask[0].numpy()
+    pred_mask = (pred_mask * 255).astype(np.uint8)
+    return pred_mask
 
-
-def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
-    in_img  = in_img[0][:, :, ::-1].numpy()
-    mask    = I_Generate_M(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
-    gt_mask = (gt_mask_coord[0][0].numpy() * 255).astype(np.uint8)
+def I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj=None, training=True):
+    in_img    = in_img[0][:, :, ::-1].numpy()
+    pred_mask = I_Generate_M(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
+    gt_mask   = (gt_mask_coord[0][0].numpy() * 255).astype(np.uint8)
     # print("gt_mask.dtype:", gt_mask.dtype)
     # print("gt_mask.shape:", gt_mask.shape)
     # print("gt_mask.max():", gt_mask.numpy().max())
     # print("gt_mask.min():", gt_mask.numpy().min())
+    return in_img, pred_mask, gt_mask
+
+def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
+    in_img, pred_mask, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training)
 
     see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     mask_write_dir = exp_obj.result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
@@ -134,24 +137,24 @@ def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, 
         Check_dir_exist_and_build(mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
         cv2.imwrite(see_write_dir  + "/" + "0a-in_img.jpg", in_img)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir  + "/" + "0b-gt_a_mask.bmp", gt_mask)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-    cv2.imwrite(    mask_write_dir + "/" + "epoch_%04i_a_mask.bmp" % epoch, mask)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    cv2.imwrite(    mask_write_dir + "/" + "epoch_%04i_a_mask.bmp" % epoch, pred_mask)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
-def I_Gen_M_test(model_G, test_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=False, see_reset_init=True):
-    pred_mask = I_Generate_M(model_G, None, in_img_pre, None, None, use_gt_range=exp_obj.use_gt_range)  ### BHWC
-    pred_mask = pred_mask.numpy()   ### HWC 和 tensor -> numpy
-    in_img    = in_img[0].numpy()   ### HWC 和 tensor -> numpy
-    gt_mask   = test_gt[0][0].numpy()
+def I_Gen_M_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, current_ep=-999, exp_obj=None, training=False, add_loss=False, bgr2rgb=False):
+    in_img, pred_mask, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training)
+    test_name = test_name.numpy()[0].decode("utf-8")
+    print("test_name", test_name)
+    print("current_ep", current_ep)
 
+    from matplot_fig_ax_util import Matplot_single_row_imgs
     single_row_imgs = Matplot_single_row_imgs(
-                            imgs      =[ in_img ,   pred_mask ,        gt_mask],    ### 把要顯示的每張圖包成list
-                            img_titles=["in_img", "pred_mask", "gt_mask"],    ### 把每張圖要顯示的字包成list
-                            fig_title ="test_%04i, epoch=%04i" % (test_index, current_epoch),   ### 圖上的大標題
+                            imgs      =[ in_img ,   pred_mask , gt_mask],         ### 把要顯示的每張圖包成list
+                            img_titles=["in_img", "pred_mask", "gt_mask"],               ### 把每張圖要顯示的字包成list
+                            fig_title ="test_%s, epoch=%04i" % (test_name, int(current_ep)),  ### 圖上的大標題
                             add_loss  =add_loss,
                             bgr2rgb   =bgr2rgb)
     single_row_imgs.Draw_img()
-    single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_dir, epoch=current_epoch, epoch_name="test_%04i" % test_index)  ### 如果沒有要接續畫loss，就可以存了喔！
+    single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_dir, name=test_name)  ### 如果沒有要接續畫loss，就可以存了喔！
 
-    pass
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
 def C_with_Mgt_to_F_and_get_F_visual(coord, gt_mask):

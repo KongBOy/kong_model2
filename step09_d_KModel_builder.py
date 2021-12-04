@@ -65,10 +65,12 @@ class Old_512_256_Unet_builder(KModel_init_builder):
 class G_Mask_op_builder(Old_512_256_Unet_builder):
     def _build_mask_op_part(self):
         ### 生成 mask 的 operation
-        from step08_b_use_G_generate import I_Generate_M, I_Generate_M_see
+        from step08_b_use_G_generate import I_Generate_M, I_Generate_M_see, I_Gen_M_test
         # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
         self.kong_model.generate_results = I_Generate_M             ### 不能checkpoint
         self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
+        self.kong_model.generate_tests   = I_Gen_M_test    ### 不能checkpoint
+
 class G_Flow_op_builder(G_Mask_op_builder):
     def _build_flow_op_part(self, I_to_C_with_Mgt_to_F=False,
                                   I_to_W=False,
@@ -91,7 +93,6 @@ class G_Flow_op_builder(G_Mask_op_builder):
             from step08_b_use_G_generate import I_Generate_W, I_Generate_W_see
             self.kong_model.generate_results = I_Generate_W        ### 不能checkpoint
             self.kong_model.generate_sees    = I_Generate_W_see    ### 不能checkpoint
-
         else:
             from step08_b_use_G_generate import I_Generate_F, I_Generate_F_see
             # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
