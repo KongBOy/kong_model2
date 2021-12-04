@@ -226,7 +226,7 @@ def I_Gen_M_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, _4, rec_
 ######################################################################################################################################################################################################
 def C_with_Mgt_to_F_and_get_F_visual(coord, gt_mask):
     flow        = np.concatenate([gt_mask, coord], axis=-1)  ### channel concate
-    flow_visual = flow_or_coord_visual_op(flow).astype(np.uint8)
+    flow_visual = flow_or_coord_visual_op(flow)
     return flow, flow_visual
 ####################################################################################################
 def I_Generate_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
