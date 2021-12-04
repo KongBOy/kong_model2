@@ -1,14 +1,16 @@
-import sys
-sys.path.append("kong_util")
-
-import matplotlib.pyplot as plt
-import cv2
-from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg, method1
-# from matplot_fig_ax_util import matplot_visual_single_row_imgs
 import numpy as np
 import tensorflow as tf
+import cv2
 
 from step06_a_datas_obj import Range
+
+import sys
+sys.path.append("kong_util")
+from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg, method1
+from flow_bm_util import check_flow_quality_then_I_w_F_to_R
+from matplot_fig_ax_util import Matplot_single_row_imgs
+
+import matplotlib.pyplot as plt
 
 ### 用 網路 生成 影像
 def I_Generate_R(model_G, _1, in_img_pre, _3, _4, use_gt_range):
@@ -58,39 +60,67 @@ def wc_visual_op(wc):
 
 def flow_or_coord_visual_op(data):
     data_ch = data.shape[2]
+    mask = None
     x_ind = 0
     y_ind = 0
     if  (data_ch == 3):
         '''
         mask: mask/y/x
         '''
+        # mask = data[..., 0]  ### 因為想看有沒有外溢出去所以丟None
+        mask = None
         x_ind = 2
         y_ind = 1
     elif(data_ch == 2):
         '''
         coord: y/x
         '''
+        mask = None
         x_ind = 1
         y_ind = 0
-    return method1(data[..., x_ind], data[..., y_ind])[..., ::-1] * 255.
+    return (method1(x=data[..., x_ind], y=data[..., y_ind], mask=mask)[..., ::-1] * 255.).astype(np.uint8)
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
-def I_Generate_F(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
-    flow = model_G(in_img_pre, training=training)
-    # print("flow before max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
-    if(use_gt_range == Range(-1, 1)): flow = (flow + 1) / 2
-    # print("flow after max, min:", flow.numpy().max(), flow.numpy().min())  ### 測試 拉range 有沒有拉對
-    flow = flow[0].numpy()
+def F_postprocess(flow_pre, use_gt_range):
+    if  (use_gt_range == Range(-1, 1)): flow = (flow_pre + 1) / 2   ### 如果 use_gt_range 是 -1~1 記得轉回 0~1
+    elif(use_gt_range == Range( 0, 1)): flow = flow_pre
+    # flow [..., 1] = 1 - flow[..., 1]  ### y 上下 flip， 雖然背景會變成青色， 不過就試試看囉， 算了好麻煩還是保持原樣：在視覺化的時候 先不要 y_flip， 在rec時再flip好了～
+    # flow = flow[..., 0:1] * flow      ### 因為想看 pred_C 有沒有外溢， 所以就先不跟mask 相乘
     return flow
 
-def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_hope, epoch=0, exp_obj=None, training=True, see_reset_init=True):
-    in_img   = in_img  [0].numpy()[:, :, ::-1]
-    flow     = I_Generate_F(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
-    gt_flow  = gt_flow [0].numpy()
-    rec_hope = rec_hope[0].numpy()[:, :, ::-1]
+def I_Generate_F(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+    flow_pre = model_G(in_img_pre, training=training)
+    flow_pre = flow_pre[0].numpy()
+    flow = F_postprocess(flow_pre, use_gt_range)
+    return flow
 
-    flow_visual    = flow_or_coord_visual_op(flow)   .astype(np.uint8)
-    gt_flow_visual = flow_or_coord_visual_op(gt_flow).astype(np.uint8)
+def I_Gen_F_basic_data(model_G, in_img, in_img_pre, gt_flow, rec_hope, exp_obj=None, training=True, bgr2rgb=True):
+    '''
+    bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
+                                但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
+    '''
+    in_img         = in_img[0].numpy()   ### HWC 和 tensor -> numpy
+    flow           = I_Generate_F(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
+    gt_flow        = gt_flow[0].numpy()   ### HWC 和 tensor -> numpy
+    rec_hope       = rec_hope[0].numpy()
+
+    flow_visual    = flow_or_coord_visual_op(flow)[:, :, ::-1]     ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+    gt_flow_visual = flow_or_coord_visual_op(gt_flow)[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+
+    if(bgr2rgb):
+        in_img         = in_img        [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+        rec_hope       = rec_hope      [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+        flow_visual    = flow_visual   [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+        gt_flow_visual = gt_flow_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+    return in_img, flow, gt_flow, rec_hope, flow_visual, gt_flow_visual
+
+def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_hope, epoch=0, exp_obj=None, training=True, see_reset_init=True, bgr2rgb=True):
+    '''
+    bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
+    '''
+    in_img, flow, gt_flow, rec_hope, flow_visual, gt_flow_visual = I_Gen_F_basic_data(model_G, in_img, in_img_pre, gt_flow, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+
+
 
     see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
 
@@ -108,6 +138,27 @@ def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_ho
     ### 這部分要記得做！在 train_step3 的 exp_obj.result_obj.Draw_loss_during_train(epoch, self.epochs) 才有畫布可以畫loss！
     ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了
     # exp_obj.result_obj.sees[see_index].save_as_matplot_visual_during_train(epoch, bgr2rgb=True)
+
+
+def I_Gen_F_test(model_G, test_name, in_img, in_img_pre, gt_flow, _4, rec_hope=None, current_ep=-999, exp_obj=None, training=False, add_loss=False, bgr2rgb=False):
+    '''
+    bgr2rgb： tf2 讀出來是 rgb， 但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
+    '''
+    test_name      = test_name.numpy()[0].decode("utf-8")
+    in_img, flow, gt_flow, rec_hope, flow_visual, gt_flow_visual = I_Gen_F_basic_data(model_G, in_img, in_img_pre, gt_flow, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+
+    bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=flow)
+    gt_bm, gt_rec = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=gt_flow)
+
+    single_row_imgs = Matplot_single_row_imgs(
+                            imgs      =[ in_img ,  flow_visual ,    rec],    ### 把要顯示的每張圖包成list
+                            img_titles=["in_img", "pred_flow_v", "pred_rec"],    ### 把每張圖要顯示的字包成list
+                            fig_title ="test_%s, epoch=%04i" % (test_name, int(current_ep)),  ### 圖上的大標題
+                            add_loss  =add_loss,
+                            bgr2rgb   =bgr2rgb)
+    single_row_imgs.Draw_img()
+    single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_dir, name=test_name)  ### 如果沒有要接續畫loss，就可以存了喔！
+
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
 def I_Generate_M(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～

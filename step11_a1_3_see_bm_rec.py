@@ -3,12 +3,14 @@ from step11_a0_see_base import See_info
 from step0_access_path import JPG_QUALITY, CORE_AMOUNT_BM_REC_VISUAL, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
 from step0_access_path import Syn_write_to_read_dir
 
+from step08_b_use_G_generate import F_postprocess
+
 import sys
 sys.path.append("kong_util")
 from util import get_dir_certain_file_names, move_dir_certain_file
 from matplot_fig_ax_util import Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
-from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img
+from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img, check_flow_quality_then_I_w_F_to_R
 from video_from_img import Video_combine_from_dir
 from multiprocess_util import multi_processing_interface
 from multiprocessing import Process
@@ -213,55 +215,19 @@ class See_bm_rec(See_info):
     ### See_method 第三部分b
     def _get_bm_rec_and_gt_bm_gt_rec(self, epoch, dis_img):
         ### pred flow part
-        flow          = np.load(self.npz_epoch_read_paths[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
-        flow [..., 1] = 1 - flow[..., 1]
-        bm, rec = self._use_flow_to_rec(dis_img=dis_img, flow=flow)
-        # print("dis_img.max():", dis_img.max())
-        # print("flow.max():", flow.max())
-        # print("rec.max():", rec.max())
-        # print("bm.max():", bm.max())
+        flow_pre = np.load(self.npz_epoch_read_paths[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        flow = F_postprocess(flow_pre, self.use_gt_range)
+        bm, rec = check_flow_quality_then_I_w_F_to_R(dis_img, flow)
 
-        # from step08_b_use_G_generate import flow_or_coord_visual_op
-        # y_coord = (flow[..., 1] * 255.).astype(np.uint8)
-        # x_coord = (flow[..., 2] * 255.).astype(np.uint8)
-        # bm_visual = flow_or_coord_visual_op(bm)
-        # flow_visual = flow_or_coord_visual_op(flow)
-        # cv2.imshow("y_coord", y_coord)
-        # cv2.imshow("x_coord", x_coord)
-        # cv2.imshow("flow_visual", flow_visual.astype(np.uint8))
-        # cv2.imshow("bm_visual", bm_visual.astype(np.uint8))
-        # cv2.waitKey()
-        # '''
-        # dis_img.max(): 255
-        # flow.max(): 1.0
-        # rec.max(): 0
-        # bm.max(): 0.81640625
-        # '''
         ### gt flow part
-        gt_flow            = np.load(self.flow_gt_npz_path)["arr_0"]       ### npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        gt_flow = np.load(self.flow_gt_npz_path)["arr_0"]       ### npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         if("real" in self.see_name):  ### 因為 see-real 沒有gt_flow， 本來全黑沒問題， 不過我後來有玩 fake_see 不是全黑就會出問題， 所以乾脆 see-real 就不要處理
             h, w = gt_flow.shape[:2]
             gt_bm  = np.zeros(shape=(h, w, 2))
             gt_rec = np.zeros(shape=(h, w, 3))
         else:
-            gt_flow   [..., 1] = 1 - gt_flow[..., 1]
-            gt_bm, gt_rec = self._use_flow_to_rec(dis_img=dis_img, flow=gt_flow)
+            gt_bm, gt_rec = check_flow_quality_then_I_w_F_to_R(dis_img, flow)
         return bm, rec, gt_bm, gt_rec
-
-    ### See_method 第三部分c
-    def _use_flow_to_rec(self, dis_img, flow):
-        if(self.use_gt_range == Range(-1, 1)): flow = (flow + 1) / 2   ### 如果 use_gt_range 是 -1~1 記得轉回 0~1
-        h, w = flow.shape[:2]
-        total_pix_amount = h * w
-        valid_mask_pix_amount = (flow[..., 0] >= 0.99).astype(np.int).sum()
-        # print("valid_mask_pix_amount / total_pix_amount:", valid_mask_pix_amount / total_pix_amount)
-        if( valid_mask_pix_amount / total_pix_amount > 0.20):
-            bm  = use_flow_to_get_bm(flow, flow_scale=h)
-            rec = use_bm_to_rec_img (bm  , flow_scale=h, dis_img=dis_img)
-        else:
-            bm  = np.zeros(shape=(h, w, 2))
-            rec = np.zeros(shape=(h, w, 3))
-        return bm, rec
 
 
     ###############################################################################################

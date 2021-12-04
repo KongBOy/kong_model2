@@ -232,10 +232,14 @@ class Experiment():
 
         print("self.result_obj.test_dir", self.result_obj.test_dir)
         Check_dir_exist_and_build_new_dir(self.result_obj.test_dir)
-
-        for test_index, (test_in, test_in_pre, test_gt, test_gt_pre, test_name) in enumerate(tqdm(self.tf_data.test_db_combine)):
+        for test_index, (test_in, test_in_pre, test_gt, test_gt_pre, test_name, rec_hope) in enumerate(tqdm(zip(self.tf_data.test_in_db.batch(1)          .take(self.tf_data.test_amount),
+                                                                                                                self.tf_data.test_in_db_pre .batch(1)     .take(self.tf_data.test_amount),
+                                                                                                                self.tf_data.test_gt_db.batch(1)          .take(self.tf_data.test_amount),
+                                                                                                                self.tf_data.test_gt_db_pre.batch(1)      .take(self.tf_data.test_amount),
+                                                                                                                self.tf_data.test_name_db.batch(1)        .take(self.tf_data.test_amount),
+                                                                                                                self.tf_data.rec_hope_test_db.batch(1)    .take(self.tf_data.test_amount)))):
             if  (flow_mask is True):
-                self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=None, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
+                self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
 
             elif(flow_mask is False):
                 in_img    = test_in[0].numpy()   ### HWC 和 tensor -> numpy

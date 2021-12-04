@@ -94,10 +94,12 @@ class G_Flow_op_builder(G_Mask_op_builder):
             self.kong_model.generate_results = I_Generate_W        ### 不能checkpoint
             self.kong_model.generate_sees    = I_Generate_W_see    ### 不能checkpoint
         else:
-            from step08_b_use_G_generate import I_Generate_F, I_Generate_F_see
+            from step08_b_use_G_generate import I_Generate_F, I_Generate_F_see, I_Gen_F_test
             # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
             self.kong_model.generate_results = I_Generate_F             ### 不能checkpoint
             self.kong_model.generate_sees    = I_Generate_F_see    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_Gen_F_test    ### 不能checkpoint
+
 class G_Ckpt_op_builder(G_Flow_op_builder):
     def _build_ckpt_part(self):
         ### 建立 tf 存模型 的物件： checkpoint物件
