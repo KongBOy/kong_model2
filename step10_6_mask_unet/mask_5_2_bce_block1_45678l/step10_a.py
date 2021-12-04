@@ -481,7 +481,9 @@ L8_ch002_sig_ep060_bce_s001_coord_conv = Exp_builder().set_basic("train", use_db
 ### coord_conv
 L8_ch001_sig_ep060_bce_s001_coord_conv = Exp_builder().set_basic("train", use_db_obj, mask_unet2_block1_ch001_sig_L8_coord_conv, G_bce_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_8l_ch001_coord_conv", describe_end="block1_ch001_sig_bce_s001_8l_ep060") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="")
 
-
+#################################################################################################################################################################################################################################################################################################################################################################################################
+#################################################################################################################################################################################################################################################################################################################################################################################################
+L4_ch032_sig_ep060_bce_s001_copy = Exp_builder().set_basic("test", use_db_obj, mask_unet2_block1_ch032_sig_L4, G_bce_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_4l_ch032", describe_end="block1_ch032_sig_bce_s001_4l_ep060_copy") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender_os_book-2_4l_ch032-flow_unet2-block1_ch032_sig_bce_s001_4l_ep060-20211109_024308_copy")  #.result_name_v1_to_v2()
 
 
 
@@ -490,7 +492,7 @@ if(__name__ == "__main__"):
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        L2_ch032_sig_ep060_bce_s001_coord_conv.build().run()
+        L4_ch032_sig_ep060_bce_s001_copy.build().run()
         # print('no argument')
         sys.exit()
 
