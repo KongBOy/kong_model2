@@ -83,6 +83,7 @@ class Experiment():
         self.epoch_stop      = self.epochs
         self.epoch_save_freq = 5     ### 訓練 epoch_save_freq 個 epoch 存一次模型
         self.start_epoch     = 0
+        self.current_ep      = self.start_epoch
 
         self.exp_bn_see_arg = False  ### 本來 bn 在 test 的時候就應該要丟 false，只是 現在batch_size=1， 丟 True 會變 IN ， 所以加這個flag 來控制
 
@@ -128,6 +129,7 @@ class Experiment():
         if(reload_model):  ### 看需不需要reload model
             self.model_obj.ckpt.restore(self.ckpt_read_manager.latest_checkpoint)
             self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
+            self.current_ep  = self.start_epoch
             print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
 
         ####################################################################################################################
@@ -161,43 +163,43 @@ class Experiment():
             self.ckpt_write_manager.save()
             print("save ok ~~~~~~~~~~~~~~~~~")
 
-        current_epoch = self.start_epoch   ### 因為 epoch 的狀態 在 train 前後是不一樣的，所以需要用一個變數來記住，就用這個current_epoch來記錄囉！
+        self.current_ep = self.start_epoch   ### 因為 epoch 的狀態 在 train 前後是不一樣的，所以需要用一個變數來記住，就用這個current_epoch來記錄囉！
         for epoch in range(self.start_epoch, self.epochs):
             ###############################################################################################################################
             ###    step0 紀錄epoch開始訓練的時間
             epoch_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
-            print("Epoch: ", current_epoch, "start at", epoch_start_timestamp)
+            print("Epoch: ", self.current_ep, "start at", epoch_start_timestamp)
             e_start = time.time()
             ###############################################################################################################################
             ###    step0 設定learning rate
-            self.lr_current = self.lr_start if current_epoch < self.epoch_down_step else self.lr_start * (self.epochs - current_epoch) / (self.epochs - self.epoch_down_step)
+            self.lr_current = self.lr_start if self.current_ep < self.epoch_down_step else self.lr_start * (self.epochs - self.current_ep) / (self.epochs - self.epoch_down_step)
             self.model_obj.optimizer_G.lr = self.lr_current
             ###############################################################################################################################
-            if(current_epoch == 0): print("Initializing Model~~~")  ### sample的時候就會initial model喔！
+            if(self.current_ep == 0): print("Initializing Model~~~")  ### sample的時候就會initial model喔！
             ###############################################################################################################################
             ###     step1 用來看目前訓練的狀況
-            self.train_step1_see_current_img(current_epoch, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+            self.train_step1_see_current_img(self.current_ep, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
             ###############################################################################################################################
-            ### 以上 current_epoch = epoch   ### 代表還沒訓練
+            ### 以上 current_ep = epoch   ### 代表還沒訓練
             ###     step2 訓練
             for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
                 self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=self.loss_info_obj)
                 # break   ### debug用，看subprocess成不成功
-            current_epoch += 1  ### 超重要！別忘了加呀！
-            ### 以下 current_epoch = epoch + 1   ### +1 代表訓練完了！變成下個epoch了！
+            self.current_ep += 1  ### 超重要！別忘了加呀！
+            ### 以下 current_ep = epoch + 1   ### +1 代表訓練完了！變成下個epoch了！
             ###############################################################
             ###     step3 整個epoch 的 loss 算平均，存進tensorboard
-            self.train_step3_Loss_info_save_loss(current_epoch)
+            self.train_step3_Loss_info_save_loss(self.current_ep)
             ###############################################################################################################################
             ###     step4 儲存模型 (checkpoint) the model every "epoch_save_freq" epochs
-            if (current_epoch) % self.epoch_save_freq == 0:
-                # print("save epoch_log :", current_epoch)
-                self.model_obj.ckpt.epoch_log.assign(current_epoch)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
+            if (self.current_ep) % self.epoch_save_freq == 0:
+                # print("save epoch_log :", current_ep)
+                self.model_obj.ckpt.epoch_log.assign(self.current_ep)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
                 self.ckpt_write_manager.save()
                 print("save ok ~~~~~~~~~~~~~~~~~")
             ###############################################################################################################################
             ###    step5 紀錄、顯示 訓練相關的時間
-            self.train_step5_show_time(current_epoch, e_start, total_start, epoch_start_timestamp)
+            self.train_step5_show_time(self.current_ep, e_start, total_start, epoch_start_timestamp)
             # break  ### debug用，看subprocess成不成功
             ###############################################################################################################################
             ###    step6 同步 result_write_dir 和 result_read_dir
@@ -207,15 +209,15 @@ class Experiment():
                 Syn_write_to_read_dir(write_dir=self.result_obj.logs_write_dir,       read_dir=self.result_obj.logs_read_dir,       build_new_dir=False, print_msg=False)
                 Syn_write_to_read_dir(write_dir=self.result_obj.train_code_write_dir, read_dir=self.result_obj.train_code_read_dir, build_new_dir=False, copy_sub_dir=True, print_msg=False)
                 print("●完成～")
-                if (current_epoch) % self.epoch_save_freq == 0:
+                if (self.current_ep) % self.epoch_save_freq == 0:
                     print("○同步 ckpt_dir")
                     Syn_write_to_read_dir(write_dir=self.result_obj.ckpt_write_dir, read_dir=self.result_obj.ckpt_read_dir, build_new_dir=True, print_msg=False)  ### 只想存最新的model，所以 build_new_dir 設 True
                     print("●完成～")
 
-            if(current_epoch == self.epoch_stop): break   ### 想要有lr 下降，但又不想train滿 中途想離開就 設 epcoh_stop 囉！
+            if(self.current_ep == self.epoch_stop): break   ### 想要有lr 下降，但又不想train滿 中途想離開就 設 epcoh_stop 囉！
 
         ### 最後train完 記得也要看結果喔！
-        self.train_step1_see_current_img(current_epoch, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+        self.train_step1_see_current_img(current_ep=self.current_ep, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
     def testing(self, current_epoch, add_loss=False, bgr2rgb=False, flow_mask=False):
         from build_dataset_combine import Check_dir_exist_and_build_new_dir,  method1
