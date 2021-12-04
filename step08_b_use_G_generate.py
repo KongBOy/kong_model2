@@ -167,10 +167,16 @@ def I_Generate_M(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):
     pred_mask = (pred_mask * 255).astype(np.uint8)
     return pred_mask
 
-def I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj=None, training=True):
-    in_img    = in_img[0][:, :, ::-1].numpy()
+def I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj=None, training=True, bgr2rgb=False):
+    '''
+    bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
+                                但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
+    '''
+    in_img    = in_img[0].numpy()
     pred_mask = I_Generate_M(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
     gt_mask   = (gt_mask_coord[0][0].numpy() * 255).astype(np.uint8)
+
+    if(bgr2rgb): in_img = in_img[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
     # print("gt_mask.dtype:", gt_mask.dtype)
     # print("gt_mask.shape:", gt_mask.shape)
     # print("gt_mask.max():", gt_mask.numpy().max())
@@ -178,11 +184,14 @@ def I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj=
     return in_img, pred_mask, gt_mask
 
 def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True):
-    in_img, pred_mask, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training)
+    '''
+    bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
+    '''
+    in_img, pred_mask, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training, bgr2rgb=True)
 
     see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     mask_write_dir = exp_obj.result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    print("mask_write_dir:", mask_write_dir)
+    # print("mask_write_dir:", mask_write_dir)
     if(epoch == 0 or see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)                                   ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
@@ -191,10 +200,13 @@ def I_Generate_M_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, 
     cv2.imwrite(    mask_write_dir + "/" + "epoch_%04i_a_mask.bmp" % epoch, pred_mask)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
 def I_Gen_M_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, current_ep=-999, exp_obj=None, training=False, add_loss=False, bgr2rgb=False):
-    in_img, pred_mask, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training)
+    '''
+    bgr2rgb： tf2 讀出來是 rgb， 但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
+    '''
+    in_img, pred_mask, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training, bgr2rgb=False)
     test_name = test_name.numpy()[0].decode("utf-8")
-    print("test_name", test_name)
-    print("current_ep", current_ep)
+    # print("test_name", test_name)
+    # print("current_ep", current_ep)
 
     from matplot_fig_ax_util import Matplot_single_row_imgs
     single_row_imgs = Matplot_single_row_imgs(
@@ -205,6 +217,10 @@ def I_Gen_M_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, _4, rec_
                             bgr2rgb   =bgr2rgb)
     single_row_imgs.Draw_img()
     single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_dir, name=test_name)  ### 如果沒有要接續畫loss，就可以存了喔！
+
+    test_mask_dir = exp_obj.result_obj.test_dir + "/pred_mask"
+    Check_dir_exist_and_build(test_mask_dir)
+    cv2.imwrite(f"{test_mask_dir}/{test_name}.bmp", pred_mask)
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
