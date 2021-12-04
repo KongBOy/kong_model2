@@ -78,9 +78,10 @@ class G_Flow_op_builder(G_Mask_op_builder):
                                   Mgt_to_C_with_gt_M_to_F=False):
         ### 生成 flow 的 operation
         if  (I_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate import I_Generate_C, I_Generate_C_with_Mgt_to_F_see
+            from step08_b_use_G_generate import I_Generate_C, I_Generate_C_with_Mgt_to_F_see, I_Generate_C_with_Mgt_to_F_test
             self.kong_model.generate_results = I_Generate_C        ### 不能checkpoint
             self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
         elif(Mgt_to_C_with_gt_M_to_F):
             from step08_b_use_G_generate import Mgt_Generate_C, Mgt_Generate_C_with_Mgt_to_F_see
             self.kong_model.generate_results = Mgt_Generate_C        ### 不能checkpoint
