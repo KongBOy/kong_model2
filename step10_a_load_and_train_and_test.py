@@ -297,17 +297,17 @@ class Experiment():
                 single_row_imgs = Matplot_single_row_imgs(
                                         imgs      =[ in_img ,   flow_v ,        rec],    ### 把要顯示的每張圖包成list
                                         img_titles=["in_img", "pred_flow_v", "pred_rec"],    ### 把每張圖要顯示的字包成list
-                                        fig_title ="test_%04i, epoch=%04i" % (test_index, current_epoch),   ### 圖上的大標題
+                                        fig_title ="test_%04i, epoch=%04i" % (test_index, current_ep),   ### 圖上的大標題
                                         add_loss  =add_loss,
                                         bgr2rgb   =bgr2rgb)
                 single_row_imgs.Draw_img()
-                single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, name="test_%04i" % test_index, epoch=current_epoch)  ### 如果沒有要接續畫loss，就可以存了喔！
+                single_row_imgs.Save_fig(dst_dir=self.result_obj.test_dir, name="test_%04i" % test_index, epoch=current_ep)  ### 如果沒有要接續畫loss，就可以存了喔！
 
 
 
-    def train_step1_see_current_img(self, epoch, training=False, see_reset_init=False):
+    def train_step1_see_current_img(self, current_ep, training=False, see_reset_init=False):
         """
-        epoch：         目前 model 正處在 被更新了幾次epoch 的狀態
+        current_ep      目前 model 正處在 被更新了幾次epoch 的狀態
         training：      可以設定 bn 的動作為 train 還是 test，當batch_size=1時，設為True可以模擬IN，設False圖會壞掉！也可由此得知目前的任務是適合用BN的
                         介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
         see_reset_init：是給 test_see 用的，有時候製作 fake_exp 的時候，只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要 重建一份see，這時see_reset_init要設True就會重建一下囉
@@ -321,10 +321,10 @@ class Experiment():
                                                                                                            self.tf_data.see_name_db        .take(self.tf_data.see_amount),
                                                                                                            self.tf_data.rec_hope_see_db_pre.take(self.tf_data.see_amount)))):
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, epoch, self.result_obj.result_write_dir, self, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, epoch, self, training, see_reset_init)
-            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, epoch, self, see_reset_init)
-            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, epoch, self, see_reset_init)
+                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, current_ep, self.result_obj.result_write_dir, self, see_reset_init)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, current_ep, self, training, see_reset_init)
+            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, current_ep, self, see_reset_init)
+            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, current_ep, self, see_reset_init)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
@@ -389,14 +389,14 @@ class Experiment():
         想設定 testing 時的 bn 使用的 training arg 的話， 麻煩用 exp.exp_bn_see_arg 來指定， 因為要用test_see 就要先建exp， 就統一寫在exp裡 個人覺得比較連貫， 因此 就不另外開一個 arg 給 test_see 用囉！
         """
         self.exp_init(reload_result=True, reload_model=True)
-        self.train_step1_see_current_img(self.start_epoch, training=self.exp_bn_see_arg, see_reset_init=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        self.train_step1_see_current_img(current_ep=self.start_epoch, training=self.exp_bn_see_arg, see_reset_init=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         print("test see finish")
 
     def test(self, flow_mask=True):  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         """
         """
         self.exp_init(reload_result=True, reload_model=True)
-        self.testing(self.start_epoch, flow_mask=flow_mask)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        self.testing(current_ep=self.start_epoch, flow_mask=flow_mask)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         print("test finish")
 
     def board_rebuild(self):
