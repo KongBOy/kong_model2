@@ -120,6 +120,10 @@ class Datasets():  ### 以上 以下 都是為了要設定這個物件
 
         self.see_version = None
 
+        self.in_dir_name  = None
+        self.gt_dir_name  = None
+        self.test_db_name = "test"  ### 目前只覺得 test_db 可以 在事後替換
+
         self.rec_hope_train_dir = None
         self.rec_hope_test_dir  = None
         self.rec_hope_see_dir   = None
@@ -200,43 +204,46 @@ class Dataset_dir_builder(Dataset_basic_builder):
         return self
 
     def set_dir_by_basic(self):
-        in_dir_name = ""
-        gt_dir_name = ""
         if  (self.db.get_method == DB_GET_METHOD.in_dis_gt_move_map):
-            in_dir_name = "dis_imgs"
-            gt_dir_name = "move_maps"
+            self.in_dir_name = "dis_imgs"
+            self.gt_dir_name = "move_maps"
         elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_ord_pad):
-            in_dir_name = "dis_imgs"
-            gt_dir_name = "gt_ord_pad_imgs"
+            self.in_dir_name = "dis_imgs"
+            self.gt_dir_name = "gt_ord_pad_imgs"
         elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_ord):
-            in_dir_name = "dis_imgs"
-            gt_dir_name = "gt_ord_imgs"
+            self.in_dir_name = "dis_imgs"
+            self.gt_dir_name = "gt_ord_imgs"
         elif(self.db.get_method == DB_GET_METHOD.in_rec_gt_ord):
-            in_dir_name = "unet_rec_imgs"
-            gt_dir_name = "gt_ord_imgs"
+            self.in_dir_name = "unet_rec_imgs"
+            self.gt_dir_name = "gt_ord_imgs"
         elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_flow or
              self.db.get_method == DB_GET_METHOD.in_dis_gt_mask_coord):
-            in_dir_name = "dis_imgs"
-            gt_dir_name = "flows"
+            self.in_dir_name = "dis_imgs"
+            self.gt_dir_name = "flows"
         elif(self.db.get_method == DB_GET_METHOD.in_img_gt_mask):
-            in_dir_name = "in_imgs"
-            gt_dir_name = "gt_masks"
+            self.in_dir_name = "in_imgs"
+            self.gt_dir_name = "gt_masks"
         elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_wc):
-            in_dir_name = "dis_imgs"
-            gt_dir_name = "wcs"
+            self.in_dir_name = "dis_imgs"
+            self.gt_dir_name = "wcs"
 
 
-        self.db.train_in_dir = self.db.db_dir + "/train/" + in_dir_name
-        self.db.train_gt_dir = self.db.db_dir + "/train/" + gt_dir_name
-        self.db.test_in_dir  = self.db.db_dir + "/test/"  + in_dir_name
-        self.db.test_gt_dir  = self.db.db_dir + "/test/"  + gt_dir_name
-        self.db.see_in_dir   = self.db.db_dir + "/see/"   + in_dir_name
-        self.db.see_gt_dir   = self.db.db_dir + "/see/"   + gt_dir_name
-        self.db.see_gt_dir   = self.db.db_dir + "/see/"   + gt_dir_name
+        self.db.train_in_dir = self.db.db_dir + "/train/" + self.in_dir_name
+        self.db.train_gt_dir = self.db.db_dir + "/train/" + self.gt_dir_name
+        self.db.test_in_dir  = self.db.db_dir + f"/{self.db.test_db_name}/" + self.in_dir_name
+        self.db.test_gt_dir  = self.db.db_dir + f"/{self.db.test_db_name}/" + self.gt_dir_name
+        self.db.see_in_dir   = self.db.db_dir + "/see/"   + self.in_dir_name
+        self.db.see_gt_dir   = self.db.db_dir + "/see/"   + self.gt_dir_name
+        self.db.see_gt_dir   = self.db.db_dir + "/see/"   + self.gt_dir_name
 
         self.db.rec_hope_train_dir = self.db.db_dir + "/train/rec_hope"
-        self.db.rec_hope_test_dir  = self.db.db_dir + "/test/rec_hope"
+        self.db.rec_hope_test_dir  = self.db.db_dir + f"/{self.db.test_db_name}/rec_hope"
         self.db.rec_hope_see_dir   = self.db.db_dir + "/see/rec_hope"
+        return self
+
+    def reset_test_db_name(self, test_db_name):
+        self.db.test_db_name      = test_db_name
+        self.set_dir_by_basic()
         return self
 
 class Dataset_format_builder(Dataset_dir_builder):

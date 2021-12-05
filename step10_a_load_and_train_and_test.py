@@ -230,9 +230,6 @@ class Experiment():
                                                                                                                 self.tf_data.rec_hope_test_db.batch(1)    .take(self.tf_data.test_amount)))):
             self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
 
-
-
-
     def train_step1_see_current_img(self, current_ep, training=False, see_reset_init=False):
         """
         current_ep      目前 model 正處在 被更新了幾次epoch 的狀態
@@ -320,9 +317,10 @@ class Experiment():
         self.train_step1_see_current_img(current_ep=self.start_epoch, training=self.exp_bn_see_arg, see_reset_init=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         print("test see finish")
 
-    def test(self, flow_mask=True):  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
+    def test(self, test_db_name="test"):  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         """
         """
+        self.db_builder.reset_test_db_name(test_db_name)
         self.exp_init(reload_result=True, reload_model=True)
         self.testing()  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         print("test finish")
@@ -338,10 +336,11 @@ class Experiment():
         self.machine_user = getpass.getuser()                           ### 取得 本機 User 給 train_step5_show_time 紀錄
         if  (self.phase == "train"):          self.train()
         elif(self.phase == "train_reload"):   self.train_reload()
-        elif(self.phase == "test_see"):       self.test_see()
-        elif(self.phase == "board_rebuild"):  self.board_rebuild()
-        elif(self.phase == "test"):           self.test()  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         elif(self.phase == "train_indicate"): pass  ### 待完成Z
+        elif("test" in self.phase):
+            if(self.phase == "test_see"): self.test_see()
+            else:                         self.test(test_db_name=self.phase)  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
+        elif(self.phase == "board_rebuild"):  self.board_rebuild()
         elif(self.phase.lower() == "ok"): pass      ### 不做事情，只是個標記而以這樣子
         else: print("ㄘㄋㄇㄉ phase 打錯字了拉~~~")
 

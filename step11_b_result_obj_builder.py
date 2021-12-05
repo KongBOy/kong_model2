@@ -118,7 +118,7 @@ class Result_train_builder(Result_sees_builder):
         self.result.logs_write_dir = self.result.result_write_dir + "/logs"
         self.result.train_code_read_dir  = self.result.result_read_dir  + f"/train_code_{self.current_time}"
         self.result.train_code_write_dir = self.result.result_write_dir + f"/train_code_{self.current_time}"
-        self.result.test_dir = self.result.result_write_dir + "/test"
+        self.result.test_dir = self.result.result_write_dir + f"/{db_obj.test_db_name}"
 
         '''
         後來覺得 use_range 應該要從 exp 裡面 抓， 所以就把 Result 和 See 的 use_range 拿掉囉～～
