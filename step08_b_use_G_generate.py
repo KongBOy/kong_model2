@@ -200,8 +200,8 @@ def I_Gen_M_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, _4, rec_
     '''
     bgr2rgb： tf2 讀出來是 rgb， 但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
     '''
-    in_img, pred_mask, pred_mask_visual, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training, bgr2rgb=False)
     test_name = test_name.numpy()[0].decode("utf-8")
+    in_img, pred_mask, pred_mask_visual, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training, bgr2rgb=False)
     # print("test_name", test_name)
     # print("current_ep", current_ep)
 
@@ -321,6 +321,7 @@ def I_Generate_C_with_Mgt_to_F_test(model_G, test_name, in_img, in_img_pre, gt_m
                             bgr2rgb   =bgr2rgb)
     single_row_imgs.Draw_img()
     single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_dir, name=test_name)  ### 如果沒有要接續畫loss，就可以存了喔！
+    print("save to:", exp_obj.result_obj.test_dir)
 
 ####################################################################################################
 def I_Generate_W(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -408,8 +409,8 @@ def Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, _2, gt_mask_coo
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(mask_write_dir)   ### 建立 model生成的結果 的資料夾
         cv2.imwrite(see_write_dir + "/" + "0a1-in_img.jpg",      in_img)             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(see_write_dir + "/" + "0a2-in_gt_mask.jpg",  (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_write_dir + "/" + "0a2-in_gt_mask.jpg",  gt_mask_visual)  ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", gt_mask_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         np.save    (see_write_dir + "/" + "0b-gt_a_gt_mask",     gt_mask)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_b_gt_flow.jpg", gt_flow_visual)                            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         np.save    (see_write_dir + "/" + "0b-gt_b_gt_flow",     gt_flow)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
@@ -435,6 +436,7 @@ def Mgt_Generate_C_with_Mgt_to_F_test(model_G, test_name, in_img, _2, gt_mask_co
                             bgr2rgb   =bgr2rgb)
     single_row_imgs.Draw_img()
     single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_dir, name=test_name)  ### 如果沒有要接續畫loss，就可以存了喔！
+    print("save to:", exp_obj.result_obj.test_dir)
 
 ######################################################################################################################################################################################################
 def I_with_Mgt_Generate_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
