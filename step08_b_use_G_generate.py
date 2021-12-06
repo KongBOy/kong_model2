@@ -6,7 +6,7 @@ from step06_a_datas_obj import Range
 
 import sys
 sys.path.append("kong_util")
-from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg, method1
+from build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy, method1
 from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
