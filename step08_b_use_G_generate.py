@@ -120,10 +120,7 @@ def I_Generate_F_see(model_G, see_index, in_img, in_img_pre, gt_flow, _4, rec_ho
     '''
     in_img, flow, gt_flow, rec_hope, flow_visual, gt_flow_visual = I_Gen_F_basic_data(model_G, in_img, in_img_pre, gt_flow, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
 
-
-
     see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)   ### 建立 see資料夾
         cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg",       in_img)                    ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
