@@ -88,9 +88,10 @@ class G_Flow_op_builder(G_Mask_op_builder):
             self.kong_model.generate_sees    = Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
             self.kong_model.generate_tests   = Mgt_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
         elif(I_with_Mgt_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate import I_with_Mgt_Generate_C, I_with_Mgt_Generate_C_with_Mgt_to_F_see
+            from step08_b_use_G_generate import I_with_Mgt_Generate_C, I_with_Mgt_Generate_C_with_Mgt_to_F_see, I_with_Mgt_Generate_C_with_Mgt_to_F_test
             self.kong_model.generate_results = I_with_Mgt_Generate_C        ### 不能checkpoint
             self.kong_model.generate_sees    = I_with_Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_with_Mgt_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
         elif(I_to_W):
             from step08_b_use_G_generate import I_Generate_W, I_Generate_W_see
             self.kong_model.generate_results = I_Generate_W        ### 不能checkpoint
