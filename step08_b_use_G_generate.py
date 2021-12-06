@@ -247,14 +247,21 @@ def I_Gen_M_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, _4, rec_
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
+def C_postprocess(coord_pre, use_gt_range):
+    if  (use_gt_range == Range(-1, 1)): coord = (coord_pre + 1) / 2   ### 如果 use_gt_range 是 -1~1 記得轉回 0~1
+    elif(use_gt_range == Range( 0, 1)): coord = coord_pre
+    # coord [..., 0] = 1 - coord[..., 0]  ### y 上下 flip， 雖然背景會變成青色， 不過就試試看囉， 算了好麻煩還是保持原樣：在視覺化的時候 先不要 y_flip， 在rec時再flip好了～
+    return coord
+
 def C_with_Mgt_to_F_and_get_F_visual(coord, gt_mask):
     flow        = np.concatenate([gt_mask, coord], axis=-1)  ### channel concate
     flow_visual = flow_or_coord_visual_op(flow)
     return flow, flow_visual
 ####################################################################################################
 def I_Generate_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
-    coord = model_G(in_img_pre, training=training)
-    coord = coord[0].numpy()
+    coord_pre = model_G(in_img_pre, training=training)
+    coord_pre = coord_pre[0].numpy()
+    coord = C_postprocess(coord_pre, use_gt_range)
     return coord
 
 def I_Gen_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):
