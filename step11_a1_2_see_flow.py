@@ -34,8 +34,8 @@ class See_flow_visual(See_info):
       所以要看的東西就是簡單的：
         單純的input, 單純的output, 單純的gt
     """
-    def __init__(self, result_read_dir, result_write_dir, see_name):
-        super(See_flow_visual, self).__init__(result_read_dir, result_write_dir, see_name)
+    def __init__(self, result_obj, see_name):
+        super(See_flow_visual, self).__init__(result_obj, see_name)
         """
         __init__：放 Dir：..._read_dir
                          ..._write_dir

@@ -42,8 +42,8 @@ class See_rec_metric(See_info):
     """
     我把它繼承See_bm_rec 的概念是要做完 See_bm_rec 後才能做 See_rec_metric 喔！
     """
-    def __init__(self, result_read_dir, result_write_dir, see_name):
-        super(See_rec_metric, self).__init__(result_read_dir, result_write_dir, see_name)
+    def __init__(self, result_obj, see_name):
+        super(See_rec_metric, self).__init__(result_obj, see_name)
         """
         __init__：放 Dir：..._read_dir
                          ..._write_dir

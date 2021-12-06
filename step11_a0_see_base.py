@@ -18,15 +18,16 @@ class See_info:
     See 是 最直接、最基本 model output的東西，在各個model裡面都應該有寫 自己的 generate_see
     而這邊只是 讀取 training 過程中生成的 See 這樣子囉~~
     '''
-    def __init__(self, result_read_dir, result_write_dir, see_name):
+    def __init__(self, result_obj, see_name):
         """
         __init__：放 Dir：..._read_dir
                          ..._write_dir
         """
         self.see_name = see_name
 
-        self.result_read_dir  = result_read_dir
-        self.result_write_dir = result_write_dir
+        self.result_obj = result_obj
+        self.result_read_dir  = result_obj.result_read_dir
+        self.result_write_dir = result_obj.result_write_dir
 
         self.see_read_dir  = self.result_read_dir  + "/" + self.see_name
         self.see_write_dir = self.result_write_dir + "/" + self.see_name

@@ -27,8 +27,8 @@ See_info -> See_npy_to_npz -> See_bm_rec -> See_rec_metric
 '''
 
 class See_npy_to_npz(See_info):
-    def __init__(self, result_read_dir, result_write_dir, see_name):
-        super(See_npy_to_npz, self).__init__(result_read_dir, result_write_dir, see_name)
+    def __init__(self, result_obj, see_name):
+        super(See_npy_to_npz, self).__init__(result_obj, see_name)
         """
         __init__：放 Dir：..._read_dir
                          ..._write_dir

@@ -22,6 +22,7 @@ class Result:
     # def __init__(self, result_name=None, r_describe=None):
     def __init__(self):
         ### train的時候用的
+        self.exp_obj_use_gt_range = None  ### 好像 跑multiprocess 的時候 會因為 exp_obj 裡面的 model_obj 的 train_step 無法被pickle 無法平行處理， 所以就不要整個 exp_obj 傳進來， 只傳需要的 use_gt_range 進來就好囉！
         self.result_name = None
         self.result_read_dir  = None
         self.result_write_dir = None

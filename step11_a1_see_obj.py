@@ -5,8 +5,8 @@ from step11_a1_4_see_rec_metric import See_rec_metric
 from step11_a1_5_see_mask       import See_mask
 # class See(See_flow_visual, See_rec_metric, See_mask):
 class See(See_flow_visual, See_npy_to_npz, See_bm_rec, See_rec_metric, See_mask):
-    def __init__(self, result_read_dir, result_write_dir, see_name):
-        super(See, self).__init__(result_read_dir, result_write_dir, see_name)
+    def __init__(self, result_obj, see_name):
+        super(See, self).__init__(result_obj, see_name)
 
 
     def _rename_wrong_to_right_path(self, wrong_file_path, wrong_word, right_word,  print_msg=False):
