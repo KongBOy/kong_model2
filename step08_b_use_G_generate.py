@@ -311,7 +311,7 @@ def I_Generate_C_with_Mgt_to_F_test(model_G, test_name, in_img, in_img_pre, gt_m
     in_img, gt_mask, gt_flow_visual, gt_flow, rec_hope, flow, flow_visual = I_Gen_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
 
     bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=flow)
-    gt_bm, gt_rec = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=gt_flow)
+    # gt_bm, gt_rec = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=gt_flow)  ### 因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！
 
     single_row_imgs = Matplot_single_row_imgs(
                             imgs      =[ in_img ,  flow_visual ,    rec],    ### 把要顯示的每張圖包成list
