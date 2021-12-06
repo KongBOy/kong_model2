@@ -105,7 +105,7 @@ def train_step_pure_G_split_mask_move_I_to_M(model_obj, in_data, gt_data, loss_i
 ###################################################################################################################################################
 ###################################################################################################################################################
 @tf.function
-def train_step_pure_G(model_obj, in_data, gt_data, loss_info_obj=None):
+def train_step_pure_G_I_to_F_or_W_or_R(model_obj, in_data, gt_data, loss_info_obj=None):
     _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_obj)
     # with tf.GradientTape() as gen_tape:
     #     model_output = model_obj.generator(in_data)
