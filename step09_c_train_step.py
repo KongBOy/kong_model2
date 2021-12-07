@@ -105,22 +105,26 @@ def train_step_pure_G_split_mask_move_I_to_M(model_obj, in_data, gt_data, loss_i
 ###################################################################################################################################################
 ###################################################################################################################################################
 @tf.function
+def train_step_pure_G_I_with_Mgt_to_F_or_W_or_R(model_obj, in_data, gt_data, loss_info_obj=None):
+    '''
+    相當於無背景的訓練
+    '''
+    gt_mask = gt_data[..., 0:1]   ### (1, h, w, 1)
+    I_with_M = in_data * gt_mask
+
+    ### debug 時 記得把 @tf.function 拿掉
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(I_with_M[0])
+    # fig.tight_layout()
+    # plt.show()
+    _train_step_in_G_out_loss_with_gt(model_obj, I_with_M, gt_data, loss_info_obj)
+
+@tf.function
 def train_step_pure_G_I_to_F_or_W_or_R(model_obj, in_data, gt_data, loss_info_obj=None):
     _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_obj)
-    # with tf.GradientTape() as gen_tape:
-    #     model_output = model_obj.generator(in_data)
-    #     # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
-    #     # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
-    #     gen_loss  = loss_info_obj.loss_funs_dict["G"](model_output, gt_data)
 
-    # generator_gradients               = gen_tape .gradient(gen_loss, model_obj.generator.trainable_variables)
-    # # for gradient in generator_gradients:
-    # #     print("gradient", gradient)
-    # model_obj .optimizer_G .apply_gradients(zip(generator_gradients, model_obj.generator.trainable_variables))
-
-    # ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
-    # for loss_name in loss_info_obj.loss_containors.keys():
-    #     loss_info_obj.loss_containors[loss_name](gen_loss)
 
 @tf.function
 def train_step_first(model_obj, in_dis_img, gt_coord_map, board_obj):
