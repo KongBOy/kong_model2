@@ -56,7 +56,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch004_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s001.{compress_all}"])  ### bm_rec 失敗
 #### 6l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L6_ch128_mae_s001      .{失敗}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch128_mae_s001_limit.{compress_and_bm_rec_all}"])

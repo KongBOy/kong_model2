@@ -25,17 +25,17 @@ import step10_a as mae_block1
 ### L2345678_flow
 mae_block1_flow_s001_L345678 = [
 ### L3 之前直接跳過 因為發現幾乎無法 rec #######################################################################
-    [mae_block1.L8_ch128_mae_s001.build().result_obj,
-     mae_block1.L8_ch064_mae_s001.build().result_obj,
-     mae_block1.L8_ch032_mae_s001.build().result_obj,
+    [mae_block1.L8_ch128_mae_s001_limit.build().result_obj,
+     mae_block1.L8_ch064_mae_s001_limit.build().result_obj,
+     mae_block1.L8_ch032_mae_s001_limit.build().result_obj,
      mae_block1.L8_ch016_mae_s001.build().result_obj,
      mae_block1.L8_ch008_mae_s001.build().result_obj,
      mae_block1.L8_ch004_mae_s001.build().result_obj,
      mae_block1.L8_ch002_mae_s001.build().result_obj,
      mae_block1.L8_ch001_mae_s001.build().result_obj],
 
-    [mae_block1.L7_ch128_mae_s001.build().result_obj,
-     mae_block1.L7_ch064_mae_s001.build().result_obj,
+    [mae_block1.L7_ch128_mae_s001_limit.build().result_obj,
+     mae_block1.L7_ch064_mae_s001_limit.build().result_obj,
      mae_block1.L7_ch032_mae_s001.build().result_obj,
      mae_block1.L7_ch016_mae_s001.build().result_obj,
      mae_block1.L7_ch008_mae_s001.build().result_obj,
@@ -43,7 +43,7 @@ mae_block1_flow_s001_L345678 = [
      mae_block1.L7_ch002_mae_s001.build().result_obj,
      mae_block1.L7_ch001_mae_s001.build().result_obj],
 
-    [mae_block1.L6_ch128_mae_s001.build().result_obj,
+    [mae_block1.L6_ch128_mae_s001_limit.build().result_obj,
      mae_block1.L6_ch064_mae_s001.build().result_obj,
      mae_block1.L6_ch032_mae_s001.build().result_obj,
      mae_block1.L6_ch016_mae_s001.build().result_obj,
@@ -61,7 +61,9 @@ mae_block1_flow_s001_L345678 = [
      mae_block1.L5_ch002_mae_s001.build().result_obj,
      mae_block1.L5_ch001_mae_s001.build().result_obj],
 
-    [mae_block1.L4_ch064_mae_s001.build().result_obj,
+    [
+     mae_block1.L4_ch128_mae_s001.build().result_obj,
+     mae_block1.L4_ch064_mae_s001.build().result_obj,
      mae_block1.L4_ch032_mae_s001.build().result_obj,
      mae_block1.L4_ch016_mae_s001.build().result_obj,
      mae_block1.L4_ch008_mae_s001.build().result_obj,
@@ -81,12 +83,12 @@ mae_block1_flow_s001_L345678 = [
 
 
 #################################################################################################################################################################################################################################################################################################################################################################################################
-mae_block1_rec_s001_L45678 = [
+mae_block1_rec_s001_L345678 = [
     ### L3 之前直接跳過 因為發現幾乎無法 rec #######################################################################
     [
-        mae_block1.L8_ch128_mae_s001.build().result_obj,
-        mae_block1.L8_ch064_mae_s001.build().result_obj,
-        mae_block1.L8_ch032_mae_s001.build().result_obj,
+        mae_block1.L8_ch128_mae_s001_limit.build().result_obj,
+        mae_block1.L8_ch064_mae_s001_limit.build().result_obj,
+        mae_block1.L8_ch032_mae_s001_limit.build().result_obj,
         mae_block1.L8_ch016_mae_s001.build().result_obj,
         mae_block1.L8_ch008_mae_s001.build().result_obj,
         mae_block1.L8_ch004_mae_s001.build().result_obj,
@@ -95,8 +97,8 @@ mae_block1_rec_s001_L45678 = [
     ],
 
     [
-        mae_block1.L7_ch128_mae_s001.build().result_obj,
-        mae_block1.L7_ch064_mae_s001.build().result_obj,
+        mae_block1.L7_ch128_mae_s001_limit.build().result_obj,
+        mae_block1.L7_ch064_mae_s001_limit.build().result_obj,
         mae_block1.L7_ch032_mae_s001.build().result_obj,
         mae_block1.L7_ch016_mae_s001.build().result_obj,
         mae_block1.L7_ch008_mae_s001.build().result_obj,
@@ -106,7 +108,7 @@ mae_block1_rec_s001_L45678 = [
     ],
 
     [
-        mae_block1.L6_ch128_mae_s001.build().result_obj,
+        mae_block1.L6_ch128_mae_s001_limit.build().result_obj,
         mae_block1.L6_ch064_mae_s001.build().result_obj,
         mae_block1.L6_ch032_mae_s001.build().result_obj,
         mae_block1.L6_ch016_mae_s001.build().result_obj,

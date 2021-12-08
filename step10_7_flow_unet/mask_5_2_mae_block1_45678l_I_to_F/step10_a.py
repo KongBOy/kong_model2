@@ -100,13 +100,17 @@ L8_ch004_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_bloc
 L8_ch002_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch002_sig_L8, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch002", describe_end="block1_L8_ch002_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender-2_L8_ch002-flow_unet2-block1_L8_ch002_mae_s001-20211207_062720")
 L8_ch001_mae_s001 = Exp_builder().set_basic("train", use_db_obj, flow_unet2_block1_ch001_sig_L8, G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L8_ch001", describe_end="block1_L8_ch001_mae_s001") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender-2_L8_ch001-flow_unet2-block1_L8_ch001_mae_s001-20211207_065431")
 
+#################################################################################################################################################################################################################################################################################################################################################################################################
+#################################################################################################################################################################################################################################################################################################################################################################################################
+L5_ch128_mae_s001_copy       = Exp_builder().set_basic("test_real_photo_until_now", use_db_obj, flow_unet2_block1_ch128_sig_L5      , G_mae_s001_loss_info_builder, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="2_L5_ch128",       describe_end="block1_L5_ch128_mae_s001_copy")       .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender-2_L5_ch128-flow_unet2-block1_L5_ch128_mae_s001-20211206_144631_copy")
 
 if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        L2_ch128_mae_s001.build().run()
+        # L2_ch128_mae_s001.build().run()
+        L5_ch128_mae_s001_copy.build().run()
         # print('no argument')
         sys.exit()
 
