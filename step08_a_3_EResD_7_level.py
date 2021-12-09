@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Conv2D, LeakyReLU, ReLU, Conv2DTranspose, Activation
 from  tensorflow_addons.layers import InstanceNormalization
 
-from step08_a_2_Rect2 import InstanceNorm_kong, ResBlock
+from step07_small_component import InstanceNorm_kong, ResBlock
 
 ### 模仿UNet
 class Rect_7_layer(tf.keras.models.Model):

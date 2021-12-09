@@ -83,6 +83,51 @@ class CoordConv(tf.keras.layers.Layer):
 
         return tf.concat([input_tensor, yx], axis=-1)
 
+class InstanceNorm_kong(tf.keras.layers.Layer):
+    def __init__(self, **kwargs):
+        super(InstanceNorm_kong, self).__init__(**kwargs)
+
+    def build(self, input_shape):
+        depth = input_shape[-1]
+        self.scale  = self.add_weight("scale", shape=[depth], initializer=tf.random_normal_initializer(mean=1.0, stddev=0.02), dtype=tf.float32)
+        self.offset = self.add_weight("offset", shape=[depth], initializer=tf.constant_initializer(0.0), dtype=tf.float32)
+
+    def call(self, input):
+        mean, variance = tf.nn.moments(input, axes=[1, 2], keepdims=True)
+        epsilon = tf.constant(1e-5, dtype=tf.float32)
+        inv = tf.math.rsqrt(variance + epsilon)
+        normalized = (input - mean) * inv
+
+        return self.scale * normalized + self.offset
+        # return tf.matmul(input, self.kernel)
+
+class ResBlock(tf.keras.layers.Layer):
+    def __init__(self, c_num, use_what_IN=InstanceNorm_kong, ks=3, s=1, use_res_learning=True, coord_conv=False, **kwargs):
+        super(ResBlock, self).__init__()
+        self.ks = ks
+        self.use_res_learning = use_res_learning
+        self.coord_conv = coord_conv
+        # if(self.coord_conv): self.coord_conv_res_layer1 = CoordConv()
+        self.conv_1 = Conv2D(c_num, kernel_size=ks, strides=s, padding="valid")
+        self.in_c1 = use_what_IN()
+        # if(self.coord_conv): self.coord_conv_res_layer2 = CoordConv()
+        self.conv_2 = Conv2D(c_num, kernel_size=ks, strides=s, padding="valid")
+        self.in_c2 = use_what_IN()
+
+    def call(self, input_tensor):
+        p = int((self.ks - 1) / 2)
+        # if(self.coord_conv): input_tensor = self.coord_conv_res_layer1(input_tensor)
+        x = tf.pad(input_tensor, [[0, 0], [p, p], [p, p], [0, 0]], "REFLECT")
+        x = self.conv_1(x)
+        x = self.in_c1(x)
+        x = tf.nn.relu(x)
+
+        # if(self.coord_conv): x = self.coord_conv_res_layer2(x)
+        x = tf.pad(x, [[0, 0], [p, p], [p, p], [0, 0]], "REFLECT")
+        x = self.conv_2(x)
+        x = self.in_c2(x)
+        if(self.use_res_learning): return x + input_tensor[..., :]
+        else: return x
 
 
 if(__name__ == "__main__"):
