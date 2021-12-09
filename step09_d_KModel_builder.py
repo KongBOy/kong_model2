@@ -49,73 +49,8 @@ class KModel_init_builder:
     # def build(self):
     #     return self.kong_model
 
-class Old_512_256_Unet_builder(KModel_init_builder):
-    def build_unet(self):
-        def _build_unet():
-            from step08_a_1_UNet_BN_512to256 import Generator512to256, generate_sees, generate_results
-            self.kong_model.generator   = Generator512to256(out_ch=2)
-            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-            self.kong_model.max_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
-            self.kong_model.min_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
-            self.kong_model.max_db_move_x  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
-            self.kong_model.max_db_move_y  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
 
-            self.kong_model.generate_results = generate_results  ### 不能checkpoint
-            self.kong_model.generate_sees    = generate_sees    ### 不能checkpoint
-
-            ### 建立 tf 存模型 的物件： checkpoint物件
-            self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
-                                                    optimizer_G=self.kong_model.optimizer_G,
-                                                    max_train_move=self.kong_model.max_train_move,
-                                                    min_train_move=self.kong_model.min_train_move,
-                                                    max_db_move_x=self.kong_model.max_db_move_x,
-                                                    max_db_move_y=self.kong_model.max_db_move_y,
-                                                    epoch_log=self.kong_model.epoch_log)
-            print("build_unet", "finish")
-            return self.kong_model
-        self.build_ops.append(_build_unet)
-        return self
-
-class G_Flow_op_builder(Old_512_256_Unet_builder):
-    def _hook_Gen_op_part(self, I_to_M=False,
-                                I_to_C_with_Mgt_to_F=False,
-                                I_to_W=False,
-                                I_with_Mgt_to_C_with_Mgt_to_F=False,
-                                Mgt_to_C_with_gt_M_to_F=False):
-        if  (I_to_M):
-            from step08_b_use_G_generate import I_Generate_M, I_Generate_M_see, I_Gen_M_test
-            # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
-            self.kong_model.generate_results = I_Generate_M             ### 不能checkpoint
-            self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = I_Gen_M_test    ### 不能checkpoint
-        ### 生成 flow 的 operation
-        elif  (I_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate import I_Generate_C, I_Generate_C_with_Mgt_to_F_see, I_Generate_C_with_Mgt_to_F_test
-            self.kong_model.generate_results = I_Generate_C        ### 不能checkpoint
-            self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = I_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
-        elif(Mgt_to_C_with_gt_M_to_F):
-            from step08_b_use_G_generate import Mgt_Generate_C, Mgt_Generate_C_with_Mgt_to_F_see, Mgt_Generate_C_with_Mgt_to_F_test
-            self.kong_model.generate_results = Mgt_Generate_C        ### 不能checkpoint
-            self.kong_model.generate_sees    = Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = Mgt_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
-        elif(I_with_Mgt_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate import I_with_Mgt_Generate_C, I_with_Mgt_Generate_C_with_Mgt_to_F_see, I_with_Mgt_Generate_C_with_Mgt_to_F_test
-            self.kong_model.generate_results = I_with_Mgt_Generate_C        ### 不能checkpoint
-            self.kong_model.generate_sees    = I_with_Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = I_with_Mgt_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
-        elif(I_to_W):
-            from step08_b_use_G_generate import I_Generate_W, I_Generate_W_see
-            self.kong_model.generate_results = I_Generate_W        ### 不能checkpoint
-            self.kong_model.generate_sees    = I_Generate_W_see    ### 不能checkpoint
-        else:
-            from step08_b_use_G_generate import I_Generate_F, I_Generate_F_see, I_Gen_F_test
-            # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
-            self.kong_model.generate_results = I_Generate_F             ### 不能checkpoint
-            self.kong_model.generate_sees    = I_Generate_F_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = I_Gen_F_test    ### 不能checkpoint
-
-class G_Ckpt_op_builder(G_Flow_op_builder):
+class G_Ckpt_op_builder(KModel_init_builder):
     def _build_ckpt_part(self):
         ### 建立 tf 存模型 的物件： checkpoint物件
         self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
@@ -156,8 +91,46 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
 
 
 class G_Unet_Purpose_builder(G_Unet_Body_builder):
+    def _hook_Gen_op_part(self, I_to_M=False,
+                            I_to_C_with_Mgt_to_F=False,
+                            I_to_W=False,
+                            I_with_Mgt_to_C_with_Mgt_to_F=False,
+                            Mgt_to_C_with_gt_M_to_F=False):
+        if  (I_to_M):
+            from step08_b_use_G_generate import I_Generate_M, I_Generate_M_see, I_Gen_M_test
+            # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
+            self.kong_model.generate_results = I_Generate_M             ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_Gen_M_test    ### 不能checkpoint
+        ### 生成 flow 的 operation
+        elif  (I_to_C_with_Mgt_to_F):
+            from step08_b_use_G_generate import I_Generate_C, I_Generate_C_with_Mgt_to_F_see, I_Generate_C_with_Mgt_to_F_test
+            self.kong_model.generate_results = I_Generate_C        ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
+        elif(Mgt_to_C_with_gt_M_to_F):
+            from step08_b_use_G_generate import Mgt_Generate_C, Mgt_Generate_C_with_Mgt_to_F_see, Mgt_Generate_C_with_Mgt_to_F_test
+            self.kong_model.generate_results = Mgt_Generate_C        ### 不能checkpoint
+            self.kong_model.generate_sees    = Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
+            self.kong_model.generate_tests   = Mgt_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
+        elif(I_with_Mgt_to_C_with_Mgt_to_F):
+            from step08_b_use_G_generate import I_with_Mgt_Generate_C, I_with_Mgt_Generate_C_with_Mgt_to_F_see, I_with_Mgt_Generate_C_with_Mgt_to_F_test
+            self.kong_model.generate_results = I_with_Mgt_Generate_C        ### 不能checkpoint
+            self.kong_model.generate_sees    = I_with_Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_with_Mgt_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
+        elif(I_to_W):
+            from step08_b_use_G_generate import I_Generate_W, I_Generate_W_see
+            self.kong_model.generate_results = I_Generate_W        ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_W_see    ### 不能checkpoint
+        else:
+            from step08_b_use_G_generate import I_Generate_F, I_Generate_F_see, I_Gen_F_test
+            # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
+            self.kong_model.generate_results = I_Generate_F             ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_F_see    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_Gen_F_test    ### 不能checkpoint
+
     def hook_build_and_gen_op(self, I_to_M=False, I_to_C_with_Mgt_to_F=False, I_to_W=False, I_with_Mgt_to_C_with_Mgt_to_F=False, Mgt_to_C_with_gt_M_to_F=False):
-        def _build_mask_unet():
+        def _hook_Gen_op():
             # self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
             # self._build_ckpt_part()     ### 後
             self._hook_Gen_op_part( I_to_M=I_to_M,
@@ -167,7 +140,7 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
                                     Mgt_to_C_with_gt_M_to_F=Mgt_to_C_with_gt_M_to_F)  ### 用 flow_op
             print("build_flow_unet2~~", "finish")
             return self.kong_model
-        self.build_ops.append(_build_mask_unet)
+        self.build_ops.append(_hook_Gen_op)
         return self
 
 
@@ -198,6 +171,35 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
         self.build_ops.append(_build_flow_rect_7_level)
         return self
 
+
+class Old_512_256_Unet_builder(G_Unet_Purpose_builder):
+    def build_unet(self):
+        def _build_unet():
+            from step08_a_1_UNet_BN_512to256 import Generator512to256, generate_sees, generate_results
+            self.kong_model.generator   = Generator512to256(out_ch=2)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+            self.kong_model.max_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
+            self.kong_model.min_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
+            self.kong_model.max_db_move_x  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
+            self.kong_model.max_db_move_y  = tf.Variable(1)  ### 在test時 rec_img需要，所以需要存起來
+
+            self.kong_model.generate_results = generate_results  ### 不能checkpoint
+            self.kong_model.generate_sees    = generate_sees    ### 不能checkpoint
+
+            ### 建立 tf 存模型 的物件： checkpoint物件
+            self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
+                                                    optimizer_G=self.kong_model.optimizer_G,
+                                                    max_train_move=self.kong_model.max_train_move,
+                                                    min_train_move=self.kong_model.min_train_move,
+                                                    max_db_move_x=self.kong_model.max_db_move_x,
+                                                    max_db_move_y=self.kong_model.max_db_move_y,
+                                                    epoch_log=self.kong_model.epoch_log)
+            print("build_unet", "finish")
+            return self.kong_model
+        self.build_ops.append(_build_unet)
+        return self
+
+
     def use_flow_rect(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3):
         self.first_k3 = first_k3
         self.hid_ch = hid_ch
@@ -225,7 +227,7 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
         self.build_ops.append(_build_flow_rect)
         return self
 
-class KModel_Mask_Flow_Generator_builder(G_Unet_Purpose_builder):
+class KModel_Mask_Flow_Generator_builder(Old_512_256_Unet_builder):
     def use_mask_flow_unet(self):
         pass
 
