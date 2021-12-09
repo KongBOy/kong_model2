@@ -9,7 +9,17 @@ class KModel:
         self.model_name = None
         self.model_describe = ""
         self.epoch_log = tf.Variable(1)  ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
-        self.train_step = None
+
+        self.generator        = None
+        self.optimizer_G      = None
+
+        self.ckpt             = None
+
+        self.train_step       = None
+
+        self.generate_results = None
+        self.generate_sees    = None
+        self.generate_tests   = None
 
     def __str__(self):
         print("model_name:", self.model_name)
@@ -21,7 +31,7 @@ class KModel_init_builder:
         if(kong_model is None): self.kong_model = KModel()
         else: self.kong_model = kong_model
 
-        self.build = None
+        self.build_ops = []
 
     def set_model_name(self, model_name):
         self.model_name = model_name
@@ -31,6 +41,10 @@ class KModel_init_builder:
     def set_train_step(self, train_step):
         self.kong_model.train_step = train_step
         return self
+
+    def build(self):
+        for op in self.build_ops: result = op()
+        return result
 
     # def build(self):
     #     return self.kong_model
@@ -59,25 +73,23 @@ class Old_512_256_Unet_builder(KModel_init_builder):
                                                     epoch_log=self.kong_model.epoch_log)
             print("build_unet", "finish")
             return self.kong_model
-        self.build = _build_unet
+        self.build_ops.append(_build_unet)
         return self
 
-class G_Mask_op_builder(Old_512_256_Unet_builder):
-    def _build_mask_op_part(self):
-        ### 生成 mask 的 operation
-        from step08_b_use_G_generate import I_Generate_M, I_Generate_M_see, I_Gen_M_test
-        # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
-        self.kong_model.generate_results = I_Generate_M             ### 不能checkpoint
-        self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
-        self.kong_model.generate_tests   = I_Gen_M_test    ### 不能checkpoint
-
-class G_Flow_op_builder(G_Mask_op_builder):
-    def _build_flow_op_part(self, I_to_C_with_Mgt_to_F=False,
-                                  I_to_W=False,
-                                  I_with_Mgt_to_C_with_Mgt_to_F=False,
-                                  Mgt_to_C_with_gt_M_to_F=False):
+class G_Flow_op_builder(Old_512_256_Unet_builder):
+    def _hook_Gen_op_part(self, I_to_M=False,
+                                I_to_C_with_Mgt_to_F=False,
+                                I_to_W=False,
+                                I_with_Mgt_to_C_with_Mgt_to_F=False,
+                                Mgt_to_C_with_gt_M_to_F=False):
+        if  (I_to_M):
+            from step08_b_use_G_generate import I_Generate_M, I_Generate_M_see, I_Gen_M_test
+            # self.kong_model.generate_results = I_Generate_F           ### 不能checkpoint  ### 好像用不到
+            self.kong_model.generate_results = I_Generate_M             ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_Gen_M_test    ### 不能checkpoint
         ### 生成 flow 的 operation
-        if  (I_to_C_with_Mgt_to_F):
+        elif  (I_to_C_with_Mgt_to_F):
             from step08_b_use_G_generate import I_Generate_C, I_Generate_C_with_Mgt_to_F_see, I_Generate_C_with_Mgt_to_F_test
             self.kong_model.generate_results = I_Generate_C        ### 不能checkpoint
             self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
@@ -109,158 +121,53 @@ class G_Ckpt_op_builder(G_Flow_op_builder):
         self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
                                                    optimizer_G=self.kong_model.optimizer_G,
                                                    epoch_log=self.kong_model.epoch_log)
+        print("ckpt finish")
 
 class G_Unet_Body_builder(G_Ckpt_op_builder):
-    def set_unet(self, hid_ch=64, depth_level=7, true_IN=False, use_bias=True, no_concat_layer=0,
-                 skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False,
-                 skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
-                 out_tanh=True, out_ch=3, concat_Activation=False):
-        self.hid_ch = hid_ch
-        self.depth_level = depth_level
-        self.no_concat_layer = no_concat_layer
-        self.skip_use_add  = skip_use_add
-        self.skip_use_cSE  = skip_use_cSE
-        self.skip_use_sSE  = skip_use_sSE
-        self.skip_use_scSE = skip_use_scSE
-        self.skip_use_cnn  = skip_use_cnn
-        self.skip_cnn_k    = skip_cnn_k
-        self.skip_use_Acti = skip_use_Acti
-        self.out_tanh = out_tanh
-        self.out_ch = out_ch
-        self.true_IN = true_IN
-        self.concat_Activation = concat_Activation
+    def set_unet(self, **kwargs):
+        def _build_unet_body_part(self):
+            ### model_part
+            ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
+
+            if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
+            elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
+            else:                                                   from step08_a_1_UNet_BN                   import Generator
+            self.kong_model.generator   = Generator(**kwargs)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+            print("build_unet", "finish")
+
+        self.build_ops.append(_build_unet_body_part)
+        self.build_ops.append(self._build_ckpt_part)
         return self
 
-    def set_unet2(self, hid_ch=64, depth_level=7, out_ch=3, no_concat_layer=0,
-                 kernel_size=4, strides=2, norm="in",
-                 d_acti="lrelu", u_acti="relu", unet_acti="tanh",
-                 use_bias=True,
-                 conv_block_num=0,
-                 skip_op=None, skip_merge_op="concat",
-                 ch_upper_bound=512,
-                 coord_conv=False,
-                 #  out_tanh=True,
-                 #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
-                 **kwargs):
-        self.kong_model.model_describe = "_L%i_ch%03i_block%i_%s" % (depth_level, hid_ch, conv_block_num, unet_acti)
-        self.hid_ch          = hid_ch
-        self.depth_level     = depth_level
-        self.out_ch          = out_ch
-        self.no_concat_layer = no_concat_layer
-        self.kernel_size     = kernel_size     ### 多的
-        self.strides         = strides         ### 多的
+    def set_unet2(self, **kwargs):
+        # self.kong_model.model_describe = "_L%i_ch%03i_block%i_%s" % (depth_level, hid_ch, conv_block_num, unet_acti)
 
-        self.d_acti          = d_acti          ### 多的
-        self.u_acti          = u_acti          ### 多的
-        self.unet_acti       = unet_acti       ### 對應 out_tanh
-        self.norm            = norm            ### 對應 true_IN
+        def _build_unet_body_part():
+            # for key, value in kwargs.items(): print(f"{key}: {value}")  ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
+            from step08_a_UNet_combine import Generator
+            self.kong_model.generator   = Generator(**kwargs)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+            print("build_unet", "finish")
 
-        self.use_bias        = use_bias        ### 之前漏的
-        self.conv_block_num  = conv_block_num  ### 多的
-        self.skip_op         = skip_op         ### 對應 skip_use_add, skip_use_cSE...
-        self.skip_merge_op   = skip_merge_op   ### 對應 concat_Activation
-
-        self.ch_upper_bound  = ch_upper_bound
-        self.coord_conv      = coord_conv
-
-        return self
-
-    def _build_unet_body_part(self):
-        ### model_part
-        ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-        # print("hid_ch", self.hid_ch)
-        # print("skip_use_cSE" , self.skip_use_cSE)
-        # print("skip_use_sSE" , self.skip_use_sSE)
-        # print("skip_use_scSE", self.skip_use_scSE)
-        # print("skip_use_cnn", self.skip_use_cnn)
-        # print("skip_cnn_k", self.skip_cnn_k)
-        # print("skip_use_Acti", self.skip_use_Acti)
-        # print("true_IN", self.true_IN)
-        # print("out_ch", self.out_ch)
-        # print()
-        if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
-        elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
-        else:                                                   from step08_a_1_UNet_BN                   import Generator
-        self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, use_bias=True, no_concat_layer=self.no_concat_layer,
-                                                skip_use_add=self.skip_use_add, skip_use_cSE=self.skip_use_cSE, skip_use_sSE=self.skip_use_sSE, skip_use_scSE=self.skip_use_scSE,
-                                                skip_use_cnn=self.skip_use_cnn, skip_cnn_k=self.skip_cnn_k, skip_use_Acti=self.skip_use_Acti,
-                                                out_tanh=self.out_tanh, out_ch=self.out_ch)
-        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-        print("build_unet", "finish")
-        return self
-
-    def _build_unet_part2(self):
-        ### model_part
-        ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-        # print("hid_ch         =", self.hid_ch         )
-        # print("depth_level    =", self.depth_level    )
-        # print("out_ch         =", self.out_ch         )
-        # print("no_concat_layer=", self.no_concat_layer)
-        # print("kernel_size    =", self.kernel_size    )
-        # print("strides        =", self.strides        )
-        # print()
-        # print("d_acti         =", self.d_acti          )
-        # print("u_acti         =", self.u_acti          )
-        # print("unet_acti      =", self.unet_acti       )
-        # print("norm           =", self.norm            )
-        # print()
-        # print("use_bias       =", self.use_bias        )
-        # print("conv_block_num =", self.conv_block_num  )
-        # print("skip_op        =", self.skip_op         )
-        # print("skip_merge_op  =", self.skip_merge_op   )
-        # print()
-        from step08_a_UNet_combine import Generator
-        self.kong_model.generator   = Generator(hid_ch=self.hid_ch, depth_level=self.depth_level, out_ch=self.out_ch, no_concat_layer=self.no_concat_layer,
-                                                d_acti=self.d_acti, u_acti=self.u_acti, unet_acti=self.unet_acti, norm=self.norm,
-                                                use_bias=self.use_bias, conv_block_num=self.conv_block_num, skip_op=self.skip_op, skip_merge_op=self.skip_merge_op,
-                                                ch_upper_bound=self.ch_upper_bound, coord_conv=self.coord_conv)
-        self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-        print("build_unet", "finish")
+        self.build_ops.append(_build_unet_body_part)  ### 先
+        self.build_ops.append(self._build_ckpt_part)  ### 後
         return self
 
 
 class G_Unet_Purpose_builder(G_Unet_Body_builder):
-    def use_flow_unet(self):
-        def _build_flow_unet():
-            self._build_unet_body_part()  ### 先， 用 step08_a_1_UNet_BN or step08_a_1_UNet_BN or step08_a_1_UNet_IN_concat_Activation or step08_a_1_UNet_IN
-            self._build_ckpt_part()       ### 後
-            self._build_flow_op_part()    ### 用 flow_op
-            print("build_flow_unet", "finish")
-            return self.kong_model
-        self.build = _build_flow_unet
-        return self
-
-    def use_mask_unet(self):
+    def hook_build_and_gen_op(self, I_to_M=False, I_to_C_with_Mgt_to_F=False, I_to_W=False, I_with_Mgt_to_C_with_Mgt_to_F=False, Mgt_to_C_with_gt_M_to_F=False):
         def _build_mask_unet():
-            self._build_unet_body_part()  ### 先， 用 step08_a_1_UNet_BN or step08_a_1_UNet_BN or step08_a_1_UNet_IN_concat_Activation or step08_a_1_UNet_IN
-            self._build_ckpt_part()       ### 後
-            self._build_mask_op_part()    ### 用 mask_op
-            print("build_mask_unet", "finish")
+            # self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
+            # self._build_ckpt_part()     ### 後
+            self._hook_Gen_op_part( I_to_M=I_to_M,
+                                    I_to_C_with_Mgt_to_F=I_to_C_with_Mgt_to_F,
+                                    I_to_W=I_to_W,
+                                    I_with_Mgt_to_C_with_Mgt_to_F=I_with_Mgt_to_C_with_Mgt_to_F,
+                                    Mgt_to_C_with_gt_M_to_F=Mgt_to_C_with_gt_M_to_F)  ### 用 flow_op
+            print("build_flow_unet2~~", "finish")
             return self.kong_model
-        self.build = _build_mask_unet
-        return self
-
-    def use_mask_unet2(self):
-        def _build_mask_unet():
-            self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
-            self._build_ckpt_part()     ### 後
-            self._build_mask_op_part()  ### 用 mask_op
-            print("build_mask_unet2", "finish")
-            return self.kong_model
-        self.build = _build_mask_unet
-        return self
-
-    def use_flow_unet2(self, I_to_C_with_Mgt_to_F=False, I_to_W=False, I_with_Mgt_to_C_with_Mgt_to_F=False, Mgt_to_C_with_gt_M_to_F=False):
-        def _build_mask_unet():
-            self._build_unet_part2()    ### 先， 用 step08_a_UNet_combine
-            self._build_ckpt_part()     ### 後
-            self._build_flow_op_part(I_to_C_with_Mgt_to_F=I_to_C_with_Mgt_to_F,
-                                     I_to_W=I_to_W,
-                                     I_with_Mgt_to_C_with_Mgt_to_F=I_with_Mgt_to_C_with_Mgt_to_F,
-                                     Mgt_to_C_with_gt_M_to_F=Mgt_to_C_with_gt_M_to_F)  ### 用 flow_op
-            print("build_flow_unet2", "finish")
-            return self.kong_model
-        self.build = _build_mask_unet
+        self.build_ops.append(_build_mask_unet)
         return self
 
 
@@ -284,11 +191,11 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
             self.kong_model.generator   = Generator(first_k=self.first_k, hid_ch=self.hid_ch, depth_level=self.depth_level, true_IN=self.true_IN, use_ReLU=self.use_ReLU, use_res_learning=self.use_res_learning, resb_num=self.resb_num, out_ch=self.out_ch)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-            self._build_flow_op_part()
+            self._hook_Gen_op_part()
             self._build_ckpt_part()
             print("build_flow_rect_7_level", "finish")
             return self.kong_model
-        self.build = _build_flow_rect_7_level
+        self.build_ops.append(_build_flow_rect_7_level)
         return self
 
     def use_flow_rect(self, first_k3=False, hid_ch=64, true_IN=True, mrfb=None, mrf_replace=False, coord_conv=False, use_res_learning=True, resb_num=9, out_ch=3):
@@ -311,11 +218,11 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
             self.kong_model.generator   = Generator(first_k3=first_k3, hid_ch=hid_ch, true_IN=true_IN, mrfb=mrfb, mrf_replace=mrf_replace, coord_conv=coord_conv, use_res_learning=use_res_learning, resb_num=resb_num, out_ch=out_ch)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
-            self._build_flow_op_part()
+            self._hook_Gen_op_part()
             self._build_ckpt_part()
             print("build_flow_rect", "finish")
             return self.kong_model
-        self.build = _build_flow_rect
+        self.build_ops.append(_build_flow_rect)
         return self
 
 class KModel_Mask_Flow_Generator_builder(G_Unet_Purpose_builder):
@@ -355,7 +262,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Mask_Flow_Generator_builder):
             self._kong_model_GD_setting()  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
             print("build_rect2", "finish")
             return self.kong_model
-        self.build = _build_rect2
+        self.build_ops.append(_build_rect2)
         return self
 
     def use_rect2_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False, D_first_concat=True, D_kernel_size=4):
@@ -381,7 +288,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Mask_Flow_Generator_builder):
             self._kong_model_GD_setting()  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
             print("build_rect2_mrf", "finish")
             return self.kong_model
-        self.build = _build_rect2_mrf
+        self.build_ops.append(_build_rect2_mrf)
         return self
 
 
@@ -409,7 +316,7 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
             self._kong_model_G_setting()  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
             print("build_justG", "finish")
             return self.kong_model
-        self.build = _build_justG
+        self.build_ops.append(_build_justG)
         return self
 
     def use_justG_mrf(self, first_k3=False, mrf_replace=False, use_res_learning=True, resb_num=9, coord_conv=False, use1=False, use3=False, use5=False, use7=False, use9=False):
@@ -432,7 +339,7 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
             print("build_justG_mrf", "finish")
             return self.kong_model
 
-        self.build = _build_justG_mrf
+        self.build_ops.append(_build_justG_mrf)
         return self
 
 

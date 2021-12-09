@@ -921,28 +921,28 @@ if(__name__ == "__main__"):
     ''' mask_flow 3ch合併 的形式'''
     # db_obj = Dataset_builder().set_basic(DB_C.type8_blender                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", db_in_range=Range(0, 255), gt_format="knpy", db_gt_range=Range(0, 1), rec_hope_format="jpg", db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True).build()
     # print(db_obj)
-    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1), use_rec_hope_range=Range(0, 255)).build_by_db_get_method().build()
 
     '''in_img, gt_mask'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type9_try_segmentation.build()
     # print(db_obj)
-    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     # ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
     # print(db_obj)
-    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=True).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     db_obj = type8_blender_wc.build()
     print(db_obj)
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).use_flow_unet()
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     print(time.time() - start_time)

@@ -81,81 +81,81 @@ justGk3_mrf357_coord_conv = KModel_builder().set_model_name(MODEL_NAME.justG ).u
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
 ########################################################### 14 快接近IN了
-flow_unet       = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet       = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 ### 在 git commit bc25e 之前都是 old ch 喔！ 最大都是 32*8=256, 16*8=128, 8*8=64 而已， 而128*8=1024 又有點太大， new_ch 就是根據層 做 2**layer，最大取512 囉！
 ### 如果想回復的話，要用 git 回復到 bc25e 或 之前的版本囉！
-flow_unet_old_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_old_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_old_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_old_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 8 , out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_old_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_old_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_old_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_old_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 8 , out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 ########################################################### 14 測試 subprocess
-flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=4, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=6, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=8, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_epoch2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=4, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_epoch3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=6, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_epoch4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=8, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 ########################################################### 14 真的IN
-flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_ch64 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 
-flow_unet_IN_new_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, true_IN=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_new_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_new_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, true_IN=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_new_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, true_IN=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_new_ch004 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, true_IN=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_new_ch128 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=128, true_IN=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_new_ch032 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 32, true_IN=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_new_ch016 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch= 16, true_IN=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_new_ch008 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  8, true_IN=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_new_ch004 = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=  4, true_IN=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 ########################################################### 14 真的IN，跟DewarpNet一樣 CNN 不用 bias
-flow_unet_IN_ch64_cnnNoBias = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, use_bias=False).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_ch64_cnnNoBias = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, use_bias=False).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 
 ########################################################### 14 看 concat Activation 有沒有差
-flow_unet_ch64_in_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, out_ch=3, concat_Activation=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_ch64_in_concat_A = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, out_ch=3, concat_Activation=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 ########################################################### 14 看 不同level 的效果
-flow_unet_2_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=2, true_IN=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_3_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=3, true_IN=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_4_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=4, true_IN=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_5_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=5, true_IN=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_6_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_7_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=7, true_IN=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_8_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=8, true_IN=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_2_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=2, true_IN=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_3_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=3, true_IN=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_4_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=4, true_IN=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_5_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=5, true_IN=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_6_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_7_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=7, true_IN=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_8_level  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=8, true_IN=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 ########################################################### 14 看 unet 的 concat 改成 + 會有什麼影響
-flow_unet_8_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_7_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=7, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_6_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_5_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=5, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_4_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_3_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_ch=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_8_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=8, true_IN=True, skip_use_add=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_7_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=7, true_IN=True, skip_use_add=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_6_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=6, true_IN=True, skip_use_add=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_5_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=5, true_IN=True, skip_use_add=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_4_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=4, true_IN=True, skip_use_add=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_3_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=3, true_IN=True, skip_use_add=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_2_level_skip_use_add  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, depth_level=2, true_IN=True, skip_use_add=True, out_ch=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 ########################################################### 14 看 unet 的 output 改成sigmoid
-flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, out_tanh=False, true_IN=True).use_flow_unet()
+flow_unet_IN_ch64_sigmoid  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, out_tanh=False, true_IN=True).hook_build_and_gen_op()
 ########################################################### 14 看 unet 的 第一層試試看 不 concat 效果如何
-flow_unet_IN_L7_ch64_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch32_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=2).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_2to4noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=4).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_2to5noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=5).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_2to6noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=6).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_2to7noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=7).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_2to8noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=8).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch32_2to2noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=32, true_IN=True, no_concat_layer=2).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to3noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to4noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=4).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to5noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=5).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to6noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=6).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to7noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=7).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to8noC = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=8).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 ########################################################### 14 看 unet 的 skip 中間接 cnn 的效果
-flow_unet_IN_L7_ch64_skip_use_cnn1_NO_relu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=None).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_skip_use_cnn3_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.relu).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.sigmoid).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_skip_use_cnn1_NO_relu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=None).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_skip_use_cnn1_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.relu).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_skip_use_cnn1_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=1, skip_use_Acti=tf.nn.sigmoid).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_skip_use_cnn3_USErelu    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.relu).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_skip_use_cnn3_USEsigmoid = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cnn=True, skip_cnn_k=3, skip_use_Acti=tf.nn.sigmoid).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 
 ########################################################### 14 看 unet 的 skip 中間接 cSE, sSE, csSE 的效果
-flow_unet_IN_L7_ch64_2to3noC_sk_cSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3, skip_use_cSE=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_2to3noC_sk_sSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_sSE=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_2to3noC_sk_scSE = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_scSE=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to3noC_sk_cSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=3, skip_use_cSE=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to3noC_sk_sSE  = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_sSE=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_2to3noC_sk_scSE = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, no_concat_layer=2, skip_use_scSE=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
-flow_unet_IN_L7_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cSE=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_sSE=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
-flow_unet_IN_L7_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_scSE=True).use_flow_unet().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_skip_use_cSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_cSE=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_skip_use_sSE    = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_sSE=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
+flow_unet_IN_L7_ch64_skip_use_scSE   = KModel_builder().set_model_name(MODEL_NAME.flow_unet).set_unet(hid_ch=64, true_IN=True, skip_use_scSE=True).hook_build_and_gen_op().set_train_step(train_step_pure_G_I_to_F_or_W_or_R)
 
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
