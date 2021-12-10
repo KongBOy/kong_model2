@@ -71,3 +71,16 @@ if(__name__ == "__main__"):
     ### 4. 跑起來試試看
     for n, (train_in, train_in_pre, train_gt, train_gt_pre, _) in enumerate(tqdm(tf_data.train_db_combine)):
         model_obj.train_step(model_obj=model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=G_mae_loss_infos)
+        if(n ==  0):
+            model_obj.generator.summary()
+            Show_model_weights(model_obj.generator)
+        if(n == 10):
+            model_obj.generator.save_weights("try_save/weights")
+            iter10 = model_obj.generator.layers[0].weights[1]
+            print("iter10:", iter10)
+        if(n == 20):
+            iter20 = model_obj.generator.layers[0].weights[1]
+            print("iter20:", iter20)
+            model_obj.generator.load_weights("try_save/weights")
+            iter20_load10 = model_obj.generator.layers[0].weights[1]
+            print("iter20_load10:", iter20_load10)
