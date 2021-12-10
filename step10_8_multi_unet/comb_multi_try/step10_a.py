@@ -33,14 +33,14 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
 use_db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper
 ############################  have_bg  #################################
 ### 1a. ch
-I_to_M_w_I_to_C_ep060 = Exp_builder().set_com("127.55").set_basic("train", use_db_obj, try_multi_unet, [G_bce_s001_loss_info_builder.set_loss_target("UNet1"), G_mae_s001_loss_info_builder.set_loss_target("UNet2")], exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="6_1_1", describe_end="I_to_M_w_I_to_C") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="")
+I_to_M_L4_ch032_and_M_w_I_to_C_L5_ch032_ep060 = Exp_builder().set_basic("train", use_db_obj, I_to_M_L4_ch032_and_M_w_I_to_C_L5_ch032, [G_bce_s001_loss_info_builder.set_loss_target("UNet1"), G_mae_s001_loss_info_builder.set_loss_target("UNet2")], exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="6_1_1", describe_end="I_to_M_w_I_to_C") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="")
 
 if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        I_to_M_w_I_to_C_ep060.build().run()
+        I_to_M_L4_ch032_and_M_w_I_to_C_L5_ch032_ep060.build().run()
         # print('no argument')
         sys.exit()
 
