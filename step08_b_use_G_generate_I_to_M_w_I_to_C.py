@@ -71,12 +71,12 @@ def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, see_index, in_img, in_img_pre, gt_ma
         cv2.imwrite(f"{see_write_dir}/0b_u2b-gt_flow.jpg", Fgt_visual)
         cv2.imwrite(f"{see_write_dir}/0c-rec_hope.jpg",    rec_hope)
 
-    np .save   (see_write_dir + "/" + "epoch_%04i_u1b-mask.npy", M)
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u1b-mask.jpg", M_visual)
-    np .save   (see_write_dir + "/" + "epoch_%04i_u2a-I_w_M.npy", I_pre_with_M_pre)
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2a-I_w_M.jpg", I_with_M_visual)
-    np .save   (see_write_dir + "/" + "epoch_%04i_u2b-flow.npy", F)
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2b-flow.jpg", F_visual)
+    np .save   (see_write_dir + "/" + "epoch_%04i_u1b-mask.npy"  % current_ep, M)
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u1b-mask.jpg"  % current_ep, M_visual)
+    np .save   (see_write_dir + "/" + "epoch_%04i_u2a-I_w_M.npy" % current_ep, I_pre_with_M_pre)
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2a-I_w_M.jpg" % current_ep, I_with_M_visual)
+    np .save   (see_write_dir + "/" + "epoch_%04i_u2b-flow.npy"  % current_ep, F)
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2b-flow.jpg"  % current_ep, F_visual)
 
 
 def I_gen_M_w_I_gen_C_w_M_to_F_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, add_loss=False, bgr2rgb=True):
