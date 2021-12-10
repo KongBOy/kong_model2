@@ -14,6 +14,7 @@ from step09_a_loss import *
 
 class Loss_info:
     def __init__(self):
+        self.loss_target = "UNet1"
         self.loss_type = None
         self.logs_read_dir  = None
         self.logs_write_dir = None
@@ -91,14 +92,18 @@ class Loss_info_init_builder:
         else: self.loss_info_obj = loss_info_obj
         # self._build = None
 
+    def set_loss_target(self, loss_target):
+        self.loss_info_obj.loss_target = loss_target
+        return self
+
     def set_loss_type(self, loss_type, **args):
         self.loss_info_obj.loss_type = loss_type
         self.args = args
         return self
 
     def set_logs_dir(self, logs_read_dir, logs_write_dir):
-        self.loss_info_obj.logs_read_dir  = logs_read_dir
-        self.loss_info_obj.logs_write_dir = logs_write_dir
+        self.loss_info_obj.logs_read_dir  = f"{logs_read_dir}/{self.loss_info_obj.loss_target}"
+        self.loss_info_obj.logs_write_dir = f"{logs_write_dir}/{self.loss_info_obj.loss_target}"
         return self
 
     def copy(self):

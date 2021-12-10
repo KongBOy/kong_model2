@@ -9,11 +9,11 @@ class Exp_builder():
 
     def set_com(self, machine="127.35"): return self  ### 只是單純讓我自己能直接看到而已，懶得去翻 cost_time.txt
 
-    def set_basic(self, phase, db_builder, model_builder, loss_info_builder, exp_dir=".", code_exe_path=".", describe_mid=None, describe_end=None, result_name=None):
+    def set_basic(self, phase, db_builder, model_builder, loss_info_builders, exp_dir=".", code_exe_path=".", describe_mid=None, describe_end=None, result_name=None):
         self.exp.phase = phase
         self.exp.db_builder = db_builder
         self.exp.model_builder = model_builder
-        self.exp.loss_info_builder = loss_info_builder
+        self.exp.loss_info_builders = loss_info_builders
         self.exp.exp_dir = exp_dir
         self.exp.code_exe_path = code_exe_path
         self.exp.describe_mid = describe_mid
@@ -69,14 +69,22 @@ class Exp_builder():
 
 
             ### 寫兩行的話 比較好打註解，寫一行其實也可以下面有補充～～
-            self.exp.loss_info_builder = self.exp.loss_info_builder.copy()                                      ### 要做copy的動作， 才不會每個 exp_builder 都用到相同的 loss_info_builder 導致 建出相同的 loss_info_obj
-            self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
+            ''' 還需要修正
+            if(type(self.exp.loss_info_builders) == type([])):
+                for loss_info_builder in self.exp.loss_info_builders:
+                    loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### 所以 loss_info_builders 要 根據 result資訊(logs_read/write_dir) 先更新一下    
+                    self.exp.loss_info_objs.append(loss_info_builder.build())  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
+            else:
+                self.exp.loss_info_builders = self.exp.loss_info_builders.copy()                                      ### 要做copy的動作， 才不會每個 exp_builder 都用到相同的 loss_info_builders 導致 建出相同的 loss_info_obj
+                self.exp.loss_info_builders = self.exp.loss_info_builders.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builders 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
+            '''
             ### 補充：如果寫一行的話：
-            # self.exp.loss_info_builder = self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).copy()  ### 先後copy() 都沒差
+            # self.exp.loss_info_builders = self.exp.loss_info_builders.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).copy()  ### 先後copy() 都沒差
+            
 
-            ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
-            # self.exp.loss_info_builder.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builder 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
-            # self.exp.loss_info_obj = self.exp.loss_info_builder.build()  ### 這裡就要build了喔！為了給 step12 用拉！
+            ### copy完後，新的 loss_info_builders 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
+            # self.exp.loss_info_builders.set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir)  ### copy完後，新的 loss_info_builders 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
+            # self.exp.loss_info_obj = self.exp.loss_info_builders.build()  ### 這裡就要build了喔！為了給 step12 用拉！
 
             # self.exp.loss_info_obj = Loss_info_builder(self.exp.loss_info_obj, in_obj_copy=True).set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).build()  ### 上面定位出 logs_read/write_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
             # print("self.exp.loss_info_obj.logs_read_dir", self.exp.loss_info_obj.logs_read_dir)

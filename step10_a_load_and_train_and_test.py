@@ -64,8 +64,8 @@ class Experiment():
         self.db_obj        = None
         self.model_builder = None
         self.model_obj     = None
-        self.loss_info_builder = None
-        self.loss_info_obj = None
+        self.loss_info_builders = None
+        self.loss_info_objs = []
         self.exp_dir      = None
         self.describe_mid = None
         self.describe_end = "try_try_try_enum"
@@ -133,11 +133,16 @@ class Experiment():
             print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
 
         ####################################################################################################################
-        ### 4.Loss_info, (5.save_code；train時才需要 loss_info_obj 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉)
-        ###   loss_info_builder 在 exo build的時候就已經有指定一個了， 那個是要給 step12用的
-        ###   train 用的 是要搭配 這裡才知道的 result 資訊(logs_read/write_dir) 後的 loss_info_builder
-        self.loss_info_builder.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builder 要 根據 result資訊(logs_read/write_dir) 先更新一下
-        self.loss_info_obj = self.loss_info_builder.build()  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_obj 囉！
+        ### 4.Loss_info, (5.save_code；train時才需要 loss_info_objs 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉)
+        ###   loss_info_builders 在 exo build的時候就已經有指定一個了， 那個是要給 step12用的
+        ###   train 用的 是要搭配 這裡才知道的 result 資訊(logs_read/write_dir) 後的 loss_info_builders
+        if(type(self.loss_info_builders) == type([])):
+            for loss_info_builder in self.loss_info_builders:
+                loss_info_builder.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builders 要 根據 result資訊(logs_read/write_dir) 先更新一下    
+                self.loss_info_objs.append(loss_info_builder.build())  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
+        else:
+            self.loss_info_builders.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builders 要 根據 result資訊(logs_read/write_dir) 先更新一下
+            self.loss_info_objs = [self.loss_info_builders.build()]  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
 
 
     def train_reload(self):
@@ -182,8 +187,7 @@ class Experiment():
             ###############################################################################################################################
             ### 以上 current_ep = epoch   ### 代表還沒訓練
             ###     step2 訓練
-            for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
-                self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_obj=self.loss_info_obj)
+                self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
                 # break   ### debug用，看subprocess成不成功
             self.current_ep += 1  ### 超重要！別忘了加呀！
             ### 以下 current_ep = epoch + 1   ### +1 代表訓練完了！變成下個epoch了！
@@ -256,34 +260,38 @@ class Experiment():
 
     def train_step3_Loss_info_save_loss(self, epoch):
         if(self.board_create_flag is False):
-            self.loss_info_obj.summary_writer = tf.summary.create_file_writer(self.loss_info_obj.logs_write_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的，注意 只有第一次 要建立tensorboard喔！
+            for loss_info_obj in self.loss_info_objs:
+                print("loss_info_obj.logs_write_dir:", loss_info_obj.logs_write_dir)
+                loss_info_obj.summary_writer = tf.summary.create_file_writer(loss_info_obj.logs_write_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的，注意 只有第一次 要建立tensorboard喔！
             self.board_create_flag = True
 
-        with self.loss_info_obj.summary_writer.as_default():
-            for loss_name, loss_containor in self.loss_info_obj.loss_containors.items():
-                ### tensorboard
-                tf.summary.scalar(loss_name, loss_containor.result(), step=epoch)
-                tf.summary.scalar("lr", self.lr_current, step=epoch)
+        for loss_info_obj in self.loss_info_objs:
+            with loss_info_obj.summary_writer.as_default():
+                for loss_name, loss_containor in loss_info_obj.loss_containors.items():
+                    ### tensorboard
+                    tf.summary.scalar(loss_name, loss_containor.result(), step=epoch)
+                    tf.summary.scalar("lr", self.lr_current, step=epoch)
 
-                ### 自己另存成 npy
-                loss_value = loss_containor.result().numpy()
-                if(epoch == 1):  ### 第一次 直接把值存成np.array
-                    np.save(self.result_obj.logs_write_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
+                    ### 自己另存成 npy
+                    loss_value = loss_containor.result().numpy()
+                    if(epoch == 1):  ### 第一次 直接把值存成np.array
+                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
 
-                else:  ### 第二次後，先把np.array先讀出來append值後 再存進去
-                    loss_array = np.load(self.result_obj.logs_write_dir + "/" + loss_name + ".npy")  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
-                    loss_array = loss_array[:epoch]   ### 這是為了防止 如果程式在 step3,4之間中斷 這種 loss已經存完 但 model還沒存 的狀況，loss 會比想像中的多一步，所以加這行防止這種情況發生喔
-                    loss_array = np.append(loss_array, loss_value)
-                    np.save(self.result_obj.logs_write_dir + "/" + loss_name, np.array(loss_array))
-                    # print(loss_array)
+                    else:  ### 第二次後，先把np.array先讀出來append值後 再存進去
+                        loss_array = np.load(loss_info_obj.logs_write_dir + "/" + loss_name + ".npy")  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
+                        loss_array = loss_array[:epoch]   ### 這是為了防止 如果程式在 step3,4之間中斷 這種 loss已經存完 但 model還沒存 的狀況，loss 會比想像中的多一步，所以加這行防止這種情況發生喔
+                        loss_array = np.append(loss_array, loss_value)
+                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_array))
+                        # print(loss_array)
 
         ###    reset tensorboard 的 loss紀錄容器
-        for loss_containor in self.loss_info_obj.loss_containors.values():
-            loss_containor.reset_states()
-        ###############################################################
-        self.loss_info_obj.see_loss_during_train(self.epochs)  ### 把 loss資訊 用 matplot畫出來
-        ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了
-        # self.result_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
+        for loss_info_obj in self.loss_info_objs:
+            for loss_containor in loss_info_obj.loss_containors.values():
+                loss_containor.reset_states()
+            ###############################################################
+            loss_info_obj.see_loss_during_train(self.epochs)  ### 把 loss資訊 用 matplot畫出來
+            ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了
+            # loss_info_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
         print("current exp:", self.result_obj.result_name)
@@ -327,7 +335,8 @@ class Experiment():
 
     def board_rebuild(self):
         self.exp_init(reload_result=True, reload_model=False)
-        self.loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(self, dst_dir=self.result_obj.logs_write_dir)
+        for loss_info_obj in self.loss_info_objs:
+            loss_info_obj.use_npy_rebuild_justG_tensorboard_loss(self, dst_dir=self.result_obj.logs_write_dir)
         print("board_rebuild finish")
         print("")
 
