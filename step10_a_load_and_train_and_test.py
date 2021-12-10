@@ -187,6 +187,7 @@ class Experiment():
             ###############################################################################################################################
             ### 以上 current_ep = epoch   ### 代表還沒訓練
             ###     step2 訓練
+            for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
                 self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
                 # break   ### debug用，看subprocess成不成功
             self.current_ep += 1  ### 超重要！別忘了加呀！
