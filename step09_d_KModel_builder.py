@@ -43,8 +43,8 @@ class KModel_init_builder:
         return self
 
     def build(self):
-        for op in self.build_ops: result = op()
-        return result
+        for op in self.build_ops: op()
+        return self.kong_model
 
     # def build(self):
     #     return self.kong_model
@@ -80,7 +80,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
 
         def _build_unet_body_part():
             # for key, value in kwargs.items(): print(f"{key}: {value}")  ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-            from step08_a_UNet_combine import Generator
+            from step08_a_0a_UNet_combine import Generator
             self.kong_model.generator   = Generator(**kwargs)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
             print("build_unet", "finish")
@@ -89,12 +89,33 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
         self.build_ops.append(self._build_ckpt_part)  ### 後
         return self
 
+    def set_multi_model_builders(self, op_type, **model_builders_dict):
+        '''
+        參數名字要丟什麼可以參考 step08_a_0b_Multi_UNet 的 Multi_Generator 的 call()
+        舉例：set_multi_model_builders(op_type     = "I_to_M_w_I_to_C",
+                                       I_to_M     = step09_e2_mask_unet2_obj.mask_unet2_block1_ch008_sig_L2,
+                                       M_w_I_to_C = step09_e5_flow_unet2_obj_I_with_Mgt_to_C.flow_unet2_block1_ch008_sig_L2)
+        '''
+        def _build_multi_unet_body_part():
+            from step08_a_0b_Multi_UNet import Multi_Generator
+            gens_dict = {}
+            for gen_name, model_builder in model_builders_dict.items():
+                gens_dict[gen_name] = model_builder.build().generator
+            self.kong_model.generator   = Multi_Generator(op_type, gens_dict)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+            print("build_multi_unet", "finish")
+
+        self.build_ops.append(_build_multi_unet_body_part)  ### 先
+        self.build_ops.append(self._build_ckpt_part)  ### 後
+        return self
 
 class G_Unet_Purpose_builder(G_Unet_Body_builder):
     def _hook_Gen_op_part(self, I_to_M=False,
                             I_to_C_with_Mgt_to_F=False,
                             I_to_W=False,
                             I_with_Mgt_to_C_with_Mgt_to_F=False,
+                            I_to_M_w_I_to_C=False, 
+                            I_with_M_to_C_with_M_to_F=False,
                             Mgt_to_C_with_gt_M_to_F=False):
         if  (I_to_M):
             from step08_b_use_G_generate import I_Generate_M, I_Generate_M_see, I_Gen_M_test
@@ -103,7 +124,7 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
             self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
             self.kong_model.generate_tests   = I_Gen_M_test    ### 不能checkpoint
         ### 生成 flow 的 operation
-        elif  (I_to_C_with_Mgt_to_F):
+        elif(I_to_C_with_Mgt_to_F):
             from step08_b_use_G_generate import I_Generate_C, I_Generate_C_with_Mgt_to_F_see, I_Generate_C_with_Mgt_to_F_test
             self.kong_model.generate_results = I_Generate_C        ### 不能checkpoint
             self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
@@ -113,6 +134,8 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
             self.kong_model.generate_results = Mgt_Generate_C        ### 不能checkpoint
             self.kong_model.generate_sees    = Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
             self.kong_model.generate_tests   = Mgt_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
+        elif(I_to_M_w_I_to_C):
+            pass
         elif(I_with_Mgt_to_C_with_Mgt_to_F):
             from step08_b_use_G_generate import I_with_Mgt_Generate_C, I_with_Mgt_Generate_C_with_Mgt_to_F_see, I_with_Mgt_Generate_C_with_Mgt_to_F_test
             self.kong_model.generate_results = I_with_Mgt_Generate_C        ### 不能checkpoint
@@ -137,7 +160,7 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
                                     I_with_Mgt_to_C_with_Mgt_to_F=I_with_Mgt_to_C_with_Mgt_to_F,
                                     Mgt_to_C_with_gt_M_to_F=Mgt_to_C_with_gt_M_to_F)  ### 用 flow_op
             print("build_flow_unet2~~", "finish")
-            return self.kong_model
+            # return self.kong_model
         self.build_ops.append(_hook_Gen_op)
         return self
 
@@ -347,6 +370,11 @@ class KModel_builder(KModel_justG_and_mrf_justG_builder): pass
 
 
 class MODEL_NAME(Enum):
+    '''
+    目前會參考 model_name 做事情的地方：
+        step6b_data_pipline 的 set_img_resize
+        step10a train想用以前的 512_to_256 和  train_step1_see_current_img 
+    '''
     unet  = "unet"
     rect  = "rect"
     justG = "justG"
@@ -354,3 +382,4 @@ class MODEL_NAME(Enum):
     flow_unet2 = "flow_unet2"  ### 包含這flow 關鍵字就沒問題
     flow_rect = "flow_rect"    ### 包含這flow 關鍵字就沒問題
     mask_flow_unet = "mask_flow_unet"
+    multi_flow_unet = "multi_flow_unet"

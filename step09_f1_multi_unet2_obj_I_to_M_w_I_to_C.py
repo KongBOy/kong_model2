@@ -1,0 +1,11 @@
+from step09_c_train_step import train_step_pure_G_split_mask_move_I_to_M_w_I_to_C
+from step09_d_KModel_builder import KModel_builder, MODEL_NAME
+
+import step09_e2_mask_unet2_obj
+import step09_e5_flow_unet2_obj_I_with_Mgt_to_C
+
+import time
+start_time = time.time()
+
+
+try_multi_unet        = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_M_w_I_to_C", I_to_M=step09_e2_mask_unet2_obj.mask_unet2_block1_ch008_sig_L2, M_w_I_to_C=step09_e5_flow_unet2_obj_I_with_Mgt_to_C.flow_unet2_block1_ch008_sig_L2).set_train_step(train_step_pure_G_split_mask_move_I_to_M_w_I_to_C)

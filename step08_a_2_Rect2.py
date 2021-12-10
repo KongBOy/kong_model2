@@ -4,7 +4,7 @@ from tensorflow.keras.layers import Input, Conv2D, LeakyReLU, BatchNormalization
 from tensorflow.keras.optimizers import Adam
 from tensorflow_addons.layers import InstanceNormalization
 
-from step07_small_component import CoordConv, InstanceNorm_kong
+from step07_small_component import CoordConv, InstanceNorm_kong, ResBlock
 # from tensorflow_addons.layers import InstanceNormalization
 tf.keras.backend.set_floatx('float32')  ### 這步非常非常重要！用了才可以加速！
 

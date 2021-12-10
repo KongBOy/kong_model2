@@ -7,6 +7,53 @@ from step09_a_loss import *
 會想把 train_step 獨立一個.py 寫 function， 還不包成 class 的原因是：
     因為 有些架構 用 的 train_step 是一樣的， 所以 先只寫成 function， 給各個架構掛上去
 '''
+
+def one_loss_info_obj_total_loss(loss_info_obj, model_output, gt_data):
+    losses = []
+    total_loss = 0
+    for loss_name, loss_fun in loss_info_obj.loss_funs_dict.items():
+        # print("loss_name:", loss_name)
+        if(loss_name == "mask_tv_loss"): losses.append(loss_fun(model_output))
+        else:                            losses.append(loss_fun(gt_data, model_output))
+        total_loss += losses[-1]
+    return total_loss, losses
+
+# @tf.function
+def train_step_pure_G_split_mask_move_I_to_M_w_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+    '''
+    gt_mask  = gt_data[0]
+    gt_coord = gt_data[1]
+    gt_datas = [gt_mask, gt_coord]
+    with tf.GradientTape() as gen_tape:
+        model_outputs = model_obj.generator(in_data)
+        # print("in_data.numpy().shape", in_data.numpy().shape)
+        # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
+        # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
+        multi_losses = []
+        multi_total_loss = 0
+        for go_m, model_output in enumerate(model_outputs):
+            total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[go_m], model_output, gt_datas[go_m])
+            multi_losses.append(losses)
+            multi_total_loss += total_loss
+
+        # gen_loss = loss_info_obj.loss_funs_dict["mask_BCE"]      (gt_data, model_output)
+        # sob_loss = loss_info_obj.loss_funs_dict["mask_Sobel_MAE"](gt_data, model_output)
+        # total_loss = gen_loss + sob_loss
+
+    total_gradients = gen_tape .gradient(multi_total_loss, model_obj.generator.trainable_variables)
+    # for gradient in generator_gradients:
+    #     print("gradient", gradient)
+    model_obj .optimizer_G .apply_gradients(zip(total_gradients, model_obj.generator.trainable_variables))
+
+    ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
+    for go_l, loss_info_obj in enumerate(loss_info_objs):
+        for go_containor, loss_containor in enumerate(loss_info_obj.loss_containors.values()):
+            loss_containor( multi_losses[go_l][go_containor] )
+    # loss_info_obj.loss_containors["mask_bce_loss"]      (gen_loss)
+    # loss_info_obj.loss_containors["mask_sobel_MAE_loss"](sob_loss)
+
 ###################################################################################################################################################
 ### 因為外層function 已經有 @tf.function， 裡面這層自動會被 decorate 到喔！ 所以這裡不用 @tf.function
 def _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_obj):
@@ -25,13 +72,7 @@ def _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_obj
         # print("in_data.numpy().shape", in_data.numpy().shape)
         # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
         # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
-        losses = []
-        total_loss = 0
-        for loss_name, loss_fun in loss_info_obj.loss_funs_dict.items():
-            # print("loss_name:", loss_name)
-            if(loss_name == "mask_tv_loss"): losses.append(loss_fun(model_output))
-            else:                            losses.append(loss_fun(gt_data, model_output))
-            total_loss += losses[-1]
+        total_loss, losses = one_loss_info_obj_total_loss(loss_info_obj, model_output, gt_data)
         # gen_loss = loss_info_obj.loss_funs_dict["mask_BCE"]      (gt_data, model_output)
         # sob_loss = loss_info_obj.loss_funs_dict["mask_Sobel_MAE"](gt_data, model_output)
         # total_loss = gen_loss + sob_loss
@@ -43,7 +84,7 @@ def _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_obj
 
     ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
     for go_containor, loss_containor in enumerate(loss_info_obj.loss_containors.values()):
-        loss_containor(loss_containor( losses[go_containor] ))
+        loss_containor( losses[go_containor] )
     # loss_info_obj.loss_containors["mask_bce_loss"]      (gen_loss)
     # loss_info_obj.loss_containors["mask_sobel_MAE_loss"](sob_loss)
 
