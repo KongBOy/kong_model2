@@ -28,7 +28,7 @@ class BCE():
         self.tf_fun = tf.keras.losses.BinaryCrossentropy(from_logits=False)
 
     def __call__(self, img_true, img_pred):
-        print("self.bce_scale~~~~~~~~~~~~~", self.bce_scale)
+        # print("self.bce_scale~~~~~~~~~~~~~", self.bce_scale)
         bce_loss = self.tf_fun(img_true, img_pred)
         return bce_loss * self.bce_scale
 
