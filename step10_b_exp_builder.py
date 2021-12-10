@@ -107,8 +107,8 @@ class Exp_builder():
         describe_end = result_name_components[4]
         result_name_v1 = f"{exp_dir}/{db_category}-{describe_mid}-{timestamp}-{model_name}-{describe_end}"
         result_name_v2 = f"{exp_dir}/{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"
-        result_path_v1 = result_read_path  + "result/" + result_name_v1
-        result_path_v2 = result_read_path  + "result/" + result_name_v2
+        result_path_v1 = self.exp.result_obj.result_read_path  + "result/" + result_name_v1
+        result_path_v2 = self.exp.result_obj.result_read_path  + "result/" + result_name_v2
         os.rename(result_path_v1, result_path_v2)
         "Y:/0 data_dir/result/6_mask_unet/5_1_L7_unet2/type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
         "Y:\0 data_dir\result\6_mask_unet\5_1_L7_unet2\type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
