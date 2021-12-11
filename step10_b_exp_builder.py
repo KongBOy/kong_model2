@@ -55,6 +55,11 @@ class Exp_builder():
         # print("0.set_result_name", result_name)  ### 追蹤see的建立過程
         return self
 
+    def set_multi_model_reload_exp_builders_dict(self, **kwargs):
+        self.exp.multi_model_by_history = True
+        self.exp.multi_model_reload_exp_builders_dict = kwargs
+        return self
+
     def build(self, result_name=None):
         '''
         這邊先建好 result_obj 的話就可以給 step11, step12 用喔，

@@ -21,6 +21,9 @@ from step06_a_datas_obj import *
 from step09_f1_multi_unet2_obj_I_to_M_w_I_to_C import *
 from step09_b_loss_info_obj import *
 from step10_b_exp_builder import Exp_builder
+
+import step10_6_mask_unet.mask_5_2_bce_block1_45678l.step10_a as I_to_M_exp_builder
+import step10_7_flow_unet.mask_5_2_mae_block1_45678l_I_with_Mgt_to_C.step10_a as M_w_I_to_C_exp_builder
 #############################################################################################################################################################################################################
 '''
 exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要巢狀也沒問題～
@@ -33,7 +36,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
 use_db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper
 ############################  have_bg  #################################
 ### 1a. ch
-I_to_M_L4_ch032_and_M_w_I_to_C_L5_ch032_ep060 = Exp_builder().set_basic("train", use_db_obj, I_to_M_L4_ch032_and_M_w_I_to_C_L5_ch032, [G_bce_s001_loss_info_builder.set_loss_target("UNet1"), G_mae_s001_loss_info_builder.set_loss_target("UNet2")], exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="6_1_1", describe_end="I_to_M_w_I_to_C") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="")
+I_to_M_L4_ch032_and_M_w_I_to_C_L5_ch032_ep060 = Exp_builder().set_basic("train", use_db_obj, I_to_M_L4_ch032_and_M_w_I_to_C_L5_ch032, [G_bce_s001_loss_info_builder.set_loss_target("UNet1"), G_mae_s001_loss_info_builder.set_loss_target("UNet2")], exp_dir=exp_dir, code_exe_path=code_exe_path, describe_mid="6_1_1", describe_end="I_to_M_w_I_to_C") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_multi_model_reload_exp_builders_dict(I_to_M=I_to_M_exp_builder.L4_ch032_sig_ep060_bce_s001, M_w_I_to_C=M_w_I_to_C_exp_builder.L5_ch032_mae_s001).set_result_name(result_name="")
 
 if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
