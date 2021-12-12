@@ -167,88 +167,88 @@ class Exp_builder():
 
 ##########################################################################################################################################
 ### 5_8a_GD_mrf
-# os_book_1532_rect_mrf7          = Exp_builder().set_com("127.48" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf7         , describe_mid="5_8a_2", describe_end="mrf7")         .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mrf79         = Exp_builder().set_com("128.245").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf79        , describe_mid="5_8a_3", describe_end="mrf79")        .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_replace_mrf7  = Exp_builder().set_com("127.35" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf7 , describe_mid="5_8a_4", describe_end="replace_mrf7") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_replace_mrf79 = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf79, describe_mid="5_8a_5", describe_end="replace_mrf79").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf7          = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf7         , describe_mid="5_8a_2", describe_end="mrf7")         .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf79         = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf79        , describe_mid="5_8a_3", describe_end="mrf79")        .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_replace_mrf7  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf7 , describe_mid="5_8a_4", describe_end="replace_mrf7") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_replace_mrf79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_replace_mrf79, describe_mid="5_8a_5", describe_end="replace_mrf79").set_train_args(epochs=700).set_result_name(result_name="")
 
 ### 5_8b_G_mrf
 ########################################################### 08b2
-# os_book_1532_justG_mrf7          = Exp_builder().set_com("128.245").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7         , describe_mid="5_8b_2" , describe_end="mrf7").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf7_k3       = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7_k3      , describe_mid="5_8b_2b", describe_end="mrf7_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf5_k3       = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf5_k3      , describe_mid="5_8b_2c", describe_end="mrf5_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf3_k3       = Exp_builder().set_com("127.48" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf3_k3      , describe_mid="5_8b_2d", describe_end="mrf3_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf7          = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7         , describe_mid="5_8b_2" , describe_end="mrf7").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf7_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf7_k3      , describe_mid="5_8b_2b", describe_end="mrf7_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf5_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf5_k3      , describe_mid="5_8b_2c", describe_end="mrf5_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf3_k3       = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf3_k3      , describe_mid="5_8b_2d", describe_end="mrf3_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 08b3
-# os_book_1532_justG_mrf79         = Exp_builder().set_com("128.245").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79        , describe_mid="5_8b_3" , describe_end="mrf79").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf79_k3      = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79_k3     , describe_mid="5_8b_3b", describe_end="mrf79_k3").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf57_k3      = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf57_k3     , describe_mid="5_8b_3c", describe_end="mrf57_k3").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf35_k3      = Exp_builder().set_com("127.35" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf35_k3     , describe_mid="5_8b_3d", describe_end="mrf35_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf79         = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79        , describe_mid="5_8b_3" , describe_end="mrf79").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf79_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf79_k3     , describe_mid="5_8b_3b", describe_end="mrf79_k3").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf57_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf57_k3     , describe_mid="5_8b_3c", describe_end="mrf57_k3").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf35_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf35_k3     , describe_mid="5_8b_3d", describe_end="mrf35_k3" ).set_train_args(epochs=700).set_result_name(result_name="")
 
-########################################################### 08b4
-# os_book_1532_justG_mrf_replace7  = Exp_builder().set_com("127.40" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace7 , describe_mid="5_8b_4" , describe_end="mrf_replace7").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf_replace5  = Exp_builder().set_com("127.35" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace5 , describe_mid="5_8b_4b", describe_end="mrf_replace5").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf_replace3  = Exp_builder().set_com("127.48" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace3 , describe_mid="5_8b_4c", describe_end="mrf_replace3").set_train_args(epochs=700).set_result_name(result_name="")
+##################################################
+# os_book_1532_justG_mrf_replace7  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace7 , describe_mid="5_8b_4" , describe_end="mrf_replace7").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf_replace5  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace5 , describe_mid="5_8b_4b", describe_end="mrf_replace5").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf_replace3  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace3 , describe_mid="5_8b_4c", describe_end="mrf_replace3").set_train_args(epochs=700).set_result_name(result_name="")
 ########################################################### 08b5
-# os_book_1532_justG_mrf_replace79 = Exp_builder().set_com("127.55" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace79, describe_mid="5_8b_5" , describe_end="mrf_replace79").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf_replace75 = Exp_builder().set_com("127.55" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace75, describe_mid="5_8b_5b", describe_end="mrf_replace75").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf_replace35 = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace35, describe_mid="5_8b_5c", describe_end="mrf_replace35").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf_replace79 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace79, describe_mid="5_8b_5" , describe_end="mrf_replace79").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf_replace75 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace75, describe_mid="5_8b_5b", describe_end="mrf_replace75").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf_replace35 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf_replace35, describe_mid="5_8b_5c", describe_end="mrf_replace35").set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 08c
-# os_book_1532_justG_mrf135_k3      = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c1", describe_end="Gk3mrf135" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf357_k3      = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c2", describe_end="Gk3mrf357" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justG_mrf3579_k3     = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c3", describe_end="Gk3mrf3579").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf135_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c1", describe_end="Gk3mrf135" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf357_k3      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c2", describe_end="Gk3mrf357" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justG_mrf3579_k3     = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_mrf357_k3     , describe_mid="5_8c3", describe_end="Gk3mrf3579").set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 08d
-# os_book_1532_rect_mrf35_Gk3_DnoC_k4   = Exp_builder().set_com("127.55" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf35_Gk3_DnoC_k4    , describe_mid="5_8d1", describe_end="Gmrf35"  ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mrf135_Gk3_DnoC_k4  = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf135_Gk3_DnoC_k4   , describe_mid="5_8d2", describe_end="Gmrf135" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mrf357_Gk3_DnoC_k4  = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf357_Gk3_DnoC_k4   , describe_mid="5_8d3", describe_end="Gmrf357" ).set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mrf3579_Gk3_DnoC_k4 = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf3579_Gk3_DnoC_k4  , describe_mid="5_8d4", describe_end="Gmrf3579").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf35_Gk3_DnoC_k4   = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf35_Gk3_DnoC_k4    , describe_mid="5_8d1", describe_end="Gmrf35"  ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf135_Gk3_DnoC_k4  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf135_Gk3_DnoC_k4   , describe_mid="5_8d2", describe_end="Gmrf135" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf357_Gk3_DnoC_k4  = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf357_Gk3_DnoC_k4   , describe_mid="5_8d3", describe_end="Gmrf357" ).set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mrf3579_Gk3_DnoC_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_mrf3579_Gk3_DnoC_k4  , describe_mid="5_8d4", describe_end="Gmrf3579").set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 09a
-# os_book_1532_rect_Gk4_D_concat_k3    = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_concat_k3   , describe_mid="5_9a_2", describe_end="Gk4_D_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk4_D_no_concat_k4 = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k4, describe_mid="5_9a_3", describe_end="Gk4_D_no_concat_k4").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk4_D_no_concat_k3 = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k3, describe_mid="5_9a_4", describe_end="Gk4_D_no_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk4_D_concat_k3    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_concat_k3   , describe_mid="5_9a_2", describe_end="Gk4_D_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk4_D_no_concat_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k4, describe_mid="5_9a_3", describe_end="Gk4_D_no_concat_k4").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk4_D_no_concat_k3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk4_D_no_concat_k3, describe_mid="5_9a_4", describe_end="Gk4_D_no_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 09b
-# os_book_1532_rect_Gk3_D_concat_k4    = Exp_builder().set_com("no com").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k4   , describe_mid="5_9b_1", describe_end="Gk3_D_concat_k4") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk3_D_concat_k3    = Exp_builder().set_com("no com").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k3   , describe_mid="5_9b_2", describe_end="Gk3_D_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk3_D_no_concat_k4 = Exp_builder().set_com("127.55").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k4   , describe_mid="5_9b_3", describe_end="Gk3_D_no_concat_k4") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk3_D_no_concat_k3 = Exp_builder().set_com("127.48").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k3   , describe_mid="5_9b_4", describe_end="Gk3_D_no_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_D_concat_k4    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k4   , describe_mid="5_9b_1", describe_end="Gk3_D_concat_k4") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_D_concat_k3    = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_concat_k3   , describe_mid="5_9b_2", describe_end="Gk3_D_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_D_no_concat_k4 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k4   , describe_mid="5_9b_3", describe_end="Gk3_D_no_concat_k4") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_D_no_concat_k3 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_D_no_concat_k3   , describe_mid="5_9b_4", describe_end="Gk3_D_no_concat_k3") .set_train_args(epochs=700).set_result_name(result_name="")
 
 ########################################################### 10
 ### 5_10_GD_D_train1_G_train_135
 ### 舊版，如果要重train記得改資料庫喔(拿掉focus)！
-# os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_com("127.35").set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_2", describe_end="1532data_mae3_focus_G03D01").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_com("127.35").set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_3", describe_end="1532data_mae3_focus_G05D01").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mae3_focus_G03D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_2", describe_end="1532data_mae3_focus_G03D01").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_mae3_focus_G05D01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data_focus, rect, describe_mid="5_9_3", describe_end="1532data_mae3_focus_G05D01").set_train_args(epochs=700).set_result_name(result_name="")
 
 # ### 新版
-# os_book_1532_rect_Gk3_train3_Dk4_no_concat = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train3_Dk4_no_concat, describe_mid="5_10_2", describe_end="Gk3_train3_Dk4_no_concat").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_rect_Gk3_train5_Dk4_no_concat = Exp_builder().set_com("no com" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train5_Dk4_no_concat, describe_mid="5_10_3", describe_end="Gk3_train5_Dk4_no_concat").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_train3_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train3_Dk4_no_concat, describe_mid="5_10_2", describe_end="Gk3_train3_Dk4_no_concat").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_rect_Gk3_train5_Dk4_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_Gk3_train5_Dk4_no_concat, describe_mid="5_10_3", describe_end="Gk3_train5_Dk4_no_concat").set_train_args(epochs=700).set_result_name(result_name="")
 # ########################################################### 11
-# os_book_1532_Gk3_no_res             = Exp_builder().set_com("127.51" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_fk3_no_res            , describe_mid="5_11_1", describe_end="justG_fk3_no_res").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_no_res_D_no_concat = Exp_builder().set_com("127.28" ).set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_fk3_no_res_D_no_concat, describe_mid="5_11_2", describe_end="rect_fk3_no_res_D_no_concat").set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_no_res_mrf357      = Exp_builder().set_com("128.246").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_mrf357_no_res     , describe_mid="5_11_3", describe_end="Gk3_mrf357_no_res").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_no_res             = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justG_fk3_no_res            , describe_mid="5_11_1", describe_end="justG_fk3_no_res").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_no_res_D_no_concat = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, rect_fk3_no_res_D_no_concat, describe_mid="5_11_2", describe_end="rect_fk3_no_res_D_no_concat").set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_no_res_mrf357      = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_mrf357_no_res     , describe_mid="5_11_3", describe_end="Gk3_mrf357_no_res").set_train_args(epochs=700).set_result_name(result_name="")
 
 # ########################################################### 12
 # exp_dir12 = "5_12_resb_num"
-# os_book_1532_Gk3_resb00 = Exp_builder().set_com("finish").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb00 , exp_dir=exp_dir12, describe_mid="5_12_1", describe_end="Gk3_resb00" ) .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb01 = Exp_builder().set_com("127.48").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb01 , exp_dir=exp_dir12, describe_mid="5_12_2", describe_end="Gk3_resb01" ) .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb03 = Exp_builder().set_com("127.35").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb03 , exp_dir=exp_dir12, describe_mid="5_12_3", describe_end="Gk3_resb03" ) .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb05 = Exp_builder().set_com("no com").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb05 , exp_dir=exp_dir12, describe_mid="5_12_4", describe_end="Gk3_resb05") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb07 = Exp_builder().set_com("no com").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="Gk3_resb07") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb00 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb00 , exp_dir=exp_dir12, describe_mid="5_12_1", describe_end="Gk3_resb00" ) .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb01 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb01 , exp_dir=exp_dir12, describe_mid="5_12_2", describe_end="Gk3_resb01" ) .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb03 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb03 , exp_dir=exp_dir12, describe_mid="5_12_3", describe_end="Gk3_resb03" ) .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb05 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb05 , exp_dir=exp_dir12, describe_mid="5_12_4", describe_end="Gk3_resb05") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb07 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb07 , exp_dir=exp_dir12, describe_mid="5_12_5", describe_end="Gk3_resb07") .set_train_args(epochs=700).set_result_name(result_name="")
 # # os_book_1532_Gk3_resb09 ### 原本已經訓練過了，但為了確保沒train錯，還是建了resb_09來train看看囉
-# os_book_1532_Gk3_resb09 = Exp_builder().set_com("finish") .set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb09 , exp_dir=exp_dir12, describe_mid="5_12_6",   describe_end="Gk3_resb09") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_Gk3_resb11 = Exp_builder().set_com("127.55") .set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7",   describe_end="Gk3_resb11") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb09 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb09 , exp_dir=exp_dir12, describe_mid="5_12_6",   describe_end="Gk3_resb09") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb11 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb11 , exp_dir=exp_dir12, describe_mid="5_12_7",   describe_end="Gk3_resb11") .set_train_args(epochs=700).set_result_name(result_name="")
 # ### 13
-# os_book_1532_Gk3_resb15 = Exp_builder().set_com("127.28") .set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb15 , exp_dir=exp_dir12, describe_mid="5_12_7_3", describe_end="Gk3_resb15") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb15 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb15 , exp_dir=exp_dir12, describe_mid="5_12_7_3", describe_end="Gk3_resb15") .set_train_args(epochs=700).set_result_name(result_name="")
 # ### 17
-# os_book_1532_Gk3_resb20 = Exp_builder().set_com("128.244").set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8",   describe_end="Gk3_resb20") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_Gk3_resb20 = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, Gk3_resb20 , exp_dir=exp_dir12, describe_mid="5_12_8",   describe_end="Gk3_resb20") .set_train_args(epochs=700).set_result_name(result_name="")
 
 # ########################################################### 12
 # exp_dir13 = "5_13_coord_conv"
-# os_book_1532_justGk3_coord_conv        = Exp_builder().set_com("127.35").set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_coord_conv        , exp_dir=exp_dir13, describe_mid="5_13_1", describe_end="coord_conv") .set_train_args(epochs=700).set_result_name(result_name="")
-# os_book_1532_justGk3_mrf357_coord_conv = Exp_builder().set_com("127.28").set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_mrf357_coord_conv , exp_dir=exp_dir13, describe_mid="5_13_2", describe_end="mrf357_coord_conv") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justGk3_coord_conv        = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_coord_conv        , exp_dir=exp_dir13, describe_mid="5_13_1", describe_end="coord_conv") .set_train_args(epochs=700).set_result_name(result_name="")
+# os_book_1532_justGk3_mrf357_coord_conv = Exp_builder().set_basic("train", type7b_h500_w332_real_os_book_1532data, justGk3_mrf357_coord_conv , exp_dir=exp_dir13, describe_mid="5_13_2", describe_end="mrf357_coord_conv") .set_train_args(epochs=700).set_result_name(result_name="")
 
 
 ### 測試subprocessing 有沒有用
