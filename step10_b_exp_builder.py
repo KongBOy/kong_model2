@@ -99,6 +99,9 @@ class Exp_builder():
         return self.exp
 
     def result_name_v1_to_v2(self):
+        '''
+        使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .result_name_v1_to_v2() 之後 案 F5 就可以跑了喔
+        '''
         result_name_components = self.exp.result_name.split("-")
         '''
         根據 step11_b_result_obj_builder 的 set_by_exp 裡的 _get_result_name_by_exp 決定的喔
