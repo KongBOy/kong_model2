@@ -352,6 +352,13 @@ class Experiment():
         print("board_rebuild finish")
         print("")
 
+    def copy_ckpt(self):
+        import shutil
+        # Check_dir_exist_and_build_new_dir(self.result_obj.ckpt_write_dir)
+        shutil.copytree(self.result_obj.ckpt_read_dir, self.result_obj.ckpt_write_dir)
+        'H:/0 data_dir/result/7_flow_unet/5_2_mae_block1_45678l_I_to_C/type8_blender_os_book-2_L8_ch004-flow_unet2-block1_L8_ch004_mae_s001-20211118_221004/ckpt'
+        "F:\kong_model2\data_dir\result\7_flow_unet\5_2_mae_block1_45678l_I_to_C"
+
     def run(self):
         self.machine_ip   = socket.gethostbyname(socket.gethostname())  ### 取得 本機 IP   給 train_step5_show_time 紀錄
         self.machine_user = getpass.getuser()                           ### 取得 本機 User 給 train_step5_show_time 紀錄
@@ -362,6 +369,7 @@ class Experiment():
             if(self.phase == "test_see"): self.test_see()
             else:                         self.test(test_db_name=self.phase)  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         elif(self.phase == "board_rebuild"):  self.board_rebuild()
+        elif(self.phase == "copy_ckpt"): self.copy_ckpt()
         elif(self.phase.lower() == "ok"): pass      ### 不做事情，只是個標記而以這樣子
         else: print("ㄘㄋㄇㄉ phase 打錯字了拉~~~")
 
