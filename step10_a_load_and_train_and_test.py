@@ -356,8 +356,6 @@ class Experiment():
         import shutil
         # Check_dir_exist_and_build_new_dir(self.result_obj.ckpt_write_dir)
         shutil.copytree(self.result_obj.ckpt_read_dir, self.result_obj.ckpt_write_dir)
-        'H:/0 data_dir/result/7_flow_unet/5_2_mae_block1_45678l_I_to_C/type8_blender_os_book-2_L8_ch004-flow_unet2-block1_L8_ch004_mae_s001-20211118_221004/ckpt'
-        "F:\kong_model2\data_dir\result\7_flow_unet\5_2_mae_block1_45678l_I_to_C"
 
     def run(self):
         self.machine_ip   = socket.gethostbyname(socket.gethostname())  ### 取得 本機 IP   給 train_step5_show_time 紀錄
