@@ -7,8 +7,6 @@ class Exp_builder():
             self.exp = Experiment()
         else: self.exp = exp
 
-    def set_com(self, machine="127.35"): return self  ### 只是單純讓我自己能直接看到而已，懶得去翻 cost_time.txt
-
     def set_basic(self, phase, db_builder, model_builder, loss_info_builders, exp_dir=".", code_exe_path=".", describe_mid=None, describe_end=None, result_name=None):
         self.exp.phase = phase
         self.exp.db_builder = db_builder
