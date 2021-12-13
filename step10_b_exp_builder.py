@@ -97,6 +97,12 @@ class Exp_builder():
         return self.exp
 
     def result_name_v1_to_v2(self):
+        from step0_access_path import result_read_path
+        import os
+        if(self.exp.result_name is not None):
+            self.db_obj = self.exp.db_builder.build()
+            # print("1.result_name", self.exp.result_name, ", self.exp.use_gt_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.use_gt_range)  ### 追蹤see的建立過程
+            self.exp.result_obj    = Result_builder().set_exp_obj_use_gt_range(self.exp.use_gt_range).set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.db_obj).build()  ### 直接用 自己指定好的 result_name
         '''
         使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .result_name_v1_to_v2() 之後 案 F5 就可以跑了喔
         '''
@@ -113,8 +119,8 @@ class Exp_builder():
         describe_end = result_name_components[4]
         result_name_v1 = f"{exp_dir}/{db_category}-{describe_mid}-{timestamp}-{model_name}-{describe_end}"
         result_name_v2 = f"{exp_dir}/{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"
-        result_path_v1 = self.exp.result_obj.result_read_path  + "result/" + result_name_v1
-        result_path_v2 = self.exp.result_obj.result_read_path  + "result/" + result_name_v2
+        result_path_v1 = result_read_path  + "result/" + result_name_v1
+        result_path_v2 = result_read_path  + "result/" + result_name_v2
         os.rename(result_path_v1, result_path_v2)
         "Y:/0 data_dir/result/6_mask_unet/5_1_L7_unet2/type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
         "Y:\0 data_dir\result\6_mask_unet\5_1_L7_unet2\type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
