@@ -257,3 +257,15 @@ if(__name__ == "__main__"):
                                                                    bce_L8_block1_ch004[3:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
+    #################################################################################################################################################################################################################
+    #################################################################################################################################################################################################################
+    ana_name = "L45678_block1_2-ch64,32,16,8,4_bce_s001_100"
+    L45678_ch64_32_16_8_4_block1_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}-{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=[bce_L4_block1_ch064,
+                                                                   bce_L5_block1_ch032,
+                                                                   bce_L6_block1_ch016,
+                                                                   bce_L7_block1_ch008,
+                                                                   bce_L8_block1_ch004], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()

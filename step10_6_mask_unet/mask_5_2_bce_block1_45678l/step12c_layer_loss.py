@@ -32,18 +32,7 @@ if(__name__ == "__main__"):
     所以總共會有 7*2 = 14 份 process 要同時處理，
     但建議不要用，已經測過，爆記憶體了
     """
-    #################################################################################################################################################################################################################
-    #################################################################################################################################################################################################################
-    ana_name = "L45678_block1_2-ch64,32,16,8,4_bce_s001_100"
-    L45678_ch64_32_16_8_4_block1_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}-{ana_name}",
-                                                  ana_what="mask",
-                                                  row_col_results=[bce_L4_block1_ch064,
-                                                                   bce_L5_block1_ch032,
-                                                                   bce_L6_block1_ch016,
-                                                                   bce_L7_block1_ch008,
-                                                                   bce_L8_block1_ch004], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            # .Gather_all_see_final_img()
+
     ################################################################################
     ana_name = "L2345_block1_3_E_relu-bce_s001_100"
     L2345_block1_E_relu_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}-{ana_name}",
@@ -84,10 +73,17 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ###############################
-    ana_name = "L2345_block1_5_coord_conv-bce_s001_100"
+    ana_name = "L2345678_block1_5_coord_conv-bce_s001_100"
     L2345_block1_coord_conv_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}-{ana_name}",
                                                   ana_what="mask",
-                                                  row_col_results=L2345_block1_bce_coord_conv, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                  row_col_results=L2345678_block1_bce_coord_conv, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                          #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                          #   .Gather_all_see_final_img()
+
+    ana_name = "L23456_block1_5_coord_conv-bce_s001_100"
+    L2345_block1_coord_conv_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}-{ana_name}",
+                                                  ana_what="mask",
+                                                  row_col_results=L23456_block1_bce_coord_conv, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                           #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                           #   .Gather_all_see_final_img()
     ana_name = "L2345_block1_5_ord_vs_coord_conv-bce_s001_100"
