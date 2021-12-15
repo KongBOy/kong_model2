@@ -93,6 +93,11 @@ class Loss_info_init_builder:
         # self._build = None
 
     def set_loss_target(self, loss_target):
+        '''
+        loss_target的目的 只是 讓儲存 loss 進 logs 時 的一個tag， 讓 UNet1, 2 可以分開資料夾存這樣子喔～
+        目前 在training時 還是靠 list 的擺放順序 要和 model 裡 UNet 的擺放順序對應到 來匹配訓練這樣子
+        還沒有 高級到用 name 來指定 誰用誰
+        '''
         self.loss_info_obj.loss_target = loss_target
         return self
 
