@@ -78,7 +78,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
     def set_unet2(self, **kwargs):
         # self.kong_model.model_describe = "_L%i_ch%03i_block%i_%s" % (depth_level, hid_ch, conv_block_num, unet_acti)
 
-        def _build_unet_body_part():
+        def _build_unet_body_part(self):
             # for key, value in kwargs.items(): print(f"{key}: {value}")  ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
             from step08_a_0a_UNet_combine import Generator
             self.kong_model.generator   = Generator(**kwargs)
@@ -96,7 +96,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
                                        I_to_M     = step09_e2_mask_unet2_obj.mask_unet2_block1_ch008_sig_L2,
                                        M_w_I_to_C = step09_e5_flow_unet2_obj_I_with_Mgt_to_C.flow_unet2_block1_ch008_sig_L2)
         '''
-        def _build_multi_unet_body_part():
+        def _build_multi_unet_body_part(self):
             from step08_a_0b_Multi_UNet import Multi_Generator
             gens_dict = {}
             for gen_name, model_builder in model_builders_dict.items():
