@@ -45,7 +45,7 @@ if(__name__ == "__main__"):
                                                   ana_what="mask",
                                                   row_col_results=[mask_bce_sobel_k3_s001_ch[:4],
                                                                    mask_bce_sobel_k3_s001_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "2_ep"
     ep_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/ana_{ana_name}",
