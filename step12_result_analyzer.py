@@ -19,7 +19,7 @@ import shutil
 class Result_analyzer:
     def __init__(self, ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False):
         self.ana_describe = ana_describe
-        self.analyze_dst_dir = analyze_write_dir + "analyze_dir_test2" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
+        self.analyze_dst_dir = analyze_write_dir + "result" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
 
         self.ana_what = ana_what
         '''

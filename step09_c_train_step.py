@@ -18,7 +18,7 @@ def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data):
         total_loss += losses[-1]
     return total_loss, losses
 
-# @tf.function
+@tf.function
 def train_step_pure_G_split_mask_move_I_to_M_w_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
@@ -83,7 +83,7 @@ def _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_obj
     model_obj .optimizer_G .apply_gradients(zip(total_gradients, model_obj.generator.trainable_variables))
 
     ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
-    for go_containor, loss_containor in enumerate(loss_info_objs.loss_containors.values()):
+    for go_containor, loss_containor in enumerate(loss_info_objs[0].loss_containors.values()):
         loss_containor( losses[go_containor] )
     # loss_info_objs.loss_containors["mask_bce_loss"]      (gen_loss)
     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)

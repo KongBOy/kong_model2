@@ -72,6 +72,9 @@ class Experiment():
         self.result_name  = None
         self.result_obj   = None
         ##############################################################################################################################
+        self.multi_model_by_history = False
+        self.multi_model_reload_exp_builders_dict = {}
+        ##############################################################################################################################
         self.board_create_flag = False
         ##############################################################################################################################
         ### step0.設定 要用的資料庫 和 要使用的模型 和 一些訓練參數
@@ -111,6 +114,14 @@ class Experiment():
     def exp_init(self, reload_result=False, reload_model=False):  ### 共作四件事： 1.result, 2.data, 3.model(reload), 4.Loss_info
         ### 0.真的建立出 model_obj， 在這之前都還是 KModel_builder喔！ 會寫這麼麻煩是為了 想實現 "真的用到的時候再建構出來！" 這樣才省時間！
         self.model_obj = self.model_builder.build()
+        if(self.multi_model_by_history):
+            for model_type, generator in self.model_obj.generator.gens_dict.items():
+                little_model_loader = tf.train.Checkpoint(generator=generator)
+                little_model_path = self.multi_model_reload_exp_builders_dict[model_type].build().result_obj.ckpt_read_dir
+                print(f"little_model_path: {little_model_path}")
+                ckpt_read_manager = tf.train.CheckpointManager(little_model_loader, little_model_path, max_to_keep=1)
+                little_model_loader.restore(ckpt_read_manager.latest_checkpoint)
+                print(f"{model_type} load ckpt from:{ckpt_read_manager.latest_checkpoint}")
         self.db_obj = self.db_builder.build()
         # print("self.model_obj", self.model_obj)  ### 檢查 KModel 有沒有正確的建立出來
 
@@ -341,6 +352,11 @@ class Experiment():
         print("board_rebuild finish")
         print("")
 
+    def copy_ckpt(self):
+        import shutil
+        # Check_dir_exist_and_build_new_dir(self.result_obj.ckpt_write_dir)
+        shutil.copytree(self.result_obj.ckpt_read_dir, self.result_obj.ckpt_write_dir)
+
     def run(self):
         self.machine_ip   = socket.gethostbyname(socket.gethostname())  ### 取得 本機 IP   給 train_step5_show_time 紀錄
         self.machine_user = getpass.getuser()                           ### 取得 本機 User 給 train_step5_show_time 紀錄
@@ -351,6 +367,7 @@ class Experiment():
             if(self.phase == "test_see"): self.test_see()
             else:                         self.test(test_db_name=self.phase)  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         elif(self.phase == "board_rebuild"):  self.board_rebuild()
+        elif(self.phase == "copy_ckpt"): self.copy_ckpt()
         elif(self.phase.lower() == "ok"): pass      ### 不做事情，只是個標記而以這樣子
         else: print("ㄘㄋㄇㄉ phase 打錯字了拉~~~")
 
