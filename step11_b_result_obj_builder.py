@@ -93,7 +93,7 @@ class Result_train_builder(Result_sees_builder):
             '''
             result_name_element = [exp.db_obj.category.value]
             if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
-            result_name_element += [exp.model_obj.model_name.value]
+            # result_name_element += [exp.model_obj.model_name.value]
             # result_name_element += [exp.model_obj.model_name.value + exp.model_obj.model_model_describe]
             if(exp.describe_end is not None): result_name_element += [exp.describe_end]
             result_name_element += [self.current_time]

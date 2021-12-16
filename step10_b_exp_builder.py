@@ -100,36 +100,108 @@ class Exp_builder():
         print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
         return self.exp
 
-    def result_name_v1_to_v2(self):
-        from step0_access_path import result_read_path
-        import os
-        if(self.exp.result_name is not None):
-            self.db_obj = self.exp.db_builder.build()
-            # print("1.result_name", self.exp.result_name, ", self.exp.use_gt_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.use_gt_range)  ### 追蹤see的建立過程
-            self.exp.result_obj    = Result_builder().set_exp_obj_use_gt_range(self.exp.use_gt_range).set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.db_obj).build()  ### 直接用 自己指定好的 result_name
-        '''
-        使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .result_name_v1_to_v2() 之後 案 F5 就可以跑了喔
-        '''
-        result_name_components = self.exp.result_name.split("-")
-        '''
-        根據 step11_b_result_obj_builder 的 set_by_exp 裡的 _get_result_name_by_exp 決定的喔
-            舉例：6_mask_unet/5_5b_ch032_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-5b_bce_s001_sobel_k5_s001-20211104_150928-flow_unet-mask_h_bg_ch032_sig_L6_ep060
-        '''
+
+    def _change_result_name_final_rename(self, result_name_ord, result_name_dst, run_change=False, print_msg=True):
         exp_dir = self.exp.exp_dir
+        result_path_ord = result_read_path  + f"result/{exp_dir}/" + result_name_ord
+        result_path_dst = result_read_path  + f"result/{exp_dir}/" + result_name_dst
+        if(run_change): os.rename(result_path_ord, result_path_dst)
+        if(print_msg):
+            print(result_path_ord, "  rename to")
+            print(result_path_dst, "  finish~~")
+        self.exp.result_name = result_name_dst
+
+    def _get_result_name_basic_v1(self):
+        ''' v1： 0: db_name, 1: describe_mid, 2: timestamp,  3: model_name,   4: describe_end '''
+        result_name_ord = self.exp.result_name
+        result_name_components = result_name_ord.split("-")
         db_category  = result_name_components[0]
         describe_mid = result_name_components[1]
         timestamp    = result_name_components[2]
         model_name   = result_name_components[3]
         describe_end = result_name_components[4]
-        result_name_v1 = f"{exp_dir}/{db_category}-{describe_mid}-{timestamp}-{model_name}-{describe_end}"
-        result_name_v2 = f"{exp_dir}/{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"
-        result_path_v1 = result_read_path  + "result/" + result_name_v1
-        result_path_v2 = result_read_path  + "result/" + result_name_v2
-        os.rename(result_path_v1, result_path_v2)
-        "Y:/0 data_dir/result/6_mask_unet/5_1_L7_unet2/type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
-        "Y:\0 data_dir\result\6_mask_unet\5_1_L7_unet2\type8_blender_os_book-6_1_1-20211106_213808-flow_unet2-mask_h_bg_ch128_sig_bce_ep060"
-        print(result_path_v1, "  rename to")
-        print(result_path_v2, "  finish~~")
+        return result_name_ord, db_category, describe_mid, timestamp, model_name, describe_end
+
+    def _get_result_name_basic_v2(self):
+        ''' v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp '''
+        result_name_ord = self.exp.result_name
+        result_name_components = result_name_ord.split("-")
+        db_category  = result_name_components[0]
+        describe_mid = result_name_components[1]
+        model_name    = result_name_components[2]
+        describe_end   = result_name_components[3]
+        timestamp = result_name_components[4]
+        return result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp
+    ##############################################################################################################################
+    def change_result_name_v1_to_v2(self, run_change=False, print_msg=True):
+        self.build_exp_temporary()
+        '''
+        v1： 0: db_name, 1: describe_mid, 2: timestamp,  3: model_name,   4: describe_end
+        v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp
+
+        使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .change_result_name_v1_to_v2() 之後 案 F5 就可以跑了喔
+
+        根據 step11_b_result_obj_builder 的 set_by_exp 裡的 _get_result_name_by_exp 決定的喔
+            舉例：6_mask_unet/5_5b_ch032_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-5b_bce_s001_sobel_k5_s001-20211104_150928-flow_unet-mask_h_bg_ch032_sig_L6_ep060
+        '''
+        result_name_ord, db_category, describe_mid, timestamp, model_name, describe_end = self._get_result_name_basic_v1()
+        result_name_v1 = f"{db_category}-{describe_mid}-{timestamp}-{model_name}-{describe_end}"  ### v1： 0: db_name, 1: describe_mid, 2: timestamp,  3: model_name,   4: describe_end
+        result_name_v2 = f"{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"  ### v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp
+        self._change_result_name_final_rename(result_name_v1, result_name_v2, run_change=run_change, print_msg=print_msg)
+        return self
+
+    ##############################################################################################################################
+    def change_result_name_v2_Remove_os_book(self, run_change=False, print_msg=True):
+        self.build_exp_temporary()
+        ''' 使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .change_result_name_v1_to_v2() 之後 案 F5 就可以跑了喔'''
+        result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp = self._get_result_name_basic_v2()
+        db_category_prone = db_category.replace("type8_blender_os_book", "type8_blender")
+        result_name_dst = f"{db_category_prone}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"  ### v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp
+        self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
+        return self
+
+    def change_result_name_v2_Remove_describe_end_loss(self, run_change=False, print_msg=True):
+        self.build_exp_temporary()
+        ''' 使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .change_result_name_v1_to_v2() 之後 案 F5 就可以跑了喔'''
+        result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp = self._get_result_name_basic_v2()
+
+        describe_end_elements = describe_end.split("_")
+        loss_describe = self.exp.loss_info_objs[0].loss_describe
+        # print("loss_describe:", loss_describe)
+
+        for loss_describe_element in loss_describe.split("_"):
+            # print("loss_describe_element:", loss_describe_element)
+            # print("describe_end_elements:", describe_end_elements)
+            if(loss_describe_element in describe_end_elements): describe_end_elements.remove(loss_describe_element)
+            # print("describe_end_elements:", describe_end_elements)
+        describe_end_prone = "_".join(describe_end_elements)
+        result_name_dst = f"{db_category}-{describe_mid}-{model_name}-{describe_end_prone}-{timestamp}"  ### v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp
+
+        self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
+        return self
+
+    def change_result_name_v2_Describe_end_use_Uniform_model_name(self, run_change=False, print_msg=True):
+        ''' 使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .change_result_name_v1_to_v2() 之後 案 F5 就可以跑了喔'''
+        self.build_exp_temporary()
+        result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp = self._get_result_name_basic_v2()
+
+        uniform_model_name = self.exp.model_builder.kong_model.model_describe
+        describe_end = uniform_model_name
+        print("uniform_model_name:", uniform_model_name)
+        result_name_dst = f"{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"  ### v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp
+
+        self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
+        return self
+
+    def change_result_name_v2_to_v3_Remove_describe_mid_model_name(self, run_change=False, print_msg=True):
+        self.build_exp_temporary()
+        result_name_components = self.exp.result_name.split("-")  ### v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp
+
+        result_name_ord = "-".join(result_name_components)
+        del result_name_components[1:3]
+        result_name_dst = "-".join(result_name_components)
+        self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
+        return self
 
 ##########################################################################################################################################
 ### 5_1_GD_Gmae136_epoch700
