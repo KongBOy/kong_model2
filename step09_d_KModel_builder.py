@@ -10,6 +10,9 @@ class KModel:
         self.model_describe = ""
         self.epoch_log = tf.Variable(1)  ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
 
+        self.model_describe_eles = []
+        self.model_describe = None
+
         self.generator        = None
         self.optimizer_G      = None
 
@@ -59,15 +62,35 @@ class G_Ckpt_op_builder(KModel_init_builder):
         print("ckpt finish")
 
 class G_Unet_Body_builder(G_Ckpt_op_builder):
-    def set_unet(self, **kwargs):
+    def set_unet(self, hid_ch=64, depth_level=7, true_IN=False, use_bias=True, no_concat_layer=0,
+                 skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False,
+                 skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
+                 out_tanh=True, out_ch=3, concat_Activation=False):
+
+        self.true_IN = true_IN
+        self.concat_Activation = concat_Activation
+
+        g_args = {
+            "hid_ch"            : hid_ch,
+            "depth_level"       : depth_level,
+            "no_concat_layer"   : no_concat_layer,
+            "skip_use_add"      : skip_use_add,
+            "skip_use_cSE"      : skip_use_cSE,
+            "skip_use_sSE"      : skip_use_sSE,
+            "skip_use_scSE"     : skip_use_scSE,
+            "skip_use_cnn"      : skip_use_cnn,
+            "skip_cnn_k"        : skip_cnn_k,
+            "skip_use_Acti"     : skip_use_Acti,
+            "out_tanh"          : out_tanh,
+            "out_ch"            : out_ch}
+
         def _build_unet_body_part():
             ### model_part
             ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-
             if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
             elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
             else:                                                   from step08_a_1_UNet_BN                   import Generator
-            self.kong_model.generator   = Generator(**kwargs)
+            self.kong_model.generator   = Generator(**g_args)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
             print("build_unet", "finish")
 
@@ -75,13 +98,42 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
         self.build_ops.append(self._build_ckpt_part)
         return self
 
-    def set_unet2(self, **kwargs):
-        # self.kong_model.model_describe = "_L%i_ch%03i_block%i_%s" % (depth_level, hid_ch, conv_block_num, unet_acti)
+    def set_unet2(self, hid_ch=64, depth_level=7, out_ch=3, no_concat_layer=0,
+                 kernel_size=4, strides=2, norm="in",
+                 d_acti="lrelu", u_acti="relu", unet_acti="tanh",
+                 use_bias=True,
+                 conv_block_num=0,
+                 skip_op=None, skip_merge_op="concat",
+                 ch_upper_bound=512,
+                 coord_conv=False,
+                 #  out_tanh=True,
+                 #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
+                 **kwargs):
+        self.kong_model.model_describe_eles = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti, "out_ch=%i" % out_ch]
+        self.kong_model.model_describe = "_".join(self.kong_model.model_describe_eles)
+        g_args = {
+            "hid_ch"          : hid_ch,
+            "depth_level"     : depth_level,
+            "out_ch"          : out_ch,
+            "no_concat_layer" : no_concat_layer,
+            "kernel_size"     : kernel_size,     ### 多的
+            "strides"         : strides,         ### 多的
+            "d_acti"          : d_acti,          ### 多的
+            "u_acti"          : u_acti,          ### 多的
+            "unet_acti"       : unet_acti,       ### 對應 out_tanh
+            "norm"            : norm,            ### 對應 true_IN
+            "use_bias"        : use_bias,        ### 之前漏的
+            "conv_block_num"  : conv_block_num,  ### 多的
+            "skip_op"         : skip_op,         ### 對應 skip_use_add, skip_use_cSE...
+            "skip_merge_op"   : skip_merge_op,   ### 對應 concat_Activation
+            "ch_upper_bound"  : ch_upper_bound,
+            "coord_conv"      : coord_conv}
+
 
         def _build_unet_body_part():
             # for key, value in kwargs.items(): print(f"{key}: {value}")  ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
             from step08_a_0a_UNet_combine import Generator
-            self.kong_model.generator   = Generator(**kwargs)
+            self.kong_model.generator   = Generator(**g_args)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
             print("build_unet", "finish")
 
