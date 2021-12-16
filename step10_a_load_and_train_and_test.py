@@ -147,13 +147,24 @@ class Experiment():
         ### 4.Loss_info, (5.save_code；train時才需要 loss_info_objs 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉)
         ###   loss_info_builders 在 exo build的時候就已經有指定一個了， 那個是要給 step12用的
         ###   train 用的 是要搭配 這裡才知道的 result 資訊(logs_read/write_dir) 後的 loss_info_builders
-        if(type(self.loss_info_builders) == type([])):
-            for loss_info_builder in self.loss_info_builders:
-                loss_info_builder.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builders 要 根據 result資訊(logs_read/write_dir) 先更新一下    
-                self.loss_info_objs.append(loss_info_builder.build())  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
-        else:
-            self.loss_info_builders.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builders 要 根據 result資訊(logs_read/write_dir) 先更新一下
-            self.loss_info_objs = [self.loss_info_builders.build()]  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
+        loss_info_objs = []
+        for loss_info_builder in self.loss_info_builders:
+            loss_info_builder = loss_info_builder.copy()  ### copy完後，新的 loss_info_builders 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
+            loss_info_builder.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builders 要 根據 result資訊(logs_read/write_dir) 先更新一下    
+            loss_info_objs.append(loss_info_builder.build())  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
+        self.loss_info_objs = loss_info_objs
+
+        # for loss_info_builder in self.loss_info_builders:
+        #     loss_info_builder.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builders 要 根據 result資訊(logs_read/write_dir) 先更新一下    
+        #     self.loss_info_objs.append(loss_info_builder.build())  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
+
+        # if(type(self.loss_info_builders) == type([])):
+        #     for loss_info_builder in self.loss_info_builders:
+        #         loss_info_builder.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builders 要 根據 result資訊(logs_read/write_dir) 先更新一下    
+        #         self.loss_info_objs.append(loss_info_builder.build())  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
+        # else:
+        #     self.loss_info_builders.set_logs_dir(self.result_obj.logs_read_dir, self.result_obj.logs_write_dir)  ### 所以 loss_info_builders 要 根據 result資訊(logs_read/write_dir) 先更新一下
+        #     self.loss_info_objs = [self.loss_info_builders.build()]  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
 
 
     def train_reload(self):
