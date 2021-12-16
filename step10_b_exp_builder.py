@@ -93,7 +93,11 @@ class Exp_builder():
             # print("self.exp.loss_info_obj.logs_read_dir", self.exp.loss_info_obj.logs_read_dir)
             # print("self.exp.loss_info_obj.logs_write_dir", self.exp.loss_info_obj.logs_write_dir)
             # print()  ### 追蹤see的建立過程
-            print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
+
+
+    def build(self):
+        self.build_exp_temporary()
+        print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
         return self.exp
 
     def result_name_v1_to_v2(self):
