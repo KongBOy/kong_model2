@@ -11,7 +11,7 @@ from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and
 from video_from_img import Video_combine_from_dir
 from multiprocessing import Process
 
-from util import get_dir_certain_file_names, get_dir_dir_names, get_dir_certain_dir_names
+from util import get_dir_certain_file_names, get_dir_dir_names, get_dir_certain_dir_names, get_dir_dir_names
 
 import os
 import shutil
@@ -36,19 +36,20 @@ class Result_analyzer:
         self.ana_timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
     def Gather_all_see_final_img(self, print_msg=False):
-        see_names = get_dir_certain_dir_names(self.analyze_dst_dir, "see")
+        print("self.analyze_dst_dir:", self.analyze_dst_dir)
+        see_ver_dir_names = get_dir_dir_names(self.analyze_dst_dir)          ### 列出 dir中 有哪些 dir
+        see_ver_dir_name  = see_ver_dir_names[-1]                            ### 取最後一個最新的，比如：mask_epoch=all (20211111_231956)
+        see_ver_dir_path  = self.analyze_dst_dir + "/" + see_ver_dir_name    ### 進去 比如：2c_block1_l3_2-ch128,64,32,16,8,4_bce_s001_100/see_001_real/mask_epoch=all (20211111_231956)
+        see_names = get_dir_certain_dir_names(see_ver_dir_path, "see")
         for see_name in see_names:                                               ### 比如：see_001_real
-            see_dir = self.analyze_dst_dir + "/" + see_name                      ### 進去 比如：2c_block1_l3_2-ch128,64,32,16,8,4_bce_s001_100/see_001_real
-            see_ver_dir_names = get_dir_certain_dir_names(see_dir, "epoch=all")  ### 列出 dir中 有哪些 dir
-            see_ver_dir_name  = see_ver_dir_names[-1]                            ### 取最後一個最新的，比如：mask_epoch=all (20211111_231956)
+            see_dir = see_ver_dir_path + "/" + see_name                      ### 進去 比如：2c_block1_l3_2-ch128,64,32,16,8,4_bce_s001_100/see_001_real
 
-            see_ver_dir_path  = self.analyze_dst_dir + "/" + see_name + "/" + see_ver_dir_name       ### 進去 比如：2c_block1_l3_2-ch128,64,32,16,8,4_bce_s001_100/see_001_real/mask_epoch=all (20211111_231956)
-            see_ver_img_names = get_dir_certain_file_names( see_ver_dir_path, certain_word="epoch")  ### 列出 dir中 有哪些 epoch_imgs
+            see_ver_img_names = get_dir_certain_file_names( see_dir, certain_word="epoch")  ### 列出 dir中 有哪些 epoch_imgs
             see_ver_final_img_name = see_ver_img_names[-1]                            ### 取最後一張 最後epoch的結果 的檔名
-            see_ver_final_img_path = see_ver_dir_path + "/" + see_ver_final_img_name  ### 取最後一張 最後epoch的結果 的 path
+            see_ver_final_img_path = see_dir + "/" + see_ver_final_img_name  ### 取最後一張 最後epoch的結果 的 path
 
             src_path = see_ver_final_img_path
-            dst_path = self.analyze_dst_dir + "/" + see_name + "--" + see_ver_dir_name + "--" + see_ver_final_img_name  ### 把 / 換成 -
+            dst_path = self.analyze_dst_dir + "/" + see_ver_dir_name + "/" + see_name + "--" + see_ver_final_img_name  ### 把 / 換成 -
 
             shutil.copy(src_path, dst_path)
             if(print_msg):
