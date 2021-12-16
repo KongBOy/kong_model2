@@ -60,7 +60,7 @@ class G_Ckpt_op_builder(KModel_init_builder):
 
 class G_Unet_Body_builder(G_Ckpt_op_builder):
     def set_unet(self, **kwargs):
-        def _build_unet_body_part(self):
+        def _build_unet_body_part():
             ### model_part
             ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
 
@@ -78,7 +78,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
     def set_unet2(self, **kwargs):
         # self.kong_model.model_describe = "_L%i_ch%03i_block%i_%s" % (depth_level, hid_ch, conv_block_num, unet_acti)
 
-        def _build_unet_body_part(self):
+        def _build_unet_body_part():
             # for key, value in kwargs.items(): print(f"{key}: {value}")  ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
             from step08_a_0a_UNet_combine import Generator
             self.kong_model.generator   = Generator(**kwargs)
