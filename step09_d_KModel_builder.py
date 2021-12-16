@@ -109,7 +109,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
-        self.kong_model.model_describe_eles = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti, "out_ch=%i" % out_ch]
+        self.kong_model.model_describe_eles = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
         self.kong_model.model_describe = "_".join(self.kong_model.model_describe_eles)
         g_args = {
             "hid_ch"          : hid_ch,
