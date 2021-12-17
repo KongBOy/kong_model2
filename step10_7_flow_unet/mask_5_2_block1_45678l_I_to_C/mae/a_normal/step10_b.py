@@ -46,7 +46,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L3_ch002_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch001_s001.{compress_and_bm_rec_all}"])  ### 跑失敗
 #### 4l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L4_ch128_s001      .{run}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch128_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch128_s001_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch064_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch032_s001.{compress_and_bm_rec_all}"])
