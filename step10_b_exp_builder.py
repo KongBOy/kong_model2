@@ -99,7 +99,8 @@ class Exp_builder():
         self.build_exp_temporary()
         print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
         return self.exp
-
+    ###########################################################################################################################################################################################################
+    ###########################################################################################################################################################################################################
 
     def _change_result_name_final_rename(self, result_name_ord, result_name_dst, run_change=False, print_msg=True):
         exp_dir = self.exp.exp_dir
@@ -132,6 +133,7 @@ class Exp_builder():
         describe_end   = result_name_components[3]
         timestamp = result_name_components[4]
         return result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp
+
     ##############################################################################################################################
     def change_result_name_v1_to_v2(self, run_change=False, print_msg=True):
         self.build_exp_temporary()
@@ -199,7 +201,7 @@ class Exp_builder():
 
         result_name_ord = "-".join(result_name_components)
         del result_name_components[1:3]
-        result_name_dst = "-".join(result_name_components)
+        result_name_dst = "-".join(result_name_components)        ### ### v2： 0: db_name, 1: describe_end, 2: timestamp
         self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
         return self
 
