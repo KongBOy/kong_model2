@@ -35,7 +35,6 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L2_ch004_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch002_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch001_s001.{compress_and_bm_rec_all}"])  ### 跑不動
-# sb.run(cmd_python_step10_a + [f"L2_ch001_s001_copy.{compress_and_bm_rec_4}"])
 #### 3l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L3_ch128_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch064_s001.{compress_and_bm_rec_all}"])
@@ -47,7 +46,6 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L3_ch001_s001.{compress_and_bm_rec_all}"])  ### 跑失敗
 #### 4l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L4_ch128_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch128_s001_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch064_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch032_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch016_s001.{compress_and_bm_rec_all}"])
@@ -65,7 +63,6 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch002_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch001_s001.{compress_and_bm_rec_all}"])
 #### 6l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L6_ch128_s001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch064_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch032_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch016_s001.{compress_and_bm_rec_all}"])
@@ -74,8 +71,6 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L6_ch002_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch001_s001.{compress_and_bm_rec_all}"])
 #### 7l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L7_ch128_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch064_s001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch032_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch016_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch008_s001.{compress_and_bm_rec_all}"])
@@ -83,12 +78,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L7_ch002_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch001_s001.{compress_and_bm_rec_all}"])  ### 跑不起來
 #### 8l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L8_ch128_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch064_s001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch032_s001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch016_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch008_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch004_s001.     {compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch004_s001_copy.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch004_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch002_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch001_s001.{compress_and_bm_rec_all}"])
