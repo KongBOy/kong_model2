@@ -22,64 +22,56 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 ### 所有 指令 統一寫這邊
 from step10_c_exp_command import *
 ######################################################################################################################
-
 import subprocess as sb
 
 
-#### l2 ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L2_ch128.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch064.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch032.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch016.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch001.{compress_and_bm_rec_all}"])  ### bm_rec 跑不動
+# sb.run(cmd_python_step10_a + [f"L7_ch016_copy.{run}"])
+# exit()
 #### 3l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L3_ch128.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch064.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch032.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch016.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch008.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch001.{compress_and_bm_rec_all}"])  ### bm_rec 跑失敗
+# sb.run(cmd_python_step10_a + [f"L3_ch128.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch032.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch016.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch008.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch004.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch002.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch001.{run}"])
 #### 4l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L4_ch128.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch064.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch128.{run}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch064.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch032.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch016.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch008.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch002.{run}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch001.{run}"])
 #### 5l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L5_ch128.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch064.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch128.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch064.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch032.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch016.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch008.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch002.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch001.{run}"])
 #### 6l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L6_ch064.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch064.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch032.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch016.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch008.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch002.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch001.{run}"])
 #### 7l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L7_ch032.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch016.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch008.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch001.{compress_and_bm_rec_all}"])  ### bm_rec 跑不起來
+# sb.run(cmd_python_step10_a + [f"L7_ch002.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch001.{run}"])
 #### 8l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L8_ch016.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch008.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch001.{compress_and_bm_rec_all}"])
+sb.run(cmd_python_step10_a + [f"L8_ch016.{compress_and_bm_rec_all}"])
+sb.run(cmd_python_step10_a + [f"L8_ch008.{compress_and_bm_rec_all}"])
+sb.run(cmd_python_step10_a + [f"L8_ch004.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch002.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch001.{run}"])

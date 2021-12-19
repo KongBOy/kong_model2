@@ -25,17 +25,8 @@ from step10_c_exp_command import *
 import subprocess as sb
 
 
-# sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001_copy.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001_copy.{run}"])
 # exit()
-#### l2 ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L2_ch128_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch064_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch032_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch016_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch004_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch002_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 3l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L3_ch128_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch064_mae_s001.{compress_and_bm_rec_all}"])
@@ -46,20 +37,17 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L3_ch002_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 4l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L4_ch128_mae_s001      .{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch128_mae_s001_limit.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch128_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch064_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch032_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch016_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch008_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch004_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch002_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s001.{compress_and_bm_rec_all}"])  ### 做不起來
+# sb.run(cmd_python_step10_a + [f"L4_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 5l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L5_ch128_mae_s001      .{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch128_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch064_mae_s001      .{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch064_mae_s001_limit.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch128_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch064_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch032_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch016_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s001.{compress_and_bm_rec_all}"])
@@ -67,44 +55,23 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch002_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch001_mae_s001.{compress_and_bm_rec_all}"])  ### 做不起來
 #### 6l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L6_ch128_mae_s001      .{失敗}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch128_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch064_mae_s001      .{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch064_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch032_mae_s001      .{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch032_mae_s001_limit.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch064_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch032_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch016_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch008_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch004_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch002_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch001_mae_s001.{compress_and_bm_rec_all}"])  ### 做不起來
 #### 7l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L7_ch128_mae_s001      .{失敗}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch128_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch064_mae_s001      .{失敗}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch064_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch032_mae_s001      .{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch032_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001      .{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001_limit.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch032_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch016_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch008_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch004_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch002_mae_s001.{compress_and_bm_rec_all}"])  ### 做不起來
+# sb.run(cmd_python_step10_a + [f"L7_ch002_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch001_mae_s001.{compress_and_bm_rec_all}"])
 #### 8l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L8_ch128_mae_s001      .{失敗}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch128_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch064_mae_s001      .{失敗}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch064_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch032_mae_s001      .{失敗}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch032_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch016_mae_s001      .{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch016_mae_s001_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch008_mae_s001      .{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch008_mae_s001_limit.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch016_mae_s001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch008_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch004_mae_s001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch002_mae_s001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch001_mae_s001.{compress_and_bm_rec_all}"])
-
-# ####################################################################################################
-# sb.run(cmd_python_step10_a + [f"L5_ch008_mae_s001_copy.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch001_mae_s001.{compress_and_bm_rec_all}"])   ### 做不起來
