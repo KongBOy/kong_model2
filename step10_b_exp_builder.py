@@ -127,6 +127,7 @@ class Exp_builder():
         ''' v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp '''
         result_name_ord = self.exp.result_name
         result_name_components = result_name_ord.split("-")
+        # print("result_name_components", result_name_components)
         db_category  = result_name_components[0]
         describe_mid = result_name_components[1]
         model_name    = result_name_components[2]
