@@ -89,10 +89,12 @@ class See_npy_to_npz(See_info):
         # else: print(f"{self.npz_read_dir} 找不到 gt_flow.npz")
 
         ### 不包含 gt_flow 的 list喔！
-        self.npz_epoch_names      = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_ext=".npz")
-        self.npz_epoch_read_paths = [self.npz_read_dir + "/" + epoch_npz_name for epoch_npz_name in self.npz_epoch_names]    ### 沒有 write_paths，同上 ，既然已經沒有 self.see_npz_write_paths， 當然更不會有 self.see_npz_epoch_write_paths 拉！
+        self.npz_epoch_mask_names = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_word2="mask", certain_ext=".npz")
+        self.npz_epoch_flow_names = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_word2="flow", certain_ext=".npz")
+        self.npz_epoch_mask_read_paths = [self.npz_read_dir + "/" + npz_epoch_mask_name for npz_epoch_mask_name in self.npz_epoch_mask_names]    ### 沒有 write_paths，同上 ，既然已經沒有 self.see_npz_write_paths， 當然更不會有 self.see_npz_epoch_write_paths 拉！
+        self.npz_epoch_flow_read_paths = [self.npz_read_dir + "/" + npz_epoch_flow_name for npz_epoch_flow_name in self.npz_epoch_flow_names]    ### 沒有 write_paths，同上 ，既然已經沒有 self.see_npz_write_paths， 當然更不會有 self.see_npz_epoch_write_paths 拉！
 
-        self.npz_epoch_amount     = len(self.npz_epoch_read_paths)
+        self.npz_epoch_amount     = len(self.npz_epoch_flow_read_paths)
 
     def Npy_to_npz(self, single_see_core_amount=8, see_print_msg=False, **args):   ### 因為有刪東西的動作，覺得不要multiprocess比較安全~~
         """

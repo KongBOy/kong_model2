@@ -60,8 +60,8 @@ class See_flow_visual(See_info):
 
     ### 因為  See_bm_rec 要用到， 所以從 See_flow_visual 提升上去 See_info囉！ 結果還是拉回來了， 因為覺得要用的時候再抓， 否則像只 predict mask 的狀況，就沒有flow拉！
     def get_flow_info(self):
-        self.gt_flow_jpg_path   = self.get_path_savely(self.see_read_dir, certain_word="gt_flow", certain_ext=".jpg")
-        self.rec_hope_path        = self.flow_v_write_dir + "/" + get_dir_certain_file_names(self.see_read_dir, certain_word="rec_hope")[0]
+        self.gt_flow_jpg_path = self.get_path_savely(self.see_read_dir,     certain_word="gt_flow",  certain_ext=".jpg")
+        self.rec_hope_path    = self.get_path_savely(self.flow_v_write_dir, certain_word="rec_hope", certain_ext=".jpg")
 
         self.flow_ep_jpg_names      = get_dir_certain_file_names(self.see_read_dir, certain_word="epoch", certain_word2="flow", certain_ext=".jpg")
         self.flow_ep_jpg_read_paths = [self.see_read_dir + "/" + epoch_name for epoch_name in self.flow_ep_jpg_names]  ### 沒有 write_paths， 同上

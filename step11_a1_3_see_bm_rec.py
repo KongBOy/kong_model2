@@ -215,7 +215,7 @@ class See_bm_rec(See_info):
     ### See_method 第三部分b
     def _get_bm_rec_and_gt_bm_gt_rec(self, epoch, dis_img):
         ### pred flow part
-        flow_pre = np.load(self.npz_epoch_read_paths[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
+        flow_pre = np.load(self.npz_epoch_flow_read_paths[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         flow = F_postprocess(flow_pre, self.result_obj.exp_obj_use_gt_range)
         bm, rec = check_flow_quality_then_I_w_F_to_R(dis_img, flow)
 
