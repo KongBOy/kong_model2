@@ -10,7 +10,7 @@ class KModel:
         self.model_describe = ""
         self.epoch_log = tf.Variable(1)  ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
 
-        self.model_describe_eles = []
+        self.model_describe_elements = []
         self.model_describe = None
 
         self.generator        = None
@@ -109,8 +109,8 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
-        self.kong_model.model_describe_eles = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
-        self.kong_model.model_describe = "_".join(self.kong_model.model_describe_eles)
+        self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
+        self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
         g_args = {
             "hid_ch"          : hid_ch,
             "depth_level"     : depth_level,
@@ -148,6 +148,11 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
                                        I_to_M     = step09_e2_mask_unet2_obj.mask_unet2_block1_ch008_sig_L2,
                                        M_w_I_to_C = step09_e5_flow_unet2_obj_I_with_Mgt_to_C.flow_unet2_block1_ch008_sig_L2)
         '''
+        for gen_name, model_builder in model_builders_dict.items():
+            self.kong_model.model_describe_elements += [gen_name] + model_builder.kong_model.model_describe_elements + ["&&"]
+        self.kong_model.model_describe_elements.pop()  ### 把結尾的 & pop 掉
+        self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
+
         def _build_multi_unet_body_part(self):
             from step08_a_0b_Multi_UNet import Multi_Generator
             gens_dict = {}
