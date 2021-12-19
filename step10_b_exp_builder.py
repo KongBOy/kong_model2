@@ -102,7 +102,7 @@ class Exp_builder():
     ###########################################################################################################################################################################################################
     ###########################################################################################################################################################################################################
 
-    def _change_result_name_final_rename(self, result_name_ord, result_name_dst, run_change=False, print_msg=True):
+    def _change_result_name_final_rename(self, result_name_ord, result_name_dst, run_change=False, print_msg=False):
         exp_dir = self.exp.exp_dir
         result_path_ord = result_read_path  + f"result/{exp_dir}/" + result_name_ord
         result_path_dst = result_read_path  + f"result/{exp_dir}/" + result_name_dst
@@ -135,7 +135,7 @@ class Exp_builder():
         return result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp
 
     ##############################################################################################################################
-    def change_result_name_v1_to_v2(self, run_change=False, print_msg=True):
+    def change_result_name_v1_to_v2(self, run_change=False, print_msg=False):
         self.build_exp_temporary()
         '''
         v1： 0: db_name, 1: describe_mid, 2: timestamp,  3: model_name,   4: describe_end
@@ -153,7 +153,7 @@ class Exp_builder():
         return self
 
     ##############################################################################################################################
-    def change_result_name_v2_Remove_os_book(self, run_change=False, print_msg=True):
+    def change_result_name_v2_Remove_os_book(self, run_change=False, print_msg=False):
         self.build_exp_temporary()
         ''' 使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .change_result_name_v1_to_v2() 之後 案 F5 就可以跑了喔'''
         result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp = self._get_result_name_basic_v2()
@@ -162,7 +162,7 @@ class Exp_builder():
         self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
         return self
 
-    def change_result_name_v2_Remove_describe_end_loss(self, run_change=False, print_msg=True):
+    def change_result_name_v2_Remove_describe_end_loss(self, run_change=False, print_msg=False):
         self.build_exp_temporary()
         ''' 使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .change_result_name_v1_to_v2() 之後 案 F5 就可以跑了喔'''
         result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp = self._get_result_name_basic_v2()
@@ -182,7 +182,7 @@ class Exp_builder():
         self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
         return self
 
-    def change_result_name_v2_Describe_end_use_Uniform_model_name(self, run_change=False, print_msg=True):
+    def change_result_name_v2_Describe_end_use_Uniform_model_name(self, run_change=False, print_msg=False):
         ''' 使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .change_result_name_v1_to_v2() 之後 案 F5 就可以跑了喔'''
         self.build_exp_temporary()
         result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp = self._get_result_name_basic_v2()
@@ -195,7 +195,20 @@ class Exp_builder():
         self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
         return self
 
-    def change_result_name_v2_to_v3_Remove_describe_mid_model_name(self, run_change=False, print_msg=True):
+    def change_result_name_v2_Describe_end_use_New_Describe_end(self, run_change=False, print_msg=False):
+        ''' 使用方法就是 在 step10a.py 裡面 直接 在 exp_builder 後面 .change_result_name_v1_to_v2() 之後 案 F5 就可以跑了喔'''
+        self.build_exp_temporary()
+        result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp = self._get_result_name_basic_v2()
+
+        new_describe_end = self.exp.describe_end
+        describe_end = new_describe_end
+        print("new_describe_end:", new_describe_end)
+        result_name_dst = f"{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"  ### v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp
+
+        self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
+        return self
+
+    def change_result_name_v2_to_v3_Remove_describe_mid_model_name(self, run_change=False, print_msg=False):
         self.build_exp_temporary()
         result_name_components = self.exp.result_name.split("-")  ### v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp
 
