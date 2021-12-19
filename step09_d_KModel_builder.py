@@ -153,7 +153,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
         self.kong_model.model_describe_elements.pop()  ### 把結尾的 & pop 掉
         self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
 
-        def _build_multi_unet_body_part(self):
+        def _build_multi_unet_body_part():
             from step08_a_0b_Multi_UNet import Multi_Generator
             gens_dict = {}
             for gen_name, model_builder in model_builders_dict.items():
