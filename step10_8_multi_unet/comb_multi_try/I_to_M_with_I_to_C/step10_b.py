@@ -25,8 +25,8 @@ from step10_c_exp_command import *
 import subprocess as sb
 
 
-# sb.run(cmd_python_step10_a + [f"I_to_M_L4_ch128_and_M_w_I_to_C_L5_ch128_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_M_L4_ch128_and_M_w_I_to_C_L5_ch064_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_M_L4_ch128_and_M_w_I_to_C_L5_ch128_ep060.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_M_L4_ch128_and_M_w_I_to_C_L5_ch064_ep060.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"I_to_M_L4_ch128_and_M_w_I_to_C_L5_ch032_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_M_L4_ch128_and_M_w_I_to_C_L5_ch016_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_M_L4_ch128_and_M_w_I_to_C_L5_ch008_ep060.{compress_and_bm_rec_all}"])
