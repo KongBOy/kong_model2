@@ -3,7 +3,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import tensorflow as tf
 import numpy as np
 import time
-from step0_access_path import Syn_write_to_read_dir, result_read_path, result_write_path, kong_model2_dir
+from step0_access_path import Syn_write_to_read_dir, Result_Read_Path, Result_Write_Path, kong_model2_dir
 from step06_a_datas_obj import *
 from step06_b_data_pipline import tf_Data_builder
 from step09_b_loss_info_obj import *
@@ -230,7 +230,7 @@ class Experiment():
             # break  ### debug用，看subprocess成不成功
             ###############################################################################################################################
             ###    step6 同步 result_write_dir 和 result_read_dir
-            if(result_write_path != result_read_path):  ### 如果要train_reload 或 test  且當 read/write 資料夾位置不一樣時， write完的結果 copy 一份 放回read， 才有 東西 read 喔！
+            if(Result_Write_Path != Result_Read_Path):  ### 如果要train_reload 或 test  且當 read/write 資料夾位置不一樣時， write完的結果 copy 一份 放回read， 才有 東西 read 喔！
                 print("○同步 cost_time.txt, logs_dir, train_code_dir")
                 Syn_write_to_read_dir(write_dir=self.result_obj.result_write_dir,     read_dir=self.result_obj.result_read_dir,     build_new_dir=False, print_msg=False)
                 Syn_write_to_read_dir(write_dir=self.result_obj.logs_write_dir,       read_dir=self.result_obj.logs_read_dir,       build_new_dir=False, print_msg=False)
