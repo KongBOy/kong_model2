@@ -5,7 +5,7 @@ import datetime
 
 import sys
 sys.path.append("kong_util")
-from step0_access_path import analyze_write_dir, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
+from step0_access_path import Analyze_Write_Dir, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
 from matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop, Save_as_jpg
 from video_from_img import Video_combine_from_dir
@@ -19,7 +19,7 @@ import shutil
 class Result_analyzer:
     def __init__(self, ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False):
         self.ana_describe = ana_describe
-        self.analyze_dst_dir = analyze_write_dir + "result" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
+        self.analyze_dst_dir = Analyze_Write_Dir + "result" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
 
         self.ana_what = ana_what
         '''
