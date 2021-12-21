@@ -43,7 +43,7 @@ if(__name__ == "__main__"):
 
     ###############################
     ana_name = "L2345_block1_4_no_Bias-bce_s001_100"
-    L2345_block1_no_Bias_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"0_{ana_dir}/ana_{ana_name}",
+    L2345_block1_no_Bias_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=L2345_block1_bce_no_Bias, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\

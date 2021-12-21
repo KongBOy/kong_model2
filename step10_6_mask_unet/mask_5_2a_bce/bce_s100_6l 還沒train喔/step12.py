@@ -41,21 +41,21 @@ if(__name__ == "__main__"):
     ### 直接看 dtd_hdr_mix 的狀況
     #################################################################################################################################################################################################################
     ana_name = "1_ch"
-    ch_analyze = Row_col_results_analyzer(ana_describe=f"0_{ana_dir}/ana_{ana_name}",
+    ch_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_L6_bce_s100_ch[:4],
                                                                    mask_L6_bce_s100_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "2_ep"
-    ep_analyze = Row_col_results_analyzer(ana_describe=f"0_{ana_dir}/ana_{ana_name}",
+    ep_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_L6_bce_s100_ep[:8],
                                                                    mask_L6_bce_s100_ep[8:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "3_noC"
-    noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"0_{ana_dir}/ana_{ana_name}",
+    noC_and_add_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_L6_bce_s100_noC_and_add[:3] + [mask_L6_bce_s100_ch[2]],
                                                                    mask_L6_bce_s100_noC_and_add[3:] + [mask_L6_bce_s100_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\

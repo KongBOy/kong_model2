@@ -41,7 +41,7 @@ if(__name__ == "__main__"):
     ### 直接看 dtd_hdr_mix 的狀況
     #################################################################################################################################################################################################################
     ana_name = "step20"
-    step20_analyze = Row_col_results_analyzer(ana_describe=f"0_{ana_dir}/ana_{ana_name}",
+    step20_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=mask_ch032_tv_s30_bce_s001_100_sobel_k5_s001_100,
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
@@ -51,7 +51,7 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "step40"
-    step40_analyze = Row_col_results_analyzer(ana_describe=f"0_{ana_dir}/ana_{ana_name}",
+    step40_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=mask_ch032_tv_s30_bce_s001_100_sobel_k5_s001_100[::2, ::2],
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
