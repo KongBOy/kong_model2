@@ -13,7 +13,7 @@ def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data):
     total_loss = 0
     for loss_name, loss_fun in loss_info_objs.loss_funs_dict.items():
         # print("loss_name:", loss_name)
-        if(loss_name == "tv"): losses.append(loss_fun(model_output))
+        if("tv" in loss_name): losses.append(loss_fun(model_output))
         else:                  losses.append(loss_fun(gt_data, model_output))
         total_loss += losses[-1]
     return total_loss, losses
@@ -133,7 +133,7 @@ def train_step_pure_G_split_mask_move_I_to_C(model_obj, in_data, gt_data, loss_i
     _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=in_data, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
 ####################################################
-@tf.function
+# @tf.function
 def train_step_pure_G_split_mask_move_I_to_M(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_to_C 是 Image_to_Coord 的縮寫
