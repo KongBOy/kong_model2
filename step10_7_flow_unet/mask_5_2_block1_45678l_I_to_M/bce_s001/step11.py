@@ -89,11 +89,8 @@ block1_mask_L2345678 = [
      block1.L8_ch001.build().result_obj],
 ]
 
-block1_mask_L45678_normal_vs_limit = 
-[
-    [block1.L4_ch128, block1_limit.L4_ch128_limit, block1.L5_ch128, block1_limit.L5_ch128_limit, block1.L5_ch064, block1_limit.L5_ch064_limit,], 
-    [block1.L6_ch064, block1_limit.L6_ch064_limit, block1.L6_ch032, block1_limit.L6_ch032_limit, block1.L7_ch032, block1_limit.L7_ch032_limit,], 
-    [block1.L7_ch016, block1_limit.L7_ch016_limit, block1.L8_ch016, block1_limit.L8_ch016_limit, block1.L8_ch008, block1_limit.L8_ch008_limit,], 
-
-
+block1_mask_L45678_normal_vs_limit = [
+    [block1.L4_ch128.build().result_obj, block1_limit.L4_ch128_limit.build().result_obj, block1.L6_ch032.build().result_obj, block1_limit.L6_ch032_limit.build().result_obj, block1.L7_ch032.build().result_obj, block1_limit.L7_ch032_limit.build().result_obj, ],
+    [block1.L5_ch064.build().result_obj, block1_limit.L5_ch064_limit.build().result_obj, block1.L6_ch064.build().result_obj, block1_limit.L6_ch064_limit.build().result_obj, block1.L8_ch008.build().result_obj, block1_limit.L8_ch008_limit.build().result_obj, ],
+    [block1.L5_ch128.build().result_obj, block1_limit.L5_ch128_limit.build().result_obj, block1.L7_ch016.build().result_obj, block1_limit.L7_ch016_limit.build().result_obj, block1.L8_ch016.build().result_obj, block1_limit.L8_ch016_limit.build().result_obj, ],
 ]

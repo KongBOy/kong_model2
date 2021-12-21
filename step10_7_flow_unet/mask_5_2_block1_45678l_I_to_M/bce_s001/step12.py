@@ -44,12 +44,12 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what="mask",
                                         row_col_results=block1_mask_L2345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
     ############################################################################
     ana_name = "block1_mask_L2345678-normal_vs_limit"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what="mask",
                                         row_col_results=block1_mask_L45678_normal_vs_limit, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
