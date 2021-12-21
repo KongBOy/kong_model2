@@ -40,9 +40,16 @@ if(__name__ == "__main__"):
     """
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
-    ana_name = "block1_mask_L2345678_2-ch128,64,32,16,8,4,2,1_bce_s001"
+    ana_name = "block1_mask_L2345678_2-ch128,64,32,16,8,4,2,1"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what="mask",
-                                        row_col_results=bce_block1_mask_s001_L2345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                        row_col_results=block1_mask_L2345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            .Gather_all_see_final_img()
+    ############################################################################
+    ana_name = "block1_mask_L2345678-normal_vs_limit"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what="mask",
+                                        row_col_results=block1_mask_L45678_normal_vs_limit, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             .Gather_all_see_final_img()
