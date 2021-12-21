@@ -133,7 +133,7 @@ def train_step_pure_G_split_mask_move_I_to_C(model_obj, in_data, gt_data, loss_i
     _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=in_data, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
 ####################################################
-# @tf.function
+@tf.function
 def train_step_pure_G_split_mask_move_I_to_M(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_to_C 是 Image_to_Coord 的縮寫
