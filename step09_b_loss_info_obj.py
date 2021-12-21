@@ -337,6 +337,7 @@ G_bce_s100_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_loss_type("
 
 ##########################################################################################################################################################################
 ### 6
+G_tv_s0p1_bce_s001_loss_info_builder  = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 0.1, bce_scale=1)  #.build_gan_loss().build_gan_loss_containors()
 G_tv_s01_bce_s001_loss_info_builder  = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 1, bce_scale=1)  #.build_gan_loss().build_gan_loss_containors()
 G_tv_s04_bce_s001_loss_info_builder  = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 4, bce_scale=1)  #.build_gan_loss().build_gan_loss_containors()
 G_tv_s08_bce_s001_loss_info_builder  = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 8, bce_scale=1)  #.build_gan_loss().build_gan_loss_containors()
