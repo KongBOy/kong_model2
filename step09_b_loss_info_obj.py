@@ -188,49 +188,77 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
         return self
 
     ### 5 ################################################################################################################################################
-    def build_bce_and_sobel_mae_loss_fun_and_containor(self):
-        ''' 因為命名關係，要注意先後順序喔 '''
-        self.build_bce_loss_fun_and_containor()
-        self.build_sobel_mae_loss_fun_and_containor()
-        return self
+    # def build_bce_and_sobel_mae_loss_fun_and_containor(self):
+    #     ''' 因為命名關係，要注意先後順序喔 '''
+    #     return self
 
     ### 6 ################################################################################################################################################
-    def build_tv_bce_loss_fun_and_containor(self):
-        ''' 因為命名關係，要注意先後順序喔 '''
-        self.build_tv_loss_fun_and_containor()
-        self.build_bce_loss_fun_and_containor()
-        return self
+    # def build_tv_bce_loss_fun_and_containor(self):
+    #     ''' 因為命名關係，要注意先後順序喔 '''
+    #     self.build_tv_loss_fun_and_containor()
+    #     self.build_bce_loss_fun_and_containor()
+    #     return self
 
     ### 7 ################################################################################################################################################
-    def build_tv_sobel_loss_fun_and_containor(self):
-        ''' 因為命名關係，要注意先後順序喔 '''
-        self.build_tv_loss_fun_and_containor()
-        self.build_sobel_mae_loss_fun_and_containor()
-        return self
+    # def build_tv_sobel_loss_fun_and_containor(self):
+    #     ''' 因為命名關係，要注意先後順序喔 '''
+    #     self.build_tv_loss_fun_and_containor()
+    #     self.build_sobel_mae_loss_fun_and_containor()
+    #     return self
 
     ### 8 ################################################################################################################################################
-    def build_tv_bce_sobel_k5_loss_fun_and_containor(self):
-        ''' 因為命名關係，要注意先後順序喔 '''
-        self.build_tv_loss_fun_and_containor()
-        self.build_bce_loss_fun_and_containor()
-        self.build_sobel_mae_loss_fun_and_containor()
-        return self
+    # def build_tv_bce_sobel_k5_loss_fun_and_containor(self):
+    #     ''' 因為命名關係，要注意先後順序喔 '''
+    #     self.build_tv_loss_fun_and_containor()
+    #     self.build_bce_loss_fun_and_containor()
+    #     self.build_sobel_mae_loss_fun_and_containor()
+    #     return self
 
 class Loss_info_builder(Loss_info_G_loss_builder):
     def build(self):
         # print("self.loss_info_obj.logs_read_dir ~  ~  ~  ~  ", self.loss_info_obj.logs_read_dir)
         # print("self.loss_info_obj.logs_write_dir~  ~  ~  ~  ", self.loss_info_obj.logs_write_dir)
+        ''' 多loss 的部分 因為命名關係，要注意先後順序喔 '''
+        if(self.loss_info_obj.loss_type   == "mse"):   self.build_mse_loss_fun_and_containor()
+        elif(self.loss_info_obj.loss_type == "mae"):   self.build_mae_loss_fun_and_containor()
+        ### 2
+        elif(self.loss_info_obj.loss_type == "bce"):   self.build_bce_loss_fun_and_containor()
+        ### 3
+        elif(self.loss_info_obj.loss_type == "sobel"): self.build_sobel_mae_loss_fun_and_containor()
+        ### 4
+        elif(self.loss_info_obj.loss_type == "tv"):    self.build_tv_loss_fun_and_containor()
 
-        if(self.loss_info_obj.loss_type   == "mse"):             self.build_g_mse_loss_fun_and_containor()
-        elif(self.loss_info_obj.loss_type == "mae"):             self.build_g_mae_loss_fun_and_containor()
+        ### 5
+        elif(self.loss_info_obj.loss_type == "bce+sobel"):
+            self.build_bce_loss_fun_and_containor()
+            self.build_sobel_mae_loss_fun_and_containor()
+        ### 6
+        elif(self.loss_info_obj.loss_type == "tv+bce"):
+            self.build_tv_loss_fun_and_containor()
+            self.build_bce_loss_fun_and_containor()
+        ### 7
+        elif(self.loss_info_obj.loss_type == "tv+sobel_k5"):
+            self.build_tv_loss_fun_and_containor()
+            self.build_sobel_mae_loss_fun_and_containor()
+        ### 8
+        elif(self.loss_info_obj.loss_type == "tv+bce+sobel_k5"):
+            self.build_tv_loss_fun_and_containor()
+            self.build_bce_loss_fun_and_containor()
+            self.build_sobel_mae_loss_fun_and_containor()
 
-        elif(self.loss_info_obj.loss_type == "bce"):             self.build_bce_loss_fun_and_containor()
-        elif(self.loss_info_obj.loss_type == "sobel"):           self.build_sobel_mae_loss_fun_and_containor()
-        elif(self.loss_info_obj.loss_type == "tv"):              self.build_tv_loss_fun_and_containor()
-        elif(self.loss_info_obj.loss_type == "bce+sobel"):       self.build_bce_and_sobel_mae_loss_fun_and_containor()
-        elif(self.loss_info_obj.loss_type == "tv+bce"):          self.build_tv_bce_loss_fun_and_containor()
-        elif(self.loss_info_obj.loss_type == "tv+sobel_k5"):     self.build_tv_sobel_loss_fun_and_containor()
-        elif(self.loss_info_obj.loss_type == "tv+bce+sobel_k5"): self.build_tv_bce_sobel_k5_loss_fun_and_containor()
+        ### 9
+        elif(self.loss_info_obj.loss_type == "mae+sobel"):
+            self.build_mae_loss_fun_and_containor()
+            self.build_sobel_mae_loss_fun_and_containor()
+        ### 10
+        elif(self.loss_info_obj.loss_type == "mae+tv"):
+            self.build_mae_loss_fun_and_containor()
+            self.build_tv_loss_fun_and_containor()
+        ### 11
+        elif(self.loss_info_obj.loss_type == "mae+sobel+tv"):
+            self.build_mae_loss_fun_and_containor()
+            self.build_sobel_mae_loss_fun_and_containor()
+            self.build_tv_loss_fun_and_containor()
 
         elif(self.loss_info_obj.loss_type == "justG"):            self.build_gan_loss()
         elif(self.loss_info_obj.loss_type == "GAN"):              self.build_gan_loss_containors()
@@ -853,22 +881,119 @@ G_tv_s100_bce_s100_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_los
 G_tv_s100_bce_s100_sobel_k5_s060_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce+sobel_k5", tv_scale=100, bce_scale= 100, sobel_kernel_size=5, sobel_kernel_scale=  60)
 G_tv_s100_bce_s100_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce+sobel_k5", tv_scale=100, bce_scale= 100, sobel_kernel_size=5, sobel_kernel_scale=  80)
 G_tv_s100_bce_s100_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_loss_type("tv+bce+sobel_k5", tv_scale=100, bce_scale= 100, sobel_kernel_size=5, sobel_kernel_scale= 100)
+##########################################################################################################################################################################
+### 9
+mae_s001_sobel_k3_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=3, sobel_kernel_scale=  1)
+mae_s001_sobel_k7_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=7, sobel_kernel_scale=  1)
+mae_s001_sobel_k7_s780_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=7, sobel_kernel_scale=780)
+
+mae_s001_sobel_k5_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1)
+mae_s001_sobel_k5_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale= 20)
+mae_s001_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale= 40)
+mae_s001_sobel_k5_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale= 60)
+mae_s001_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale= 80)
+mae_s001_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=100)
+mae_s001_sobel_k5_s120_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=120)
+mae_s001_sobel_k5_s140_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=140)
+mae_s001_sobel_k5_s160_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=160)
+mae_s001_sobel_k5_s180_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=180)
+
+mae_s020_sobel_k5_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 20, sobel_kernel_size=5, sobel_kernel_scale=  1)
+mae_s020_sobel_k5_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 20, sobel_kernel_size=5, sobel_kernel_scale= 20)
+mae_s020_sobel_k5_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 20, sobel_kernel_size=5, sobel_kernel_scale= 40)
+mae_s020_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 20, sobel_kernel_size=5, sobel_kernel_scale= 60)
+mae_s020_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 20, sobel_kernel_size=5, sobel_kernel_scale= 80)
+mae_s020_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 20, sobel_kernel_size=5, sobel_kernel_scale=100)
+
+mae_s040_sobel_k5_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 40, sobel_kernel_size=5, sobel_kernel_scale=  1)
+mae_s040_sobel_k5_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 40, sobel_kernel_size=5, sobel_kernel_scale= 20)
+mae_s040_sobel_k5_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 40, sobel_kernel_size=5, sobel_kernel_scale= 40)
+mae_s040_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 40, sobel_kernel_size=5, sobel_kernel_scale= 60)
+mae_s040_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 40, sobel_kernel_size=5, sobel_kernel_scale= 80)
+mae_s040_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 40, sobel_kernel_size=5, sobel_kernel_scale=100)
+
+mae_s060_sobel_k5_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 60, sobel_kernel_size=5, sobel_kernel_scale=  1)
+mae_s060_sobel_k5_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 60, sobel_kernel_size=5, sobel_kernel_scale= 20)
+mae_s060_sobel_k5_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 60, sobel_kernel_size=5, sobel_kernel_scale= 40)
+mae_s060_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 60, sobel_kernel_size=5, sobel_kernel_scale= 60)
+mae_s060_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 60, sobel_kernel_size=5, sobel_kernel_scale= 80)
+mae_s060_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 60, sobel_kernel_size=5, sobel_kernel_scale=100)
+
+mae_s080_sobel_k5_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 80, sobel_kernel_size=5, sobel_kernel_scale=  1)
+mae_s080_sobel_k5_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 80, sobel_kernel_size=5, sobel_kernel_scale= 20)
+mae_s080_sobel_k5_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 80, sobel_kernel_size=5, sobel_kernel_scale= 40)
+mae_s080_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 80, sobel_kernel_size=5, sobel_kernel_scale= 60)
+mae_s080_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 80, sobel_kernel_size=5, sobel_kernel_scale= 80)
+mae_s080_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale= 80, sobel_kernel_size=5, sobel_kernel_scale=100)
+
+mae_s100_sobel_k5_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale=  1)
+mae_s100_sobel_k5_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 20)
+mae_s100_sobel_k5_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 40)
+mae_s100_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 60)
+mae_s100_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 80)
+##########################################################################################################################################################################
+### 10
+mae_s001_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale=  1)
+mae_s001_tv_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale= 20)
+mae_s001_tv_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale= 40)
+mae_s001_tv_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale= 60)
+mae_s001_tv_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale= 80)
+mae_s001_tv_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale=100)
+mae_s001_tv_s120_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale=120)
+mae_s001_tv_s140_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale=140)
+mae_s001_tv_s160_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale=160)
+mae_s001_tv_s180_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale=180)
+
+mae_s020_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 20, tv_scale=  1)
+mae_s020_tv_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 20, tv_scale= 20)
+mae_s020_tv_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 20, tv_scale= 40)
+mae_s020_tv_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 20, tv_scale= 60)
+mae_s020_tv_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 20, tv_scale= 80)
+mae_s020_tv_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 20, tv_scale=100)
+
+mae_s040_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 40, tv_scale=  1)
+mae_s040_tv_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 40, tv_scale= 20)
+mae_s040_tv_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 40, tv_scale= 40)
+mae_s040_tv_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 40, tv_scale= 60)
+mae_s040_tv_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 40, tv_scale= 80)
+mae_s040_tv_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 40, tv_scale=100)
+
+mae_s060_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 60, tv_scale=  1)
+mae_s060_tv_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 60, tv_scale= 20)
+mae_s060_tv_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 60, tv_scale= 40)
+mae_s060_tv_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 60, tv_scale= 60)
+mae_s060_tv_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 60, tv_scale= 80)
+mae_s060_tv_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 60, tv_scale=100)
+
+mae_s080_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 80, tv_scale=  1)
+mae_s080_tv_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 80, tv_scale= 20)
+mae_s080_tv_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 80, tv_scale= 40)
+mae_s080_tv_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 80, tv_scale= 60)
+mae_s080_tv_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 80, tv_scale= 80)
+mae_s080_tv_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale= 80, tv_scale=100)
+
+mae_s100_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=100, tv_scale=  1)
+mae_s100_tv_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=100, tv_scale= 20)
+mae_s100_tv_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=100, tv_scale= 40)
+mae_s100_tv_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=100, tv_scale= 60)
+mae_s100_tv_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=100, tv_scale= 80)
+mae_s100_tv_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=100, tv_scale=100)
 
 
 GAN_mae_loss_info                  = Loss_info_builder().set_loss_type("justG")  #.build_gan_loss().build_gan_loss_containors()
 
 if(__name__ == "__main__"):
     # from step09_d_KModel_builder import MODEL_NAME
-    # loss_info_obj = Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_g_mse_loss_fun_and_containor().build()
-    # print(Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_g_mse_loss_fun_and_containor().build())
+    # loss_info_obj = Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_mse_loss_fun_and_containor().build()
+    # print(Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_mse_loss_fun_and_containor().build())
     # print(loss_info_obj.loss_containors)
     # print(loss_info_obj.summary_writer)
 
-    # loss_info_b1 = Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_g_mse_loss_fun_and_containor()
+    # loss_info_b1 = Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_mse_loss_fun_and_containor()
     # loss_info_b2 = loss_info_b1.copy().set_logs_dir(logs_read_dir="def", logs_write_dir="def")   ### 如果 不copy() 的話，原本的 "abc" 會被改調喔！
     # print(loss_info_b1.loss_info_obj.logs_read_dir)
     # print(loss_info_b2.loss_info_obj.logs_read_dir)
-    # loss_info_obj = Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").set_loss_type("mse").build()  #.build_g_mse_loss_fun_and_containor().build()
+    # loss_info_obj = Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").set_loss_type("mse").build()  #.build_mse_loss_fun_and_containor().build()
 
     loss_info_obj = G_bce_sobel_k7_s780_loss_info_builder.build()
     print(loss_info_obj.loss_funs_dict["mask_Sobel_MAE"].sobel_kernel_scale)
