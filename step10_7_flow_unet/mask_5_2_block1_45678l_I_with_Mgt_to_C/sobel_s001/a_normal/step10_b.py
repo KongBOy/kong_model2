@@ -28,13 +28,13 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L7_ch016_copy.{run}"])
 # exit()
 #### 3l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L3_ch064.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch032.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch016.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch008.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch004.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch002.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch001.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch064.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch032.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch016.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch008.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch004.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch002.{compress_all}"])  ### 同色 無法 bm_rec
+# sb.run(cmd_python_step10_a + [f"L3_ch001.{compress_all}"])  ### 同色 無法 bm_rec
 # sb.run(cmd_python_step10_a + [f"L3_ch128.{run}"])
 #### 4l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L4_ch064.{compress_and_bm_rec_all}"])
@@ -46,22 +46,22 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L4_ch001.{compress_all}"])  ### 太差 bm_rec 做太慢
 # sb.run(cmd_python_step10_a + [f"L4_ch128.{run}"])
 #### 5l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L5_ch064.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch032.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch016.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch008.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch004.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch002.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch001.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch064.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch032.{compress_all}"])  ### 同色，無法 bm_rec
+# sb.run(cmd_python_step10_a + [f"L5_ch016.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch008.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch004.{compress_and_bm_rec_all}"])  ### 看起來有點差 try try
+# sb.run(cmd_python_step10_a + [f"L5_ch002.{compress_and_bm_rec_all}"])  ### 看起來有點差 try try
+# sb.run(cmd_python_step10_a + [f"L5_ch001.{compress_all}"]) ### 看起來太差，就不bm_rec了
 # sb.run(cmd_python_step10_a + [f"L5_ch128.{run}"])
 #### 6l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L6_ch032.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch016.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch008.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch004.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch002.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch032.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch016.{compress_all}"])  ### 同色，bm_rec 做不起來
+# sb.run(cmd_python_step10_a + [f"L6_ch008.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch004.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch002.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch001.{compress_all}"])  ### 同色，bm_rec 做不起來
+# sb.run(cmd_python_step10_a + [f"L6_ch064.{compress_all}"])  ### 同色，bm_rec 做不起來
 #### 7l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L7_ch016.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch008.{run}"])
