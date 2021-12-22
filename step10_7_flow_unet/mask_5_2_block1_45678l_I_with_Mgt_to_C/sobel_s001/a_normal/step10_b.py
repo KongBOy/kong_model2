@@ -33,8 +33,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L3_ch016.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch008.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch002.{compress_all}"])  ### 同色 無法 bm_rec
+# sb.run(cmd_python_step10_a + [f"L3_ch001.{compress_all}"])  ### 同色 無法 bm_rec
 # sb.run(cmd_python_step10_a + [f"L3_ch128.{run}"])
 #### 4l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L4_ch064.{compress_and_bm_rec_all}"])
