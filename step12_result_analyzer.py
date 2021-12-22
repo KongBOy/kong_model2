@@ -188,6 +188,7 @@ class Col_results_analyzer(Result_analyzer):
 
     def analyze_col_results_single_see(self, see_num, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
         print(f"{self.ana_describe} doing analyze_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
+        print(f"analyze_dst_dir: {self.analyze_dst_dir}")
         """
         真的在做事情的地方a
         _Draw_col_results_single_see_ 的 前置步驟：設定格式
@@ -223,6 +224,7 @@ class Col_results_analyzer(Result_analyzer):
 
     def analyze_col_results_all_single_see(self, single_see_multiprocess=False, single_see_core_amount=8):
         print(f"{self.ana_describe} doing analyze_col_results_all_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}")
+        print(f"analyze_dst_dir: {self.analyze_dst_dir}")
         """
         方便做事情的介面，自動走訪所有 see
         """
@@ -241,6 +243,7 @@ class Col_results_analyzer(Result_analyzer):
 
     def analyze_col_results_all_single_see_multiprocess(self, core_amount=8, task_amount=32, single_see_multiprocess=False, single_see_core_amount=8):
         print(f"{self.ana_describe} doing analyze_col_results_all_single_see_multiprocess, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}")
+        print(f"analyze_dst_dir: {self.analyze_dst_dir}")
         """
         包 第二層 multiprocess
 
@@ -416,6 +419,7 @@ class Row_col_results_analyzer(Result_analyzer):
 
     def analyze_row_col_results_single_see(self, see_num, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
         print(f"{self.ana_describe} doing analyze_row_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
+        print(f"analyze_dst_dir: {self.analyze_dst_dir}")
         start_time = time.time()
         analyze_see_dir = self.analyze_dst_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + self.r_c_results[0][0].sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_dir)  ### 建立 存結果的資料夾

@@ -42,14 +42,14 @@ if(__name__ == "__main__"):
 
     ###############################
     ana_name = "L2345678_block1_5_coord_conv-bce_s001_100"
-    L2345_block1_coord_conv_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/ana_{ana_name}",
+    L2345_block1_coord_conv_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=L2345678_block1_bce_coord_conv, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                           #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                           #   .Gather_all_see_final_img()
 
     ana_name = "L23456_block1_5_coord_conv-bce_s001_100"
-    L2345_block1_coord_conv_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/ana_{ana_name}",
+    L2345_block1_coord_conv_bce_s001_100_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=L23456_block1_bce_coord_conv, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                           #   .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\

@@ -41,7 +41,7 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "2c_block1_mask_L345678_2-ch128,64,32,16,8,4,2,1_mae_s001"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/ana_{ana_name}",
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what="mask",
                                         row_col_results=mask_block1_mae_s001_L2345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
                                 .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
