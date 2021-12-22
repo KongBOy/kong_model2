@@ -149,14 +149,14 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
         self.loss_info_obj.loss_describe = "_".join(self.loss_info_obj.loss_describe_eles)
 
     ### before ################################################################################################################################################
-    def build_g_mae_loss_fun_and_containor(self):
+    def build_mae_loss_fun_and_containor(self):
         loss_describe = "mae_s%03i" % self.args["mae_scale"]
         self._update_loss_describe(loss_describe)
         self.loss_info_obj.loss_funs_dict [loss_describe]  = MAE(**self.args)
         self.loss_info_obj.loss_containors[loss_describe] = tf.keras.metrics.Mean(loss_describe, dtype=tf.float32)
         return self
 
-    def build_g_mse_loss_fun_and_containor(self):
+    def build_mse_loss_fun_and_containor(self):
         loss_describe = "mae_s%03i" % self.args["mse_scale"]
         self._update_loss_describe(loss_describe)
         self.loss_info_obj.loss_funs_dict[loss_describe]  = mse_kong
