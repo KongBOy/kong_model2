@@ -47,12 +47,12 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L4_ch128.{run}"])
 #### 5l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L5_ch064.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch032.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch032.{compress_all}"])  ### 同色，無法 bm_rec
 # sb.run(cmd_python_step10_a + [f"L5_ch016.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch008.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch004.{compress_and_bm_rec_all}"])  ### 看起來有點差 try try
+# sb.run(cmd_python_step10_a + [f"L5_ch002.{compress_and_bm_rec_all}"])  ### 看起來有點差 try try
+# sb.run(cmd_python_step10_a + [f"L5_ch001.{compress_all}"]) ### 看起來太差，就不bm_rec了
 # sb.run(cmd_python_step10_a + [f"L5_ch128.{run}"])
 #### 6l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L6_ch032.{run}"])
