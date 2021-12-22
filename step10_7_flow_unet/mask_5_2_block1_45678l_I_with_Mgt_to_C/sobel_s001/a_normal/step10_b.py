@@ -41,9 +41,9 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L4_ch032.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch016.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch008.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch004.{compress_all}"])  ### 太差 bm_rec 做太慢
+# sb.run(cmd_python_step10_a + [f"L4_ch002.{compress_all}"])  ### 太差 bm_rec 做太慢
+# sb.run(cmd_python_step10_a + [f"L4_ch001.{compress_all}"])  ### 太差 bm_rec 做太慢
 # sb.run(cmd_python_step10_a + [f"L4_ch128.{run}"])
 #### 5l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L5_ch064.{run}"])
