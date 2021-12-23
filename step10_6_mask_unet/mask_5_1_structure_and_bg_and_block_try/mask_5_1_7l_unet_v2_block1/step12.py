@@ -41,52 +41,52 @@ if(__name__ == "__main__"):
     ana_name = "1_ch-1_row"
     mask_L7_ch_analyze = Col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                               ana_what="mask",
-                                              col_results=mask_L7_block1_ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                              col_results=mask_L7_block1_ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_col_results_all_single_see(single_see_multiprocess=True)
     ############################################
     ana_name = "1_ch-2_row"
     mask_layer_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_L7_block1_ch[:4],
-                                                                   mask_L7_block1_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                                   mask_L7_block1_ch[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ########################################################################################
     ana_name = "2_layer-1_row"
     mask_L7_ch_analyze = Col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                               ana_what="mask",
-                                              col_results=mask_L7_block1_layer, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                              col_results=mask_L7_block1_layer, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_col_results_all_single_see(single_see_multiprocess=True)
     ############################################
     ana_name = "2_layer-2_row"
     mask_layer_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_L7_block1_layer[:4],
-                                                                   mask_L7_block1_layer[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                                   mask_L7_block1_layer[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ########################################################################################
     ana_name = "3_noC-1_row"
     mask_L7_ch_analyze = Col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                               ana_what="mask",
-                                              col_results=mask_L7_block1_layer_noC, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                              col_results=mask_L7_block1_layer_noC, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_col_results_all_single_see(single_see_multiprocess=True)
     ############################################
     ana_name = "3_noC-2_row"
     mask_layer_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_L7_block1_layer_noC[:4],
-                                                                   mask_L7_block1_layer_noC[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                                   mask_L7_block1_layer_noC[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ########################################################################################
     ana_name = "4_skip_add-1_row"
     mask_L7_ch_analyze = Col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                               ana_what="mask",
-                                              col_results=mask_L7_block1_skip_add, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                              col_results=mask_L7_block1_skip_add, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_col_results_all_single_see(single_see_multiprocess=True)
     ############################################
     ana_name = "4_skip_add-2_row"
     mask_layer_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=[mask_L7_block1_skip_add[:4],
-                                                                   mask_L7_block1_skip_add[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                                   mask_L7_block1_skip_add[4:]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
 

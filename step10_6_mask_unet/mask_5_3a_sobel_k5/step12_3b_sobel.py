@@ -48,7 +48,7 @@ if(__name__ == "__main__"):
                                                 row_col_results=[ mask_sobel_k5_s001_ch[:3] + mask_sobel_k5_s060_ch[:3],
                                                                   mask_sobel_k5_s020_ch[:3] + mask_sobel_k5_s080_ch[:3],
                                                                   mask_sobel_k5_s040_ch[:3] + mask_sobel_k5_s100_ch[:3],
-                                                                  ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                                  ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                     .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     ############################################
     ana_name = "sobel_k5_s1,20,40,60,80,100-4_no_concat_and_add"
@@ -59,7 +59,7 @@ if(__name__ == "__main__"):
                                                                   [mask_sobel_k5_s040_ch[2]] + mask_sobel_k5_s040_noC_and_add + [mask_sobel_k5_s040_ch[2]],
                                                                   [mask_sobel_k5_s060_ch[2]] + mask_sobel_k5_s060_noC_and_add + [mask_sobel_k5_s060_ch[2]],
                                                                   [mask_sobel_k5_s080_ch[2]] + mask_sobel_k5_s080_noC_and_add + [mask_sobel_k5_s080_ch[2]],
-                                                                  [mask_sobel_k5_s100_ch[2]] + mask_sobel_k5_s100_noC_and_add + [mask_sobel_k5_s100_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                                  [mask_sobel_k5_s100_ch[2]] + mask_sobel_k5_s100_noC_and_add + [mask_sobel_k5_s100_ch[2]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                     # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
@@ -69,5 +69,5 @@ if(__name__ == "__main__"):
                                                 row_col_results=[ mask_ch032_sobel_k5_s1_260[  : 5],
                                                                   mask_ch032_sobel_k5_s1_260[ 5:10],
                                                                   mask_ch032_sobel_k5_s1_260[10:  ],
-                                                                  ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
+                                                                  ], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                     # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
