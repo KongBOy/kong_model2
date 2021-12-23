@@ -171,7 +171,8 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
                             I_to_C_with_Mgt_to_F=False,
                             I_to_W=False,
                             I_with_Mgt_to_C_with_Mgt_to_F=False,
-                            I_to_M_w_I_to_C=False, 
+                            I_to_M_w_I_to_C=False,
+                            I_to_Cx_Cy = False,
                             Mgt_to_C_with_gt_M_to_F=False):
         if  (I_to_M):
             from step08_b_use_G_generate_I_to_M import I_Generate_M, I_Generate_M_see, I_Gen_M_test
@@ -203,20 +204,26 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
             from step08_b_use_G_generate_I_to_W import I_Generate_W, I_Generate_W_see
             self.kong_model.generate_results = I_Generate_W        ### 不能checkpoint
             self.kong_model.generate_sees    = I_Generate_W_see    ### 不能checkpoint
+        elif(I_to_Cx_Cy):
+            from step08_b_use_G_generate_I_w_M_to_Cx_Cy import I_w_Mgt_Gen_Cx_Cy_to_C, I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see, I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test
+            self.kong_model.generate_results = I_w_Mgt_Gen_Cx_Cy_to_C
+            self.kong_model.generate_sees    = I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see
+            self.kong_model.generate_tests   = I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test
         else:
             from step08_b_use_G_generate_I_to_F import I_Generate_F, I_Generate_F_see, I_Gen_F_test
             self.kong_model.generate_results = I_Generate_F             ### 不能checkpoint
             self.kong_model.generate_sees    = I_Generate_F_see    ### 不能checkpoint
             self.kong_model.generate_tests   = I_Gen_F_test    ### 不能checkpoint
 
-    def hook_build_and_gen_op(self, I_to_M=False, I_to_C_with_Mgt_to_F=False, I_to_W=False, I_with_Mgt_to_C_with_Mgt_to_F=False, I_to_M_w_I_to_C=False, Mgt_to_C_with_gt_M_to_F=False):
+    def hook_build_and_gen_op(self, I_to_M=False, I_to_C_with_Mgt_to_F=False, I_to_W=False, I_with_Mgt_to_C_with_Mgt_to_F=False, I_to_M_w_I_to_C=False, Mgt_to_C_with_gt_M_to_F=False, I_to_Cx_Cy=False):
         def _hook_Gen_op():
             self._hook_Gen_op_part( I_to_M=I_to_M,
                                     I_to_C_with_Mgt_to_F=I_to_C_with_Mgt_to_F,
                                     I_to_W=I_to_W,
                                     I_with_Mgt_to_C_with_Mgt_to_F=I_with_Mgt_to_C_with_Mgt_to_F,
                                     I_to_M_w_I_to_C=I_to_M_w_I_to_C,
-                                    Mgt_to_C_with_gt_M_to_F=Mgt_to_C_with_gt_M_to_F)  ### 用 flow_op
+                                    Mgt_to_C_with_gt_M_to_F=Mgt_to_C_with_gt_M_to_F,
+                                    I_to_Cx_Cy=I_to_Cx_Cy)  ### 用 flow_op
             print("build_flow_unet2~~", "finish")
             # return self.kong_model
         self.build_ops.append(_hook_Gen_op)

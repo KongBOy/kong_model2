@@ -30,6 +30,12 @@ class Multi_Generator(tf.keras.models.Model):
             C = self.gens_dict["W_to_C"](W)
             return M, W, C
 
+        elif(self.op_type == "I_to_Cx_Cy"):
+            I = input_tensor
+            Cx = self.gens_dict["I_to_Cx"](I)
+            Cy = self.gens_dict["I_to_Cy"](I)
+            return Cx, Cy
+
 def see(model_obj, train_in_pre):
     M_pre, C_pre = model_obj.generator(train_in_pre)
 
