@@ -2,6 +2,7 @@ import cv2
 import time
 from tqdm import tqdm
 import datetime
+import numpy as np
 
 import sys
 sys.path.append("kong_util")
@@ -17,11 +18,13 @@ import os
 import shutil
 
 class Result_analyzer:
-    def __init__(self, ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False):
+    def __init__(self, ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False, img_h=768, img_w=768):
         self.ana_describe = ana_describe
         self.analyze_dst_dir = Analyze_Write_Dir + "result" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
 
         self.ana_what = ana_what
+        self.img_h = img_h  ### 給 空影像用的
+        self.img_w = img_w  ### 給 空影像用的
         '''
         mask,
         flow,
@@ -80,8 +83,8 @@ class Result_analyzer:
 ########################################################################################################################################
 ########################################################################################################################################
 class Col_results_analyzer(Result_analyzer):
-    def __init__(self, ana_describe, ana_what, col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False):
-        super().__init__(ana_describe, ana_what, show_in_img, show_gt_img)
+    def __init__(self, ana_describe, ana_what, col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768):
+        super().__init__(ana_describe, ana_what, show_in_img, show_gt_img, img_h=img_h, img_w=img_w)
 
         self.c_results = col_results
         self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
@@ -121,14 +124,16 @@ class Col_results_analyzer(Result_analyzer):
             use_epoch = min(trained_epoch, epoch)  ### 超出範圍就取最後一張
 
             ### debug 用
-            # print(f"epoch={epoch},    result.trained_epoch={trained_epoch},    use_epoch={use_epoch},    len(rec_read_paths)={len(result.sees[see_num].rec_read_paths)},    result.sees[{see_num}].rec_read_paths[{use_epoch}]={result.sees[see_num].rec_read_paths[use_epoch]}")
+            # print(f"epoch={epoch}, result.trained_epoch={trained_epoch}, use_epoch={use_epoch}")
 
-            ### 可以直接調整這裡 來決定 analyze 要畫什麼， 當然這是寫死的寫法不大好， 有空再寫得更通用吧～
-            if  (self.ana_what == "rec"):  c_imgs.append(cv2.imread(result.sees[see_num].rec_read_paths[use_epoch]))
-            elif(self.ana_what == "flow"): c_imgs.append(cv2.imread(result.sees[see_num].flow_ep_jpg_read_paths[use_epoch]))
-            elif(self.ana_what == "mask"): c_imgs.append(cv2.imread(result.sees[see_num].mask_read_paths[use_epoch]))
+            if(use_epoch == -1): c_imgs.append(np.zeros(shape=[self.img_h, self.img_w, 3]))  ### use_epoch 代表 沒有做該任務， 比如有些flow太差 bm_rec就做不起來， 這時就填充 空影像 即可～
+            else:
+                ### 可以直接調整這裡 來決定 analyze 要畫什麼， 當然這是寫死的寫法不大好， 有空再寫得更通用吧～
+                if  (self.ana_what == "rec"):  c_imgs.append(cv2.imread(result.sees[see_num].rec_read_paths[use_epoch]))
+                elif(self.ana_what == "flow"): c_imgs.append(cv2.imread(result.sees[see_num].flow_ep_jpg_read_paths[use_epoch]))
+                elif(self.ana_what == "mask"): c_imgs.append(cv2.imread(result.sees[see_num].mask_read_paths[use_epoch]))
 
-            # c_imgs.append(cv2.imread(result.sees[see_num].see_jpg_paths[epoch + 2]))
+                # c_imgs.append(cv2.imread(result.sees[see_num].see_jpg_paths[epoch + 2]))
         return c_imgs
 
     def step2b_get_c_results_imgs_and_attach_in_gt(self, see_num, epoch, in_img, gt_img):
@@ -348,8 +353,8 @@ class Col_results_analyzer(Result_analyzer):
 
 ### 目前小任務還沒有切multiprocess喔！
 class Row_col_results_analyzer(Result_analyzer):
-    def __init__(self, ana_describe, ana_what, row_col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False):
-        super().__init__(ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss)
+    def __init__(self, ana_describe, ana_what, row_col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768):
+        super().__init__(ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss, img_h=img_h, img_w=img_w)
 
         self.r_c_results = row_col_results
         self.r_c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_min_trained_epoch()去抓
@@ -487,8 +492,8 @@ def doing_analyze_2page(analyze_obj):
 ################################################################################################################################################################
 
 class Bm_Rec_exps_analyze(Result_analyzer):
-    def __init__(self, ana_describe, ana_what, exps, show_in_img, show_gt_img):
-        super().__init__(ana_describe, ana_what, show_in_img, show_gt_img)
+    def __init__(self, ana_describe, ana_what, exps, show_in_img, show_gt_img, img_h=768, img_w=768):
+        super().__init__(ana_describe, ana_what, show_in_img, show_gt_img, img_h=img_h, img_w=img_w)
         self.exps = exps
 
     def _build_analyze_see_bm_rec_dir(self, see_num, dst_dir, reset_dir=True):
