@@ -26,7 +26,7 @@ import sobel_s001.b_limit .step10_a as mae_block1_limit
 ### Layer_Ch
 Layer_Ch = [
     [
-### L3 之前直接跳過 因為發現幾乎無法 rec #######################################################################
+        ### L3 之前直接跳過 因為發現幾乎無法 rec #######################################################################
         mae_block1.L3_ch128.build().result_obj,
         mae_block1.L3_ch064.build().result_obj,
         mae_block1.L3_ch032.build().result_obj,

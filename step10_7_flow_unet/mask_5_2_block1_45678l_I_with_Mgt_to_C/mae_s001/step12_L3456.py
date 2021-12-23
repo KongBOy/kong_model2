@@ -18,7 +18,7 @@ if(__name__ == "__main__"):
     # print("    kong_model2_dir:", kong_model2_dir)
     #############################################################################################################################################################################################################
     from step12_result_analyzer import Row_col_results_analyzer
-    from step11 import  *
+    from step11_L3456 import  *
     #############################################################################################################################################################################################################
     kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer
     if  (kong_to_py_layer == 2): template_dir = code_exe_path_element[kong_layer + 1][7:]  ### [7:] 是為了去掉 step1x_
@@ -43,13 +43,12 @@ if(__name__ == "__main__"):
     ana_name = "Layer_Ch"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what="flow",
-                                        row_col_results=mae_block1_flow_s001_L345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                        row_col_results=Layer_Ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             .Gather_all_see_final_img()
     ######################################
-    ana_name = "2c_block1_rec_L45678_2-ch128,64,32,16,8,4,2,1_mae_s001"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what="rec",
-                                        row_col_results=mae_block1_rec_s001_L45678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                        row_col_results=Layer_Ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             .Gather_all_see_final_img()
