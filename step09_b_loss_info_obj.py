@@ -982,6 +982,7 @@ mae_s100_tv_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv",
 ##########################################################################################################################################################################
 ### 10
 mae_s001_sobel_k5_s001_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel+tv", mae_scale=  1, sobel_kernel_size=3, sobel_kernel_scale=  1, tv_scale=  1)
+mae_s0p1_sobel_k5_s0p1_tv_s0p1_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel+tv", mae_scale=0.1, sobel_kernel_size=3, sobel_kernel_scale=0.1, tv_scale=0.1)
 
 GAN_mae_loss_info                  = Loss_info_builder().set_loss_type("justG")  #.build_gan_loss().build_gan_loss_containors()
 
