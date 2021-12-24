@@ -58,13 +58,13 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_
     see_write_dir   = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
-        cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg",       in_img)             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", gt_mask_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        cv2.imwrite(see_write_dir + "/" + "0b-gt_b_gt_flow.jpg", gt_flow_visual)                            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        np.save    (see_write_dir + "/" + "0b-gt_b_gt_flow",     gt_flow)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        cv2.imwrite(see_write_dir + "/" + "0c-rec_hope.jpg",     rec_hope)           ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張
-    np.save(    see_write_dir + "/" + "epoch_%04i_a_flow"            % current_ep, flow)                         ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flow_visual.jpg" % current_ep, flow_visual)                  ### 把 生成的 flow_visual 存進相對應的資料夾
+        cv2.imwrite(see_write_dir + "/" + "0a-in_img.jpg",       in_img)                         ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", gt_mask_visual)                 ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_write_dir + "/" + "0b-gt_b_gt_flow.jpg", gt_flow_visual)                 ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        np.save    (see_write_dir + "/" + "0b-gt_b_gt_flow",     gt_flow)                        ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(see_write_dir + "/" + "0c-rec_hope.jpg",     rec_hope)                       ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張
+    np.save(    see_write_dir + "/" + "epoch_%04i_a_flow"            % current_ep, flow)         ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flow_visual.jpg" % current_ep, flow_visual)  ### 把 生成的 flow_visual 存進相對應的資料夾
 
 def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=-999, exp_obj=None, training=True, add_loss=False, bgr2rgb=False):
     '''
@@ -77,9 +77,9 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test(model_G, test_name, in_img, in_img
     # gt_bm, gt_rec = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=gt_flow)  ### 因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！
 
     single_row_imgs = Matplot_single_row_imgs(
-                            imgs      =[ in_img , gt_mask_visual,  flow_visual ,    rec,   rec_hope],    ### 把要顯示的每張圖包成list
-                            img_titles=["in_img", "gt_mask",  "pred_flow_v", "pred_rec", "rec_hope"],    ### 把每張圖要顯示的字包成list
-                            fig_title ="test_%s, epoch=%04i" % (test_name, int(current_ep)),  ### 圖上的大標題
+                            imgs      =[ in_img , gt_mask_visual,  flow_visual ,    rec,   rec_hope],  ### 把要顯示的每張圖包成list
+                            img_titles=["in_img", "gt_mask",  "pred_flow_v", "pred_rec", "rec_hope"],  ### 把每張圖要顯示的字包成list
+                            fig_title ="test_%s, epoch=%04i" % (test_name, int(current_ep)),           ### 圖上的大標題
                             add_loss  =add_loss,
                             bgr2rgb   =bgr2rgb)
     single_row_imgs.Draw_img()
