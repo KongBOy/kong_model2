@@ -72,7 +72,7 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_
     np.save(    see_write_dir + "/" + "epoch_%04i_a_flow"            % current_ep, flow)         ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_Cx.jpg"          % current_ep, Cx_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_Cy.jpg"          % current_ep, Cy_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flowl.jpg" % current_ep, flow_visual)  ### 把 生成的 flow_visual 存進相對應的資料夾
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flow.jpg" % current_ep, flow_visual)  ### 把 生成的 flow_visual 存進相對應的資料夾
 
 def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=-999, exp_obj=None, training=True, add_loss=False, bgr2rgb=False):
     '''
