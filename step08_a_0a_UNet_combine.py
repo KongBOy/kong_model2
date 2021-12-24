@@ -136,7 +136,7 @@ class Generator(tf.keras.models.Model):
                 layer_id = self.depth_level - 1 - go
                 if (layer_id <= self.no_concat_layer): x1 = u_middle(x1)
                 else:                                  x1 = u_middle(x1, skips[skip_id])
-                skip -= 1
+                skip_id -= 1
             ### Up top
             # print(self.u_top.name)  ### debug 用
             x1 = self.u_top(x1)  ### up 的 top 沒有 skip
