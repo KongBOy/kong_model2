@@ -18,41 +18,37 @@ def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data):
         total_loss += losses[-1]
     return total_loss, losses
 
-@tf.function
-def train_step_pure_G_split_mask_move_I_to_M_w_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
-    '''
-    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
-    '''
-    gt_mask  = gt_data[0]
-    gt_coord = gt_data[1]
-    gt_datas = [gt_mask, gt_coord]
-    with tf.GradientTape() as gen_tape:
-        model_outputs = model_obj.generator(in_data)
-        # print("in_data.numpy().shape", in_data.numpy().shape)
-        # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
-        # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
-        multi_losses = []
-        multi_total_loss = 0
-        for go_m, model_output in enumerate(model_outputs):
-            total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[go_m], model_output, gt_datas[go_m])
-            multi_losses.append(losses)
-            multi_total_loss += total_loss
 
-        # gen_loss = loss_info_objs.loss_funs_dict["mask_BCE"]      (gt_data, model_output)
-        # sob_loss = loss_info_objs.loss_funs_dict["mask_Sobel_MAE"](gt_data, model_output)
-        # total_loss = gen_loss + sob_loss
+# def _train_step_multi_output_multi_optimizer(model_obj, in_data, gt_datas, loss_info_objs=None):
+#     with tf.GradientTape() as gen_tape:
+#         model_outputs = model_obj.generator(in_data)
+#         # print("in_data.numpy().shape", in_data.numpy().shape)
+#         # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
+#         # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
+#         multi_losses = []
+#         multi_total_loss = 0
+#         for go_m, model_output in enumerate(model_outputs):
+#             total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[go_m], model_output, gt_datas[go_m])
+#             multi_losses.append(losses)
+#             multi_total_loss += total_loss
 
-    total_gradients = gen_tape .gradient(multi_total_loss, model_obj.generator.trainable_variables)
-    # for gradient in generator_gradients:
-    #     print("gradient", gradient)
-    model_obj .optimizer_G .apply_gradients(zip(total_gradients, model_obj.generator.trainable_variables))
 
-    ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
-    for go_l, loss_info_objs in enumerate(loss_info_objs):
-        for go_containor, loss_containor in enumerate(loss_info_objs.loss_containors.values()):
-            loss_containor( multi_losses[go_l][go_containor] )
-    # loss_info_objs.loss_containors["mask_bce_loss"]      (gen_loss)
-    # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
+#         # gen_loss = loss_info_objs.loss_funs_dict["mask_BCE"]      (gt_data, model_output)
+#         # sob_loss = loss_info_objs.loss_funs_dict["mask_Sobel_MAE"](gt_data, model_output)
+#         # total_loss = gen_loss + sob_loss
+
+#     total_gradients = gen_tape .gradient(multi_total_loss, model_obj.generator.trainable_variables)
+#     # for gradient in generator_gradients:
+#     #     print("gradient", gradient)
+#     model_obj .optimizer_G .apply_gradients(zip(total_gradients, model_obj.generator.trainable_variables))
+
+#     ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
+#     for go_l, loss_info_objs in enumerate(loss_info_objs):
+#         for go_containor, loss_containor in enumerate(loss_info_objs.loss_containors.values()):
+#             loss_containor( multi_losses[go_l][go_containor] )
+#     # loss_info_objs.loss_containors["mask_bce_loss"]      (gen_loss)
+#     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
+
 
 def _train_step_multi_output(model_obj, in_data, gt_datas, loss_info_objs=None):
     with tf.GradientTape() as gen_tape:
@@ -84,6 +80,18 @@ def _train_step_multi_output(model_obj, in_data, gt_datas, loss_info_objs=None):
     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
 
 @tf.function
+def train_step_pure_G_split_mask_move_I_to_M_w_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+    '''
+    gt_mask  = gt_data[0]
+    gt_coord = gt_data[1]
+    gt_datas = [gt_mask, gt_coord]
+
+    _train_step_multi_output(in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+
+
+@tf.function
 def train_step_pure_G_split_mask_move_I_to_Cx_Cy(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
@@ -91,9 +99,11 @@ def train_step_pure_G_split_mask_move_I_to_Cx_Cy(model_obj, in_data, gt_data, lo
     gt_mask  = gt_data[0]
     I_with_M = in_data * gt_mask
 
-    gt_cx = gt_data[1][..., 1]
-    gt_cy = gt_data[1][..., 0]
+    gt_cx = gt_data[1][0:1, ..., 1:2]
+    gt_cy = gt_data[1][0:1, ..., 0:1]
     gt_datas = [gt_cx, gt_cy]
+    # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
+    # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
 
     ### debug 時 記得把 @tf.function 拿掉
     # import matplotlib.pyplot as plt
@@ -143,6 +153,28 @@ def _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_obj
     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
 
 ####################################################
+@tf.function
+def train_step_pure_G_split_mask_move_I_with_Mgt_to_Cx(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+    '''
+    ### in_img.shape (1, h, w, 3)
+    gt_mask = gt_data[0]   ### (1, h, w, 1)
+    gt_cx   = gt_data[1][0:1, ..., 1:2]  ### (1, h, w, 1)， 注意 藥用 slice 取 才能保持 shape 喔！
+    I_with_M = in_data * gt_mask
+    # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
+
+    ### debug 時 記得把 @tf.function 拿掉
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(15, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(I_with_M[0])
+    # ax[2].imshow(gt_cx[0])
+    # fig.tight_layout()
+    # plt.show()
+
+    _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=I_with_M, gt_data=gt_cx, loss_info_objs=loss_info_objs)
+
 @tf.function
 def train_step_pure_G_split_mask_move_I_with_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
