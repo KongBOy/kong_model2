@@ -8,7 +8,7 @@ from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-from step08_b_use_G_generate_0_util import C_postprocess, C_with_M_to_F_and_get_F_visual
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_with_M_to_F_and_get_F_visual
 ######################################################################################################################################################################################################
 def I_with_Mgt_Generate_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     '''
@@ -20,7 +20,7 @@ def I_with_Mgt_Generate_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt
 
     coord_pre      = model_G(I_pre_with_M, training=training)
     coord_pre = coord_pre[0].numpy()
-    coord = C_postprocess(coord_pre, use_gt_range)
+    coord = Value_Range_Postprocess_to_01(coord_pre, use_gt_range)
 
     I_with_M_visual = (I_pre_with_M[0].numpy() * 255.).astype(np.uint8)
     return coord, I_with_M_visual

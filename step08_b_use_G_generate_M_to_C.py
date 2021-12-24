@@ -8,7 +8,7 @@ from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-from step08_b_use_G_generate_0_util import C_postprocess, C_with_M_to_F_and_get_F_visual
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_with_M_to_F_and_get_F_visual
 
 ######################################################################################################################################################################################################
 def Mgt_Generate_C(model_G, _1, _2, _3, gt_mask_coord_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -20,7 +20,7 @@ def Mgt_Generate_C(model_G, _1, _2, _3, gt_mask_coord_pre, use_gt_range, trainin
 
     coord_pre = model_G(gt_mask_pre, training=training)
     coord_pre = coord_pre[0].numpy()
-    coord = C_postprocess(coord_pre, use_gt_range)
+    coord = Value_Range_Postprocess_to_01(coord_pre, use_gt_range)
     return coord
 
 def Mgt_Gen_C_with_Mgt_to_F_basic_data(model_G, in_img, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):

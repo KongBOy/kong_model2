@@ -8,13 +8,13 @@ from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-from step08_b_use_G_generate_0_util import flow_or_coord_visual_op, F_postprocess
+from step08_b_use_G_generate_0_util import flow_or_coord_visual_op, Value_Range_Postprocess_to_01
 
 ######################################################################################################################################################################################################
 def I_Generate_F(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     flow_pre = model_G(in_img_pre, training=training)
     flow_pre = flow_pre[0].numpy()
-    flow = F_postprocess(flow_pre, use_gt_range)
+    flow = Value_Range_Postprocess_to_01(flow_pre, use_gt_range)
     return flow
 
 def I_Gen_F_basic_data(model_G, in_img, in_img_pre, gt_flow, rec_hope, exp_obj=None, training=True, bgr2rgb=True):

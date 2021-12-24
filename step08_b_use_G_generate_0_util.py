@@ -33,18 +33,10 @@ def flow_or_coord_visual_op(data):
     return (method1(x=data[..., x_ind], y=data[..., y_ind], mask=mask)[..., ::-1] * 255.).astype(np.uint8)
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
-def F_postprocess(flow_pre, use_gt_range=Range( 0, 1)):
-    if  (use_gt_range == Range(-1, 1)): flow = (flow_pre + 1) / 2   ### 如果 use_gt_range 是 -1~1 記得轉回 0~1
-    elif(use_gt_range == Range( 0, 1)): flow = flow_pre
-    # flow [..., 1] = 1 - flow[..., 1]  ### y 上下 flip， 雖然背景會變成青色， 不過就試試看囉， 算了好麻煩還是保持原樣：在視覺化的時候 先不要 y_flip， 在rec時再flip好了～
-    # flow = flow[..., 0:1] * flow      ### 因為想看 pred_C 有沒有外溢， 所以就先不跟mask 相乘
-    return flow
-######################################################################################################################################################################################################
-def C_postprocess(coord_pre, use_gt_range=Range( 0, 1)):
-    if  (use_gt_range == Range(-1, 1)): coord = (coord_pre + 1) / 2   ### 如果 use_gt_range 是 -1~1 記得轉回 0~1
-    elif(use_gt_range == Range( 0, 1)): coord = coord_pre
-    # coord [..., 0] = 1 - coord[..., 0]  ### y 上下 flip， 雖然背景會變成青色， 不過就試試看囉， 算了好麻煩還是保持原樣：在視覺化的時候 先不要 y_flip， 在rec時再flip好了～
-    return coord
+def Value_Range_Postprocess_to_01(data_pre, use_gt_range=Range( 0, 1)):
+    if  (use_gt_range == Range(-1, 1)): data = (data_pre + 1) / 2   ### 如果 use_gt_range 是 -1~1 記得轉回 0~1
+    elif(use_gt_range == Range( 0, 1)): data = data_pre
+    return data
 ######################################################################################################################################################################################################
 def C_with_M_to_F_and_get_F_visual(coord, mask):
     flow        = np.concatenate([mask, coord], axis=-1)  ### channel concate

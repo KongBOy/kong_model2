@@ -9,7 +9,7 @@ from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-from step08_b_use_G_generate_0_util import C_postprocess, C_with_M_to_F_and_get_F_visual
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_with_M_to_F_and_get_F_visual
 
 ######################################################################################################################################################################################################
 def I_w_Mgt_Gen_Cx_Cy_to_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -21,7 +21,7 @@ def I_w_Mgt_Gen_Cx_Cy_to_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_g
     Cx_pre = Cx_pre[0].numpy()
     Cy_pre = Cy_pre[0].numpy()
     C_pre = np.concatenate([Cy_pre, Cx_pre], axis=-1)
-    C = C_postprocess(C_pre, use_gt_range)
+    C = Value_Range_Postprocess_to_01(C_pre, use_gt_range)
     return C
 
 def I_w_Mgt_Gen_Cx_Cy_to_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):

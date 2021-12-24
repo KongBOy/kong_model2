@@ -41,8 +41,8 @@ def see(model_obj, train_in_pre):
 
     M_visual = (M_pre[0].numpy() * 255.).astype(np.uint8)
 
-    from step08_b_use_G_generate_0_util import flow_or_coord_visual_op, C_postprocess
-    C = C_postprocess(C_pre[0])
+    from step08_b_use_G_generate_0_util import flow_or_coord_visual_op, Value_Range_Postprocess_to_01
+    C = Value_Range_Postprocess_to_01(C_pre[0])
     C_visual = flow_or_coord_visual_op(C)
 
     fig, ax = plt.subplots(nrows=1, ncols=2)
