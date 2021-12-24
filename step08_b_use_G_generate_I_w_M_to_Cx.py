@@ -60,6 +60,7 @@ def I_w_Mgt_to_Cx_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, gt_
         cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", gt_mask_visual)               ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_b_gt_cx.jpg",   gt_cx_visual)                 ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(see_write_dir + "/" + "0c-rec_hope.jpg",     rec_hope)                     ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_cx.jpg"          % current_ep, cx_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flow_visual.jpg" % current_ep, cx_visual)  ### 把 生成的 flow_visual 存進相對應的資料夾
 
 

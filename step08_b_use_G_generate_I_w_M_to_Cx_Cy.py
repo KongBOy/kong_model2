@@ -31,6 +31,8 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt
     '''
     in_img   = in_img[0].numpy()
     coord   = I_w_Mgt_Gen_Cx_Cy_to_C(model_G, None, in_img_pre, None, gt_mask_coord_pre, exp_obj.use_gt_range, training=training)
+    cx_visual = coord[..., 1:2]
+    cy_visual = coord[..., 0:1]
     gt_mask  = gt_mask_coord[0][0].numpy()
     gt_mask_visual = (gt_mask * 255).astype(np.uint8)
     gt_coord = gt_mask_coord[1][0].numpy()
@@ -44,7 +46,7 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt
         rec_hope       = rec_hope      [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
         flow_visual    = flow_visual   [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
         gt_flow_visual = gt_flow_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
-    return in_img, flow, flow_visual, gt_mask_visual, gt_flow_visual, gt_flow, rec_hope
+    return in_img, flow, flow_visual, gt_mask_visual, gt_flow_visual, gt_flow, cx_visual, cy_visual, rec_hope
 
 def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, bgr2rgb=True):
     '''
@@ -53,7 +55,7 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_
 
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
     '''
-    in_img, flow, flow_visual, gt_mask_visual, gt_flow_visual, gt_flow, rec_hope = I_w_Mgt_Gen_Cx_Cy_to_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+    in_img, flow, flow_visual, gt_mask_visual, gt_flow_visual, gt_flow, cx_visual, cy_visual, rec_hope = I_w_Mgt_Gen_Cx_Cy_to_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
 
     see_write_dir   = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
@@ -64,6 +66,8 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see(model_G, see_index, in_img, in_img_
         np.save    (see_write_dir + "/" + "0b-gt_b_gt_flow",     gt_flow)                        ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(see_write_dir + "/" + "0c-rec_hope.jpg",     rec_hope)                       ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張
     np.save(    see_write_dir + "/" + "epoch_%04i_a_flow"            % current_ep, flow)         ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_cx.jpg"          % current_ep, cx_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_cy.jpg"          % current_ep, cy_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_a_flow_visual.jpg" % current_ep, flow_visual)  ### 把 生成的 flow_visual 存進相對應的資料夾
 
 def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=-999, exp_obj=None, training=True, add_loss=False, bgr2rgb=False):
@@ -71,7 +75,7 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test(model_G, test_name, in_img, in_img
     bgr2rgb： tf2 讀出來是 rgb， 但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
     '''
     test_name      = test_name.numpy()[0].decode("utf-8")
-    in_img, flow, flow_visual, gt_mask_visual, gt_flow_visual, gt_flow, rec_hope = I_w_Mgt_Gen_Cx_Cy_to_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+    in_img, flow, flow_visual, gt_mask_visual, gt_flow_visual, gt_flow, cx_visual, cy_visual, rec_hope = I_w_Mgt_Gen_Cx_Cy_to_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
 
     bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=flow)
     # gt_bm, gt_rec = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=gt_flow)  ### 因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！
