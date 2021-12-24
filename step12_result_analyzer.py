@@ -25,6 +25,7 @@ class Result_analyzer:
         self.ana_what = ana_what
         self.img_h = img_h  ### 給 空影像用的
         self.img_w = img_w  ### 給 空影像用的
+
         '''
         mask,
         flow,
@@ -89,6 +90,7 @@ class Col_results_analyzer(Result_analyzer):
         self.c_results = col_results
         self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
         self.c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_max_trained_epoch()去抓
+        print("Col_results_analyzer build finish")
 
     def _step0_get_c_trained_epochs(self):
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
@@ -355,14 +357,14 @@ class Col_results_analyzer(Result_analyzer):
 class Row_col_results_analyzer(Result_analyzer):
     def __init__(self, ana_describe, ana_what, row_col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768):
         super().__init__(ana_describe, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss, img_h=img_h, img_w=img_w)
-
         self.r_c_results = row_col_results
         self.r_c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_min_trained_epoch()去抓
         self.r_c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_max_trained_epoch()去抓
 
         self.c_results_list = []
         for c_results in row_col_results:
-            self.c_results_list.append(Col_results_analyzer(ana_describe=ana_describe, ana_what=ana_what, col_results=c_results, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss))
+            self.c_results_list.append(Col_results_analyzer(ana_describe=ana_describe, ana_what=ana_what, col_results=c_results, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss, img_h=img_h, img_w=img_w))
+        print("Row_col_results_analyzer build finish")
 
     def _step0_get_r_c_trained_epochs(self):
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
