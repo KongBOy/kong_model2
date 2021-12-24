@@ -175,45 +175,39 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
                             I_to_Cx_Cy = False,
                             Mgt_to_C_with_gt_M_to_F=False):
         if  (I_to_M):
-            from step08_b_use_G_generate_I_to_M import I_Generate_M, I_Generate_M_see, I_Gen_M_test
-            self.kong_model.generate_results = I_Generate_M             ### 不能checkpoint
+            from step08_b_use_G_generate_I_to_M import  I_Generate_M_see, I_Gen_M_test
             self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
             self.kong_model.generate_tests   = I_Gen_M_test    ### 不能checkpoint
         ### 生成 flow 的 operation
         elif(I_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate_I_to_C import I_Generate_C, I_Generate_C_with_Mgt_to_F_see, I_Generate_C_with_Mgt_to_F_test
-            self.kong_model.generate_results = I_Generate_C        ### 不能checkpoint
+            from step08_b_use_G_generate_I_to_C import  I_Generate_C_with_Mgt_to_F_see, I_Generate_C_with_Mgt_to_F_test
             self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = I_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_Generate_C_with_Mgt_to_F_test   ### 不能checkpoint
         elif(Mgt_to_C_with_gt_M_to_F):
-            from step08_b_use_G_generate_M_to_C import Mgt_Generate_C, Mgt_Generate_C_with_Mgt_to_F_see, Mgt_Generate_C_with_Mgt_to_F_test
-            self.kong_model.generate_results = Mgt_Generate_C        ### 不能checkpoint
+            from step08_b_use_G_generate_M_to_C import Mgt_Generate_C_with_Mgt_to_F_see, Mgt_Generate_C_with_Mgt_to_F_test
             self.kong_model.generate_sees    = Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = Mgt_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
+            self.kong_model.generate_tests   = Mgt_Generate_C_with_Mgt_to_F_test   ### 不能checkpoint
         elif(I_to_M_w_I_to_C):
-            from step08_b_use_G_generate_I_to_M_w_I_to_C import I_gen_M_w_I_gen_C, I_gen_M_w_I_gen_C_w_M_to_F_see, I_gen_M_w_I_gen_C_w_M_to_F_test
-            self.kong_model.generate_results = I_gen_M_w_I_gen_C        ### 不能checkpoint
+            from step08_b_use_G_generate_I_to_M_w_I_to_C import  I_gen_M_w_I_gen_C_w_M_to_F_see, I_gen_M_w_I_gen_C_w_M_to_F_test
             self.kong_model.generate_sees    = I_gen_M_w_I_gen_C_w_M_to_F_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = I_gen_M_w_I_gen_C_w_M_to_F_test    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_gen_M_w_I_gen_C_w_M_to_F_test   ### 不能checkpoint
         elif(I_with_Mgt_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate_I_w_M_to_C import I_with_Mgt_Generate_C, I_with_Mgt_Generate_C_with_Mgt_to_F_see, I_with_Mgt_Generate_C_with_Mgt_to_F_test
-            self.kong_model.generate_results = I_with_Mgt_Generate_C        ### 不能checkpoint
+            from step08_b_use_G_generate_I_w_M_to_C import  I_with_Mgt_Generate_C_with_Mgt_to_F_see, I_with_Mgt_Generate_C_with_Mgt_to_F_test
             self.kong_model.generate_sees    = I_with_Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = I_with_Mgt_Generate_C_with_Mgt_to_F_test    ### 不能checkpoint
+            self.kong_model.generate_tests   = I_with_Mgt_Generate_C_with_Mgt_to_F_test   ### 不能checkpoint
         elif(I_to_W):
             from step08_b_use_G_generate_I_to_W import I_Generate_W, I_Generate_W_see
             self.kong_model.generate_results = I_Generate_W        ### 不能checkpoint
             self.kong_model.generate_sees    = I_Generate_W_see    ### 不能checkpoint
         elif(I_to_Cx_Cy):
-            from step08_b_use_G_generate_I_w_M_to_Cx_Cy import I_w_Mgt_Gen_Cx_Cy_to_C, I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see, I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test
-            self.kong_model.generate_results = I_w_Mgt_Gen_Cx_Cy_to_C
+            from step08_b_use_G_generate_I_w_M_to_Cx_Cy import  I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see, I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test
             self.kong_model.generate_sees    = I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see
             self.kong_model.generate_tests   = I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_test
         else:
             from step08_b_use_G_generate_I_to_F import I_Generate_F, I_Generate_F_see, I_Gen_F_test
-            self.kong_model.generate_results = I_Generate_F             ### 不能checkpoint
-            self.kong_model.generate_sees    = I_Generate_F_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = I_Gen_F_test    ### 不能checkpoint
+            self.kong_model.generate_results = I_Generate_F      ### 不能checkpoint
+            self.kong_model.generate_sees    = I_Generate_F_see  ### 不能checkpoint
+            self.kong_model.generate_tests   = I_Gen_F_test      ### 不能checkpoint
 
     def hook_build_and_gen_op(self, I_to_M=False, I_to_C_with_Mgt_to_F=False, I_to_W=False, I_with_Mgt_to_C_with_Mgt_to_F=False, I_to_M_w_I_to_C=False, Mgt_to_C_with_gt_M_to_F=False, I_to_Cx_Cy=False):
         def _hook_Gen_op():
