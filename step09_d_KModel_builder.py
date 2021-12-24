@@ -106,6 +106,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
                  skip_op=None, skip_merge_op="concat",
                  ch_upper_bound=512,
                  coord_conv=False,
+                 d_amount = 1,
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
@@ -127,7 +128,8 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
             "skip_op"         : skip_op,         ### 對應 skip_use_add, skip_use_cSE...
             "skip_merge_op"   : skip_merge_op,   ### 對應 concat_Activation
             "ch_upper_bound"  : ch_upper_bound,
-            "coord_conv"      : coord_conv}
+            "coord_conv"      : coord_conv,
+            "d_amount"        : d_amount}
 
 
         def _build_unet_body_part():
