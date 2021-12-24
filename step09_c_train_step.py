@@ -88,7 +88,7 @@ def train_step_pure_G_split_mask_move_I_to_M_w_I_to_C(model_obj, in_data, gt_dat
     gt_coord = gt_data[1]
     gt_datas = [gt_mask, gt_coord]
 
-    _train_step_multi_output(in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+    _train_step_multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
 
 @tf.function
