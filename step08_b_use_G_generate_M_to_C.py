@@ -43,7 +43,7 @@ def Mgt_Gen_C_with_Mgt_to_F_basic_data(model_G, in_img, gt_mask_coord, gt_mask_c
         rec_hope = rec_hope[:, :, ::-1]
         flow_visual    = flow_visual   [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
         gt_flow_visual = gt_flow_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
-    return in_img, gt_mask, gt_mask_visual, flow, flow_visual, gt_flow, gt_flow_visual, rec_hope
+    return in_img, gt_mask_visual, flow, flow_visual, gt_flow, gt_flow_visual, rec_hope
 
 
 def Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, _2, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, bgr2rgb=True):
@@ -52,7 +52,7 @@ def Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, _2, gt_mask_coo
     gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
     '''
-    in_img, gt_mask, gt_mask_visual, flow, flow_visual, gt_flow, gt_flow_visual, rec_hope = Mgt_Gen_C_with_Mgt_to_F_basic_data(model_G, in_img, gt_mask_coord, gt_mask_coord_pre, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+    in_img, gt_mask_visual, flow, flow_visual, gt_flow, gt_flow_visual, rec_hope = Mgt_Gen_C_with_Mgt_to_F_basic_data(model_G, in_img, gt_mask_coord, gt_mask_coord_pre, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
 
     see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     mask_write_dir = exp_obj.result_obj.sees[see_index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
@@ -62,7 +62,6 @@ def Mgt_Generate_C_with_Mgt_to_F_see(model_G, see_index, in_img, _2, gt_mask_coo
         cv2.imwrite(see_write_dir + "/" + "0a1-in_img.jpg",      in_img)             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir + "/" + "0a2-in_gt_mask.jpg",  gt_mask_visual)  ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_a_gt_mask.jpg", gt_mask_visual)  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        np.save    (see_write_dir + "/" + "0b-gt_a_gt_mask",     gt_mask)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(see_write_dir + "/" + "0b-gt_b_gt_flow.jpg", gt_flow_visual)                            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         np.save    (see_write_dir + "/" + "0b-gt_b_gt_flow",     gt_flow)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(see_write_dir + "/" + "0c-rec_hope.jpg",     rec_hope)           ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張
@@ -76,7 +75,7 @@ def Mgt_Generate_C_with_Mgt_to_F_test(model_G, test_name, in_img, _2, gt_mask_co
     bgr2rgb： tf2 讀出來是 rgb， 但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
     '''
     test_name      = test_name.numpy()[0].decode("utf-8")
-    in_img, gt_mask, gt_mask_visual, flow, flow_visual, gt_flow, gt_flow_visual, rec_hope = Mgt_Gen_C_with_Mgt_to_F_basic_data(model_G, in_img, gt_mask_coord, gt_mask_coord_pre, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+    in_img, gt_mask_visual, flow, flow_visual, gt_flow, gt_flow_visual, rec_hope = Mgt_Gen_C_with_Mgt_to_F_basic_data(model_G, in_img, gt_mask_coord, gt_mask_coord_pre, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
     bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=flow)
 
     single_row_imgs = Matplot_single_row_imgs(

@@ -57,23 +57,20 @@ def I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_c
         rec_hope = rec_hope[:, :, ::-1]
         F_visual    = F_visual   [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
         Fgt_visual = Fgt_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
-    return in_img, M, M_visual, Mgt, Mgt_visual, I_pre_with_M_pre, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Fgt_visual, rec_hope
+    return in_img, M, M_visual, Mgt, Mgt_visual, I_pre_with_M_pre, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, rec_hope
 
 def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, bgr2rgb=True):
-    in_img, M, M_visual, Mgt, Mgt_visual, I_pre_with_M_pre, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Fgt_visual, rec_hope = I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+    in_img, M_visual, Mgt_visual, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, rec_hope = I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
     see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
         cv2.imwrite(f"{see_write_dir}/0a_u1a-in_img.jpg",  in_img)
-        np .save   (f"{see_write_dir}/0b_u1b-gt_mask.npy", Mgt)
         cv2.imwrite(f"{see_write_dir}/0b_u1b-gt_mask.jpg", Mgt_visual)
         np .save   (f"{see_write_dir}/0b_u2b-gt_flow.npy", Fgt)
         cv2.imwrite(f"{see_write_dir}/0b_u2b-gt_flow.jpg", Fgt_visual)
         cv2.imwrite(f"{see_write_dir}/0c-rec_hope.jpg",    rec_hope)
 
-    np .save   (see_write_dir + "/" + "epoch_%04i_u1b-mask.npy"  % current_ep, M)
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u1b-mask.jpg"  % current_ep, M_visual)
-    np .save   (see_write_dir + "/" + "epoch_%04i_u2a-I_w_M.npy" % current_ep, I_pre_with_M_pre)
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2a-I_w_M.jpg" % current_ep, I_with_M_visual)
     np .save   (see_write_dir + "/" + "epoch_%04i_u2b-flow.npy"  % current_ep, F)
     cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2b-flow.jpg"  % current_ep, F_visual)
@@ -81,7 +78,7 @@ def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, see_index, in_img, in_img_pre, gt_ma
 
 def I_gen_M_w_I_gen_C_w_M_to_F_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, add_loss=False, bgr2rgb=True):
     test_name = test_name.numpy()[0].decode("utf-8")
-    in_img, M, M_visual, Mgt, Mgt_visual, I_pre_with_M_pre, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Fgt_visual, rec_hope = I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+    in_img, M_visual,  Mgt_visual, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, rec_hope = I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
     bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=F)
 
     single_row_imgs = Matplot_single_row_imgs(
