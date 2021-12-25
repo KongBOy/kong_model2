@@ -14,7 +14,8 @@ class Generator(tf.keras.models.Model):
                  ch_upper_bound=512,
                  coord_conv=False,
 
-                 d_amount=1, 
+                 d_amount=1,
+                 bottle_divide = False,
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
@@ -34,6 +35,7 @@ class Generator(tf.keras.models.Model):
         self.unet_out_ch = out_ch
         self.unet_acti = unet_acti
         self.d_amount  = d_amount
+        self.bottle_divide = bottle_divide
         kwargs = dict(kernel_size=kernel_size, strides=strides, norm=norm, conv_block_num=conv_block_num,
                     #   d_acti=d_acti, u_acti=u_acti,
                       use_bias=use_bias,
@@ -121,14 +123,27 @@ class Generator(tf.keras.models.Model):
             skips.append(skip)
         ### Down bottle
         # print(self.d_bottle.name)  ### debug 用
-        x = self.d_bottle(x)  ### down 的 bottle沒有 skip
+        x_bottle = self.d_bottle(x)  ### down 的 bottle沒有 skip
+        #####################################################
+        if(self.bottle_divide is False):
+            x1_bottle = x_bottle
+            x2_bottle = x_bottle
+            x3_bottle = x_bottle
+        else:
+            n, h, w, c = x_bottle.shape
+            # print("n, h, w, c~~~~~~~~~~~~~~~~", n, h, w, c)
+            c_div = c // self.d_amount
+            x1_bottle  = x_bottle[..., c_div * 0 : c_div * (0 + 1)]  ### dec_id = 0
+            x2_bottle  = x_bottle[..., c_div * 1 : c_div * (1 + 1)]  ### dec_id = 1
+            x3_bottle  = x_bottle[..., c_div * 2 : c_div * (2 + 1)]  ### dec_id = 2
+
         #####################################################
         skip_id = self.depth_level - 1 - 1  ### 第一個 -1 是因為 top_bottle 沒有skip， 第二個 -1 是因為 數量 轉 index
         if(self.d_amount >= 1):
             ### Up bottle
             # print(self.u_bottle.name)  ### debug 用
-            if(self.no_concat_layer >= self.depth_level - 1): x1 = self.u_bottle(x)
-            else:                                             x1 = self.u_bottle(x, skips[skip_id])
+            if(self.no_concat_layer >= self.depth_level - 1): x1 = self.u_bottle(x1_bottle)
+            else:                                             x1 = self.u_bottle(x1_bottle, skips[skip_id])
             skip_id -= 1
 
             ### Up middle
@@ -144,8 +159,9 @@ class Generator(tf.keras.models.Model):
         #####################################################
         skip_id = self.depth_level - 1 - 1  ### 第一個 -1 是因為 top_bottle 沒有skip， 第二個 -1 是因為 數量 轉 index
         if(self.d_amount >= 2):
-            if(self.no_concat_layer >= self.depth_level - 1): x2 = self.u_bottle2(x)
-            else:                                             x2 = self.u_bottle2(x, skips[skip_id])
+            ### Up bottle
+            if(self.no_concat_layer >= self.depth_level - 1): x2 = self.u_bottle2(x2_bottle)
+            else:                                             x2 = self.u_bottle2(x2_bottle, skips[skip_id])
             skip_id -= 1
 
             ### Up middle
@@ -161,8 +177,9 @@ class Generator(tf.keras.models.Model):
         #####################################################
         skip_id = self.depth_level - 1 - 1  ### 第一個 -1 是因為 top_bottle 沒有skip， 第二個 -1 是因為 數量 轉 index
         if(self.d_amount >= 3):
-            if(self.no_concat_layer >= self.depth_level - 1): x3 = self.u_bottle3(x)
-            else:                                             x3 = self.u_bottle3(x, skips[skip_id])
+            ### Up bottle
+            if(self.no_concat_layer >= self.depth_level - 1): x3 = self.u_bottle3(x3_bottle)
+            else:                                             x3 = self.u_bottle3(x3_bottle, skips[skip_id])
             skip_id -= 1
 
             ### Up middle
