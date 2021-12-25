@@ -26,6 +26,15 @@ import subprocess as sb
 
 
 #### 3l ############################################################################################
+# sb.run(cmd_python_step10_a + [f"L2_ch128.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch032.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch016.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch008.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch004.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch002.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch001.{run}"])
+#### 3l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L3_ch064.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch032.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch016.{run}"])
