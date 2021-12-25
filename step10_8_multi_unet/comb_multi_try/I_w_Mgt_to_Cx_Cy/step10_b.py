@@ -26,13 +26,13 @@ import subprocess as sb
 
 
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch128_and_I_to_Cy_L2_ch128_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch064_and_I_to_Cy_L2_ch064_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch032_and_I_to_Cy_L2_ch032_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch016_and_I_to_Cy_L2_ch016_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch008_and_I_to_Cy_L2_ch008_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch004_and_I_to_Cy_L2_ch004_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch002_and_I_to_Cy_L2_ch002_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch001_and_I_to_Cy_L2_ch001_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch064_and_I_to_Cy_L2_ch064_ep060.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch032_and_I_to_Cy_L2_ch032_ep060.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch016_and_I_to_Cy_L2_ch016_ep060.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch008_and_I_to_Cy_L2_ch008_ep060.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch004_and_I_to_Cy_L2_ch004_ep060.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch002_and_I_to_Cy_L2_ch002_ep060.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L2_ch001_and_I_to_Cy_L2_ch001_ep060.{compress_and_bm_rec_all}"])
 
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L3_ch128_and_I_to_Cy_L3_ch128_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L3_ch064_and_I_to_Cy_L3_ch064_ep060.{compress_and_bm_rec_all}"])
