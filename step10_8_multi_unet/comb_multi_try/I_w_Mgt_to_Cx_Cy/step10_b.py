@@ -63,7 +63,7 @@ import subprocess as sb
 
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L6_ch128_and_I_to_Cy_L6_ch128_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L6_ch032_and_I_to_Cy_L6_ch032_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Cx_L6_ch064_and_I_to_Cy_L6_ch064_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L6_ch064_and_I_to_Cy_L6_ch064_ep060.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L6_ch016_and_I_to_Cy_L6_ch016_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L6_ch008_and_I_to_Cy_L6_ch008_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L6_ch004_and_I_to_Cy_L6_ch004_ep060.{run}"])
