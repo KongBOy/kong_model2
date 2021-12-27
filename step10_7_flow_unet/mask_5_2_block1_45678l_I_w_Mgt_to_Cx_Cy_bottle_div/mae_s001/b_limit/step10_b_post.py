@@ -26,18 +26,18 @@ import subprocess as sb
 
 
 #### 4l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L4_ch128_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch128_limit.{compress_and_bm_rec_all}"])
 #### 5l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L5_ch128_limit.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch064_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch128_limit.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch064_limit.{compress_and_bm_rec_all}"])
 #### 6l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L6_ch128_limit.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch128_limit.{run}"])  ###  待reload
 # sb.run(cmd_python_step10_a + [f"L6_ch064_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch032_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch032_limit.{compress_and_bm_rec_all}"])
 #### 7l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L7_ch128_limit.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch064_limit.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch032_limit.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch128_limit.{compress_and_bm_rec_all}"])  ###  訓練中
+# sb.run(cmd_python_step10_a + [f"L7_ch064_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch032_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch016_limit.{run}"])
 #### 8l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L8_ch128_limit.{run}"])
