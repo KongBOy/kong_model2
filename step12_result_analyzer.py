@@ -373,6 +373,7 @@ class Row_col_results_analyzer(Result_analyzer):
         trained_epochs = []
         for row_results in self.r_c_results:
             for result in row_results:
+                # print(f"{result.result_name}/{result.sees[0].see_name}:", "trained_epoch=", result.sees[0].trained_epoch)
                 trained_epochs.append(result.sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
         return trained_epochs
 
