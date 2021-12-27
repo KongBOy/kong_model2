@@ -138,11 +138,13 @@ class Result_train_builder(Result_sees_builder):
         self._build_sees(self.result.sees_ver)
 
 
-        if("-" in result_name):
+        if("-" in result_name or "_" in result_name):
             ### 給 ana_describe，這是給 step12 用的，default 直 設 result.describe_end
             # self.result.ana_describe = result_name.split("-")[-1]
             # self.result.ana_describe = result_name.split("-")[-4]
             self.result.ana_describe = result_name.split("-")[-2]
+        else:
+            self.result.ana_describe = "no result"
         return self
 
 class Result_plot_builder(Result_train_builder):
