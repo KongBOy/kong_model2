@@ -20,10 +20,11 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
 
-import step10_a as mae_block1
+import a_normal.step10_a as mae_block1
+import b_limit.step10_a  as mae_block1_limit
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ### Layer_Ch
-Layer_Ch = [
+Layer2345678_Ch = [
     [
         mae_block1.I_to_Cx_L2_ch128_and_I_to_Cy_L2_ch128_ep060.build().result_obj,
         mae_block1.I_to_Cx_L2_ch064_and_I_to_Cy_L2_ch064_ep060.build().result_obj,
@@ -60,33 +61,31 @@ Layer_Ch = [
         mae_block1.I_to_Cx_L5_ch004_and_I_to_Cy_L5_ch004_ep060.build().result_obj,
         mae_block1.I_to_Cx_L5_ch002_and_I_to_Cy_L5_ch002_ep060.build().result_obj,
         mae_block1.I_to_Cx_L5_ch001_and_I_to_Cy_L5_ch001_ep060.build().result_obj],
-
-
-    # [
-    #     mae_block1_limit.L6_ch128_limit.build().result_obj,
-    #     mae_block1.L6_ch064.build().result_obj,
-    #     mae_block1.L6_ch032.build().result_obj,
-    #     mae_block1.L6_ch016.build().result_obj,
-    #     mae_block1.L6_ch008.build().result_obj,
-    #     mae_block1.L6_ch004.build().result_obj,
-    #     mae_block1.L6_ch002.build().result_obj,
-    #     mae_block1.L6_ch001.build().result_obj],
-
-    # [mae_block1_limit.L7_ch128_limit.build().result_obj,
-    #  mae_block1_limit.L7_ch064_limit.build().result_obj,
-    #  mae_block1.L7_ch032.build().result_obj,
-    #  mae_block1.L7_ch016.build().result_obj,
-    #  mae_block1.L7_ch008.build().result_obj,
-    #  mae_block1.L7_ch004.build().result_obj,
-    #  mae_block1.L7_ch002.build().result_obj,
-    #  mae_block1.L7_ch001.build().result_obj],
-
-    # [mae_block1_limit.L8_ch128_limit.build().result_obj,
-    #  mae_block1_limit.L8_ch064_limit.build().result_obj,
-    #  mae_block1_limit.L8_ch032_limit.build().result_obj,
-    #  mae_block1.L8_ch016.build().result_obj,
-    #  mae_block1.L8_ch008.build().result_obj,
-    #  mae_block1.L8_ch004.build().result_obj,
-    #  mae_block1.L8_ch002.build().result_obj,
-    #  mae_block1.L8_ch001.build().result_obj],
+    [
+        mae_block1_limit.I_to_Cx_L6_ch128_lim_and_I_to_Cy_L6_ch128_lim_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L6_ch064_and_I_to_Cy_L6_ch064_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L6_ch032_and_I_to_Cy_L6_ch032_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L6_ch016_and_I_to_Cy_L6_ch016_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L6_ch008_and_I_to_Cy_L6_ch008_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L6_ch004_and_I_to_Cy_L6_ch004_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L6_ch002_and_I_to_Cy_L6_ch002_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L6_ch001_and_I_to_Cy_L6_ch001_ep060.build().result_obj],
+    [
+        mae_block1_limit.I_to_Cx_L7_ch128_lim_and_I_to_Cy_L7_ch128_lim_ep060.build().result_obj,
+        mae_block1_limit.I_to_Cx_L7_ch064_lim_and_I_to_Cy_L7_ch064_lim_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L7_ch032_and_I_to_Cy_L7_ch032_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L7_ch016_and_I_to_Cy_L7_ch016_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L7_ch008_and_I_to_Cy_L7_ch008_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L7_ch004_and_I_to_Cy_L7_ch004_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L7_ch002_and_I_to_Cy_L7_ch002_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L7_ch001_and_I_to_Cy_L7_ch001_ep060.build().result_obj],
+    [
+        mae_block1_limit.I_to_Cx_L8_ch128_lim_and_I_to_Cy_L8_ch128_lim_ep060.build().result_obj,
+        mae_block1_limit.I_to_Cx_L8_ch064_lim_and_I_to_Cy_L8_ch064_lim_ep060.build().result_obj,
+        mae_block1_limit.I_to_Cx_L8_ch032_lim_and_I_to_Cy_L8_ch032_lim_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L8_ch016_and_I_to_Cy_L8_ch016_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L8_ch008_and_I_to_Cy_L8_ch008_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L8_ch004_and_I_to_Cy_L8_ch004_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L8_ch002_and_I_to_Cy_L8_ch002_ep060.build().result_obj,
+        mae_block1.I_to_Cx_L8_ch001_and_I_to_Cy_L8_ch001_ep060.build().result_obj],
 ]

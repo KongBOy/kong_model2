@@ -143,6 +143,8 @@ class Result_train_builder(Result_sees_builder):
             # self.result.ana_describe = result_name.split("-")[-1]
             # self.result.ana_describe = result_name.split("-")[-4]
             self.result.ana_describe = result_name.split("-")[-2]
+        else:
+            self.result.ana_describe = "no result"
         return self
 
 class Result_plot_builder(Result_train_builder):
