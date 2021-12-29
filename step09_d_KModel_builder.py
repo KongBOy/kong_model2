@@ -180,9 +180,9 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
                             Mgt_to_C_with_gt_M_to_F=False,
                             I_w_Mgt_to_Cx=False):
         if  (I_to_M):
-            from step08_b_use_G_generate_I_to_M import  I_Generate_M_see, I_Gen_M_test
+            from step08_b_use_G_generate_I_to_M import  I_Generate_M_see  #, I_Gen_M_test
             self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
-            self.kong_model.generate_tests   = I_Gen_M_test    ### 不能checkpoint
+            # self.kong_model.generate_tests   = I_Gen_M_test    ### 不能checkpoint
         ### 生成 flow 的 operation
         elif(I_to_C_with_Mgt_to_F):
             from step08_b_use_G_generate_I_to_C import  I_Generate_C_with_Mgt_to_F_see, I_Generate_C_with_Mgt_to_F_test

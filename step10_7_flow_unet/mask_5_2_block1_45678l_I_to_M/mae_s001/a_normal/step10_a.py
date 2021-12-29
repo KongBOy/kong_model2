@@ -104,7 +104,7 @@ if(__name__ == "__main__"):
         ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
         # L8_ch001.build().run()
         # L2_ch001.build().run()
-        L3_ch128.build().run()
+        L4_ch016.build().run()
         # print('no argument')
         sys.exit()
 

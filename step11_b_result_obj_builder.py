@@ -3,7 +3,7 @@ from step06_a_datas_obj import DB_C
 from step11_a1_see_obj import See
 from step11_a2_result_obj import Result
 import datetime
-
+from kong_util.util import get_dir_img_file_names
 class Result_init_builder:
     def __init__(self, result=None):
         self.current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -51,6 +51,13 @@ class Result_sees_builder(Result_init_builder):
         self.result.see_amount = len(self.result.sees)
         # self.result.see_file_amount = self.result.sees[0].see_file_amount   ### 覺得 see 已經有 see_file_amount了，result 就不需要這attr了， 想用 要知道 要去 sees[...] 取 喔！
         # print("3. at see", self.result.result_name, ", self.result.use_gt_range~~~~~~~~~~~~~~~", self.result.use_gt_range)
+
+    def _build_tests(self, db_obj):
+        self.result.test_amount = len( get_dir_img_file_names(db_obj.test_in_dir) )
+        self.result.tests = [ See(self.result, db_obj.test_db_name + "/test_%03i" % test_i) for test_i in range(self.result.test_amount)]
+        # print("test_amount:", self.result.test_amount)
+        # print("self.result.tests", self.result.tests)
+        pass
 
 
 class Result_train_builder(Result_sees_builder):
@@ -122,7 +129,10 @@ class Result_train_builder(Result_sees_builder):
         self.result.logs_write_dir = self.result.result_write_dir + "/logs"
         self.result.train_code_read_dir  = self.result.result_read_dir  + f"/train_code_{self.current_time}"
         self.result.train_code_write_dir = self.result.result_write_dir + f"/train_code_{self.current_time}"
-        self.result.test_dir = self.result.result_write_dir + f"/{db_obj.test_db_name}"
+
+        self.result.test_db_name   = db_obj.test_db_name
+        self.result.test_read_dir  = self.result.result_read_dir  + f"/{db_obj.test_db_name}"
+        self.result.test_write_dir = self.result.result_write_dir + f"/{db_obj.test_db_name}"
 
         '''
         後來覺得 use_range 應該要從 exp 裡面 抓， 所以就把 Result 和 See 的 use_range 拿掉囉～～
@@ -136,6 +146,7 @@ class Result_train_builder(Result_sees_builder):
         '''
         self.result.sees_ver = db_obj.see_version
         self._build_sees(self.result.sees_ver)
+        self._build_tests(db_obj)
 
 
         if("-" in result_name):

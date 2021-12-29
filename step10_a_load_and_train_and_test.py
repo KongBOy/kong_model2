@@ -247,15 +247,17 @@ class Experiment():
         self.train_step1_see_current_img(current_ep=self.current_ep, training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
     def testing(self, add_loss=False, bgr2rgb=False):
-        print("self.result_obj.test_dir", self.result_obj.test_dir)
-        Check_dir_exist_and_build_new_dir(self.result_obj.test_dir)
+        print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
+        Check_dir_exist_and_build_new_dir(self.result_obj.test_write_dir)
         for test_index, (test_in, test_in_pre, test_gt, test_gt_pre, test_name, rec_hope) in enumerate(tqdm(zip(self.tf_data.test_in_db.batch(1)          .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_in_db_pre .batch(1)     .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_gt_db.batch(1)          .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_gt_db_pre.batch(1)      .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_name_db.batch(1)        .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.rec_hope_test_db             .take(self.tf_data.test_amount)))):
-            self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
+            # self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
+            self.model_obj.generate_sees  (self.model_obj.generator, "test", test_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, self.current_ep, self, training=False, see_reset_init=True, postprocess=True)
+        Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir, read_dir=self.result_obj.test_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
 
     def train_step1_see_current_img(self, current_ep, training=False, see_reset_init=False):
         """
