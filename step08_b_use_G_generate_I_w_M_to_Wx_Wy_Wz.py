@@ -82,8 +82,8 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Mgt_w
 
     W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = W_01_visual_op(W_01)
     Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)
-    print("Wgt_visual", Wgt_visual.max())
-    print("Wgt_visual", Wgt_visual.min())
+    # print("Wgt_visual", Wgt_visual.max())
+    # print("Wgt_visual", Wgt_visual.min())
     Mgt_visual = (Mgt_pre[0].numpy() * 255).astype(np.uint8)
     I_pre_with_M_pre = (I_pre_with_M_pre[0].numpy() * 255).astype(np.uint8)
     if(bgr2rgb):
