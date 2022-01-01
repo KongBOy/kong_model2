@@ -117,6 +117,33 @@ def train_step_pure_G_split_mask_move_I_to_Cx_Cy(model_obj, in_data, gt_data, lo
 
     _train_step_multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
+@tf.function
+def train_step_pure_G_split_mask_move_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+    '''
+    gt_mask  = gt_data[0]
+    I_with_M = in_data * gt_mask
+
+    Wxgt = gt_data[1][0:1, ..., 2:3]
+    Wygt = gt_data[1][0:1, ..., 1:2]
+    Wzgt = gt_data[1][0:1, ..., 0:1]
+    gt_datas = [Wzgt, Wygt, Wxgt]
+    # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
+    # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
+
+    ### debug 時 記得把 @tf.function 拿掉
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(I_with_M[0])
+    # ax[2].imshow(gt_cx[0])
+    # ax[3].imshow(gt_cy[0])
+    # fig.tight_layout()
+    # plt.show()
+
+    _train_step_multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+
 
 ###################################################################################################################################################
 ### 因為外層function 已經有 @tf.function， 裡面這層自動會被 decorate 到喔！ 所以這裡不用 @tf.function
