@@ -77,5 +77,5 @@ def I_Gen_F_test(model_G, test_name, in_img, in_img_pre, gt_flow, _4, rec_hope=N
                             add_loss  =add_loss,
                             bgr2rgb   =bgr2rgb)
     single_row_imgs.Draw_img()
-    single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_dir, name=test_name)  ### 如果沒有要接續畫loss，就可以存了喔！
+    single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_write_dir, name=test_name)  ### 如果沒有要接續畫loss，就可以存了喔！
 

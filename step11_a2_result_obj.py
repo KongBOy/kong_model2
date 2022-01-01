@@ -35,8 +35,11 @@ class Result:
         self.sees_ver = None
         self.sees = None
         self.see_amount = None
-        self.test_dir = None
 
+        self.test_read_dir = None
+        self.test_write_dir = None
+        self.test_db_name = None
+        self.tests = []
         ### after train的時候才用的
         self.ana_describe = None  ### 這是給matplot用的title
 
