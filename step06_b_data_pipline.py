@@ -655,8 +655,10 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
 
         #     debug_dict["2-1 train_in"    ] = train_in[0].numpy()
         #     debug_dict["2-2 train_in_pre"] = train_in_pre[0].numpy()
-        #     debug_dict["2-3 train_gt"    ] = train_gt[0].numpy()
-        #     debug_dict["2-4 train_gt_pre"] = train_gt_pre[0].numpy()
+        #     debug_dict["2-3 train_Mgt"    ] = train_gt[0][0].numpy()
+        #     debug_dict["2-4 train_Mgt_pre"] = train_gt_pre[0][0].numpy()
+        #     debug_dict["2-5 train_Wgt"    ] = train_gt[1][0].numpy()
+        #     debug_dict["2-6 train_Wgt_pre"] = train_gt_pre[1][0].numpy()
 
         #     if(get_what == "flow"):
         #         train_gt_visual     = method1(train_gt[0, ..., 2]    , train_gt[0, ..., 1])

@@ -33,10 +33,16 @@ def W_01_visual_op(W_01):
     # Wx_visual = (W_01_ch_norm[..., 2:3] * 255).astype(np.uint8)
 
     ### 方法2： 直接 * 2
-    W_visual  = (W_01           * 255).astype(np.uint8) * 2
-    Wz_visual = (W_01[..., 0:1] * 255).astype(np.uint8) * 2
-    Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8) * 2
-    Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8) * 2
+    # W_visual  = (W_01           * 255).astype(np.uint8) * 2
+    # Wz_visual = (W_01[..., 0:1] * 255).astype(np.uint8) * 2
+    # Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8) * 2
+    # Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8) * 2
+
+    ### 方法2b：
+    W_visual  = (W_01           * 255).astype(np.uint8)
+    Wz_visual = (W_01[..., 0:1] * 255).astype(np.uint8)
+    Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8)
+    Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8)
 
     ### 方法3： 整張圖直接 normalize to 01
     # W_01 = W_01.astype(np.float32)
