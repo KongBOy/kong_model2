@@ -209,7 +209,7 @@ def train_step_pure_G_split_mask_move_Mgt_to_C(model_obj, in_data, gt_data, loss
 
 ####################################################
 @tf.function
-def train_step_pure_G_split_mask_move_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_pure_G_split_mask_move_I_to_C_or_W(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_to_C 是 Image_to_Coord 的縮寫
     '''
@@ -232,7 +232,7 @@ def train_step_pure_G_split_mask_move_I_to_M(model_obj, in_data, gt_data, loss_i
 ###################################################################################################################################################
 ###################################################################################################################################################
 @tf.function
-def train_step_pure_G_I_with_Mgt_to_F_or_W_or_R(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_pure_G_I_with_Mgt_to_F(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     相當於無背景的訓練
     '''
