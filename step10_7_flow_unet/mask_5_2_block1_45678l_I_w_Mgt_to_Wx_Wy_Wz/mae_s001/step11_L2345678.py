@@ -20,19 +20,19 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
 
-import mae_s001.a_normal.step10_a as block1
-import mae_s001.b_limit .step10_a as block1_limit
+import a_normal.step10_a as block1
+import b_limit .step10_a as block1_limit
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ### L2345678_flow
 block1_mask_L2345678 = [
-    # [block1.L2_ch128.build().result_obj,
-    #  block1.L2_ch064.build().result_obj,
-    #  block1.L2_ch032.build().result_obj,
-    #  block1.L2_ch016.build().result_obj,
-    #  block1.L2_ch008.build().result_obj,
-    #  block1.L2_ch004.build().result_obj,
-    #  block1.L2_ch002.build().result_obj,
-    #  block1.L2_ch001.build().result_obj],
+    [block1.L2_ch128.build().result_obj,
+     block1.L2_ch064.build().result_obj,
+     block1.L2_ch032.build().result_obj,
+     block1.L2_ch016.build().result_obj,
+     block1.L2_ch008.build().result_obj,
+     block1.L2_ch004.build().result_obj,
+     block1.L2_ch002.build().result_obj,
+     block1.L2_ch001.build().result_obj],
 
     [block1.L3_ch128.build().result_obj,
      block1.L3_ch064.build().result_obj,
