@@ -61,7 +61,7 @@ def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _
     cv2.imwrite(    private_mask_write_dir + "/" + "epoch_%04i_a_mask.bmp" % epoch, pred_mask_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
     if(postprocess):
-        current_see_name = used_sees[index].see_name.replace("/", "-")
+        current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
         from matplot_fig_ax_util import Matplot_single_row_imgs
         imgs = [ in_img ,   pred_mask_visual , gt_mask]
         img_titles = ["in_img", "pred_mask", "gt_mask"]
@@ -73,7 +73,7 @@ def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _
                                 add_loss  =add_loss,
                                 bgr2rgb   =bgr2rgb)
         single_row_imgs.Draw_img()
-        single_row_imgs.Save_fig(dst_dir=public_write_dir, name="test_%03i" % index)  ### 如果沒有要接續畫loss，就可以存了喔！
+        single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 如果沒有要接續畫loss，就可以存了喔！
 
         '''
         Fake_F 的部分
