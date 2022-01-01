@@ -79,27 +79,46 @@ def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _
         Fake_F 的部分
         '''
         gather_mask_dir   = public_write_dir + "/pred_mask"
-        gather_fake_F_dir = public_write_dir + "/pred_mask/fake_F"
         Check_dir_exist_and_build(gather_mask_dir)
-        Check_dir_exist_and_build(gather_fake_F_dir)
         cv2.imwrite(f"{gather_mask_dir}/{current_see_name}.bmp", pred_mask_visual)
+
         h, w = pred_mask.shape[:2]
+        fake_name = current_see_name.split(".")[0]
+        print("")
+        ###############################################################################
+        gather_fake_F_dir = public_write_dir + "/pred_mask/fake_F"
+        Check_dir_exist_and_build(gather_fake_F_dir)
         fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
         fake_F = np.concatenate((pred_mask, fake_C), axis=-1)
         fake_F = fake_F.astype(np.float32)
-        fake_name = current_see_name.split(".")[0]
 
         gather_fake_F_npy_dir  = gather_fake_F_dir + "/1 npy"
         gather_fake_F_knpy_dir = gather_fake_F_dir + "/2 knpy"
         Check_dir_exist_and_build(gather_fake_F_npy_dir)
         Check_dir_exist_and_build(gather_fake_F_knpy_dir)
-        fake_npy_path  = f"{gather_fake_F_npy_dir}/{fake_name}.npy"
-        fake_knpy_path = f"{gather_fake_F_knpy_dir}/{fake_name}.knpy"
-        np.save(fake_npy_path, fake_F)
-        Save_npy_path_as_knpy(fake_npy_path, fake_knpy_path)
-        print("")
-        print("fake_npy_path :", fake_npy_path)
-        print("fake_knpy_path:", fake_knpy_path)
+        fake_F_npy_path  = f"{gather_fake_F_npy_dir}/{fake_name}.npy"
+        fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{fake_name}.knpy"
+        np.save(fake_F_npy_path, fake_F)
+        Save_npy_path_as_knpy(fake_F_npy_path, fake_F_knpy_path)
+        print("fake_F_npy_path :", fake_F_npy_path)
+        print("fake_F_knpy_path:", fake_F_knpy_path)
+        ###############################################################################
+        gather_fake_W_dir = public_write_dir + "/pred_mask/fake_W"
+        Check_dir_exist_and_build(gather_fake_W_dir)
+        fake_W = np.zeros(shape=(h, w, 3), dtype=np.float32)
+        fake_W = np.concatenate((fake_W, pred_mask), axis=-1)
+        fake_W = fake_W.astype(np.float32)
+
+        gather_fake_W_npy_dir  = gather_fake_W_dir + "/1 npy"
+        gather_fake_W_knpy_dir = gather_fake_W_dir + "/2 knpy"
+        Check_dir_exist_and_build(gather_fake_W_npy_dir)
+        Check_dir_exist_and_build(gather_fake_W_knpy_dir)
+        fake_W_npy_path  = f"{gather_fake_W_npy_dir}/{fake_name}.npy"
+        fake_W_knpy_path = f"{gather_fake_W_knpy_dir}/{fake_name}.knpy"
+        np.save(fake_W_npy_path, fake_W)
+        Save_npy_path_as_knpy(fake_W_npy_path, fake_W_knpy_path)
+        print("fake_W_npy_path :", fake_W_npy_path)
+        print("fake_W_knpy_path:", fake_W_knpy_path)
 
 
 # def I_Gen_M_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, current_ep=-999, exp_obj=None, training=False, add_loss=False, bgr2rgb=False):
