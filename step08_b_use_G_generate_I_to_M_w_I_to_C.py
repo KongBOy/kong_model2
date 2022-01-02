@@ -63,38 +63,40 @@ def I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_c
         Fgt_visual = Fgt_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
     return in_img, M_visual, Mgt_visual, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual, rec_hope
 
-def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, see_index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, bgr2rgb=True):
+def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+    if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
+    elif(phase == "test"): used_sees = exp_obj.result_obj.tests
+    private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
+
     in_img, M_visual, Mgt_visual, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual, rec_hope = I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
-    see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
-        Check_dir_exist_and_build(see_write_dir)    ### 建立 放輔助檔案 的資料夾
-        cv2.imwrite(f"{see_write_dir}/0a_u1a-in_img.jpg",  in_img)
-        cv2.imwrite(f"{see_write_dir}/0b_u1b-gt_mask.jpg", Mgt_visual)
-        cv2.imwrite(f"{see_write_dir}/0b_u2b-gt_Cx.jpg",   Cxgt_visual)
-        cv2.imwrite(f"{see_write_dir}/0b_u2b-gt_Cy.jpg",   Cygt_visual)
-        np .save   (f"{see_write_dir}/0b_u2b-gt_flow.npy", Fgt)
-        cv2.imwrite(f"{see_write_dir}/0b_u2b-gt_flow.jpg", Fgt_visual)
-        cv2.imwrite(f"{see_write_dir}/0c-rec_hope.jpg",    rec_hope)
+        Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
+        cv2.imwrite(f"{private_write_dir}/0a_u1a-in_img.jpg",  in_img)
 
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u1b-mask.jpg"  % current_ep, M_visual)
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2a-I_w_M.jpg" % current_ep, I_with_M_visual)
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2b-Cx.jpg"    % current_ep, Cx_visual)
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2b-Cy.jpg"    % current_ep, Cy_visual)
-    np .save   (see_write_dir + "/" + "epoch_%04i_u2b-flow.npy"  % current_ep, F)
-    cv2.imwrite(see_write_dir + "/" + "epoch_%04i_u2b-flow.jpg"  % current_ep, F_visual)
+        cv2.imwrite(f"{private_write_dir}/0b_u1b-gt_mask.jpg", Mgt_visual)
+        cv2.imwrite(f"{private_write_dir}/0b_u2b-gt_Cx.jpg",   Cxgt_visual)
+        cv2.imwrite(f"{private_write_dir}/0b_u2b-gt_Cy.jpg",   Cygt_visual)
+        np .save   (f"{private_write_dir}/0b_u2b-gt_flow.npy", Fgt)
+        cv2.imwrite(f"{private_write_dir}/0b_u2b-gt_flow.jpg", Fgt_visual)
+        cv2.imwrite(f"{private_write_dir}/0c-rec_hope.jpg",    rec_hope)
 
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b-mask.jpg"  % current_ep, M_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2a-I_w_M.jpg" % current_ep, I_with_M_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b-Cx.jpg"    % current_ep, Cx_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b-Cy.jpg"    % current_ep, Cy_visual)
+    np .save   (private_write_dir + "/" + "epoch_%04i_u2b-flow.npy"  % current_ep, F)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b-flow.jpg"  % current_ep, F_visual)
 
-def I_gen_M_w_I_gen_C_w_M_to_F_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, add_loss=False, bgr2rgb=True):
-    test_name = test_name.numpy()[0].decode("utf-8")
-    in_img, M_visual, Mgt_visual, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual, rec_hope = I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
-    bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=F)
-
-    single_row_imgs = Matplot_single_row_imgs(
-                            imgs      =[ in_img , M_visual,  Mgt_visual, I_with_M_visual , F_visual ,   Fgt_visual,     rec,       rec_hope ],    ### 把要顯示的每張圖包成list
-                            img_titles=["in_img",    "Mask", "gt_Mask",  "I_with_M",     "pred_flow_v",  "gt_flow_v", "pred_rec", "rec_hope"],    ### 把每張圖要顯示的字包成list
-                            fig_title ="test_%s, epoch=%04i" % (test_name, int(current_ep)),  ### 圖上的大標題
-                            add_loss  =add_loss,
-                            bgr2rgb   =bgr2rgb)
-    single_row_imgs.Draw_img()
-    single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_write_dir, name=test_name)  ### 如果沒有要接續畫loss，就可以存了喔！
-    print("save to:", exp_obj.result_obj.test_write_dir)
+    if(postprocess):
+        current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+        bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=F)
+        single_row_imgs = Matplot_single_row_imgs(
+                                imgs      =[ in_img , M_visual,  Mgt_visual, I_with_M_visual , F_visual ,   Fgt_visual,     rec,       rec_hope ],    ### 把要顯示的每張圖包成list
+                                img_titles=["in_img",    "Mask", "gt_Mask",  "I_with_M",     "pred_flow_v",  "gt_flow_v", "pred_rec", "rec_hope"],    ### 把每張圖要顯示的字包成list
+                                fig_title ="%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
+                                add_loss  =add_loss,
+                                bgr2rgb   =bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+        single_row_imgs.Draw_img()
+        single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
+        print("save to:", exp_obj.result_obj.test_write_dir)

@@ -64,7 +64,7 @@ def train_step_Multi_output_I_to_M_w_I_to_C(model_obj, in_data, gt_data, loss_in
     _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
 
-# @tf.function
+@tf.function
 def train_step_Multi_output_I_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
@@ -74,19 +74,19 @@ def train_step_Multi_output_I_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_inf
 
     gt_cx = gt_data[..., 2:3]
     gt_cy = gt_data[..., 1:2]
-    gt_datas = [gt_cx, gt_cy]
+    gt_datas = [gt_cy, gt_cx]
     # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
     # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
 
     ## debug 時 記得把 @tf.function 拿掉
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
-    ax[0].imshow(in_data[0])
-    ax[1].imshow(I_with_M[0])
-    ax[2].imshow(gt_cx[0])
-    ax[3].imshow(gt_cy[0])
-    fig.tight_layout()
-    plt.show()
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(I_with_M[0])
+    # ax[2].imshow(gt_cx[0])
+    # ax[3].imshow(gt_cy[0])
+    # fig.tight_layout()
+    # plt.show()
 
     _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 

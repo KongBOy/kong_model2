@@ -39,7 +39,7 @@ def W_01_visual_op(W_01):
     # Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8) * 2
 
     ### 方法2b：
-    W_visual  = (W_01           * 255).astype(np.uint8)
+    W_visual  = (W_01[..., 0:3] * 255).astype(np.uint8)
     Wz_visual = (W_01[..., 0:1] * 255).astype(np.uint8)
     Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8)
     Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8)
@@ -75,7 +75,7 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_r
     I_w_M_01 = I_w_M_01[0].numpy()
     return W_01, I_w_M_01, Wgt_01, Mgt_pre
 
-def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Wgt_w_Mgt, Wgt_w_Mgt_pre, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Wgt_w_Mgt, Wgt_w_Mgt_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
     elif(phase == "test"): used_sees = exp_obj.result_obj.tests
     private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
@@ -100,6 +100,7 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Wgt_w
     # print("Wgt_visual", Wgt_visual.min())
     Mgt_visual = (Mgt_pre * 255).astype(np.uint8)
     I_w_M_visual = (I_w_M_01 * 255).astype(np.uint8)
+    ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
     if(bgr2rgb):
         in_img = in_img[:, :, ::-1]
         rec_hope = rec_hope[:, :, ::-1]
@@ -109,35 +110,36 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Wgt_w
     # print("Wgt.shape:       ", Wgt.shape)
     # print("Wgt_visual.shape:", Wgt_visual.shape)
 
-    if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
+    if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
-        cv2.imwrite(private_write_dir + "/" + "0a1-ord_img.jpg",  in_img)
-        cv2.imwrite(private_write_dir + "/" + "0a2-in_img.jpg",      I_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + "0b-gt_a_gt_mask.jpg", Mgt_visual)
-        np.save    (private_write_dir + "/" + "0b-gt_b_gt_W",        Wgt_01)
-        cv2.imwrite(private_write_dir + "/" + "0b-gt_b_gt_W.jpg",    Wgt_visual)
-        cv2.imwrite(private_write_dir + "/" + "0b-gt_b_gt_Wx.jpg",   Wxgt_visual)
-        cv2.imwrite(private_write_dir + "/" + "0b-gt_b_gt_Wy.jpg",   Wygt_visual)
-        cv2.imwrite(private_write_dir + "/" + "0b-gt_b_gt_Wz.jpg",   Wzgt_visual)
-        cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",     rec_hope)
-    np.save(    private_write_dir + "/" + "epoch_%04i_a_W"             % epoch, W_01)
-    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_a_W_visual.jpg"  % epoch, W_visual)
-    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_a_Wx_visual.jpg" % epoch, Wx_visual)
-    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_a_Wy_visual.jpg" % epoch, Wy_visual)
-    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_a_Wz_visual.jpg" % epoch, Wz_visual)
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_img.jpg",      in_img)
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a2-gt_mask.jpg",      Mgt_visual)
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-in_img_w_Mgt.jpg", I_w_M_visual)
+
+        np.save    (private_write_dir + "/" + "0b_u1b1-gt_W",             Wgt_01)
+        cv2.imwrite(private_write_dir + "/" + "0b_u1b2-gt_W.jpg",         Wgt_visual)
+        cv2.imwrite(private_write_dir + "/" + "0b_u1b3-gt_Wx.jpg",         Wxgt_visual)
+        cv2.imwrite(private_write_dir + "/" + "0b_u1b4-gt_Wy.jpg",         Wygt_visual)
+        cv2.imwrite(private_write_dir + "/" + "0b_u1b5-gt_Wz.jpg",         Wzgt_visual)
+        cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",           rec_hope)
+    np.save(    private_write_dir + "/" + "epoch_%04i_u1b1-W"             % current_ep, W_01)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2-W_visual.jpg"  % current_ep, W_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3-Wx_visual.jpg" % current_ep, Wx_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4-Wy_visual.jpg" % current_ep, Wy_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b5-Wz_visual.jpg" % current_ep, Wz_visual)
 
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-        from matplot_fig_ax_util import Matplot_single_row_imgs
         imgs       = [ in_img ,   W_visual , Wgt_visual]
         img_titles = ["in_img", "Wpred",   "Wgt"]
 
         single_row_imgs = Matplot_single_row_imgs(
                                 imgs      =imgs,         ### 把要顯示的每張圖包成list
                                 img_titles=img_titles,               ### 把每張圖要顯示的字包成list
-                                fig_title ="%s, epoch=%04i" % (current_see_name, int(epoch)),  ### 圖上的大標題
+                                fig_title ="%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
                                 add_loss  =add_loss,
-                                bgr2rgb   =bgr2rgb)
+                                bgr2rgb   =bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
         single_row_imgs.Draw_img()
-        single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 如果沒有要接續畫loss，就可以存了喔！
+        single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
+        print("save to:", exp_obj.result_obj.test_write_dir)

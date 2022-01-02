@@ -32,6 +32,8 @@ class norm_mapping_util():
 
     def _norm_to_01_by_max_min_val(self, data):  ### 因為用tanh，所以把值弄到 [-1, 1]
         data = (data - self.db_range.min) / (self.db_range.max - self.db_range.min)
+        # print("self.db_range.max", self.db_range.max)
+        # print("self.db_range.min", self.db_range.min)
         return data
 
     def _norm_to_tanh_by_max_min_val(self, data):  ### 因為用tanh，所以把值弄到 [-1, 1]
@@ -114,11 +116,11 @@ class mov_mapping_util(norm_mapping_util):
 
     def step2_M_clip_and_C_normalize(self, F):
         M     = F[..., 0:1]
+        C     = F[..., 1:3]
         M_pre = self._mask_binary_clip(M)
-        C     = F[...,  1:3]
         C_pre = self.check_use_range_and_db_range_then_normalize_data(C)
         F_pre = tf.concat([M_pre, C_pre], axis=-1)
-        return F
+        return F_pre
 
     # def step2_flow_split_to_M_and_C(self, F):
     #     M = F[..., 0:1]
@@ -646,17 +648,17 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
         # # print("train_gt_finish")
 
         # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine.take(5)):
-        #     debug_dict["1-1 train_in"    ] = train_in
-        #     debug_dict["1-2 train_in_pre"] = train_in_pre
-        #     debug_dict["1-3 train_gt"    ] = train_gt
-        #     debug_dict["1-4 train_gt_pre"] = train_gt_pre
+        #     debug_dict[f"{i}--1-1 train_in"    ] = train_in
+        #     debug_dict[f"{i}--1-2 train_in_pre"] = train_in_pre
+        #     debug_dict[f"{i}--1-3 train_gt"    ] = train_gt
+        #     debug_dict[f"{i}--1-4 train_gt_pre"] = train_gt_pre
 
-        #     debug_dict["2-1 train_in"    ] = train_in[0].numpy()
-        #     debug_dict["2-2 train_in_pre"] = train_in_pre[0].numpy()
-        #     debug_dict["2-3 train_Mgt"    ] = train_gt[0][0].numpy()
-        #     debug_dict["2-4 train_Mgt_pre"] = train_gt_pre[0][0].numpy()
-        #     debug_dict["2-5 train_Wgt"    ] = train_gt[1][0].numpy()
-        #     debug_dict["2-6 train_Wgt_pre"] = train_gt_pre[1][0].numpy()
+        #     debug_dict[f"{i}--2-1 train_in"    ] = train_in[0].numpy()
+        #     debug_dict[f"{i}--2-2 train_in_pre"] = train_in_pre[0].numpy()
+        #     debug_dict[f"{i}--2-3 train_Mgt"    ] = train_gt[0][0].numpy()
+        #     debug_dict[f"{i}--2-4 train_Mgt_pre"] = train_gt_pre[0][0].numpy()
+        #     debug_dict[f"{i}--2-5 train_Wgt"    ] = train_gt[1][0].numpy()
+        #     debug_dict[f"{i}--2-6 train_Wgt_pre"] = train_gt_pre[1][0].numpy()
 
         #     if(get_what == "flow"):
         #         train_gt_visual     = method1(train_gt[0, ..., 2]    , train_gt[0, ..., 1])
@@ -692,8 +694,8 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
         #         ax[1, 4].imshow(train_gt_pre[0, ..., 3])
         #     fig.tight_layout()
         #     plt.show()
-        # #########################################################################################################################################
-        # return self
+        #########################################################################################################################################
+        return self
 
 class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder):
     def build_by_in_dis_gt_mask_coord(self):
@@ -720,17 +722,17 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
         # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine.take(3)):
         #     # if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
         #     # elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)
-        #     debug_dict["1-1 train_in"    ] = train_in
-        #     debug_dict["1-2 train_in_pre"] = train_in_pre
-        #     debug_dict["1-3 train_gt"    ] = train_gt
-        #     debug_dict["1-4 train_gt_pre"] = train_gt_pre
+        #     debug_dict[f"{i}--1-1 train_in"    ] = train_in
+        #     debug_dict[f"{i}--1-2 train_in_pre"] = train_in_pre
+        #     debug_dict[f"{i}--1-3 train_gt"    ] = train_gt
+        #     debug_dict[f"{i}--1-4 train_gt_pre"] = train_gt_pre
 
-        #     debug_dict["2-1  train_in"     ] = train_in[0].numpy()
-        #     debug_dict["2-2  train_in_pre" ] = train_in_pre[0].numpy()
-        #     debug_dict["2-3a train_gt_mask"] = train_gt[0, ..., 0:1].numpy()
-        #     debug_dict["2-3b train_gt_move"] = train_gt[0, ..., 1:3].numpy()
-        #     debug_dict["2-4a train_gt_pre_mask"] = train_gt_pre[0, ..., 0:1].numpy()
-        #     debug_dict["2-4b train_gt_pre_move"] = train_gt_pre[0, ..., 1:3].numpy()
+        #     debug_dict[f"{i}--2-1  train_in"     ] = train_in[0].numpy()
+        #     debug_dict[f"{i}--2-2  train_in_pre" ] = train_in_pre[0].numpy()
+        #     debug_dict[f"{i}--2-3a train_gt_mask"] = train_gt[0, ..., 0:1].numpy()
+        #     debug_dict[f"{i}--2-3b train_gt_move"] = train_gt[0, ..., 1:3].numpy()
+        #     debug_dict[f"{i}--2-4a train_gt_pre_mask"] = train_gt_pre[0, ..., 0:1].numpy()
+        #     debug_dict[f"{i}--2-4b train_gt_pre_move"] = train_gt_pre[0, ..., 1:3].numpy()
 
         #     # breakpoint()
         #     ### 用 matplot 視覺化， 也可以順便看一下 真的要使用data時， 要怎麼抓資料才正確
@@ -768,6 +770,22 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
             self.tf_data.see_gt_db , self.tf_data.see_gt_db_pre = see_gt_factory.build_mask_coord_db()
 
             self.tf_data.see_amount    = get_db_amount(self.tf_data.db_obj.see_in_dir)
+
+            ###########################################################################################################################################
+            ### 勿刪！用來測試寫得對不對！
+            # for i, (see_in, see_in_pre, see_gt, see_gt_pre) in enumerate(tf.data.Dataset.zip((self.tf_data.see_in_db.batch(1), self.tf_data.see_in_db_pre.batch(1),
+            #                                                                                   self.tf_data.see_gt_db.batch(1), self.tf_data.see_gt_db_pre.batch(1)))):
+            #     debug_dict[f"{i}--3-1 see_in"    ] = see_in
+            #     debug_dict[f"{i}--3-2 see_in_pre"] = see_in_pre
+            #     debug_dict[f"{i}--3-3 see_gt"    ] = see_gt
+            #     debug_dict[f"{i}--3-4 see_gt_pre"] = see_gt_pre
+
+            #     debug_dict[f"{i}--4-1  see_in"     ] = see_in[0].numpy()
+            #     debug_dict[f"{i}--4-2  see_in_pre" ] = see_in_pre[0].numpy()
+            #     debug_dict[f"{i}--4-3a see_gt_mask"] = see_gt[0, ..., 0:1].numpy()
+            #     debug_dict[f"{i}--4-3b see_gt_move"] = see_gt[0, ..., 1:3].numpy()
+            #     debug_dict[f"{i}--4-4a see_gt_pre_mask"] = see_gt_pre[0, ..., 0:1].numpy()
+            #     debug_dict[f"{i}--4-4b see_gt_pre_move"] = see_gt_pre[0, ..., 1:3].numpy()
 
         if(self.tf_data.db_obj.have_rec_hope):
             rec_hope_train_factory = tf_Datapipline_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_train_dir, file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
@@ -909,7 +927,7 @@ if(__name__ == "__main__"):
     db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
