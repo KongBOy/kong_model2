@@ -164,7 +164,7 @@ def _train_step_Single_output(model_obj, in_data, gt_data, loss_info_objs):
 
 ####################################################
 @tf.function
-def train_step_Mask_Data_input_Single_output_I_w_Mgt_to_Cx(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Single_output_I_w_Mgt_to_Cx(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
@@ -186,7 +186,7 @@ def train_step_Mask_Data_input_Single_output_I_w_Mgt_to_Cx(model_obj, in_data, g
     _train_step_Single_output(model_obj=model_obj, in_data=I_with_M, gt_data=gt_cx, loss_info_objs=loss_info_objs)
 
 @tf.function
-def train_step_Mask_Data_input_Single_output_I_w_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Single_output_I_w_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
@@ -208,7 +208,7 @@ def train_step_Mask_Data_input_Single_output_I_w_Mgt_to_C(model_obj, in_data, gt
 
 ####################################################
 @tf.function
-def train_step_Mask_Data_input_Single_output_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Single_output_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     Mgt_to_C 是 Mask(gt)_to_Coord 的縮寫
     '''
@@ -219,7 +219,7 @@ def train_step_Mask_Data_input_Single_output_Mgt_to_C(model_obj, in_data, gt_dat
 
 ####################################################
 @tf.function
-def train_step_Mask_Data_input_Single_output_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Single_output_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_to_C 是 Image_to_Coord 的縮寫
     '''
@@ -250,7 +250,7 @@ def train_step_Single_output_I_to_W(model_obj, in_data, gt_data, loss_info_objs=
 
 ####################################################
 @tf.function
-def train_step_Mask_Data_input_Single_output_I_to_M(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Single_output_I_to_M(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_to_C 是 Image_to_Coord 的縮寫
     '''
@@ -262,7 +262,7 @@ def train_step_Mask_Data_input_Single_output_I_to_M(model_obj, in_data, gt_data,
 ###################################################################################################################################################
 ###################################################################################################################################################
 @tf.function
-def train_step_Data_input_Single_output_I_w_Mgt_to_F(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Single_output_I_w_Mgt_to_F(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     相當於無背景的訓練
     '''
@@ -279,7 +279,7 @@ def train_step_Data_input_Single_output_I_w_Mgt_to_F(model_obj, in_data, gt_data
     _train_step_Single_output(model_obj, I_with_M, gt_data, loss_info_objs)
 
 @tf.function
-def train_step_Data_input_Single_output_I_to_F_or_R(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Single_output_I_to_F_or_R(model_obj, in_data, gt_data, loss_info_objs=None):
     _train_step_Single_output(model_obj, in_data, gt_data, loss_info_objs)
 
 
