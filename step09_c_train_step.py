@@ -95,23 +95,28 @@ def train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt_data, los
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
-    gt_mask  = gt_data[0]
+    gt_mask  = gt_data[..., 3:4]
     I_with_M = in_data * gt_mask
 
-    Wxgt = gt_data[1][0:1, ..., 2:3]
-    Wygt = gt_data[1][0:1, ..., 1:2]
-    Wzgt = gt_data[1][0:1, ..., 0:1]
+    Wxgt = gt_data[..., 2:3]
+    Wygt = gt_data[..., 1:2]
+    Wzgt = gt_data[..., 0:1]
     gt_datas = [Wzgt, Wygt, Wxgt]
-    # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
-    # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
 
     ### debug 時 記得把 @tf.function 拿掉
+    # print("in_data.shape", in_data.shape)
+    # print("gt_data.shape", gt_data.shape)
+    # print("gt_mask.shape", gt_mask.shape)
+    # print("I_with_M.shape", I_with_M.shape)
+    # print("Wxgt.shape", Wxgt.shape)
     # import matplotlib.pyplot as plt
-    # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
-    # ax[0].imshow(in_data[0])
-    # ax[1].imshow(I_with_M[0])
-    # ax[2].imshow(gt_cx[0])
-    # ax[3].imshow(gt_cy[0])
+    # fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(12, 8))
+    # ax[0, 0].imshow(in_data[0])
+    # ax[0, 1].imshow(gt_mask[0])
+    # ax[0, 2].imshow(I_with_M[0])
+    # ax[1, 0].imshow(Wxgt[0])
+    # ax[1, 1].imshow(Wygt[0])
+    # ax[1, 2].imshow(Wzgt[0])
     # fig.tight_layout()
     # plt.show()
 
@@ -223,7 +228,26 @@ def train_step_Mask_Data_input_Single_output_I_to_C(model_obj, in_data, gt_data,
 
     _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
-    _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=in_data, gt_data=gt_coord, loss_info_objs=loss_info_objs)
+@tf.function
+def train_step_Single_output_I_to_W(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_to_W 是 Image_to_wc 的縮寫
+    '''
+    gt_wc = gt_data[..., :3]
+    ### debug 時 記得把 @tf.function 拿掉
+    # print("gt_data.shape", gt_data.shape)
+    # print("in_data.shape", in_data.shape)
+    # print("gt_wc.shape", gt_wc.shape)
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(gt_wc[0, ..., 0:1])
+    # ax[2].imshow(gt_wc[0, ..., 1:2])
+    # ax[3].imshow(gt_wc[0, ..., 2:3])
+    # fig.tight_layout()
+    # plt.show()
+
+    _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_wc, loss_info_objs=loss_info_objs)
 
 ####################################################
 @tf.function

@@ -43,7 +43,7 @@ def I_Generate_W_see(model_G, phase, index, in_img, in_img_pre, gt_wc, _4, rec_h
         rec_hope = rec_hope[:, :, ::-1]
 
     wc    = I_Generate_W(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
-    gt_wc = gt_wc[1][0].numpy()
+    gt_wc = gt_wc[0, ..., :3].numpy()
 
     wc_visual    = wc_visual_op(wc)
     gt_wc_visual = wc_visual_op(gt_wc)
@@ -55,8 +55,6 @@ def I_Generate_W_see(model_G, phase, index, in_img, in_img_pre, gt_wc, _4, rec_h
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
         cv2.imwrite(private_write_dir + "/" + "0a-in_img.jpg",       in_img)             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        # cv2.imwrite(private_write_dir + "/" + "0b-gt_a_gt_mask.jpg", (gt_mask.numpy() * 255).astype(np.uint8))  ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        # np.save    (private_write_dir + "/" + "0b-gt_a_gt_mask",     gt_mask)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0b-gt_b_gt_wc.jpg", gt_wc_visual)                            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         np.save    (private_write_dir + "/" + "0b-gt_b_gt_wc",     gt_wc)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",   rec_hope)           ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張

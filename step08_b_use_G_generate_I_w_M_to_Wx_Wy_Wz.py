@@ -52,19 +52,30 @@ def W_01_visual_op(W_01):
     return W_visual, Wx_visual, Wy_visual, Wz_visual
 
 ####################################################################################################
-def I_w_M_Gen_Wx_Wy_Wz_to_W(model_G, _1, in_img_pre, _3, Mgt_w_Wgt_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
-    Mgt_pre  = Mgt_w_Wgt_pre[0]
+def I_w_M_Gen_Wx_Wy_Wz_to_W(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+    Mgt_pre = Wgt_w_Mgt_pre[..., 3:4]
+    Wgt_pre = Wgt_w_Mgt_pre[..., 0:3]
     I_pre_with_M_pre = in_img_pre * Mgt_pre
 
     Wz_pre, Wy_pre, Wx_pre = model_G(I_pre_with_M_pre, training=training)
+
+    ### 後處理： 拿掉 batch 和 弄成01 和 轉成 numpy
     Wz_pre = Wz_pre[0].numpy()
     Wy_pre = Wy_pre[0].numpy()
     Wx_pre = Wx_pre[0].numpy()
     W_pre  = np.concatenate([Wz_pre, Wy_pre, Wx_pre], axis=-1)
     W_01 = Value_Range_Postprocess_to_01(W_pre, use_gt_range)
-    return W_01, I_pre_with_M_pre, Mgt_pre
 
-def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Mgt_w_Wgt, Mgt_w_Wgt_pre, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+    Wgt_pre = Wgt_pre[0].numpy()
+    Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, use_gt_range)
+
+    Mgt_pre = Mgt_pre[0].numpy()
+
+    I_w_M_01  = Value_Range_Postprocess_to_01(I_pre_with_M_pre, use_gt_range)
+    I_w_M_01 = I_w_M_01[0].numpy()
+    return W_01, I_w_M_01, Wgt_01, Mgt_pre
+
+def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Wgt_w_Mgt, Wgt_w_Mgt_pre, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
     elif(phase == "test"): used_sees = exp_obj.result_obj.tests
     private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
@@ -80,22 +91,19 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Mgt_w
     in_img   = in_img  [0].numpy()
     rec_hope = rec_hope[0].numpy()
 
-    W_01, I_pre_with_M_pre, Mgt_pre = I_w_M_Gen_Wx_Wy_Wz_to_W(model_G, None, in_img_pre, None, Mgt_w_Wgt_pre, exp_obj.use_gt_range, training=training)
-    Wgt_pre = Mgt_w_Wgt_pre[1][0].numpy()
-    # print("Wgt_pre", Wgt_pre.max())
-    # print("Wgt_pre", Wgt_pre.min())
-    Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, exp_obj.use_gt_range)
+    W_01, I_w_M_01, Wgt_01, Mgt_pre = I_w_M_Gen_Wx_Wy_Wz_to_W(model_G, None, in_img_pre, None, Wgt_w_Mgt_pre, exp_obj.use_gt_range, training=training)
+
 
     W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = W_01_visual_op(W_01)
     Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)
     # print("Wgt_visual", Wgt_visual.max())
     # print("Wgt_visual", Wgt_visual.min())
-    Mgt_visual = (Mgt_pre[0].numpy() * 255).astype(np.uint8)
-    I_pre_with_M_pre = (I_pre_with_M_pre[0].numpy() * 255).astype(np.uint8)
+    Mgt_visual = (Mgt_pre * 255).astype(np.uint8)
+    I_w_M_visual = (I_w_M_01 * 255).astype(np.uint8)
     if(bgr2rgb):
         in_img = in_img[:, :, ::-1]
         rec_hope = rec_hope[:, :, ::-1]
-        I_pre_with_M_pre = I_pre_with_M_pre[:, :, ::-1]
+        I_w_M_visual = I_w_M_visual[:, :, ::-1]
     # print("W_01.shape:          ", W_01.shape)
     # print("W_visual.shape:   ", W_visual.shape)
     # print("Wgt.shape:       ", Wgt.shape)
@@ -103,7 +111,8 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Mgt_w
 
     if(epoch == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
-        cv2.imwrite(private_write_dir + "/" + "0a-in_img.jpg",       in_img)
+        cv2.imwrite(private_write_dir + "/" + "0a1-ord_img.jpg",  in_img)
+        cv2.imwrite(private_write_dir + "/" + "0a2-in_img.jpg",      I_w_M_visual)
         cv2.imwrite(private_write_dir + "/" + "0b-gt_a_gt_mask.jpg", Mgt_visual)
         np.save    (private_write_dir + "/" + "0b-gt_b_gt_W",        Wgt_01)
         cv2.imwrite(private_write_dir + "/" + "0b-gt_b_gt_W.jpg",    Wgt_visual)

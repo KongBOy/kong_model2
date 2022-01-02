@@ -119,7 +119,7 @@ class mov_mapping_util(norm_mapping_util):
 
     def step2_flow_split_to_M_and_C_then_M_clip_and_C_normalize(self, F):
         M = F[..., 0:1]
-        M = self.step3_mask_binary_clip(M)
+        M = self._mask_binary_clip(M)
 
         C = F[..., 1:3]
         C = self.check_use_range_and_db_range_then_normalize_data(C)
@@ -130,36 +130,28 @@ class mov_mapping_util(norm_mapping_util):
         return M
 
 
-
     def step1_wc_load(self, file_name):
         raw_data = self._step0_load_knpy(file_name)
         wc = tf.reshape(raw_data, [self.img_resize[0], self.img_resize[1], 4])  ### ch1:z, ch2:y, ch3:x, ch4:後處理成mask了
         return wc   #[..., :3]
 
-    def step2_wc_split_to_M_and_W(self, wc):
-        M = wc[..., 3:4]
-        wc   = wc[...,  :3]
-        return M, wc
 
-    def step2_wc_split_to_M_and_W_then_M_clip_and_W_normalize(self, wc):
+    def step2_M_clip_and_W_normalize(self, wc):
         M = wc[..., 3:4]
-        M = self.step3_mask_binary_clip(M)
+        M = self._mask_binary_clip(M)
         wc   = wc[...,  :3]
         wc   = self.check_use_range_and_db_range_then_normalize_data(wc)
-        return M, wc
+        W = tf.concat([wc, M], axis=-1)
+        return W
 
+class mask_mapping_util(norm_mapping_util):
+    def _3ch_get_1ch(self, img): return img[..., 0]
 
-
-    def step3_mask_binary_clip(self, mask):
+    def _mask_binary_clip(self, mask):
         threshold = 0.8
         mask = tf.where(mask > threshold, 1, 0)
         mask = tf.cast(mask, tf.float32)
         return mask
-
-
-
-class mask_mapping_util(norm_mapping_util):
-    def _3ch_get_1ch(self, img): return img[..., 0]
 
 ####################################################################################################
 ####################################################################################################
@@ -248,11 +240,10 @@ class tf_Datapipline_factory(img_mapping_util, mov_mapping_util, mask_mapping_ut
     def build_wc_db(self):
         self.ord_db = self._build_file_name_db()
         self.ord_db = self.ord_db.map(self.step1_wc_load)
-        self.ord_db = self.ord_db.map(self.step2_wc_split_to_M_and_W)
 
         self.pre_db = self._build_file_name_db()
         self.pre_db = self.pre_db.map(self.step1_wc_load)
-        self.pre_db = self.pre_db.map(self.step2_wc_split_to_M_and_W_then_M_clip_and_W_normalize)
+        self.pre_db = self.pre_db.map(self.step2_M_clip_and_W_normalize)
         return self.ord_db, self.pre_db
 
     ###  mask1ch, coord(先y再x) 2ch 的形式
@@ -681,21 +672,21 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
         #         ax[0, 1].imshow(train_in_pre[0])
 
         #         ### W_ord vs W_pre
-        #         ax[0, 2].imshow(train_gt    [1][0])
-        #         ax[0, 3].imshow(train_gt_pre[1][0])
+        #         ax[0, 2].imshow(train_gt    [0, ..., :3])
+        #         ax[0, 3].imshow(train_gt_pre[0, ..., :3])
 
         #         ### Wx, Wy, Wz 看一下長什麼樣子
-        #         ax[1, 0].imshow(train_gt_pre[1][0, ..., 0])
-        #         ax[1, 1].imshow(train_gt_pre[1][0, ..., 1])
-        #         ax[1, 2].imshow(train_gt_pre[1][0, ..., 2])
+        #         ax[1, 0].imshow(train_gt_pre[0, ..., 0])
+        #         ax[1, 1].imshow(train_gt_pre[0, ..., 1])
+        #         ax[1, 2].imshow(train_gt_pre[0, ..., 2])
 
         #         ### M_ord vs M_pre
-        #         ax[1, 3].imshow(train_gt    [0][0])
-        #         ax[1, 4].imshow(train_gt_pre[0][0])
+        #         ax[1, 3].imshow(train_gt    [0, ..., 3])
+        #         ax[1, 4].imshow(train_gt_pre[0, ..., 3])
         #     fig.tight_layout()
         #     plt.show()
-        #########################################################################################################################################
-        return self
+        # #########################################################################################################################################
+        # return self
 
 class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder):
     def build_by_in_dis_gt_mask_coord(self):
