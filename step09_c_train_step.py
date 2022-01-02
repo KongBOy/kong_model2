@@ -17,40 +17,13 @@ def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data):
         else:                  losses.append(loss_fun(gt_data, model_output))
         total_loss += losses[-1]
     return total_loss, losses
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
 
-
-# def _train_step_multi_output_multi_optimizer(model_obj, in_data, gt_datas, loss_info_objs=None):
-#     with tf.GradientTape() as gen_tape:
-#         model_outputs = model_obj.generator(in_data)
-#         # print("in_data.numpy().shape", in_data.numpy().shape)
-#         # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
-#         # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
-#         multi_losses = []
-#         multi_total_loss = 0
-#         for go_m, model_output in enumerate(model_outputs):
-#             total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[go_m], model_output, gt_datas[go_m])
-#             multi_losses.append(losses)
-#             multi_total_loss += total_loss
-
-
-#         # gen_loss = loss_info_objs.loss_funs_dict["mask_BCE"]      (gt_data, model_output)
-#         # sob_loss = loss_info_objs.loss_funs_dict["mask_Sobel_MAE"](gt_data, model_output)
-#         # total_loss = gen_loss + sob_loss
-
-#     total_gradients = gen_tape .gradient(multi_total_loss, model_obj.generator.trainable_variables)
-#     # for gradient in generator_gradients:
-#     #     print("gradient", gradient)
-#     model_obj .optimizer_G .apply_gradients(zip(total_gradients, model_obj.generator.trainable_variables))
-
-#     ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
-#     for go_l, loss_info_objs in enumerate(loss_info_objs):
-#         for go_containor, loss_containor in enumerate(loss_info_objs.loss_containors.values()):
-#             loss_containor( multi_losses[go_l][go_containor] )
-#     # loss_info_objs.loss_containors["mask_bce_loss"]      (gen_loss)
-#     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
-
-
-def _train_step_multi_output(model_obj, in_data, gt_datas, loss_info_objs=None):
+def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None):
     with tf.GradientTape() as gen_tape:
         model_outputs = model_obj.generator(in_data)
         # print("in_data.numpy().shape", in_data.numpy().shape)
@@ -78,9 +51,9 @@ def _train_step_multi_output(model_obj, in_data, gt_datas, loss_info_objs=None):
             loss_containor( multi_losses[go_l][go_containor] )
     # loss_info_objs.loss_containors["mask_bce_loss"]      (gen_loss)
     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
-
+####################################################
 @tf.function
-def train_step_pure_G_split_mask_move_I_to_M_w_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Multi_output_I_to_M_w_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
@@ -88,11 +61,11 @@ def train_step_pure_G_split_mask_move_I_to_M_w_I_to_C(model_obj, in_data, gt_dat
     gt_coord = gt_data[1]
     gt_datas = [gt_mask, gt_coord]
 
-    _train_step_multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+    _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
 
 @tf.function
-def train_step_pure_G_split_mask_move_I_to_Cx_Cy(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Multi_output_I_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
@@ -115,10 +88,10 @@ def train_step_pure_G_split_mask_move_I_to_Cx_Cy(model_obj, in_data, gt_data, lo
     # fig.tight_layout()
     # plt.show()
 
-    _train_step_multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+    _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
 @tf.function
-def train_step_pure_G_split_mask_move_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
@@ -142,12 +115,17 @@ def train_step_pure_G_split_mask_move_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt
     # fig.tight_layout()
     # plt.show()
 
-    _train_step_multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+    _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
 
 ###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
 ### 因為外層function 已經有 @tf.function， 裡面這層自動會被 decorate 到喔！ 所以這裡不用 @tf.function
-def _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_objs):
+def _train_step_Single_output(model_obj, in_data, gt_data, loss_info_objs):
     # print("gt_data.min()", gt_data.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
     # print("gt_data.max()", gt_data.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
     # print("gt_data[..., 0].min()", gt_data.numpy()[..., 0].min())  ### 用這show的時候要先把 @tf.function註解掉
@@ -181,7 +159,7 @@ def _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_obj
 
 ####################################################
 @tf.function
-def train_step_pure_G_split_mask_move_I_with_Mgt_to_Cx(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Mask_Data_input_Single_output_I_w_Mgt_to_Cx(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
@@ -200,10 +178,10 @@ def train_step_pure_G_split_mask_move_I_with_Mgt_to_Cx(model_obj, in_data, gt_da
     # fig.tight_layout()
     # plt.show()
 
-    _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=I_with_M, gt_data=gt_cx, loss_info_objs=loss_info_objs)
+    _train_step_Single_output(model_obj=model_obj, in_data=I_with_M, gt_data=gt_cx, loss_info_objs=loss_info_objs)
 
 @tf.function
-def train_step_pure_G_split_mask_move_I_with_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Mask_Data_input_Single_output_I_w_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
@@ -220,46 +198,49 @@ def train_step_pure_G_split_mask_move_I_with_Mgt_to_C(model_obj, in_data, gt_dat
     # fig.tight_layout()
     # plt.show()
 
-    _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=I_with_M, gt_data=gt_coord, loss_info_objs=loss_info_objs)
+    _train_step_Single_output(model_obj=model_obj, in_data=I_with_M, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
 
 ####################################################
 @tf.function
-def train_step_pure_G_split_mask_move_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Mask_Data_input_Single_output_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     Mgt_to_C 是 Mask(gt)_to_Coord 的縮寫
     '''
     gt_mask = gt_data[0]
     gt_coord = gt_data[1]
 
-    _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=gt_mask, gt_data=gt_coord, loss_info_objs=loss_info_objs)
+    _train_step_Single_output(model_obj=model_obj, in_data=gt_mask, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
 ####################################################
 @tf.function
-def train_step_pure_G_split_mask_move_I_to_C_or_W(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Mask_Data_input_Single_output_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_to_C 是 Image_to_Coord 的縮寫
     '''
     gt_mask = gt_data[0]
     gt_coord = gt_data[1]
+
+    _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
     _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=in_data, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
 ####################################################
 @tf.function
-def train_step_pure_G_split_mask_move_I_to_M(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Mask_Data_input_Single_output_I_to_M(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_to_C 是 Image_to_Coord 的縮寫
     '''
     gt_mask = gt_data[0]
     gt_coord = gt_data[1]
 
-    _train_step_in_G_out_loss_with_gt(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
+    _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
 
 ###################################################################################################################################################
 ###################################################################################################################################################
+###################################################################################################################################################
 @tf.function
-def train_step_pure_G_I_with_Mgt_to_F(model_obj, in_data, gt_data, loss_info_objs=None):
+def train_step_Data_input_Single_output_I_w_Mgt_to_F(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     相當於無背景的訓練
     '''
@@ -273,11 +254,11 @@ def train_step_pure_G_I_with_Mgt_to_F(model_obj, in_data, gt_data, loss_info_obj
     # ax[1].imshow(I_with_M[0])
     # fig.tight_layout()
     # plt.show()
-    _train_step_in_G_out_loss_with_gt(model_obj, I_with_M, gt_data, loss_info_objs)
+    _train_step_Single_output(model_obj, I_with_M, gt_data, loss_info_objs)
 
 @tf.function
-def train_step_pure_G_I_to_F_or_W_or_R(model_obj, in_data, gt_data, loss_info_objs=None):
-    _train_step_in_G_out_loss_with_gt(model_obj, in_data, gt_data, loss_info_objs)
+def train_step_Data_input_Single_output_I_to_F_or_R(model_obj, in_data, gt_data, loss_info_objs=None):
+    _train_step_Single_output(model_obj, in_data, gt_data, loss_info_objs)
 
 
 @tf.function
@@ -292,6 +273,9 @@ def train_step_first(model_obj, in_dis_img, gt_coord_map, board_obj):
     ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
     board_obj.losses["gen_l1_loss"](gen_l1_loss)
 
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
 ###################################################################################################################################################
 ###################################################################################################################################################
 
