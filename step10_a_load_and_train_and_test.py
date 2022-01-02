@@ -254,7 +254,7 @@ class Experiment():
                                                                                                                 self.tf_data.test_gt_db.batch(1)          .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_gt_db_pre.batch(1)      .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_name_db.batch(1)        .take(self.tf_data.test_amount),
-                                                                                                                self.tf_data.rec_hope_test_db             .take(self.tf_data.test_amount)))):
+                                                                                                                self.tf_data.rec_hope_test_db.batch(1)    .take(self.tf_data.test_amount)))):
             # self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
             self.model_obj.generate_sees  (self.model_obj.generator, "test", test_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, self.current_ep, self, training=False, see_reset_init=True, postprocess=True)
         Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir, read_dir=self.result_obj.test_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
