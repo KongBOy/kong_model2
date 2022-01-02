@@ -5,7 +5,7 @@ import sys
 sys.path.append("kong_util")
 # from util import get_dir_moves
 from util import get_db_amount
-
+import time
 
 from step06_a_datas_obj import DB_C, DB_N, DB_GM, VALUE_RANGE, Dataset_builder, Range
 import os
@@ -112,18 +112,26 @@ class mov_mapping_util(norm_mapping_util):
         F = tf.reshape(raw_data, [self.img_resize[0], self.img_resize[1], 3])  ### ch1:mask, ch2:y, ch3:x
         return F
 
-    def step2_flow_split_to_M_and_C(self, F):
-        M = F[..., 0:1]
-        C = F[..., 1:3]
-        return M, C
+    def step2_M_clip_and_C_normalize(self, F):
+        M     = F[..., 0:1]
+        M_pre = self._mask_binary_clip(M)
+        C     = F[...,  1:3]
+        C_pre = self.check_use_range_and_db_range_then_normalize_data(C)
+        F_pre = tf.concat([M_pre, C_pre], axis=-1)
+        return F
 
-    def step2_flow_split_to_M_and_C_then_M_clip_and_C_normalize(self, F):
-        M = F[..., 0:1]
-        M = self._mask_binary_clip(M)
+    # def step2_flow_split_to_M_and_C(self, F):
+    #     M = F[..., 0:1]
+    #     C = F[..., 1:3]
+    #     return M, C
 
-        C = F[..., 1:3]
-        C = self.check_use_range_and_db_range_then_normalize_data(C)
-        return M, C
+    # def step2_flow_split_to_M_and_C_then_M_clip_and_C_normalize(self, F):
+    #     M = F[..., 0:1]
+    #     M = self._mask_binary_clip(M)
+
+    #     C = F[..., 1:3]
+    #     C = self.check_use_range_and_db_range_then_normalize_data(C)
+    #     return M, C
 
     def step2_flow_extract_just_mask(self, F):
         M = F[..., 0:1]
@@ -250,11 +258,10 @@ class tf_Datapipline_factory(img_mapping_util, mov_mapping_util, mask_mapping_ut
     def build_mask_coord_db(self):
         self.ord_db = self._build_file_name_db()
         self.ord_db = self.ord_db.map(self.step1_flow_load)
-        self.ord_db = self.ord_db.map(self.step2_flow_split_to_M_and_C)
 
         self.pre_db = self._build_file_name_db()
         self.pre_db = self.pre_db.map(self.step1_flow_load)
-        self.pre_db = self.pre_db.map(self.step2_flow_split_to_M_and_C_then_M_clip_and_C_normalize)
+        self.pre_db = self.pre_db.map(self.step2_M_clip_and_C_normalize)
         return self.ord_db, self.pre_db
 
     ###  mask1ch， 目前好像沒用到， 這是在用 車子db 測試的mask時候 用的， 測試完後好像就沒再用到了
@@ -711,8 +718,8 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
         # import matplotlib.pyplot as plt
         # from util import method1
         # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine.take(3)):
-        #     if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
-        #     elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)
+        #     # if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
+        #     # elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)
         #     debug_dict["1-1 train_in"    ] = train_in
         #     debug_dict["1-2 train_in_pre"] = train_in_pre
         #     debug_dict["1-3 train_gt"    ] = train_gt
@@ -720,19 +727,19 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
 
         #     debug_dict["2-1  train_in"     ] = train_in[0].numpy()
         #     debug_dict["2-2  train_in_pre" ] = train_in_pre[0].numpy()
-        #     debug_dict["2-3a train_gt_mask"] = train_gt[0][0].numpy()
-        #     debug_dict["2-3b train_gt_move"] = train_gt[1][0].numpy()
-        #     debug_dict["2-4a train_gt_pre_mask"] = train_gt_pre[0][0].numpy()
-        #     debug_dict["2-4b train_gt_pre_move"] = train_gt_pre[1][0].numpy()
+        #     debug_dict["2-3a train_gt_mask"] = train_gt[0, ..., 0:1].numpy()
+        #     debug_dict["2-3b train_gt_move"] = train_gt[0, ..., 1:3].numpy()
+        #     debug_dict["2-4a train_gt_pre_mask"] = train_gt_pre[0, ..., 0:1].numpy()
+        #     debug_dict["2-4b train_gt_pre_move"] = train_gt_pre[0, ..., 1:3].numpy()
 
         #     # breakpoint()
         #     ### 用 matplot 視覺化， 也可以順便看一下 真的要使用data時， 要怎麼抓資料才正確
         #     train_in          = train_in[0]
         #     train_in_pre      = train_in_pre[0]
-        #     train_gt_mask     = train_gt[0][0].numpy()
-        #     train_gt_pre_mask = train_gt_pre[0][0].numpy()
-        #     train_gt_move     = train_gt[1][0].numpy()
-        #     train_gt_pre_move = train_gt_pre[1][0].numpy()
+        #     train_gt_mask     = train_gt    [0, ..., 0:1].numpy()
+        #     train_gt_pre_mask = train_gt_pre[0, ..., 0:1].numpy()
+        #     train_gt_move     = train_gt    [0, ..., 1:3].numpy()
+        #     train_gt_pre_move = train_gt_pre[0, ..., 1:3].numpy()
         #     train_gt_move_visual     = method1(train_gt_move[..., 1]    , train_gt_move[..., 0])
         #     train_gt_pre_move_visual = method1(train_gt_pre_move[..., 1], train_gt_pre_move[..., 0])
 
@@ -872,7 +879,7 @@ class tf_Data_builder(tf_Data_in_img_gt_mask_builder):
 if(__name__ == "__main__"):
     from step09_d_KModel_builder import MODEL_NAME, KModel_builder
     from step06_a_datas_obj import *
-    import time
+    
     start_time = time.time()
 
     # db_obj = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", db_in_range=Range(0, 255), gt_format="bmp", db_gt_range=Range(0, 255)).set_detail(have_train=True, have_see=True).build()
@@ -898,18 +905,18 @@ if(__name__ == "__main__"):
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
-    # ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    # db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
-    # print(db_obj)
-    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).build_by_db_get_method().build()
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
+    print(db_obj)
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    db_obj = type8_blender_wc.build()
-    print(db_obj)
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    # db_obj = type8_blender_wc.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     print(time.time() - start_time)
     print("finish")

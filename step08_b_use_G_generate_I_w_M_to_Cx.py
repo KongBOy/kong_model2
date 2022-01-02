@@ -14,8 +14,7 @@ def I_w_Mgt_to_Cx(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt_range, 
     '''
     這邊model 生成的是 ch2 的 coord， 要再跟 mask concate 後才會變成 ch3 的 flow 喔！
     '''
-    gt_mask_pre  = gt_mask_coord_pre[0]
-    gt_coord_pre = gt_mask_coord_pre[1]
+    gt_mask_pre  = gt_mask_coord_pre[..., 0:1]
     I_pre_w_M = in_img_pre * gt_mask_pre
 
     cx_pre      = model_G(I_pre_w_M, training=training)
@@ -28,8 +27,8 @@ def I_w_Mgt_to_Cx(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt_range, 
 def I_w_Mgt_to_Cx_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):
     in_img    = in_img[0].numpy()
     cx, I_w_M_visual = I_w_Mgt_to_Cx(model_G, None, in_img_pre, None, gt_mask_coord_pre, exp_obj.use_gt_range, training=training)
-    gt_mask  = gt_mask_coord[0][0]
-    gt_cx    = gt_mask_coord[1][0][..., 1]
+    gt_mask  = gt_mask_coord[0, ..., 0:1]
+    gt_cx    = gt_mask_coord[0, ..., 2:3]
 
     gt_mask_visual = (gt_mask.numpy() * 255).astype(np.uint8)
     gt_cx_visual   = (gt_cx.numpy() * 255).astype(np.uint8)

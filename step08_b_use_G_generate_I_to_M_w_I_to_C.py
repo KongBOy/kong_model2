@@ -40,8 +40,8 @@ def I_gen_M_w_I_gen_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=Fa
 
 def I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):
     in_img    = in_img[0].numpy()
-    Mgt  = gt_mask_coord[0][0]
-    Cgt  = gt_mask_coord[1][0].numpy()
+    Mgt  = gt_mask_coord[0, ..., 0:1]
+    Cgt  = gt_mask_coord[0, ..., 1:3].numpy()
     Cxgt_visual = (Cgt[..., 1:2] * 255).astype(np.uint8)
     Cygt_visual = (Cgt[..., 0:1] * 255).astype(np.uint8)
     M, M_visual, I_pre_with_M_pre, I_with_M_visual, C = I_gen_M_w_I_gen_C(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)

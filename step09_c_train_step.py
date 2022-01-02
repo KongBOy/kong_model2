@@ -57,36 +57,36 @@ def train_step_Multi_output_I_to_M_w_I_to_C(model_obj, in_data, gt_data, loss_in
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
-    gt_mask  = gt_data[0]
-    gt_coord = gt_data[1]
+    gt_mask  = gt_data[..., 0:1]
+    gt_coord = gt_data[..., 1:3]
     gt_datas = [gt_mask, gt_coord]
 
     _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
 
-@tf.function
+# @tf.function
 def train_step_Multi_output_I_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
-    gt_mask  = gt_data[0]
+    gt_mask  = gt_data[..., 0:1]
     I_with_M = in_data * gt_mask
 
-    gt_cx = gt_data[1][0:1, ..., 1:2]
-    gt_cy = gt_data[1][0:1, ..., 0:1]
+    gt_cx = gt_data[..., 2:3]
+    gt_cy = gt_data[..., 1:2]
     gt_datas = [gt_cx, gt_cy]
     # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
     # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
 
-    ### debug 時 記得把 @tf.function 拿掉
-    # import matplotlib.pyplot as plt
-    # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
-    # ax[0].imshow(in_data[0])
-    # ax[1].imshow(I_with_M[0])
-    # ax[2].imshow(gt_cx[0])
-    # ax[3].imshow(gt_cy[0])
-    # fig.tight_layout()
-    # plt.show()
+    ## debug 時 記得把 @tf.function 拿掉
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
+    ax[0].imshow(in_data[0])
+    ax[1].imshow(I_with_M[0])
+    ax[2].imshow(gt_cx[0])
+    ax[3].imshow(gt_cy[0])
+    fig.tight_layout()
+    plt.show()
 
     _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
@@ -169,8 +169,8 @@ def train_step_Mask_Data_input_Single_output_I_w_Mgt_to_Cx(model_obj, in_data, g
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
     ### in_img.shape (1, h, w, 3)
-    gt_mask = gt_data[0]   ### (1, h, w, 1)
-    gt_cx   = gt_data[1][0:1, ..., 1:2]  ### (1, h, w, 1)， 注意 藥用 slice 取 才能保持 shape 喔！
+    gt_mask = gt_data[..., 0:1]   ### (1, h, w, 1)
+    gt_cx   = gt_data[..., 2:3]   ### (1, h, w, 1)， 注意 藥用 slice 取 才能保持 shape 喔！
     I_with_M = in_data * gt_mask
     # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
 
@@ -191,8 +191,8 @@ def train_step_Mask_Data_input_Single_output_I_w_Mgt_to_C(model_obj, in_data, gt
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
     '''
     ### in_img.shape (1, h, w, 3)
-    gt_mask = gt_data[0]   ### (1, h, w, 1)
-    gt_coord = gt_data[1]  ### (1, h, w, 2)
+    gt_mask  = gt_data[..., 0:1]  ### (1, h, w, 1)
+    gt_coord = gt_data[..., 1:3]  ### (1, h, w, 2)
     I_with_M = in_data * gt_mask
 
     ### debug 時 記得把 @tf.function 拿掉
@@ -212,8 +212,8 @@ def train_step_Mask_Data_input_Single_output_Mgt_to_C(model_obj, in_data, gt_dat
     '''
     Mgt_to_C 是 Mask(gt)_to_Coord 的縮寫
     '''
-    gt_mask = gt_data[0]
-    gt_coord = gt_data[1]
+    gt_mask  = gt_data[..., 0:1]
+    gt_coord = gt_data[..., 1:3]
 
     _train_step_Single_output(model_obj=model_obj, in_data=gt_mask, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
@@ -223,8 +223,7 @@ def train_step_Mask_Data_input_Single_output_I_to_C(model_obj, in_data, gt_data,
     '''
     I_to_C 是 Image_to_Coord 的縮寫
     '''
-    gt_mask = gt_data[0]
-    gt_coord = gt_data[1]
+    gt_coord = gt_data[..., 1:3]
 
     _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
@@ -255,8 +254,7 @@ def train_step_Mask_Data_input_Single_output_I_to_M(model_obj, in_data, gt_data,
     '''
     I_to_C 是 Image_to_Coord 的縮寫
     '''
-    gt_mask = gt_data[0]
-    gt_coord = gt_data[1]
+    gt_mask = gt_data[..., 0:1]
 
     _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
 
