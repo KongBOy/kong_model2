@@ -5,51 +5,12 @@ from step06_a_datas_obj import Range
 
 import sys
 
-from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_visual_op
 sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-
-######################################################################################################################################################################################################
-def W_01_visual_op(W_01):
-    ### 因為 Wgt 本身值就很小， 所以有想出以下三種 視覺化方式
-    ### 方法1： channel_wise 的 normalize to 01
-    # W_ch_max = W_01.max(axis=(0, 1))
-    # W_ch_min = W_01.min(axis=(0, 1))
-    # W_01_ch_norm = (W_01 - W_ch_min) / (W_ch_max - W_ch_min)
-    # # print("W_ch_norm.shape", W_ch_norm.shape)
-    # # print("W_ch_max:", W_ch_max)
-    # # print("W_ch_min:", W_ch_min)
-    # # print("W_ch_max-W_ch_min:", W_ch_max - W_ch_min)
-    # # print("W_01     [0, 0]", W_01[0, 0])
-    # # print("W_ch_norm[0, 0]", W_ch_norm[0, 0])
-    # # print("W_01[0, 0]", W_01[0, 0])
-    # # print("(W_01 - W_ch_min)[0, 0]", (W_01 - W_ch_min)[0, 0])
-    # W_visual  = (W_01_ch_norm           * 255).astype(np.uint8)
-    # Wz_visual = (W_01_ch_norm[..., 0:1] * 255).astype(np.uint8)
-    # Wy_visual = (W_01_ch_norm[..., 1:2] * 255).astype(np.uint8)
-    # Wx_visual = (W_01_ch_norm[..., 2:3] * 255).astype(np.uint8)
-
-    ### 方法2： 直接 * 2
-    # W_visual  = (W_01           * 255).astype(np.uint8) * 2
-    # Wz_visual = (W_01[..., 0:1] * 255).astype(np.uint8) * 2
-    # Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8) * 2
-    # Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8) * 2
-
-    ### 方法2b：
-    W_visual  = (W_01[..., 0:3] * 255).astype(np.uint8)
-    Wz_visual = (W_01[..., 0:1] * 255).astype(np.uint8)
-    Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8)
-    Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8)
-
-    ### 方法3： 整張圖直接 normalize to 01
-    # W_01 = W_01.astype(np.float32)
-    # W_01 = (W_01 - W_01.min()) / (W_01.max() - W_01.min() + 0.000001) * 255.
-    # wc_2d_v = W_01.astype(np.uint8)
-
-    return W_visual, Wx_visual, Wy_visual, Wz_visual
 
 ####################################################################################################
 def I_w_M_Gen_Wx_Wy_Wz_to_W(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -75,7 +36,7 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_r
     I_w_M_01 = I_w_M_01[0].numpy()
     return W_01, I_w_M_01, Wgt_01, Mgt_pre
 
-def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, Wgt_w_Mgt, Wgt_w_Mgt_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
     elif(phase == "test"): used_sees = exp_obj.result_obj.tests
     private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
