@@ -26,7 +26,7 @@ import subprocess as sb
 
 
 #### 3l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L2_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch066.{run}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch033.{run}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch018.{run}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch009.{run}"])
@@ -34,7 +34,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L2_ch003.{run}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch129.{run}"])
 #### 3l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L3_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch066.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch033.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch018.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch009.{run}"])
@@ -42,7 +42,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L3_ch003.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch129.{run}"])
 #### 4l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L4_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch066.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch033.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch018.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch009.{run}"])
@@ -50,7 +50,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L4_ch003.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch129.{run}"])
 #### 5l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L5_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch066.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch033.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch018.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch009.{run}"])
@@ -63,7 +63,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L6_ch009.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch006.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch003.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch066.{run}"])
 #### 7l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L7_ch018.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch009.{run}"])
