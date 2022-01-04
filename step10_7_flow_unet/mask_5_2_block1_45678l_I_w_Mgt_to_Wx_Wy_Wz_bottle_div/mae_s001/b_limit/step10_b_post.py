@@ -31,7 +31,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch129_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch066_limit.{run}"])
 #### 6l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L6_ch129_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch129_limit.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch066_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch033_limit.{run}"])
 #### 7l ############################################################################################
@@ -40,8 +40,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L7_ch033_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch018_limit.{run}"])
 #### 8l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L8_ch066_limit.{run}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch129_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch066_limit.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch129_limit.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch033_limit.{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch018_limit.{run}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch009_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch018_limit.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch009_limit.{compress_all}"])
