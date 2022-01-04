@@ -16,7 +16,7 @@ def I_w_Mgt_Gen_Cx_Cy_to_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_g
     gt_mask_pre  = gt_mask_coord_pre[..., 0:1]
     I_pre_with_M = in_img_pre * gt_mask_pre
 
-    Cy_pre, Cx_pre = model_G(I_pre_with_M, training=training)
+    Cx_pre, Cy_pre = model_G(I_pre_with_M, training=training)  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
     Cx_pre = Cx_pre[0].numpy()
     Cy_pre = Cy_pre[0].numpy()
     C_pre = np.concatenate([Cy_pre, Cx_pre], axis=-1)
@@ -73,8 +73,8 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see(model_G, phase, index, in_img, in_i
         cv2.imwrite(private_write_dir + "/" + "0a_u1a3-in_img_w_Mgt.jpg", I_w_M_visual)
 
         ''' 覺得 u1b 不用寫 mask， 因為 unet1 又沒有 output mask！ '''
-        cv2.imwrite(private_write_dir + "/" + "0b_u1b1-gt_b_gt_flow.jpg", gt_flow_visual)                 ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        np.save    (private_write_dir + "/" + "0b_u1b2-gt_b_gt_flow",     gt_flow)                        ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        np.save    (private_write_dir + "/" + "0b_u1b1-gt_b_gt_flow",     gt_flow)                        ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(private_write_dir + "/" + "0b_u1b2-gt_b_gt_flow.jpg", gt_flow_visual)                 ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0b_u1b3-gt_b_gt_Cx.jpg",   Cxgt_visual)                    ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0b_u1b4-gt_b_gt_Cy.jpg",   Cygt_visual)                    ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",          rec_hope)                       ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張

@@ -26,13 +26,13 @@ import subprocess as sb
 
 
 #### 3l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L2_ch066.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch033.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch018.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch009.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch006.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch003.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch129.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch066.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch033.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch018.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch009.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch006.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch003.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch129.{compress_all}"])
 #### 3l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L3_ch066.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch033.{compress_all}"])
