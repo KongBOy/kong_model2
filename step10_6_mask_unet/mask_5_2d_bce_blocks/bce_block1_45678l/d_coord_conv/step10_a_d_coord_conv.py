@@ -14,8 +14,8 @@ print("    kong_layer:", kong_layer)
 print("    kong_model2_dir:", kong_model2_dir)
 #############################################################################################################################################################################################################
 # exp_dir = code_exe_path_element[-3][7:] + "/" + code_exe_path.split("\\")[-2][5:]  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
-kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer
-print("    kong_to_py_layer:", kong_to_py_layer)
+kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
+# print("    kong_to_py_layer:", kong_to_py_layer)
 if  (kong_to_py_layer == 2): exp_dir = code_exe_path_element[kong_layer + 1][7:]  ### [7:] 是為了去掉 step1x_
 elif(kong_to_py_layer == 3): exp_dir = code_exe_path_element[kong_layer + 1][7:] + "/" + code_exe_path_element[kong_layer + 2][5:]  ### [5:] 是為了去掉 mask_ ，前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
 elif(kong_to_py_layer >  3): exp_dir = code_exe_path_element[kong_layer + 1][7:] + "/" + code_exe_path_element[kong_layer + 2][5:] + "/" + "/".join(code_exe_path_element[kong_layer + 3: -1])  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子

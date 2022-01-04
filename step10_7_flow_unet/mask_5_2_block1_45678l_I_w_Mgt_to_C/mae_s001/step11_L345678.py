@@ -1,10 +1,11 @@
 #############################################################################################################################################################################################################
+#############################################################################################################################################################################################################
 ### 把 kong_model2 加入 sys.path
 import os
 code_exe_path = os.path.realpath(__file__)                   ### 目前執行 step10_b.py 的 path
 code_exe_path_element = code_exe_path.split("\\")            ### 把 path 切分 等等 要找出 kong_model 在第幾層
 kong_layer = code_exe_path_element.index("kong_model2")      ### 找出 kong_model2 在第幾層
-kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer + 1])    ### 定位出 kong_model2 的 dir
+kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer + 1])  ### 定位出 kong_model2 的 dir
 import sys                                                   ### 把 kong_model2 加入 sys.path
 sys.path.append(kong_model2_dir)
 # print(__file__.split("\\")[-1])
@@ -66,21 +67,21 @@ Layer_Ch = [
         mae_block1.L6_ch002.build().result_obj,
         mae_block1.L6_ch001.build().result_obj],
 
-    # [mae_block1_limit.L7_ch128_limit.build().result_obj,
-    #  mae_block1_limit.L7_ch064_limit.build().result_obj,
-    #  mae_block1.L7_ch032.build().result_obj,
-    #  mae_block1.L7_ch016.build().result_obj,
-    #  mae_block1.L7_ch008.build().result_obj,
-    #  mae_block1.L7_ch004.build().result_obj,
-    #  mae_block1.L7_ch002.build().result_obj,
-    #  mae_block1.L7_ch001.build().result_obj],
+    [mae_block1_limit.L7_ch128_limit.build().result_obj,
+     mae_block1_limit.L7_ch064_limit.build().result_obj,
+     mae_block1.L7_ch032.build().result_obj,
+     mae_block1.L7_ch016.build().result_obj,
+     mae_block1.L7_ch008.build().result_obj,
+     mae_block1.L7_ch004.build().result_obj,
+     mae_block1.L7_ch002.build().result_obj,
+     mae_block1.L7_ch001.build().result_obj],
 
-    # [mae_block1_limit.L8_ch128_limit.build().result_obj,
-    #  mae_block1_limit.L8_ch064_limit.build().result_obj,
-    #  mae_block1_limit.L8_ch032_limit.build().result_obj,
-    #  mae_block1.L8_ch016.build().result_obj,
-    #  mae_block1.L8_ch008.build().result_obj,
-    #  mae_block1.L8_ch004.build().result_obj,
-    #  mae_block1.L8_ch002.build().result_obj,
-    #  mae_block1.L8_ch001.build().result_obj],
+    [mae_block1_limit.L8_ch128_limit.build().result_obj,
+     mae_block1_limit.L8_ch064_limit.build().result_obj,
+     mae_block1_limit.L8_ch032_limit.build().result_obj,
+     mae_block1.L8_ch016.build().result_obj,
+     mae_block1.L8_ch008.build().result_obj,
+     mae_block1.L8_ch004.build().result_obj,
+     mae_block1.L8_ch002.build().result_obj,
+     mae_block1.L8_ch001.build().result_obj],
 ]
