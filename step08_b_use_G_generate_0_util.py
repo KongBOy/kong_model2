@@ -8,7 +8,6 @@ sys.path.append("kong_util")
 from build_dataset_combine import  method1
 
 import matplotlib.pyplot as plt
-
 ######################################################################################################################################################################################################
 def flow_or_coord_visual_op(data):
     data_ch = data.shape[2]
@@ -42,3 +41,10 @@ def C_with_M_to_F_and_get_F_visual(coord, mask):
     flow        = np.concatenate([mask, coord], axis=-1)  ### channel concate
     flow_visual = flow_or_coord_visual_op(flow)
     return flow, flow_visual
+
+def W_01_visual_op(W_01):
+    W_visual  = (W_01[..., 0:3] * 255).astype(np.uint8)
+    Wz_visual = (W_01[..., 0:1] * 255).astype(np.uint8)
+    Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8)
+    Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8)
+    return W_visual, Wx_visual, Wy_visual, Wz_visual
