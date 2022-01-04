@@ -52,7 +52,8 @@ def Mgt_Gen_C_with_Mgt_to_F_basic_data(model_G, in_img, gt_mask_coord_pre, rec_h
 def Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, _2, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
     elif(phase == "test"): used_sees = exp_obj.result_obj.tests
-    private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    private_write_dir     = used_sees[index].see_write_dir          ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    private_rec_write_dir = used_sees[index].rec_visual_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
     '''
     gt_mask_coord_pre[:, :, :, 0:1] 為 mask  (1, h, w, 1)
@@ -63,7 +64,7 @@ def Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, _2, gt_mask_
 
     if(current_ep == 0 or see_reset_init):          ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
-        Check_dir_exist_and_build(private_write_dir)   ### 建立 model生成的結果 的資料夾
+        Check_dir_exist_and_build(private_rec_write_dir)   ### 建立 model生成的結果 的資料夾
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_img.jpg",         in_img)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a2-Mgt_in_img.jpg",  gt_mask_visual)                 ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
 
@@ -81,6 +82,9 @@ def Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, _2, gt_mask_
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
         bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=flow)
+        '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
+        # gt_bm, gt_rec = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=gt_flow)  ### 因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！
+        cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
 
         single_row_imgs = Matplot_single_row_imgs(
                                 imgs      =[ gt_mask_visual ,  flow_visual ,    rec],             ### 把要顯示的每張圖包成list

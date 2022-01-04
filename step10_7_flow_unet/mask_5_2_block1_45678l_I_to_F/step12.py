@@ -20,10 +20,13 @@ if(__name__ == "__main__"):
     from step12_result_analyzer import Row_col_results_analyzer
     from step11 import  *
     #############################################################################################################################################################################################################
-    kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer
-    if  (kong_to_py_layer == 2): template_dir = code_exe_path_element[kong_layer + 1][7:]  ### [7:] 是為了去掉 step1x_
+    kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
+    # print("    kong_to_py_layer:", kong_to_py_layer)
+    if  (kong_to_py_layer == 0): template_dir = ""
+    elif(kong_to_py_layer == 2): template_dir = code_exe_path_element[kong_layer + 1][7:]  ### [7:] 是為了去掉 step1x_
     elif(kong_to_py_layer == 3): template_dir = code_exe_path_element[kong_layer + 1][7:] + "/" + code_exe_path_element[kong_layer + 2][5:]  ### [5:] 是為了去掉 mask_ ，前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
     elif(kong_to_py_layer >  3): template_dir = code_exe_path_element[kong_layer + 1][7:] + "/" + code_exe_path_element[kong_layer + 2][5:] + "/" + "/".join(code_exe_path_element[kong_layer + 3: -1])  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
+    # print("    template_dir:", template_dir)
     #############################################################################################################################################################################################################
     ana_dir = template_dir
     #############################################################################################################################################################################################################
@@ -42,6 +45,7 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     ana_name = "Layer_Ch"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
                                         ana_what="flow",
                                         row_col_results=mae_block1_flow_s001_L345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
@@ -49,6 +53,7 @@ if(__name__ == "__main__"):
     ######################################                                          
     ana_name = "2c_block1_rec_L345678_2-ch128,64,32,16,8,4,2,1_mae_s001"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=mae_block1_rec_s001_L345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\

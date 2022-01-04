@@ -51,7 +51,8 @@ def I_with_Mgt_Generate_C_with_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, 
 def I_with_Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, in_img_pre, _3, gt_mask_coord_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
     elif(phase == "test"): used_sees = exp_obj.result_obj.tests
-    private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    private_write_dir     = used_sees[index].see_write_dir          ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    private_rec_write_dir = used_sees[index].rec_visual_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
     '''
     gt_mask_coord_pre[:, :, :, 0:1] 為 mask  (1, h, w, 1)
@@ -61,7 +62,7 @@ def I_with_Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, in_im
     in_img, I_w_M_visual, Mgt_visual, flow, flow_visual, gt_flow, gt_flow_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual, rec_hope = I_with_Mgt_Generate_C_with_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord_pre, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
     if(current_ep == 0 or see_reset_init):          ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
-        Check_dir_exist_and_build(private_write_dir)   ### 建立 model生成的結果 的資料夾
+        Check_dir_exist_and_build(private_rec_write_dir)   ### 建立 model生成的結果 的資料夾
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_img.jpg",         in_img)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a2-gt_mask.jpg",         Mgt_visual)         ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(private_write_dir + "/" + "0a_u1a3-in_img_with_Mgt.jpg", I_w_M_visual)       ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
@@ -80,6 +81,9 @@ def I_with_Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, in_im
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
         bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=flow)
+        '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
+        # gt_bm, gt_rec = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=gt_flow)  ### 因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！
+        cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
 
         single_row_imgs = Matplot_single_row_imgs(
                                 imgs      =[ in_img , Mgt_visual, I_w_M_visual , flow_visual ,    rec,    rec_hope],     ### 把要顯示的每張圖包成list

@@ -34,7 +34,13 @@ class Multi_Generator(tf.keras.models.Model):
             I = input_tensor
             Cx = self.gens_dict["I_to_Cx"](I)
             Cy = self.gens_dict["I_to_Cy"](I)
-            return Cx, Cy
+            return Cx, Cy   ### 這個順序要跟 step8b_useG, step9c_train_step 對應到喔！
+        elif(self.op_type == "I_to_Wx_Wy_Wz"):
+            I = input_tensor
+            Wx = self.gens_dict["I_to_Wx"](I)
+            Wy = self.gens_dict["I_to_Wy"](I)
+            Wz = self.gens_dict["I_to_Wz"](I)
+            return Wz, Wy, Wx   ### 這個順序要跟 step8b_useG, step9c_train_step 對應到喔！
 
 def see(model_obj, train_in_pre):
     M_pre, C_pre = model_obj.generator(train_in_pre)

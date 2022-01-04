@@ -45,7 +45,7 @@ def I_w_Mgt_to_Cx_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, gt_mask
 def I_w_Mgt_to_Cx_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
     elif(phase == "test"): used_sees = exp_obj.result_obj.tests
-    private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+    private_write_dir     = used_sees[index].see_write_dir          ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
     '''
     gt_mask_coord[0] 為 mask  (1, h, w, 1)
@@ -55,6 +55,7 @@ def I_w_Mgt_to_Cx_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, 
     in_img, I_w_M_visual, gt_mask_visual, Cx_visual, gt_cx_visual, rec_hope = I_w_Mgt_to_Cx_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
     if(current_ep == 0 or see_reset_init):          ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
+        Check_dir_exist_and_build(private_rec_write_dir)    ### 建立 放輔助檔案 的資料夾
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_img.jpg",      in_img)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a2-gt_mask.jpg",      gt_mask_visual)               ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(private_write_dir + "/" + "0a_u1a3-in_img_w_Mgt.jpg", I_w_M_visual)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張

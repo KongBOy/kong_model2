@@ -20,10 +20,13 @@ if(__name__ == "__main__"):
     from step12_result_analyzer import  Row_col_results_analyzer
     from step11_3b_sobel import  *
     #############################################################################################################################################################################################################
-    kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer
-    if  (kong_to_py_layer == 2): template_dir = code_exe_path_element[kong_layer + 1][7:]  ### [7:] 是為了去掉 step1x_
+    kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
+    # print("    kong_to_py_layer:", kong_to_py_layer)
+    if  (kong_to_py_layer == 0): template_dir = ""
+    elif(kong_to_py_layer == 2): template_dir = code_exe_path_element[kong_layer + 1][7:]  ### [7:] 是為了去掉 step1x_
     elif(kong_to_py_layer == 3): template_dir = code_exe_path_element[kong_layer + 1][7:] + "/" + code_exe_path_element[kong_layer + 2][5:]  ### [5:] 是為了去掉 mask_ ，前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
     elif(kong_to_py_layer >  3): template_dir = code_exe_path_element[kong_layer + 1][7:] + "/" + code_exe_path_element[kong_layer + 2][5:] + "/" + "/".join(code_exe_path_element[kong_layer + 3: -1])  ### 前面的 mask_ 是為了python 的 module 不能 數字開頭， 隨便加的這樣子
+    # print("    template_dir:", template_dir)
     ##########################################################################################################################################################################################################################################################################################
     ana_dir = template_dir
     ##########################################################################################################################################################################################################################################################################################
