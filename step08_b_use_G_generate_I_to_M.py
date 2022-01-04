@@ -46,13 +46,6 @@ def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _
     public_write_dir       = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
     # print('public_write_dir:', public_write_dir)
 
-    # if(phase == "see"):
-    #     private_write_dir  = exp_obj.result_obj.sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
-    #     private_mask_write_dir = exp_obj.result_obj.sees[index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    # elif(phase == "test"):
-    #     private_write_dir  = exp_obj.result_obj.tests[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
-    #     private_mask_write_dir = exp_obj.result_obj.tests[index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
-    # print("private_mask_write_dir:", mask_write_dir)
     if(epoch == 0 or see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)                                   ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
