@@ -67,8 +67,8 @@ def I_with_Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, in_im
         cv2.imwrite(private_write_dir + "/" + "0a_u1a3-in_img_with_Mgt.jpg", I_w_M_visual)       ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
 
         ''' 覺得 u1b 不用寫 mask， 因為 unet1 又沒有 output mask！ '''
-        cv2.imwrite(private_write_dir + "/" + "0b_u1b1-gt_flow.jpg",          gt_flow_visual)    ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        np.save    (private_write_dir + "/" + "0b_u1b2-gt_flow",              gt_flow)           ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        np.save    (private_write_dir + "/" + "0b_u1b1-gt_flow",              gt_flow)           ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        cv2.imwrite(private_write_dir + "/" + "0b_u1b2-gt_flow.jpg",          gt_flow_visual)    ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0b_u1b3-gt_Cx.jpg",            Cxgt_visual)       ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0b_u1b4-gt_Cy.jpg",            Cygt_visual)       ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",             rec_hope)           ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張

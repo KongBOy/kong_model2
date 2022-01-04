@@ -74,7 +74,7 @@ def train_step_Multi_output_I_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_inf
 
     gt_cx = gt_data[..., 2:3]
     gt_cy = gt_data[..., 1:2]
-    gt_datas = [gt_cy, gt_cx]
+    gt_datas = [gt_cx, gt_cy]  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
     # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
     # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
 
