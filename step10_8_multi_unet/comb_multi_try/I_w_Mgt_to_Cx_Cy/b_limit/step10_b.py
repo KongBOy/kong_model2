@@ -40,8 +40,8 @@ sb.run(cmd_python_step10_a + [f"I_to_Cx_L7_ch064_lim_and_I_to_Cy_L7_ch064_lim_ep
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L7_ch032_lim_and_I_to_Cy_L7_ch032_lim_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L7_ch016_lim_and_I_to_Cy_L7_ch016_lim_ep060.{run}"])
 
-sb.run(cmd_python_step10_a + [f"I_to_Cx_L8_ch128_lim_and_I_to_Cy_L8_ch128_lim_ep060.{run}"])
-sb.run(cmd_python_step10_a + [f"I_to_Cx_L8_ch064_lim_and_I_to_Cy_L8_ch064_lim_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L8_ch128_lim_and_I_to_Cy_L8_ch128_lim_ep060.{run}"])  ### flow看起來極差
+# sb.run(cmd_python_step10_a + [f"I_to_Cx_L8_ch064_lim_and_I_to_Cy_L8_ch064_lim_ep060.{run}"])  ### flow看起來極差
 sb.run(cmd_python_step10_a + [f"I_to_Cx_L8_ch032_lim_and_I_to_Cy_L8_ch032_lim_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L8_ch016_lim_and_I_to_Cy_L8_ch016_lim_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Cx_L8_ch008_lim_and_I_to_Cy_L8_ch008_lim_ep060.{run}"])
