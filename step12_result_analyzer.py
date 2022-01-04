@@ -19,22 +19,23 @@ import shutil
 
 class Result_analyzer:
     def __init__(self, ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False, img_h=768, img_w=768):
+        self.ana_what_sees = ana_what_sees
         '''
         ana_what_sees: test / see
         '''
         self.ana_describe = ana_describe
         self.analyze_dst_dir = Analyze_Write_Dir + "result" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
 
-        self.ana_what = ana_what
         self.img_h = img_h  ### 給 空影像用的
         self.img_w = img_w  ### 給 空影像用的
 
-        self.ana_what_sees = ana_what_sees
+        self.ana_what = ana_what
         '''
         mask,
         flow,
         bm,
-        rec
+        rec,
+        wc
         '''
         self.show_in_img = show_in_img
         self.show_gt_img = show_gt_img
@@ -102,6 +103,7 @@ class Result_analyzer:
                 if  (self.ana_what == "flow"): see.get_flow_info()
                 elif(self.ana_what == "rec"):  see.get_bm_rec_info()
                 elif(self.ana_what == "mask"): see.get_mask_info()
+                elif(self.ana_what == "wc"):   see.get_wc_info()
 
     def _step0_r_c_results_get_see_base_info(self, r_c_results):
         """
@@ -166,6 +168,7 @@ class Col_results_analyzer(Result_analyzer):
                 if  (self.ana_what == "rec"):  c_imgs.append(cv2.imread(used_sees[see_num].rec_read_paths[use_epoch]))
                 elif(self.ana_what == "flow"): c_imgs.append(cv2.imread(used_sees[see_num].flow_ep_jpg_read_paths[use_epoch]))
                 elif(self.ana_what == "mask"): c_imgs.append(cv2.imread(used_sees[see_num].mask_read_paths[use_epoch]))
+                elif(self.ana_what == "wc"):   c_imgs.append(cv2.imread(used_sees[see_num].wc_read_paths[use_epoch]))
 
                 # c_imgs.append(cv2.imread(used_sees[see_num].see_jpg_paths[epoch + 2]))
         return c_imgs
