@@ -71,7 +71,7 @@ class Exp_builder():
         '''
         if(self.exp.result_name is not None):
             ''' 建 虛擬的 result_obj ，這樣就不用 exp_init() 就能使用 resul_obj裡面的東西囉'''
-            if("test" in self.exp.phase): self.exp.db_builder.reset_test_db_name(self.exp.phase)
+            if("test" in self.exp.phase and "test_see" not in self.exp.phase): self.exp.db_builder.reset_test_db_name(self.exp.phase)
             self.db_obj = self.exp.db_builder.build()
             # print("1.result_name", self.exp.result_name, ", self.exp.use_gt_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.use_gt_range)  ### 追蹤see的建立過程
             self.exp.result_obj    = Result_builder().set_exp_obj_use_gt_range(self.exp.use_gt_range).set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.db_obj).build()  ### 直接用 自己指定好的 result_name
