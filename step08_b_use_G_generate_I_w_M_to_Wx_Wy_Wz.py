@@ -7,10 +7,12 @@ import sys
 
 from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_visual_op
 sys.path.append("kong_util")
-from build_dataset_combine import Check_dir_exist_and_build
+from build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
+import datetime
+import pdb
 
 ####################################################################################################
 def I_w_M_Gen_Wx_Wy_Wz_to_W(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -104,3 +106,20 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, _3, W
         single_row_imgs.Draw_img()
         single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
         print("save to:", exp_obj.result_obj.test_write_dir)
+
+        ### W_01 back to W then + M
+        gt_min = exp_obj.db_obj.db_gt_range.min
+        gt_max = exp_obj.db_obj.db_gt_range.min
+        W = W_01 * (gt_max - gt_min) + gt_min
+        WM = np.concatenate([W, Mgt_pre], axis=-1)
+
+        gather_WM_npy_dir  = f"{public_write_dir}/pred_WM_{phase}/WM_npy"
+        gather_WM_knpy_dir = f"{public_write_dir}/pred_WM_{phase}/WM_knpy"
+        Check_dir_exist_and_build(gather_WM_npy_dir)
+        Check_dir_exist_and_build(gather_WM_knpy_dir)
+
+        WM_npy_path  = f"{gather_WM_npy_dir}/{current_see_name}_pred.npy"
+        WM_knpy_path = f"{gather_WM_knpy_dir}/{current_see_name}_pred.knpy"
+        np.save(WM_npy_path, WM)
+        Save_npy_path_as_knpy(WM_npy_path, WM_knpy_path)
+        # breakpoint()

@@ -12,6 +12,8 @@ class Range():
     def __eq__(self, that):
         if not isinstance(that, Range): return False
         return self.min == that.min and self.max == that.max
+    def __str__(self):
+        return f"min:{self.min}, max:{self.max}"
 
 class DB_CATEGORY(Enum):
     '''

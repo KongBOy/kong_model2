@@ -99,13 +99,14 @@ L8_ch002 = Exp_builder().set_basic("train", use_db_obj, block1_L8_ch002_sig, use
 L8_ch001 = Exp_builder().set_basic("train", use_db_obj, block1_L8_ch001_sig, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=block1_L8_ch001_sig.kong_model.model_describe).set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender-L8_ch001_block1_sig_out_1-20220102_115825")
 #################################################################################################################################################################################################################################################################################################################################################################################################
 #################################################################################################################################################################################################################################################################################################################################################################################################
+L8_ch016 = Exp_builder().set_basic("test_see", use_db_obj, block1_L8_ch016_sig, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=block1_L8_ch016_sig.kong_model.model_describe).set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender-L8_ch016_block1_sig_out_1-20220102_123223")
 
 if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        L4_ch016.build().run()
+        L8_ch016.build().run()
         # L2_ch001_mae_s001.build().run()
         # print('no argument')
         sys.exit()
