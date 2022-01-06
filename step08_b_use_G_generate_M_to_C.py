@@ -49,7 +49,9 @@ def Mgt_Gen_C_with_Mgt_to_F_basic_data(model_G, in_img, gt_mask_coord_pre, rec_h
     return in_img, gt_mask_visual, flow, flow_visual, gt_flow, gt_flow_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual, rec_hope
 
 
-def Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, _2, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, _2, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+    current_ep = exp_obj.current_ep
+    current_time = exp_obj.current_time
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
     elif(phase == "test"): used_sees = exp_obj.result_obj.tests
     private_write_dir     = used_sees[index].see_write_dir          ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置

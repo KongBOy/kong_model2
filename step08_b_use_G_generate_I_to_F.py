@@ -43,7 +43,9 @@ def I_Gen_F_basic_data(model_G, in_img, in_img_pre, gt_flow, rec_hope, exp_obj=N
         gt_flow_visual = gt_flow_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
     return in_img, flow, gt_flow, rec_hope, flow_visual, M_visual, Cx_visual, Cy_visual, gt_flow_visual, Mgt_visual, Cxgt_visual, Cygt_visual
 
-def I_Generate_F_see(model_G, phase, index, in_img, in_img_pre, gt_flow, _4, rec_hope, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def I_Generate_F_see(model_G, phase, index, in_img, in_img_pre, gt_flow, _4, rec_hope, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+    current_ep = exp_obj.current_ep
+    current_time = exp_obj.current_time
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
     elif(phase == "test"): used_sees = exp_obj.result_obj.tests
     private_write_dir     = used_sees[index].see_write_dir          ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置

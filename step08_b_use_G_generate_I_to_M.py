@@ -34,24 +34,26 @@ def I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj=
     # print("gt_mask.min():", gt_mask.numpy().min())
     return in_img, pred_mask, pred_mask_visual, gt_mask
 
-def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, epoch=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=False):
+def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=False):
+    current_ep = exp_obj.current_ep
+    current_time = exp_obj.current_time
+    if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
+    elif(phase == "test"): used_sees = exp_obj.result_obj.tests
     '''
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
     '''
     in_img, pred_mask, pred_mask_visual, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training, bgr2rgb=True)
-    if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
-    elif(phase == "test"): used_sees = exp_obj.result_obj.tests
     private_write_dir      = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     private_mask_write_dir = used_sees[index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     public_write_dir       = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
     # print('public_write_dir:', public_write_dir)
 
-    if(epoch == 0 or see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
+    if(current_ep == 0 or see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)                                   ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
         cv2.imwrite(private_write_dir  + "/" + "0a_u1a1-in_img.jpg", in_img)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.bmp", gt_mask)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-    cv2.imwrite(    private_mask_write_dir + "/" + "epoch_%04i_u1b1_mask.bmp" % epoch, pred_mask_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    cv2.imwrite(    private_mask_write_dir + "/" + "epoch_%04i_u1b1_mask.bmp" % current_ep, pred_mask_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
@@ -62,7 +64,7 @@ def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _
         single_row_imgs = Matplot_single_row_imgs(
                                 imgs      =imgs,         ### 把要顯示的每張圖包成list
                                 img_titles=img_titles,               ### 把每張圖要顯示的字包成list
-                                fig_title ="%s, epoch=%04i" % (current_see_name, int(epoch)),  ### 圖上的大標題
+                                fig_title ="%s, epoch=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
                                 add_loss  =add_loss,
                                 bgr2rgb   =bgr2rgb)
         single_row_imgs.Draw_img()

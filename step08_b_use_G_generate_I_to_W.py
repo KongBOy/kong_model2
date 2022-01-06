@@ -28,7 +28,9 @@ def I_Generate_W(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, train
     Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, use_gt_range)
     return W_01, Wgt_01
 
-def I_Generate_W_see(model_G, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pre, rec_hope=None, current_ep=0, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def I_Generate_W_see(model_G, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+    current_ep = exp_obj.current_ep
+    current_time = exp_obj.current_time
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
     elif(phase == "test"): used_sees = exp_obj.result_obj.tests
     private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
