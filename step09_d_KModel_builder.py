@@ -42,7 +42,9 @@ class KModel_init_builder:
         return self
 
     def set_train_step(self, train_step):
-        self.kong_model.train_step = train_step
+        def _later_set_train_step():
+            self.kong_model.train_step = train_step
+        self.build_ops.append(_later_set_train_step)
         return self
 
     def build(self):
