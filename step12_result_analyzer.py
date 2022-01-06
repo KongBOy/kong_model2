@@ -36,6 +36,9 @@ class Result_analyzer:
         bm,
         rec,
         wc
+        wx
+        wy
+        wz
         '''
         self.show_in_img = show_in_img
         self.show_gt_img = show_gt_img
@@ -104,6 +107,9 @@ class Result_analyzer:
                 elif(self.ana_what == "rec"):  see.get_bm_rec_info()
                 elif(self.ana_what == "mask"): see.get_mask_info()
                 elif(self.ana_what == "wc"):   see.get_wc_info()
+                elif(self.ana_what == "wx"):   see.get_wc_info()
+                elif(self.ana_what == "wy"):   see.get_wc_info()
+                elif(self.ana_what == "wz"):   see.get_wc_info()
 
     def _step0_r_c_results_get_see_base_info(self, r_c_results):
         """
@@ -169,6 +175,9 @@ class Col_results_analyzer(Result_analyzer):
                 elif(self.ana_what == "flow"): c_imgs.append(cv2.imread(used_sees[see_num].flow_ep_jpg_read_paths[use_epoch]))
                 elif(self.ana_what == "mask"): c_imgs.append(cv2.imread(used_sees[see_num].mask_read_paths[use_epoch]))
                 elif(self.ana_what == "wc"):   c_imgs.append(cv2.imread(used_sees[see_num].wc_read_paths[use_epoch]))
+                elif(self.ana_what == "wx"):   c_imgs.append(cv2.imread(used_sees[see_num].wx_read_paths[use_epoch]))
+                elif(self.ana_what == "wy"):   c_imgs.append(cv2.imread(used_sees[see_num].wy_read_paths[use_epoch]))
+                elif(self.ana_what == "wz"):   c_imgs.append(cv2.imread(used_sees[see_num].wz_read_paths[use_epoch]))
 
                 # c_imgs.append(cv2.imread(used_sees[see_num].see_jpg_paths[epoch + 2]))
         return c_imgs
