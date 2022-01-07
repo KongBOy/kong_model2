@@ -270,12 +270,12 @@ class Experiment():
         """
         # sample_start_time = time.time()
 
-        for see_index, (test_in, test_in_pre, test_gt, test_gt_pre, _, rec_hope_pre) in enumerate(tqdm(zip(self.tf_data.see_in_db.batch(1)          .take(self.tf_data.see_amount),
-                                                                                                           self.tf_data.see_in_db_pre.batch(1)      .take(self.tf_data.see_amount),
-                                                                                                           self.tf_data.see_gt_db.batch(1)          .take(self.tf_data.see_amount),
-                                                                                                           self.tf_data.see_gt_db_pre.batch(1)      .take(self.tf_data.see_amount),
-                                                                                                           self.tf_data.see_name_db.batch(1)        .take(self.tf_data.see_amount),
-                                                                                                           self.tf_data.rec_hope_see_db_pre.batch(1).take(self.tf_data.see_amount)))):
+        for see_index, (test_in, test_in_pre, test_gt, test_gt_pre, _, rec_hope_pre) in enumerate(tqdm(zip(self.tf_data.see_in_db.batch(1)          ,
+                                                                                                           self.tf_data.see_in_db_pre.batch(1)      ,
+                                                                                                           self.tf_data.see_gt_db.batch(1)          ,
+                                                                                                           self.tf_data.see_gt_db_pre.batch(1)      ,
+                                                                                                           self.tf_data.see_name_db.batch(1)        ,
+                                                                                                           self.tf_data.rec_hope_see_db_pre.batch(1)))):
             if  ("unet"  in self.model_obj.model_name.value and
                  "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator , "see", see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, self.result_obj.result_write_dir, self, see_reset_init, postprocess=postprocess)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
             elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , "see", see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess)
