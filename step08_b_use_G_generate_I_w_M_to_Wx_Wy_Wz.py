@@ -111,12 +111,19 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, _3, W
 
         ### W_01 back to W then + M
         gt_min = exp_obj.db_obj.db_gt_range.min
-        gt_max = exp_obj.db_obj.db_gt_range.min
+        gt_max = exp_obj.db_obj.db_gt_range.max
         W = W_01 * (gt_max - gt_min) + gt_min
         WM = np.concatenate([W, Mgt_pre], axis=-1)
+        ### 確認寫得對不對
+        # fig, ax = plt.subplots(1, 2)
+        # ax[0].imshow(W_01)
+        # ax[1].imshow(W - gt_min)
+        # print(W.max())
+        # print(W.min())
+        # plt.show()
 
-        gather_WM_npy_dir  = f"{public_write_dir}/pred_WM_{phase}/WM_npy"
-        gather_WM_knpy_dir = f"{public_write_dir}/pred_WM_{phase}/WM_knpy"
+        gather_WM_npy_dir  = f"{public_write_dir}/pred_WM_{phase}-{current_time}/WM_npy"
+        gather_WM_knpy_dir = f"{public_write_dir}/pred_WM_{phase}-{current_time}/WM_knpy"
         Check_dir_exist_and_build(gather_WM_npy_dir)
         Check_dir_exist_and_build(gather_WM_knpy_dir)
 
