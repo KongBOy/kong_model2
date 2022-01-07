@@ -40,7 +40,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
 '''
 
 use_db_obj = type8_blender_wc
-use_loss_obj = [G_mae_s001_loss_info_builder.set_loss_target("UNet_z"), G_mae_s001_loss_info_builder.set_loss_target("UNet_y"), G_mae_s001_loss_info_builder.set_loss_target("UNet_x")]  ### z, x, y 順序是看 step08_a_0b_Multi_UNet 來對應的喔
+use_loss_obj = [G_mae_s001_loss_info_builder.set_loss_target("UNet_z"), G_mae_s001_loss_info_builder.set_loss_target("UNet_y"), G_mae_s001_loss_info_builder.set_loss_target("UNet_x")]  ### z, y, x 順序是看 step08_a_0b_Multi_UNet 來對應的喔
 #############################################################
 I_to_Wx_L4_ch128_lim_and_I_to_Wy_L4_ch128_lim_ep060_and_I_to_Wz_L4_ch128_lim_ep060 = Exp_builder().set_basic("train", use_db_obj, I_to_Wx_L4_ch128_lim_and_I_to_Wy_L4_ch128_lim_and_I_to_Wz_L4_ch128_lim, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=I_to_Wx_L4_ch128_lim_and_I_to_Wy_L4_ch128_lim_and_I_to_Wz_L4_ch128_lim.kong_model.model_describe + "_limit") .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="")
 
