@@ -94,7 +94,7 @@ def I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see(model_G, phase, index, in_img, in_i
         '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
         # gt_bm, gt_rec = check_flow_quality_then_I_w_F_to_R(dis_img=in_img, flow=gt_flow)
         cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
-        print("private_rec_write_dir~~~~~~~~~~~~~~~~", private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep)
+        # print("private_rec_write_dir:", private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep)
 
         single_row_imgs = Matplot_single_row_imgs(
                                 imgs      =[ in_img , Mgt_visual, I_w_M_visual,  flow_visual ,    rec,   rec_hope],  ### 把要顯示的每張圖包成list
