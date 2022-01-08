@@ -6,12 +6,18 @@ import cv2
 def norm_to_0_1_by_max_min(data):  ### data 為 np.array才行
     return (data - data.min()) / (data.max() - data.min())
 
-def mse_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
-    loss = tf.reduce_mean(tf.math.square(tensor1 - tensor2))
+def mse_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32), Mask=None):
+    if(Mask is None): loss = tf.reduce_mean(tf.math.square(tensor1 - tensor2))
+    else:
+        n, h, w, c = tensor1.shape
+        loss = tf.reduce_sum(tf.math.square((tensor1 - tensor2) * Mask)) / ( tf.reduce_sum(Mask) * c)
     return loss * lamb
 
-def mae_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32)):
-    loss = tf.reduce_mean(tf.math.abs(tensor1 - tensor2))
+def mae_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32), Mask=None):
+    if(Mask is None): loss = tf.reduce_mean(tf.math.abs(tensor1 - tensor2))
+    else:
+        n, h, w, c = tensor1.shape
+        loss = tf.reduce_sum(tf.math.abs((tensor1 - tensor2) * Mask)) / ( tf.reduce_sum(Mask) * c)
     return loss * lamb
 
 class MSE(tf.keras.losses.Loss):
@@ -19,7 +25,7 @@ class MSE(tf.keras.losses.Loss):
         super().__init__(name="MSE")
         self.mse_scale = mse_scale
 
-    def __call__(self, img_true, img_pred):
+    def __call__(self, img_true, img_pred, Mask=None):
         return mse_kong(img_true, img_pred, self.mse_scale)
 
 class MAE(tf.keras.losses.Loss):
@@ -27,7 +33,7 @@ class MAE(tf.keras.losses.Loss):
         super().__init__(name="MAE")
         self.mae_scale = mae_scale
 
-    def __call__(self, img_true, img_pred):
+    def __call__(self, img_true, img_pred, Mask=None):
         print("MAE.__call__.mae_scale:", self.mae_scale)
         return mae_kong(img_true, img_pred, self.mae_scale)
 
@@ -148,7 +154,7 @@ class Sobel_MAE(tf.keras.losses.Loss):
         output = tf.reshape(output, shape=image_shape + [kernels_num])  ### (1, 448, 448, 3, 2 -> 分別是 dx 和 dy)
         return output
 
-    def call(self, img1, img2):
+    def call(self, img1, img2, Mask=None):
         print("Sobel_MAE.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
         img1_sobel_xy = self.Calculate_sobel_edges(image=img1)
         img1_sobel_x = img1_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
@@ -157,7 +163,7 @@ class Sobel_MAE(tf.keras.losses.Loss):
         img2_sobel_xy = self.Calculate_sobel_edges(image=img2)
         img2_sobel_x = img2_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
         img2_sobel_y = img2_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
-        grad_loss = mae_kong(img1_sobel_x, img2_sobel_x) + mae_kong(img1_sobel_y, img2_sobel_y)
+        grad_loss = mae_kong(img1_sobel_x, img2_sobel_x) + mae_kong(img1_sobel_y, img2_sobel_y, Mask=Mask)
 
         # import matplotlib.pyplot as plt
         # show_size = 5

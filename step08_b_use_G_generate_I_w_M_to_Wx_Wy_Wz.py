@@ -113,6 +113,7 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, _3, W
         gt_min = exp_obj.db_obj.db_gt_range.min
         gt_max = exp_obj.db_obj.db_gt_range.max
         W = W_01 * (gt_max - gt_min) + gt_min
+        if(exp_obj.db_obj.get_method.value == "in_dis_gt_wc_try_mul_M"): W = W * Mgt_pre
         WM = np.concatenate([W, Mgt_pre], axis=-1)
         ### 確認寫得對不對
         # fig, ax = plt.subplots(1, 2)

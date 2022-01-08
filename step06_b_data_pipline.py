@@ -122,6 +122,15 @@ class mov_mapping_util(norm_mapping_util):
         F_pre = tf.concat([M_pre, C_pre], axis=-1)
         return F_pre
 
+    def step2_M_clip_and_C_normalize_try_mul_M(self, wc):
+        M     = F[..., 0:1]
+        C     = F[..., 1:3]
+        M_pre = self._mask_binary_clip(M)
+        C_pre = self.check_use_range_and_db_range_then_normalize_data(C)
+        C_pre = C_pre * M
+        F_pre = tf.concat([M_pre, C_pre], axis=-1)
+        return F_pre
+
     # def step2_flow_split_to_M_and_C(self, F):
     #     M = F[..., 0:1]
     #     C = F[..., 1:3]
@@ -151,6 +160,15 @@ class mov_mapping_util(norm_mapping_util):
         M = self._mask_binary_clip(M)
         wc   = wc[...,  :3]
         wc   = self.check_use_range_and_db_range_then_normalize_data(wc)
+        W = tf.concat([wc, M], axis=-1)
+        return W
+
+    def step2_M_clip_and_W_normalize_try_mul_M(self, wc):
+        M = wc[..., 3:4]
+        M = self._mask_binary_clip(M)
+        wc = wc[...,  :3]
+        wc = self.check_use_range_and_db_range_then_normalize_data(wc)
+        wc = wc * M
         W = tf.concat([wc, M], axis=-1)
         return W
 
@@ -264,6 +282,24 @@ class tf_Datapipline_factory(img_mapping_util, mov_mapping_util, mask_mapping_ut
         self.pre_db = self._build_file_name_db()
         self.pre_db = self.pre_db.map(self.step1_flow_load)
         self.pre_db = self.pre_db.map(self.step2_M_clip_and_C_normalize)
+        return self.ord_db, self.pre_db
+
+    def build_wc_db_try_mul_M(self):
+        self.ord_db = self._build_file_name_db()
+        self.ord_db = self.ord_db.map(self.step1_wc_load)
+
+        self.pre_db = self._build_file_name_db()
+        self.pre_db = self.pre_db.map(self.step1_wc_load)
+        self.pre_db = self.pre_db.map(self.step2_M_clip_and_W_normalize_try_mul_M)
+        return self.ord_db, self.pre_db
+
+    def build_mask_coord_db_try_mul_M(self):
+        self.ord_db = self._build_file_name_db()
+        self.ord_db = self.ord_db.map(self.step1_flow_load)
+
+        self.pre_db = self._build_file_name_db()
+        self.pre_db = self.pre_db.map(self.step1_flow_load)
+        self.pre_db = self.pre_db.map(self.step2_M_clip_and_C_normalize_try_mul_M)
         return self.ord_db, self.pre_db
 
     ###  mask1ch， 目前好像沒用到， 這是在用 車子db 測試的mask時候 用的， 測試完後好像就沒再用到了
@@ -432,6 +468,8 @@ class tf_Data_init_builder:
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_img_gt_mask):       self.build_by_in_img_gt_mask()
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_mask_coord): self.build_by_in_dis_gt_mask_coord()
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_wc_gt_flow):        self.build_by_in_wc_gt_flow()
+
+        elif  (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_wc_try_mul_M): self.build_by_in_dis_gt_wc_try_mul_M()
         return self
 
 
@@ -703,6 +741,92 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
         #########################################################################################################################################
         return self
 
+    def build_by_in_dis_gt_wc_try_mul_M(self):
+        ##########################################################################################################################################
+        ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
+        self._build_train_test_in_img_db()
+        # self.tf_data.train_gt_db, self.tf_data.train_gt_db_pre = self.train_gt_factory.build_wc_db()  ### 可以留著原本的 用 下面的視覺化來比較一下 then_mul_M 的差異
+        # self.tf_data.test_gt_db,   self.tf_data.test_gt_db_pre = self.test_gt_factory.build_wc_db()   ### 可以留著原本的 用 下面的視覺化來比較一下 then_mul_M 的差異
+        self.tf_data.train_gt_db, self.tf_data.train_gt_db_pre = self.train_gt_factory.build_wc_db_try_mul_M()
+        self.tf_data.test_gt_db, self.tf_data.test_gt_db_pre = self.test_gt_factory.build_wc_db_try_mul_M()
+        ##########################################################################################################################################
+        ### 整理程式碼後發現，train_in,gt combine 和 test_in,gt combine 及 之後的shuffle 大家都一樣，寫成一個function給大家call囉
+        self._train_in_gt_and_test_in_gt_combine_then_train_shuffle()
+        # print('self.tf_data.train_in_db',self.tf_data.train_in_db)
+        # print('self.tf_data.train_in_db_pre',self.tf_data.train_in_db_pre)
+        # print('self.tf_data.train_gt_db',self.tf_data.train_gt_db)
+        # print('self.tf_data.train_gt_db_pre',self.tf_data.train_gt_db_pre)
+
+        if(self.tf_data.db_obj.have_see):
+            self.tf_data.see_in_db   , self.tf_data.see_in_db_pre = self.see_in_factory.build_img_db()
+            self.tf_data.see_name_db , _                          = self.see_in_factory.build_name_db()
+            self.tf_data.see_gt_db, self.tf_data.see_gt_db_pre = self.see_gt_factory.build_wc_db_try_mul_M()
+            self.tf_data.see_amount    = get_db_amount(self.tf_data.db_obj.see_in_dir)
+
+        if(self.tf_data.db_obj.have_rec_hope):
+            self.tf_data.rec_hope_train_db, self.tf_data.rec_hope_train_db_pre = self.rec_hope_train_factory.build_img_db()
+            self.tf_data.rec_hope_test_db,  self.tf_data.rec_hope_test_db_pre  = self.rec_hope_test_factory .build_img_db()
+            self.tf_data.rec_hope_see_db,   self.tf_data.rec_hope_see_db_pre   = self.rec_hope_see_factory  .build_img_db()
+
+            self.tf_data.rec_hope_train_amount = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
+            self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
+            self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+
+            ##########################################################################################################################################
+            ### 勿刪！用來測試寫得對不對！
+            # import matplotlib.pyplot as plt
+            # for i, rec_hope_see in enumerate(self.tf_data.rec_hope_see_db_pre.take(5)):
+            #     fig, ax = plt.subplots(nrows=1, ncols=1)
+            #     ax.imshow(rec_hope_see[0])
+            #     plt.show()
+            #     plt.close()
+            ##########################################################################################################################################
+
+
+        ##########################################################################################################################################
+        ### 勿刪！用來測試寫得對不對！
+        # import matplotlib.pyplot as plt
+        # from util import method1
+
+        # # for i in enumerate(self.tf_data.train_gt_db): pass
+        # # print("train_gt_finish")
+
+        # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine.take(5)):
+        #     debug_dict[f"{i}--1-1 train_in"    ] = train_in
+        #     debug_dict[f"{i}--1-2 train_in_pre"] = train_in_pre
+        #     debug_dict[f"{i}--1-3 train_gt"    ] = train_gt
+        #     debug_dict[f"{i}--1-4 train_gt_pre"] = train_gt_pre
+
+        #     debug_dict[f"{i}--2-1 train_in"    ]  = train_in    [0].numpy()
+        #     debug_dict[f"{i}--2-2 train_in_pre"]  = train_in_pre[0].numpy()
+        #     debug_dict[f"{i}--2-3 train_Mgt"    ] = train_gt    [0].numpy()
+        #     debug_dict[f"{i}--2-4 train_Mgt_pre"] = train_gt_pre[0].numpy()
+        #     debug_dict[f"{i}--2-5 train_Wgt"    ] = train_gt    [0].numpy()
+        #     debug_dict[f"{i}--2-6 train_Wgt_pre"] = train_gt_pre[0].numpy()
+
+        #     fig, ax = plt.subplots(2, 5)
+        #     fig.set_size_inches(4.5 * 5, 4.5 * 2)
+        #     ### ord vs pre
+        #     ax[0, 0].imshow(train_in    [0])
+        #     ax[0, 1].imshow(train_in_pre[0])
+
+        #     ### W_ord vs W_pre
+        #     ax[0, 2].imshow(train_gt    [0, ..., :3])
+        #     ax[0, 3].imshow(train_gt_pre[0, ..., :3])
+
+        #     ### Wx, Wy, Wz 看一下長什麼樣子
+        #     ax[1, 0].imshow(train_gt_pre[0, ..., 0])
+        #     ax[1, 1].imshow(train_gt_pre[0, ..., 1])
+        #     ax[1, 2].imshow(train_gt_pre[0, ..., 2])
+
+        #     ### M_ord vs M_pre
+        #     ax[1, 3].imshow(train_gt    [0, ..., 3])
+        #     ax[1, 4].imshow(train_gt_pre[0, ..., 3])
+        #     fig.tight_layout()
+        #     plt.show()
+        #########################################################################################################################################
+        return self
+
 class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder):
     def build_by_in_dis_gt_mask_coord(self):
         ##########################################################################################################################################
@@ -928,8 +1052,6 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
             #     plt.show()
             #     plt.close()
             ##########################################################################################################################################
-
-
         return self
 
 class tf_Data_in_img_gt_mask_builder(tf_Data_in_wc_gt_flow_builder):
@@ -1046,7 +1168,14 @@ if(__name__ == "__main__"):
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    db_obj = type8_blender_wc_flow.build()
+    # db_obj = type8_blender_wc_flow.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+
+    ''' mask1ch, flow 2ch合併 的形式'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    db_obj = type8_blender_wc_try_mul_M.build()
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
