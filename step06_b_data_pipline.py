@@ -936,17 +936,17 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
     def build_by_in_wc_gt_flow(self):
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
-
         self.tf_data.train_name_db, _                             = self.train_in_factory .build_name_db()
         self.tf_data.train_in_db  , self.tf_data.train_in_db_pre  = self.train_in_factory .build_wc_db()
 
-        ''' 這裡的 train_in2_db 是 dis_img， 只是為了讓 F 來做 bm_rec 來 visualize 而已， 不會丟進去model裡面， 所以 不需要 train_in2_db_pre 喔！ 更不需要 zip 了'''
-        self.tf_data.train_in2_db , _                             = self.train_in2_factory.build_img_db()
-
-        self.tf_data.train_in_db = tf.data.Dataset.zip((self.tf_data.train_in_db, self.tf_data.train_in2_db))
-
         self.tf_data.test_in_db  , self.tf_data.test_in_db_pre   = self.test_in_factory.build_wc_db()
         self.tf_data.test_name_db, _                             = self.test_in_factory.build_name_db()
+
+        ''' 這裡的 train_in2_db 是 dis_img， 只是為了讓 F 來做 bm_rec 來 visualize 而已， 不會丟進去model裡面， 所以 不需要 train_in2_db_pre 喔！ 更不需要 zip 了'''
+        self.tf_data.train_in2_db , _                             = self.train_in2_factory.build_img_db()
+        self.tf_data.test_in2_db  , _                             = self.test_in2_factory .build_img_db()
+        self.tf_data.train_in_db = tf.data.Dataset.zip((self.tf_data.train_in_db, self.tf_data.train_in2_db))
+        self.tf_data.test_in_db  = tf.data.Dataset.zip((self.tf_data.test_in_db, self.tf_data.test_in2_db))
 
         ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
         self.tf_data.train_amount    = get_db_amount(self.tf_data.db_obj.train_in_dir)
@@ -966,17 +966,17 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
         # from util import method1
         # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine.take(3)):
         #     ''' 注意這裡的train_in 有多 dis_img 喔！
-        #            train_in[0] 是 dis_img, shape=(N, H, W, C)
-        #            train_in[1] 是 wc,      shape=(N, H, W, C)
+        #            train_in[0] 是 wc,      shape=(N, H, W, C)
+        #            train_in[1] 是 dis_img, shape=(N, H, W, C)
         #     '''
         #     # if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
         #     # elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)
-        #     debug_dict[f"{i}--1-1 train_in"    ] = train_in[0]
+        #     debug_dict[f"{i}--1-1 train_in"    ] = train_in[0]  ### [0]第一個是 取 wc, [1] 是取 dis_img
         #     debug_dict[f"{i}--1-2 train_in_pre"] = train_in_pre
         #     debug_dict[f"{i}--1-3 train_gt"    ] = train_gt
         #     debug_dict[f"{i}--1-4 train_gt_pre"] = train_gt_pre
 
-        #     debug_dict[f"{i}--2-1  train_in"     ] = train_in[0][0].numpy()
+        #     debug_dict[f"{i}--2-1  train_in"     ] = train_in[0][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
         #     debug_dict[f"{i}--2-2  train_in_pre" ] = train_in_pre[0].numpy()
         #     debug_dict[f"{i}--2-3a train_gt_mask"] = train_gt[0, ..., 0:1].numpy()
         #     debug_dict[f"{i}--2-3b train_gt_move"] = train_gt[0, ..., 1:3].numpy()
@@ -985,7 +985,7 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
 
         #     # breakpoint()
         #     ### 用 matplot 視覺化， 也可以順便看一下 真的要使用data時， 要怎麼抓資料才正確
-        #     train_in          = train_in[0][0]
+        #     train_in          = train_in[0][0]  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
         #     train_in_pre      = train_in_pre[0]
         #     train_gt_mask     = train_gt    [0, ..., 0:1].numpy()
         #     train_gt_pre_mask = train_gt_pre[0, ..., 0:1].numpy()
@@ -1012,6 +1012,10 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
         if(self.tf_data.db_obj.have_see):
             self.tf_data.see_in_db  , self.tf_data.see_in_db_pre = self.see_in_factory.build_wc_db()
             self.tf_data.see_name_db, _                          = self.see_in_factory.build_name_db()
+
+            ''' 這裡的 train_in2_db 是 dis_img， 只是為了讓 F 來做 bm_rec 來 visualize 而已， 不會丟進去model裡面， 所以 不需要 train_in2_db_pre 喔！ 更不需要 zip 了'''
+            self.tf_data.see_in2_db  , _                             = self.see_in2_factory .build_img_db()
+            self.tf_data.see_in_db = tf.data.Dataset.zip((self.tf_data.see_in_db, self.tf_data.see_in2_db))
 
             self.tf_data.see_gt_db , self.tf_data.see_gt_db_pre  = self.see_gt_factory.build_mask_coord_db()
 
