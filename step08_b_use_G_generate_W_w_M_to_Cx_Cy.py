@@ -76,15 +76,19 @@ def W_w_M_Gen_Cx_Cy_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, r
     F_visual   = F_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
     Fgt_visual = Fgt_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
 
+    ### 這個是給後處理用的 dis_img
+    dis_img = in_WM[1][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
 
     ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
     if(bgr2rgb):
         rec_hope   = rec_hope  [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
         F_visual   = F_visual  [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
         Fgt_visual = Fgt_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+        dis_img    = dis_img   [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
 
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",          dis_img)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_W_01.jpg",         W_visual)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_Wx_01.jpg",        Wx_visual)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_Wy_01.jpg",        Wy_visual)
@@ -108,7 +112,6 @@ def W_w_M_Gen_Cx_Cy_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, r
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-        dis_img = in_WM[0][0].numpy()  ### [0]第一個是 取 dis_img， 第二個[0]是取 batch
         bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img, flow=F)
         '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
         cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
