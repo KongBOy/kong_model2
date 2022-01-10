@@ -291,6 +291,25 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.rec_hope_train_dir = self.db.db_dir + "/train/rec_hope"
         self.db.rec_hope_test_dir  = self.db.db_dir + f"/{self.db.test_db_name}/rec_hope"
         self.db.rec_hope_see_dir   = self.db.db_dir + "/see/rec_hope"
+    
+        ### check 資料正確性的資料夾
+        self.db.check_train_in_dir = self.db.db_dir + "/check" + "/train/" + in_dir_name
+        self.db.check_train_gt_dir = self.db.db_dir + "/check" + "/train/" + gt_dir_name
+        self.db.check_test_in_dir  = self.db.db_dir + "/check" + f"/{self.db.test_db_name}/" + in_dir_name
+        self.db.check_test_gt_dir  = self.db.db_dir + "/check" + f"/{self.db.test_db_name}/" + gt_dir_name
+        self.db.check_see_in_dir   = self.db.db_dir + "/check" + "/see/"   + in_dir_name
+        self.db.check_see_gt_dir   = self.db.db_dir + "/check" + "/see/"   + gt_dir_name
+
+        self.db.check_train_in2_dir = self.db.db_dir + "/check" + "/train/" + in2_dir_name
+        self.db.check_train_gt2_dir = self.db.db_dir + "/check" + "/train/" + gt2_dir_name
+        self.db.check_test_in2_dir  = self.db.db_dir + "/check" + f"/{self.db.test_db_name}/" + in2_dir_name
+        self.db.check_test_gt2_dir  = self.db.db_dir + "/check" + f"/{self.db.test_db_name}/" + gt2_dir_name
+        self.db.check_see_in2_dir   = self.db.db_dir + "/check" + "/see/"   + in2_dir_name
+        self.db.check_see_gt2_dir   = self.db.db_dir + "/check" + "/see/"   + gt2_dir_name
+
+        self.db.check_rec_hope_train_dir = self.db.db_dir + "/check" + "/train/rec_hope"
+        self.db.check_rec_hope_test_dir  = self.db.db_dir + "/check" + f"/{self.db.test_db_name}/rec_hope"
+        self.db.check_rec_hope_see_dir   = self.db.db_dir + "/check" + "/see/rec_hope"
         return self
 
     def reset_test_db_name(self, test_db_name):
