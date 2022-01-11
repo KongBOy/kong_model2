@@ -109,7 +109,7 @@ def train_step_Multi_output_W_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_inf
     # import matplotlib.pyplot as plt
     # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
     # ax[0].imshow(in_data[0])
-    # ax[1].imshow(I_with_M[0])
+    # ax[1].imshow(W_w_M[0])
     # ax[2].imshow(gt_cx[0])
     # ax[3].imshow(gt_cy[0])
     # fig.tight_layout()
