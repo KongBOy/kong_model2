@@ -28,20 +28,20 @@ import subprocess as sb
 
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L4_ch128_lim_and_I_to_Wy_L4_ch128_lim_ep060_and_I_to_Wz_L4_ch128_lim_ep060.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L5_ch128_lim_and_I_to_Wy_L5_ch128_lim_ep060_and_I_to_Wz_L5_ch128_lim_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L5_ch128_lim_and_I_to_Wy_L5_ch128_lim_ep060_and_I_to_Wz_L5_ch128_lim_ep060.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L5_ch064_lim_and_I_to_Wy_L5_ch064_lim_ep060_and_I_to_Wz_L5_ch064_lim_ep060.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch128_lim_and_I_to_Wy_L6_ch128_lim_ep060_and_I_to_Wz_L6_ch128_lim_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch064_lim_and_I_to_Wy_L6_ch064_lim_ep060_and_I_to_Wz_L6_ch064_lim_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch128_lim_and_I_to_Wy_L6_ch128_lim_ep060_and_I_to_Wz_L6_ch128_lim_ep060.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch064_lim_and_I_to_Wy_L6_ch064_lim_ep060_and_I_to_Wz_L6_ch064_lim_ep060.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch032_lim_and_I_to_Wy_L6_ch032_lim_ep060_and_I_to_Wz_L6_ch032_lim_ep060.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L7_ch128_lim_and_I_to_Wy_L7_ch128_lim_ep060_and_I_to_Wz_L7_ch128_lim_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L7_ch064_lim_and_I_to_Wy_L7_ch064_lim_ep060_and_I_to_Wz_L7_ch064_lim_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L7_ch032_lim_and_I_to_Wy_L7_ch032_lim_ep060_and_I_to_Wz_L7_ch032_lim_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L7_ch128_lim_and_I_to_Wy_L7_ch128_lim_ep060_and_I_to_Wz_L7_ch128_lim_ep060.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L7_ch064_lim_and_I_to_Wy_L7_ch064_lim_ep060_and_I_to_Wz_L7_ch064_lim_ep060.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L7_ch032_lim_and_I_to_Wy_L7_ch032_lim_ep060_and_I_to_Wz_L7_ch032_lim_ep060.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L7_ch016_lim_and_I_to_Wy_L7_ch016_lim_ep060_and_I_to_Wz_L7_ch016_lim_ep060.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch128_lim_and_I_to_Wy_L8_ch128_lim_ep060_and_I_to_Wz_L8_ch128_lim_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch064_lim_and_I_to_Wy_L8_ch064_lim_ep060_and_I_to_Wz_L8_ch064_lim_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch032_lim_and_I_to_Wy_L8_ch032_lim_ep060_and_I_to_Wz_L8_ch032_lim_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch128_lim_and_I_to_Wy_L8_ch128_lim_ep060_and_I_to_Wz_L8_ch128_lim_ep060.{compress_all}"])
+sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch064_lim_and_I_to_Wy_L8_ch064_lim_ep060_and_I_to_Wz_L8_ch064_lim_ep060.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch032_lim_and_I_to_Wy_L8_ch032_lim_ep060_and_I_to_Wz_L8_ch032_lim_ep060.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch016_lim_and_I_to_Wy_L8_ch016_lim_ep060_and_I_to_Wz_L8_ch016_lim_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch008_lim_and_I_to_Wy_L8_ch008_lim_ep060_and_I_to_Wz_L8_ch008_lim_ep060.{run}"])
