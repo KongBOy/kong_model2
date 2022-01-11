@@ -39,10 +39,10 @@ def I_w_Mgt_to_Cx_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, 
     gt_mask  = gt_mask_coord[0, ..., 0:1]
     gt_cx    = gt_mask_coord[0, ..., 2:3]
 
-    gt_mask_visual = (gt_mask.numpy() * 255).astype(np.uint8)
-    gt_cx_visual   = (gt_cx.numpy() * 255).astype(np.uint8)
-    Cx_visual      = (cx * 255).astype(np.uint8)
-    Cx_w_Mgt_visual      = (cx * gt_mask_pre * 255).astype(np.uint8)
+    gt_mask_visual  = (gt_mask.numpy() * 255).astype(np.uint8)
+    gt_cx_visual    = (gt_cx.numpy() * 255).astype(np.uint8)
+    Cx_visual       = (cx * 255).astype(np.uint8)
+    Cx_w_Mgt_visual = (cx * gt_mask_pre.numpy() * 255).astype(np.uint8)
 
     rec_hope = rec_hope[0].numpy()
     if(bgr2rgb):
