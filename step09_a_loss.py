@@ -26,7 +26,7 @@ class MSE(tf.keras.losses.Loss):
         self.mse_scale = mse_scale
 
     def __call__(self, img_true, img_pred, Mask=None):
-        return mse_kong(img_true, img_pred, self.mse_scale)
+        return mse_kong(img_true, img_pred, self.mse_scale, Mask=Mask)
 
 class MAE(tf.keras.losses.Loss):
     def __init__(self, mae_scale=1, **args):
@@ -35,7 +35,7 @@ class MAE(tf.keras.losses.Loss):
 
     def __call__(self, img_true, img_pred, Mask=None):
         print("MAE.__call__.mae_scale:", self.mae_scale)
-        return mae_kong(img_true, img_pred, self.mae_scale)
+        return mae_kong(img_true, img_pred, self.mae_scale, Mask=Mask)
 
 class BCE():
     def __init__(self, bce_scale=1, **args):
@@ -163,7 +163,7 @@ class Sobel_MAE(tf.keras.losses.Loss):
         img2_sobel_xy = self.Calculate_sobel_edges(image=img2)
         img2_sobel_x = img2_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
         img2_sobel_y = img2_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
-        grad_loss = mae_kong(img1_sobel_x, img2_sobel_x) + mae_kong(img1_sobel_y, img2_sobel_y, Mask=Mask)
+        grad_loss = mae_kong(img1_sobel_x, img2_sobel_x, Mask=Mask) + mae_kong(img1_sobel_y, img2_sobel_y, Mask=Mask)
 
         # import matplotlib.pyplot as plt
         # show_size = 5
