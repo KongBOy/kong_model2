@@ -255,6 +255,27 @@ def train_step_Single_output_I_w_Mgt_to_Cy(model_obj, in_data, gt_data, loss_inf
     _train_step_Single_output(model_obj=model_obj, in_data=I_with_M, gt_data=gt_cy, loss_info_objs=loss_info_objs)
 
 @tf.function
+def train_step_Single_output_I_w_Mgt_to_Cy_focus(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+    '''
+    ### in_img.shape (1, h, w, 3)
+    gt_mask = gt_data[..., 0:1]   ### (1, h, w, 1)
+    gt_cy   = gt_data[..., 1:2]   ### (1, h, w, 1)， 注意 藥用 slice 取 才能保持 shape 喔！
+    I_with_M = in_data * gt_mask
+    # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
+
+    ### debug 時 記得把 @tf.function 拿掉
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(15, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(I_with_M[0])
+    # ax[2].imshow(gt_cx[0])
+    # fig.tight_layout()
+    # plt.show()
+    _train_step_Single_output(model_obj=model_obj, in_data=I_with_M, gt_data=gt_cy, loss_info_objs=loss_info_objs, Mask=gt_mask)
+
+@tf.function
 def train_step_Single_output_I_w_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
