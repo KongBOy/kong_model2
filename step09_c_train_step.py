@@ -8,13 +8,14 @@ from step09_a_loss import *
     因為 有些架構 用 的 train_step 是一樣的， 所以 先只寫成 function， 給各個架構掛上去
 '''
 
-def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data):
+def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data, Mask=None):
     losses = []
     total_loss = 0
     for loss_name, loss_fun in loss_info_objs.loss_funs_dict.items():
         # print("loss_name:", loss_name)
-        if("tv" in loss_name): losses.append(loss_fun(model_output))
-        else:                  losses.append(loss_fun(gt_data, model_output))
+        if  ("tv"  in loss_name): losses.append(loss_fun(model_output))
+        elif("bce" in loss_name): losses.append(loss_fun(gt_data, model_output))
+        else:                     losses.append(loss_fun(gt_data, model_output, Mask))
         total_loss += losses[-1]
     return total_loss, losses
 ###################################################################################################################################################
@@ -23,7 +24,7 @@ def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data):
 ###################################################################################################################################################
 ###################################################################################################################################################
 
-def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None):
+def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None, Mask=None):
     with tf.GradientTape() as gen_tape:
         model_outputs = model_obj.generator(in_data)
         # print("in_data.numpy().shape", in_data.numpy().shape)
@@ -32,7 +33,7 @@ def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None):
         multi_losses = []
         multi_total_loss = 0
         for go_m, model_output in enumerate(model_outputs):
-            total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[go_m], model_output, gt_datas[go_m])
+            total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[go_m], model_output, gt_datas[go_m], Mask=Mask)
             multi_losses.append(losses)
             multi_total_loss += total_loss
 
@@ -157,7 +158,7 @@ def train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt_data, los
 ###################################################################################################################################################
 ###################################################################################################################################################
 ### 因為外層function 已經有 @tf.function， 裡面這層自動會被 decorate 到喔！ 所以這裡不用 @tf.function
-def _train_step_Single_output(model_obj, in_data, gt_data, loss_info_objs):
+def _train_step_Single_output(model_obj, in_data, gt_data, loss_info_objs, Mask=None):
     # print("gt_data.min()", gt_data.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
     # print("gt_data.max()", gt_data.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
     # print("gt_data[..., 0].min()", gt_data.numpy()[..., 0].min())  ### 用這show的時候要先把 @tf.function註解掉
@@ -173,7 +174,7 @@ def _train_step_Single_output(model_obj, in_data, gt_data, loss_info_objs):
         # print("in_data.numpy().shape", in_data.numpy().shape)
         # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
         # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
-        total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[0], model_output, gt_data)
+        total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[0], model_output, gt_data, Mask=Mask)
         # gen_loss = loss_info_objs.loss_funs_dict["mask_BCE"]      (gt_data, model_output)
         # sob_loss = loss_info_objs.loss_funs_dict["mask_Sobel_MAE"](gt_data, model_output)
         # total_loss = gen_loss + sob_loss
@@ -209,8 +210,28 @@ def train_step_Single_output_I_w_Mgt_to_Cx(model_obj, in_data, gt_data, loss_inf
     # ax[2].imshow(gt_cx[0])
     # fig.tight_layout()
     # plt.show()
-
     _train_step_Single_output(model_obj=model_obj, in_data=I_with_M, gt_data=gt_cx, loss_info_objs=loss_info_objs)
+
+@tf.function
+def train_step_Single_output_I_w_Mgt_to_Cx_focus(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+    '''
+    ### in_img.shape (1, h, w, 3)
+    gt_mask = gt_data[..., 0:1]   ### (1, h, w, 1)
+    gt_cx   = gt_data[..., 2:3]   ### (1, h, w, 1)， 注意 藥用 slice 取 才能保持 shape 喔！
+    I_with_M = in_data * gt_mask
+    # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
+
+    ### debug 時 記得把 @tf.function 拿掉
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(15, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(I_with_M[0])
+    # ax[2].imshow(gt_cx[0])
+    # fig.tight_layout()
+    # plt.show()
+    _train_step_Single_output(model_obj=model_obj, in_data=I_with_M, gt_data=gt_cx, loss_info_objs=loss_info_objs, Mask=gt_mask)
 
 @tf.function
 def train_step_Single_output_I_w_Mgt_to_Cy(model_obj, in_data, gt_data, loss_info_objs=None):
@@ -253,8 +274,24 @@ def train_step_Single_output_I_w_Mgt_to_C(model_obj, in_data, gt_data, loss_info
 
     _train_step_Single_output(model_obj=model_obj, in_data=I_with_M, gt_data=gt_coord, loss_info_objs=loss_info_objs)
 
+@tf.function
+def train_step_Single_output_I_w_Mgt_to_F(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    相當於無背景的訓練
+    '''
+    gt_mask = gt_data[..., 0:1]   ### (1, h, w, 1)
+    I_with_M = in_data * gt_mask
 
-####################################################
+    ### debug 時 記得把 @tf.function 拿掉
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(I_with_M[0])
+    # fig.tight_layout()
+    # plt.show()
+    _train_step_Single_output(model_obj, I_with_M, gt_data, loss_info_objs)
+########################################################################################################
+########################################################################################################
 @tf.function
 def train_step_Single_output_Mgt_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
@@ -293,7 +330,6 @@ def train_step_Single_output_I_to_W(model_obj, in_data, gt_data, loss_info_objs=
     # ax[3].imshow(gt_wc[0, ..., 2:3])
     # fig.tight_layout()
     # plt.show()
-
     _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_wc, loss_info_objs=loss_info_objs)
 
 ####################################################
@@ -308,28 +344,9 @@ def train_step_Single_output_I_to_M(model_obj, in_data, gt_data, loss_info_objs=
 
 ###################################################################################################################################################
 ###################################################################################################################################################
-###################################################################################################################################################
-@tf.function
-def train_step_Single_output_I_w_Mgt_to_F(model_obj, in_data, gt_data, loss_info_objs=None):
-    '''
-    相當於無背景的訓練
-    '''
-    gt_mask = gt_data[..., 0:1]   ### (1, h, w, 1)
-    I_with_M = in_data * gt_mask
-
-    ### debug 時 記得把 @tf.function 拿掉
-    # import matplotlib.pyplot as plt
-    # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
-    # ax[0].imshow(in_data[0])
-    # ax[1].imshow(I_with_M[0])
-    # fig.tight_layout()
-    # plt.show()
-    _train_step_Single_output(model_obj, I_with_M, gt_data, loss_info_objs)
-
 @tf.function
 def train_step_Single_output_I_to_F_or_R(model_obj, in_data, gt_data, loss_info_objs=None):
     _train_step_Single_output(model_obj, in_data, gt_data, loss_info_objs)
-
 
 @tf.function
 def train_step_first(model_obj, in_dis_img, gt_coord_map, board_obj):
@@ -348,8 +365,6 @@ def train_step_first(model_obj, in_dis_img, gt_coord_map, board_obj):
 ###################################################################################################################################################
 ###################################################################################################################################################
 ###################################################################################################################################################
-
-
 @tf.function
 # def train_step(rect2, in_data, gt_data, optimizer_G, optimizer_D, loss_info_objs ):
 def train_step_GAN(model_obj, in_data, gt_data, loss_info_objs=None):
