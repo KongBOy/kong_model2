@@ -37,7 +37,7 @@ def I_w_Mgt_to_Cy_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, 
     I_w_M_visual = (I_pre_w_M[0].numpy() * 255.).astype(np.uint8)
 
     gt_mask  = gt_mask_coord[0, ..., 0:1]
-    gt_cy    = gt_mask_coord[0, ..., 2:3]
+    gt_cy    = gt_mask_coord[0, ..., 1:2]
 
     gt_mask_visual  = (gt_mask.numpy() * 255).astype(np.uint8)
     gt_cy_visual    = (gt_cy.numpy() * 255).astype(np.uint8)
