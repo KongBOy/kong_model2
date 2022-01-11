@@ -57,9 +57,9 @@ def I_w_Mgt_to_Cx_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, 
     in_img, I_w_M_visual, gt_mask_visual, Cx_visual, gt_cx_visual, rec_hope = I_w_Mgt_to_Cx_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
     if(current_ep == 0 or see_reset_init):          ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
-        cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_img.jpg",      in_img)
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      in_img)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a2-gt_mask.jpg",      gt_mask_visual)               ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-in_img_w_Mgt.jpg", I_w_M_visual)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
 
         ''' 覺得 u1b 不用寫 mask， 因為 unet1 又沒有 output mask！ '''
         cv2.imwrite(private_write_dir + "/" + "0b_u1b1-gt_a_gt_Cx.jpg",    gt_cx_visual)                 ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張

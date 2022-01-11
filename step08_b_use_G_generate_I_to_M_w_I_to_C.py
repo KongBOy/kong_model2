@@ -76,21 +76,21 @@ def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, phase, index, in_img, in_img_pre, gt
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(private_rec_write_dir)    ### 建立 放輔助檔案 的資料夾
-        cv2.imwrite(f"{private_write_dir}/0a_u1a-in_img.jpg",  in_img)
+        cv2.imwrite(f"{private_write_dir}/0a_u1a0-dis_img(in_img).jpg",  in_img)
 
-        cv2.imwrite(f"{private_write_dir}/0b_u1b-gt_mask.jpg", Mgt_visual)
-        cv2.imwrite(f"{private_write_dir}/0b_u2b-gt_Cx.jpg",   Cxgt_visual)
-        cv2.imwrite(f"{private_write_dir}/0b_u2b-gt_Cy.jpg",   Cygt_visual)
-        np .save   (f"{private_write_dir}/0b_u2b-gt_flow.npy", Fgt)
-        cv2.imwrite(f"{private_write_dir}/0b_u2b-gt_flow.jpg", Fgt_visual)
+        cv2.imwrite(f"{private_write_dir}/0b_u1b1-gt_mask.jpg", Mgt_visual)
+        np .save   (f"{private_write_dir}/0b_u2b2-gt_flow.npy", Fgt)
+        cv2.imwrite(f"{private_write_dir}/0b_u2b3-gt_flow.jpg", Fgt_visual)
+        cv2.imwrite(f"{private_write_dir}/0b_u2b4-gt_Cx.jpg",   Cxgt_visual)
+        cv2.imwrite(f"{private_write_dir}/0b_u2b5-gt_Cy.jpg",   Cygt_visual)
         cv2.imwrite(f"{private_write_dir}/0c-rec_hope.jpg",    rec_hope)
 
-    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b-mask.jpg"  % current_ep, M_visual)
-    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2a-I_w_M.jpg" % current_ep, I_with_M_visual)
-    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b-Cx.jpg"    % current_ep, Cx_visual)
-    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b-Cy.jpg"    % current_ep, Cy_visual)
-    np .save   (private_write_dir + "/" + "epoch_%04i_u2b-flow.npy"  % current_ep, F)
-    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b-flow.jpg"  % current_ep, F_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b1-mask.jpg"  % current_ep, M_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2a1-I_w_M.jpg" % current_ep, I_with_M_visual)
+    np .save   (private_write_dir + "/" + "epoch_%04i_u2b2-flow.npy"  % current_ep, F)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b3-flow.jpg"  % current_ep, F_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b4-Cx.jpg"    % current_ep, Cx_visual)
+    cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b5-Cy.jpg"    % current_ep, Cy_visual)
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾

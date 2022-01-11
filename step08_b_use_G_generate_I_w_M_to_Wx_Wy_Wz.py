@@ -77,9 +77,9 @@ def I_w_M_Gen_Wx_Wy_Wz_to_W_see(model_G, phase, index, in_img, in_img_pre, _3, W
 
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
-        cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_img.jpg",      in_img)
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      in_img)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a2-gt_mask.jpg",      Mgt_visual)
-        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-in_img_w_Mgt.jpg", I_w_M_visual)
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
 
         np.save    (private_write_dir + "/" + "0b_u1b1-gt_W",             Wgt_01)
         cv2.imwrite(private_write_dir + "/" + "0b_u1b2-gt_W.jpg",         Wgt_visual)

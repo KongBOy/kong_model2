@@ -60,7 +60,7 @@ def I_Generate_W_see(model_G, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pr
 
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
-        cv2.imwrite(private_write_dir + "/" + "0a_u1a1-in_img.jpg", in_img)             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img(in_img).jpg", in_img)             ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
 
         np.save    (private_write_dir + "/" + "0b_u1b1-gt_wc",      Wgt_01)                                   ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0b_u1b3-gt_Wx.jpg",  Wxgt_visual)

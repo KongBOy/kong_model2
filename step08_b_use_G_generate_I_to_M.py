@@ -51,7 +51,7 @@ def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _
     if(current_ep == 0 or see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)                                   ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
-        cv2.imwrite(private_write_dir  + "/" + "0a_u1a1-in_img.jpg", in_img)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", in_img)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
         cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.bmp", gt_mask)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
     cv2.imwrite(    private_mask_write_dir + "/" + "epoch_%04i_u1b1_mask.bmp" % current_ep, pred_mask_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 

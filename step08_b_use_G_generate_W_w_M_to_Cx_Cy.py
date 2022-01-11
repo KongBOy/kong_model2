@@ -95,9 +95,9 @@ def W_w_M_Gen_Cx_Cy_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, r
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_Wz_01.jpg",        Wz_visual)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a2-gt_mask.jpg",          Mgt_visual)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a3-W_w_Mgt(in_img).jpg",  W_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-Wx_w_Mgt(in_img).jpg", Wx_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-Wy_w_Mgt(in_img).jpg", Wy_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-Wz_w_Mgt(in_img).jpg", Wz_w_M_visual)
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-Wx_w_Mgt.jpg", Wx_w_M_visual)
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-Wy_w_Mgt.jpg", Wy_w_M_visual)
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a3-Wz_w_Mgt.jpg", Wz_w_M_visual)
 
         np.save    (private_write_dir + "/" + "0b_u1b1-gt_b_gt_flow",     Fgt)
         cv2.imwrite(private_write_dir + "/" + "0b_u1b2-gt_b_gt_flow.jpg", Fgt_visual)

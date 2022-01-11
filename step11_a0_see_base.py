@@ -34,11 +34,11 @@ class See_info:
 
     def get_path_savely(self, search_dir_1, search_dir_2=".", certain_word=".", certain_ext="."):
         names = get_dir_certain_file_names(search_dir_1, certain_word=certain_word, certain_ext=certain_ext)
-        if(len(names) > 0): return f"{search_dir_1}/{names[0]}"
+        if(len(names) > 0): return f"{search_dir_1}/{names[-1]}"
 
         ### 如果 search_dir_1 找不到就去 search_dir_2 找
         names = get_dir_certain_file_names(search_dir_2, certain_word=certain_word, certain_ext=certain_ext)
-        if(len(names) > 0): return f"{search_dir_2}/{names[0]}"
+        if(len(names) > 0): return f"{search_dir_2}/{names[-1]}"
 
         ### 如果 search_dir_1, 2 就代表真的找不到了
         print(f"{search_dir_1} 找不到 {certain_word}{certain_ext} 字眼的檔案")
@@ -57,7 +57,9 @@ class See_info:
         # self.in_img_path          = self.see_read_dir + "/" + self.see_jpg_names[0]
         # print("self.see_read_dir:", self.see_read_dir)
         self.in_img_path  = self.get_path_savely(self.see_read_dir, certain_word="in_img")
+
         self.dis_img_path = self.get_path_savely(self.see_read_dir, certain_word="dis_img")
+        if(self.dis_img_path is None): self.dis_img_path = self.get_path_savely(self.see_read_dir, certain_word="in_img")  ### 為了相容以前沒有寫 dis_img 的 result
         # self.in_img_names = get_dir_certain_file_names(self.see_read_dir, certain_word="in_img")
         # if(len(self.in_img_names) > 0): self.in_img_path = f"{self.see_read_dir}/{self.in_img_names[0]}"
         # else: print(f"{self.see_read_dir} 找不到 gt_flow.npz")
