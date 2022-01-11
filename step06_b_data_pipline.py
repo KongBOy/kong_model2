@@ -801,8 +801,14 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
             #     ax[1, 2].imshow(see_gt_pre[0, ..., 2])
 
             #     ### M_ord vs M_pre
-            #     ax[1, 3].imshow(see_gt    [0, ..., 3])
-            #     ax[1, 4].imshow(see_gt_pre[0, ..., 3])
+            #     Mgt     = see_gt    [0, ..., 3:4]
+            #     Mgt_pre = see_gt_pre[0, ..., 3:4]
+            #     ax[1, 3].imshow(see_gt    [0, ..., 3:4])
+            #     ax[1, 4].imshow(see_gt_pre[0, ..., 3:4])
+
+            #     in_pre_w_Mgt_pre = see_in_pre[0] * Mgt_pre
+            #     ax[0, 4].imshow(in_pre_w_Mgt_pre)
+
             #     fig.tight_layout()
             #     plt.show()
             ##########################################################################################################################################
@@ -837,7 +843,8 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
 
         # # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine.take(5)):
         # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine):
-        #     print(i)
+        #     # if(i < 620): continue
+        #     # print(i)
         #     debug_dict[f"{i}--1-1 train_in"    ] = train_in
         #     debug_dict[f"{i}--1-2 train_in_pre"] = train_in_pre
         #     debug_dict[f"{i}--1-3 train_gt"    ] = train_gt
@@ -853,26 +860,40 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
         #     fig, ax = plt.subplots(2, 5)
         #     fig.set_size_inches(4.5 * 5, 4.5 * 2)
         #     ### ord vs pre
-        #     ax[0, 0].imshow(train_in    [0])
-        #     ax[0, 1].imshow(train_in_pre[0])
+        #     in_ord = train_in    [0]
+        #     in_pre = train_in_pre[0]
+        #     ax[0, 0].imshow(in_ord)
+        #     ax[0, 1].imshow(in_pre)
 
         #     ### W_ord vs W_pre
-        #     ax[0, 2].imshow(train_gt    [0, ..., :3])
-        #     ax[0, 3].imshow(train_gt_pre[0, ..., :3])
+        #     W_ord = train_gt    [0, ..., :3]
+        #     W_pre = train_gt_pre[0, ..., :3]
+        #     ax[0, 2].imshow(W_ord)
+        #     ax[0, 3].imshow(W_pre)
 
         #     ### Wx, Wy, Wz 看一下長什麼樣子
-        #     ax[1, 0].imshow(train_gt_pre[0, ..., 0])
-        #     ax[1, 1].imshow(train_gt_pre[0, ..., 1])
-        #     ax[1, 2].imshow(train_gt_pre[0, ..., 2])
+        #     Wx_pre = train_gt_pre[0, ..., 0]
+        #     Wy_pre = train_gt_pre[0, ..., 1]
+        #     Wz_pre = train_gt_pre[0, ..., 2]
+        #     ax[1, 0].imshow(Wx_pre)
+        #     ax[1, 1].imshow(Wy_pre)
+        #     ax[1, 2].imshow(Wz_pre)
 
         #     ### M_ord vs M_pre
-        #     ax[1, 3].imshow(train_gt    [0, ..., 3])
-        #     ax[1, 4].imshow(train_gt_pre[0, ..., 3])
+        #     Mgt     = train_gt    [0, ..., 3:4]
+        #     Mgt_pre = train_gt_pre[0, ..., 3:4]
+        #     ax[1, 3].imshow(Mgt)
+        #     ax[1, 4].imshow(Mgt_pre)
+
+        #     ### W_pre * M
+        #     W_pre_w_Mgt_pre = W_pre * Mgt_pre
+        #     ax[0, 4].imshow(W_pre_w_Mgt_pre)
+
         #     fig.tight_layout()
         #     if(os.path.isdir(self.tf_data.db_obj.check_train_gt_dir) is False): os.makedirs(self.tf_data.db_obj.check_train_gt_dir)
-        #     # plt.show()
-        #     plt.savefig(f"{self.tf_data.db_obj.check_train_gt_dir}/" + "%05i" % (i + 1) )
-        #     plt.close()
+        #     plt.show()
+        #     # plt.savefig(f"{self.tf_data.db_obj.check_train_gt_dir}/" + "%05i" % (i + 1) )
+        #     # plt.close()
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # import matplotlib.pyplot as plt
