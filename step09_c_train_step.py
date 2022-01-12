@@ -92,6 +92,32 @@ def train_step_Multi_output_I_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_inf
     _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
 @tf.function
+def train_step_Multi_output_I_w_M_to_Cx_Cy_focus(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+    '''
+    gt_mask  = gt_data[..., 0:1]
+    I_with_M = in_data * gt_mask
+
+    gt_cx = gt_data[..., 2:3]
+    gt_cy = gt_data[..., 1:2]
+    gt_datas = [gt_cx, gt_cy]  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
+    # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
+    # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
+
+    ## debug 時 記得把 @tf.function 拿掉
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(I_with_M[0])
+    # ax[2].imshow(gt_cx[0])
+    # ax[3].imshow(gt_cy[0])
+    # fig.tight_layout()
+    # plt.show()
+
+    _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=gt_mask)
+
+@tf.function
 def train_step_Multi_output_W_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫

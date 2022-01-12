@@ -83,14 +83,17 @@ class See_npy_to_npz(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        self.flow_gt_npz_path = self.get_path_savely(self.npz_read_dir, certain_word="gt_flow", certain_ext=".npz")
+        self.flow_gt_npz_path =            self.get_path_savely(self.npz_read_dir, certain_word="gt_flow", certain_ext=".npz")
+        if(self.flow_gt_npz_path is None): self.get_path_savely(self.npz_read_dir, certain_word="Fgt",     certain_ext=".npz")
         # self.flow_gt_npz_names    = get_dir_certain_file_names(self.npz_read_dir, certain_word="gt_flow", certain_ext=".npz")
         # if(len(self.flow_gt_npz_names) > 0): self.flow_gt_npz_path = f"{self.npz_read_dir}/{self.flow_gt_npz_names[0]}"
         # else: print(f"{self.npz_read_dir} 找不到 gt_flow.npz")
 
         ### 不包含 gt_flow 的 list喔！
         self.npz_epoch_mask_names = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_word2="mask", certain_ext=".npz")
-        self.npz_epoch_flow_names = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_word2="flow", certain_ext=".npz")
+        self.npz_epoch_flow_names                                       = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_word2="flow",        certain_ext=".npz")
+        if(len(self.npz_epoch_flow_names) == 0): self.flow_ep_jpg_names = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_word2="F.jpg",       certain_ext=".npz")
+        if(len(self.npz_epoch_flow_names) == 0): self.flow_ep_jpg_names = get_dir_certain_file_names(self.npz_read_dir, certain_word="epoch", certain_word2="F_w_Mgt.jpg", certain_ext=".npz")
         self.npz_epoch_mask_read_paths = [self.npz_read_dir + "/" + npz_epoch_mask_name for npz_epoch_mask_name in self.npz_epoch_mask_names]    ### 沒有 write_paths，同上 ，既然已經沒有 self.see_npz_write_paths， 當然更不會有 self.see_npz_epoch_write_paths 拉！
         self.npz_epoch_flow_read_paths = [self.npz_read_dir + "/" + npz_epoch_flow_name for npz_epoch_flow_name in self.npz_epoch_flow_names]    ### 沒有 write_paths，同上 ，既然已經沒有 self.see_npz_write_paths， 當然更不會有 self.see_npz_epoch_write_paths 拉！
 
