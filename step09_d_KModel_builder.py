@@ -204,9 +204,12 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
         elif(I_to_W):
             from step08_b_use_G_generate_I_to_W import I_Generate_W_see
             self.kong_model.generate_sees    = I_Generate_W_see    ### 不能checkpoint
-        elif(I_to_Cx_Cy):
+        elif(I_w_Mgt_to_Cx_Cy):
             from step08_b_use_G_generate_I_w_M_to_Cx_Cy import  I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see
             self.kong_model.generate_sees    = I_w_Mgt_Gen_Cx_Cy_to_C_with_Mgt_to_F_see
+        elif(I_w_Mgt_to_Cx_Cy_focus):
+            from step08_b_use_G_generate_I_w_M_to_Cx_Cy_focus import  I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see
+            self.kong_model.generate_sees    = I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see
         elif(I_w_Mgt_to_Cx):
             from step08_b_use_G_generate_I_w_M_to_Cx import  I_w_Mgt_to_Cx_see
             self.kong_model.generate_sees    = I_w_Mgt_to_Cx_see   ### 不能checkpoint
@@ -223,7 +226,7 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
             from step08_b_use_G_generate_I_to_F import I_Generate_F_see
             self.kong_model.generate_sees    = I_Generate_F_see  ### 不能checkpoint
 
-    def hook_build_and_gen_op(self, I_to_M=False, I_to_C_with_Mgt_to_F=False, I_to_W=False, I_with_Mgt_to_C_with_Mgt_to_F=False, I_to_M_w_I_to_C=False, Mgt_to_C_with_gt_M_to_F=False, I_to_Cx_Cy=False, I_w_Mgt_to_Cx=False, I_w_Mgt_to_Cy=False, I_w_Mgt_to_Wx_Wy_Wz=False, W_w_M_to_Cx_Cy_see=False):
+    def hook_build_and_gen_op(self, I_to_M=False, I_to_C_with_Mgt_to_F=False, I_to_W=False, I_with_Mgt_to_C_with_Mgt_to_F=False, I_to_M_w_I_to_C=False, Mgt_to_C_with_gt_M_to_F=False, I_w_Mgt_to_Cx_Cy=False, I_w_Mgt_to_Cx_Cy_focus=False, I_w_Mgt_to_Cx=False, I_w_Mgt_to_Cy=False, I_w_Mgt_to_Wx_Wy_Wz=False, W_w_M_to_Cx_Cy_see=False):
         def _hook_Gen_op():
             self._hook_Gen_op_part( I_to_M=I_to_M,
                                     I_to_C_with_Mgt_to_F=I_to_C_with_Mgt_to_F,
@@ -231,7 +234,8 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
                                     I_with_Mgt_to_C_with_Mgt_to_F=I_with_Mgt_to_C_with_Mgt_to_F,
                                     I_to_M_w_I_to_C=I_to_M_w_I_to_C,
                                     Mgt_to_C_with_gt_M_to_F=Mgt_to_C_with_gt_M_to_F,
-                                    I_to_Cx_Cy=I_to_Cx_Cy,
+                                    I_w_Mgt_to_Cx_Cy=I_w_Mgt_to_Cx_Cy,
+                                    I_w_Mgt_to_Cx_Cy_focus=I_w_Mgt_to_Cx_Cy_focus,
                                     I_w_Mgt_to_Cx=I_w_Mgt_to_Cx,
                                     I_w_Mgt_to_Cy=I_w_Mgt_to_Cy,
                                     I_w_Mgt_to_Wx_Wy_Wz=I_w_Mgt_to_Wx_Wy_Wz,
