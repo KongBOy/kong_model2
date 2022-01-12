@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, BatchNormalization, Concatenate
 from tensorflow_addons.layers import InstanceNormalization
-from step07_small_component import *
+from step07_a_small_component import *
 
 def Use_what_acti(acti):
     if  (acti == "lrelu"): return LeakyReLU(alpha=0.2, name="lrelu")

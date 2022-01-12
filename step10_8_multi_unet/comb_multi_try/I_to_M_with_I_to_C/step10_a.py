@@ -27,8 +27,8 @@ exp_dir = template_dir
 
 from step06_a_datas_obj import *
 from step09_f1_multi_unet2_obj_I_to_M_w_I_to_C import *
-from step09_b_loss_info_obj import *
-from step10_b_exp_builder import Exp_builder
+from step10_a2_loss_info_obj import *
+from step10_b2_exp_builder import Exp_builder
 
 import step10_7_flow_unet.mask_5_2_block1_45678l_I_to_M         .bce_s001.a_normal.step10_a as I_to_M_exp_builder
 import step10_7_flow_unet.mask_5_2_block1_45678l_I_with_Mgt_to_C.mae_s001.a_normal.step10_a as M_w_I_to_C_exp_builder
@@ -74,10 +74,10 @@ if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
-        ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
+        ### 直接按 F5 或打 python step10_b1_exp_obj_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
         I_to_M_L4_ch032_and_M_w_I_to_C_L5_ch032_ep060.build().run()
         # print('no argument')
         sys.exit()
 
-    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_a_load_and_train_and_test.py 某個exp.build().run()
+    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_b1_exp_obj_load_and_train_and_test.py 某個exp.build().run()
     eval(sys.argv[1])

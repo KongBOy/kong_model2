@@ -7,7 +7,7 @@ import datetime
 from step0_access_path import Syn_write_to_read_dir, Result_Read_Path, Result_Write_Path, kong_model2_dir
 from step06_a_datas_obj import *
 from step06_b_data_pipline import tf_Data_builder
-from step09_b_loss_info_obj import *
+from step10_a2_loss_info_obj import *
 from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")

@@ -4,7 +4,7 @@ from tensorflow.keras.layers import Input, Conv2D, LeakyReLU, BatchNormalization
 from tensorflow.keras.optimizers import Adam
 from tensorflow_addons.layers import InstanceNormalization
 
-from step07_small_component import CoordConv, InstanceNorm_kong, ResBlock
+from step07_a_small_component import CoordConv, InstanceNorm_kong, ResBlock
 # from tensorflow_addons.layers import InstanceNormalization
 tf.keras.backend.set_floatx('float32')  ### 這步非常非常重要！用了才可以加速！
 
@@ -394,8 +394,8 @@ if(__name__ == "__main__"):
     from tqdm import tqdm
     from step06_a_datas_obj import DB_C, DB_N, DB_GM, Range
     from step06_b_data_pipline import Dataset_builder, tf_Data_builder
-    from step09_d_KModel_builder import KModel_builder, MODEL_NAME
-    from step09_b_loss_info_obj import Loss_info_builder
+    from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
+    from step10_a2_loss_info_obj import Loss_info_builder
 
     ### 1. model_obj
     model_obj = KModel_builder().set_model_name(MODEL_NAME.rect).use_rect2(first_k3=False, g_train_many=False)

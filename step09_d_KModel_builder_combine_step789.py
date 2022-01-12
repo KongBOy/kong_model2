@@ -89,9 +89,9 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
         def _build_unet_body_part():
             ### model_part
             ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-            if  (self.true_IN and self.concat_Activation is False): from step08_a_1_UNet_IN                   import Generator   ### 目前最常用這個
-            elif(self.true_IN and self.concat_Activation is True) : from step08_a_1_UNet_IN_concat_Activation import Generator
-            else:                                                   from step08_a_1_UNet_BN                   import Generator
+            if  (self.true_IN and self.concat_Activation is False): from step07_b_1_UNet_IN                   import Generator   ### 目前最常用這個
+            elif(self.true_IN and self.concat_Activation is True) : from step07_b_1_UNet_IN_concat_Activation import Generator
+            else:                                                   from step07_b_1_UNet_BN                   import Generator
             self.kong_model.generator   = Generator(**g_args)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
             print("build_unet", "finish")
@@ -138,7 +138,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
 
         def _build_unet_body_part():
             # for key, value in kwargs.items(): print(f"{key}: {value}")  ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-            from step08_a_0a_UNet_combine import Generator
+            from step07_b_0a_UNet_combine import Generator
             self.kong_model.generator   = Generator(**g_args)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
             print("build_unet", "finish")
@@ -149,10 +149,10 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
 
     def set_multi_model_builders(self, op_type, **model_builders_dict):
         '''
-        參數名字要丟什麼可以參考 step08_a_0b_Multi_UNet 的 Multi_Generator 的 call()
+        參數名字要丟什麼可以參考 step07_b_0b_Multi_UNet 的 Multi_Generator 的 call()
         舉例：set_multi_model_builders(op_type     = "I_to_M_w_I_to_C",
                                        I_to_M     = step09_e2_mask_unet2_obj.mask_unet2_block1_ch008_sig_L2,
-                                       M_w_I_to_C = step09_e5_flow_unet2_obj_I_with_Mgt_to_C.flow_unet2_block1_ch008_sig_L2)
+                                       M_w_I_to_C = step09_e5_flow_unet2_obj_I_w_Mgt_to_C.flow_unet2_block1_ch008_sig_L2)
         '''
         for gen_name, model_builder in model_builders_dict.items():
             self.kong_model.model_describe_elements += [gen_name] + model_builder.kong_model.model_describe_elements + ["&&"]
@@ -160,7 +160,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
         self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
 
         def _build_multi_unet_body_part():
-            from step08_a_0b_Multi_UNet import Multi_Generator
+            from step07_b_0b_Multi_UNet import Multi_Generator
             gens_dict = {}
             for gen_name, model_builder in model_builders_dict.items():
                 gens_dict[gen_name] = model_builder.build().generator
@@ -249,7 +249,7 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
 class Old_model_and_512_256_Unet_builder(G_Unet_Purpose_builder):
     def build_unet(self):
         def _build_unet():
-            from step08_a_1_UNet_BN_512to256 import Generator512to256, generate_sees, generate_results
+            from step07_b_1_UNet_BN_512to256 import Generator512to256, generate_sees, generate_results
             self.kong_model.generator   = Generator512to256(out_ch=2)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
             self.kong_model.max_train_move = tf.Variable(1)  ### 在test時 把move_map值弄到-1~1需要，所以需要存起來
@@ -290,7 +290,7 @@ class Old_model_and_512_256_Unet_builder(G_Unet_Purpose_builder):
             depth_level=2 的情況 已經做到 和 Rect 幾乎一樣了，下面的 flow_rect 還留著是因為 裡面還有 MRFB 和 CoordConv 的東西
             '''
             ### model_part
-            from step08_a_3_EResD_7_level import Rect_7_layer as Generator
+            from step07_b_3_EResD_7_level import Rect_7_layer as Generator
             self.kong_model.generator   = Generator(first_k=self.first_k, hid_ch=self.hid_ch, depth_level=self.depth_level, true_IN=self.true_IN, use_ReLU=self.use_ReLU, use_res_learning=self.use_res_learning, resb_num=self.resb_num, out_ch=self.out_ch)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
@@ -318,7 +318,7 @@ class Old_model_and_512_256_Unet_builder(G_Unet_Purpose_builder):
             flow_rect 還留著是因為 裡面還有 MRFB 和 CoordConv 的東西
             '''
             ### model_part
-            from step08_a_2_Rect2 import Generator
+            from step07_b_2_Rect2 import Generator
             self.kong_model.generator   = Generator(first_k3=first_k3, hid_ch=hid_ch, true_IN=true_IN, mrfb=mrfb, mrf_replace=mrf_replace, coord_conv=coord_conv, use_res_learning=use_res_learning, resb_num=resb_num, out_ch=out_ch)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
@@ -359,7 +359,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Mask_Flow_Generator_builder):
         self.D_kernel_size = D_kernel_size
 
         def _build_rect2():
-            from step08_a_2_Rect2 import Generator, Discriminator, Rect2
+            from step07_b_2_Rect2 import Generator, Discriminator, Rect2
             gen_obj = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
             dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
             self.kong_model.rect = Rect2(gen_obj, dis_obj)   ### 把 Generator物件 丟進 Rect建立 Rect物件
@@ -384,7 +384,7 @@ class KModel_GD_and_mrfGD_builder(KModel_Mask_Flow_Generator_builder):
         self.D_kernel_size = D_kernel_size
 
         def _build_rect2_mrf():
-            from step08_a_2_Rect2 import MRFBlock, Generator, Discriminator, Rect2
+            from step07_b_2_Rect2 import MRFBlock, Generator, Discriminator, Rect2
             mrfb    = MRFBlock(c_num=64, use1=use1, use3=use3, use5=use5, use7=use7, use9=use9)  ### 先建立 mrf物件
             gen_obj = Generator(first_k3=first_k3, mrfb=mrfb, mrf_replace=mrf_replace, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)   ### 把 mrf物件 丟進 Generator 建立 Generator物件
             dis_obj = Discriminator(D_first_concat=D_first_concat, D_kernel_size=D_kernel_size)
@@ -415,7 +415,7 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
         self.coord_conv = coord_conv
 
         def _build_justG():
-            from step08_a_2_Rect2 import Generator
+            from step07_b_2_Rect2 import Generator
             self.kong_model.generator   = Generator(first_k3=first_k3, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 建立 Generator物件
             self._kong_model_G_setting()  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
             print("build_justG", "finish")
@@ -436,7 +436,7 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
         self.use9 = use9
 
         def _build_justG_mrf():
-            from step08_a_2_Rect2 import MRFBlock, Generator
+            from step07_b_2_Rect2 import MRFBlock, Generator
             mrfb = MRFBlock(c_num=64, use1=use1, use3=use3, use5=use5, use7=use7, use9=use9)  ### 先建立 mrf物件
             self.kong_model.generator = Generator(first_k3=first_k3, mrfb=mrfb, mrf_replace=mrf_replace, use_res_learning=use_res_learning, resb_num=resb_num, coord_conv=coord_conv)  ### 把 mrf物件 丟進 Generator 建立 Generator物件
             self._kong_model_G_setting()  ### 去把kong_model 剩下的oprimizer, util_method, ckpt 設定完
