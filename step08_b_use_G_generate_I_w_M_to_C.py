@@ -8,7 +8,7 @@ from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_with_M_to_F_and_get_F_visual
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_concat_with_M_to_F_and_get_F_visual
 ######################################################################################################################################################################################################
 def I_with_Mgt_Generate_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     '''
@@ -27,15 +27,11 @@ def I_with_Mgt_Generate_C(model_G, _1, in_img_pre, _3, gt_mask_coord_pre, use_gt
 def I_with_Mgt_Generate_C_with_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):
     in_img    = in_img[0].numpy()
     coord, I_w_M_visual = I_with_Mgt_Generate_C(model_G, None, in_img_pre, None, gt_mask_coord_pre, exp_obj.use_gt_range, training=training)
-    Cx_visual = (coord[..., 1:2] * 255).astype(np.uint8)
-    Cy_visual = (coord[..., 0:1] * 255).astype(np.uint8)
     gt_mask  = gt_mask_coord_pre[0, ..., 0:1].numpy()
     gt_coord = gt_mask_coord_pre[0, ..., 1:3].numpy()
-    Cxgt_visual = (gt_coord[..., 1:2] * 255).astype(np.uint8)
-    Cygt_visual = (gt_coord[..., 0:1] * 255).astype(np.uint8)
     Mgt_visual = (gt_mask * 255).astype(np.uint8)
-    flow,    flow_visual    = C_with_M_to_F_and_get_F_visual(coord,    gt_mask)
-    gt_flow, gt_flow_visual = C_with_M_to_F_and_get_F_visual(gt_coord, gt_mask)
+    flow,    flow_visual,    Cx_visual,   Cy_visual   = C_concat_with_M_to_F_and_get_F_visual(coord,    gt_mask)
+    gt_flow, gt_flow_visual, Cxgt_visual, Cygt_visual = C_concat_with_M_to_F_and_get_F_visual(gt_coord, gt_mask)
     flow_visual    = flow_visual   [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
     gt_flow_visual = gt_flow_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
 
@@ -67,7 +63,7 @@ def I_with_Mgt_Generate_C_with_Mgt_to_F_see(model_G, phase, index, in_img, in_im
         Check_dir_exist_and_build(private_rec_write_dir)   ### 建立 model生成的結果 的資料夾
         cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",         in_img)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",         Mgt_visual)         ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_with_Mgt((in_img)).jpg", I_w_M_visual)       ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+        cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_with_Mgt(in_img).jpg", I_w_M_visual)       ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
 
         ''' 覺得 u1b 不用寫 mask， 因為 unet1 又沒有 output mask！ '''
         np.save    (private_write_dir + "/" + "0b_u1b1-gt_flow",              gt_flow)           ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張

@@ -9,7 +9,7 @@ from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_with_M_to_F_and_get_F_visual
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_concat_with_M_to_F_and_get_F_visual
 
 ######################################################################################################################################################################################################
 def I_Generate_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -25,15 +25,11 @@ def I_Gen_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord_pre
     '''
     in_img   = in_img[0].numpy()
     coord    = I_Generate_C(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
-    Cx_visual = (coord[..., 1:2] * 255).astype(np.uint8)
-    Cy_visual = (coord[..., 0:1] * 255).astype(np.uint8)
     gt_mask  = gt_mask_coord_pre[0, ..., 0:1].numpy()
     gt_coord = gt_mask_coord_pre[0, ..., 0:3].numpy()
     gt_mask_visual = (gt_mask * 255).astype(np.uint8)
-    Cxgt_visual = (gt_coord[..., 1:2] * 255).astype(np.uint8)
-    Cygt_visual = (gt_coord[..., 0:1] * 255).astype(np.uint8)
-    flow,    flow_visual    = C_with_M_to_F_and_get_F_visual(coord,    gt_mask)
-    gt_flow, gt_flow_visual = C_with_M_to_F_and_get_F_visual(gt_coord, gt_mask)
+    flow,    flow_visual,    Cx_visual,   Cy_visual   = C_concat_with_M_to_F_and_get_F_visual(coord,    gt_mask)
+    gt_flow, gt_flow_visual, Cxgt_visual, Cygt_visual = C_concat_with_M_to_F_and_get_F_visual(gt_coord, gt_mask)
     flow_visual    = flow_visual   [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
     gt_flow_visual = gt_flow_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
     rec_hope       = rec_hope[0].numpy()
