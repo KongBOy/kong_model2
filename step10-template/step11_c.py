@@ -8,7 +8,7 @@ sys.path.append(code_exe_dir)
 
 from step10_a import *
 """
-group寫法2：from step10_a_load_and_train_and_test import * 直接包 exps
+group寫法2：from step10_b1_exp_obj_load_and_train_and_test import * 直接包 exps
 補充：無法直接 from step10_a import * 直接處理，
     因為裡面包含太多其他物件了！光要抽出自己想用的 exp物件就是一大工程覺得~
     還有我也不知道要怎麼 直接用 ，也是要一個個 名字 打出來 才能用，名字 都打出來了，不如就直接 包成exps 囉！

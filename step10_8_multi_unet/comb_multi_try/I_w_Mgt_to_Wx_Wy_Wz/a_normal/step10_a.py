@@ -27,8 +27,8 @@ exp_dir = template_dir
 
 from step06_a_datas_obj import *
 from step09_g2_multi_unet2_obj_I_to_Wx_Wy_Wz import *
-from step09_b_loss_info_obj import *
-from step10_b_exp_builder import Exp_builder
+from step10_a2_loss_info_obj import *
+from step10_b2_exp_builder import Exp_builder
 
 #############################################################################################################################################################################################################
 '''
@@ -40,7 +40,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
 '''
 
 use_db_obj = type8_blender_wc
-use_loss_obj = [G_mae_s001_loss_info_builder.set_loss_target("UNet_z"), G_mae_s001_loss_info_builder.set_loss_target("UNet_y"), G_mae_s001_loss_info_builder.set_loss_target("UNet_x")]  ### z, y, x 順序是看 step08_a_0b_Multi_UNet 來對應的喔
+use_loss_obj = [G_mae_s001_loss_info_builder.set_loss_target("UNet_z"), G_mae_s001_loss_info_builder.set_loss_target("UNet_y"), G_mae_s001_loss_info_builder.set_loss_target("UNet_x")]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
 #############################################################
 I_to_Wx_L2_ch128_and_I_to_Wy_L2_ch128_ep060_and_I_to_Wz_L2_ch128_ep060 = Exp_builder().set_basic("train", use_db_obj, I_to_Wx_L2_ch128_and_I_to_Wy_L2_ch128_and_I_to_Wz_L2_ch128, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=I_to_Wx_L2_ch128_and_I_to_Wy_L2_ch128_and_I_to_Wz_L2_ch128.kong_model.model_describe) .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender-I_to_Wx_L2_ch128_block1_sig_out_1_&&_I_to_Wy_L2_ch128_block1_sig_out_1_&&_I_to_Wz_L2_ch128_block1_sig_out_1-20220104_215914")
 I_to_Wx_L2_ch064_and_I_to_Wy_L2_ch064_ep060_and_I_to_Wz_L2_ch064_ep060 = Exp_builder().set_basic("train", use_db_obj, I_to_Wx_L2_ch064_and_I_to_Wy_L2_ch064_and_I_to_Wz_L2_ch064, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=I_to_Wx_L2_ch064_and_I_to_Wy_L2_ch064_and_I_to_Wz_L2_ch064.kong_model.model_describe) .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender-I_to_Wx_L2_ch064_block1_sig_out_1_&&_I_to_Wy_L2_ch064_block1_sig_out_1_&&_I_to_Wz_L2_ch064_block1_sig_out_1-20220105_031204")
@@ -104,10 +104,10 @@ if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
-        ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
+        ### 直接按 F5 或打 python step10_b1_exp_obj_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
         I_to_Wx_L2_ch008_and_I_to_Wy_L2_ch008_ep060_I_to_Wz_L2_ch008_ep060.build().run()
         # print('no argument')
         sys.exit()
 
-    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_a_load_and_train_and_test.py 某個exp.build().run()
+    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_b1_exp_obj_load_and_train_and_test.py 某個exp.build().run()
     eval(sys.argv[1])

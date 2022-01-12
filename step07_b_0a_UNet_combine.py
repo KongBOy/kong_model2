@@ -1,5 +1,5 @@
 import tensorflow as tf
-from step07_unet_component import UNet_down, UNet_up
+from step07_a_unet_component import UNet_down, UNet_up
 from tensorflow.keras.layers import Activation
 ### 參考 DewarpNet 的 train_wc 用的 UNet
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
@@ -226,13 +226,13 @@ if(__name__ == "__main__"):
     from tqdm import tqdm
     from step06_a_datas_obj import *
     from step06_b_data_pipline import tf_Data_builder
-    from step09_b_loss_info_obj import *
+    from step10_a2_loss_info_obj import *
     from step09_c_train_step import *
 
     # from step09_e2_mask_unet2_obj import *
     # from step09_e3_flow_unet2_obj_I_to_C import *
     # from step09_e4_flow_unet2_obj_Mgt_to_C import *
-    from step09_e5_flow_unet2_obj_I_with_Mgt_to_C import *
+    from step09_e5_flow_unet2_obj_I_w_Mgt_to_C import *
 
 
     # model_obj = flow_unet2_ch032_tanh_L7

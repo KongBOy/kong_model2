@@ -10,19 +10,19 @@ class Multi_Generator(tf.keras.models.Model):
         print("here~~")
 
     def call(self, input_tensor, training=None):
-        if  (self.op_type == "I_to_M_and_C"):
+        if  (self.op_type == "I_to_M_and_C"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
             I = input_tensor
             M = self.gens_dict["I_to_M"](input_tensor)
             C = self.gens_dict["I_to_C"](input_tensor)
             return M, C
 
-        elif(self.op_type == "I_to_M_w_I_to_C"):
+        elif(self.op_type == "I_to_M_w_I_to_C"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
             I = input_tensor
             M = self.gens_dict["I_to_M"](input_tensor)
             M_w_I = M * I
             C = self.gens_dict["M_w_I_to_C"](M_w_I)
             return M, C
-        elif(self.op_type == "I_to_M_w_I_to_W_to_C"):
+        elif(self.op_type == "I_to_M_w_I_to_W_to_C"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
             I = input_tensor
             M = self.gens_dict["I_to_M"](input_tensor)
             M_w_I = M * I
@@ -30,12 +30,12 @@ class Multi_Generator(tf.keras.models.Model):
             C = self.gens_dict["W_to_C"](W)
             return M, W, C
 
-        elif(self.op_type == "I_to_Cx_Cy"):
+        elif(self.op_type == "I_to_Cx_Cy"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
             I = input_tensor
             Cx = self.gens_dict["I_to_Cx"](I)
             Cy = self.gens_dict["I_to_Cy"](I)
             return Cx, Cy   ### 這個順序要跟 step8b_useG, step9c_train_step 對應到喔！
-        elif(self.op_type == "I_to_Wx_Wy_Wz"):
+        elif(self.op_type == "I_to_Wx_Wy_Wz"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
             I = input_tensor
             Wx = self.gens_dict["I_to_Wx"](I)
             Wy = self.gens_dict["I_to_Wy"](I)
@@ -78,7 +78,7 @@ if(__name__ == "__main__"):
     from tqdm import tqdm
     from step06_a_datas_obj import *
     from step06_b_data_pipline import tf_Data_builder
-    from step09_b_loss_info_obj import Loss_info_builder
+    from step10_a2_loss_info_obj import Loss_info_builder
     from step09_c_train_step import *
 
 

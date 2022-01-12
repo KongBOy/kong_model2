@@ -9,7 +9,7 @@ import copy
 import time
 start_time = time.time()
 
-from step09_a_loss import *
+from step10_a1_loss import *
 
 
 class Loss_info:
@@ -987,7 +987,7 @@ mae_s0p1_sobel_k5_s0p1_tv_s0p1_loss_info_builder = Loss_info_builder().set_loss_
 GAN_mae_loss_info                  = Loss_info_builder().set_loss_type("justG")  #.build_gan_loss().build_gan_loss_containors()
 
 if(__name__ == "__main__"):
-    # from step09_d_KModel_builder import MODEL_NAME
+    # from step09_d_KModel_builder_combine_step789 import MODEL_NAME
     # loss_info_obj = Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_mse_loss_fun_and_containor().build()
     # print(Loss_info_builder().set_logs_dir(logs_read_dir="abc", logs_write_dir="abc").build_mse_loss_fun_and_containor().build())
     # print(loss_info_obj.loss_containors)

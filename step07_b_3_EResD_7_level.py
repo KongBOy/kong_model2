@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Conv2D, LeakyReLU, ReLU, Conv2DTranspose, Activation
 from  tensorflow_addons.layers import InstanceNormalization
 
-from step07_small_component import InstanceNorm_kong, ResBlock
+from step07_a_small_component import InstanceNorm_kong, ResBlock
 
 ### 模仿UNet
 class Rect_7_layer(tf.keras.models.Model):
@@ -21,7 +21,7 @@ class Rect_7_layer(tf.keras.models.Model):
         use_what_IN = InstanceNorm_kong  ### 原本架構使用InstanceNorm_kong，用它來當 default IN
         if(self.true_IN): use_what_IN = InstanceNormalization
 
-        ### 跟 step08_a_2_Rect2 好像就是差 ReLU了
+        ### 跟 step07_b_2_Rect2 好像就是差 ReLU了
         self.use_ReLU = use_ReLU
 
         ########################################################################################################################################################
@@ -286,8 +286,8 @@ if(__name__ == "__main__"):
     from tqdm import tqdm
     from step06_a_datas_obj import DB_C, DB_N, DB_GM, Range
     from step06_b_data_pipline import Dataset_builder, tf_Data_builder
-    from step09_d_KModel_builder import MODEL_NAME, KModel_builder
-    from step09_b_loss_info_obj import Loss_info_builder
+    from step09_d_KModel_builder_combine_step789 import MODEL_NAME, KModel_builder
+    from step10_a2_loss_info_obj import Loss_info_builder
 
     ### 1. model_obj
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level()

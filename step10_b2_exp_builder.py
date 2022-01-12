@@ -1,4 +1,4 @@
-from step10_a_load_and_train_and_test import Experiment
+from step10_b1_exp_obj_load_and_train_and_test import Experiment
 from step11_b_result_obj_builder import Result_builder
 
 from step0_access_path import Result_Read_Path
@@ -363,7 +363,7 @@ if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
-        ### 直接按 F5 或打 python step10_a_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
+        ### 直接按 F5 或打 python step10_b1_exp_obj_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
         # blender_os_book_flow_unet_new_shuf_ch008_fake.build().run()
         # rect_fk3_ch64_tfIN_resb_ok9_epoch500.build().run()
         # rect_fk3_ch64_tfIN_resb_ok9_epoch700_no_epoch_down.build().run()
@@ -398,5 +398,5 @@ if(__name__ == "__main__"):
         # print('no argument')
         sys.exit()
 
-    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_a_load_and_train_and_test.py 某個exp.build().run()
+    ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_b1_exp_obj_load_and_train_and_test.py 某個exp.build().run()
     eval(sys.argv[1])
