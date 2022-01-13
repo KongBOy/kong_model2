@@ -106,7 +106,7 @@ class See_bm_rec(See_info):
 
         self.see_rec_amount = len(self.rec_read_paths)
         self.trained_epoch  = self.see_rec_amount - 1  ### 去掉epoch0
-
+        # print("self.see_rec_amount", self.see_rec_amount)
     ###############################################################################################
     ###############################################################################################
     def Save_as_bm_rec_matplot_visual(self,   ### 訓練後，可以走訪所有see_file 並重新產生 bm_rec_matplot_visual
