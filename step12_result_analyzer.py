@@ -12,7 +12,7 @@ from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and
 from video_from_img import Video_combine_from_dir
 from multiprocessing import Process
 
-from util import get_dir_certain_file_names, get_dir_dir_names, get_dir_certain_dir_names, get_dir_dir_names
+from util import get_dir_certain_file_names, get_dir_certain_dir_names
 
 import os
 import shutil
@@ -52,7 +52,7 @@ class Result_analyzer:
 
     def Gather_all_see_final_img(self, print_msg=False, test_db_name="test"):
         print("self.analyze_dst_dir:", self.analyze_dst_dir)
-        time_ver_dir_names = get_dir_dir_names(self.analyze_dst_dir)          ### 列出 dir中 有哪些 dir
+        time_ver_dir_names = get_dir_certain_dir_names(self.analyze_dst_dir, certain_word=self.ana_what)          ### 列出 dir中 有哪些 dir
         time_ver_dir_name  = time_ver_dir_names[-1]                            ### 取最後一個最新的，比如：mask_epoch=all (20211111_231956)
         time_ver_dir_path  = self.analyze_dst_dir + "/" + time_ver_dir_name    ### 進去 比如：2c_block1_l3_2-ch128,64,32,16,8,4_bce_s001_100/see_001_real/mask_epoch=all (20211111_231956)
         if(self.ana_what_sees == "test"):
