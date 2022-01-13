@@ -203,6 +203,38 @@ def train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt_data, los
 
     _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
 
+@tf.function
+def train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz_focus(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+    '''
+    gt_mask  = gt_data[..., 3:4]
+    I_with_M = in_data * gt_mask
+
+    Wxgt = gt_data[..., 2:3]
+    Wygt = gt_data[..., 1:2]
+    Wzgt = gt_data[..., 0:1]
+    gt_datas = [Wzgt, Wygt, Wxgt]
+
+    ### debug 時 記得把 @tf.function 拿掉
+    # print("in_data.shape", in_data.shape)
+    # print("gt_data.shape", gt_data.shape)
+    # print("gt_mask.shape", gt_mask.shape)
+    # print("I_with_M.shape", I_with_M.shape)
+    # print("Wxgt.shape", Wxgt.shape)
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(12, 8))
+    # ax[0, 0].imshow(in_data[0])
+    # ax[0, 1].imshow(gt_mask[0])
+    # ax[0, 2].imshow(I_with_M[0])
+    # ax[1, 0].imshow(Wxgt[0])
+    # ax[1, 1].imshow(Wygt[0])
+    # ax[1, 2].imshow(Wzgt[0])
+    # fig.tight_layout()
+    # plt.show()
+
+    _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=gt_mask)
+
 
 ###################################################################################################################################################
 ###################################################################################################################################################
