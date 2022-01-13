@@ -31,10 +31,13 @@ class Result_analyzer:
 
         self.ana_what = ana_what
         '''
+        大小寫都可以
         mask,
         flow,
         bm,
         rec,
+        Cx
+        Cy
         wc
         wx
         wy
@@ -103,13 +106,15 @@ class Result_analyzer:
                 see.get_see_base_info()  ### 大家都需要拿 in_img
 
                 ### 根據 ana_what 去抓相對應的 see_info
-                if  (self.ana_what == "flow"): see.get_flow_info()
-                elif(self.ana_what == "rec"):  see.get_bm_rec_info()
-                elif(self.ana_what == "mask"): see.get_mask_info()
-                elif(self.ana_what == "wc"):   see.get_wc_info()
-                elif(self.ana_what == "wx"):   see.get_wc_info()
-                elif(self.ana_what == "wy"):   see.get_wc_info()
-                elif(self.ana_what == "wz"):   see.get_wc_info()
+                if  (self.ana_what.lower() == "flow"): see.get_flow_info()
+                elif(self.ana_what.lower() == "cx"):   see.get_flow_info()
+                elif(self.ana_what.lower() == "cy"):   see.get_flow_info()
+                elif(self.ana_what.lower() == "rec"):  see.get_bm_rec_info()
+                elif(self.ana_what.lower() == "mask"): see.get_mask_info()
+                elif(self.ana_what.lower() == "wc"):   see.get_wc_info()
+                elif(self.ana_what.lower() == "wx"):   see.get_wc_info()
+                elif(self.ana_what.lower() == "wy"):   see.get_wc_info()
+                elif(self.ana_what.lower() == "wz"):   see.get_wc_info()
 
     def _step0_r_c_results_get_see_base_info(self, r_c_results):
         """
@@ -171,13 +176,15 @@ class Col_results_analyzer(Result_analyzer):
             if(use_epoch == -1): c_imgs.append(np.zeros(shape=[self.img_h, self.img_w, 3]))  ### use_epoch 代表 沒有做該任務， 比如有些flow太差 bm_rec就做不起來， 這時就填充 空影像 即可～
             else:
                 ### 可以直接調整這裡 來決定 analyze 要畫什麼， 當然這是寫死的寫法不大好， 有空再寫得更通用吧～
-                if  (self.ana_what == "rec"):  c_imgs.append(cv2.imread(used_sees[see_num].rec_read_paths[use_epoch]))
-                elif(self.ana_what == "flow"): c_imgs.append(cv2.imread(used_sees[see_num].flow_ep_jpg_read_paths[use_epoch]))
-                elif(self.ana_what == "mask"): c_imgs.append(cv2.imread(used_sees[see_num].mask_read_paths[use_epoch]))
-                elif(self.ana_what == "wc"):   c_imgs.append(cv2.imread(used_sees[see_num].wc_read_paths[use_epoch]))
-                elif(self.ana_what == "wx"):   c_imgs.append(cv2.imread(used_sees[see_num].wx_read_paths[use_epoch]))
-                elif(self.ana_what == "wy"):   c_imgs.append(cv2.imread(used_sees[see_num].wy_read_paths[use_epoch]))
-                elif(self.ana_what == "wz"):   c_imgs.append(cv2.imread(used_sees[see_num].wz_read_paths[use_epoch]))
+                if  (self.ana_what.lower() == "rec"):  c_imgs.append(cv2.imread(used_sees[see_num].rec_read_paths[use_epoch]))
+                elif(self.ana_what.lower() == "flow"): c_imgs.append(cv2.imread(used_sees[see_num].flow_ep_jpg_read_paths[use_epoch]))
+                elif(self.ana_what.lower() == "cx"):   c_imgs.append(cv2.imread(used_sees[see_num].Cx_read_paths[use_epoch]))
+                elif(self.ana_what.lower() == "cy"):   c_imgs.append(cv2.imread(used_sees[see_num].Cy_read_paths[use_epoch]))
+                elif(self.ana_what.lower() == "mask"): c_imgs.append(cv2.imread(used_sees[see_num].mask_read_paths[use_epoch]))
+                elif(self.ana_what.lower() == "wc"):   c_imgs.append(cv2.imread(used_sees[see_num].wc_read_paths[use_epoch]))
+                elif(self.ana_what.lower() == "wx"):   c_imgs.append(cv2.imread(used_sees[see_num].wx_read_paths[use_epoch]))
+                elif(self.ana_what.lower() == "wy"):   c_imgs.append(cv2.imread(used_sees[see_num].wy_read_paths[use_epoch]))
+                elif(self.ana_what.lower() == "wz"):   c_imgs.append(cv2.imread(used_sees[see_num].wz_read_paths[use_epoch]))
 
                 # c_imgs.append(cv2.imread(used_sees[see_num].see_jpg_paths[epoch + 2]))
         return c_imgs
