@@ -93,7 +93,7 @@ def I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see(model_G, phase, index, dis_im
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
 
-        bm, rec       = check_F_quality_then_I_w_F_to_R(dis_img=dis_img, F=F)
+        bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img, F=F)
         '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
         # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img, F=Fgt)
         cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)

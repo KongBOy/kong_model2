@@ -47,6 +47,12 @@ class KModel_init_builder:
         self.build_ops.append(_later_set_train_step)
         return self
 
+    def set_gen_op(self, gen_op):
+        def _later_set_gen_op():
+            self.kong_model.generate_sees = gen_op
+        self.build_ops.append(_later_set_gen_op)
+        return self
+
     def build(self):
         for op in self.build_ops: op()
         return self.kong_model
@@ -190,17 +196,17 @@ class G_Unet_Purpose_builder(G_Unet_Body_builder):
             self.kong_model.generate_sees    = I_Generate_M_see    ### 不能checkpoint
         ### 生成 flow 的 operation
         elif(I_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate_I_to_C import  I_Generate_C_with_Mgt_to_F_see
-            self.kong_model.generate_sees    = I_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
+            from step08_b_use_G_generate_I_to_C import  I_Gen_C_w_Mgt_to_F_see
+            self.kong_model.generate_sees    = I_Gen_C_w_Mgt_to_F_see    ### 不能checkpoint
         elif(Mgt_to_C_with_gt_M_to_F):
-            from step08_b_use_G_generate_M_to_C import Mgt_Generate_C_with_Mgt_to_F_see
-            self.kong_model.generate_sees    = Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
+            from step08_b_use_G_generate_M_to_C import Mgt_Gen_C_w_Mgt_to_F_see
+            self.kong_model.generate_sees    = Mgt_Gen_C_w_Mgt_to_F_see    ### 不能checkpoint
         elif(I_to_M_w_I_to_C):
             from step08_b_use_G_generate_I_to_M_w_I_to_C import  I_gen_M_w_I_gen_C_w_M_to_F_see
             self.kong_model.generate_sees    = I_gen_M_w_I_gen_C_w_M_to_F_see    ### 不能checkpoint
         elif(I_with_Mgt_to_C_with_Mgt_to_F):
-            from step08_b_use_G_generate_I_w_M_to_C import  I_with_Mgt_Generate_C_with_Mgt_to_F_see
-            self.kong_model.generate_sees    = I_with_Mgt_Generate_C_with_Mgt_to_F_see    ### 不能checkpoint
+            from step08_b_use_G_generate_I_w_M_to_C import  I_with_Mgt_Gen_C_with_Mgt_to_F_see
+            self.kong_model.generate_sees    = I_with_Mgt_Gen_C_with_Mgt_to_F_see    ### 不能checkpoint
         elif(I_to_W):
             from step08_b_use_G_generate_I_to_W import I_Generate_W_see
             self.kong_model.generate_sees    = I_Generate_W_see    ### 不能checkpoint
