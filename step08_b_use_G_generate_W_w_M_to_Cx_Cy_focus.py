@@ -25,7 +25,7 @@ def use_model(model_G, in_WM_pre, training):
 
     return W_pre, Mgt_pre, W_pre_W_M_pre, Cx_raw_pre, Cy_raw_pre
 
-def W_w_M_Gen_Cx_Cy_focus_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def W_w_M_Gen_Cx_Cy_focus_see(model_G, phase, index, in_WM, in_WM_pre, _, Mgt_C_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
@@ -64,9 +64,9 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_
     C_raw_pre = np.concatenate([Cy_raw_pre, Cx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
     C_raw = Value_Range_Postprocess_to_01(C_raw_pre, exp_obj.use_gt_range)
     C_raw = C_raw[0]
-    Cgt = Fgt[0, ..., 1:3].numpy()
+    Cgt = Mgt_C_pre[0, ..., 1:3].numpy()
 
-    Mgt = Fgt[0, ..., 0:1].numpy()
+    Mgt = Mgt_C_pre[0, ..., 0:1].numpy()
     F_raw, F_raw_visual, Cx_raw_visual, Cy_raw_visual, F_w_Mgt,   F_w_Mgt_visual,   Cx_w_Mgt_visual,   Cy_w_Mgt_visual   = C_and_C_w_M_to_F_and_visualize(C_raw, Mgt)
     Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_concat_with_M_to_F_and_get_F_visual(Cgt, Mgt)
     F_raw_visual   = F_raw_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
