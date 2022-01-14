@@ -29,8 +29,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L7_ch016_copy.{run}"])
 # exit()
 #### 3l ############################################################################################
-# sb.run(cmd_python_step10_a + [f"L3_ch064.{run}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch032.{run}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch064.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch032.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch016.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch008.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch004.{run}"])
