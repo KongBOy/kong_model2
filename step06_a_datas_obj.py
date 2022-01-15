@@ -95,10 +95,11 @@ class DB_GET_METHOD(Enum):
 
     in_img_gt_mask   = "in_img_gt_mask"
 
-    in_dis_gt_wc           = "in_dis_gt_wc"
-    in_dis_gt_wc_try_mul_M = "in_dis_gt_wc_try_mul_M"
+    in_dis_gt_wc            = "in_dis_gt_wc"
+    in_dis_gt_wc_try_mul_M  = "in_dis_gt_wc_try_mul_M"
 
-    in_wc_gt_flow    = "in_wc_gt_flow"  ### train_in 除了wc外會多抓 dis_img 來 讓 F 可以做 bm_rec喔！
+    in_wc_gt_flow           = "in_wc_gt_flow"  ### train_in 除了wc外會多抓 dis_img 來 讓 F 可以做 bm_rec喔！
+    in_wc_gt_flow_try_mul_M = "in_wc_gt_flow_try_mul_M"  ### train_in 除了wc外會多抓 dis_img 來 讓 F 可以做 bm_rec喔！
 
 class VALUE_RANGE(Enum):
     zero_to_one    = Range( 0,   1)
@@ -268,7 +269,8 @@ class Dataset_dir_builder(Dataset_basic_builder):
         elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_wc or self.db.get_method == DB_GET_METHOD.in_dis_gt_wc_try_mul_M):
             in_dir_name = "dis_imgs"
             gt_dir_name = "wcs"
-        elif(self.db.get_method == DB_GET_METHOD.in_wc_gt_flow):
+        elif(self.db.get_method == DB_GET_METHOD.in_wc_gt_flow or
+             self.db.get_method == DB_GET_METHOD.in_wc_gt_flow_try_mul_M):
             in_dir_name = "wcs"
             in2_dir_name = "dis_imgs"
             gt_dir_name = "flows"
@@ -387,6 +389,7 @@ type8_blender_wc                             = Dataset_builder().set_basic(DB_C.
 type8_blender_wc_try_mul_M                   = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_dis_gt_wc_try_mul_M, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy",                        db_in_range=Range(0, 255), db_gt_range=Range(-0.13532962, 0.1357405) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 
 type8_blender_wc_flow                        = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_wc_gt_flow,        h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", gt_format="knpy", in2_format="png", db_in_range=Range(-0.13532962, 0.1357405), db_gt_range=Range(0,   1), db_in2_range=(0, 255) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_wc_flow_try_mul_M              = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_wc_gt_flow_try_mul_M, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", gt_format="knpy", in2_format="png", db_in_range=Range(-0.13532962, 0.1357405), db_gt_range=Range(0,   1), db_in2_range=(0, 255) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 
 if(__name__ == "__main__"):
     db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg,   DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", gt_format="bmp", db_in_range=Range(0, 255), db_gt_range=Range(0, 255)).set_detail(have_train=True, have_see=True).build()

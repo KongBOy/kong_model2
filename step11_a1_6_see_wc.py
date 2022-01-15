@@ -56,18 +56,19 @@ class See_wc(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        self.wc_names                              = get_dir_certain_file_names(self.wc_read_dir , certain_word="epoch", certain_word2="wc",    certain_ext=".jpg")
-        if(len(self.wc_names) == 0): self.wc_names = get_dir_certain_file_names(self.wc_read_dir , certain_word="epoch", certain_word2="W_visual", certain_ext=".jpg")
+        self.wc_names                              = get_dir_certain_file_names(self.wc_read_dir , certain_word="epoch", certain_word2="wc",              certain_ext=".jpg")
+        if(len(self.wc_names) == 0): self.wc_names = get_dir_certain_file_names(self.wc_read_dir , certain_word="epoch", certain_word2="W_visual",        certain_ext=".jpg")
+        if(len(self.wc_names) == 0): self.wc_names = get_dir_certain_file_names(self.wc_read_dir , certain_word="epoch", certain_word2="W_w_Mgt_visual",  certain_ext=".jpg")
         
-        self.wx_names                              = get_dir_certain_file_names(self.wx_read_dir , certain_word="epoch", certain_word2="wx",    certain_ext=".jpg")
-        if(len(self.wx_names) == 0): self.wx_names = get_dir_certain_file_names(self.wx_read_dir , certain_word="epoch", certain_word2="Wx_visual", certain_ext=".jpg")
-        self.wy_names                              = get_dir_certain_file_names(self.wy_read_dir , certain_word="epoch", certain_word2="wy",    certain_ext=".jpg")
-        if(len(self.wy_names) == 0): self.wy_names = get_dir_certain_file_names(self.wy_read_dir , certain_word="epoch", certain_word2="Wy_visual", certain_ext=".jpg")
-        self.wz_names                              = get_dir_certain_file_names(self.wz_read_dir , certain_word="epoch", certain_word2="wz",    certain_ext=".jpg")
-        if(len(self.wz_names) == 0): self.wz_names = get_dir_certain_file_names(self.wz_read_dir , certain_word="epoch", certain_word2="Wz_visual", certain_ext=".jpg")
-        
-        
-
+        self.wx_names                              = get_dir_certain_file_names(self.wx_read_dir , certain_word="epoch", certain_word2="wx",              certain_ext=".jpg")
+        if(len(self.wx_names) == 0): self.wx_names = get_dir_certain_file_names(self.wx_read_dir , certain_word="epoch", certain_word2="Wx_visual",       certain_ext=".jpg")
+        if(len(self.wx_names) == 0): self.wx_names = get_dir_certain_file_names(self.wx_read_dir , certain_word="epoch", certain_word2="Wx_w_Mgt_visual", certain_ext=".jpg")
+        self.wy_names                              = get_dir_certain_file_names(self.wy_read_dir , certain_word="epoch", certain_word2="wy",              certain_ext=".jpg")
+        if(len(self.wy_names) == 0): self.wy_names = get_dir_certain_file_names(self.wy_read_dir , certain_word="epoch", certain_word2="Wy_visual",       certain_ext=".jpg")
+        if(len(self.wy_names) == 0): self.wy_names = get_dir_certain_file_names(self.wy_read_dir , certain_word="epoch", certain_word2="Wy_w_Mgt_visual", certain_ext=".jpg")
+        self.wz_names                              = get_dir_certain_file_names(self.wz_read_dir , certain_word="epoch", certain_word2="wz",              certain_ext=".jpg")
+        if(len(self.wz_names) == 0): self.wz_names = get_dir_certain_file_names(self.wz_read_dir , certain_word="epoch", certain_word2="Wz_visual",       certain_ext=".jpg")
+        if(len(self.wz_names) == 0): self.wz_names = get_dir_certain_file_names(self.wz_read_dir , certain_word="epoch", certain_word2="Wz_w_Mgt_visual", certain_ext=".jpg")
 
         self.wc_read_paths  = [self.wc_read_dir + "/" + name for name in self.wc_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
         self.wx_read_paths  = [self.wx_read_dir + "/" + name for name in self.wx_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
