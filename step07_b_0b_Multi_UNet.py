@@ -30,7 +30,7 @@ class Multi_Generator(tf.keras.models.Model):
             C = self.gens_dict["W_to_C"](W)
             return M, W, C
 
-        elif(self.op_type == "I_to_Cx_Cy"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
+        elif(self.op_type == "I_or_W_to_Cx_Cy"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
             I = input_tensor
             Cx = self.gens_dict["I_to_Cx"](I)
             Cy = self.gens_dict["I_to_Cy"](I)
