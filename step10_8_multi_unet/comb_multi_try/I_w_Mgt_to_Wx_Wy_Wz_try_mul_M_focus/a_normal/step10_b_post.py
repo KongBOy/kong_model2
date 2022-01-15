@@ -81,4 +81,4 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch008_and_I_to_Wy_L8_ch008_ep060_and_I_to_Wz_L8_ch008_ep060.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch004_and_I_to_Wy_L8_ch004_ep060_and_I_to_Wz_L8_ch004_ep060.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch002_and_I_to_Wy_L8_ch002_ep060_and_I_to_Wz_L8_ch002_ep060.{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch001_and_I_to_Wy_L8_ch001_ep060_and_I_to_Wz_L8_ch001_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L8_ch001_and_I_to_Wy_L8_ch001_ep060_and_I_to_Wz_L8_ch001_ep060.{compress_all}"])
