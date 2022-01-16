@@ -31,7 +31,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch128_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch064_limit.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"L6_ch128_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch128_limit.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch064_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch032_limit.{run}"])
 
