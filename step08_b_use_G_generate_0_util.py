@@ -59,3 +59,15 @@ def W_01_visual_op(W_01):
     Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8)
     Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8)
     return W_visual, Wx_visual, Wy_visual, Wz_visual
+
+def W_01_concat_with_M_to_WM_and_get_W_visual(W, M):
+    WM = np.concatenate([W, M], axis=-1)
+    W_visual, Wx_visual, Wy_visual, Wz_visual = W_01_visual_op(W)
+    return WM, W_visual, Wx_visual, Wy_visual, Wz_visual
+
+def W_01_and_W_01_w_M_to_WM_and_visualize(W_raw, M):
+    W_raw_c_M, W_raw_visual, Wx_raw_visual, Wy_raw_visual, Wz_raw_visual = W_01_concat_with_M_to_WM_and_get_W_visual(W_raw, M)
+
+    W_w_M = W_raw * M
+    W_w_M_c_M, W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual = W_01_concat_with_M_to_WM_and_get_W_visual(W_w_M, M)
+    return W_raw_c_M, W_raw_visual, Wx_raw_visual, Wy_raw_visual, Wz_raw_visual, W_w_M_c_M, W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual
