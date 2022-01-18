@@ -1,4 +1,4 @@
-from step0_access_path import data_access_path
+from step0_access_path import Data_Access_Dir
 import sys
 sys.path.append("kong_util")
 
@@ -8,7 +8,7 @@ from build_dataset_combine import Page_num, Crop_use_center, Resize_hw, Select_l
 
 
 
-produce_curve_dir = data_access_path + "/datasets/cut_os_book/produce_curve/"
+produce_curve_dir = Data_Access_Dir + "/datasets/cut_os_book/produce_curve/"
 
 step0_dir = produce_curve_dir + "0_os_photo/1_photoimpact_black_bg"
 step1_dir = produce_curve_dir + "1_page_num_ok"

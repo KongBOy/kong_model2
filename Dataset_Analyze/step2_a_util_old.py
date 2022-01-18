@@ -5,7 +5,7 @@ from build_dataset_combine import Check_dir_exist_and_build
 from util import time_util
 from matplot_fig_ax_util import change_into_img_2D_coord_ax
 
-from step0_access_path import data_access_path
+from step0_access_path import Data_Access_Dir
 from step2_a_distort_curl_and_fold import get_dis_move_map, get_xy_f_and_m
 import time
 import numpy as np
@@ -39,9 +39,9 @@ def get_rand_para(h_res, w_res, row, col, curl_probability, smooth=False):
 ### 只有 參數隨機產生， funciton 重複使用 上面寫好的function喔！
 def distort_rand(dst_dir, start_index, amount, x_min, x_max, y_min, y_max, w_res, h_res, distort_time=None, curl_probability=0.3, move_x_thresh=40, move_y_thresh=55, smooth=False, write_npy=True):
     start_time = time.time()
-    Check_dir_exist_and_build(data_access_path + dst_dir + "/" + "distort_mesh_visuals")
-    Check_dir_exist_and_build(data_access_path + dst_dir + "/" + "move_maps")
-    Check_dir_exist_and_build(data_access_path + dst_dir + "/" + "distort_infos")
+    Check_dir_exist_and_build(Data_Access_Dir + dst_dir + "/" + "distort_mesh_visuals")
+    Check_dir_exist_and_build(Data_Access_Dir + dst_dir + "/" + "move_maps")
+    Check_dir_exist_and_build(Data_Access_Dir + dst_dir + "/" + "distort_infos")
 
     move_maps = []
     for index in range(start_index, start_index + amount):
@@ -62,8 +62,8 @@ def distort_rand(dst_dir, start_index, amount, x_min, x_max, y_min, y_max, w_res
             result_move_f = result_move_f + move_f  ### 走到這就取到 在我覺得合理範圍的 move_f 囉，把我要的move_f加進去容器內～
 
             ### 紀錄扭曲參數
-            if  (dis_type == "fold"): distrore_info_log(data_access_path + dst_dir + "/" + "distort_infos", index, h_res, w_res, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
-            elif(dis_type == "curl"): distrore_info_log(data_access_path + dst_dir + "/" + "distort_infos", index, h_res, w_res, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
+            if  (dis_type == "fold"): distrore_info_log(Data_Access_Dir + dst_dir + "/" + "distort_infos", index, h_res, w_res, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
+            elif(dis_type == "curl"): distrore_info_log(Data_Access_Dir + dst_dir + "/" + "distort_infos", index, h_res, w_res, distort_time, vert_x, vert_y, move_x, move_y, dis_type, alpha )
 
 
         ## 紀錄扭曲視覺化的結果
@@ -71,7 +71,7 @@ def distort_rand(dst_dir, start_index, amount, x_min, x_max, y_min, y_max, w_res
 
         result_move_map = result_move_f.reshape(h_res, w_res, 2)  ### (..., 2)→(h_res, w_res, 2)
         result_move_map = result_move_map.astype(np.float32)
-        if(write_npy) : np.save(data_access_path + dst_dir + "/" + "move_maps/%06i" % index, result_move_map)  ### 把move_map存起來，記得要轉成float32！
+        if(write_npy) : np.save(Data_Access_Dir + dst_dir + "/" + "move_maps/%06i" % index, result_move_map)  ### 把move_map存起來，記得要轉成float32！
         print("%06i process 1 mesh cost time:" % index, "%.3f" % (time.time() - dis_start_time), "total_time:", time_util(time.time() - start_time) )
         move_maps.append(result_move_map)
     return np.array(move_maps, dtype=np.float32)
@@ -80,9 +80,9 @@ def distort_rand(dst_dir, start_index, amount, x_min, x_max, y_min, y_max, w_res
 def distort_like_page(dst_dir, start_index, x_min, x_max, y_min, y_max, w_res, h_res, write_npy=True):
     move_maps = []
     start_time = time.time()
-    Check_dir_exist_and_build(data_access_path + dst_dir + "/" + "distort_mesh_visuals")
-    Check_dir_exist_and_build(data_access_path + dst_dir + "/" + "move_maps")
-    Check_dir_exist_and_build(data_access_path + dst_dir + "/" + "distort_infos")
+    Check_dir_exist_and_build(Data_Access_Dir + dst_dir + "/" + "distort_mesh_visuals")
+    Check_dir_exist_and_build(Data_Access_Dir + dst_dir + "/" + "move_maps")
+    Check_dir_exist_and_build(Data_Access_Dir + dst_dir + "/" + "distort_infos")
 
     ### 可以用step2_d去試 我想要的參數喔！
     distort_time = 1
@@ -98,11 +98,11 @@ def distort_like_page(dst_dir, start_index, x_min, x_max, y_min, y_max, w_res, h
             result_move_f = np.zeros(shape=(h_res * w_res, 2), dtype=np.float64)  ### 初始化 move容器
             move_f, _ = get_dis_move_map( x_min, x_max, y_min, y_max, w_res, h_res, go_vert_x, vert_y, move_x, go_move_y , dis_type, alpha, debug=False )  ### 用參數去得到 扭曲move_f
             result_move_f = result_move_f + move_f  ### 把我要的move_f加進去容器內～
-            distrore_info_log(data_access_path + dst_dir + "/" + "distort_infos", index, h_res, w_res, distort_time, go_vert_x, vert_y, move_x, go_move_y, dis_type, alpha )  ### 紀錄扭曲參數
+            distrore_info_log(Data_Access_Dir + dst_dir + "/" + "distort_infos", index, h_res, w_res, distort_time, go_vert_x, vert_y, move_x, go_move_y, dis_type, alpha )  ### 紀錄扭曲參數
             result_move_map = result_move_f.reshape(h_res, w_res, 2)  ### (..., 2)→(h_res, w_res, 2)
             result_move_map = result_move_map.astype(np.float32)
             # save_distort_mesh_visual(h_res, w_res, result_move_f, index)   ### 紀錄扭曲視覺化的結果
-            np.save(data_access_path + dst_dir + "/" + "move_maps/%06i" % index, result_move_map)  ### 把move_map存起來，記得要轉成float32！
+            np.save(Data_Access_Dir + dst_dir + "/" + "move_maps/%06i" % index, result_move_map)  ### 把move_map存起來，記得要轉成float32！
             print("%06i process 1 mesh cost time:" % index, "%.3f" % (time.time() - dis_start_time), "total_time:", time_util(time.time() - start_time) )
             index += 1
             move_maps.append(result_move_map)
@@ -130,7 +130,7 @@ def save_distort_mesh_visual(h_res, w_res, result_move_f, index):
     fig, ax = plt.subplots(1, 1)
     fig.set_size_inches(4, 5)
     show_distort_mesh_visual(h_res, w_res, result_move_f, fig, ax)
-    plt.savefig(data_access_path + "step2_flow_build/distort_mesh_visuals/%06i.png" % index)
+    plt.savefig(Data_Access_Dir + "step2_flow_build/distort_mesh_visuals/%06i.png" % index)
     plt.close()
 
 def show_distort_mesh_visual(x_min, x_max, y_min, y_max, w_res, h_res, move_f, fig, ax):
