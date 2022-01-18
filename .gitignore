@@ -22,3 +22,5 @@ temp*
 
 # pdf轉jpg要用到的套件
 *poppler-21.11.0*
+
+debug_data/try_*
