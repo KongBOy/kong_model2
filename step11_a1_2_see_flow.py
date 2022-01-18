@@ -74,15 +74,18 @@ class See_flow_visual(See_info):
         self.flow_ep_jpg_names                                       = get_dir_certain_file_names(self.see_read_dir, certain_word="epoch", certain_word2="flow",        certain_ext=".jpg")
         if(len(self.flow_ep_jpg_names) == 0): self.flow_ep_jpg_names = get_dir_certain_file_names(self.see_read_dir, certain_word="epoch", certain_word2="F.jpg",       certain_ext=".jpg")
         if(len(self.flow_ep_jpg_names) == 0): self.flow_ep_jpg_names = get_dir_certain_file_names(self.see_read_dir, certain_word="epoch", certain_word2="F_w_Mgt.jpg", certain_ext=".jpg")
+        if(len(self.flow_ep_jpg_names) == 0): self.flow_ep_jpg_names = get_dir_certain_file_names(self.see_read_dir, certain_word="epoch", certain_word2="F_w_M.jpg",   certain_ext=".jpg")
         self.flow_ep_jpg_read_paths = [self.see_read_dir + "/" + epoch_name for epoch_name in self.flow_ep_jpg_names]  ### 沒有 write_paths， 同上
         self.flow_ep_jpg_amount     = len(self.flow_ep_jpg_names)
 
         self.Cx_names                              = get_dir_certain_file_names(self.Cx_read_dir , certain_word="epoch", certain_word2="Cx.jpg",        certain_ext=".jpg")
         if(len(self.Cx_names) == 0): self.Cx_names = get_dir_certain_file_names(self.Cx_read_dir , certain_word="epoch", certain_word2="Cx_visual.jpg", certain_ext=".jpg")
         if(len(self.Cx_names) == 0): self.Cx_names = get_dir_certain_file_names(self.Cx_read_dir , certain_word="epoch", certain_word2="Cx_w_Mgt.jpg",  certain_ext=".jpg")
+        if(len(self.Cx_names) == 0): self.Cx_names = get_dir_certain_file_names(self.Cx_read_dir , certain_word="epoch", certain_word2="Cx_w_M.jpg",    certain_ext=".jpg")
         self.Cy_names                              = get_dir_certain_file_names(self.Cy_read_dir , certain_word="epoch", certain_word2="Cy.jpg",        certain_ext=".jpg")
         if(len(self.Cy_names) == 0): self.Cy_names = get_dir_certain_file_names(self.Cy_read_dir , certain_word="epoch", certain_word2="Cy_visual.jpg", certain_ext=".jpg")
         if(len(self.Cy_names) == 0): self.Cy_names = get_dir_certain_file_names(self.Cy_read_dir , certain_word="epoch", certain_word2="Cy_w_Mgt.jpg",  certain_ext=".jpg")
+        if(len(self.Cy_names) == 0): self.Cy_names = get_dir_certain_file_names(self.Cy_read_dir , certain_word="epoch", certain_word2="Cy_w_M.jpg",    certain_ext=".jpg")
         self.Cx_read_paths  = [self.Cx_read_dir + "/" + name for name in self.Cx_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
         self.Cy_read_paths  = [self.Cy_read_dir + "/" + name for name in self.Cy_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 

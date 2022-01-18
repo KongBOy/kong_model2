@@ -5,7 +5,7 @@ from step06_a_datas_obj import Range
 
 import sys
 
-from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_visual_op, C_concat_with_M_to_F_and_get_F_visual, C_and_C_w_M_to_F_and_visualize
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual, C_01_and_C_01_w_M_to_F_and_visualize
 from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 sys.path.append("kong_util")

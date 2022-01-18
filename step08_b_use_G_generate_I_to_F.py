@@ -8,7 +8,7 @@ from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-from step08_b_use_G_generate_0_util import flow_or_coord_visual_op, Value_Range_Postprocess_to_01
+from step08_b_use_G_generate_0_util import F_01_or_C_01_method1_visual_op, Value_Range_Postprocess_to_01
 
 ######################################################################################################################################################################################################
 def I_Generate_F(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -33,8 +33,8 @@ def I_Gen_F_basic_data(model_G, in_img, in_img_pre, gt_flow, rec_hope, exp_obj=N
     Mgt_visual     = (gt_flow[..., 0:1] * 255).astype(np.uint8)
     rec_hope       = rec_hope[0].numpy()
 
-    flow_visual    = flow_or_coord_visual_op(flow)[:, :, ::-1]     ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
-    gt_flow_visual = flow_or_coord_visual_op(gt_flow)[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+    flow_visual    = F_01_or_C_01_method1_visual_op(flow)[:, :, ::-1]     ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+    gt_flow_visual = F_01_or_C_01_method1_visual_op(gt_flow)[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
 
     if(bgr2rgb):
         in_img         = in_img        [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
