@@ -9,7 +9,7 @@ from build_dataset_combine import  method1
 
 import matplotlib.pyplot as plt
 ######################################################################################################################################################################################################
-def flow_or_coord_visual_op(data):
+def F_01_or_C_01_method1_visual_op(data):
     ''' data.shape 為 H, W, C， 不適 N, H, W, C 喔！ '''
     data_ch = data.shape[2]
     mask = None
@@ -41,16 +41,16 @@ def Value_Range_Postprocess_to_01(data_pre, use_gt_range=Range( 0, 1)):
     elif(use_gt_range == Range( 0, 1)): data = data_pre
     return data
 ######################################################################################################################################################################################################
-def C_concat_with_M_to_F_and_get_F_visual(C, M):
+def C_01_concat_with_M_to_F_and_get_F_visual(C, M):
     F        = np.concatenate([M, C], axis=-1)  ### channel concate
-    F_visual, Cx_visual, Cy_visual = flow_or_coord_visual_op(F)
+    F_visual, Cx_visual, Cy_visual = F_01_or_C_01_method1_visual_op(F)
     return F, F_visual, Cx_visual, Cy_visual
 
-def C_and_C_w_M_to_F_and_visualize(C, M):
-    F, F_visual, Cx_visual, Cy_visual = C_concat_with_M_to_F_and_get_F_visual(C, M)
+def C_01_and_C_01_w_M_to_F_and_visualize(C, M):
+    F, F_visual, Cx_visual, Cy_visual = C_01_concat_with_M_to_F_and_get_F_visual(C, M)
 
     C_w_M = C * M
-    F_w_M, F_w_M_visual, Cx_w_M_visual, Cy_w_M_visual = C_concat_with_M_to_F_and_get_F_visual(C_w_M, M)
+    F_w_M, F_w_M_visual, Cx_w_M_visual, Cy_w_M_visual = C_01_concat_with_M_to_F_and_get_F_visual(C_w_M, M)
     return F, F_visual, Cx_visual, Cy_visual, F_w_M, F_w_M_visual, Cx_w_M_visual, Cy_w_M_visual
 
 def W_01_visual_op(W_01):
@@ -59,3 +59,15 @@ def W_01_visual_op(W_01):
     Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8)
     Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8)
     return W_visual, Wx_visual, Wy_visual, Wz_visual
+
+def W_01_concat_with_M_to_WM_and_get_W_visual(W, M):
+    WM = np.concatenate([W, M], axis=-1)
+    W_visual, Wx_visual, Wy_visual, Wz_visual = W_01_visual_op(W)
+    return WM, W_visual, Wx_visual, Wy_visual, Wz_visual
+
+def W_01_and_W_01_w_M_to_WM_and_visualize(W_raw, M):
+    W_raw_c_M, W_raw_visual, Wx_raw_visual, Wy_raw_visual, Wz_raw_visual = W_01_concat_with_M_to_WM_and_get_W_visual(W_raw, M)
+
+    W_w_M = W_raw * M
+    W_w_M_c_M, W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual = W_01_concat_with_M_to_WM_and_get_W_visual(W_w_M, M)
+    return W_raw_c_M, W_raw_visual, Wx_raw_visual, Wy_raw_visual, Wz_raw_visual, W_w_M_c_M, W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual

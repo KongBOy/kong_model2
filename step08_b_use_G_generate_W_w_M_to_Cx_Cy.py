@@ -5,7 +5,7 @@ from step06_a_datas_obj import Range
 
 import sys
 
-from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_visual_op, C_concat_with_M_to_F_and_get_F_visual
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual
 from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 sys.path.append("kong_util")
@@ -67,8 +67,8 @@ def W_w_M_Gen_Cx_Cy_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, r
     Cgt = Fgt[0, ..., 1:3].numpy()
 
     Mgt = Fgt[0, ..., 0:1].numpy()
-    F,   F_visual,   Cx_visual,   Cy_visual   = C_concat_with_M_to_F_and_get_F_visual(C, Mgt)
-    Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_concat_with_M_to_F_and_get_F_visual(Cgt, Mgt)
+    F,   F_visual,   Cx_visual,   Cy_visual   = C_01_concat_with_M_to_F_and_get_F_visual(C, Mgt)
+    Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_01_concat_with_M_to_F_and_get_F_visual(Cgt, Mgt)
     F_visual   = F_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
     Fgt_visual = Fgt_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
 

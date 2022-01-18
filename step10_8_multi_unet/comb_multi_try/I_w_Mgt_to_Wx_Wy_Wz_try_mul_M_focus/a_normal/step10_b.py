@@ -63,7 +63,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L5_ch001_and_I_to_Wy_L5_ch001_ep060_and_I_to_Wz_L5_ch001_ep060.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch032_and_I_to_Wy_L6_ch032_ep060_and_I_to_Wz_L6_ch032_ep060.{run}"])
-# sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch064_and_I_to_Wy_L6_ch064_ep060_and_I_to_Wz_L6_ch064_ep060.{run}"])
+# sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch064_and_I_to_Wy_L6_ch064_ep060_and_I_to_Wz_L6_ch064_ep060.{超出記憶體確定了}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch016_and_I_to_Wy_L6_ch016_ep060_and_I_to_Wz_L6_ch016_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch008_and_I_to_Wy_L6_ch008_ep060_and_I_to_Wz_L6_ch008_ep060.{run}"])
 # sb.run(cmd_python_step10_a + [f"I_to_Wx_L6_ch004_and_I_to_Wy_L6_ch004_ep060_and_I_to_Wz_L6_ch004_ep060.{run}"])
