@@ -146,12 +146,12 @@ if(__name__ == "__main__"):
 
 
         if(n == 10):
-            model_obj.generator.save_weights("try_save/weights")
+            model_obj.generator.save_weights("debug_data/try_save/weights")
             iter10 = model_obj.generator.layers[0].weights[1]
             print("iter10:", iter10)
         if(n == 20):
             iter20 = model_obj.generator.layers[0].weights[1]
             print("iter20:", iter20)
-            model_obj.generator.load_weights("try_save/weights")
+            model_obj.generator.load_weights("debug_data/try_save/weights")
             iter20_load10 = model_obj.generator.layers[0].weights[1]
             print("iter20_load10:", iter20_load10)

@@ -182,10 +182,10 @@ class Sobel_MAE(tf.keras.losses.Loss):
         # print("grad_x residual:", mae_kong(img1_sobel_x, img2_sobel_x))
         # print("grad_y residual:", mae_kong(img1_sobel_y, img2_sobel_y))
         # print("grad_loss total:", grad_loss)
-        # cv2.imwrite( "temp_img1_sobel_x.jpg", (norm_to_0_1_by_max_min(img1_sobel_x[0].numpy()) * 255).astype(np.uint8))
-        # cv2.imwrite( "temp_img1_sobel_y.jpg", (norm_to_0_1_by_max_min(img1_sobel_y[0].numpy()) * 255).astype(np.uint8))
-        # cv2.imwrite( "temp_img2_sobel_x.jpg", (norm_to_0_1_by_max_min(img2_sobel_x[0].numpy()) * 255).astype(np.uint8))
-        # cv2.imwrite( "temp_img2_sobel_y.jpg", (norm_to_0_1_by_max_min(img2_sobel_y[0].numpy()) * 255).astype(np.uint8))
+        # cv2.imwrite( "debug_data/temp_img1_sobel_x.jpg", (norm_to_0_1_by_max_min(img1_sobel_x[0].numpy()) * 255).astype(np.uint8))
+        # cv2.imwrite( "debug_data/temp_img1_sobel_y.jpg", (norm_to_0_1_by_max_min(img1_sobel_y[0].numpy()) * 255).astype(np.uint8))
+        # cv2.imwrite( "debug_data/temp_img2_sobel_x.jpg", (norm_to_0_1_by_max_min(img2_sobel_x[0].numpy()) * 255).astype(np.uint8))
+        # cv2.imwrite( "debug_data/temp_img2_sobel_y.jpg", (norm_to_0_1_by_max_min(img2_sobel_y[0].numpy()) * 255).astype(np.uint8))
         # plt.show()
         return grad_loss
 
@@ -222,14 +222,15 @@ class Total_Variance():
 if __name__ == '__main__':
     # window_size = 5
     # pad_size = int((window_size - 1) / 2)
+    from step0_access_path import Data_Access_Dir
 
-    img1_path = "1_1_8-pp_Page_465-YHc0001.exr"  ### "1_1_2-cp_Page_0654-XKI0001.exr"
-    img2_path = "1_1_1-pr_Page_141-PZU0001.exr"  ### "1_1_1-tc_Page_065-YGB0001.exr"
+    img1_path = Data_Access_Dir + "1_1_8-pp_Page_465-YHc0001.exr"  ### "1_1_2-cp_Page_0654-XKI0001.exr"
+    img2_path = Data_Access_Dir + "1_1_1-pr_Page_141-PZU0001.exr"  ### "1_1_1-tc_Page_065-YGB0001.exr"
     img1 = cv2.imread(img1_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
     img2 = cv2.imread(img2_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
 
-    # img1_path = "2-0b-gt_a_mask.bmp"
-    # img2_path = "2-epoch_0060_a_mask.bmp"
+    # img1_path = Data_Access_Dir + "2-0b-gt_a_mask.bmp"
+    # img2_path = Data_Access_Dir + "2-epoch_0060_a_mask.bmp"
     # img1 = cv2.imread(img1_path)  ### HWC
     # img2 = cv2.imread(img2_path)  ### HWC
 

@@ -1,7 +1,7 @@
-import step10_7_flow_unet.mask_5_2_block1_45678l_I_w_Mgt_to_C               .mae_s001.a_normal.step10_a as I_w_Mgt_to_C
-import step10_7_flow_unet.mask_5_2_block1_45678l_I_w_Mgt_to_Cx_Cy           .mae_s001.a_normal.step10_a as I_w_Mgt_to_Cx_Cy
-import step10_7_flow_unet.mask_5_2_block1_45678l_I_w_Mgt_to_Cx_Cy_bottle_div.mae_s001.a_normal.step10_a as I_w_Mgt_to_Cx_Cy_bottle_div
-import step10_8_multi_unet.comb_multi_try.I_w_Mgt_to_Cx_Cy                           .a_normal.step10_a as I_w_Mgt_to_Cx_Cy_2unet
+import Exps_7_flow_unet.I_w_Mgt_to_C               .mae_s001.a_normal.step10_a as I_w_Mgt_to_C
+import Exps_7_flow_unet.I_w_Mgt_to_Cx_Cy           .mae_s001.a_normal.step10_a as I_w_Mgt_to_Cx_Cy
+import Exps_7_flow_unet.I_w_Mgt_to_Cx_Cy_bottle_div.mae_s001.a_normal.step10_a as I_w_Mgt_to_Cx_Cy_bottle_div
+import Exps_8_multi_unet.comb_multi_try.I_w_Mgt_to_Cx_Cy                           .a_normal.step10_a as I_w_Mgt_to_Cx_Cy_2unet
 
 I_w_Mgt_to_C_compare_L5 = [
     [
