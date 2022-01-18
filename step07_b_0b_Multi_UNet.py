@@ -9,7 +9,7 @@ class Multi_Generator(tf.keras.models.Model):
         self.op_type = op_type
         print("here~~")
 
-    def call(self, input_tensor, Mask, training=None):
+    def call(self, input_tensor, Mask=None, training=None):
         if  (self.op_type == "I_to_M_and_C"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
             I = input_tensor
             M = self.gens_dict["I_to_M"](input_tensor)
@@ -41,18 +41,28 @@ class Multi_Generator(tf.keras.models.Model):
             Wy = self.gens_dict["I_to_Wy"](I)
             Wz = self.gens_dict["I_to_Wz"](I)
             return Wz, Wy, Wx   ### 這個順序要跟 step8b_useG, step9c_train_step 對應到喔！
-        elif(self.op_type == "I_to_Wx_Wy_Wz_3UNet_focus_to_Cx_Cy_2UNet_focus"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
+        elif(self.op_type == "I_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
+            '''
+            注意 不能在這邊把 Wxyz concat 起來喔， 因為要分開算 loss！
+            '''
+            # I_pre = input_tensor
+            # Wz_pre_raw, Wy_pre_raw, Wx_pre_raw = self.gens_dict["I_to_Wx_Wy_Wz"](I_pre)
+            # W_pre_raw = tf.concat([Wz_pre_raw, Wy_pre_raw, Wx_pre_raw], axis=-1)
+            # W_pre_w_M = W_pre_raw * Mask
+
+            # Cx_pre_raw, Cy_pre_raw = self.gens_dict["W_to_Cx_Cy"](W_pre_w_M)
+            # C_pre_raw = tf.concat([Cy_pre_raw, Cx_pre_raw], axis=-1)
+            # C_pre_w_M = C_pre_raw * Mask
+            # return W_pre_raw, W_pre_w_M, C_pre_raw, C_pre_w_M
+
             I_pre = input_tensor
-            Wx_pre_raw = self.gens_dict["I_to_Wx"](I_pre)
-            Wy_pre_raw = self.gens_dict["I_to_Wy"](I_pre)
-            Wz_pre_raw = self.gens_dict["I_to_Wz"](I_pre)
+            Wz_pre_raw, Wy_pre_raw, Wx_pre_raw = self.gens_dict["I_to_Wx_Wy_Wz"](I_pre)
             W_pre_raw = tf.concat([Wz_pre_raw, Wy_pre_raw, Wx_pre_raw], axis=-1)
             W_pre_w_M = W_pre_raw * Mask
-            Cx_pre_raw = self.gens_dict["I_to_Cx"](W_pre_w_M)
-            Cy_pre_raw = self.gens_dict["I_to_Cy"](W_pre_w_M)
-            C_pre_raw = tf.concat([Cy_pre_raw, Cx_pre_raw], axis=-1)
-            C_pre_w_M = C_pre_raw * Mask
-            return W_pre_raw, W_pre_w_M, C_pre_raw, C_pre_w_M
+
+            Cx_pre_raw, Cy_pre_raw = self.gens_dict["W_to_Cx_Cy"](W_pre_w_M)
+
+            return Wz_pre_raw, Wy_pre_raw, Wx_pre_raw, Cx_pre_raw, Cy_pre_raw
 
 def see(model_obj, train_in_pre):
     M_pre, C_pre = model_obj.generator(train_in_pre)

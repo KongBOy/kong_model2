@@ -26,7 +26,7 @@ def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data, Mask=Non
 
 def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None, Mask=None):
     with tf.GradientTape() as gen_tape:
-        model_outputs = model_obj.generator(in_data)
+        model_outputs = model_obj.generator(in_data, Mask=Mask)
         # print("in_data.numpy().shape", in_data.numpy().shape)
         # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
         # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
@@ -53,6 +53,38 @@ def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None, 
     # loss_info_objs.loss_containors["mask_bce_loss"]      (gen_loss)
     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
 ####################################################
+@tf.function
+def train_step_Multi_output_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus(model_obj, in_data, gt_data, loss_info_objs=None):
+    I_pre   = in_data
+    Wgt     = gt_data[0]
+    Fgt     = gt_data[1]
+    Mgt_pre = gt_data[0][..., 3:4]  ### 配合抓DB的方式用 in_dis_gt_wc_flow 的話：第一個 [0]是W， [1]是F， [0][..., 3:4] 或 [1][..., 0:1] 都可以取道Mask
+
+    I_pre_w_M_pre = I_pre * Mgt_pre
+
+    Wzgt = Wgt[..., 0:1]
+    Wygt = Wgt[..., 1:2]
+    Wxgt = Wgt[..., 2:3]
+    Cxgt = Fgt[..., 2:3]
+    Cygt = Fgt[..., 1:2]
+    gt_datas = [Wzgt, Wygt, Wxgt, Cxgt, Cygt]
+
+    ## debug 時 記得把 @tf.function 拿掉
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=8, figsize=(40, 5))
+    # ax[0].imshow(I_pre[0])
+    # ax[1].imshow(Mgt_pre[0])
+    # ax[2].imshow(I_pre_w_M_pre[0])
+    # ax[3].imshow(Wzgt[0])
+    # ax[4].imshow(Wygt[0])
+    # ax[5].imshow(Wxgt[0])
+    # ax[6].imshow(Cxgt[0])
+    # ax[7].imshow(Cygt[0])
+    # fig.tight_layout()
+    # plt.show()
+
+    _train_step_Multi_output(model_obj, in_data=I_pre_w_M_pre, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=Mgt_pre)
+
 @tf.function
 def train_step_Multi_output_I_to_M_w_I_to_C(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
