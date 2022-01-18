@@ -43,6 +43,6 @@ import subprocess as sb
 ### 8l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L8_ch064_limit.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch128_limit.{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch032_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L8_ch032_limit.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch016_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch008_limit.{run}"])
