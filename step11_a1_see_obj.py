@@ -104,8 +104,8 @@ class See(See_flow_visual, See_npy_to_npz, See_bm_rec, See_rec_metric, See_mask,
         right_jpg_path = self._rename_wrong_to_right_path(wrong_file_path=self.gt_flow_jpg_path, wrong_word="0b-gt_a_gt_flow", right_word="0b-gt_b_gt_flow")
         _              = self._rename_wrong_to_right_path(wrong_file_path=f"{self.see_read_dir}/0a-in_gt_mask.jpg"  , wrong_word="0a-in_gt_mask.jpg", right_word="0a2-in_gt_mask.jpg")
         _              = self._rename_wrong_to_right_path(wrong_file_path=f"{self.see_read_dir}/0a-in_img.jpg"      , wrong_word="0a-in_img.jpg",     right_word="0a1-in_img.jpg")
-        from step08_b_use_G_generate_0_util import flow_or_coord_visual_op
-        gt_flow_visual = flow_or_coord_visual_op(gt_flow)
+        from step08_b_use_G_generate_0_util import F_01_or_C_01_method1_visual_op
+        gt_flow_visual = F_01_or_C_01_method1_visual_op(gt_flow)
         cv2.imwrite(right_jpg_path, gt_flow_visual)
 
 
@@ -114,7 +114,7 @@ class See(See_flow_visual, See_npy_to_npz, See_bm_rec, See_rec_metric, See_mask,
             coord = np.load(coord_npy_epoch_path)
             if(coord.shape[2] == 2):
                 flow = np.concatenate((gt_mask, coord), axis=2)
-                flow_visual = flow_or_coord_visual_op(data=flow)
+                flow_visual = F_01_or_C_01_method1_visual_op(data=flow)
                 cv2.imwrite(self.flow_ep_jpg_read_paths[go_npy], flow_visual.astype(np.uint8))
                 np.save(coord_npy_epoch_path, flow)
 

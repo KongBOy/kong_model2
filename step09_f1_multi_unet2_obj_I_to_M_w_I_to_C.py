@@ -1,4 +1,4 @@
-from step08_b_use_G_generate_I_to_M_w_I_to_C import  I_gen_M_w_I_gen_C_w_M_to_F_see
+from step08_c_use_G_generate_I_to_M_w_I_to_C import  I_gen_M_w_I_gen_C_w_M_to_F_see
 
 from step09_c_train_step import train_step_Multi_output_I_to_M_w_I_to_C
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
