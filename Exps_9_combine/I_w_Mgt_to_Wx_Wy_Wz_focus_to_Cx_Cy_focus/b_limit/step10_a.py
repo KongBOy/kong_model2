@@ -31,8 +31,8 @@ from step10_a2_loss_info_obj import *
 from step10_b2_exp_builder import Exp_builder
 
 
-import Exps_8_multi_unet.comb_multi_try.I_w_Mgt_to_Wx_Wy_Wz_try_mul_M_focus .b_limit  .step10_a as I_to_Wxyz_limit_exp_builder
-import Exps_8_multi_unet.comb_multi_try.W_w_Mgt_to_Cx_Cy_try_mul_M_focus    .b_limit  .step10_a as W_to_Cxy_limit_exp_builder
+import Exps_8_multi_unet.I_w_Mgt_to_Wx_Wy_Wz_try_mul_M_focus .b_limit  .step10_a as I_to_Wxyz_limit_exp_builder
+import Exps_8_multi_unet.W_w_Mgt_to_Cx_Cy_try_mul_M_focus    .b_limit  .step10_a as W_to_Cxy_limit_exp_builder
 
 #############################################################################################################################################################################################################
 '''
