@@ -1,7 +1,7 @@
 from step10_b1_exp_obj_load_and_train_and_test import Experiment
 from step11_b_result_obj_builder import Result_builder
 
-from step0_access_path import Result_Read_Path
+from step0_access_path import Result_Read_Dir
 import os
 
 class Exp_builder():
@@ -105,8 +105,8 @@ class Exp_builder():
 
     def _change_result_name_final_rename(self, result_name_ord, result_name_dst, run_change=False, print_msg=False):
         exp_dir = self.exp.exp_dir
-        result_path_ord = Result_Read_Path  + f"result/{exp_dir}/" + result_name_ord
-        result_path_dst = Result_Read_Path  + f"result/{exp_dir}/" + result_name_dst
+        result_path_ord = Result_Read_Dir  + f"result/{exp_dir}/" + result_name_ord
+        result_path_dst = Result_Read_Dir  + f"result/{exp_dir}/" + result_name_dst
         if(run_change): os.rename(result_path_ord, result_path_dst)
         if(print_msg):
             print(result_path_ord, "  rename to")

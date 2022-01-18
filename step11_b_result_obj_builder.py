@@ -1,4 +1,4 @@
-from step0_access_path import Result_Read_Path, Result_Write_Path
+from step0_access_path import Result_Read_Dir, Result_Write_Dir
 from step06_a_datas_obj import DB_C
 from step11_a1_see_obj import See
 from step11_a2_result_obj import Result
@@ -121,8 +121,8 @@ class Result_train_builder(Result_sees_builder):
         '''
         ### step3a.用result_name 來設定ckpt, logs 的資料夾
         self.result.result_name = result_name  ### 如果他被包在某個資料夾，該資料夾也算名字喔！ex：5_justG_mae1369/type7b_h500_w332_real_os_book-20200525_225555-justG-1532data_mae9_127.35_copy
-        self.result.result_read_dir  = Result_Read_Path  + "result/" + result_name
-        self.result.result_write_dir = Result_Write_Path + "result/" + result_name
+        self.result.result_read_dir  = Result_Read_Dir  + "result/" + result_name
+        self.result.result_write_dir = Result_Write_Dir + "result/" + result_name
         self.result.ckpt_read_dir    = self.result.result_read_dir + "/ckpt"
         self.result.ckpt_write_dir   = self.result.result_write_dir + "/ckpt"
         self.result.logs_read_dir  = self.result.result_read_dir + "/logs"

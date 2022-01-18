@@ -13,12 +13,12 @@ sys.path.append(kong_model2_dir + "/kong_util")
 # print("    kong_model2_dir:", kong_model2_dir)
 ######################################################################################################################
 ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
-data_access_path  = f"{kong_model2_dir}/data_dir/"    ### 通常是 讀取速度較快的SSD，127.35 是 400GB SSD
+Data_Access_Dir  = f"{kong_model2_dir}/data_dir/"    ### 通常是 讀取速度較快的SSD，127.35 是 400GB SSD
 
-# Result_Read_Path  = "H:/0 data_dir/"    ### 通常是 大容量的機械式硬碟，127.35 是 2T 機械式硬碟
-# Result_Write_Path = "H:/0 data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
-Result_Read_Path  = f"{kong_model2_dir}/data_dir/"    ### 通常是 大容量的機械式硬碟，127.35 是 2T 機械式硬碟
-Result_Write_Path = f"{kong_model2_dir}/data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
+# Result_Read_Dir  = "H:/data_dir/"    ### 通常是 大容量的機械式硬碟，127.35 是 2T 機械式硬碟
+# Result_Write_Dir = "H:/data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
+Result_Read_Dir  = f"{kong_model2_dir}/data_dir/"    ### 通常是 大容量的機械式硬碟，127.35 是 2T 機械式硬碟
+Result_Write_Dir = f"{kong_model2_dir}/data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
 
 Analyze_Write_Dir = f"{kong_model2_dir}/data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
 

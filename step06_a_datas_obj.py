@@ -1,7 +1,7 @@
 """
 直接看 DB 的狀況並且記錄下來
 """
-from step0_access_path import data_access_path
+from step0_access_path import Data_Access_Dir
 from enum import Enum
 import copy
 
@@ -215,7 +215,7 @@ class Dataset_basic_builder(Dataset_init_builder):
         self.db.get_method = get_method
         self.db.h          = h
         self.db.w          = w
-        self.db.db_dir     = data_access_path + "datasets/" + self.db.category.value + "/" + self.db.db_name.value
+        self.db.db_dir     = Data_Access_Dir + "datasets/" + self.db.category.value + "/" + self.db.db_name.value
         return self
 
     def set_get_method(self, get_method):

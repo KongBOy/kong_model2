@@ -419,8 +419,8 @@ if(__name__ == "__main__"):
     # img_resize = (494 + 2, 336)  ### dis_img(in_img的大小)的大小且要是4的倍數
     # from step06_b_data_pipline import get_1_pure_unet_db  , get_2_pure_rect2_dataset
 
-    # data_access_path = "F:/Users/Lin_server/Desktop/0 db/"
-    # db_dir  = data_access_path + "datasets"
+    # Data_Access_Dir = "F:/Users/Lin_server/Desktop/0 db/"
+    # db_dir  = Data_Access_Dir + "datasets"
     # db_name = "2_pure_rect2_page_h=384,w=256"
     # BATCH_SIZE = 1
 
