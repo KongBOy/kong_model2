@@ -40,9 +40,9 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_G, phase, index, in_WM, in_WM_pre, _, Mgt_C_
 
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
     '''
-    # plt.imshow(in_img[0])
-    # plt.show()
-    rec_hope  = rec_hope[0].numpy()
+    ### 這個是給後處理用的 dis_img
+    dis_img = in_WM[1][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
+    rec_hope = rec_hope[0].numpy()
 
     W_pre, Mgt_pre, W_pre_W_M_pre, Cx_raw_pre, Cy_raw_pre = use_model(model_G, in_WM_pre, training)
 
@@ -64,17 +64,16 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_G, phase, index, in_WM, in_WM_pre, _, Mgt_C_
     C_raw_pre = np.concatenate([Cy_raw_pre, Cx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
     C_raw = Value_Range_Postprocess_to_01(C_raw_pre, exp_obj.use_gt_range)
     C_raw = C_raw[0]
-    Cgt = Mgt_C_pre[0, ..., 1:3].numpy()
+    Cgt_pre = Mgt_C_pre[0, ..., 1:3].numpy()
+    Cgt_01 = Value_Range_Postprocess_to_01(Cgt_pre, exp_obj.use_gt_range)
 
     Mgt = Mgt_C_pre[0, ..., 0:1].numpy()
-    F_raw, F_raw_visual, Cx_raw_visual, Cy_raw_visual, F_w_Mgt,   F_w_Mgt_visual,   Cx_w_Mgt_visual,   Cy_w_Mgt_visual   = C_and_C_w_M_to_F_and_visualize(C_raw, Mgt)
-    Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_concat_with_M_to_F_and_get_F_visual(Cgt, Mgt)
+    F_raw, F_raw_visual, Cx_raw_visual, Cy_raw_visual, F_w_Mgt,   F_w_Mgt_visual,   Cx_w_Mgt_visual,   Cy_w_Mgt_visual   = C_01_and_C_01_w_M_to_F_and_visualize(C_raw, Mgt)
+    Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_01_concat_with_M_to_F_and_get_F_visual(Cgt_01, Mgt)
     F_raw_visual   = F_raw_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
     F_w_Mgt_visual = F_w_Mgt_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
     Fgt_visual     = Fgt_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
 
-    ### 這個是給後處理用的 dis_img
-    dis_img = in_WM[1][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
 
     ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
     if(bgr2rgb):
@@ -113,7 +112,7 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_G, phase, index, in_WM, in_WM_pre, _, Mgt_C_
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-        bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img, flow=F)
+        bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img, flow=F_w_Mgt)
         '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
         cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
 
