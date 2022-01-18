@@ -9,7 +9,7 @@ from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_and_C_w_M_to_F_and_visualize
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_01_and_C_01_w_M_to_F_and_visualize
 
 ######################################################################################################################################################################################################
 def use_model(model_G, _1, dis_img_pre, _3, Mgt_C_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -53,8 +53,8 @@ def I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see(model_G, phase, index, dis_im
     Cgt = Mgt_C_pre[0, ..., 1:3].numpy()
     Mgt_visual = (Mgt * 255).astype(np.uint8)
 
-    F_raw, F_raw_visual, Cx_raw_visual, Cy_raw_visual, F_w_Mgt,   F_w_Mgt_visual,   Cx_w_Mgt_visual,   Cy_w_Mgt_visual = C_and_C_w_M_to_F_and_visualize(C_raw,   Mgt)
-    Fgt,   Fgt_visual,   Cxgt_visual,   Cygt_visual,         _,                _,                 _,                 _ = C_and_C_w_M_to_F_and_visualize(Cgt,     Mgt)
+    F_raw, F_raw_visual, Cx_raw_visual, Cy_raw_visual, F_w_Mgt,   F_w_Mgt_visual,   Cx_w_Mgt_visual,   Cy_w_Mgt_visual = C_01_and_C_01_w_M_to_F_and_visualize(C_raw,   Mgt)
+    Fgt,   Fgt_visual,   Cxgt_visual,   Cygt_visual,         _,                _,                 _,                 _ = C_01_and_C_01_w_M_to_F_and_visualize(Cgt,     Mgt)
 
     ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
     F_raw_visual   = F_raw_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
