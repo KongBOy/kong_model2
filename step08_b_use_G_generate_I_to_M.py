@@ -8,6 +8,7 @@ sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
 
 import matplotlib.pyplot as plt
+import os
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
@@ -34,11 +35,11 @@ def I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj=
     # print("gt_mask.min():", gt_mask.numpy().min())
     return in_img, pred_mask, pred_mask_visual, gt_mask
 
-def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=False):
+def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
-    if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
-    elif(phase == "test"): used_sees = exp_obj.result_obj.tests
+    if  (phase == "train"): used_sees = exp_obj.result_obj.sees
+    elif(phase == "test"):  used_sees = exp_obj.result_obj.tests
     '''
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
     '''
@@ -73,92 +74,59 @@ def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _
         '''
         Fake_F 的部分
         '''
-        gather_mask_dir   = public_write_dir + "/pred_mask"
-        Check_dir_exist_and_build(gather_mask_dir)
-        cv2.imwrite(f"{gather_mask_dir}/{current_see_name}.bmp", pred_mask_visual)
+        if(phase == "test"):
+            gather_mask_dir   = public_write_dir + "/pred_mask"
+            Check_dir_exist_and_build(gather_mask_dir)
+            cv2.imwrite(f"{gather_mask_dir}/{current_see_name}.bmp", pred_mask_visual)
 
-        h, w = pred_mask.shape[:2]
-        fake_name = current_see_name.split(".")[0]
-        print("")
-        ###############################################################################
-        gather_fake_F_dir = public_write_dir + "/pred_mask/fake_F"
-        Check_dir_exist_and_build(gather_fake_F_dir)
-        fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
-        fake_F = np.concatenate((pred_mask, fake_C), axis=-1)
-        fake_F = fake_F.astype(np.float32)
+            h, w = pred_mask.shape[:2]
+            fake_name = current_see_name.split(".")[0]
+            print("")
+            ###############################################################################
+            fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
+            fake_F = np.concatenate((pred_mask, fake_C), axis=-1)
+            fake_F = fake_F.astype(np.float32)
 
-        gather_fake_F_npy_dir  = gather_fake_F_dir + "/1 npy"
-        gather_fake_F_knpy_dir = gather_fake_F_dir + "/2 knpy"
-        Check_dir_exist_and_build(gather_fake_F_npy_dir)
-        Check_dir_exist_and_build(gather_fake_F_knpy_dir)
-        fake_F_npy_path  = f"{gather_fake_F_npy_dir}/{fake_name}.npy"
-        fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{fake_name}.knpy"
-        np.save(fake_F_npy_path, fake_F)
-        Save_npy_path_as_knpy(fake_F_npy_path, fake_F_knpy_path)
-        print("fake_F_npy_path :", fake_F_npy_path)
-        print("fake_F_knpy_path:", fake_F_knpy_path)
-        ###############################################################################
-        gather_fake_W_dir = public_write_dir + "/pred_mask/fake_W"
-        Check_dir_exist_and_build(gather_fake_W_dir)
-        fake_W = np.zeros(shape=(h, w, 3), dtype=np.float32)
-        fake_W = np.concatenate((fake_W, pred_mask), axis=-1)
-        fake_W = fake_W.astype(np.float32)
+            ### 定位出 存檔案的位置
+            gather_fake_F_dir = public_write_dir + "/pred_mask/fake_F"
+            gather_fake_F_npy_dir  = gather_fake_F_dir + "/1 npy_then_npz"
+            gather_fake_F_knpy_dir = gather_fake_F_dir + "/2 knpy"
+            Check_dir_exist_and_build(gather_fake_F_dir)
+            Check_dir_exist_and_build(gather_fake_F_npy_dir)
+            Check_dir_exist_and_build(gather_fake_F_knpy_dir)
 
-        gather_fake_W_npy_dir  = gather_fake_W_dir + "/1 npy"
-        gather_fake_W_knpy_dir = gather_fake_W_dir + "/2 knpy"
-        Check_dir_exist_and_build(gather_fake_W_npy_dir)
-        Check_dir_exist_and_build(gather_fake_W_knpy_dir)
-        fake_W_npy_path  = f"{gather_fake_W_npy_dir}/{fake_name}.npy"
-        fake_W_knpy_path = f"{gather_fake_W_knpy_dir}/{fake_name}.knpy"
-        np.save(fake_W_npy_path, fake_W)
-        Save_npy_path_as_knpy(fake_W_npy_path, fake_W_knpy_path)
-        print("fake_W_npy_path :", fake_W_npy_path)
-        print("fake_W_knpy_path:", fake_W_knpy_path)
+            ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
+            fake_F_npy_path  = f"{gather_fake_F_npy_dir}/{fake_name}.npy"
+            fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{fake_name}.knpy"
+            np.save(fake_F_npy_path, fake_F)
+            Save_npy_path_as_knpy(fake_F_npy_path, fake_F_knpy_path)
+            print("fake_F_npy_path :", fake_F_npy_path)
+            print("fake_F_knpy_path:", fake_F_knpy_path)
 
+            ### .npy刪除(因為超占空間) 改存 .npz
+            np.savez_compressed(fake_F_npy_path.replace(".npy", ".npz"), fake_F)
+            os.remove(fake_F_npy_path)
+            ###############################################################################
+            fake_W = np.zeros(shape=(h, w, 3), dtype=np.float32)
+            fake_W = np.concatenate((fake_W, pred_mask), axis=-1)
+            fake_W = fake_W.astype(np.float32)
 
-# def I_Gen_M_test(model_G, test_name, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, current_ep=-999, exp_obj=None, training=False, add_loss=False, bgr2rgb=False):
-#     '''
-#     bgr2rgb： tf2 讀出來是 rgb， 但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
-#     '''
-#     test_name = test_name.numpy()[0].decode("utf-8")
-#     in_img, pred_mask, pred_mask_visual, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training, bgr2rgb=False)
-#     # print("test_name", test_name)
-#     # print("current_ep", current_ep)
+            ### 定位出 存檔案的位置
+            gather_fake_W_dir = public_write_dir + "/pred_mask/fake_W"
+            gather_fake_W_npy_dir  = gather_fake_W_dir + "/1 npy"
+            gather_fake_W_knpy_dir = gather_fake_W_dir + "/2 knpy"
+            Check_dir_exist_and_build(gather_fake_W_dir)
+            Check_dir_exist_and_build(gather_fake_W_npy_dir)
+            Check_dir_exist_and_build(gather_fake_W_knpy_dir)
 
-#     from matplot_fig_ax_util import Matplot_single_row_imgs
-#     single_row_imgs = Matplot_single_row_imgs(
-#                             imgs      =[ in_img ,   pred_mask_visual , gt_mask],         ### 把要顯示的每張圖包成list
-#                             img_titles=["in_img", "pred_mask", "gt_mask"],               ### 把每張圖要顯示的字包成list
-#                             fig_title ="test_%s, epoch=%04i" % (test_name, int(current_ep)),  ### 圖上的大標題
-#                             add_loss  =add_loss,
-#                             bgr2rgb   =bgr2rgb)
-#     single_row_imgs.Draw_img()
-#     single_row_imgs.Save_fig(dst_dir=exp_obj.result_obj.test_write_dir, name=test_name)  ### 如果沒有要接續畫loss，就可以存了喔！
+            ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
+            fake_W_npy_path  = f"{gather_fake_W_npy_dir}/{fake_name}.npy"
+            fake_W_knpy_path = f"{gather_fake_W_knpy_dir}/{fake_name}.knpy"
+            np.save(fake_W_npy_path, fake_W)
+            Save_npy_path_as_knpy(fake_W_npy_path, fake_W_knpy_path)
+            print("fake_W_npy_path :", fake_W_npy_path)
+            print("fake_W_knpy_path:", fake_W_knpy_path)
 
-
-#     '''
-#     Fake_F 的部分
-#     '''
-#     test_mask_dir        = exp_obj.result_obj.test_write_dir + "/pred_mask"
-#     test_fake_F_dir = exp_obj.result_obj.test_write_dir + "/pred_mask/fake_F"
-#     Check_dir_exist_and_build(test_mask_dir)
-#     Check_dir_exist_and_build(test_fake_F_dir)
-#     cv2.imwrite(f"{test_mask_dir}/{test_name}.bmp", pred_mask_visual)
-#     h, w = pred_mask.shape[:2]
-#     fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
-#     fake_F = np.concatenate((pred_mask, fake_C), axis=-1)
-#     fake_F = fake_F.astype(np.float32)
-#     fake_name = test_name.split(".")[0]
-
-#     test_fake_F_npy_dir  = exp_obj.result_obj.test_write_dir + "/pred_mask/fake_F/1 npy"
-#     test_fake_F_knpy_dir = exp_obj.result_obj.test_write_dir + "/pred_mask/fake_F/2 knpy"
-#     Check_dir_exist_and_build(test_fake_F_npy_dir)
-#     Check_dir_exist_and_build(test_fake_F_knpy_dir)
-#     fake_npy_path  = f"{test_fake_F_npy_dir}/{fake_name}.npy"
-#     fake_knpy_path = f"{test_fake_F_knpy_dir}/{fake_name}.knpy"
-#     np.save(fake_npy_path, fake_F)
-#     Save_npy_path_as_knpy(fake_npy_path, fake_knpy_path)
-#     print("")
-#     print("fake_npy_path :", fake_npy_path)
-#     print("fake_knpy_path:", fake_knpy_path)
-
+            ### .npy刪除(因為超占空間) 改存 .npz
+            np.savez_compressed(fake_W_npy_path.replace(".npy", ".npz"), fake_W)
+            os.remove(fake_W_npy_path)

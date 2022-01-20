@@ -27,11 +27,11 @@ def use_model(model_G, _1, dis_img_pre, _3, Mgt_C_pre, use_gt_range, training=Fa
     Mgt_pre = Mgt_pre[0].numpy()
     return C_raw, I_w_M_visual, Mgt_pre
 
-def I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see(model_G, phase, index, dis_img, dis_img_pre, _3, Mgt_C_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see(model_G, phase, index, dis_img, dis_img_pre, _3, Mgt_C_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
-    if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
-    elif(phase == "test"): used_sees = exp_obj.result_obj.tests
+    if  (phase == "train"): used_sees = exp_obj.result_obj.sees
+    elif(phase == "test"):  used_sees = exp_obj.result_obj.tests
     private_write_dir     = used_sees[index].see_write_dir          ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     private_rec_write_dir = used_sees[index].rec_visual_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
@@ -77,12 +77,14 @@ def I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see(model_G, phase, index, dis_im
         cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(dis_img).jpg", I_w_M_visual)
 
         ''' 覺得 u1b 不用寫 mask， 因為 unet1 又沒有 output mask！ '''
-        np.save    (private_write_dir + "/" + "0b_u1b1-gt_b_Fgt",      Fgt)                        ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        if(npz_save is False): np.save            (private_write_dir + "/" + "0b_u1b1-gt_b_Fgt", Fgt)                        ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+        if(npz_save is True ): np.savez_compressed(private_write_dir + "/" + "0b_u1b1-gt_b_Fgt", Fgt)                        ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0b_u1b2-gt_b_Fgt.jpg",  Fgt_visual)                 ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0b_u1b3-gt_b_Cgtx.jpg", Cxgt_visual)                    ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0b_u1b4-gt_b_Cgty.jpg", Cygt_visual)                    ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",       rec_hope)                       ### 寫一張 rec_hope圖進去，hope 我 rec可以做到這麼好ˊ口ˋ，0c是為了保證自動排序會放在第三張
-    np.save(    private_write_dir + "/" + "epoch_%04i_u1b1_F_w_Mgt"      % current_ep, F_w_Mgt)          ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    if(npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1_F_w_Mgt" % current_ep, F_w_Mgt)          ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+    if(npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1_F_w_Mgt" % current_ep, F_w_Mgt)          ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2_F_raw.jpg"    % current_ep, F_raw_visual)     ### 把 生成的 F_visual 存進相對應的資料夾
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3_F_w_Mgt.jpg"  % current_ep, F_w_Mgt_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4_Cx_raw.jpg"   % current_ep, Cx_raw_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～

@@ -25,11 +25,11 @@ def use_model(model_G, in_WM_pre, training):
 
     return W_pre, Mgt_pre, W_pre_W_M_pre, Cx_pre, Cy_pre
 
-def W_w_M_Gen_Cx_Cy_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def W_w_M_Gen_Cx_Cy_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
-    if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
-    elif(phase == "test"): used_sees = exp_obj.result_obj.tests
+    if  (phase == "train"): used_sees = exp_obj.result_obj.sees
+    elif(phase == "test"):  used_sees = exp_obj.result_obj.tests
     private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     private_rec_write_dir = used_sees[index].rec_visual_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
@@ -95,12 +95,14 @@ def W_w_M_Gen_Cx_Cy_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, r
         cv2.imwrite(private_write_dir + "/" + "0a_u1a3-Wy_w_Mgt.jpg", Wy_w_M_visual)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a3-Wz_w_Mgt.jpg", Wz_w_M_visual)
 
-        np.save    (private_write_dir + "/" + "0b_u1b1-gt_b_gt_flow",     Fgt)
+        if(npz_save is False): np.save            (private_write_dir + "/" + "0b_u1b1-gt_b_gt_flow", Fgt)
+        if(npz_save is True ): np.savez_compressed(private_write_dir + "/" + "0b_u1b1-gt_b_gt_flow", Fgt)
         cv2.imwrite(private_write_dir + "/" + "0b_u1b2-gt_b_gt_flow.jpg", Fgt_visual)
         cv2.imwrite(private_write_dir + "/" + "0b_u1b3-gt_b_gt_Cx.jpg",   Cxgt_visual)
         cv2.imwrite(private_write_dir + "/" + "0b_u1b4-gt_b_gt_Cy.jpg",   Cygt_visual)
         cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",          rec_hope)
-    np.save(    private_write_dir + "/" + "epoch_%04i_u1b1_flow"     % current_ep, F)
+    if(npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1_flow" % current_ep, F)
+    if(npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1_flow" % current_ep, F)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2_flow.jpg" % current_ep, F_visual)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3_Cx.jpg"   % current_ep, Cx_visual)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4_Cy.jpg"   % current_ep, Cy_visual)

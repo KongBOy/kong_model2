@@ -59,11 +59,11 @@ def I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_c
         Fgt_visual = Fgt_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
     return in_img, M_visual, Mgt_visual, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual, rec_hope
 
-def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
-    if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
-    elif(phase == "test"): used_sees = exp_obj.result_obj.tests
+    if  (phase == "train"): used_sees = exp_obj.result_obj.sees
+    elif(phase == "test"):  used_sees = exp_obj.result_obj.tests
     private_write_dir     = used_sees[index].see_write_dir          ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     private_rec_write_dir = used_sees[index].rec_visual_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
@@ -75,7 +75,8 @@ def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, phase, index, in_img, in_img_pre, gt
         cv2.imwrite(f"{private_write_dir}/0a_u1a0-dis_img(in_img).jpg",  in_img)
 
         cv2.imwrite(f"{private_write_dir}/0b_u1b1-gt_mask.jpg", Mgt_visual)
-        np .save   (f"{private_write_dir}/0b_u2b2-gt_flow.npy", Fgt)
+        if(npz_save is False): np .save            (f"{private_write_dir}/0b_u2b2-gt_flow.npy", Fgt)
+        if(npz_save is True ): np .savez_compressed(f"{private_write_dir}/0b_u2b2-gt_flow.npy", Fgt)
         cv2.imwrite(f"{private_write_dir}/0b_u2b3-gt_flow.jpg", Fgt_visual)
         cv2.imwrite(f"{private_write_dir}/0b_u2b4-gt_Cx.jpg",   Cxgt_visual)
         cv2.imwrite(f"{private_write_dir}/0b_u2b5-gt_Cy.jpg",   Cygt_visual)
@@ -83,7 +84,8 @@ def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, phase, index, in_img, in_img_pre, gt
 
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b1-mask.jpg"  % current_ep, M_visual)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2a1-I_w_M.jpg" % current_ep, I_with_M_visual)
-    np .save   (private_write_dir + "/" + "epoch_%04i_u2b2-flow.npy"  % current_ep, F)
+    if(npz_save is False): np .save            (private_write_dir + "/" + "epoch_%04i_u2b2-flow.npy"  % current_ep, F)
+    if(npz_save is True ): np .savez_compressed(private_write_dir + "/" + "epoch_%04i_u2b2-flow.npy"  % current_ep, F)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b3-flow.jpg"  % current_ep, F_visual)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b4-Cx.jpg"    % current_ep, Cx_visual)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b5-Cy.jpg"    % current_ep, Cy_visual)

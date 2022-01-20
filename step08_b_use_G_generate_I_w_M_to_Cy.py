@@ -9,14 +9,14 @@ from matplot_fig_ax_util import Matplot_single_row_imgs
 import matplotlib.pyplot as plt
 from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01
 ######################################################################################################################################################################################################
-def I_w_Mgt_to_Cy_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def I_w_Mgt_to_Cy_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     '''
     這邊model 生成的是 ch2 的 coord， 要再跟 mask concate 後才會變成 ch3 的 flow 喔！
     '''
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
-    if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
-    elif(phase == "test"): used_sees = exp_obj.result_obj.tests
+    if  (phase == "train"): used_sees = exp_obj.result_obj.sees
+    elif(phase == "test"):  used_sees = exp_obj.result_obj.tests
     private_write_dir     = used_sees[index].see_write_dir          ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
     '''
