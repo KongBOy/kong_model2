@@ -6,7 +6,7 @@ import numpy as np
 
 import sys
 sys.path.append("kong_util")
-from step0_access_path import Analyze_Write_Dir, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
+from step0_access_path import Analyze_Write_Dir, Analyze_Read_Dir, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG, Syn_write_to_read_dir
 from matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop, Save_as_jpg
 from video_from_img import Video_combine_from_dir
@@ -19,17 +19,22 @@ import shutil
 
 class Result_analyzer:
     def __init__(self, ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False, img_h=768, img_w=768):
-        self.ana_what_sees = ana_what_sees
         '''
         ana_what_sees: test / see
         '''
+        self.ana_timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        self.ana_what_sees = ana_what_sees
+        self.ana_what = ana_what
         self.ana_describe = ana_describe
-        self.analyze_dst_dir = Analyze_Write_Dir + "result" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
+
+        self.analyze_write_dir = Analyze_Write_Dir + "result" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
+        self.analyze_read_dir  = Analyze_Read_Dir  + "result" + "/" + self.ana_describe  ### 例如 .../data_dir/analyze_dir/testtest
+        self.analyze_see_private_write_dir  = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/"
+        self.analyze_see_public_read_dir    = self.analyze_read_dir  + f"/{self.ana_what}_{self.ana_timestamp}/"
 
         self.img_h = img_h  ### 給 空影像用的
         self.img_w = img_w  ### 給 空影像用的
 
-        self.ana_what = ana_what
         '''
         大小寫都可以
         mask,
@@ -48,13 +53,12 @@ class Result_analyzer:
         self.bgr2rgb = bgr2rgb
         self.add_loss = add_loss
 
-        self.ana_timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
     def Gather_all_see_final_img(self, print_msg=False, test_db_name="test"):
-        print("self.analyze_dst_dir:", self.analyze_dst_dir)
-        time_ver_dir_names = get_dir_certain_dir_names(self.analyze_dst_dir, certain_word=self.ana_what)          ### 列出 dir中 有哪些 dir
+        print("self.analyze_write_dir:", self.analyze_write_dir)
+        time_ver_dir_names = get_dir_certain_dir_names(self.analyze_write_dir, certain_word=self.ana_what)          ### 列出 dir中 有哪些 dir
         time_ver_dir_name  = time_ver_dir_names[-1]                            ### 取最後一個最新的，比如：mask_epoch=all (20211111_231956)
-        time_ver_dir_path  = self.analyze_dst_dir + "/" + time_ver_dir_name    ### 進去 比如：2c_block1_l3_2-ch128,64,32,16,8,4_bce_s001_100/see_001_real/mask_epoch=all (20211111_231956)
+        time_ver_dir_path  = self.analyze_write_dir + "/" + time_ver_dir_name    ### 進去 比如：2c_block1_l3_2-ch128,64,32,16,8,4_bce_s001_100/see_001_real/mask_epoch=all (20211111_231956)
         if(self.ana_what_sees == "test"):
             test_db_names  = get_dir_certain_dir_names(time_ver_dir_path, test_db_name)          ### 列出 dir中 有哪些 dir
             test_db_name   = test_db_names[-1]
@@ -68,7 +72,7 @@ class Result_analyzer:
                 time_test_final_img_path = test_dir + "/" + time_test_final_img_name
 
                 src_path = time_test_final_img_path
-                dst_path = self.analyze_dst_dir + "/" + time_ver_dir_name + "/" + test_db_name + "/" + test_name + "--" + time_test_final_img_name
+                dst_path = self.analyze_write_dir + "/" + time_ver_dir_name + "/" + test_db_name + "/" + test_name + "--" + time_test_final_img_name
 
                 shutil.copy(src_path, dst_path)
                 if(print_msg):
@@ -85,12 +89,14 @@ class Result_analyzer:
                 time_ver_final_img_path = see_dir + "/" + time_ver_final_img_name  ### 取最後一張 最後epoch的結果 的 path
 
                 src_path = time_ver_final_img_path
-                dst_path = self.analyze_dst_dir + "/" + time_ver_dir_name + "/" + see_name + "--" + time_ver_final_img_name  ### 把 / 換成 -
+                dst_path = self.analyze_write_dir + "/" + time_ver_dir_name + "/" + see_name + "--" + time_ver_final_img_name  ### 把 / 換成 -
 
                 shutil.copy(src_path, dst_path)
                 if(print_msg):
                     print("src_path:", src_path, "  copy to")
                     print("dst_path:", dst_path, "  finish~")
+
+        Syn_write_to_read_dir(self.analyze_see_private_write_dir, self.analyze_see_public_read_dir, copy_sub_dir=False, print_msg=False)
         return self
 
     ########################################################################################################################################
@@ -201,7 +207,7 @@ class Col_results_analyzer(Result_analyzer):
 
     ########################################################################################################################################
     ### 單一row，同see
-    def _Draw_col_results_single_see_(self, start_epoch, epoch_amount, see_num, in_img, gt_img, c_titles, analyze_see_dir):
+    def _Draw_col_results_single_see_(self, start_epoch, epoch_amount, see_num, in_img, gt_img, c_titles, analyze_see_private_write_dir):
         """
         真的在做事情的地方b
         _Draw_col_results_single_see_ 是 核心動作：
@@ -235,18 +241,18 @@ class Col_results_analyzer(Result_analyzer):
             if(self.add_loss):
                 for go_result, result in enumerate(self.c_results):
                     single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
-            single_row_imgs.Save_fig(dst_dir=analyze_see_dir, name="epoch", epoch=go_epoch)
+            single_row_imgs.Save_fig(dst_dir=analyze_see_private_write_dir, name="epoch", epoch=go_epoch)
 
-    def _Draw_col_results_single_see_multiprocess(self, see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=8, task_amount=100, print_msg=False):
+    def _Draw_col_results_single_see_multiprocess(self, see_num, in_img, gt_img, c_titles, analyze_see_private_write_dir, core_amount=8, task_amount=100, print_msg=False):
         """
         ### 包 第一層 multiprocess， _Draw_col_results_single_see_ 的 multiprocess 介面
         """
         from multiprocess_util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see_, task_args=[see_num, in_img, gt_img, c_titles, analyze_see_dir], print_msg=print_msg)
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see_, task_args=[see_num, in_img, gt_img, c_titles, analyze_see_private_write_dir], print_msg=print_msg)
 
     def analyze_col_results_single_see(self, see_num, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
         print(f"{self.ana_describe} doing analyze_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
-        print(f"analyze_dst_dir: {self.analyze_dst_dir}")
+        print(f"analyze_write_dir: {self.analyze_write_dir}")
         """
         真的在做事情的地方a
         _Draw_col_results_single_see_ 的 前置步驟：設定格式
@@ -254,8 +260,8 @@ class Col_results_analyzer(Result_analyzer):
         start_time = time.time()
         if  (self.ana_what_sees == "see"):  used_sees = self.c_results[0].sees
         elif(self.ana_what_sees == "test"): used_sees = self.c_results[0].tests
-        analyze_see_dir = self.analyze_dst_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
-        Check_dir_exist_and_build_new_dir(analyze_see_dir)  ### 建立 存結果的資料夾
+        analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
+        Check_dir_exist_and_build_new_dir(analyze_see_private_write_dir)  ### 建立 存結果的資料夾
 
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！ 並且抓出各result的trained_epochs
@@ -273,20 +279,20 @@ class Col_results_analyzer(Result_analyzer):
         c_titles = self.step1_get_c_titles()
 
         ### 抓  每個epoch要顯示的imgs 並且畫出來
-        if(single_see_multiprocess): self._Draw_col_results_single_see_multiprocess(see_num, in_img, gt_img, c_titles, analyze_see_dir, core_amount=single_see_core_amount, task_amount=self.c_max_trained_epoch, print_msg=print_msg)
-        else: self._Draw_col_results_single_see_(0, self.c_max_trained_epoch, see_num, in_img, gt_img, c_titles, analyze_see_dir)
+        if(single_see_multiprocess): self._Draw_col_results_single_see_multiprocess(see_num, in_img, gt_img, c_titles, analyze_see_private_write_dir, core_amount=single_see_core_amount, task_amount=self.c_max_trained_epoch, print_msg=print_msg)
+        else: self._Draw_col_results_single_see_(0, self.c_max_trained_epoch, see_num, in_img, gt_img, c_titles, analyze_see_private_write_dir)
 
-        Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
+        Find_ltrd_and_crop(analyze_see_private_write_dir, analyze_see_private_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+        Save_as_jpg(analyze_see_private_write_dir, analyze_see_private_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
 
         if(self.c_max_trained_epoch > 1):
-            Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+            Video_combine_from_dir(analyze_see_private_write_dir, analyze_see_private_write_dir)          ### 存成jpg後 順便 把所有圖 串成影片
         print(f"{self.ana_describe} doing analyze_col_results_single_see, doing see_num:{see_num} finish, cost_time:{time.time() - start_time}")
         return self
 
     def analyze_col_results_all_single_see(self, single_see_multiprocess=False, single_see_core_amount=8):
         print(f"{self.ana_describe} doing analyze_col_results_all_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}")
-        print(f"analyze_dst_dir: {self.analyze_dst_dir}")
+        print(f"analyze_write_dir: {self.analyze_write_dir}")
         """
         方便做事情的介面，自動走訪所有 see
         """
@@ -307,7 +313,7 @@ class Col_results_analyzer(Result_analyzer):
 
     def analyze_col_results_all_single_see_multiprocess(self, core_amount=8, task_amount=32, single_see_multiprocess=False, single_see_core_amount=8):
         print(f"{self.ana_describe} doing analyze_col_results_all_single_see_multiprocess, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}")
-        print(f"analyze_dst_dir: {self.analyze_dst_dir}")
+        print(f"analyze_write_dir: {self.analyze_write_dir}")
         """
         包 第二層 multiprocess
 
@@ -327,7 +333,7 @@ class Col_results_analyzer(Result_analyzer):
     ########################################################################################################################################
     ########################################################################################################################################
     ''' 好像都沒用到，先註解起來吧～再看看要不要 把功能用其他方式實現出來 再刪掉 '''
-    # def _Draw_col_results_multi_see_(self, start_epoch, epoch_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir):
+    # def _Draw_col_results_multi_see_(self, start_epoch, epoch_amount, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_private_write_dir):
     #     for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount + 1)):  ### +1 是因為 0~epoch 都要做，  range 只到 end-1， 所以 +1 補回來～
     #         r_c_imgs = []
     #         for go_see_num, see_num in enumerate(see_nums):
@@ -353,12 +359,12 @@ class Col_results_analyzer(Result_analyzer):
     #         if(self.add_loss):
     #             for go_result, result in enumerate(self.c_results):
     #                 multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
-    #         multi_row_imgs.Save_fig(dst_dir=analyze_see_dir, name="epoch", epoch=go_epoch)
+    #         multi_row_imgs.Save_fig(dst_dir=analyze_see_private_write_dir, name="epoch", epoch=go_epoch)
 
     # ### 包 multiprocess， _Draw_col_results_multi_see_ 的 multiprocess 介面
-    # def _Draw_col_results_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100):
+    # def _Draw_col_results_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_private_write_dir, core_amount=8, task_amount=100):
     #     from multiprocess_util import multi_processing_interface
-    #     multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_multi_see_, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir])
+    #     multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_multi_see_, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_private_write_dir])
 
     # ### 同col同result，同row同see
     # def analyze_col_results_multi_see(self, see_nums, save_name, multiprocess=True, core_amount=8):
@@ -376,9 +382,9 @@ class Col_results_analyzer(Result_analyzer):
     #         return
     #     ###############################################################################################
     #     start_time = time.time()
-    #     analyze_see_dir = self.analyze_dst_dir + "/" + save_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
-    #     Check_dir_exist_and_build_new_dir(analyze_see_dir)                                  ### 建立 存結果的資料夾
-    #     print(f"save to {analyze_see_dir}")
+    #     analyze_see_private_write_dir = self.analyze_write_dir + "/" + save_name  ### (可以再想想好名字！)分析結果存哪裡定位出來
+    #     Check_dir_exist_and_build_new_dir(analyze_see_private_write_dir)                                  ### 建立 存結果的資料夾
+    #     print(f"save to {analyze_see_private_write_dir}")
 
     #     ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
     #     self._step0_c_results_get_see_base_info(self.c_results)
@@ -397,13 +403,13 @@ class Col_results_analyzer(Result_analyzer):
     #     r_c_titles = [c_titles]  ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
     #     ### 抓 row/col 要顯示的imgs 並且畫出來
-    #     if(multiprocess):       self._Draw_col_results_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir, core_amount=core_amount, task_amount=self.c_max_trained_epoch)
-    #     else: self._Draw_col_results_multi_see_(0, self.c_max_trained_epoch, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_dir)
+    #     if(multiprocess):       self._Draw_col_results_multi_see_multiprocess(see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_private_write_dir, core_amount=core_amount, task_amount=self.c_max_trained_epoch)
+    #     else: self._Draw_col_results_multi_see_(0, self.c_max_trained_epoch, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_private_write_dir)
 
     #     ### 後處理，讓資料變得 好看 且 更小 並 串成影片
-    #     Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-    #     Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 50], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
-    #     # Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+    #     Find_ltrd_and_crop(analyze_see_private_write_dir, analyze_see_private_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+    #     Save_as_jpg(analyze_see_private_write_dir, analyze_see_private_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, 50], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
+    #     # Video_combine_from_dir(analyze_see_private_write_dir, analyze_see_private_write_dir)          ### 存成jpg後 順便 把所有圖 串成影片
     #     print(f"{self.ana_describe} doing analyze_col_results_multi_see, save_name={save_name} finish, cost_time:{time.time() - start_time}")
 
 
@@ -455,7 +461,7 @@ class Row_col_results_analyzer(Result_analyzer):
 
     ########################################################################################################################################
     ### 各row各col 皆 不同result，但全部都看相同某個see；這analyzer不會有 multi_see 的method喔！因為row被拿去show不同的result了，就沒有空間給multi_see拉，所以參數就不用 single_see_multiprocess囉！
-    def _draw_row_col_results_single_see(self, start_epoch, epoch_amount, see_num, r_c_titles, analyze_see_dir):
+    def _draw_row_col_results_single_see(self, start_epoch, epoch_amount, see_num, r_c_titles, analyze_see_private_write_dir):
         ### 要記得see的第一張存的是 輸入的in影像，第二張存的是 輸出的gt影像
         ### 因為是certain_see → 所有的result看的是相同see，所以所有result的in/gt都一樣喔！乾脆就抓最左上角result的in/gt就好啦！
 
@@ -478,22 +484,24 @@ class Row_col_results_analyzer(Result_analyzer):
                                             bgr2rgb          = self.bgr2rgb,
                                             add_loss         = self.add_loss)
             row_col_imgs.Draw_img()
-            row_col_imgs.Save_fig(dst_dir=analyze_see_dir, name="epoch", epoch=go_epoch)
-            # print("analyze_see_dir", analyze_see_dir)  ### 找不到東西存哪時可以打註解
+            row_col_imgs.Save_fig(dst_dir=analyze_see_private_write_dir, name="epoch", epoch=go_epoch)
+            # print("analyze_see_private_write_dir", analyze_see_private_write_dir)  ### 找不到東西存哪時可以打註解
 
-    def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_dir, core_amount=8, task_amount=100, print_msg=False):
+    def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_private_write_dir, core_amount=8, task_amount=100, print_msg=False):
         from multiprocess_util import multi_processing_interface
-        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_row_col_results_single_see, task_args=[see_num, r_c_titles, analyze_see_dir], print_msg=print_msg)
+        multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_row_col_results_single_see, task_args=[see_num, r_c_titles, analyze_see_private_write_dir], print_msg=print_msg)
 
 
     def analyze_row_col_results_single_see(self, see_num, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
-        print(f"{self.ana_describe} doing analyze_row_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
-        print(f"analyze_dst_dir: {self.analyze_dst_dir}")
+        print(f"{self.ana_describe} doing Row_Col_results_analyze Single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: start single_see, Current See:{see_num}")
+        print(f"analyze_write_dir: {self.analyze_write_dir}")
         start_time = time.time()
         if  (self.ana_what_sees == "see"):  used_sees = self.r_c_results[0][0].sees
         elif(self.ana_what_sees == "test"): used_sees = self.r_c_results[0][0].tests
-        analyze_see_dir = self.analyze_dst_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
-        Check_dir_exist_and_build_new_dir(analyze_see_dir)  ### 建立 存結果的資料夾
+        analyze_see_private_read_dir  = self.analyze_read_dir  + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
+        analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
+        Check_dir_exist_and_build_new_dir(analyze_see_private_write_dir)  ### 建立 存結果的資料夾
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！ 並且抓出各result的trained_epochs
         self._step0_r_c_results_get_see_base_info(self.r_c_results)
@@ -506,16 +514,18 @@ class Row_col_results_analyzer(Result_analyzer):
         print("processing see_num:", see_num)
         ### 抓 每row 每col 各不同result的 要顯示的imgs 並且畫出來
         ### 注意，這analyzer不會有 multi_see 的method喔！因為row被拿去show不同的result了，就沒有空間給 multi_see拉，所以不用寫if/else 來 限制 multi_see時 single_see_multiprocess 要設False這樣子～
-        if(single_see_multiprocess): self._draw_row_col_results_single_see_multiprocess(see_num, r_c_titles, analyze_see_dir, core_amount=single_see_core_amount, task_amount=self.r_c_max_trained_epoch, print_msg=print_msg)
-        else: self._draw_row_col_results_single_see(0, self.r_c_max_trained_epoch, see_num, r_c_titles, analyze_see_dir)
-        Find_ltrd_and_crop(analyze_see_dir, analyze_see_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Save_as_jpg(analyze_see_dir, analyze_see_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
+        if(single_see_multiprocess): self._draw_row_col_results_single_see_multiprocess(see_num, r_c_titles, analyze_see_private_write_dir, core_amount=single_see_core_amount, task_amount=self.r_c_max_trained_epoch, print_msg=print_msg)
+        else: self._draw_row_col_results_single_see(0, self.r_c_max_trained_epoch, see_num, r_c_titles, analyze_see_private_write_dir)
+        Find_ltrd_and_crop(analyze_see_private_write_dir, analyze_see_private_write_dir, padding=15, search_amount=10, core_amount=CORE_AMOUNT_FIND_LTRD_AND_CROP)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+        Save_as_jpg(analyze_see_private_write_dir, analyze_see_private_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
 
         if(self.r_c_max_trained_epoch > 1):
-            video_p = Process( target=Video_combine_from_dir, args=(analyze_see_dir, analyze_see_dir) )
+            video_p = Process( target=Video_combine_from_dir, args=(analyze_see_private_write_dir, analyze_see_private_write_dir) )
             video_p.start()
             video_p.join()   ### 還是乖乖join比較好， 雖然不join 可以不用等他結束才跑下個Process， 但因為存Video很耗記憶體， 如果存大圖 或 多epochs 容易爆記憶體！
-            # Video_combine_from_dir(analyze_see_dir, analyze_see_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+            # Video_combine_from_dir(analyze_see_private_write_dir, analyze_see_private_write_dir)          ### 存成jpg後 順便 把所有圖 串成影片
+        Syn_write_to_read_dir(analyze_see_private_write_dir, analyze_see_private_read_dir, copy_sub_dir=False, print_msg=False)
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: finish single_see, Current See:{see_num}")
         print("cost_time:", time.time() - start_time)
         return self
 
@@ -571,15 +581,15 @@ class Bm_Rec_exps_analyze(Result_analyzer):
         ### { analyze_dir/ana_describe } / {see_001-real} / {dst_dir} / rec
         if  (self.ana_what_sees == "see"):  used_sees = self.exps[0].result_obj.sees
         elif(self.ana_what_sees == "test"): used_sees = self.exps[0].result_obj.tests
-        analyze_see_dir = self.analyze_dst_dir + "/" + used_sees[see_num].see_name + "/" + dst_dir  ### (可以再想想好名字！)分析結果存哪裡定位出來，上面是analyze_see_dir
-        analyze_see_bm_dir  = analyze_see_dir + "/" + "bm"       ### 定出 存結果的資料夾
-        analyze_see_rec_dir = analyze_see_dir + "/" + "rec"      ### 定出 存結果的資料夾
+        analyze_see_private_write_dir = self.analyze_write_dir + "/" + used_sees[see_num].see_name + "/" + dst_dir  ### (可以再想想好名字！)分析結果存哪裡定位出來，上面是analyze_see_private_write_dir
+        analyze_see_bm_dir  = analyze_see_private_write_dir + "/" + "bm"       ### 定出 存結果的資料夾
+        analyze_see_rec_dir = analyze_see_private_write_dir + "/" + "rec"      ### 定出 存結果的資料夾
         if(reset_dir):
-            Check_dir_exist_and_build_new_dir(analyze_see_dir)       ### 建立 存結果的資料夾
+            Check_dir_exist_and_build_new_dir(analyze_see_private_write_dir)       ### 建立 存結果的資料夾
             Check_dir_exist_and_build_new_dir(analyze_see_bm_dir)    ### 建立 存結果的資料夾
             Check_dir_exist_and_build_new_dir(analyze_see_rec_dir)   ### 建立 存結果的資料夾
         else:
-            Check_dir_exist_and_build        (analyze_see_dir)       ### 建立 存結果的資料夾
+            Check_dir_exist_and_build        (analyze_see_private_write_dir)       ### 建立 存結果的資料夾
             Check_dir_exist_and_build        (analyze_see_bm_dir)    ### 建立 存結果的資料夾
             Check_dir_exist_and_build        (analyze_see_rec_dir)   ### 建立 存結果的資料夾
         return analyze_see_bm_dir, analyze_see_rec_dir
@@ -621,7 +631,7 @@ class Bm_Rec_exps_analyze(Result_analyzer):
         return self
 
     def analyze_tensorboard(self, reset_dir=False):
-        analyze_board_dir = self.analyze_dst_dir + "/" + "boards"  ### 分析結果存哪裡定位出來 例如 D:/0 data_dir/analyze_dir/5_14-bm_rec-2_1-ch_results/boards
+        analyze_board_dir = self.analyze_write_dir + "/" + "boards"  ### 分析結果存哪裡定位出來 例如 D:/0 data_dir/analyze_dir/5_14-bm_rec-2_1-ch_results/boards
         if(reset_dir): Check_dir_exist_and_build_new_dir(analyze_board_dir)    ### 一開始雖然覺得下面較好，但實際用起來發現我也不會存結論在board資料夾，而是直接寫在這裡，所以就多個reset_flag，讓我可控制要不要刪掉上次的board資料夾囉！
         else:          Check_dir_exist_and_build        (analyze_board_dir)           ### 建立 存結果的資料夾，目前覺的外層的這個 不用 build_new_dir，這樣才可以存筆記在裡面，要小心的是 如果 exps 有刪掉某個exp，就不會自動刪掉囉！
         for exp in self.exps:
