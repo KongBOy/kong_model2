@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 import time
 import datetime
-from step0_access_path import Syn_write_to_read_dir, Result_Read_Dir, Result_Write_Dir, kong_model2_dir
+from step0_access_path import Syn_write_to_read_dir, Result_Read_Dir, Result_Write_Dir, kong_model2_dir, JPG_QUALITY
 from step06_a_datas_obj import *
 from step06_b_data_pipline import tf_Data_builder
 from step10_a2_loss_info_obj import *
@@ -12,6 +12,7 @@ from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
 from util import time_util, get_dir_certain_file_names
+from build_dataset_combine import Save_as_jpg, Find_ltrd_and_crop
 
 from tqdm import tqdm
 
@@ -341,15 +342,24 @@ class Experiment():
             f.write("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1)))))        ; f.write("\n")
             f.write("\n")
 
-    def test_see(self):
-        """
-        用最後儲存的 Model 來產生see～
-        也常常拿來 reset in/gt see 喔！
-        想設定 testing 時的 bn 使用的 training arg 的話， 麻煩用 exp.exp_bn_see_arg 來指定， 因為要用test_see 就要先建exp， 就統一寫在exp裡 個人覺得比較連貫， 因此 就不另外開一個 arg 給 test_see 用囉！
-        """
+    def train_run_final_see(self):
         self.exp_init(reload_result=True, reload_model=True)
-        self.train_step1_see_current_img(training=self.exp_bn_see_arg, see_reset_init=True, postprocess=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, see_reset_init=True, postprocess=True, npz_save=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        Find_ltrd_and_crop   (self.result_obj.result_write_dir, self.result_obj.result_write_dir, padding=15, search_amount=2, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+        Save_as_jpg          (self.result_obj.result_write_dir, self.result_obj.result_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完
+        Syn_write_to_read_dir(write_dir=self.result_obj.result_write_dir, read_dir=self.result_obj.result_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
         print("test see finish")
+
+    # def test_see(self):
+    #     """
+    #     用最後儲存的 Model 來產生see～
+    #     也常常拿來 reset in/gt see 喔！
+    #     想設定 testing 時的 bn 使用的 training arg 的話， 麻煩用 exp.exp_bn_see_arg 來指定， 因為要用test_see 就要先建exp， 就統一寫在exp裡 個人覺得比較連貫， 因此 就不另外開一個 arg 給 test_see 用囉！
+    #     """
+    #     self.exp_init(reload_result=True, reload_model=True)
+    #     self.train_step1_see_current_img(phase="test", training=False, see_reset_init=True, postprocess=True, npz_save=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+    #     Syn_write_to_read_dir(write_dir=self.result_obj.result_write_dir, read_dir=self.result_obj.result_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
+    #     print("test see finish")
 
     def test(self, test_db_name="test"):  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         """
@@ -376,9 +386,11 @@ class Experiment():
         self.machine_user = getpass.getuser()                           ### 取得 本機 User 給 train_step5_show_time 紀錄
         if  (self.phase == "train"):          self.train()
         elif(self.phase == "train_reload"):   self.train_reload()
+        elif(self.phase == "train_run_final_see"): self.train_run_final_see()
         elif(self.phase == "train_indicate"): pass  ### 待完成Z
         elif("test" in self.phase):
-            if(self.phase == "test_see"): self.test_see()
+            # if(self.phase == "test_see"): self.test_see()
+            if(self.phase == "test_see"): self.test(test_db_name="see")
             else:                         self.test(test_db_name=self.phase)  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         elif(self.phase == "board_rebuild"):  self.board_rebuild()
         elif(self.phase == "copy_ckpt"): self.copy_ckpt()
