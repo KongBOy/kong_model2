@@ -27,7 +27,7 @@ def I_Generate_R(model_G, _1, in_img_pre, _3, _4, use_gt_range, bgr2rgb=False):
 
 
 ### 這是一張一張進來的，沒有辦法跟 Result 裡面的 see 生成法合併，要的話就是把這裡matplot部分去除，用result裡的see生成matplot圖囉！
-def I_Generate_R_see(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_hope, exp_obj=None, see_reset_init=False, bgr2rgb=True):
+def I_Generate_R_see(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_hope, exp_obj=None, see_reset_init=False, npz_save=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     '''
