@@ -54,7 +54,10 @@ class Result_sees_builder(Result_init_builder):
 
     def _build_tests(self, db_obj):
         self.result.test_amount = len( get_dir_img_file_names(db_obj.test_in_dir) )
-        self.result.tests = [ See(self.result, db_obj.test_db_name + "/test_%03i" % test_i) for test_i in range(self.result.test_amount)]
+        
+        used_see_dir = db_obj.test_db_name
+        if(db_obj.test_db_name == "see"): used_see_dir = "test_" + used_see_dir
+        self.result.tests = [ See(self.result, used_see_dir + "/test_%03i" % test_i) for test_i in range(self.result.test_amount)]
         # print("test_amount:", self.result.test_amount)
         # print("self.result.tests", self.result.tests)
         pass
@@ -130,9 +133,12 @@ class Result_train_builder(Result_sees_builder):
         self.result.train_code_read_dir  = self.result.result_read_dir  + f"/train_code_{self.current_time}"
         self.result.train_code_write_dir = self.result.result_write_dir + f"/train_code_{self.current_time}"
 
-        self.result.test_db_name   = db_obj.test_db_name
-        self.result.test_read_dir  = self.result.result_read_dir  + f"/{db_obj.test_db_name}"
-        self.result.test_write_dir = self.result.result_write_dir + f"/{db_obj.test_db_name}"
+        self.result.test_db_name   = db_obj.test_db_name  ### 保存一下最原始的 test_db_name
+
+        used_test_dir = db_obj.test_db_name
+        if(db_obj.test_db_name == "see"): used_test_dir = "test_" + used_test_dir
+        self.result.test_read_dir  = self.result.result_read_dir  + f"/{used_test_dir}"
+        self.result.test_write_dir = self.result.result_write_dir + f"/{used_test_dir}"
 
         '''
         後來覺得 use_range 應該要從 exp 裡面 抓， 所以就把 Result 和 See 的 use_range 拿掉囉～～

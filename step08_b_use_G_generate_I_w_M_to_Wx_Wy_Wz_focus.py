@@ -13,6 +13,7 @@ from matplot_fig_ax_util import Matplot_single_row_imgs
 import matplotlib.pyplot as plt
 import datetime
 import pdb
+import os
 
 ####################################################################################################
 def use_model(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
@@ -38,11 +39,11 @@ def use_model(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training
     I_w_M_01 = I_w_M_01[0].numpy()
     return W_raw_01, I_w_M_01, Wgt_01, Mgt_pre
 
-def I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see(model_G, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, add_loss=False, bgr2rgb=True):
+def I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see(model_G, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
-    if  (phase == "see"):  used_sees = exp_obj.result_obj.sees
-    elif(phase == "test"): used_sees = exp_obj.result_obj.tests
+    if  (phase == "train"): used_sees = exp_obj.result_obj.sees
+    elif(phase == "test"):  used_sees = exp_obj.result_obj.tests
     private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
     '''
@@ -83,13 +84,15 @@ def I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see(model_G, phase, index, in_img, in_img_pre,
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
 
-        np.save    (private_write_dir + "/" + "0b_u1b1-gt_W",      Wgt_01)
+        if(npz_save is False): np.save            (private_write_dir + "/" + "0b_u1b1-gt_W", Wgt_01)
+        if(npz_save is True ): np.savez_compressed(private_write_dir + "/" + "0b_u1b1-gt_W", Wgt_01)
         cv2.imwrite(private_write_dir + "/" + "0b_u1b2-gt_W.jpg",  Wgt_visual)
         cv2.imwrite(private_write_dir + "/" + "0b_u1b3-gt_Wx.jpg", Wxgt_visual)
         cv2.imwrite(private_write_dir + "/" + "0b_u1b4-gt_Wy.jpg", Wygt_visual)
         cv2.imwrite(private_write_dir + "/" + "0b_u1b5-gt_Wz.jpg", Wzgt_visual)
         cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",   rec_hope)
-    np.save(    private_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt"             % current_ep, W_w_Mgt_01)
+    if(npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt" % current_ep, W_w_Mgt_01)
+    if(npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt" % current_ep, W_w_Mgt_01)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2-W_raw_visual.jpg"    % current_ep, W_raw_visual)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3-W_w_Mgt_visual.jpg"  % current_ep, W_w_Mgt_visual)
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4-Wx_raw_visual.jpg"   % current_ep, Wx_raw_visual)
@@ -114,27 +117,35 @@ def I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see(model_G, phase, index, in_img, in_img_pre,
         single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
         print("save to:", exp_obj.result_obj.test_write_dir)
 
-        ### W_01 back to W then + M
-        gt_min = exp_obj.db_obj.db_gt_range.min
-        gt_max = exp_obj.db_obj.db_gt_range.max
-        W = W_w_Mgt_01 * (gt_max - gt_min) + gt_min
-        if(exp_obj.db_obj.get_method.value == "in_dis_gt_wc_try_mul_M"): W = W * Mgt_pre
-        WM = np.concatenate([W, Mgt_pre], axis=-1)
-        ### 確認寫得對不對
-        # fig, ax = plt.subplots(1, 2)
-        # ax[0].imshow(W_01)
-        # ax[1].imshow(W - gt_min)
-        # print(W.max())
-        # print(W.min())
-        # plt.show()
+        if(phase == "test"):
+            ### W_01 back to W then + M
+            gt_min = exp_obj.db_obj.db_gt_range.min
+            gt_max = exp_obj.db_obj.db_gt_range.max
+            W = W_w_Mgt_01 * (gt_max - gt_min) + gt_min
+            if(exp_obj.db_obj.get_method.value == "in_dis_gt_wc_try_mul_M"): W = W * Mgt_pre
+            WM = np.concatenate([W, Mgt_pre], axis=-1)
+            ### 確認寫得對不對
+            # fig, ax = plt.subplots(1, 2)
+            # ax[0].imshow(W_01)
+            # ax[1].imshow(W - gt_min)
+            # print(W.max())
+            # print(W.min())
+            # plt.show()
 
-        gather_WM_npy_dir  = f"{public_write_dir}/pred_WM_{phase}-{current_time}/WM_npy"
-        gather_WM_knpy_dir = f"{public_write_dir}/pred_WM_{phase}-{current_time}/WM_knpy"
-        Check_dir_exist_and_build(gather_WM_npy_dir)
-        Check_dir_exist_and_build(gather_WM_knpy_dir)
+            ### 定位出 存檔案的位置
+            gather_WM_npy_dir  = f"{public_write_dir}/pred_WM_{phase}-{current_time}/WM_npy_then_npz"
+            gather_WM_knpy_dir = f"{public_write_dir}/pred_WM_{phase}-{current_time}/WM_knpy"
+            Check_dir_exist_and_build(gather_WM_npy_dir)
+            Check_dir_exist_and_build(gather_WM_knpy_dir)
 
-        WM_npy_path  = f"{gather_WM_npy_dir}/{current_see_name}_pred.npy"
-        WM_knpy_path = f"{gather_WM_knpy_dir}/{current_see_name}_pred.knpy"
-        np.save(WM_npy_path, WM)
-        Save_npy_path_as_knpy(WM_npy_path, WM_knpy_path)
-        # breakpoint()
+            ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
+            WM_npy_path  = f"{gather_WM_npy_dir}/{current_see_name}_pred.npy"
+            WM_knpy_path = f"{gather_WM_knpy_dir}/{current_see_name}_pred.knpy"
+            np.save(WM_npy_path, WM)
+            Save_npy_path_as_knpy(WM_npy_path, WM_knpy_path)
+
+            ### .npy刪除(因為超占空間) 改存 .npz
+            np.savez_compressed(WM_npy_path.replace(".npy", ".npz"), WM)
+            os.remove(WM_npy_path)
+
+            # breakpoint()

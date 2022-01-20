@@ -20,7 +20,10 @@ Data_Access_Dir  = f"{kong_model2_dir}/data_dir/"    ### 通常是 讀取速度�
 Result_Read_Dir  = f"{kong_model2_dir}/data_dir/"    ### 通常是 大容量的機械式硬碟，127.35 是 2T 機械式硬碟
 Result_Write_Dir = f"{kong_model2_dir}/data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
 
-Analyze_Write_Dir = f"{kong_model2_dir}/data_dir/"    ### 通常是 有碎片也沒差的SSD，127.35 是 400GB SSD， 弄完再剪下貼上 到 大容量的硬碟
+# Analyze_Read_Dir   =  "H:/data_dir/"
+# Analyze_Write_Dir  =  "H:/data_dir/"
+Analyze_Read_Dir  =  f"{kong_model2_dir}/data_dir/"
+Analyze_Write_Dir = f"{kong_model2_dir}/data_dir/"
 
 JPG_QUALITY = 30
 CORE_AMOUNT = 6

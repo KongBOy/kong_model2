@@ -26,7 +26,7 @@ import step09_g3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus
 import time
 start_time = time.time()
 ''' I_to_Wxyz 固定， 變動 W_to_Cxy '''
-Use_what_Model = step09_g2_multi_unet2_obj_I_w_Mgt_to_Wx_Wy_Wz_focus.block1_L5_ch064_sig
+Use_what_Model = step09_g2_multi_unet2_obj_I_w_Mgt_to_Wx_Wy_Wz_focus.block1_L6_ch016_sig
 ###############################################################################################################################
 block1_L2_ch128_sig = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus", I_to_Wx_Wy_Wz=Use_what_Model, W_to_Cx_Cy=step09_g3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus.block1_L2_ch128_sig).set_gen_op(I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see).set_train_step(train_step_Multi_output_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus)
 block1_L2_ch064_sig = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus", I_to_Wx_Wy_Wz=Use_what_Model, W_to_Cx_Cy=step09_g3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus.block1_L2_ch064_sig).set_gen_op(I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see).set_train_step(train_step_Multi_output_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus)

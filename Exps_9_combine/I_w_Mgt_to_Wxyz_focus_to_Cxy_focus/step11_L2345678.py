@@ -53,7 +53,7 @@ Layer2345678_Ch = [
      block1.L4_ch002.build().result_obj,
      block1.L4_ch001.build().result_obj],
 
-    [# block1.L5_ch128.build().result_obj,
+    [block1.L5_ch128.build().result_obj,
      block1.L5_ch064.build().result_obj,
      block1.L5_ch032.build().result_obj,
      block1.L5_ch016.build().result_obj,
@@ -63,7 +63,7 @@ Layer2345678_Ch = [
      block1.L5_ch001.build().result_obj],
 
     [block1_limit.L6_ch128_limit.build().result_obj,
-     # block1.L6_ch064.build().result_obj,
+     block1.L6_ch064.build().result_obj,
      block1.L6_ch032.build().result_obj,
      block1.L6_ch016.build().result_obj,
      block1.L6_ch008.build().result_obj,
