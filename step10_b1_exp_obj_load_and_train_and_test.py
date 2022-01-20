@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 import time
 import datetime
-from step0_access_path import Syn_write_to_read_dir, Result_Read_Dir, Result_Write_Dir, kong_model2_dir
+from step0_access_path import Syn_write_to_read_dir, Result_Read_Dir, Result_Write_Dir, kong_model2_dir, JPG_QUALITY
 from step06_a_datas_obj import *
 from step06_b_data_pipline import tf_Data_builder
 from step10_a2_loss_info_obj import *
@@ -12,6 +12,7 @@ from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
 from util import time_util, get_dir_certain_file_names
+from build_dataset_combine import Save_as_jpg, Find_ltrd_and_crop
 
 from tqdm import tqdm
 
@@ -207,7 +208,7 @@ class Experiment():
             if(self.current_ep == 0): print("Initializing Model~~~")  ### sample的時候就會initial model喔！
             ###############################################################################################################################
             ###     step1 用來看目前訓練的狀況
-            self.train_step1_see_current_img(training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+            self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
             ###############################################################################################################################
             ### 以上 current_ep = epoch   ### 代表還沒訓練
             ###     step2 訓練
@@ -246,11 +247,10 @@ class Experiment():
             if(self.current_ep == self.epoch_stop): break   ### 想要有lr 下降，但又不想train滿 中途想離開就 設 epcoh_stop 囉！
 
         ### 最後train完 記得也要看結果喔！
-        self.train_step1_see_current_img(training=self.exp_bn_see_arg)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+        self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
     def testing(self, add_loss=False, bgr2rgb=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
-        Check_dir_exist_and_build_new_dir(self.result_obj.test_write_dir)
         for test_index, (test_in, test_in_pre, test_gt, test_gt_pre, test_name, rec_hope) in enumerate(tqdm(zip(self.tf_data.test_in_db.batch(1)          .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_in_db_pre .batch(1)     .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_gt_db.batch(1)          .take(self.tf_data.test_amount),
@@ -258,10 +258,10 @@ class Experiment():
                                                                                                                 self.tf_data.test_name_db.batch(1)        .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.rec_hope_test_db.batch(1)    .take(self.tf_data.test_amount)))):
             # self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
-            self.model_obj.generate_sees  (self.model_obj.generator, "test", test_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, self, training=False, see_reset_init=True, postprocess=True)
+            self.model_obj.generate_sees  (self.model_obj.generator, "test", test_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, self, training=False, see_reset_init=True, postprocess=True, npz_save=True)
         Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir, read_dir=self.result_obj.test_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
 
-    def train_step1_see_current_img(self, training=False, see_reset_init=False, postprocess=False):
+    def train_step1_see_current_img(self, phase="train", training=False, see_reset_init=False, postprocess=False, npz_save=False):
         """
         current_ep      目前 model 正處在 被更新了幾次epoch 的狀態
         training：      可以設定 bn 的動作為 train 還是 test，當batch_size=1時，設為True可以模擬IN，設False圖會壞掉！也可由此得知目前的任務是適合用BN的
@@ -277,10 +277,10 @@ class Experiment():
                                                                                                            self.tf_data.see_name_db.batch(1)        ,
                                                                                                            self.tf_data.rec_hope_see_db_pre.batch(1)))):
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator , "see", see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, self.result_obj.result_write_dir, self, see_reset_init, postprocess=postprocess)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , "see", see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess)
-            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, "see", see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, see_reset_init, postprocess=postprocess)
-            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , "see", see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, see_reset_init, postprocess=postprocess)
+                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, self.result_obj.result_write_dir, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save)
+            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)
+            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
@@ -342,15 +342,24 @@ class Experiment():
             f.write("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1)))))        ; f.write("\n")
             f.write("\n")
 
-    def test_see(self):
-        """
-        用最後儲存的 Model 來產生see～
-        也常常拿來 reset in/gt see 喔！
-        想設定 testing 時的 bn 使用的 training arg 的話， 麻煩用 exp.exp_bn_see_arg 來指定， 因為要用test_see 就要先建exp， 就統一寫在exp裡 個人覺得比較連貫， 因此 就不另外開一個 arg 給 test_see 用囉！
-        """
+    def train_run_final_see(self):
         self.exp_init(reload_result=True, reload_model=True)
-        self.train_step1_see_current_img(training=self.exp_bn_see_arg, see_reset_init=True, postprocess=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, see_reset_init=True, postprocess=True, npz_save=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        Find_ltrd_and_crop   (self.result_obj.result_write_dir, self.result_obj.result_write_dir, padding=15, search_amount=2, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
+        Save_as_jpg          (self.result_obj.result_write_dir, self.result_obj.result_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完
+        Syn_write_to_read_dir(write_dir=self.result_obj.result_write_dir, read_dir=self.result_obj.result_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
         print("test see finish")
+
+    # def test_see(self):
+    #     """
+    #     用最後儲存的 Model 來產生see～
+    #     也常常拿來 reset in/gt see 喔！
+    #     想設定 testing 時的 bn 使用的 training arg 的話， 麻煩用 exp.exp_bn_see_arg 來指定， 因為要用test_see 就要先建exp， 就統一寫在exp裡 個人覺得比較連貫， 因此 就不另外開一個 arg 給 test_see 用囉！
+    #     """
+    #     self.exp_init(reload_result=True, reload_model=True)
+    #     self.train_step1_see_current_img(phase="test", training=False, see_reset_init=True, postprocess=True, npz_save=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+    #     Syn_write_to_read_dir(write_dir=self.result_obj.result_write_dir, read_dir=self.result_obj.result_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
+    #     print("test see finish")
 
     def test(self, test_db_name="test"):  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         """
@@ -377,9 +386,11 @@ class Experiment():
         self.machine_user = getpass.getuser()                           ### 取得 本機 User 給 train_step5_show_time 紀錄
         if  (self.phase == "train"):          self.train()
         elif(self.phase == "train_reload"):   self.train_reload()
+        elif(self.phase == "train_run_final_see"): self.train_run_final_see()
         elif(self.phase == "train_indicate"): pass  ### 待完成Z
         elif("test" in self.phase):
-            if(self.phase == "test_see"): self.test_see()
+            # if(self.phase == "test_see"): self.test_see()
+            if(self.phase == "test_see"): self.test(test_db_name="see")
             else:                         self.test(test_db_name=self.phase)  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         elif(self.phase == "board_rebuild"):  self.board_rebuild()
         elif(self.phase == "copy_ckpt"): self.copy_ckpt()
