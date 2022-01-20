@@ -74,7 +74,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L7_ch008.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch004.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch002.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch032.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch032.{run}"])  ### 訓練超出記憶體
 # sb.run(cmd_python_step10_a + [f"L7_ch001.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"L8_ch008.{run}"])
