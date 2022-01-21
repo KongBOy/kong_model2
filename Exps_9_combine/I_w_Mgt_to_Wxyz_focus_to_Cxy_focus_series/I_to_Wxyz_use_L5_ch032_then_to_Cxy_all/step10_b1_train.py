@@ -60,7 +60,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch032.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch064.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch128.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch128.{run}"])  ### 訓練 超出GPU記憶體
 
 # sb.run(cmd_python_step10_a + [f"L6_ch004.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch008.{run}"])
