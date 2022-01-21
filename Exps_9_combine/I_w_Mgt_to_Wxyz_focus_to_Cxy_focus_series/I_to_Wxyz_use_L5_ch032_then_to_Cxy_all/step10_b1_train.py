@@ -68,7 +68,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L6_ch002.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch032.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch064.{run}"])
+sb.run(cmd_python_step10_a + [f"L6_ch064.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"L7_ch002.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch004.{run}"])
@@ -83,7 +83,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L8_ch001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch016.{run}"])
 #########################################################
-# sb.run(cmd_python_step10_a + [f"L6_ch128_limit.{run}"])
+sb.run(cmd_python_step10_a + [f"L6_ch128_limit.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"L7_ch064_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch128_limit.{run}"])
