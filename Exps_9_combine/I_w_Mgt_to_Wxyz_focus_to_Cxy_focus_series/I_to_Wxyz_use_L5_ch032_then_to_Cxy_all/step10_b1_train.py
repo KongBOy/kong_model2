@@ -85,8 +85,8 @@ sb.run(cmd_python_step10_a + [f"L6_ch064.{run}"])
 #########################################################
 sb.run(cmd_python_step10_a + [f"L6_ch128_limit.{run}"])
 
-sb.run(cmd_python_step10_a + [f"L7_ch064_limit.{run}"])
-sb.run(cmd_python_step10_a + [f"L7_ch128_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch064_limit.{run}"])
+# sb.run(cmd_python_step10_a + [f"L7_ch128_limit.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"L8_ch032_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch064_limit.{run}"])
