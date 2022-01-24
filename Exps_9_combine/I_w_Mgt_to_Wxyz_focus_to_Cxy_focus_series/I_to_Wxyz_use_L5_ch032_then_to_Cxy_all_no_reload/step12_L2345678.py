@@ -92,5 +92,3 @@ if(__name__ == "__main__"):
                                         row_col_results=block1_mask_L2345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             .Gather_all_see_final_img()
-
-
