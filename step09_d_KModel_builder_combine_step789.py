@@ -18,6 +18,16 @@ class KModel:
 
         self.ckpt             = None
 
+        self.discriminator    = None
+        # self.D_Cxy            = None
+        # self.D_Wxyz           = None
+        self.optimizer_D      = None  ### 目前思考起來 Discriminator 不能單獨存在， 一定要依附 G 才能訓練， 所以綁在這裡
+        # self.optimizer_D_Cxy  = None  ### 目前思考起來 Discriminator 不能單獨存在， 一定要依附 G 才能訓練， 所以綁在這裡
+        # self.optimizer_D_Wxyz = None  ### 目前思考起來 Discriminator 不能單獨存在， 一定要依附 G 才能訓練， 所以綁在這裡
+        self.ckpt_D           = None
+        # self.ckpt_D_Cxy       = None
+        # self.ckpt_D_Wxyz      = None
+
         self.train_step       = None
 
         self.generate_results = None
@@ -26,7 +36,9 @@ class KModel:
 
     def __str__(self):
         print("model_name:", self.model_name)
-        print("generator:", self.__dict__)
+        for key, value in self.__dict__.items():
+            print(f"    {key}: {value}")
+        # print("generator:", self.__dict__)
         return ""
 
 class KModel_init_builder:
@@ -61,15 +73,22 @@ class KModel_init_builder:
     #     return self.kong_model
 
 
-class G_Ckpt_op_builder(KModel_init_builder):
-    def _build_ckpt_part(self):
+class Ckpt_op_builder(KModel_init_builder):
+    def _build_G_ckpt_part(self):
         ### 建立 tf 存模型 的物件： checkpoint物件
         self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
                                                    optimizer_G=self.kong_model.optimizer_G,
                                                    epoch_log=self.kong_model.epoch_log)
-        print("ckpt finish")
+        print("ckpt_G finish")
 
-class G_Unet_Body_builder(G_Ckpt_op_builder):
+    def _build_D_ckpt_part(self):
+        ### 建立 tf 存模型 的物件： checkpoint物件
+        self.kong_model.ckpt_D = tf.train.Checkpoint(discriminator=self.kong_model.discriminator,
+                                                     optimizer_D=self.kong_model.optimizer_D,
+                                                     epoch_log=self.kong_model.epoch_log)
+        print("ckpt_D finish")
+
+class G_Unet_Body_builder(Ckpt_op_builder):
     def set_unet(self, hid_ch=64, depth_level=7, true_IN=False, use_bias=True, no_concat_layer=0,
                  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False,
                  skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
@@ -103,7 +122,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
             print("build_unet", "finish")
 
         self.build_ops.append(_build_unet_body_part)
-        self.build_ops.append(self._build_ckpt_part)
+        self.build_ops.append(self._build_G_ckpt_part)
         return self
 
     def set_unet2(self, hid_ch=64, depth_level=7, out_ch=3, no_concat_layer=0,
@@ -150,7 +169,27 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
             print("build_unet", "finish")
 
         self.build_ops.append(_build_unet_body_part)  ### 先
-        self.build_ops.append(self._build_ckpt_part)  ### 後
+        self.build_ops.append(self._build_G_ckpt_part)  ### 後
+        return self
+
+    def set_D_Cxy(self, D_first_concat=True,
+                        D_kernel_size=4):
+        d_args = {
+            "D_first_concat"  : D_first_concat,
+            "D_kernel_size"   : D_kernel_size}
+
+        def _build_disc_body_part():
+            ### model_part
+            ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
+            from step07_b_2_Rect2 import Discriminator
+            self.kong_model.discriminator   = Discriminator(**d_args)
+            self.kong_model.D_Cxy           = self.kong_model.discriminator
+            self.kong_model.optimizer_D     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+            self.kong_model.optimizer_D_Cxy = self.kong_model.optimizer_D
+            print("build_unet", "finish")
+
+        self.build_ops.append(_build_disc_body_part)
+        self.build_ops.append(self._build_D_ckpt_part)
         return self
 
     def set_multi_model_builders(self, op_type, **model_builders_dict):
@@ -175,7 +214,7 @@ class G_Unet_Body_builder(G_Ckpt_op_builder):
             print("build_multi_unet", "finish")
 
         self.build_ops.append(_build_multi_unet_body_part)  ### 先
-        self.build_ops.append(self._build_ckpt_part)  ### 後
+        self.build_ops.append(self._build_G_ckpt_part)  ### 後
         return self
 
 class Old_model_and_512_256_Unet_builder(G_Unet_Body_builder):
@@ -227,7 +266,7 @@ class Old_model_and_512_256_Unet_builder(G_Unet_Body_builder):
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
             self._hook_Gen_op_part()
-            self._build_ckpt_part()
+            self._build_G_ckpt_part()
             print("build_flow_rect_7_level", "finish")
             return self.kong_model
         self.build_ops.append(_build_flow_rect_7_level)
@@ -255,7 +294,7 @@ class Old_model_and_512_256_Unet_builder(G_Unet_Body_builder):
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
             self._hook_Gen_op_part()
-            self._build_ckpt_part()
+            self._build_G_ckpt_part()
             print("build_flow_rect", "finish")
             return self.kong_model
         self.build_ops.append(_build_flow_rect)

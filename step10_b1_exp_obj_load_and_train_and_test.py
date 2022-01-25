@@ -111,6 +111,8 @@ class Experiment():
         self.tf_data      = None
         self.ckpt_read_manager  = None
         self.ckpt_write_manager = None
+        self.ckpt_D_read_manager  = None
+        self.ckpt_D_write_manager = None
 
 ################################################################################################################################################
 ################################################################################################################################################
@@ -125,6 +127,15 @@ class Experiment():
                 ckpt_read_manager = tf.train.CheckpointManager(little_model_loader, little_model_path, max_to_keep=1)
                 little_model_loader.restore(ckpt_read_manager.latest_checkpoint)
                 print(f"{model_type} load ckpt from:{ckpt_read_manager.latest_checkpoint}")
+
+            if( self.model_obj.discriminator is not None):
+                for model_type, discriminator in self.model_obj.discriminator.disc_dict.items():
+                    little_model_D_loader = tf.train.Checkpoint(discriminator=discriminator)
+                    little_model_D_path   = self.multi_model_reload_exp_builders_dict[model_type].build().result_obj.ckpt_D_read_dir
+                    print(f"little_model_D_path: {little_model_D_path}")
+                    ckpt_D_read_manager = tf.train.CheckpointManager(little_model_D_loader, little_model_D_path, max_to_keep=1)
+                    little_model_D_loader.restore(ckpt_D_read_manager.latest_checkpoint)
+                    print(f"{model_type} load ckpt from:{ckpt_D_read_manager.latest_checkpoint}")
         self.db_obj = self.db_builder.build()
         # print("self.model_obj", self.model_obj)  ### 檢查 KModel 有沒有正確的建立出來
 
@@ -140,8 +151,12 @@ class Experiment():
         ### 3.model
         self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
         self.ckpt_write_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_write_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
+        if( self.model_obj.discriminator is not None):
+            self.ckpt_D_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt_D, directory=self.result_obj.ckpt_D_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
+            self.ckpt_D_write_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt_D, directory=self.result_obj.ckpt_D_write_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
         if(reload_model):  ### 看需不需要reload model
             self.model_obj.ckpt.restore(self.ckpt_read_manager.latest_checkpoint)
+            if(self.model_obj.discriminator is not None): self.model_obj.ckpt_D.restore(self.ckpt_D_read_manager.latest_checkpoint)
             self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
             self.current_ep  = self.start_epoch
             print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
@@ -204,6 +219,7 @@ class Experiment():
             ###    step0 設定learning rate
             self.lr_current = self.lr_start if self.current_ep < self.epoch_down_step else self.lr_start * (self.epochs - self.current_ep) / (self.epochs - self.epoch_down_step)
             self.model_obj.optimizer_G.lr = self.lr_current
+            if(self.model_obj.optimizer_D is not None): self.model_obj.optimizer_D.lr = self.lr_current
             ###############################################################################################################################
             if(self.current_ep == 0): print("Initializing Model~~~")  ### sample的時候就會initial model喔！
             ###############################################################################################################################
@@ -226,6 +242,7 @@ class Experiment():
                 # print("save epoch_log :", current_ep)
                 self.model_obj.ckpt.epoch_log.assign(self.current_ep)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
                 self.ckpt_write_manager.save()
+                if(self.model_obj.discriminator is not None): self.ckpt_D_write_manager.save()
                 print("save ok ~~~~~~~~~~~~~~~~~")
             ###############################################################################################################################
             ###    step5 紀錄、顯示 訓練相關的時間

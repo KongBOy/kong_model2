@@ -128,6 +128,8 @@ class Result_train_builder(Result_sees_builder):
         self.result.result_write_dir = Result_Write_Dir + "result/" + result_name
         self.result.ckpt_read_dir    = self.result.result_read_dir + "/ckpt"
         self.result.ckpt_write_dir   = self.result.result_write_dir + "/ckpt"
+        self.result.ckpt_D_read_dir  = self.result.result_read_dir  + "/ckpt_D"
+        self.result.ckpt_D_write_dir = self.result.result_write_dir + "/ckpt_D"
         self.result.logs_read_dir  = self.result.result_read_dir + "/logs"
         self.result.logs_write_dir = self.result.result_write_dir + "/logs"
         self.result.train_code_read_dir  = self.result.result_read_dir  + f"/train_code_{self.current_time}"

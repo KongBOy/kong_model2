@@ -187,6 +187,18 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
         self.loss_info_obj.loss_containors["tv" ] = tf.keras.metrics.Mean(name='tv', dtype=tf.float32)
         return self
 
+    ### 10 ################################################################################################################################################
+    def build_GAN_loss_fun_and_containor(self):
+        loss_describe = "GAN_s%03i" % self.args["GAN_scale"]
+        self._update_loss_describe(loss_describe)
+        self.loss_info_obj.loss_funs_dict ["BCE_D_fake"] = BCE(bce_scale=self.args["GAN_scale"], **self.args)
+        self.loss_info_obj.loss_containors["BCE_D_fake"] = tf.keras.metrics.Mean(name='2_D_fake', dtype=tf.float32)
+        self.loss_info_obj.loss_funs_dict ["BCE_D_real"] = BCE(bce_scale=self.args["GAN_scale"], **self.args)
+        self.loss_info_obj.loss_containors["BCE_D_real"] = tf.keras.metrics.Mean(name='1_D_real', dtype=tf.float32)
+        self.loss_info_obj.loss_funs_dict ["BCE_G_to_D"] = BCE(bce_scale=self.args["GAN_scale"], **self.args)
+        self.loss_info_obj.loss_containors["BCE_G_to_D"] = tf.keras.metrics.Mean(name='3_G_to_D', dtype=tf.float32)
+        return self
+
     ### 5 ################################################################################################################################################
     # def build_bce_and_sobel_mae_loss_fun_and_containor(self):
     #     ''' 因為命名關係，要注意先後順序喔 '''
@@ -260,10 +272,13 @@ class Loss_info_builder(Loss_info_G_loss_builder):
             self.build_sobel_mae_loss_fun_and_containor()
             self.build_tv_loss_fun_and_containor()
 
-        elif(self.loss_info_obj.loss_type == "justG"):            self.build_gan_loss()
-        elif(self.loss_info_obj.loss_type == "GAN"):              self.build_gan_loss_containors()
+        elif(self.loss_info_obj.loss_type == "justG"): self.build_gan_loss()
+        # elif(self.loss_info_obj.loss_type == "GAN"):   self.build_gan_loss_containors()
+        elif(self.loss_info_obj.loss_type == "GAN"):   self.build_GAN_loss_fun_and_containor()
 
         return self.loss_info_obj
+
+GAN_s001_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  1)
 
 ### 並不是 model 決定 Loss， 而是由 我想 怎麼設計決定，
 # 所以 不能只寫 build_by_model_name，也要寫 我自己指定的method

@@ -21,12 +21,19 @@ tf.keras.backend.set_floatx('float32')  ### 這步非常非常重要！用了才
 #     normalized = (in_x-mean)*inv
 #     return scale*normalized + offset
 
-
+def Use_what_nrom(norm):
+    if  (norm == "bn"): return BatchNormalization(epsilon=1e-05, momentum=0.1, name="bn")  ### b_in_channel:64
+    elif(norm == "in"): return InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="in")
 
 class Discriminator(tf.keras.models.Model):
-    def __init__(self, D_first_concat=True, use_what_IN=InstanceNorm_kong, D_kernel_size=4, **kwargs):
+    def __init__(self, D_first_concat=True, norm="in", D_kernel_size=4, out_acti="sigmoid", **kwargs):
         super(Discriminator, self).__init__(**kwargs)
-
+        '''
+        norm: bn/ in
+        out_acti: tanh/ relu/ sigmoid
+        '''
+        self.norm = norm
+        self.out_acti = out_acti
         self.D_first_concat = D_first_concat
         if(self.D_first_concat):
             self.concat = Concatenate()
@@ -38,30 +45,32 @@ class Discriminator(tf.keras.models.Model):
         self.leaky_lr1 = LeakyReLU(alpha=0.2)
 
         self.conv_2 = Conv2D(64 * 2, kernel_size=self.D_kernel_size, strides=2, padding="same")
-        self.in_c2   = use_what_IN()
+        self.in_c2   = Use_what_nrom(self.norm)
         self.leaky_lr2 = LeakyReLU(alpha=0.2)
 
         self.conv_3 = Conv2D(64 * 4, kernel_size=self.D_kernel_size, strides=2, padding="same")
-        self.in_c3   = use_what_IN()
+        self.in_c3   = Use_what_nrom(self.norm)
         self.leaky_lr3 = LeakyReLU(alpha=0.2)
 
         self.conv_4 = Conv2D(64 * 8, kernel_size=self.D_kernel_size, strides=2, padding="same")
-        self.in_c4   = use_what_IN()
+        self.in_c4   = Use_what_nrom(self.norm)
         self.leaky_lr4 = LeakyReLU(alpha=0.2)
 
         self.conv_map = Conv2D(1   , kernel_size=self.D_kernel_size, strides=1, padding="same")
+        if(self.out_acti == "tanh"):    self.tanh    = Activation(tf.nn.tanh,    name="out_tanh")
+        if(self.out_acti == "relu"):    self.tanh    = Activation(tf.nn.relu,    name="out_relu")
+        if(self.out_acti == "sigmoid"): self.sigmoid = Activation(tf.nn.sigmoid, name="out_sigmoid")
 
-
-    def call(self, dis_img, gt_img):
-        # print("dis_img",dis_img.shape)
+    def call(self, in_data, gt_img=None, training=None):
+        # print("in_data",in_data.shape)
         # print("gt_img",gt_img.shape)
 
         if(self.D_first_concat):
-            concat_img = self.concat([dis_img, gt_img])
+            concat_img = self.concat([in_data, gt_img])
             # print("concat_img",concat_img.shape)
             x = self.conv_1(concat_img)
         else:
-            x = self.conv_1(dis_img)
+            x = self.conv_1(in_data)
         x = self.leaky_lr1(x)
         # x = tf.nn.leaky_relu(x, alpha=0.2)
 
@@ -79,7 +88,11 @@ class Discriminator(tf.keras.models.Model):
         x = self.in_c4(x)
         x = self.leaky_lr4(x)
         # x = tf.nn.leaky_relu(x, alpha=0.2)
-        return self.conv_map(x)
+        final_x = self.conv_map(x)
+
+        if  (self.out_acti == "tanh"):    return self.tanh(final_x)
+        elif(self.out_acti == "sigmoid"): return self.sigmoid(final_x)
+
 
 ### 應該是參考 CycleGAN 的 Generator
 class Generator(tf.keras.models.Model):
@@ -402,7 +415,7 @@ if(__name__ == "__main__"):
 
     ### 2. db_obj 和 tf_data
     db_obj = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book , DB_N.os_book_800data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", gt_format="jpg").set_detail(have_train=True, have_see=True).build()
-    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
     GAN_mae_loss_info = Loss_info_builder().build_gan_loss().build_gan_loss_containors().build()
