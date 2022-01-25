@@ -53,7 +53,7 @@ block1_mask_L2345678 = [
         mae_block1.L4_ch002.build().result_obj,
         mae_block1.L4_ch001.build().result_obj],
     [
-        mae_block1.L5_ch128.build().result_obj,
+        mae_block1.L5_ch128_limit.build().result_obj,
         mae_block1.L5_ch064.build().result_obj,
         mae_block1.L5_ch032.build().result_obj,
         mae_block1.L5_ch016.build().result_obj,
