@@ -7,7 +7,6 @@ class Multi_Generator(tf.keras.models.Model):
         super(Multi_Generator, self).__init__(**kwargs)
         self.gens_dict = gens_dict
         self.op_type = op_type
-        print("here~~")
 
     def call(self, input_tensor, Mask=None, training=None):
         if  (self.op_type == "I_to_M_and_C"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
