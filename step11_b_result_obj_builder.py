@@ -3,7 +3,7 @@ from step06_a_datas_obj import DB_C
 from step11_a1_see_obj import See
 from step11_a2_result_obj import Result
 import datetime
-from kong_util.util import get_dir_img_file_names
+from kong_util.util import get_dir_img_file_names, get_dir_certain_file_names
 class Result_init_builder:
     def __init__(self, result=None):
         self.current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -53,8 +53,13 @@ class Result_sees_builder(Result_init_builder):
         # print("3. at see", self.result.result_name, ", self.result.use_gt_range~~~~~~~~~~~~~~~", self.result.use_gt_range)
 
     def _build_tests(self, db_obj):
+        '''
+        網路的輸入不是只有 img， 也有可能輸入 wc 喔！ 所以如果用 get_dir_img_file_names 抓不到東西， 代表輸入應該是 wc拉！ 要抓.knpy喔～
+        '''
         self.result.test_amount = len( get_dir_img_file_names(db_obj.test_in_dir) )
-        
+        if(self.result.test_amount == 0): self.result.test_amount += len( get_dir_certain_file_names(db_obj.test_in_dir, certain_word=".knpy") )
+        # print("self.result.test_amount", self.result.test_amount)
+
         used_see_dir = db_obj.test_db_name
         if(db_obj.test_db_name == "see"): used_see_dir = "test_" + used_see_dir
         self.result.tests = [ See(self.result, used_see_dir + "/test_%03i" % test_i) for test_i in range(self.result.test_amount)]
