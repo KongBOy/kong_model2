@@ -7,7 +7,7 @@ from step10_a1_loss import *
 會想把 train_step 獨立一個.py 寫 function， 還不包成 class 的原因是：
     因為 有些架構 用 的 train_step 是一樣的， 所以 先只寫成 function， 給各個架構掛上去
 '''
-@tf.function
+# @tf.function
 def train_step_Cxy_GAN(model_obj, in_data, gt_data, loss_info_objs=None):
     in_Mask  = in_data[..., 3:4]
     in_W     = in_data[..., 0:3]
@@ -31,11 +31,23 @@ def train_step_Cxy_GAN(model_obj, in_data, gt_data, loss_info_objs=None):
         fake_score_gt0 = tf.zeros_like(fake_score, dtype=tf.float32)
         real_score_gt1 = tf.ones_like (real_score, dtype=tf.float32)
 
-        BCE_D_fake = loss_info_objs[2].loss_funs_dict["BCE_D_fake"](fake_score, fake_score_gt0)
-        BCE_D_real = loss_info_objs[2].loss_funs_dict["BCE_D_real"](real_score, real_score_gt1)
+        BCE_D_fake = loss_info_objs[2].loss_funs_dict["BCE_D_fake"](fake_score_gt0, fake_score)
+        BCE_D_real = loss_info_objs[2].loss_funs_dict["BCE_D_real"](real_score_gt1, real_score)
         D_total_loss = (BCE_D_fake + BCE_D_real) / 2
     grad_D = D_tape.gradient(D_total_loss, model_obj.discriminator.trainable_weights)
     model_obj.optimizer_D.apply_gradients(zip(grad_D, model_obj.discriminator.trainable_weights))
+
+    # import numpy as np
+    # print(fake_score)
+    # print(-1 * np.log(1 - fake_score + 0.0001))
+    # print(np.mean(-1 * np.log(1 - fake_score + 0.0001)))
+
+    # print("BCE_D_fake", BCE_D_fake)
+    # print(loss_info_objs[2].loss_funs_dict["BCE_D_fake"](fake_score_gt0, fake_score))
+    # print(loss_info_objs[2].loss_funs_dict["BCE_D_fake"](fake_score, fake_score_gt0))
+    # import matplotlib.pyplot as plt
+    # plt.imshow(fake_score[0])
+    # plt.show()
 
     ### 更新完D 後 訓練 Generator， 所以應該要重新丟一次資料進去G
     with tf.GradientTape(persistent=True) as G_tape:
@@ -53,7 +65,7 @@ def train_step_Cxy_GAN(model_obj, in_data, gt_data, loss_info_objs=None):
         C_pre_w_M = C_pre_raw * in_Mask
         fake_score = model_obj.discriminator(C_pre_w_M)
         fake_score_gt1 = tf.ones_like(fake_score, dtype=tf.float32)
-        BCE_G_to_D = loss_info_objs[2].loss_funs_dict["BCE_G_to_D"](fake_score, fake_score_gt1)
+        BCE_G_to_D = loss_info_objs[2].loss_funs_dict["BCE_G_to_D"](fake_score_gt1, fake_score)
         G_total_loss = BCE_G_to_D + multi_total_loss
         # G_total_loss = multi_total_loss  ### debug 用， 看看 不加 GAN loss 效果如何
     grad_G = G_tape.gradient(G_total_loss, model_obj.generator.trainable_weights)
