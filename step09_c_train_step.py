@@ -7,7 +7,7 @@ from step10_a1_loss import *
 會想把 train_step 獨立一個.py 寫 function， 還不包成 class 的原因是：
     因為 有些架構 用 的 train_step 是一樣的， 所以 先只寫成 function， 給各個架構掛上去
 '''
-# @tf.function
+@tf.function
 def train_step_Cxy_GAN(model_obj, in_data, gt_data, loss_info_objs=None):
     in_Mask  = in_data[..., 3:4]
     in_W     = in_data[..., 0:3]
