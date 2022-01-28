@@ -206,7 +206,7 @@ class tf_Datapipline_factory(img_mapping_util, mov_mapping_util, mask_mapping_ut
 
     ####################################################################################################
     def _build_file_name_db(self):
-        # print("debug _build_file_name_db self.ord_dir:", self.ord_dir)
+        # print("debug _build_file_name_db self.ord_dir:", self.ord_dir + "/" + "*." + self.file_format)
         return tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.file_format, shuffle=False)
 
     def step1_file_paths_to_names(self, file_path):
@@ -1267,7 +1267,7 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
             self.tf_data.see_amount    = get_db_amount(self.tf_data.db_obj.see_in_dir)
 
             ###########################################################################################################################################
-            ### 勿刪！用來測試寫得對不對！
+            ### 勿刪！用來測試寫得對不對！ 這要用sypder開才看的到喔
             # for i, (see_in, see_in_pre, see_gt, see_gt_pre) in enumerate(tf.data.Dataset.zip((self.tf_data.see_in_db.batch(1), self.tf_data.see_in_db_pre.batch(1),
             #                                                                                   self.tf_data.see_gt_db.batch(1), self.tf_data.see_gt_db_pre.batch(1)))):
             #     debug_dict[f"{i}--3-1 see_in"    ] = see_in
@@ -1584,10 +1584,17 @@ if(__name__ == "__main__"):
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    db_obj = type8_blender_dis_wc_flow_try_mul_M.build()
+    db_obj = type8_blender_wc_flow_try_mul_M.build()
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+
+    ''' mask1ch, flow 2ch合併 的形式'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    # db_obj = type8_blender_dis_wc_flow_try_mul_M.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     print(time.time() - start_time)
     print("finish")
