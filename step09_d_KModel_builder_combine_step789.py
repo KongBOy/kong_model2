@@ -173,13 +173,16 @@ class G_Unet_Body_builder(Ckpt_op_builder):
         return self
 
     def set_discriminator_by_exist_builder(self, model_builder):
+        self.kong_model.model_describe_elements += ["&&"] + model_builder.kong_model.model_describe_elements
+        self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
+
         def _build_disc_body_part():
             self.kong_model.discriminator = model_builder.build().discriminator
             self.kong_model.optimizer_D   = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
             print("build_multi_unet", "finish")
 
         self.build_ops.append(_build_disc_body_part)    ### 先
-        self.build_ops.append(self._build_G_ckpt_part)  ### 後
+        self.build_ops.append(self._build_D_ckpt_part)  ### 後
         return self
 
 
@@ -196,6 +199,8 @@ class G_Unet_Body_builder(Ckpt_op_builder):
             "D_first_concat" : D_first_concat,
             "out_acti"       : out_acti
         }
+        self.kong_model.model_describe_elements += ["Disc", "L%i" % depth_level, "ch%03i" % hid_ch]
+        self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
 
         def _build_disc_body_part():
             ### model_part
