@@ -30,6 +30,8 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_G, phase, index, in_WM, in_WM_pre, _, Mgt_C_
     current_time = exp_obj.current_time
     if  (phase == "train"): used_sees = exp_obj.result_obj.sees
     elif(phase == "test"):  used_sees = exp_obj.result_obj.tests
+    # print("sees_sees~~~~~~~~~~~~~~~~~~", exp_obj.result_obj.sees)
+    # print("tests_sees~~~~~~~~~~~~~~~~~", exp_obj.result_obj.tests)
     private_write_dir    = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     private_rec_write_dir = used_sees[index].rec_visual_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
@@ -85,6 +87,7 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_G, phase, index, in_WM, in_WM_pre, _, Mgt_C_
 
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
+        Check_dir_exist_and_build(private_rec_write_dir)    ### 建立 放輔助檔案 的資料夾
         cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",          dis_img)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_W_01.jpg",         W_visual)
         cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_Wx_01.jpg",        Wx_visual)
