@@ -172,21 +172,37 @@ class G_Unet_Body_builder(Ckpt_op_builder):
         self.build_ops.append(self._build_G_ckpt_part)  ### 後
         return self
 
-    def set_D_Cxy(self, D_first_concat=True,
-                        D_kernel_size=4):
+    def set_discriminator_by_exist_builder(self, model_builder):
+        def _build_disc_body_part():
+            self.kong_model.discriminator = model_builder.build().discriminator
+            self.kong_model.optimizer_D   = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+            print("build_multi_unet", "finish")
+
+        self.build_ops.append(_build_disc_body_part)    ### 先
+        self.build_ops.append(self._build_G_ckpt_part)  ### 後
+        return self
+
+
+    def set_discriminator(self,
+                          hid_ch=64, depth_level=4,
+                          kernel_size=4, strides=2, norm="in",
+                          D_first_concat=False, out_acti="sigmoid"):
         d_args = {
-            "D_first_concat"  : D_first_concat,
-            "D_kernel_size"   : D_kernel_size}
+            "hid_ch"         : hid_ch,
+            "depth_level"    : depth_level,
+            "kernel_size"    : kernel_size,
+            "strides"        : strides,
+            "norm"           : norm,
+            "D_first_concat" : D_first_concat,
+            "out_acti"       : out_acti
+        }
 
         def _build_disc_body_part():
             ### model_part
-            ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-            from step07_b_2_Rect2 import Discriminator
+            from step07_b_0a2_Discriminator import Discriminator
             self.kong_model.discriminator   = Discriminator(**d_args)
-            self.kong_model.D_Cxy           = self.kong_model.discriminator
             self.kong_model.optimizer_D     = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-            self.kong_model.optimizer_D_Cxy = self.kong_model.optimizer_D
-            print("build_unet", "finish")
+            print("build_Discriminator", "finish")
 
         self.build_ops.append(_build_disc_body_part)
         self.build_ops.append(self._build_D_ckpt_part)
@@ -435,3 +451,4 @@ class MODEL_NAME(Enum):
     flow_rect = "flow_rect"    ### 包含這flow 關鍵字就沒問題
     mask_flow_unet = "mask_flow_unet"
     multi_flow_unet = "multi_flow_unet"
+    discriminator = "discriminator"

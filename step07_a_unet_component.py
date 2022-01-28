@@ -23,7 +23,7 @@ class Conv_block(tf.keras.layers.Layer):
     def __init__(self, out_ch, kernel_size=4, strides=2, acti="lrelu", norm="in", use_bias=True, coord_conv=False, **kwargs):
         """
         acti: lrelu/ relu
-        norm: bn/ in
+        norm: bn/ in/ False
         """
         super(Conv_block, self).__init__(**kwargs)
         self.norm = norm
@@ -32,14 +32,15 @@ class Conv_block(tf.keras.layers.Layer):
         if(coord_conv): self.CoordConv = CoordConv()
         self.Conv = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding="same", use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
         self.Acti = Use_what_acti(acti)
-        self.Norm = Use_what_nrom(self.norm)
+        if(norm is not False): self.Norm = Use_what_nrom(self.norm)
 
     def call(self, x, training=None):
         if(self.CoordConv is not None): x = self.CoordConv(x)
         x = self.Conv(x)
         x = self.Acti(x)
-        if  (self.norm == "bn"): x = self.Norm(x, training)
-        elif(self.norm == "in"): x = self.Norm(x)
+        if(self.norm is not False):
+            if  (self.norm == "bn"): x = self.Norm(x, training)
+            elif(self.norm == "in"): x = self.Norm(x)
 
         return x
 
