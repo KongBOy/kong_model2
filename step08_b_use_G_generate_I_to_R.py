@@ -10,12 +10,12 @@ from build_dataset_combine import Check_dir_exist_and_build
 import matplotlib.pyplot as plt
 
 ### 用 網路 生成 影像
-def I_Generate_R(model_G, _1, in_img_pre, _3, _4, use_gt_range, bgr2rgb=False):
+def I_Generate_R(model_obj, _1, in_img_pre, _3, _4, use_gt_range, bgr2rgb=False):
     '''
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
                                 但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
     '''
-    rect = model_G(in_img_pre, training=True)  ### 把影像丟進去model生成還原影像
+    rect = model_obj.generator(in_img_pre, training=True)  ### 把影像丟進去model生成還原影像
     rect = rect[0].numpy()
     if(bgr2rgb): rect = rect[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
 
@@ -27,7 +27,7 @@ def I_Generate_R(model_G, _1, in_img_pre, _3, _4, use_gt_range, bgr2rgb=False):
 
 
 ### 這是一張一張進來的，沒有辦法跟 Result 裡面的 see 生成法合併，要的話就是把這裡matplot部分去除，用result裡的see生成matplot圖囉！
-def I_Generate_R_see(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_hope, exp_obj=None, see_reset_init=False, npz_save=False, bgr2rgb=True):
+def I_Generate_R_see(model_obj, see_index, in_img, in_img_pre, gt_img, _4, rec_hope, exp_obj=None, see_reset_init=False, npz_save=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     '''
@@ -35,7 +35,7 @@ def I_Generate_R_see(model_G, see_index, in_img, in_img_pre, gt_img, _4, rec_hop
     '''
     in_img = in_img[0].numpy()
     gt_img = gt_img[0].numpy()
-    rect_back = I_Generate_R(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range)
+    rect_back = I_Generate_R(model_obj, None, in_img_pre, None, None, exp_obj.use_gt_range)
 
     see_write_dir  = exp_obj.result_obj.sees[see_index].see_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     plot_dir = see_write_dir + "/" + "matplot_visual"    ### 每個 see資料夾 內都有一個matplot_visual 存 in_img, rect, gt_img 併起來好看的結果

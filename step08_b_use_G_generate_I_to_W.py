@@ -19,8 +19,8 @@ def wc_visual_op(wc):
     return wc_2d_v
 
 ####################################################################################################
-def I_Generate_W(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
-    W_pre = model_G(in_img_pre, training=training)
+def I_Generate_W(model_obj, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+    W_pre = model_obj.generator(in_img_pre, training=training)
     W_pre = W_pre[0, ..., 0:3].numpy()
     W_01 = Value_Range_Postprocess_to_01(W_pre, use_gt_range)
 
@@ -28,7 +28,7 @@ def I_Generate_W(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, train
     Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, use_gt_range)
     return W_01, Wgt_01
 
-def I_Generate_W_see(model_G, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+def I_Generate_W_see(model_obj, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     if  (phase == "train"): used_sees = exp_obj.result_obj.sees
@@ -49,7 +49,7 @@ def I_Generate_W_see(model_G, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pr
         in_img = in_img[:, :, ::-1]
         rec_hope = rec_hope[:, :, ::-1]
 
-    W_01, Wgt_01    = I_Generate_W(model_G, None, in_img_pre, None, Wgt_w_Mgt_pre, exp_obj.use_gt_range, training=training)
+    W_01, Wgt_01    = I_Generate_W(model_obj, None, in_img_pre, None, Wgt_w_Mgt_pre, exp_obj.use_gt_range, training=training)
 
     W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = W_01_visual_op(W_01)
     Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)

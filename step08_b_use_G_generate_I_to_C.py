@@ -12,19 +12,19 @@ import matplotlib.pyplot as plt
 from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_01_concat_with_M_to_F_and_get_F_visual
 
 ######################################################################################################################################################################################################
-def I_Generate_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
-    coord_pre = model_G(in_img_pre, training=training)
+def I_Generate_C(model_obj, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+    coord_pre = model_obj.generator(in_img_pre, training=training)
     coord_pre = coord_pre[0].numpy()
     coord = Value_Range_Postprocess_to_01(coord_pre, use_gt_range)
     return coord
 
-def I_Gen_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):
+def I_Gen_C_w_Mgt_to_F_basic_data(model_obj, in_img, in_img_pre, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):
     '''
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
                                 但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
     '''
     in_img   = in_img[0].numpy()
-    coord    = I_Generate_C(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
+    coord    = I_Generate_C(model_obj, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
     gt_mask  = gt_mask_coord_pre[0, ..., 0:1].numpy()
     gt_coord = gt_mask_coord_pre[0, ..., 0:3].numpy()
     gt_mask_visual = (gt_mask * 255).astype(np.uint8)
@@ -40,7 +40,7 @@ def I_Gen_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord_pre
         gt_flow_visual = gt_flow_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
     return in_img, gt_mask, gt_mask_visual, gt_flow_visual, gt_flow, rec_hope, flow, flow_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual
 
-def I_Gen_C_w_Mgt_to_F_see(model_G, phase, index, in_img, in_img_pre, _3, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+def I_Gen_C_w_Mgt_to_F_see(model_obj, phase, index, in_img, in_img_pre, _3, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     if  (phase == "train"): used_sees = exp_obj.result_obj.sees
@@ -54,7 +54,7 @@ def I_Gen_C_w_Mgt_to_F_see(model_G, phase, index, in_img, in_img_pre, _3, gt_mas
 
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
     '''
-    in_img, gt_mask, gt_mask_visual, gt_flow_visual, gt_flow, rec_hope, flow, flow_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual = I_Gen_C_w_Mgt_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord_pre, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+    in_img, gt_mask, gt_mask_visual, gt_flow_visual, gt_flow, rec_hope, flow, flow_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual = I_Gen_C_w_Mgt_to_F_basic_data(model_obj, in_img, in_img_pre, gt_mask_coord_pre, rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
 
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾

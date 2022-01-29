@@ -12,11 +12,11 @@ import matplotlib.pyplot as plt
 from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_01_and_C_01_w_M_to_F_and_visualize
 
 ######################################################################################################################################################################################################
-def use_model(model_G, _1, dis_img_pre, _3, Mgt_C_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+def use_model(model_obj, _1, dis_img_pre, _3, Mgt_C_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     Mgt_pre  = Mgt_C_pre[..., 0:1]
     I_pre_w_Mgt_pre = dis_img_pre * Mgt_pre
 
-    Cx_raw_pre, Cy_raw_pre = model_G(I_pre_w_Mgt_pre, training=training)  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
+    Cx_raw_pre, Cy_raw_pre = model_obj.generator(I_pre_w_Mgt_pre, training=training)  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
     Cx_raw_pre = Cx_raw_pre[0].numpy()
     Cy_raw_pre = Cy_raw_pre[0].numpy()
     C_raw_pre = np.concatenate([Cy_raw_pre, Cx_raw_pre], axis=-1)
@@ -27,7 +27,7 @@ def use_model(model_G, _1, dis_img_pre, _3, Mgt_C_pre, use_gt_range, training=Fa
     Mgt_pre = Mgt_pre[0].numpy()
     return C_raw, I_w_M_visual, Mgt_pre
 
-def I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see(model_G, phase, index, dis_img, dis_img_pre, _3, Mgt_C_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+def I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see(model_obj, phase, index, dis_img, dis_img_pre, _3, Mgt_C_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     if  (phase == "train"): used_sees = exp_obj.result_obj.sees
@@ -47,7 +47,7 @@ def I_w_Mgt_Gen_Cx_Cy_focus_to_C_with_Mgt_to_F_see(model_G, phase, index, dis_im
     '''
     dis_img   = dis_img[0].numpy()
 
-    C_raw, I_w_M_visual, Mgt_pre = use_model(model_G, None, dis_img_pre, None, Mgt_C_pre, exp_obj.use_gt_range, training=training)
+    C_raw, I_w_M_visual, Mgt_pre = use_model(model_obj, None, dis_img_pre, None, Mgt_C_pre, exp_obj.use_gt_range, training=training)
 
     Mgt = Mgt_C_pre[0, ..., 0:1].numpy()
     Cgt = Mgt_C_pre[0, ..., 1:3].numpy()

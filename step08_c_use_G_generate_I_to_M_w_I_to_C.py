@@ -10,7 +10,7 @@ from matplot_fig_ax_util import Matplot_single_row_imgs
 import matplotlib.pyplot as plt
 from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_01_concat_with_M_to_F_and_get_F_visual
 
-def I_gen_M_w_I_gen_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+def I_gen_M_w_I_gen_C(model_obj, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     '''
     這邊model 生成的是 ch2 的 coord， 要再跟 mask concate 後才會變成 ch3 的 flow 喔！
     M        0~1
@@ -25,7 +25,7 @@ def I_gen_M_w_I_gen_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=Fa
     C        0~1
     C_visual 寫在外面要用 method1，寫在外面是想跟 gt_F 一起寫看起來漂亮且好改
     '''
-    M_pre, C_pre = model_G(in_img_pre, training=training)
+    M_pre, C_pre = model_obj.generator(in_img_pre, training=training)
     M_pre = M_pre[0].numpy()
     M = M_pre  ### 因為 mask 要用 BCE， 所以Range 只可能 Range(0, 1)， 沒有其他可能， 所以不用做 postprocess M 就直接是 M_pre 囉
     M_visual = (M * 255).astype(np.uint8)
@@ -38,11 +38,11 @@ def I_gen_M_w_I_gen_C(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=Fa
 
     return M, M_visual, I_pre_with_M_pre, I_with_M_visual, C
 
-def I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):
+def I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_obj, in_img, in_img_pre, gt_mask_coord, rec_hope=None, exp_obj=None, training=True, bgr2rgb=True):
     in_img    = in_img[0].numpy()
     Mgt  = gt_mask_coord[0, ..., 0:1]
     Cgt  = gt_mask_coord[0, ..., 1:3].numpy()
-    M, M_visual, I_pre_with_M_pre, I_with_M_visual, C = I_gen_M_w_I_gen_C(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
+    M, M_visual, I_pre_with_M_pre, I_with_M_visual, C = I_gen_M_w_I_gen_C(model_obj, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
     Mgt_visual = (Mgt.numpy() * 255).astype(np.uint8)
 
     F,   F_visual,   Cx_visual,   Cy_visual   = C_01_concat_with_M_to_F_and_get_F_visual(C  , M  )
@@ -59,7 +59,7 @@ def I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_c
         Fgt_visual = Fgt_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
     return in_img, M_visual, Mgt_visual, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual, rec_hope
 
-def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+def I_gen_M_w_I_gen_C_w_M_to_F_see(model_obj, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     if  (phase == "train"): used_sees = exp_obj.result_obj.sees
@@ -68,7 +68,7 @@ def I_gen_M_w_I_gen_C_w_M_to_F_see(model_G, phase, index, in_img, in_img_pre, gt
     private_rec_write_dir = used_sees[index].rec_visual_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     public_write_dir     = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
 
-    in_img, M_visual, Mgt_visual, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual, rec_hope = I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
+    in_img, M_visual, Mgt_visual, I_with_M_visual, F, F_visual, Fgt, Fgt_visual, Cx_visual, Cy_visual, Cxgt_visual, Cygt_visual, rec_hope = I_gen_M_w_I_gen_C_w_M_to_F_basic_data(model_obj, in_img, in_img_pre, gt_mask_coord, rec_hope=rec_hope, exp_obj=exp_obj, training=training, bgr2rgb=bgr2rgb)
     if(current_ep == 0 or see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
         Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(private_rec_write_dir)    ### 建立 放輔助檔案 的資料夾

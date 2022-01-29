@@ -275,7 +275,7 @@ class Experiment():
                                                                                                                 self.tf_data.test_name_db.batch(1)        .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.rec_hope_test_db.batch(1)    .take(self.tf_data.test_amount)))):
             # self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
-            self.model_obj.generate_sees  (self.model_obj.generator, "test", test_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, self, training=False, see_reset_init=True, postprocess=True, npz_save=True)
+            self.model_obj.generate_sees  (self.model_obj, "test", test_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, self, training=False, see_reset_init=True, postprocess=True, npz_save=True)
         Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir, read_dir=self.result_obj.test_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
 
     def train_step1_see_current_img(self, phase="train", training=False, see_reset_init=False, postprocess=False, npz_save=False):
@@ -294,10 +294,10 @@ class Experiment():
                                                                                                            self.tf_data.see_name_db.batch(1)        ,
                                                                                                            self.tf_data.rec_hope_see_db_pre.batch(1)))):
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, self.result_obj.result_write_dir, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save)
-            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect.generator, phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)
-            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.generator     , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)
+                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, self.result_obj.result_write_dir, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj     , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save)
+            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect, phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)
+            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj     , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)

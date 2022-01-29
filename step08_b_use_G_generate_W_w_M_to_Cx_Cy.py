@@ -17,15 +17,15 @@ import datetime
 import pdb
 
 ####################################################################################################
-def use_model(model_G, in_WM_pre, training):
+def use_model(model_obj, in_WM_pre, training):
     W_pre   = in_WM_pre[..., 0:3]
     Mgt_pre = in_WM_pre[..., 3:4]
     W_pre_W_M_pre = W_pre * Mgt_pre
-    Cx_pre, Cy_pre = model_G(W_pre_W_M_pre, training=training)
+    Cx_pre, Cy_pre = model_obj.generator(W_pre_W_M_pre, training=training)
 
     return W_pre, Mgt_pre, W_pre_W_M_pre, Cx_pre, Cy_pre
 
-def W_w_M_Gen_Cx_Cy_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+def W_w_M_Gen_Cx_Cy_see(model_obj, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     if  (phase == "train"): used_sees = exp_obj.result_obj.sees
@@ -44,7 +44,7 @@ def W_w_M_Gen_Cx_Cy_see(model_G, phase, index, in_WM, in_WM_pre, Fgt, Fgt_pre, r
     # plt.show()
     rec_hope  = rec_hope[0].numpy()
 
-    W_pre, Mgt_pre, W_pre_W_M_pre, Cx_pre, Cy_pre = use_model(model_G, in_WM_pre, training)
+    W_pre, Mgt_pre, W_pre_W_M_pre, Cx_pre, Cy_pre = use_model(model_obj, in_WM_pre, training)
 
     ### visualize W_pre
     W_01 = Value_Range_Postprocess_to_01(W_pre)

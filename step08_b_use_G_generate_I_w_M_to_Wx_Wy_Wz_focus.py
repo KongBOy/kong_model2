@@ -16,12 +16,12 @@ import pdb
 import os
 
 ####################################################################################################
-def use_model(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+def use_model(model_obj, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
     Mgt_pre = Wgt_w_Mgt_pre[..., 3:4]
     Wgt_pre = Wgt_w_Mgt_pre[..., 0:3]
     I_pre_with_M_pre = in_img_pre * Mgt_pre
 
-    Wz_raw_pre, Wy_raw_pre, Wx_raw_pre = model_G(I_pre_with_M_pre, training=training)
+    Wz_raw_pre, Wy_raw_pre, Wx_raw_pre = model_obj.generator(I_pre_with_M_pre, training=training)
 
     ### 後處理： 拿掉 batch 和 弄成01 和 轉成 numpy
     Wz_raw_pre = Wz_raw_pre[0].numpy()
@@ -39,7 +39,7 @@ def use_model(model_G, _1, in_img_pre, _3, Wgt_w_Mgt_pre, use_gt_range, training
     I_w_M_01 = I_w_M_01[0].numpy()
     return W_raw_01, I_w_M_01, Wgt_01, Mgt_pre
 
-def I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see(model_G, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+def I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see(model_obj, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     if  (phase == "train"): used_sees = exp_obj.result_obj.sees
@@ -57,7 +57,7 @@ def I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see(model_G, phase, index, in_img, in_img_pre,
     in_img   = in_img  [0].numpy()
     rec_hope = rec_hope[0].numpy()
 
-    W_raw_01, I_w_M_01, Wgt_01, Mgt_pre = use_model(model_G, None, in_img_pre, None, Wgt_w_Mgt_pre, exp_obj.use_gt_range, training=training)
+    W_raw_01, I_w_M_01, Wgt_01, Mgt_pre = use_model(model_obj, None, in_img_pre, None, Wgt_w_Mgt_pre, exp_obj.use_gt_range, training=training)
     W_w_Mgt_01 = W_raw_01 * Mgt_pre
 
 

@@ -9,7 +9,7 @@ from matplot_fig_ax_util import Matplot_single_row_imgs
 import matplotlib.pyplot as plt
 from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01
 ######################################################################################################################################################################################################
-def I_w_Mgt_to_Cx_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+def I_w_Mgt_to_Cx_see(model_obj, phase, index, in_img, in_img_pre, gt_mask_coord, gt_mask_coord_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     '''
     這邊model 生成的是 ch2 的 coord， 要再跟 mask concate 後才會變成 ch3 的 flow 喔！
     '''
@@ -30,7 +30,7 @@ def I_w_Mgt_to_Cx_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, 
     gt_mask_pre  = gt_mask_coord_pre[..., 0:1]
     I_pre_w_M = in_img_pre * gt_mask_pre
 
-    cx_pre      = model_G(I_pre_w_M, training=training)
+    cx_pre      = model_obj.generator(I_pre_w_M, training=training)
     cx_pre = cx_pre[0].numpy()
     cx = Value_Range_Postprocess_to_01(cx_pre, exp_obj.use_gt_range)
 

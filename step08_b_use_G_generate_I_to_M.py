@@ -12,20 +12,20 @@ import os
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
-def I_Generate_M(model_G, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
-    M_pre = model_G(in_img_pre, training=training)
+def I_Generate_M(model_obj, _1, in_img_pre, _3, _4, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+    M_pre = model_obj.generator(in_img_pre, training=training)
     M_pre = M_pre[0].numpy()
     M = M_pre  ### 因為 mask 要用 BCE， 所以Range 只可能 Range(0, 1)， 沒有其他可能， 所以不用做 postprocess M 就直接是 M_pre 囉
     M_visual = (M * 255).astype(np.uint8)
     return M, M_visual
 
-def I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj=None, training=True, bgr2rgb=False):
+def I_Generate_M_basic_data(model_obj, in_img, in_img_pre, gt_mask_coord, exp_obj=None, training=True, bgr2rgb=False):
     '''
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
                                 但 plt 存圖是rgb， 所以存圖不用轉ch， 把 bgr2rgb設False喔！
     '''
     in_img    = in_img[0].numpy()
-    pred_mask, pred_mask_visual = I_Generate_M(model_G, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
+    pred_mask, pred_mask_visual = I_Generate_M(model_obj, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
     gt_mask   = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
 
     if(bgr2rgb): in_img = in_img[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
@@ -35,7 +35,7 @@ def I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj=
     # print("gt_mask.min():", gt_mask.numpy().min())
     return in_img, pred_mask, pred_mask_visual, gt_mask
 
-def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False):
+def I_Generate_M_see(model_obj, phase, index, in_img, in_img_pre, gt_mask_coord, _4, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     if  (phase == "train"): used_sees = exp_obj.result_obj.sees
@@ -43,7 +43,7 @@ def I_Generate_M_see(model_G, phase, index, in_img, in_img_pre, gt_mask_coord, _
     '''
     bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
     '''
-    in_img, pred_mask, pred_mask_visual, gt_mask = I_Generate_M_basic_data(model_G, in_img, in_img_pre, gt_mask_coord, exp_obj, training, bgr2rgb=True)
+    in_img, pred_mask, pred_mask_visual, gt_mask = I_Generate_M_basic_data(model_obj, in_img, in_img_pre, gt_mask_coord, exp_obj, training, bgr2rgb=True)
     private_write_dir      = used_sees[index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
     private_mask_write_dir = used_sees[index].mask_write_dir  ### 每個 see 都有自己的資料夾 存 model生成的結果，先定出位置
     public_write_dir       = "/".join(used_sees[index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾

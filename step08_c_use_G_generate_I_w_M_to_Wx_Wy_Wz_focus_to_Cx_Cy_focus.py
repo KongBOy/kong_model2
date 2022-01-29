@@ -18,11 +18,11 @@ import pdb
 import os
 
 ####################################################################################################
-# def use_model(model_G, in_dis, in_dis_pre, gt_WM_F, gt_WM_F_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
+# def use_model(model_obj, in_dis, in_dis_pre, gt_WM_F, gt_WM_F_pre, use_gt_range, training=False):  ### training 這個參數是為了 一開使 用BN ，為了那些exp 還能重現所以才保留，現在用 IN 完全不會使用到他這樣子拉～
 
 #     return W_raw_01, I_w_M_01, Wgt_01, Mgt_pre
 
-def I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see(model_G, phase, index, in_dis, in_dis_pre, gt_WM_F, gt_WM_F_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+def I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see(model_obj, phase, index, in_dis, in_dis_pre, gt_WM_F, gt_WM_F_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
     current_ep = exp_obj.current_ep
     current_time = exp_obj.current_time
     if  (phase == "train"): used_sees = exp_obj.result_obj.sees
@@ -47,8 +47,8 @@ def I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see(model_G, phase, index, in_
 
     I_pre_w_M = I_pre * use_M  ### 這次試試看用 M 不用 M_pre
 
-    # W_pre_raw, W_pre_w_M, C_pre_raw, C_pre_w_M = model_G(I_pre_w_M, Mask=use_M, training=training)
-    Wz_pre_raw, Wy_pre_raw, Wx_pre_raw, Cx_pre_raw, Cy_pre_raw = model_G(I_pre_w_M, Mask=use_M, training=training)
+    # W_pre_raw, W_pre_w_M, C_pre_raw, C_pre_w_M = model_obj(I_pre_w_M, Mask=use_M, training=training)
+    Wz_pre_raw, Wy_pre_raw, Wx_pre_raw, Cx_pre_raw, Cy_pre_raw = model_obj.generator(I_pre_w_M, Mask=use_M, training=training)
     W_pre_raw = np.concatenate((Wz_pre_raw, Wy_pre_raw, Wx_pre_raw), axis=-1)
     C_pre_raw = np.concatenate((Cy_pre_raw, Cx_pre_raw), axis=-1)
 
