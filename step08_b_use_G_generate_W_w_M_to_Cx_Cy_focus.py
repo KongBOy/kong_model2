@@ -127,7 +127,8 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_obj, phase, index, in_WM, in_WM_pre, _, Mgt_
                                 img_titles=["F_w_Mgt_visual", "fake_score", "Fgt_visual", "real_score"],  ### 把每張圖要顯示的字包成list
                                 fig_title ="epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
                                 add_loss  =add_loss,
-                                bgr2rgb   =bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                                bgr2rgb   =bgr2rgb,
+                                where_colorbar = [None, True, None, True])  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
 
         # single_row_imgs = Matplot_multi_row_imgs(
         #                 rows_cols_imgs   = [ [F_w_Mgt_visual ,  fake_score] , [Fgt_visual,   real_score]],   ### 把要顯示的每張圖包成list
