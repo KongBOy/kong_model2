@@ -1,3 +1,4 @@
+from re import L
 import numpy as np
 import cv2
 
@@ -10,7 +11,7 @@ from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
-from matplot_fig_ax_util import Matplot_single_row_imgs
+from matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 
 import matplotlib.pyplot as plt
 import datetime
@@ -114,6 +115,32 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_obj, phase, index, in_WM, in_WM_pre, _, Mgt_
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b6_Cy_raw.jpg"   % current_ep, Cy_raw_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
     cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b7_Cy_w_Mgt.jpg" % current_ep, Cy_w_Mgt_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
+    if(model_obj.discriminator is not None):
+        C_pre_w_Mgt = (C_raw_pre * Mgt)  ### 1, 512, 512, 2
+        Cgt_pre     =  Cgt_pre[np.newaxis, ...]           ### 1, 512, 512, 2
+
+        fake_score = model_obj.discriminator(C_pre_w_Mgt).numpy()[0]
+        real_score = model_obj.discriminator(Cgt_pre).numpy()[0]
+
+        single_row_imgs = Matplot_single_row_imgs(
+                                imgs      =[ F_w_Mgt_visual ,  fake_score ,  Fgt_visual,   real_score],   ### 把要顯示的每張圖包成list
+                                img_titles=["F_w_Mgt_visual", "fake_score", "Fgt_visual", "real_score"],  ### 把每張圖要顯示的字包成list
+                                fig_title ="epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
+                                add_loss  =add_loss,
+                                bgr2rgb   =bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+
+        # single_row_imgs = Matplot_multi_row_imgs(
+        #                 rows_cols_imgs   = [ [F_w_Mgt_visual ,  fake_score] , [Fgt_visual,   real_score]],   ### 把要顯示的每張圖包成list
+        #                 rows_cols_titles = [ ["F_w_Mgt_visual", "fake_score"], ["Fgt_visual", "real_score"]],  ### 把每張圖要顯示的字包成list
+        #                 fig_title ="epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
+        #                 add_loss  =add_loss,
+        #                 bgr2rgb   =bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+        single_row_imgs.Draw_img()
+        plt.tight_layout()
+        # plt.show()
+        single_row_imgs.Save_fig(dst_dir=private_write_dir, name="epoch_%04i_u1b8_Disc" % current_ep)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
+        print("save to:", private_write_dir)
+        # breakpoint()
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
