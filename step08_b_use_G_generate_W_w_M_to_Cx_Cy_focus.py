@@ -140,7 +140,7 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_obj, phase, index, in_WM, in_WM_pre, _, Mgt_
         plt.tight_layout()
         # plt.show()
         single_row_imgs.Save_fig(dst_dir=private_write_dir, name="epoch_%04i_u1b8_Disc" % current_ep)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
-        print("save to:", private_write_dir)
+        # print("save to:", private_write_dir)
         # breakpoint()
 
     if(postprocess):

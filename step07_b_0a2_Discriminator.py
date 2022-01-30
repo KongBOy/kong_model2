@@ -6,7 +6,7 @@ from tensorflow.keras.optimizers import Adam
 class Discriminator(tf.keras.models.Model):
     def __init__(self,
                  hid_ch=64, depth_level=7,
-                 kernel_size=4, strides=2, norm="in",
+                 kernel_size=4, strides=2, padding="same", norm="in",
                  D_first_concat=False, out_acti="sigmoid", **kwargs):
         super(Discriminator, self).__init__(**kwargs)
         '''
@@ -23,8 +23,8 @@ class Discriminator(tf.keras.models.Model):
         for i in range(depth_level):
             layer_id = i + 1
             D_layers_name = f"Disc_L{layer_id}"
-            if(layer_id == 1): self.D_layers[D_layers_name] = Conv_block(out_ch=hid_ch * 2 ** (layer_id - 1), kernel_size=kernel_size, strides=2, acti="lrelu", norm=False, use_bias=True, name= D_layers_name )
-            else:              self.D_layers[D_layers_name] = Conv_block(out_ch=hid_ch * 2 ** (layer_id - 1), kernel_size=kernel_size, strides=2, acti="lrelu", norm=norm,  use_bias=True, name= D_layers_name )
+            if(layer_id == 1): self.D_layers[D_layers_name] = Conv_block(out_ch=hid_ch * 2 ** (layer_id - 1), kernel_size=kernel_size, strides=2, acti="lrelu", padding=padding, norm=False, use_bias=True, name= D_layers_name )
+            else:              self.D_layers[D_layers_name] = Conv_block(out_ch=hid_ch * 2 ** (layer_id - 1), kernel_size=kernel_size, strides=2, acti="lrelu", padding=padding, norm=norm,  use_bias=True, name= D_layers_name )
 
         self.conv_map = Conv2D(1   , kernel_size=kernel_size, strides=1, padding="same", name="1x1_Conv")
         if(self.out_acti == "tanh"):    self.tanh    = Activation(tf.nn.tanh,    name="out_tanh")
@@ -80,9 +80,24 @@ if(__name__ == "__main__"):
     from step10_a2_loss_info_obj import *
     from step09_c_train_step import *
 
-    from step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN import *
 
-    model_obj = block1_L2_ch016_sig
+    ###################################################################
+    # from step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN import *
+    # model_obj = block1_L2_ch016_sig
+
+    ###################################################################
+    # from step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN_G_L5_ch032_D_all import *
+    # model_obj = disc_L8_ch016_sig
+
+    ###################################################################
+    from step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN_G_L5_ch032_D_all_no_pad import *
+    '''
+    no_pad 的 
+        L8 output shape 為 1, 0, 0, 1
+        L9 直接完全跑步起來
+    '''
+    model_obj = disc_L7_ch016_sig
+
     ###################################################################
     model_obj = model_obj.build()  ### 可替換成 上面 想測試的 model
 

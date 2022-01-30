@@ -20,7 +20,7 @@ def Use_what_skip_op(skip_op):
     elif(skip_op == "scse"): return scSE
 
 class Conv_block(tf.keras.layers.Layer):
-    def __init__(self, out_ch, kernel_size=4, strides=2, acti="lrelu", norm="in", use_bias=True, coord_conv=False, **kwargs):
+    def __init__(self, out_ch, kernel_size=4, strides=2, padding="same", acti="lrelu", norm="in", use_bias=True, coord_conv=False, **kwargs):
         """
         acti: lrelu/ relu
         norm: bn/ in/ False
@@ -30,7 +30,7 @@ class Conv_block(tf.keras.layers.Layer):
         self.CoordConv = None
 
         if(coord_conv): self.CoordConv = CoordConv()
-        self.Conv = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding="same", use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
+        self.Conv = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding=padding, use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
         self.Acti = Use_what_acti(acti)
         if(norm is not False): self.Norm = Use_what_nrom(self.norm)
 

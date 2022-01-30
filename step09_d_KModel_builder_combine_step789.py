@@ -188,13 +188,14 @@ class G_Unet_Body_builder(Ckpt_op_builder):
 
     def set_discriminator(self,
                           hid_ch=64, depth_level=4,
-                          kernel_size=4, strides=2, norm="in",
+                          kernel_size=4, strides=2, padding="same", norm="in",
                           D_first_concat=False, out_acti="sigmoid"):
         d_args = {
             "hid_ch"         : hid_ch,
             "depth_level"    : depth_level,
             "kernel_size"    : kernel_size,
             "strides"        : strides,
+            "padding"        : padding,
             "norm"           : norm,
             "D_first_concat" : D_first_concat,
             "out_acti"       : out_acti
