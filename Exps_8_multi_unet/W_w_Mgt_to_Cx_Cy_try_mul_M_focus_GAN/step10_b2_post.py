@@ -30,7 +30,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L2_ch001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch002.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch008.{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch016.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch032.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch064.{run}"])
