@@ -33,8 +33,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L2_ch008.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch004.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch128.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch128.{compress_and_bm_rec_all}"])
 
 # sb.run(cmd_python_step10_a + [f"L3_ch064.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch032.{compress_and_bm_rec_all}"])
@@ -42,8 +42,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L3_ch008.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch004.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L3_ch128.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch001.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L3_ch128.{compress_and_bm_rec_all}"])
 
 # sb.run(cmd_python_step10_a + [f"L4_ch064.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch032.{compress_and_bm_rec_all}"])
