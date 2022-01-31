@@ -34,11 +34,11 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L1_ch001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L1_ch128.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"L2_ch002.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch004.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch008.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch016.{run}"])
-# sb.run(cmd_python_step10_a + [f"L2_ch032.{run}"])
+# sb.run(cmd_python_step10_a + [f"L2_ch002.{run}"])  ### 想看正確D需重tain
+# sb.run(cmd_python_step10_a + [f"L2_ch004.{run}"])  ### 想看正確D需重tain
+# sb.run(cmd_python_step10_a + [f"L2_ch008.{run}"])  ### 想看正確D需重tain
+# sb.run(cmd_python_step10_a + [f"L2_ch016.{run}"])  ### 想看正確D需重tain
+# sb.run(cmd_python_step10_a + [f"L2_ch032.{run}"])  ### 想看正確D需重tain
 # sb.run(cmd_python_step10_a + [f"L2_ch064.{run}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L2_ch128.{run}"])
@@ -79,14 +79,14 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L6_ch001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch128.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"L7_ch002.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch004.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch008.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch016.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch032.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch064.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch128.{run}"])
+sb.run(cmd_python_step10_a + [f"L7_ch002.{run}"])
+sb.run(cmd_python_step10_a + [f"L7_ch004.{run}"])
+sb.run(cmd_python_step10_a + [f"L7_ch008.{run}"])
+sb.run(cmd_python_step10_a + [f"L7_ch016.{run}"])
+sb.run(cmd_python_step10_a + [f"L7_ch032.{run}"])
+sb.run(cmd_python_step10_a + [f"L7_ch064.{run}"])
+sb.run(cmd_python_step10_a + [f"L7_ch001.{run}"])
+sb.run(cmd_python_step10_a + [f"L7_ch128.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"L8_ch002.{run}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch004.{run}"])
