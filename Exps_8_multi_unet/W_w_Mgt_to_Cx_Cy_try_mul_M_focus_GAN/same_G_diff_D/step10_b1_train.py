@@ -52,11 +52,11 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L3_ch001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L3_ch128.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"L4_ch002.{run}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch004.{run}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch008.{run}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch016.{run}"])
-# sb.run(cmd_python_step10_a + [f"L4_ch032.{run}"])
+# sb.run(cmd_python_step10_a + [f"L4_ch002.{run}"])  ### 如果想看正確D需重train
+# sb.run(cmd_python_step10_a + [f"L4_ch004.{run}"])  ### 如果想看正確D需重train
+# sb.run(cmd_python_step10_a + [f"L4_ch008.{run}"])  ### 如果想看正確D需重train
+# sb.run(cmd_python_step10_a + [f"L4_ch016.{run}"])  ### 如果想看正確D需重train
+# sb.run(cmd_python_step10_a + [f"L4_ch032.{run}"])  ### 如果想看正確D需重train
 # sb.run(cmd_python_step10_a + [f"L4_ch064.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch128.{run}"])
@@ -101,7 +101,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L9_ch004.{run}"])
 # sb.run(cmd_python_step10_a + [f"L9_ch008.{run}"])
 # sb.run(cmd_python_step10_a + [f"L9_ch016.{run}"])
-# sb.run(cmd_python_step10_a + [f"L9_ch032.{run}"])
-# sb.run(cmd_python_step10_a + [f"L9_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L9_ch032.{run}"])  ### 訓練超出記憶體
+# sb.run(cmd_python_step10_a + [f"L9_ch064.{run}"])  ### 訓練超出記憶體
 # sb.run(cmd_python_step10_a + [f"L9_ch001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L9_ch128.{run}"])
+# sb.run(cmd_python_step10_a + [f"L9_ch128.{run}"])  ### 訓練超出記憶體
