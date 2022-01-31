@@ -25,11 +25,11 @@ from step10_c_exp_command import *
 ######################################################################################################################
 import subprocess as sb
 
-# sb.run(cmd_python_step10_a + [f"L1_ch002.{run}"])
-# sb.run(cmd_python_step10_a + [f"L1_ch004.{run}"])
-# sb.run(cmd_python_step10_a + [f"L1_ch008.{run}"])
-# sb.run(cmd_python_step10_a + [f"L1_ch016.{run}"])
-# sb.run(cmd_python_step10_a + [f"L1_ch032.{run}"])
+# sb.run(cmd_python_step10_a + [f"L1_ch002.{run}"])  ### 想看正確D需重train
+# sb.run(cmd_python_step10_a + [f"L1_ch004.{run}"])  ### 想看正確D需重train
+# sb.run(cmd_python_step10_a + [f"L1_ch008.{run}"])  ### 想看正確D需重train
+# sb.run(cmd_python_step10_a + [f"L1_ch016.{run}"])  ### 想看正確D需重train
+# sb.run(cmd_python_step10_a + [f"L1_ch032.{run}"])  ### 想看正確D需重train
 # sb.run(cmd_python_step10_a + [f"L1_ch064.{run}"])
 # sb.run(cmd_python_step10_a + [f"L1_ch001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L1_ch128.{run}"])
