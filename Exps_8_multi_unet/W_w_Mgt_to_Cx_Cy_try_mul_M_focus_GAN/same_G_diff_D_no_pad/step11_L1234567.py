@@ -25,6 +25,15 @@ import step10_a as disc
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ### L2345678_flow
 Layer1234567_Ch = [
+    [disc.L1_ch128.build().result_obj,
+     disc.L1_ch064.build().result_obj,
+     disc.L1_ch032.build().result_obj,
+     disc.L1_ch016.build().result_obj,
+     disc.L1_ch008.build().result_obj,
+     disc.L1_ch004.build().result_obj,
+     disc.L1_ch002.build().result_obj,
+     disc.L1_ch001.build().result_obj],
+
     [disc.L2_ch128.build().result_obj,
      disc.L2_ch064.build().result_obj,
      disc.L2_ch032.build().result_obj,
