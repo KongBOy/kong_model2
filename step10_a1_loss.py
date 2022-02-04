@@ -42,9 +42,42 @@ class BCE():
         self.bce_scale = bce_scale
         self.tf_fun = tf.keras.losses.BinaryCrossentropy(from_logits=False)
 
-    def __call__(self, img_true, img_pred):
+    def __call__(self, img_true, img_pred, Mask=None):
         print("BCE.__call__.bce_scal:", self.bce_scale)
-        bce_loss = self.tf_fun(img_true, img_pred)
+        bce_loss = -1 * img_true * tf.math.log(img_pred + 0.0000001) - ( 1 - img_true) * tf.math.log( 1 - img_pred + 0.0000001)  ### 學tf 加一個小小值防止 log 0 的狀況產生～～嘗試到了　0.0000001 會跟tf2算的一樣
+        if(bce_loss.shape[1] != 1 or bce_loss.shape[2] != 1):  ### 如果 hw > 1 的話 要做平均
+            if  (Mask is     None): bce_loss = tf.reduce_mean(bce_loss)  ### 無 Mask 的話直接平均
+            elif(Mask is not None):  ### 有 Mask 的話， 先把 Mask 縮到相對應的大小， 再根據 Mask 做平均
+                n, h, w, c = bce_loss.shape
+
+                # import matplotlib.pyplot as plt
+                # fig, ax = plt.subplots(nrows=2, ncols=4, figsize=(20, 10))
+                # bilinear =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BILINEAR)
+                # nearest =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+                # bicubic =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BICUBIC)
+                # area =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.AREA)
+                # lanczos3 =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.LANCZOS3)
+                # lanczos5 =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.LANCZOS5)
+                # gaussian =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.GAUSSIAN)
+                # mitchellcubic =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.MITCHELLCUBIC)
+
+                # ax[0, 0].imshow(bilinear     [0], vmin=0, vmax=1)
+                # ax[0, 1].imshow(nearest      [0], vmin=0, vmax=1)
+                # ax[0, 2].imshow(bicubic      [0], vmin=0, vmax=1)
+                # ax[0, 3].imshow(area         [0], vmin=0, vmax=1)
+                # ax[1, 0].imshow(lanczos3     [0], vmin=0, vmax=1)
+                # ax[1, 1].imshow(lanczos5     [0], vmin=0, vmax=1)
+                # ax[1, 2].imshow(gaussian     [0], vmin=0, vmax=1)
+                # ax[1, 3].imshow(mitchellcubic[0], vmin=0, vmax=1)
+                # fig.tight_layout()
+                # plt.show()
+
+                Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.AREA)
+                # print("Mask", Mask)
+                bce_loss = tf.reduce_sum( bce_loss * Mask ) / tf.reduce_sum(Mask * c)
+        # tf_bce_loss = self.tf_fun(img_true, img_pred)
+        # print("   bce_loss",    bce_loss)  ### 確認過和 tf2 一樣
+        # print("tf_bce_loss", tf_bce_loss)  ### 確認過和 自己算的一樣
         return bce_loss * self.bce_scale
 
 
