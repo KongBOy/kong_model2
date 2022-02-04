@@ -19,8 +19,8 @@ class Ttrain_step_Cxy_GAN():
         in_W     = in_data[..., 0:3]
         W_w_M = in_W * in_Mask
 
-        Cxgt = gt_data[..., 2:3]
-        Cygt = gt_data[..., 1:2]
+        Cxgt_pre = gt_data[..., 2:3]
+        Cygt_pre = gt_data[..., 1:2]
 
         BCE_mask = None
         if(self.BCE_use_mask): BCE_mask = in_Mask
@@ -28,12 +28,12 @@ class Ttrain_step_Cxy_GAN():
         with tf.GradientTape(persistent=True) as D_tape:
             ### 生成 fake_data， 並丟入 D 取得 fake_score
             Cx_pre_raw, Cy_pre_raw = model_obj.generator(W_w_M)
-            C_pre_raw = tf.concat([Cy_pre_raw, Cx_pre_raw], axis=-1)
-            C_pre_w_M = C_pre_raw * in_Mask
+            C_pre_raw  = tf.concat([Cy_pre_raw, Cx_pre_raw], axis=-1)
+            C_pre_w_M  = C_pre_raw * in_Mask
             fake_score = model_obj.discriminator(C_pre_w_M)
             ### 取用 real_data， 並丟入 D 取得 real_score
-            Cgt   = tf.concat([Cygt, Cxgt], axis=-1)
-            real_score = model_obj.discriminator(Cgt)
+            Cgt_pre    = tf.concat([Cygt_pre, Cxgt_pre], axis=-1)
+            real_score = model_obj.discriminator(Cgt_pre)
 
             ### 訓練D： fake 越低分越好， real 越高分越好
             fake_score_gt0 = tf.zeros_like(fake_score, dtype=tf.float32)
@@ -61,7 +61,7 @@ class Ttrain_step_Cxy_GAN():
         with tf.GradientTape(persistent=True) as G_tape:
             Cx_pre_raw, Cy_pre_raw = model_obj.generator(W_w_M)
             model_outputs = [Cx_pre_raw, Cy_pre_raw]
-            gt_datas      = [Cxgt      , Cygt      ]  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
+            gt_datas      = [Cxgt_pre  , Cygt_pre  ]  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
             multi_losses = []
             multi_total_loss = 0
             for go_m, model_output in enumerate(model_outputs):
