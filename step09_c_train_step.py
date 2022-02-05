@@ -9,9 +9,10 @@ from step10_a1_loss import *
 '''
 
 class Ttrain_step_w_GAN:
-    def __init__(self, op_type, BCE_use_mask=False):
+    def __init__(self, op_type, BCE_use_mask=False, BCE_Mask_type="Area"):
         self.op_type = op_type
         self.BCE_use_mask = BCE_use_mask
+        self.BCE_Mask_type = BCE_Mask_type
 
     # def train_step_Cxy_GAN(model_obj, in_data, gt_data, loss_info_objs=None):
     def multi_output_w_GAN_train(self, model_obj, in_data, gt_datas, loss_info_objs=None, Mask=None):
@@ -33,8 +34,8 @@ class Ttrain_step_w_GAN:
             real_score_gt1 = tf.ones_like (real_score, dtype=tf.float32)
 
             BCE_posi = len(model_outputs_raw)  ### 舉例： 第一個放 Cx 的 loss_info_obj, 第二個放 Cy  的 loss_info_obj, 第三個 才放 GAN 的 loss
-            BCE_D_fake = loss_info_objs[BCE_posi].loss_funs_dict["BCE_D_fake"](fake_score_gt0, fake_score, BCE_mask)
-            BCE_D_real = loss_info_objs[BCE_posi].loss_funs_dict["BCE_D_real"](real_score_gt1, real_score, BCE_mask)
+            BCE_D_fake = loss_info_objs[BCE_posi].loss_funs_dict["BCE_D_fake"](fake_score_gt0, fake_score, BCE_mask, Mask_type=self.BCE_Mask_type)
+            BCE_D_real = loss_info_objs[BCE_posi].loss_funs_dict["BCE_D_real"](real_score_gt1, real_score, BCE_mask, Mask_type=self.BCE_Mask_type)
             D_total_loss = (BCE_D_fake + BCE_D_real) / 2
         grad_D = D_tape.gradient(D_total_loss, model_obj.discriminator.trainable_weights)
         model_obj.optimizer_D.apply_gradients(zip(grad_D, model_obj.discriminator.trainable_weights))
@@ -55,7 +56,7 @@ class Ttrain_step_w_GAN:
             fake_score_gt1 = tf.ones_like(fake_score, dtype=tf.float32)   ### 訓練G時， 希望騙過D， 所以希望越高分越好
 
             BCE_posi = len(model_outputs_raw)  ### 舉例： 第一個放 Cx 的 loss_info_obj, 第二個放 Cy  的 loss_info_obj, 第三個 才放 GAN 的 loss (同上)
-            BCE_G_to_D = loss_info_objs[BCE_posi].loss_funs_dict["BCE_G_to_D"](fake_score_gt1, fake_score, BCE_mask)
+            BCE_G_to_D = loss_info_objs[BCE_posi].loss_funs_dict["BCE_G_to_D"](fake_score_gt1, fake_score, BCE_mask, Mask_type=self.BCE_Mask_type)
             G_total_loss = BCE_G_to_D + multi_total_loss
             # G_total_loss = multi_total_loss  ### debug 用， 看看 不加 GAN loss 效果如何
         grad_G = G_tape.gradient(G_total_loss, model_obj.generator.trainable_weights)

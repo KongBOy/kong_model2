@@ -42,7 +42,7 @@ class BCE():
         self.bce_scale = bce_scale
         self.tf_fun = tf.keras.losses.BinaryCrossentropy(from_logits=False)
 
-    def __call__(self, img_true, img_pred, Mask=None):
+    def __call__(self, img_true, img_pred, Mask=None, Mask_type="Area"):
         print("BCE.__call__.bce_scal:", self.bce_scale)
         bce_loss = -1 * img_true * tf.math.log(img_pred + 0.0000001) - ( 1 - img_true) * tf.math.log( 1 - img_pred + 0.0000001)  ### 學tf 加一個小小值防止 log 0 的狀況產生～～嘗試到了　0.0000001 會跟tf2算的一樣
         if(bce_loss.shape[1] != 1 or bce_loss.shape[2] != 1):  ### 如果 hw > 1 的話 要做平均
@@ -50,17 +50,21 @@ class BCE():
             elif(Mask is not None):  ### 有 Mask 的話， 先把 Mask 縮到相對應的大小， 再根據 Mask 做平均
                 n, h, w, c = bce_loss.shape
 
+                ##############################################################################################################################
+                ##############################################################################################################################
+                ### 嘗試 resize
                 # import matplotlib.pyplot as plt
-                # fig, ax = plt.subplots(nrows=2, ncols=4, figsize=(20, 10))
-                # bilinear =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BILINEAR)
-                # nearest =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
-                # bicubic =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BICUBIC)
-                # area =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.AREA)
-                # lanczos3 =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.LANCZOS3)
-                # lanczos5 =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.LANCZOS5)
-                # gaussian =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.GAUSSIAN)
+
+                # bilinear      =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BILINEAR)
+                # nearest       =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+                # bicubic       =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BICUBIC)
+                # area          =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.AREA)
+                # lanczos3      =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.LANCZOS3)
+                # lanczos5      =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.LANCZOS5)
+                # gaussian      =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.GAUSSIAN)
                 # mitchellcubic =  tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.MITCHELLCUBIC)
 
+                # fig, ax = plt.subplots(nrows=2, ncols=4, figsize=(16, 8))
                 # ax[0, 0].imshow(bilinear     [0], vmin=0, vmax=1)
                 # ax[0, 1].imshow(nearest      [0], vmin=0, vmax=1)
                 # ax[0, 2].imshow(bicubic      [0], vmin=0, vmax=1)
@@ -70,11 +74,73 @@ class BCE():
                 # ax[1, 2].imshow(gaussian     [0], vmin=0, vmax=1)
                 # ax[1, 3].imshow(mitchellcubic[0], vmin=0, vmax=1)
                 # fig.tight_layout()
-                # plt.show()
+                ####################################################################################
+                ### 嘗試 resize 後再 Erosion的效果
+                ### 全1
+                # kernel = tf.ones((3, 3, 1))
+                ### 自己亂試
+                # kernel = tf.constant( [ [[ 0 ], [ 0 ], [ 0 ]],
+                #                         [[ 0 ], [ 1 ], [ 0 ]],
+                #                         [[ 0 ], [ 0 ], [ 0 ]] ], dtype=tf.float32)
+                ### 自己亂試
+                # kernel = tf.constant( [ [[0.5], [0.5], [0.5]],
+                #                         [[0.5], [ 1 ], [0.5]],
+                #                         [[0.5], [0.5], [0.5]] ], dtype=tf.float32)
+                ### 高斯kernel
+                # kernel = tf.constant( [ [[0.71653131], [0.84648172], [0.71653131]],
+                #                         [[0.84648172], [1.        ], [0.84648172]],
+                #                         [[0.71653131], [0.84648172], [0.71653131]] ], dtype=tf.float32)
+                # bilinear_erosion      =  tf.nn.erosion2d (bilinear     , filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)).numpy()
+                # nearest_erosion       =  tf.nn.erosion2d (nearest      , filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)).numpy()
+                # bicubic_erosion       =  tf.nn.erosion2d (bicubic      , filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)).numpy()
+                # area_erosion          =  tf.nn.erosion2d (area         , filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)).numpy()
+                # lanczos3_erosion      =  tf.nn.erosion2d (lanczos3     , filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)).numpy()
+                # lanczos5_erosion      =  tf.nn.erosion2d (lanczos5     , filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)).numpy()
+                # gaussian_erosion      =  tf.nn.erosion2d (gaussian     , filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)).numpy()
+                # mitchellcubic_erosion =  tf.nn.erosion2d (mitchellcubic, filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)).numpy()
 
-                Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.AREA)
+                # fig, ax = plt.subplots(nrows=2, ncols=4, figsize=(16, 8))
+                # ax[0, 0].imshow(bilinear_erosion     [0] + 1, vmin=0, vmax=1)
+                # ax[0, 1].imshow(nearest_erosion      [0] + 1, vmin=0, vmax=1)
+                # ax[0, 2].imshow(bicubic_erosion      [0] + 1, vmin=0, vmax=1)
+                # ax[0, 3].imshow(area_erosion         [0] + 1, vmin=0, vmax=1)
+                # ax[1, 0].imshow(lanczos3_erosion     [0] + 1, vmin=0, vmax=1)
+                # ax[1, 1].imshow(lanczos5_erosion     [0] + 1, vmin=0, vmax=1)
+                # ax[1, 2].imshow(gaussian_erosion     [0] + 1, vmin=0, vmax=1)
+                # ax[1, 3].imshow(mitchellcubic_erosion[0] + 1, vmin=0, vmax=1)
+                # fig.tight_layout()
+                # print("bilinear_erosion.max()", bilinear_erosion.max())
+                # print("bilinear_erosion.min()", bilinear_erosion.min())
+                # plt.show()
+                ##############################################################################################################################
+                ##############################################################################################################################
+
+                if  (Mask_type.lower() == "area")   : Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.AREA)
+                elif(Mask_type.lower() == "bicubic"): Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BICUBIC)
+                elif(Mask_type.lower() == "nearest"): Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+                elif(Mask_type.lower() == "erosion"):
+                    kernel = tf.ones((3, 3, 1))
+                    Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BILINEAR)
+                    if(Mask.shape[1] == 3 and Mask.shape[2] == 3 ):
+                        Mask = Mask * tf.constant( [[[ 0 ], [ 0 ], [ 0 ]],
+                                                    [[ 0 ], [ 1 ], [ 0 ]],
+                                                    [[ 0 ], [ 0 ], [ 0 ]]], dtype=tf.float32)
+                    else:
+                        Mask = tf.nn.erosion2d(Mask, filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1))
+                ##############################################################################################################################
+                ##############################################################################################################################
+                # import matplotlib.pyplot as plt
+                # fig, ax = plt.subplots(nrows=1, ncols=3)
+                # ax[0].imshow( bce_loss        [0],         vmin=0, vmax=1)
+                # ax[1].imshow( Mask            [0],         vmin=0, vmax=1)
+                # ax[2].imshow((bce_loss * Mask)[0], vmin=0, vmax=1)
+                # plt.show()
                 # print("Mask", Mask)
+                ##############################################################################################################################
+                ##############################################################################################################################
+
                 bce_loss = tf.reduce_sum( bce_loss * Mask ) / tf.reduce_sum(Mask * c)
+
         # tf_bce_loss = self.tf_fun(img_true, img_pred)
         # print("   bce_loss",    bce_loss)  ### 確認過和 tf2 一樣
         # print("tf_bce_loss", tf_bce_loss)  ### 確認過和 自己算的一樣
