@@ -126,7 +126,7 @@ class BCE():
                                                     [[ 0 ], [ 1 ], [ 0 ]],
                                                     [[ 0 ], [ 0 ], [ 0 ]]], dtype=tf.float32)
                     else:
-                        Mask = tf.nn.erosion2d(Mask, filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1))
+                        Mask = tf.nn.erosion2d(Mask, filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)) + 1
                 ##############################################################################################################################
                 ##############################################################################################################################
                 # import matplotlib.pyplot as plt
