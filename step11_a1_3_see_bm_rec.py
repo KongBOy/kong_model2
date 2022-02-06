@@ -151,7 +151,7 @@ class See_bm_rec(See_info):
 
         ### See_method 第四部分：後處理 存 video
         video_processes = []
-        video_processes.append(Process( target=Video_combine_from_dir, args=(self.see_read_dir, self.see_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
+        # video_processes.append(Process( target=Video_combine_from_dir, args=(self.see_read_dir, self.see_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         video_processes.append(Process( target=Video_combine_from_dir, args=(self.bm_rec_matplot_visual_write_dir, self.bm_rec_matplot_visual_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉###
         video_processes.append(Process( target=Video_combine_from_dir, args=(self.rec_visual_write_dir, self.rec_visual_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         for video_p in video_processes: video_p.start()
