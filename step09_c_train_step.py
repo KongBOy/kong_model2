@@ -77,7 +77,7 @@ class Ttrain_step_w_GAN:
         loss_info_objs[2].loss_containors["BCE_G_to_D"](BCE_G_to_D)
 
 
-    # @tf.function
+    @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
         if(self.op_type == "W_w_Mgt_to_Cx_Cy_focus"):
             in_Mask  = in_data[..., 3:4]
@@ -91,23 +91,23 @@ class Ttrain_step_w_GAN:
                                          gt_datas=[Cxgt_pre, Cygt_pre],  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
                                          loss_info_objs=loss_info_objs,  ### 第一個放 Cx 的 loss_info_obj, 第二個放 Cy  的 loss_info_obj, 第三個 才放 GAN 的 loss
                                          Mask=in_Mask)
-            import matplotlib.pyplot as plt
-            import tensorflow as tf
-            bce_mask = in_Mask
-            # bce_mask = tf.image.resize(bce_mask, size=(3, 3))
-            # bce_mask = bce_mask * tf.constant( [[[ 0 ], [ 0 ], [ 0 ]],
-            #                                     [[ 0 ], [ 1 ], [ 0 ]],
-            #                                     [[ 0 ], [ 0 ], [ 0 ]]], dtype=tf.float32)
-            kernel = tf.ones((3, 3, 1))
-            bce_mask = tf.image.resize(bce_mask, size=(7, 7))
-            bce_mask = tf.nn.erosion2d(bce_mask, filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)) + 1
-            plt.figure()
-            plt.imshow(bce_mask[0], vmin=0, vmax=1)
-            global debug_i
-            plt.savefig("debug_data/try_Mask_erosion/%03i" % debug_i)
-            debug_i += 1
-            plt.close()
-            # plt.show()
+            # import matplotlib.pyplot as plt
+            # import tensorflow as tf
+            # bce_mask = in_Mask
+            # # bce_mask = tf.image.resize(bce_mask, size=(3, 3))
+            # # bce_mask = bce_mask * tf.constant( [[[ 0 ], [ 0 ], [ 0 ]],
+            # #                                     [[ 0 ], [ 1 ], [ 0 ]],
+            # #                                     [[ 0 ], [ 0 ], [ 0 ]]], dtype=tf.float32)
+            # kernel = tf.ones((3, 3, 1))
+            # bce_mask = tf.image.resize(bce_mask, size=(7, 7))
+            # bce_mask = tf.nn.erosion2d(bce_mask, filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)) + 1
+            # plt.figure()
+            # plt.imshow(bce_mask[0], vmin=0, vmax=1)
+            # global debug_i
+            # plt.savefig("debug_data/try_Mask_erosion/%03i" % debug_i)
+            # debug_i += 1
+            # plt.close()
+            # # plt.show()
 
 ###################################################################################################################################################
 ###################################################################################################################################################
