@@ -13,6 +13,10 @@ class Discriminator(tf.keras.models.Model):
         norm: bn/ in
         out_acti: tanh/ relu/ sigmoid
         '''
+        self.kernel_size = kernel_size
+        self.strides = strides
+        self.padding = padding
+        self.depth_level = depth_level
 
         self.out_acti = out_acti
         self.D_first_concat = D_first_concat

@@ -24,3 +24,4 @@ temp*
 *poppler-21.11.0*
 
 debug_data/try_*
+debug_data/*.png
