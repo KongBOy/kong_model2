@@ -407,7 +407,8 @@ class Experiment():
         elif(self.phase == "train_indicate"): pass  ### 待完成Z
         elif("test" in self.phase):
             # if(self.phase == "test_see"): self.test_see()
-            if(self.phase == "test_see"): self.test(test_db_name="see")
+            if  (self.phase == "test_see"  ): self.test(test_db_name="see")
+            elif(self.phase == "test_train"): self.test(test_db_name="train")
             else:                         self.test(test_db_name=self.phase)  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         elif(self.phase == "board_rebuild"):  self.board_rebuild()
         elif(self.phase == "copy_ckpt"): self.copy_ckpt()
