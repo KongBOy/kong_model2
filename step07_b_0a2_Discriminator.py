@@ -86,15 +86,24 @@ if(__name__ == "__main__"):
 
 
     ###################################################################
-    # from step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN import *
+    # from Exps_8_multi_unet.\
+    #         W_w_Mgt_to_Cx_Cy_try_mul_M_focus_GAN.\
+    #             diff_G_same_D.\
+    #                 step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN import *
     # model_obj = block1_L2_ch016_sig
 
     ###################################################################
-    # from step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN_G_L5_ch032_D_all import *
+    # from Exps_8_multi_unet.\
+    #         W_w_Mgt_to_Cx_Cy_try_mul_M_focus_GAN.\
+    #             same_G_diff_D.\
+    #                 step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN_G_L5_ch032_D_all import *
     # model_obj = disc_L8_ch016_sig
 
     ###################################################################
-    from step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN_G_L5_ch032_D_all_no_pad import *
+    from Exps_8_multi_unet.\
+            W_w_Mgt_to_Cx_Cy_try_mul_M_focus_GAN.\
+                same_G_diff_D_no_pad.\
+                    step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN_G_L5_ch032_D_all_no_pad import *
     '''
     no_pad 的 
         L8 output shape 為 1, 0, 0, 1
