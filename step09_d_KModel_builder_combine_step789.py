@@ -126,7 +126,7 @@ class G_Unet_Body_builder(Ckpt_op_builder):
         return self
 
     def set_unet2(self, hid_ch=64, depth_level=7, out_ch=3, no_concat_layer=0,
-                 kernel_size=4, strides=2, norm="in",
+                 kernel_size=4, strides=2, padding="same", norm="in",
                  d_acti="lrelu", u_acti="relu", unet_acti="tanh",
                  use_bias=True,
                  conv_block_num=0,
@@ -147,6 +147,7 @@ class G_Unet_Body_builder(Ckpt_op_builder):
             "no_concat_layer" : no_concat_layer,
             "kernel_size"     : kernel_size,     ### 多的
             "strides"         : strides,         ### 多的
+            "padding"         : padding,
             "d_acti"          : d_acti,          ### 多的
             "u_acti"          : u_acti,          ### 多的
             "unet_acti"       : unet_acti,       ### 對應 out_tanh

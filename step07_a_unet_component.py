@@ -46,7 +46,7 @@ class Conv_block(tf.keras.layers.Layer):
 
 class UNet_down(tf.keras.layers.Layer):
     def __init__(self, at_where, out_ch,
-                 kernel_size=4, strides=2, norm="in",
+                 kernel_size=4, strides=2, padding="same", norm="in",
                  acti="lrelu",
                  use_bias=True,
                  conv_block_num=0,
@@ -64,26 +64,26 @@ class UNet_down(tf.keras.layers.Layer):
         super(UNet_down, self).__init__(**kwargs)
         self.at_where = at_where
         self.norm = norm
-        self.Conv_blocks = [ Conv_block(out_ch=out_ch, kernel_size=kernel_size, strides=1, acti=acti, norm=norm, use_bias=use_bias, name=f"Conv_block_{i}") for i in range(conv_block_num) ]
+        self.Conv_blocks = [ Conv_block(out_ch=out_ch, kernel_size=kernel_size, strides=1, padding="same", acti=acti, norm=norm, use_bias=use_bias, name=f"Conv_block_{i}") for i in range(conv_block_num) ]
         ''' 目前覺得這樣子展開來比較好看 '''
         if  (self.at_where == "top"):
-            self.Conv    = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding="same", use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
+            self.Conv    = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding=padding, use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
             self.Skip_op = Use_what_skip_op(skip_op)  ### cse/sse/scse
             if(self.Skip_op is not None): self.Skip_op = self.Skip_op(in_ch=out_ch, ratio=out_ch // 32)
         elif(self.at_where == "middle"):
             self.Acti    = Use_what_acti(acti)
-            self.Conv    = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding="same", use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
+            self.Conv    = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding=padding, use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
             self.Norm    = Use_what_nrom(self.norm)
             self.Skip_op = Use_what_skip_op(skip_op)  ### cse/sse/scse
             if(self.Skip_op is not None): self.Skip_op = self.Skip_op(in_ch=out_ch, ratio=out_ch // 32)
         elif(self.at_where == "bottle"):
             self.Acti = Use_what_acti(acti)
-            self.Conv = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding="same", use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
+            self.Conv = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding=padding, use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
 
         ''' 簡短版大概長這樣，不過不好直觀的理解 '''
         # if(self.at_where != "top"): self.Acti = Use_what_acti(acti)
         # if(self.at_where == "middle"): self.Norm = Use_what_nrom(self.norm)
-        # self.Conv = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding="same", use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
+        # self.Conv = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding=padding, use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
         # if(self.at_where != "bottle"):
         #   self.Skip_op = Use_what_skip_op(skip_op)  ### cse/sse/scse
         #   if(self.Skip_op is not None): self.Skip_op = self.Skip_op(in_ch=out_ch, ratio=out_ch // 32)
@@ -108,7 +108,7 @@ class UNet_down(tf.keras.layers.Layer):
 
 class UNet_up(tf.keras.layers.Layer):
     def __init__(self, at_where, out_ch,
-                 kernel_size=4, strides=2, norm="in",
+                 kernel_size=4, strides=2, padding="same", norm="in",
                  acti="relu",
                  use_bias=True,
                  conv_block_num=0,
@@ -126,14 +126,14 @@ class UNet_up(tf.keras.layers.Layer):
         super(UNet_up, self).__init__(**kwargs)
         self.at_where = at_where
         self.norm = norm
-        self.Conv_blocks = [ Conv_block(out_ch=out_ch, kernel_size=kernel_size, strides=1, acti=acti, norm=norm, use_bias=use_bias, name=f"Conv_block_{i}") for i in range(conv_block_num) ]
+        self.Conv_blocks = [ Conv_block(out_ch=out_ch, kernel_size=kernel_size, strides=1, padding="same", acti=acti, norm=norm, use_bias=use_bias, name=f"Conv_block_{i}") for i in range(conv_block_num) ]
 
         if  (self.at_where == "top"):
             self.Acti = Use_what_acti(acti)
-            self.Conv_T = Conv2DTranspose(out_ch, kernel_size=kernel_size, strides=strides, padding="same", use_bias=use_bias, name="conv_up")  #,bias=False) ### in_channel:3
+            self.Conv_T = Conv2DTranspose(out_ch, kernel_size=kernel_size, strides=strides, padding=padding, use_bias=use_bias, name="conv_up")  #,bias=False) ### in_channel:3
         elif(self.at_where == "middle" or self.at_where == "bottle"):
             self.Acti = Use_what_acti(acti)
-            self.Conv_T = Conv2DTranspose(out_ch, kernel_size=kernel_size, strides=strides, padding="same", use_bias=use_bias, name="conv_up")  #,bias=False) ### in_channel:3
+            self.Conv_T = Conv2DTranspose(out_ch, kernel_size=kernel_size, strides=strides, padding=padding, use_bias=use_bias, name="conv_up")  #,bias=False) ### in_channel:3
             self.Norm = Use_what_nrom(self.norm)
 
             self.Skip_merge_op = skip_merge_op
