@@ -14,7 +14,7 @@ sys.path.append("kong_util")
 from util import time_util, get_dir_certain_file_names
 from build_dataset_combine import Save_as_jpg, Find_ltrd_and_crop
 
-from tqdm import tqdm
+from tqdm import tqdm, trange
 
 import socket    ### 取得 本機 IP   給 train_step5_show_time 紀錄
 import getpass   ### 取得 本機 User 給 train_step5_show_time 紀錄
@@ -228,9 +228,29 @@ class Experiment():
             ###############################################################################################################################
             ### 以上 current_ep = epoch   ### 代表還沒訓練
             ###     step2 訓練
-            for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
-                self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
-                # break   ### debug用，看subprocess成不成功
+            if(self.model_obj.discriminator is not None):
+                D_train_amount = self.model_obj.train_step.D_train_amount
+                G_train_amount = self.model_obj.train_step.G_train_amount
+                D_train_db_combine = self.tf_data.train_db_combine.repeat(D_train_amount)
+                G_train_db_combine = self.tf_data.train_db_combine.repeat(G_train_amount)
+                D_iter = iter(D_train_db_combine)
+                G_iter = iter(G_train_db_combine)
+                for _ in trange(len(self.tf_data.train_db_combine)):
+                    for _ in range(D_train_amount):
+                        (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)
+                        self.model_obj.train_step.D_training = True
+                        self.model_obj.train_step.G_training = False
+                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
+
+                    for _ in range(G_train_amount):
+                        (_, train_in_pre, _, train_gt_pre, _) = next(G_iter)
+                        self.model_obj.train_step.D_training = False
+                        self.model_obj.train_step.G_training = True
+                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
+            else:
+                for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
+                    self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
+                    # break   ### debug用，看subprocess成不成功
             self.current_ep += 1  ### 超重要！別忘了加呀！
             ### 以下 current_ep = epoch + 1   ### +1 代表訓練完了！變成下個epoch了！
             ###############################################################
