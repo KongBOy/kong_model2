@@ -77,7 +77,7 @@ class Ttrain_step_w_GAN:
                     loss_containor( multi_losses[go_m][go_containor] )
         loss_info_objs[2].loss_containors["BCE_D_fake"](BCE_D_fake)
         loss_info_objs[2].loss_containors["BCE_D_real"](BCE_D_real)
-        loss_info_objs[2].loss_containors["BCE_G_to_D"](BCE_G_to_D)
+        if(self.just_train_D is False): loss_info_objs[2].loss_containors["BCE_G_to_D"](BCE_G_to_D)
 
 
     @tf.function
