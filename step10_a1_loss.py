@@ -3,6 +3,10 @@ import tensorflow as tf
 import numpy as np
 import cv2
 
+import sys
+sys.path.append("kong_util")
+from Disc_and_receptive_field_util import tf_M_resize_then_erosion_by_kong
+
 def norm_to_0_1_by_max_min(data):  ### data 為 np.array才行
     return (data - data.min()) / (data.max() - data.min())
 
@@ -119,14 +123,15 @@ class BCE():
                 elif(Mask_type.lower() == "bicubic"): Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BICUBIC)
                 elif(Mask_type.lower() == "nearest"): Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
                 elif(Mask_type.lower() == "erosion"):
-                    kernel = tf.ones((3, 3, 1))
-                    Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BILINEAR)
-                    if(Mask.shape[1] == 3 and Mask.shape[2] == 3 ):
-                        Mask = Mask * tf.constant( [[[ 0 ], [ 0 ], [ 0 ]],
-                                                    [[ 0 ], [ 1 ], [ 0 ]],
-                                                    [[ 0 ], [ 0 ], [ 0 ]]], dtype=tf.float32)
-                    else:
-                        Mask = tf.nn.erosion2d(Mask, filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)) + 1
+                    Mask = tf_M_resize_then_erosion_by_kong(Mask, resize_h=h, resize_w=w)
+                    # kernel = tf.ones((3, 3, 1))
+                    # Mask = tf.image.resize(Mask, (h, w), method=tf.image.ResizeMethod.BILINEAR)
+                    # if(Mask.shape[1] == 3 and Mask.shape[2] == 3 ):
+                    #     Mask = Mask * tf.constant( [[[ 0 ], [ 0 ], [ 0 ]],
+                    #                                 [[ 0 ], [ 1 ], [ 0 ]],
+                    #                                 [[ 0 ], [ 0 ], [ 0 ]]], dtype=tf.float32)
+                    # else:
+                    #     Mask = tf.nn.erosion2d(Mask, filters=kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)) + 1
                 ##############################################################################################################################
                 ##############################################################################################################################
                 # import matplotlib.pyplot as plt
@@ -135,7 +140,6 @@ class BCE():
                 # ax[1].imshow( Mask            [0],         vmin=0, vmax=1)
                 # ax[2].imshow((bce_loss * Mask)[0], vmin=0, vmax=1)
                 # plt.show()
-                # print("Mask", Mask)
                 ##############################################################################################################################
                 ##############################################################################################################################
 
