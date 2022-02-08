@@ -243,10 +243,11 @@ class Experiment():
                     print("==================== init_graph_finish ====================")
 
                 ### 先把要用的物件都抓出來
-                D_train_amount    = self.model_obj.train_step.D_train_amount
-                G_train_amount    = self.model_obj.train_step.G_train_amount
-                D_train_many_diff = self.model_obj.train_step.D_train_many_diff
-                G_train_many_diff = self.model_obj.train_step.G_train_many_diff
+                D_train_amount     = self.model_obj.train_step.D_train_amount
+                G_train_amount     = self.model_obj.train_step.G_train_amount
+                D_train_many_diff  = self.model_obj.train_step.D_train_many_diff
+                G_train_many_diff  = self.model_obj.train_step.G_train_many_diff
+                DG_train_many_diff = self.model_obj.train_step.DG_train_many_diff
 
                 ### D,G 根據自己要train的次數， 建立各自 的 dataset
                 if  (D_train_many_diff is False): D_train_db_combine = self.tf_data.train_db_combine                         ### 訓練多次時用 same資料
@@ -258,19 +259,41 @@ class Experiment():
                 G_iter = iter(G_train_db_combine)
 
                 for go_iter in trange(len(self.tf_data.train_db_combine)):
-                    ''' 訓練D '''
-                    if(D_train_many_diff is False): (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)  ### 訓練多次時用 same資料， 取資料時機再for 外面
-                    for _ in range(D_train_amount):
-                        if(epoch == 0 and go_iter == 0): print("train D")  ### 確認寫得對不對
-                        if(D_train_many_diff is True): (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)  ### 訓練多次時用 diff資料， 取資料時機再for 裡面
-                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=True, G_training=False)
+                    if(DG_train_many_diff is True):
+                        ''' 訓練D '''
+                        if(D_train_many_diff is False): (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)  ### 訓練多次時用 same資料， 取資料時機再for 外面
+                        for _ in range(D_train_amount):
+                            if(epoch == 0 and go_iter == 0): print("train D")  ### 確認寫得對不對
+                            if(D_train_many_diff is True): (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)  ### 訓練多次時用 diff資料， 取資料時機再for 裡面
+                            # plt.imshow(train_in_pre[0][..., :3])
+                            # plt.show()
+                            self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=True, G_training=False)
 
-                    ''' 訓練G '''
-                    if(G_train_many_diff is False): (_, train_in_pre, _, train_gt_pre, _) = next(G_iter)  ### 訓練多次時用 same資料， 取資料時機再for 外面
-                    for _ in range(G_train_amount):
-                        if(epoch == 0 and go_iter == 0): print("train G")  ### 確認寫得對不對
-                        if(G_train_many_diff is True): (_, train_in_pre, _, train_gt_pre, _) = next(G_iter)  ### 訓練多次時用 diff資料， 取資料時機再for 裡面
-                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
+                        ''' 訓練G '''
+                        if(G_train_many_diff is False): (_, train_in_pre, _, train_gt_pre, _) = next(G_iter)  ### 訓練多次時用 same資料， 取資料時機再for 外面
+                        for _ in range(G_train_amount):
+                            if(epoch == 0 and go_iter == 0): print("train G")  ### 確認寫得對不對
+                            if(G_train_many_diff is True): (_, train_in_pre, _, train_gt_pre, _) = next(G_iter)  ### 訓練多次時用 diff資料， 取資料時機再for 裡面
+                            # plt.imshow(train_in_pre[0][..., :3])
+                            # plt.show()
+                            self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
+                    else:
+                        DG_train_db_combine = self.tf_data.train_db_combine
+                        DG_iter = iter(D_train_db_combine)
+                        (_, train_in_pre, _, train_gt_pre, _) = next(DG_iter)  ### DG 都用相同的資料， 但因為先train D， 所以就統一拿D的資料
+                        ''' 訓練D '''
+                        for _ in range(D_train_amount):
+                            if(epoch == 0 and go_iter == 0): print("train D")  ### 確認寫得對不對
+                            # plt.imshow(train_in_pre[0][..., :3])
+                            # plt.show()
+                            self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=True, G_training=False)
+                        ''' 訓練G '''
+                        for _ in range(G_train_amount):
+                            if(epoch == 0 and go_iter == 0): print("train G")  ### 確認寫得對不對
+                            # plt.imshow(train_in_pre[0][..., :3])
+                            # plt.show()
+                            self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
+
             else:
                 for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
                     self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)

@@ -10,7 +10,7 @@ from step10_a1_loss import *
 debug_i = 1
 
 class Ttrain_step_w_GAN:
-    def __init__(self, op_type, BCE_use_mask=False, BCE_Mask_type="Area", D_train_amount=1, G_train_amount=1, just_train_D=False):
+    def __init__(self, op_type, BCE_use_mask=False, BCE_Mask_type="Area", D_train_amount=1, G_train_amount=1, just_train_D=False, D_train_many_diff=True, G_train_many_diff=True, DG_train_many_diff=True):
         self.op_type = op_type
         self.BCE_use_mask = BCE_use_mask
         self.BCE_Mask_type = BCE_Mask_type
@@ -19,6 +19,9 @@ class Ttrain_step_w_GAN:
         self.G_train_amount = G_train_amount
 
         self.just_train_D = just_train_D
+        self.D_train_many_diff = D_train_many_diff
+        self.G_train_many_diff = G_train_many_diff
+        self.DG_train_many_diff = DG_train_many_diff
 
         self.init_graph_finished = 0
         '''
