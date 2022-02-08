@@ -19,8 +19,7 @@ class Ttrain_step_w_GAN:
         self.G_train_amount = G_train_amount
 
         self.just_train_D = just_train_D
-        self.D_training = True
-        self.G_training = False
+
         self.init_graph_finished = 0
         '''
         我只有一個 __call__ 可以使用，
@@ -29,12 +28,12 @@ class Ttrain_step_w_GAN:
         '''
 
     # def train_step_Cxy_GAN(model_obj, in_data, gt_data, loss_info_objs=None):
-    def multi_output_w_GAN_train(self, model_obj, in_data, gt_datas, loss_info_objs=None, Mask=None):
+    def multi_output_w_GAN_train(self, model_obj, in_data, gt_datas, loss_info_objs=None, Mask=None, D_training=True, G_training=False):
         BCE_mask = None
         if(self.BCE_use_mask): BCE_mask = Mask
 
         ### 訓練 Discriminato
-        if(self.D_training):
+        if(D_training):
             with tf.GradientTape() as D_tape:
                 ### 生成 fake_data， 並丟入 D 取得 fake_score
                 model_outputs_raw = model_obj.generator(in_data)           ### 舉例：model_outputs_raw == [Cx_pre_raw, Cy_pre_raw], in_data == W_w_M
@@ -71,7 +70,7 @@ class Ttrain_step_w_GAN:
 
 
         ### 更新完D 後 訓練 Generator， 所以應該要重新丟一次資料進去G
-        if(self.G_training and self.just_train_D is False):
+        if(G_training and self.just_train_D is False):
             with tf.GradientTape() as G_tape:
                 model_outputs_raw = model_obj.generator(in_data)  ### 舉例：model_outputs_raw == [Cx_pre_raw, Cy_pre_raw] (同上)
                 multi_losses = []
@@ -115,7 +114,7 @@ class Ttrain_step_w_GAN:
 
 
     @tf.function
-    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None, D_training=True, G_training=False):
         if(self.op_type == "W_w_Mgt_to_Cx_Cy_focus"):
             in_Mask  = in_data[..., 3:4]
             in_W     = in_data[..., 0:3]
@@ -127,7 +126,9 @@ class Ttrain_step_w_GAN:
                                          in_data=W_w_M,
                                          gt_datas=[Cxgt_pre, Cygt_pre],  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
                                          loss_info_objs=loss_info_objs,  ### 第一個放 Cx 的 loss_info_obj, 第二個放 Cy  的 loss_info_obj, 第三個 才放 GAN 的 loss
-                                         Mask=in_Mask)
+                                         Mask=in_Mask,
+                                         D_training=D_training,
+                                         G_training=G_training)
             # import matplotlib.pyplot as plt
             # import tensorflow as tf
             # bce_mask = in_Mask
