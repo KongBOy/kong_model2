@@ -191,7 +191,7 @@ def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None, 
     model_obj .optimizer_G .apply_gradients(zip(total_gradients, model_obj.generator.trainable_variables))
 
     ### 把值放進 loss containor裡面，在外面才會去算 平均後 才畫出來喔！
-    for go_m in enumerate(model_outputs):
+    for go_m, _ in enumerate(model_outputs):
         loss_info_obj = loss_info_objs[go_m]
         for go_containor, loss_containor in enumerate(loss_info_obj.loss_containors.values()):
             loss_containor( multi_losses[go_m][go_containor] )

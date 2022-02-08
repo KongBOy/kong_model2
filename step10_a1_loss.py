@@ -10,18 +10,22 @@ from Disc_and_receptive_field_util import tf_M_resize_then_erosion_by_kong
 def norm_to_0_1_by_max_min(data):  ### data 為 np.array才行
     return (data - data.min()) / (data.max() - data.min())
 
-def mse_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32), Mask=None):
-    if(Mask is None): loss = tf.reduce_mean(tf.math.square(tensor1 - tensor2))
+def mse_kong(gt_data, pred_data, lamb=tf.constant(1., tf.float32), Mask=None):
+    n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+    gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+    if(Mask is None): loss = tf.reduce_mean(tf.math.square(gt_data - pred_data))
     else:
-        n, h, w, c = tensor1.shape
-        loss = tf.reduce_sum(tf.math.square((tensor1 - tensor2) * Mask)) / ( tf.reduce_sum(Mask) * c)
+        Mask = Mask[:, :h, :w, :]    ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        loss = tf.reduce_sum(tf.math.square((gt_data - pred_data) * Mask)) / ( tf.reduce_sum(Mask) * c)
     return loss * lamb
 
-def mae_kong(tensor1, tensor2, lamb=tf.constant(1., tf.float32), Mask=None):
-    if(Mask is None): loss = tf.reduce_mean(tf.math.abs(tensor1 - tensor2))
+def mae_kong(gt_data, pred_data, lamb=tf.constant(1., tf.float32), Mask=None):
+    n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+    gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+    if(Mask is None): loss = tf.reduce_mean(tf.math.abs(gt_data - pred_data))
     else:
-        n, h, w, c = tensor1.shape
-        loss = tf.reduce_sum(tf.math.abs((tensor1 - tensor2) * Mask)) / ( tf.reduce_sum(Mask) * c)
+        Mask = Mask[:, :h, :w, :]    ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        loss = tf.reduce_sum(tf.math.abs((gt_data - pred_data) * Mask)) / ( tf.reduce_sum(Mask) * c)
     return loss * lamb
 
 class MSE(tf.keras.losses.Loss):
@@ -29,26 +33,28 @@ class MSE(tf.keras.losses.Loss):
         super().__init__(name="MSE")
         self.mse_scale = mse_scale
 
-    def __call__(self, img_true, img_pred, Mask=None):
-        return mse_kong(img_true, img_pred, self.mse_scale, Mask=Mask)
+    def __call__(self, gt_data, pred_data, Mask=None):
+        return mse_kong(gt_data, pred_data, self.mse_scale, Mask=Mask)
 
 class MAE(tf.keras.losses.Loss):
     def __init__(self, mae_scale=1, **args):
         super().__init__(name="MAE")
         self.mae_scale = mae_scale
 
-    def __call__(self, img_true, img_pred, Mask=None):
+    def __call__(self, gt_data, pred_data, Mask=None):
         print("MAE.__call__.mae_scale:", self.mae_scale)
-        return mae_kong(img_true, img_pred, self.mae_scale, Mask=Mask)
+        return mae_kong(gt_data, pred_data, self.mae_scale, Mask=Mask)
 
 class BCE():
     def __init__(self, bce_scale=1, **args):
         self.bce_scale = bce_scale
         self.tf_fun = tf.keras.losses.BinaryCrossentropy(from_logits=False)
 
-    def __call__(self, img_true, img_pred, Mask=None, Mask_type="Area"):
+    def __call__(self, gt_data, pred_data, Mask=None, Mask_type="Area"):
         print("BCE.__call__.bce_scal:", self.bce_scale)
-        bce_loss = -1 * img_true * tf.math.log(img_pred + 0.0000001) - ( 1 - img_true) * tf.math.log( 1 - img_pred + 0.0000001)  ### 學tf 加一個小小值防止 log 0 的狀況產生～～嘗試到了　0.0000001 會跟tf2算的一樣
+        n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        bce_loss = -1 * gt_data * tf.math.log(pred_data + 0.0000001) - ( 1 - gt_data) * tf.math.log( 1 - pred_data + 0.0000001)  ### 學tf 加一個小小值防止 log 0 的狀況產生～～嘗試到了　0.0000001 會跟tf2算的一樣
         if(bce_loss.shape[1] != 1 or bce_loss.shape[2] != 1):  ### 如果 hw > 1 的話 要做平均
             if  (Mask is     None): bce_loss = tf.reduce_mean(bce_loss)  ### 無 Mask 的話直接平均
             elif(Mask is not None):  ### 有 Mask 的話， 先把 Mask 縮到相對應的大小， 再根據 Mask 做平均
@@ -145,7 +151,7 @@ class BCE():
 
                 bce_loss = tf.reduce_sum( bce_loss * Mask ) / tf.reduce_sum(Mask * c)
 
-        # tf_bce_loss = self.tf_fun(img_true, img_pred)
+        # tf_bce_loss = self.tf_fun(gt_data, pred_data)
         # print("   bce_loss",    bce_loss)  ### 確認過和 tf2 一樣
         # print("tf_bce_loss", tf_bce_loss)  ### 確認過和 自己算的一樣
         return bce_loss * self.bce_scale
@@ -257,13 +263,15 @@ class Sobel_MAE(tf.keras.losses.Loss):
         output = tf.reshape(output, shape=image_shape + [kernels_num])  ### (1, 448, 448, 3, 2 -> 分別是 dx 和 dy)
         return output
 
-    def call(self, img1, img2, Mask=None):
+    def call(self, gt_data, pred_data, Mask=None):
+        n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         print("Sobel_MAE.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
-        img1_sobel_xy = self.Calculate_sobel_edges(image=img1)
+        img1_sobel_xy = self.Calculate_sobel_edges(image=gt_data)
         img1_sobel_x = img1_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
         img1_sobel_y = img1_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
 
-        img2_sobel_xy = self.Calculate_sobel_edges(image=img2)
+        img2_sobel_xy = self.Calculate_sobel_edges(image=pred_data)
         img2_sobel_x = img2_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
         img2_sobel_y = img2_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
         grad_loss = mae_kong(img1_sobel_x, img2_sobel_x, Mask=Mask) + mae_kong(img1_sobel_y, img2_sobel_y, Mask=Mask)

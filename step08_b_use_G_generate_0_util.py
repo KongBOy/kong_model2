@@ -42,11 +42,16 @@ def Value_Range_Postprocess_to_01(data_pre, use_gt_range=Range( 0, 1)):
     return data
 ######################################################################################################################################################################################################
 def C_01_concat_with_M_to_F_and_get_F_visual(C, M):
+    ''' 輸入的 Coord 和 Mask 皆為 HWC '''
+    h, w, c = C.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+    M = M[:h, :w, :]   ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
     F        = np.concatenate([M, C], axis=-1)  ### channel concate
     F_visual, Cx_visual, Cy_visual = F_01_or_C_01_method1_visual_op(F)
     return F, F_visual, Cx_visual, Cy_visual
 
 def C_01_and_C_01_w_M_to_F_and_visualize(C, M):
+    h, w, c = C.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+    M = M[:h, :w, :]   ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
     F, F_visual, Cx_visual, Cy_visual = C_01_concat_with_M_to_F_and_get_F_visual(C, M)
 
     C_w_M = C * M
@@ -61,6 +66,9 @@ def W_01_visual_op(W_01):
     return W_visual, Wx_visual, Wy_visual, Wz_visual
 
 def W_01_concat_with_M_to_WM_and_get_W_visual(W, M):
+    ''' 輸入的 W 和 Mask 皆為 HWC '''
+    h, w, c = W.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+    M = M[:h, :w, :]   ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
     WM = np.concatenate([W, M], axis=-1)
     W_visual, Wx_visual, Wy_visual, Wz_visual = W_01_visual_op(W)
     return WM, W_visual, Wx_visual, Wy_visual, Wz_visual
