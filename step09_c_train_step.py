@@ -21,6 +21,7 @@ class Ttrain_step_w_GAN:
         self.just_train_D = just_train_D
         self.D_training = True
         self.G_training = False
+        self.init_graph_finished = 0
         '''
         我只有一個 __call__ 可以使用，
         所以就把 train_D_G 都寫在一個method裡，
@@ -33,55 +34,65 @@ class Ttrain_step_w_GAN:
         if(self.BCE_use_mask): BCE_mask = Mask
 
         ### 訓練 Discriminato
-        with tf.GradientTape() as D_tape:
-            ### 生成 fake_data， 並丟入 D 取得 fake_score
-            model_outputs_raw = model_obj.generator(in_data)           ### 舉例：model_outputs_raw == [Cx_pre_raw, Cy_pre_raw], in_data == W_w_M
-            model_output_raw  = tf.concat(model_outputs_raw, axis=-1)  ### 舉例：model_output_raw  ==  C_pre_raw
-            model_output_w_M  = model_output_raw * Mask                ### 舉例：model_output_w_M  ==  C_pre_w_M
-            fake_score = model_obj.discriminator(model_output_w_M)
-            ### 取用 real_data， 並丟入 D 取得 real_score
-            gt_data    = tf.concat(gt_datas, axis=-1)                  ### 舉例：gt_data == Cgt_pre, gt_datas == [Cygt_pre, Cxgt_pre]
-            real_score = model_obj.discriminator(gt_data)
-
-            ### 訓練D： fake 越低分越好， real 越高分越好
-            fake_score_gt0 = tf.zeros_like(fake_score, dtype=tf.float32)
-            real_score_gt1 = tf.ones_like (real_score, dtype=tf.float32)
-
-            BCE_posi = len(model_outputs_raw)  ### 舉例： 第一個放 Cx 的 loss_info_obj, 第二個放 Cy  的 loss_info_obj, 第三個 才放 GAN 的 loss
-            BCE_D_fake = loss_info_objs[BCE_posi].loss_funs_dict["BCE_D_fake"](fake_score_gt0, fake_score, BCE_mask, Mask_type=self.BCE_Mask_type)
-            BCE_D_real = loss_info_objs[BCE_posi].loss_funs_dict["BCE_D_real"](real_score_gt1, real_score, BCE_mask, Mask_type=self.BCE_Mask_type)
-            D_total_loss = (BCE_D_fake + BCE_D_real) / 2
-
         if(self.D_training):
+            with tf.GradientTape() as D_tape:
+                ### 生成 fake_data， 並丟入 D 取得 fake_score
+                model_outputs_raw = model_obj.generator(in_data)           ### 舉例：model_outputs_raw == [Cx_pre_raw, Cy_pre_raw], in_data == W_w_M
+                model_output_raw  = tf.concat(model_outputs_raw, axis=-1)  ### 舉例：model_output_raw  ==  C_pre_raw
+                model_output_w_M  = model_output_raw * Mask                ### 舉例：model_output_w_M  ==  C_pre_w_M
+                fake_score = model_obj.discriminator(model_output_w_M)
+                ### 取用 real_data， 並丟入 D 取得 real_score
+                gt_data    = tf.concat(gt_datas, axis=-1)                  ### 舉例：gt_data == Cgt_pre, gt_datas == [Cygt_pre, Cxgt_pre]
+                real_score = model_obj.discriminator(gt_data)
+
+                ### 訓練D： fake 越低分越好， real 越高分越好
+                fake_score_gt0 = tf.zeros_like(fake_score, dtype=tf.float32)
+                real_score_gt1 = tf.ones_like (real_score, dtype=tf.float32)
+
+                BCE_posi = len(model_outputs_raw)  ### 舉例： 第一個放 Cx 的 loss_info_obj, 第二個放 Cy  的 loss_info_obj, 第三個 才放 GAN 的 loss
+                BCE_D_fake = loss_info_objs[BCE_posi].loss_funs_dict["BCE_D_fake"](fake_score_gt0, fake_score, BCE_mask, Mask_type=self.BCE_Mask_type)
+                BCE_D_real = loss_info_objs[BCE_posi].loss_funs_dict["BCE_D_real"](real_score_gt1, real_score, BCE_mask, Mask_type=self.BCE_Mask_type)
+                D_total_loss = (BCE_D_fake + BCE_D_real) / 2
+                D_total_loss *= self.init_graph_finished  ### 如果是在 init_graph的話， init_graph_finished == 0， 這樣就不會更新到 model 了喔！ 當 init_graph完成後， 在exp層級會幫這裡的 init_graph_finished 設 1， 之後的訓練時 loss值不會歸零 就會正常更新了～
+                print("calculate D finish")
+
             grad_D = D_tape.gradient(D_total_loss, model_obj.discriminator.trainable_weights)
             model_obj.optimizer_D.apply_gradients(zip(grad_D, model_obj.discriminator.trainable_weights))
 
             loss_info_objs[2].loss_containors["BCE_D_fake"](BCE_D_fake)
             loss_info_objs[2].loss_containors["BCE_D_real"](BCE_D_real)
+
+            ### 如果是在 init_graph的話， init_graph_finished == 0， 此時算出來的 loss值是被歸零的， 不用儲存， 但為了建立graph還是要有存的動作， 存完reset就好囉！ 當 init_graph完成後， 在exp層級會幫這裡的 init_graph_finished 設 1， 之後的訓練時 loss值不會歸零 就不用reset拉～
+            if(self.init_graph_finished == 0):
+                loss_info_objs[2].loss_containors["BCE_D_fake"].reset_states()
+                loss_info_objs[2].loss_containors["BCE_D_real"].reset_states()
+                print("reset D metric finish (init_graph dosen't need to save so reset it)")
             print("update D finish")
 
 
         ### 更新完D 後 訓練 Generator， 所以應該要重新丟一次資料進去G
-        with tf.GradientTape() as G_tape:
-            model_outputs_raw = model_obj.generator(in_data)  ### 舉例：model_outputs_raw == [Cx_pre_raw, Cy_pre_raw] (同上)
-            multi_losses = []
-            multi_total_loss = 0
-            for go_m, model_output in enumerate(model_outputs_raw):  ### 舉例：model_outputs_raw == [Cx_pre_raw, Cy_pre_raw]， 第一次跑 Cx， 第二次跑 Cy
-                total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[go_m], model_output, gt_datas[go_m], Mask=Mask)
-                multi_losses.append(losses)
-                multi_total_loss += total_loss
-
-            model_output_raw  = tf.concat(model_outputs_raw, axis=-1)  ### 舉例：model_output_raw  ==  C_pre_raw (同上)
-            model_output_w_M  = model_output_raw * Mask                ### 舉例：model_output_w_M  ==  C_pre_w_M (同上)
-            fake_score = model_obj.discriminator(model_output_w_M)
-            fake_score_gt1 = tf.ones_like(fake_score, dtype=tf.float32)   ### 訓練G時， 希望騙過D， 所以希望越高分越好
-
-            BCE_posi = len(model_outputs_raw)  ### 舉例： 第一個放 Cx 的 loss_info_obj, 第二個放 Cy  的 loss_info_obj, 第三個 才放 GAN 的 loss (同上)
-            BCE_G_to_D = loss_info_objs[BCE_posi].loss_funs_dict["BCE_G_to_D"](fake_score_gt1, fake_score, BCE_mask, Mask_type=self.BCE_Mask_type)
-            G_total_loss = BCE_G_to_D + multi_total_loss
-            # G_total_loss = multi_total_loss  ### debug 用， 看看 不加 GAN loss 效果如何
-
         if(self.G_training and self.just_train_D is False):
+            with tf.GradientTape() as G_tape:
+                model_outputs_raw = model_obj.generator(in_data)  ### 舉例：model_outputs_raw == [Cx_pre_raw, Cy_pre_raw] (同上)
+                multi_losses = []
+                multi_total_loss = 0
+                for go_m, model_output in enumerate(model_outputs_raw):  ### 舉例：model_outputs_raw == [Cx_pre_raw, Cy_pre_raw]， 第一次跑 Cx， 第二次跑 Cy
+                    total_loss, losses = one_loss_info_obj_total_loss(loss_info_objs[go_m], model_output, gt_datas[go_m], Mask=Mask)
+                    multi_losses.append(losses)
+                    multi_total_loss += total_loss
+
+                model_output_raw  = tf.concat(model_outputs_raw, axis=-1)  ### 舉例：model_output_raw  ==  C_pre_raw (同上)
+                model_output_w_M  = model_output_raw * Mask                ### 舉例：model_output_w_M  ==  C_pre_w_M (同上)
+                fake_score = model_obj.discriminator(model_output_w_M)
+                fake_score_gt1 = tf.ones_like(fake_score, dtype=tf.float32)   ### 訓練G時， 希望騙過D， 所以希望越高分越好
+
+                BCE_posi = len(model_outputs_raw)  ### 舉例： 第一個放 Cx 的 loss_info_obj, 第二個放 Cy  的 loss_info_obj, 第三個 才放 GAN 的 loss (同上)
+                BCE_G_to_D = loss_info_objs[BCE_posi].loss_funs_dict["BCE_G_to_D"](fake_score_gt1, fake_score, BCE_mask, Mask_type=self.BCE_Mask_type)
+                G_total_loss = BCE_G_to_D + multi_total_loss
+                G_total_loss *= self.init_graph_finished  ### 如果是在 init_graph的話， init_graph_finished == 0， 這樣就不會更新到 model 了喔！ 當 init_graph完成後， 在exp層級會幫這裡的 init_graph_finished 設 1， 之後的訓練時 loss值不會歸零 就會正常更新了～
+                # G_total_loss = multi_total_loss  ### debug 用， 看看 不加 GAN loss 效果如何
+                print("calculate G finish")
+
             grad_G = G_tape.gradient(G_total_loss, model_obj.generator.trainable_weights)
             model_obj.optimizer_G.apply_gradients(zip(grad_G, model_obj.generator.trainable_weights))
 
@@ -91,6 +102,15 @@ class Ttrain_step_w_GAN:
                 for go_containor, loss_containor in enumerate(loss_info_obj.loss_containors.values()):
                     loss_containor( multi_losses[go_m][go_containor] )
             loss_info_objs[2].loss_containors["BCE_G_to_D"](BCE_G_to_D)
+
+            ### 如果是在 init_graph的話， init_graph_finished == 0， 此時算出來的 loss值是被歸零的， 不用儲存， 但為了建立graph還是要有存的動作， 存完reset就好囉！ 當 init_graph完成後， 在exp層級會幫這裡的 init_graph_finished 設 1， 之後的訓練時 loss值不會歸零 就不用reset拉～
+            if(self.init_graph_finished == 0):
+                for go_m, _ in enumerate(model_outputs_raw):
+                    loss_info_obj = loss_info_objs[go_m]
+                    for go_containor, loss_containor in enumerate(loss_info_obj.loss_containors.values()):
+                        if(self.init_graph_finished == 0): loss_containor.reset_states()  ### 如果是在 init_graph的話， init_graph_finished == 0， 此時算出來的 loss值是被歸零的， 不用儲存， 但為了建立graph還是要有存的動作， 存完reset就好囉！ 當 init_graph完成後， 在exp層級會幫這裡的 init_graph_finished 設 1， 之後的訓練時 loss值不會歸零 就不用reset拉～
+                loss_info_objs[2].loss_containors["BCE_G_to_D"].reset_states()
+                print("reset G metric finish (init_graph dosen't need to save so reset it)")
             print("update G finish")
 
 
