@@ -254,9 +254,11 @@ class Experiment():
                 elif(D_train_many_diff is True) : D_train_db_combine = self.tf_data.train_db_combine.repeat(D_train_amount)  ### 訓練多次時用 diff資料
                 if  (G_train_many_diff is False): G_train_db_combine = self.tf_data.train_db_combine                         ### 訓練多次時用 same資料
                 elif(G_train_many_diff is True) : G_train_db_combine = self.tf_data.train_db_combine.repeat(G_train_amount)  ### 訓練多次時用 diff資料
+                DG_train_db_combine = self.tf_data.train_db_combine  ### DG 都用相同的資料 實用的dataset
 
                 D_iter = iter(D_train_db_combine)
                 G_iter = iter(G_train_db_combine)
+                DG_iter = iter(DG_train_db_combine)
 
                 for go_iter in trange(len(self.tf_data.train_db_combine)):
                     if(DG_train_many_diff is True):
@@ -278,9 +280,7 @@ class Experiment():
                             # plt.show()
                             self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
                     else:
-                        DG_train_db_combine = self.tf_data.train_db_combine
-                        DG_iter = iter(DG_train_db_combine)
-                        (_, train_in_pre, _, train_gt_pre, _) = next(DG_iter)  ### DG 都用相同的資料， 但因為先train D， 所以就統一拿D的資料
+                        (_, train_in_pre, _, train_gt_pre, _) = next(DG_iter)  ### DG 都用相同的資料
                         ''' 訓練D '''
                         for _ in range(D_train_amount):
                             if(epoch == 0 and go_iter == 0): print("train D")  ### 確認寫得對不對
