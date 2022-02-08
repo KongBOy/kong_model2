@@ -231,18 +231,9 @@ class Experiment():
             ### 以上 current_ep = epoch   ### 代表還沒訓練
             ###     step2 訓練
             if(self.model_obj.discriminator is not None):
+                ''' 超重要！ 初始化graph， 必須要走過所有運算流程才行(包含 gradient 和 apply_gradient)， 所以 把 train_step.D_training, G_training 都設True 喔！ '''
                 ### 先把要用的物件都抓出來
                 init_graph_finished = self.model_obj.train_step.init_graph_finished
-                D_train_amount = self.model_obj.train_step.D_train_amount
-                G_train_amount = self.model_obj.train_step.G_train_amount
-
-                ### D,G 根據自己要train的次數， 建立各自 的 dataset
-                D_train_db_combine = self.tf_data.train_db_combine.repeat(D_train_amount)
-                G_train_db_combine = self.tf_data.train_db_combine.repeat(G_train_amount)
-                D_iter = iter(D_train_db_combine)
-                G_iter = iter(G_train_db_combine)
-
-                ''' 超重要！ 初始化graph， 必須要走過所有運算流程才行(包含 gradient 和 apply_gradient)， 所以 把 train_step.D_training, G_training 都設True 喔！ '''
                 if(init_graph_finished == 0):
                     init_graph_combine = self.tf_data.train_db_combine.take(1)
                     for (_, train_in_pre, _, train_gt_pre, _) in (init_graph_combine):
@@ -253,17 +244,36 @@ class Experiment():
                     self.model_obj.train_step.init_graph_finished = 1
                     print("==================== init_graph_finish ====================")
 
+                ### 先把要用的物件都抓出來
+                D_train_amount    = self.model_obj.train_step.D_train_amount
+                G_train_amount    = self.model_obj.train_step.G_train_amount
+                D_train_many_diff = self.model_obj.train_step.D_train_many_diff
+                G_train_many_diff = self.model_obj.train_step.G_train_many_diff
+
+                ### D,G 根據自己要train的次數， 建立各自 的 dataset
+                if  (D_train_many_diff is False): D_train_db_combine = self.tf_data.train_db_combine                         ### 訓練多次時用 same資料
+                elif(D_train_many_diff is True) : D_train_db_combine = self.tf_data.train_db_combine.repeat(D_train_amount)  ### 訓練多次時用 diff資料
+                if  (G_train_many_diff is False): G_train_db_combine = self.tf_data.train_db_combine                         ### 訓練多次時用 same資料
+                elif(G_train_many_diff is True) : G_train_db_combine = self.tf_data.train_db_combine.repeat(G_train_amount)  ### 訓練多次時用 diff資料
+
+                D_iter = iter(D_train_db_combine)
+                G_iter = iter(G_train_db_combine)
+
                 for go_iter in trange(len(self.tf_data.train_db_combine)):
+                    ''' 訓練D '''
+                    if(D_train_many_diff is False): (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)  ### 訓練多次時用 same資料， 取資料時機再for 外面
                     for _ in range(D_train_amount):
                         if(epoch == 0 and go_iter == 0): print("train D")  ### 確認寫得對不對
-                        (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)
+                        if(D_train_many_diff is True): (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)  ### 訓練多次時用 diff資料， 取資料時機再for 裡面
                         self.model_obj.train_step.D_training = True
                         self.model_obj.train_step.G_training = False
                         self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
 
+                    ''' 訓練G '''
+                    if(G_train_many_diff is False): (_, train_in_pre, _, train_gt_pre, _) = next(G_iter)  ### 訓練多次時用 same資料， 取資料時機再for 外面
                     for _ in range(G_train_amount):
                         if(epoch == 0 and go_iter == 0): print("train G")  ### 確認寫得對不對
-                        (_, train_in_pre, _, train_gt_pre, _) = next(G_iter)
+                        if(G_train_many_diff is True): (_, train_in_pre, _, train_gt_pre, _) = next(G_iter)  ### 訓練多次時用 diff資料， 取資料時機再for 裡面
                         self.model_obj.train_step.D_training = False
                         self.model_obj.train_step.G_training = True
                         self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
