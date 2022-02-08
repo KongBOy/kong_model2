@@ -279,7 +279,7 @@ class Experiment():
                             self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
                     else:
                         DG_train_db_combine = self.tf_data.train_db_combine
-                        DG_iter = iter(D_train_db_combine)
+                        DG_iter = iter(DG_train_db_combine)
                         (_, train_in_pre, _, train_gt_pre, _) = next(DG_iter)  ### DG 都用相同的資料， 但因為先train D， 所以就統一拿D的資料
                         ''' 訓練D '''
                         for _ in range(D_train_amount):
