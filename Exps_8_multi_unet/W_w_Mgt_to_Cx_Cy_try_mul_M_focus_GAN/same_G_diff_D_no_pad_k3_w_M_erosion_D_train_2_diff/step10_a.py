@@ -26,7 +26,7 @@ exp_dir = template_dir
 #############################################################################################################################################################################################################
 
 from step06_a_datas_obj import *
-from step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN_G_L5_ch032_D_all_no_pad_k3_w_M_erosion_D_train_2 import *
+from step09 import *
 from step10_a2_loss_info_obj import *
 from step10_b2_exp_builder import Exp_builder
 
