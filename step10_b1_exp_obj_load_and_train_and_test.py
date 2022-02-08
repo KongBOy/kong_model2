@@ -208,7 +208,7 @@ class Experiment():
             self.ckpt_write_manager.save()
             print("save ok ~~~~~~~~~~~~~~~~~")
 
-        # self.tf_data.train_db_combine = self.tf_data.train_db_combine.take(5)  ### debug用
+        # self.tf_data.train_db_combine = self.tf_data.train_db_combine.take(20)  ### debug用
 
         self.current_ep = self.start_epoch   ### 因為 epoch 的狀態 在 train 前後是不一樣的，所以需要用一個變數來記住，就用這個current_epoch來記錄囉！
         for epoch in range(self.start_epoch, self.epochs):
@@ -247,9 +247,7 @@ class Experiment():
                     init_graph_combine = self.tf_data.train_db_combine.take(1)
                     for (_, train_in_pre, _, train_gt_pre, _) in (init_graph_combine):
                         print("==================== init_graph ====================")
-                        self.model_obj.train_step.D_training = True
-                        self.model_obj.train_step.G_training = True
-                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
+                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=True, G_training=True)
                     self.model_obj.train_step.init_graph_finished = 1
                     print("==================== init_graph_finish ====================")
 
@@ -257,16 +255,13 @@ class Experiment():
                     for _ in range(D_train_amount):
                         if(epoch == 0 and go_iter == 0): print("train D")  ### 確認寫得對不對
                         (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)
-                        self.model_obj.train_step.D_training = True
-                        self.model_obj.train_step.G_training = False
-                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
+                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=True, G_training=False)
 
                     for _ in range(G_train_amount):
                         if(epoch == 0 and go_iter == 0): print("train G")  ### 確認寫得對不對
                         (_, train_in_pre, _, train_gt_pre, _) = next(G_iter)
-                        self.model_obj.train_step.D_training = False
-                        self.model_obj.train_step.G_training = True
-                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
+                        self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
+                    self.model_obj.train_step.init_graph_finished = 1
             else:
                 for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
                     self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
