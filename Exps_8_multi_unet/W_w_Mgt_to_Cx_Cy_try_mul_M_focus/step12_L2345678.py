@@ -74,7 +74,7 @@ if(__name__ == "__main__"):
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=Layer2345678_Ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=False66, single_see_core_amount=6)\
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             .Gather_all_see_final_img(test_db_name="test_see")
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
