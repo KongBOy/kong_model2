@@ -328,9 +328,13 @@ block2_8l_ch001_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).se
 
 
 if(__name__ == "__main__"):
+    import numpy as np
     # print(flow_rect_2_level_fk3.build())
     # print(mask_unet_ch032_tanh_L7.build())
     # print(flow_unet2_block2_ch001_sig_8l.build())
-    print(block2_8l_ch001_sig.build())
+    data = np.zeros(shape=(1, 512, 512, 1))
+    use_model = block2_8l_ch001_sig
+    use_model = use_model.build()
+    print(use_model.generator(data))
     print("build_model cost time:", time.time() - start_time)
     pass
