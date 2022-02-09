@@ -122,46 +122,71 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_obj, phase, index, in_WM, in_WM_pre, _, Mgt_
         fake_score = model_obj.discriminator(C_pre_w_Mgt).numpy()[0]
         real_score = model_obj.discriminator(Cgt_pre).numpy()[0]
 
-        import tensorflow as tf
-        from kong_util.Disc_and_receptive_field_util import get_receptive_filed_feature_length, tf_M_resize_then_erosion_by_kong, get_receptive_field_mask
-        kernel_size = model_obj.discriminator.kernel_size
-        strides     = model_obj.discriminator.strides
-        layer      = model_obj.discriminator.depth_level
-        receptive_filed_feature_length = get_receptive_filed_feature_length(kernel_size, strides, layer, ord_len=dis_img.shape[0])
-        Mgt_pre_resize         = tf.image.resize(Mgt_pre, size=(receptive_filed_feature_length, receptive_filed_feature_length))
-        Mgt_pre_resize         = Mgt_pre_resize[0]
-        Mgt_pre_resize_erosion = tf_M_resize_then_erosion_by_kong(Mgt_pre, resize_h=receptive_filed_feature_length, resize_w=receptive_filed_feature_length)
-        Mgt_pre_resize_erosion = Mgt_pre_resize_erosion[0]
-        receptive_filed_mask   = get_receptive_field_mask(kernel_size=kernel_size, strides=strides, layer=layer, img_shape=dis_img.shape, Mask=Mgt_pre_resize_erosion, vmin=0.5)
+        if(model_obj.train_step.BCE_use_mask):
+            import tensorflow as tf
+            from kong_util.Disc_and_receptive_field_util import get_receptive_filed_feature_length, tf_M_resize_then_erosion_by_kong, get_receptive_field_mask
 
-        fake_score_w_M         = fake_score * Mgt_pre_resize_erosion
-        real_score_w_M         = real_score * Mgt_pre_resize_erosion
-        F_w_Mgt_visual_w_RFM   = (F_w_Mgt_visual * receptive_filed_mask).astype(np.uint8)
-        Fgt_visual_w_RFM       = (Fgt_visual     * receptive_filed_mask).astype(np.uint8)
-        # if(bgr2rgb):
-        #     F_w_Mgt_visual_w_RFM = F_w_Mgt_visual_w_RFM[..., ::-1]
-        #     Fgt_visual_w_RFM     = Fgt_visual_w_RFM[..., ::-1]
+            ''' GAN 的 Discriminator 有用 Mask 的 Case '''
+            ### 把 Mask 縮小到 跟 D_out 一樣的大小
+            ###     這邊在取得大小， 這邊其實可以直接抓 fake_score的shape， 不過想看看自己模擬的 receptive field 寫得對不對， 所以就用自己寫的function來抓大小囉～
+            kernel_size = model_obj.discriminator.kernel_size
+            strides     = model_obj.discriminator.strides
+            layer      = model_obj.discriminator.depth_level
+            receptive_filed_feature_length = get_receptive_filed_feature_length(kernel_size, strides, layer, ord_len=dis_img.shape[0])
 
-        exp_obj.model_obj.train_step.BCE_Mask_type
-        exp_obj.model_obj.train_step.BCE_use_mask
+            ### 模擬訓練中怎麼縮小， 這邊就怎麼縮小， 可以參考 step10_loss 裡的 BCE loss 喔～
+            BCE_Mask_type = model_obj.train_step.BCE_Mask_type.lower()
+            if  (BCE_Mask_type == "erosion"):  M_used = tf_M_resize_then_erosion_by_kong(Mgt_pre, resize_h=receptive_filed_feature_length, resize_w=receptive_filed_feature_length)
+            elif(BCE_Mask_type == "bicubic"):  M_used = tf.image.resize(Mgt_pre, size=(receptive_filed_feature_length, receptive_filed_feature_length), method=tf.image.ResizeMethod.BICUBIC)
+            elif(BCE_Mask_type == "area"   ):  M_used = tf.image.resize(Mgt_pre, size=(receptive_filed_feature_length, receptive_filed_feature_length), method=tf.image.ResizeMethod.AREA)
+            elif(BCE_Mask_type == "nearest"):  M_used = tf.image.resize(Mgt_pre, size=(receptive_filed_feature_length, receptive_filed_feature_length), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-        single_row_imgs = Matplot_multi_row_imgs(
-                        rows_cols_imgs   = [ [F_w_Mgt_visual ,  fake_score , fake_score_w_M, F_w_Mgt_visual_w_RFM] , [Fgt_visual,     real_score,   real_score_w_M,  Fgt_visual_w_RFM]],   ### 把要顯示的每張圖包成list
-                        rows_cols_titles = [ ["F_w_Mgt_visual", "fake_score", "fake_score_w_M", "F_w_Mgt_visual_w_RFM"], ["F_w_Mgt_visual_w_RFM", "Fgt_visual", "real_score", "real_score_w_M", "Fgt_visual_w_RFM"]],  ### 把每張圖要顯示的字包成list
+            ### BHWC -> HWC
+            M_used = M_used[0]
+
+            ### 取得 Mask 在原影像 的 receptive_filed_mask
+            receptive_filed_mask   = get_receptive_field_mask(kernel_size=kernel_size, strides=strides, layer=layer, img_shape=dis_img.shape, Mask=M_used, vmin=0.5)  ### return HWC， vmin=0.5 是為了等等相乘時留一點透明度
+
+            ### D_out 跟 縮小M 相乘， 原影像 跟 原影像的receptive_filed_mask 相乘
+            fake_score_w_M         = fake_score * M_used
+            real_score_w_M         = real_score * M_used
+            F_w_Mgt_visual_w_RFM   = (F_w_Mgt_visual * receptive_filed_mask).astype(np.uint8)
+            Fgt_visual_w_RFM       = (Fgt_visual     * receptive_filed_mask).astype(np.uint8)
+            # if(bgr2rgb):
+            #     F_w_Mgt_visual_w_RFM = F_w_Mgt_visual_w_RFM[..., ::-1]
+            #     Fgt_visual_w_RFM     = Fgt_visual_w_RFM[..., ::-1]
+
+
+            single_row_imgs = Matplot_multi_row_imgs(
+                            rows_cols_imgs   = [ [F_w_Mgt_visual ,  fake_score , fake_score_w_M, F_w_Mgt_visual_w_RFM] , [Fgt_visual,     real_score,   real_score_w_M,  Fgt_visual_w_RFM]],   ### 把要顯示的每張圖包成list
+                            rows_cols_titles = [ ["F_w_Mgt_visual", "fake_score", "fake_score_w_M", "F_w_Mgt_visual_w_RFM"], ["F_w_Mgt_visual_w_RFM", "Fgt_visual", "real_score", "real_score_w_M", "Fgt_visual_w_RFM"]],  ### 把每張圖要顯示的字包成list
+                            fig_title ="epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
+                            add_loss  =add_loss,
+                            bgr2rgb   =bgr2rgb,   ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                            where_colorbar = [[None, True, True, None], [None, True, True, None]],
+                            w_same_as_first=True)
+
+            ### 1 row 的版本， 覺得太長
+            # single_row_imgs = Matplot_single_row_imgs(
+            #                         imgs      =[ F_w_Mgt_visual ,  fake_score , fake_score_w_M, F_w_Mgt_visual_w_RFM,    Fgt_visual,     real_score,   real_score_w_M,  Fgt_visual_w_RFM],   ### 把要顯示的每張圖包成list
+            #                         img_titles=["F_w_Mgt_visual", "fake_score", "fake_score_w_M", "F_w_Mgt_visual_w_RFM", "Fgt_visual", "real_score", "real_score_w_M", "Fgt_visual_w_RFM"],  ### 把每張圖要顯示的字包成list
+            #                         fig_title ="epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
+            #                         add_loss  =add_loss,
+            #                         bgr2rgb   =bgr2rgb,    ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+            #                         where_colorbar = [None, True, True, None, None, True, True, None],
+            #                         w_same_as_first=True)
+
+        else:
+            ''' GAN 的 Discriminator 沒用 Mask 的 Case '''
+            single_row_imgs = Matplot_single_row_imgs(
+                        imgs      =[ F_w_Mgt_visual ,  fake_score ,  Fgt_visual,   real_score],   ### 把要顯示的每張圖包成list
+                        img_titles=["F_w_Mgt_visual", "fake_score", "Fgt_visual", "real_score"],  ### 把每張圖要顯示的字包成list
                         fig_title ="epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
                         add_loss  =add_loss,
-                        bgr2rgb   =bgr2rgb,   ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
-                        where_colorbar = [[None, True, True, None], [None, True, True, None]],
+                        bgr2rgb   =bgr2rgb,  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                        where_colorbar = [None, True, None, True],
                         w_same_as_first=True)
 
-        # single_row_imgs = Matplot_single_row_imgs(
-        #                         imgs      =[ F_w_Mgt_visual ,  fake_score , fake_score_w_M, F_w_Mgt_visual_w_RFM,    Fgt_visual,     real_score,   real_score_w_M,  Fgt_visual_w_RFM],   ### 把要顯示的每張圖包成list
-        #                         img_titles=["F_w_Mgt_visual", "fake_score", "fake_score_w_M", "F_w_Mgt_visual_w_RFM", "Fgt_visual", "real_score", "real_score_w_M", "Fgt_visual_w_RFM"],  ### 把每張圖要顯示的字包成list
-        #                         fig_title ="epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
-        #                         add_loss  =add_loss,
-        #                         bgr2rgb   =bgr2rgb,    ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
-        #                         where_colorbar = [None, True, True, None, None, True, True, None],
-        #                         w_same_as_first=True)
         single_row_imgs.Draw_img()
         single_row_imgs.Save_fig(dst_dir=private_write_dir, name="epoch_%04i_u1b8_Disc" % current_ep)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
         # print("save to:", private_write_dir)
@@ -178,7 +203,8 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_obj, phase, index, in_WM, in_WM_pre, _, Mgt_
                                 img_titles=["W_01",        "Mgt",        "W_w_M",   "F_raw_visual", "F_w_Mgt_visual",     "pred_rec", "rec_hope"],  ### 把每張圖要顯示的字包成list
                                 fig_title ="%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
                                 add_loss  =add_loss,
-                                bgr2rgb   =bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                                bgr2rgb   =bgr2rgb,  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                                w_same_as_first=True)
         single_row_imgs.Draw_img()
         single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
         print("save to:", exp_obj.result_obj.test_write_dir)
