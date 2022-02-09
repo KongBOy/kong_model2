@@ -278,8 +278,11 @@ class Loss_info_builder(Loss_info_G_loss_builder):
 
         return self.loss_info_obj
 
-GAN_s001_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  1)
 GAN_s0p1_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.1)
+GAN_s0p2_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.2)
+GAN_s0p5_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.5)
+GAN_s0p7_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.7)
+GAN_s001_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  1)
 
 ### 並不是 model 決定 Loss， 而是由 我想 怎麼設計決定，
 # 所以 不能只寫 build_by_model_name，也要寫 我自己指定的method
