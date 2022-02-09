@@ -280,6 +280,7 @@ class Loss_info_builder(Loss_info_G_loss_builder):
 
 GAN_s0p1_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.1)
 GAN_s0p2_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.2)
+GAN_s0p3_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.3)
 GAN_s0p5_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.5)
 GAN_s0p7_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.7)
 GAN_s0p7_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.9)
