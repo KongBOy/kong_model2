@@ -10,7 +10,7 @@ sys.path.append("kong_util")
 from util import get_dir_certain_file_names, move_dir_certain_file
 from matplot_fig_ax_util import Matplot_single_row_imgs
 from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
-from flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img, check_flow_quality_then_I_w_F_to_R
+from kong_util.flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img, check_flow_quality_then_I_w_F_to_R
 from video_from_img import Video_combine_from_dir
 from multiprocess_util import multi_processing_interface
 from multiprocessing import Process
@@ -214,6 +214,11 @@ class See_bm_rec(See_info):
 
     ### See_method 第三部分b
     def _get_bm_rec_and_gt_bm_gt_rec(self, epoch, dis_img):
+        '''
+        不用擔心 Gk3_no_pad 的時候 flow(511, 511, 3) 的 h, w 和 dis_img (512, 512, 3) 不一樣，
+        因為 use_flow_to_get_bm 裡面用的 h, w 是 看 flow 的
+        且 處理過程會自動忽略 dis_img 最右 和 最下 pixel 喔～(沒驗證不過心算起來是這樣，且差 1 pixel好像感覺不出來)
+        '''
         ### pred flow part
         flow_pre = np.load(self.npz_epoch_flow_read_paths[epoch])["arr_0"]  ### see資料夾 內的flow 該epoch產生的flow 讀出來，npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         flow = Value_Range_Postprocess_to_01(flow_pre, self.result_obj.exp_obj_use_gt_range)
