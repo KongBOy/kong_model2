@@ -282,6 +282,7 @@ GAN_s0p1_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=
 GAN_s0p2_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.2)
 GAN_s0p5_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.5)
 GAN_s0p7_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.7)
+GAN_s0p7_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  0.9)
 GAN_s001_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=  1)
 
 ### 並不是 model 決定 Loss， 而是由 我想 怎麼設計決定，
