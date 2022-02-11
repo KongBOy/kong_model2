@@ -255,7 +255,7 @@ class Experiment():
                 if  (G_train_many_diff is False): G_train_db_combine = self.tf_data.train_db_combine                         ### 訓練多次時用 same資料
                 elif(G_train_many_diff is True) : G_train_db_combine = self.tf_data.train_db_combine.repeat(G_train_amount)  ### 訓練多次時用 diff資料
                 DG_train_db_combine = self.tf_data.train_db_combine  ### DG 都用相同的資料 實用的dataset
-
+                ### 參考： https://www.tensorflow.org/guide/data#basic_mechanics
                 D_iter = iter(D_train_db_combine)
                 G_iter = iter(G_train_db_combine)
                 DG_iter = iter(DG_train_db_combine)

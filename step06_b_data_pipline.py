@@ -100,9 +100,9 @@ class mov_mapping_util(norm_mapping_util):
             ch2 : y
             ch3 : x
         wc:
-            ch1：待查
-            ch2：待查
-            ch3：待查
+            ch1：z
+            ch2：y
+            ch3：x
         '''
         flow = tf.io.read_file(file_name)
         flow = tf.io.decode_raw(flow , tf.float32)
