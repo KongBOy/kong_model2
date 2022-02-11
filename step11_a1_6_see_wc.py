@@ -201,19 +201,22 @@ class See_wc(See_info):
         in_img     = cv2.imread(self.dis_img_path)
         WM_01      = np.load(self.WM_npz_epoch_read_paths[epoch])["arr_0"]  ### npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
         WM_01_gt   = np.load(self.WM_npz_gt_path)["arr_0"]
+        h, w, c = WM_01.shape           ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        WM_01_gt = WM_01_gt[:h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
 
         WM_back    = WM_01 * (W_max - W_min) + W_min
         WM_gt_back = WM_01_gt * (W_max - W_min) + W_min
         if(WM_01.shape[2] == 3):
             M = cv2.imread(self.temp_M_path)[..., 0:1]
+            M = M[:h, :w, :]            ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
             M = np.where(M > 0.95, 1, 0)
             WM_back = np.concatenate((WM_back, M), axis=-1)
             WM_gt_back = np.concatenate((WM_gt_back, M), axis=-1)
 
         WM_3D_path    = f'{self.WM_3D_matplot_visual_write_dir}/{self.WM_npz_epoch_names[epoch].replace(".npz", ".jpg")}'
         WM_3D_gt_path = f'{self.WM_3D_matplot_visual_write_dir}/{self.WM_npz_gt_name           .replace(".npz", ".jpg")}'
-        WM_3d_plot(WM_back, savefig=True, save_path=WM_3D_path,**WM_range)
-        if(os.path.isfile(WM_3D_gt_path) is False): WM_3d_plot(WM_gt_back, savefig=True, save_path=WM_3D_gt_path,**WM_range)
+        WM_3d_plot(WM_back, savefig=True, save_path=WM_3D_path, **WM_range)
+        if(os.path.isfile(WM_3D_gt_path) is False): WM_3d_plot(WM_gt_back, savefig=True, save_path=WM_3D_gt_path, **WM_range)
 
         W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = W_01_visual_op(WM_01,    out_ch3=True)
         Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(WM_01_gt, out_ch3=True)
@@ -233,8 +236,8 @@ class See_wc(See_info):
                                 add_loss=add_loss,
                                 bgr2rgb=bgr2rgb)
         matplot_imgs.Draw_img()
-        WM_3d_plot(WM_back,    fig=matplot_imgs.fig, ax=matplot_imgs.ax[0], ax_r=0, ax_c=1, ax_rows=3,**WM_range)
-        WM_3d_plot(WM_gt_back, fig=matplot_imgs.fig, ax=matplot_imgs.ax[0], ax_r=0, ax_c=2, ax_rows=3,**WM_range)
+        WM_3d_plot(WM_back,    fig=matplot_imgs.fig, ax=matplot_imgs.ax[0], ax_r=0, ax_c=1, ax_rows=3, **WM_range)
+        WM_3d_plot(WM_gt_back, fig=matplot_imgs.fig, ax=matplot_imgs.ax[0], ax_r=0, ax_c=2, ax_rows=3, **WM_range)
         matplot_imgs.ax[0, 3].remove()
 
         return matplot_imgs
