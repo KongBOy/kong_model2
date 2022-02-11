@@ -5,14 +5,12 @@ from step0_access_path import Syn_write_to_read_dir
 
 from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01
 
-import sys
-sys.path.append("kong_util")
-from util import get_dir_certain_file_names, move_dir_certain_file
-from matplot_fig_ax_util import Matplot_single_row_imgs
-from build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
+from kong_util.util import get_dir_certain_file_names, move_dir_certain_file
+from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
+from kong_util.build_dataset_combine import Save_as_jpg, Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
 from kong_util.flow_bm_util import use_flow_to_get_bm, use_bm_to_rec_img, check_flow_quality_then_I_w_F_to_R
-from video_from_img import Video_combine_from_dir
-from multiprocess_util import multi_processing_interface
+from kong_util.video_from_img import Video_combine_from_dir
+from kong_util.multiprocess_util import multi_processing_interface
 from multiprocessing import Process
 
 import cv2

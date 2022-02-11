@@ -1,7 +1,7 @@
 import sys
 sys.path.append("kong_util")
 
-from matplot_fig_ax_util import check_fig_ax_init, mesh3D_scatter_and_z0_plane
+from kong_util.matplot_fig_ax_util import check_fig_ax_init, mesh3D_scatter_and_z0_plane
 import numpy as np
 
 from step2_a_util import wt_calculate

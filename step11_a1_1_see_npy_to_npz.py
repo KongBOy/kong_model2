@@ -1,13 +1,11 @@
 from step11_a0_see_base import See_info
 
-from step0_access_path import JPG_QUALITY, CORE_AMOUNT_NPY_TO_NPZ, CORE_AMOUNT_BM_REC_VISUAL, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
+from step0_access_path import  CORE_AMOUNT_NPY_TO_NPZ
 from step0_access_path import Syn_write_to_read_dir
 
-import sys
-sys.path.append("kong_util")
-from util import get_dir_certain_file_names, move_dir_certain_file
-from build_dataset_combine import Check_dir_exist_and_build
-from multiprocess_util import multi_processing_interface
+from kong_util.util import get_dir_certain_file_names, move_dir_certain_file
+from kong_util.build_dataset_combine import Check_dir_exist_and_build
+from kong_util.multiprocess_util import multi_processing_interface
 
 import time
 import numpy as np
