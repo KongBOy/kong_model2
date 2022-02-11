@@ -144,6 +144,9 @@ class Result:
                     不過真的試過以後，效率其實還不錯！
                     但記憶體會爆的問題還是在，可能只適合在記憶體大的電腦跑這樣子
                     """
+                if(args["see_method_name"] == "Save_as_WM_matplot_visual"):
+                    self.sees[see_num].Npy_to_npz               (**args)
+                    self.sees[see_num].Save_as_WM_matplot_visual(**args)
 
                 if(args["see_method_name"] == "Calculate_and_Visual_SSIM_LD"):
                     self.sees[see_num].Calculate_SSIM_LD (single_see_core_amount=args["single_see_core_amount"], see_print_msg=args["see_print_msg"])

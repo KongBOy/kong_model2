@@ -29,6 +29,7 @@ JPG_QUALITY = 30
 CORE_AMOUNT = 6
 CORE_AMOUNT_NPY_TO_NPZ = 2
 CORE_AMOUNT_BM_REC_VISUAL = 8  ### 8  ### 14  ### 500
+CORE_AMOUNT_WM_VISUAL = 5  ### 8  ### 14  ### 500
 CORE_AMOUNT_SAVE_AS_JPG = 6  ### 12         ### Save_as_jpg
 CORE_AMOUNT_FIND_LTRD_AND_CROP = 6  ### 12  ### Find_ltrd_and_crop
 
