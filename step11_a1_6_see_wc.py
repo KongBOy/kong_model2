@@ -112,7 +112,7 @@ class See_wc(See_info):
 
         self.WM_npz_all_read_paths   = [self.WM_npz_read_dir + "/" + name for name in self.WM_npz_all_names]    ### 目前還沒用到～　所以也沒有寫 write_path 囉！
         self.WM_npz_epoch_read_paths = [self.WM_npz_read_dir + "/" + name for name in self.WM_npz_epoch_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
-        self.WM_npz_gt_path          = self.get_path_savely(self.WM_npz_read_dir, certain_word="gt", certain_ext=".npz")
+        self.WM_npz_gt_path          = self.get_path_savely(self.WM_npz_read_dir, certain_word="gt_W", certain_ext=".npz")
         self.WM_npz_all_amount   = len(self.WM_npz_all_read_paths)
         self.WM_npz_epoch_amount = len(self.WM_npz_epoch_read_paths)
 
