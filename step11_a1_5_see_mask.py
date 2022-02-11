@@ -49,7 +49,9 @@ class See_mask(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        self.mask_names  = get_dir_certain_file_names(self.mask_read_dir , certain_word="epoch", certain_ext=".bmp")
+        self.mask_names                                = get_dir_certain_file_names(self.mask_read_dir , certain_word="epoch", certain_ext=".bmp")
+        if(len(self.mask_names) == 0): self.mask_names = get_dir_certain_file_names(self.mask_read_dir , certain_word="epoch", certain_ext=".jpg")
+
         self.mask_read_paths  = [self.mask_read_dir + "/" + name for name in self.mask_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
         self.mask_amount = len(self.mask_read_paths)
