@@ -53,8 +53,8 @@ def I_Generate_M_see(model_obj, phase, index, in_img, in_img_pre, gt_mask_coord,
         Check_dir_exist_and_build(private_write_dir)                                   ### 建立 放輔助檔案 的資料夾
         Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
         cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", in_img)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-        cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.bmp", gt_mask)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-    cv2.imwrite(    private_mask_write_dir + "/" + "epoch_%04i_u1b1_mask.bmp" % current_ep, pred_mask_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+        cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.jpg", gt_mask)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+    cv2.imwrite(    private_mask_write_dir + "/" + "epoch_%04i_u1b1_mask.jpg" % current_ep, pred_mask_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
@@ -77,7 +77,7 @@ def I_Generate_M_see(model_obj, phase, index, in_img, in_img_pre, gt_mask_coord,
         if(phase == "test"):
             gather_mask_dir   = public_write_dir + "/pred_mask"
             Check_dir_exist_and_build(gather_mask_dir)
-            cv2.imwrite(f"{gather_mask_dir}/{current_see_name}.bmp", pred_mask_visual)
+            cv2.imwrite(f"{gather_mask_dir}/{current_see_name}.jpg", pred_mask_visual)
 
             h, w = pred_mask.shape[:2]
             fake_name = current_see_name.split(".")[0]
