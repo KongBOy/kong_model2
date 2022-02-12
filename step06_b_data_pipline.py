@@ -1589,6 +1589,87 @@ if(__name__ == "__main__"):
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
+    # print("here")
+    img1 = tf_data.train_db_combine.take(10)
+
+
+    ### 雖然來源相同， 不過兩個iter是獨立運作的
+    db1 = tf_data.train_db_combine
+    db2 = tf_data.train_db_combine
+
+    iter1 = iter(db1)
+    iter2 = iter(db2)
+
+    data1 = next(iter1)
+    data2 = next(iter2)
+    plt.figure()
+    plt.imshow(data1[0][1][0][..., :3])
+    plt.figure()
+    plt.imshow(data2[0][1][0][..., :3])
+    plt.show()
+    print("data1 == data2", data1)
+
+
+    print(len(img1))
+    # print("here~ ", img1)
+    # img2 = tf_data.train_db_combine.take(10)
+    # print("here~~", img2)
+    # ### 有shuffle蒔 從這裡知道 take 不花時間， 有點像定義動作的概念
+
+    # ### 有shuffle蒔 從下面知道， 真正用for去取資料的時候才花時間～ 用for 才是真正去取資料喔！ take()不是， take()只是定義動作而已～
+    # plt.figure()
+    # for data in img1:
+    #     plt.imshow(data[0][1][0][..., :3])
+    #     break
+    # print("here1")
+
+    # plt.figure()
+    # for data in img2:
+    #     plt.imshow(data[0][1][0][..., :3])
+    #     break
+    # print("here2")
+
+    # plt.figure()
+    # for data in img2:
+    #     plt.imshow(data[0][1][0][..., :3])
+    #     break
+    # print("here3")
+    # it1 = iter(img1)
+    # it2 = iter(img2)
+
+    # data = next(it2)
+    # plt.figure()
+    # plt.imshow(data[0][1][0][..., :3])
+
+    # data = next(it2)
+    # plt.figure()
+    # plt.imshow(data[0][1][0][..., :3])
+
+    # data = next(it1)
+    # plt.figure()
+    # plt.imshow(data[0][1][0][..., :3])
+
+    # plt.figure()
+    # for data in img1:
+    #     plt.imshow(data[0][1][0][..., :3])
+    #     break
+    # print("here1")
+
+    # plt.figure()
+    # it1 = iter(img1)
+    # data = next(it1)
+    # plt.figure()
+    # plt.imshow(data[0][1][0][..., :3])
+    # print("here1")
+
+    # i = 0
+    # it1 = iter(img1.repeat(2))
+    # while(True):
+    #     data = next(it1)
+    #     i = i + 1
+    #     print(i)
+
+    plt.show()
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type8_blender_dis_wc_flow_try_mul_M.build()
