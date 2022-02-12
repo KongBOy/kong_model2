@@ -69,7 +69,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L6_ch016.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch032.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch001.{run}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch064.{run}"])
+# sb.run(cmd_python_step10_a + [f"L6_ch064.{compress_and_WM_3D_all_from_begin}"])
 
 # sb.run(cmd_python_step10_a + [f"L7_ch002.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch004.{compress_and_WM_3D_all_from_begin}"])
