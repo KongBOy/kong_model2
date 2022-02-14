@@ -28,20 +28,20 @@ import subprocess as sb
 
 # sb.run(cmd_python_step10_a + [f"L4_ch128_limit.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"L5_ch128_limit.{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch128_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch064_limit.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"L6_ch128_limit.{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"L6_ch064_limit.{compress_all}"])
+sb.run(cmd_python_step10_a + [f"L6_ch128_limit.{compress_and_WM_3D_all_from_begin}"])
+sb.run(cmd_python_step10_a + [f"L6_ch064_limit.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch032_limit.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"L7_ch128_limit.{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"L7_ch064_limit.{compress_all}"])
+sb.run(cmd_python_step10_a + [f"L7_ch128_limit.{compress_and_WM_3D_all_from_begin}"])
+sb.run(cmd_python_step10_a + [f"L7_ch064_limit.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch032_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L7_ch016_limit.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"L8_ch128_limit.{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch064_limit.{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"L8_ch032_limit.{compress_all}"])
+sb.run(cmd_python_step10_a + [f"L8_ch128_limit.{compress_and_WM_3D_all_from_begin}"])
+sb.run(cmd_python_step10_a + [f"L8_ch064_limit.{compress_and_WM_3D_all_from_begin}"])
+sb.run(cmd_python_step10_a + [f"L8_ch032_limit.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch016_limit.{run}"])
 # sb.run(cmd_python_step10_a + [f"L8_ch008_limit.{run}"])
