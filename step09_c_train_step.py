@@ -174,7 +174,7 @@ def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data, Mask=Non
 
 def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None, Mask=None):
     with tf.GradientTape() as gen_tape:
-        model_outputs = model_obj.generator(in_data, Mask=Mask)
+        model_outputs = model_obj.generator(in_data)
         # print("in_data.numpy().shape", in_data.numpy().shape)
         # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
         # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
@@ -352,7 +352,7 @@ def train_step_Multi_output_W_w_M_to_Cx_Cy_focus(model_obj, in_data, gt_data, lo
 
     _train_step_Multi_output(model_obj, in_data=W_w_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=in_Mask)
 
-@tf.function
+# @tf.function
 def train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
