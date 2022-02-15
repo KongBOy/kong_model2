@@ -57,7 +57,8 @@ class Multi_Generator(tf.keras.models.Model):
             I_pre = input_tensor
             Wz_pre_raw, Wy_pre_raw, Wx_pre_raw = self.gens_dict["I_to_Wx_Wy_Wz"](I_pre)
             W_pre_raw = tf.concat([Wz_pre_raw, Wy_pre_raw, Wx_pre_raw], axis=-1)
-            W_pre_w_M = W_pre_raw * Mask
+            b, h, w, c = W_pre_raw.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+            W_pre_w_M = W_pre_raw * Mask[:, :h, :w, :]
 
             Cx_pre_raw, Cy_pre_raw = self.gens_dict["W_to_Cx_Cy"](W_pre_w_M)
 

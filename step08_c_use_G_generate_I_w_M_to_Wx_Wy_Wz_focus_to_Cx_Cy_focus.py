@@ -9,8 +9,8 @@ from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_v
 from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 sys.path.append("kong_util")
-from build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
-from matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
+from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
+from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 
 import matplotlib.pyplot as plt
 import datetime
