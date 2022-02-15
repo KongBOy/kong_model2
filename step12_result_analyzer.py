@@ -47,6 +47,7 @@ class Result_analyzer:
         wx
         wy
         wz
+        w3d
         '''
         self.show_in_img = show_in_img
         self.show_gt_img = show_gt_img
@@ -121,6 +122,7 @@ class Result_analyzer:
                 elif(self.ana_what.lower() == "wx"):   see.get_wc_info()
                 elif(self.ana_what.lower() == "wy"):   see.get_wc_info()
                 elif(self.ana_what.lower() == "wz"):   see.get_wc_info()
+                elif(self.ana_what.lower() == "w3d"):  see.get_wc_info()
 
     def _step0_r_c_results_get_see_base_info(self, r_c_results):
         """
@@ -191,6 +193,7 @@ class Col_results_analyzer(Result_analyzer):
                 elif(self.ana_what.lower() == "wx"):   c_imgs.append(cv2.imread(used_sees[see_num].wx_read_paths[use_epoch]))
                 elif(self.ana_what.lower() == "wy"):   c_imgs.append(cv2.imread(used_sees[see_num].wy_read_paths[use_epoch]))
                 elif(self.ana_what.lower() == "wz"):   c_imgs.append(cv2.imread(used_sees[see_num].wz_read_paths[use_epoch]))
+                elif(self.ana_what.lower() == "w3d"):  c_imgs.append(cv2.imread(used_sees[see_num].WM_3D_epoch_read_path[use_epoch]))
 
                 # c_imgs.append(cv2.imread(used_sees[see_num].see_jpg_paths[epoch + 2]))
         return c_imgs
@@ -247,7 +250,7 @@ class Col_results_analyzer(Result_analyzer):
         """
         ### 包 第一層 multiprocess， _Draw_col_results_single_see_ 的 multiprocess 介面
         """
-        from multiprocess_util import multi_processing_interface
+        from kong_util.multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see_, task_args=[see_num, in_img, gt_img, c_titles, analyze_see_private_write_dir], print_msg=print_msg)
 
     def analyze_col_results_single_see(self, see_num, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
@@ -324,7 +327,7 @@ class Col_results_analyzer(Result_analyzer):
                     建議用法例子：core_amount=2, task_amount=7(see_amount數), single_see_multiprocess=True, single_see_core_amount=8
         """
         start_time = time.time()
-        from multiprocess_util import multi_processing_interface
+        from kong_util.multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._analyze_col_results_all_single_see_multiprocess, task_args=[single_see_multiprocess, single_see_core_amount])
         print(f"{self.ana_describe} doing analyze_col_results_all_single_see_multiprocess finish, cost_time:{time.time() - start_time}")
         return self
@@ -363,7 +366,7 @@ class Col_results_analyzer(Result_analyzer):
 
     # ### 包 multiprocess， _Draw_col_results_multi_see_ 的 multiprocess 介面
     # def _Draw_col_results_multi_see_multiprocess(self, see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_private_write_dir, core_amount=8, task_amount=100):
-    #     from multiprocess_util import multi_processing_interface
+    #     from kong_util.multiprocess_util import multi_processing_interface
     #     multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_multi_see_, task_args=[see_nums, in_imgs, gt_imgs, r_c_titles, analyze_see_private_write_dir])
 
     # ### 同col同result，同row同see
@@ -488,7 +491,7 @@ class Row_col_results_analyzer(Result_analyzer):
             # print("analyze_see_private_write_dir", analyze_see_private_write_dir)  ### 找不到東西存哪時可以打註解
 
     def _draw_row_col_results_single_see_multiprocess(self, see_num, r_c_titles, analyze_see_private_write_dir, core_amount=8, task_amount=100, print_msg=False):
-        from multiprocess_util import multi_processing_interface
+        from kong_util.multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._draw_row_col_results_single_see, task_args=[see_num, r_c_titles, analyze_see_private_write_dir], print_msg=print_msg)
 
 
@@ -543,7 +546,7 @@ class Row_col_results_analyzer(Result_analyzer):
             self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
 
     def analyze_row_col_results_all_single_see_multiprocess(self, core_amount=8, task_amount=32, single_see_multiprocess=False, single_see_core_amount=8):
-        from multiprocess_util import multi_processing_interface
+        from kong_util.multiprocess_util import multi_processing_interface
         if(single_see_multiprocess):
             self._analyze_row_col_results_all_single_see(start_see=16, see_amount=int(task_amount / 2), single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)
             self._analyze_row_col_results_all_single_see(start_see= 0, see_amount=int(task_amount / 2), single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)

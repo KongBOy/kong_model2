@@ -105,6 +105,9 @@ class See_wc(See_info):
         self.temp_M_name        = self.get_name_savely(self.see_read_dir, certain_word="gt_mask", certain_ext=".jpg")  ### 等之後 改寫 I_to_Wxyz 多把 Mask concat 到 W 後面， 這個就不需要囉
         self.temp_M_path        = f"{self.see_read_dir}/{self.temp_M_name}"                                            ### 等之後 改寫 I_to_Wxyz 多把 Mask concat 到 W 後面， 這個就不需要囉
 
+        self.WM_3D_epoch_names  = get_dir_certain_file_names(self.WM_3D_matplot_visual_read_dir , certain_word="epoch", certain_ext=".jpg")
+
+
         self.wc_read_paths  = [self.wc_read_dir + "/" + name for name in self.wc_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
         self.wx_read_paths  = [self.wx_read_dir + "/" + name for name in self.wx_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
         self.wy_read_paths  = [self.wy_read_dir + "/" + name for name in self.wy_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
@@ -113,6 +116,8 @@ class See_wc(See_info):
         self.WM_npz_all_read_paths   = [self.WM_npz_read_dir + "/" + name for name in self.WM_npz_all_names]    ### 目前還沒用到～　所以也沒有寫 write_path 囉！
         self.WM_npz_epoch_read_paths = [self.WM_npz_read_dir + "/" + name for name in self.WM_npz_epoch_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
         self.WM_npz_gt_path          = self.get_path_savely(self.WM_npz_read_dir, certain_word="gt_W", certain_ext=".npz")
+        self.WM_3D_epoch_read_path   = [self.WM_3D_matplot_visual_read_dir + "/" + name for name in self.WM_3D_epoch_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
+
         self.WM_npz_all_amount   = len(self.WM_npz_all_read_paths)
         self.WM_npz_epoch_amount = len(self.WM_npz_epoch_read_paths)
 
