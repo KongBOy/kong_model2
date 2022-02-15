@@ -170,7 +170,9 @@ def I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see(model_obj, phase, index, i
                                 rows_cols_titles = r_c_titles,               ### 把每張圖要顯示的字包成list
                                 fig_title        = "%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
                                 add_loss         = add_loss,
-                                bgr2rgb          = bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                                bgr2rgb          = bgr2rgb,
+                                one_ch_vmin=0,
+                                one_ch_vmax=255)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
         single_row_imgs.Draw_img()
         single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
         print("save to:", exp_obj.result_obj.test_write_dir)

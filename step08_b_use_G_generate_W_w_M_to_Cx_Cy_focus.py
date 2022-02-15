@@ -164,7 +164,9 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_obj, phase, index, in_WM, in_WM_pre, _, Mgt_
                             add_loss  =add_loss,
                             bgr2rgb   =bgr2rgb,   ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
                             where_colorbar = [[None, True, True, None], [None, True, True, None]],
-                            w_same_as_first=True)
+                            w_same_as_first=True,
+                            one_ch_vmin=0,
+                            one_ch_vmax=1)
 
             ### 1 row 的版本， 覺得太長
             # single_row_imgs = Matplot_single_row_imgs(
@@ -185,7 +187,9 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_obj, phase, index, in_WM, in_WM_pre, _, Mgt_
                         add_loss  =add_loss,
                         bgr2rgb   =bgr2rgb,  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
                         where_colorbar = [None, True, None, True],
-                        w_same_as_first=True)
+                        w_same_as_first=True, 
+                        one_ch_vmin=0, 
+                        one_ch_vmax=1)
 
         single_row_imgs.Draw_img()
         single_row_imgs.Save_fig(dst_dir=private_write_dir, name="epoch_%04i_u1b8_Disc" % current_ep)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
