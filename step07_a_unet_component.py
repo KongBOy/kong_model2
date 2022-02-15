@@ -92,6 +92,7 @@ class UNet_down(tf.keras.layers.Layer):
         if  (self.at_where != "top"):  x = self.Acti(x)
 
         for block in self.Conv_blocks: x = block(x, training)
+        x_before_down = x
 
         if(self.CoordConv is not None): x = self.CoordConv(x)
         x = self.Conv(x)
@@ -103,8 +104,11 @@ class UNet_down(tf.keras.layers.Layer):
         if(self.at_where != "bottle"):
             if(self.Skip_op is None): skip = x
             else:                     skip = self.Skip_op(x)
-            return x, skip
-        else: return x
+
+            if  (self.at_where == "middle"): return x, skip
+            elif(self.at_where == "top"): return x, skip, x_before_down
+
+        elif(self.at_where == "bottle"): return x
 
 class UNet_up(tf.keras.layers.Layer):
     def __init__(self, at_where, out_ch,
