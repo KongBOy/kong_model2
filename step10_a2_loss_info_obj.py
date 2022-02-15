@@ -272,6 +272,11 @@ class Loss_info_builder(Loss_info_G_loss_builder):
             self.build_sobel_mae_loss_fun_and_containor()
             self.build_tv_loss_fun_and_containor()
 
+        ### 12
+        elif(self.loss_info_obj.loss_type == "bce+mae"):
+            self.build_bce_loss_fun_and_containor()
+            self.build_mae_loss_fun_and_containor()
+
         elif(self.loss_info_obj.loss_type == "justG"): self.build_gan_loss()
         # elif(self.loss_info_obj.loss_type == "GAN"):   self.build_gan_loss_containors()
         elif(self.loss_info_obj.loss_type == "GAN"):   self.build_GAN_loss_fun_and_containor()
@@ -1004,6 +1009,10 @@ mae_s100_tv_s100_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv",
 ### 10
 mae_s001_sobel_k5_s001_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel+tv", mae_scale=  1, sobel_kernel_size=3, sobel_kernel_scale=  1, tv_scale=  1)
 mae_s0p1_sobel_k5_s0p1_tv_s0p1_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel+tv", mae_scale=0.1, sobel_kernel_size=3, sobel_kernel_scale=0.1, tv_scale=0.1)
+
+##########################################################################################################################################################################
+### 12
+bce_s001_mae_s001_loss_info_builder = Loss_info_builder().set_loss_type("bce+mae", bce_scale=1, mae_scale=  1)
 
 GAN_mae_loss_info                  = Loss_info_builder().set_loss_type("justG")  #.build_gan_loss().build_gan_loss_containors()
 
