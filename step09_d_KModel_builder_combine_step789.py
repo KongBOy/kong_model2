@@ -164,7 +164,55 @@ class G_Unet_Body_builder(Ckpt_op_builder):
 
         def _build_unet_body_part():
             # for key, value in kwargs.items(): print(f"{key}: {value}")  ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
-            from step07_b_0a_UNet_combine import Generator
+            from step07_b_0a_UNet_combine_v2_no_out_conv_block import Generator
+            self.kong_model.generator   = Generator(**g_args)
+            self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+            print("build_unet", "finish")
+
+        self.build_ops.append(_build_unet_body_part)  ### 先
+        self.build_ops.append(self._build_G_ckpt_part)  ### 後
+        return self
+
+    def set_unet3(self, hid_ch=64, depth_level=7, out_ch=3, no_concat_layer=0,
+                 kernel_size=4, strides=2, padding="same", norm="in",
+                 d_acti="lrelu", u_acti="relu", unet_acti="tanh",
+                 use_bias=True,
+                 conv_block_num=0,
+                 skip_op=None, skip_merge_op="concat",
+                 ch_upper_bound=512,
+                 coord_conv=False,
+                 d_amount = 1,
+                 bottle_divide=False,
+                 #  out_tanh=True,
+                 #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
+                 **kwargs):
+        self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
+        self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
+        g_args = {
+            "hid_ch"          : hid_ch,
+            "depth_level"     : depth_level,
+            "out_ch"          : out_ch,
+            "no_concat_layer" : no_concat_layer,
+            "kernel_size"     : kernel_size,     ### 多的
+            "strides"         : strides,         ### 多的
+            "padding"         : padding,
+            "d_acti"          : d_acti,          ### 多的
+            "u_acti"          : u_acti,          ### 多的
+            "unet_acti"       : unet_acti,       ### 對應 out_tanh
+            "norm"            : norm,            ### 對應 true_IN
+            "use_bias"        : use_bias,        ### 之前漏的
+            "conv_block_num"  : conv_block_num,  ### 多的
+            "skip_op"         : skip_op,         ### 對應 skip_use_add, skip_use_cSE...
+            "skip_merge_op"   : skip_merge_op,   ### 對應 concat_Activation
+            "ch_upper_bound"  : ch_upper_bound,
+            "coord_conv"      : coord_conv,
+            "d_amount"        : d_amount,
+            "bottle_divide"   : bottle_divide, }
+
+
+        def _build_unet_body_part():
+            # for key, value in kwargs.items(): print(f"{key}: {value}")  ### 檢查 build KModel 的時候 參數有沒有正確的傳進來~~
+            from step07_b_0a_UNet_combine_v3_add_out_conv_block import Generator
             self.kong_model.generator   = Generator(**g_args)
             self.kong_model.optimizer_G = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
             print("build_unet", "finish")

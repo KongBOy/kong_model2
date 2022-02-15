@@ -332,9 +332,9 @@ if(__name__ == "__main__"):
     # print(flow_rect_2_level_fk3.build())
     # print(mask_unet_ch032_tanh_L7.build())
     # print(flow_unet2_block2_ch001_sig_8l.build())
-    data = np.zeros(shape=(1, 512, 512, 1))
+    print("build_model cost time:", time.time() - start_time)
+    data = np.zeros(shape=(1, 512, 512, 1), dtype=np.float32)
     use_model = block2_8l_ch001_sig
     use_model = use_model.build()
     print(use_model.generator(data))
-    print("build_model cost time:", time.time() - start_time)
-    pass
+    use_model.generator.summary()

@@ -1,3 +1,19 @@
+#############################################################################################################################################################################################################
+#############################################################################################################################################################################################################
+### 把 kong_model2 加入 sys.path
+import os
+code_exe_path = os.path.realpath(__file__)                   ### 目前執行 step10_b.py 的 path
+code_exe_path_element = code_exe_path.split("\\")            ### 把 path 切分 等等 要找出 kong_model 在第幾層
+kong_layer = code_exe_path_element.index("kong_model2")      ### 找出 kong_model2 在第幾層
+kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer + 1])  ### 定位出 kong_model2 的 dir
+import sys                                                   ### 把 kong_model2 加入 sys.path
+sys.path.append(kong_model2_dir)
+# print(__file__.split("\\")[-1])
+# print("    code_exe_path:", code_exe_path)
+# print("    code_exe_path_element:", code_exe_path_element)
+# print("    kong_layer:", kong_layer)
+# print("    kong_model2_dir:", kong_model2_dir)
+#############################################################################################################################################################################################################
 from step08_b_use_G_generate_I_to_M import I_Generate_M_see
 from step09_c_train_step import train_step_Single_output_I_to_M
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
@@ -329,12 +345,13 @@ block2_8l_ch001_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).se
 
 if(__name__ == "__main__"):
     import numpy as np
-    # print(flow_rect_2_level_fk3.build())
-    # print(mask_unet_ch032_tanh_L7.build())
-    # print(flow_unet2_block2_ch001_sig_8l.build())
+
+    print("build_model cost time:", time.time() - start_time)
     data = np.zeros(shape=(1, 512, 512, 1))
-    use_model = block2_8l_ch001_sig
+    use_model = block2_5l_ch016_sig
     use_model = use_model.build()
     print(use_model.generator(data))
-    print("build_model cost time:", time.time() - start_time)
+    use_model.generator.summary()
+
+    from kong_util.tf_model_util import Show_model_layer_names
     pass

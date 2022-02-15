@@ -104,10 +104,13 @@ if(__name__ == "__main__"):
     use_model = block1_L4_ch016_sig
     model = use_model.build()
 
-    data = np.zeros(shape=(1, 512, 512, 3))
+    data = np.zeros(shape=(1, 512, 512, 3), dtype=np.float32)
     result = model.generator(data)
     z, y, x  = model.generator(data)
     # breakpoint()
     print("z.shape", z.shape)
     print("y.shape", y.shape)
     print("x.shape", x.shape)
+    
+    model.generator(data).summary()
+

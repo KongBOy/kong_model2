@@ -78,7 +78,7 @@ class Generator(tf.keras.models.Model):
                                                           **self.common_kwargs )
         self.d_bottle = UNet_down(at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level, ch_upper_bound=ch_upper_bound),
                                                      acti=d_acti,
-                                                     conv_block_num=self.conv_block_num[-1],
+                                                     conv_block_num=self.conv_block_num[self.depth_level - 1],
                                                      name=f"D_{depth_level-1}->{depth_level}_bottle",
                                                      **self.common_kwargs)
 
