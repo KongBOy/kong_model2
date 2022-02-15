@@ -63,6 +63,7 @@ class Generator(tf.keras.models.Model):
         ### 定義 Down 架構
         ### 最基本(比如最少層depth_level=2)的一定有 top, bottle
         self.d_top    = UNet_down(at_where="top"   ,
+                                  in_ch =self.Get_Layer_hid_ch(to_L=1, ch_upper_bound=ch_upper_bound),
                                   out_ch=self.Get_Layer_hid_ch(to_L=1, ch_upper_bound=ch_upper_bound),
                                   acti=d_acti,
                                   conv_block_num=self.conv_block_num[0],
@@ -74,12 +75,14 @@ class Generator(tf.keras.models.Model):
                 layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)
                 d_middle_name = f"D_{layer_id-1}->{layer_id}_middle"
                 self.d_middles[d_middle_name] = UNet_down(at_where="middle",
+                                                          in_ch =self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound),
                                                           out_ch=self.Get_Layer_hid_ch(to_L=layer_id, ch_upper_bound=ch_upper_bound),
                                                           acti=d_acti,
                                                           conv_block_num=self.conv_block_num[layer_id - 1],
                                                           name=d_middle_name,
                                                           **self.common_kwargs )
         self.d_bottle = UNet_down(at_where="bottle",
+                                  in_ch =self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound),
                                   out_ch=self.Get_Layer_hid_ch(to_L=depth_level, ch_upper_bound=ch_upper_bound),
                                   acti=d_acti,
                                   conv_block_num=self.conv_block_num[self.depth_level - 1],
@@ -98,8 +101,8 @@ class Generator(tf.keras.models.Model):
     def Up_arch_define(self):
         for go_dec in range(self.d_amount):
             self.up_arch_dict[f"u{go_dec}_bottle" ] = UNet_up  (at_where="bottle",
-                                                                out_ch=self.Get_Layer_hid_ch(to_L=self.depth_level - 1,
-                                                                ch_upper_bound=self.ch_upper_bound),
+                                                                in_ch =self.Get_Layer_hid_ch(to_L=self.depth_level    , ch_upper_bound=self.ch_upper_bound),
+                                                                out_ch=self.Get_Layer_hid_ch(to_L=self.depth_level - 1, ch_upper_bound=self.ch_upper_bound),
                                                                 acti=self.u_acti,
                                                                 conv_block_num=self.conv_block_num[self.depth_level],
                                                                 name=f"U_{self.depth_level}->{self.depth_level-1}_bottle",
@@ -112,6 +115,7 @@ class Generator(tf.keras.models.Model):
                     u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
                     # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
                     self.up_arch_dict[f"u{go_dec}_middles"][u_middle_name] = UNet_up  (at_where="middle",
+                                                                                       in_ch =self.Get_Layer_hid_ch(to_L=layer_id    , ch_upper_bound=self.ch_upper_bound),
                                                                                        out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=self.ch_upper_bound),
                                                                                        acti=self.u_acti,
                                                                                        conv_block_num=self.conv_block_num[-layer_id - 1],  ### -1 是因為現在有新增 out_conv_block 在最尾巴， 所以原本的index要多-1
@@ -119,6 +123,7 @@ class Generator(tf.keras.models.Model):
                                                                                        **self.common_kwargs)
             if(self.out_conv_block is False):
                 self.up_arch_dict[f"u{go_dec}_top"] = UNet_up  (at_where="top",
+                                                                in_ch =self.Get_Layer_hid_ch(to_L=1, ch_upper_bound=self.ch_upper_bound),
                                                                 out_ch=self.Get_Layer_hid_ch(to_L=0, ch_upper_bound=self.ch_upper_bound),
                                                                 acti=self.u_acti,
                                                                 conv_block_num=self.conv_block_num[-1 - 1],  ### -1 是因為現在有新增 out_conv_block 在最尾巴， 所以原本的index要多-1
@@ -126,6 +131,7 @@ class Generator(tf.keras.models.Model):
                                                                 **self.common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
             elif(self.out_conv_block is True):
                 self.up_arch_dict[f"u{go_dec}_top"] = UNet_up  (at_where="top",
+                                                                in_ch =self.hid_ch,
                                                                 out_ch=self.hid_ch,
                                                                 acti=self.u_acti,
                                                                 conv_block_num=self.conv_block_num[-1 - 1],  ### -1 是因為現在有新增 out_conv_block 在最尾巴， 所以原本的index要多-1
@@ -134,8 +140,8 @@ class Generator(tf.keras.models.Model):
 
                 self.up_arch_dict[f"u{go_dec}_top_out_concat"] = Concatenate(name="U_0_top_out_concat")
 
-                self.up_arch_dict[f"u{go_dec}_top_out_convs"]  = Conv_Blocks(out_ch       = self.hid_ch,
-                                                                             final_out_ch = self.unet_out_ch,
+                self.up_arch_dict[f"u{go_dec}_top_out_convs"]  = Conv_Blocks(in_ch       = self.hid_ch,
+                                                                             out_ch = self.unet_out_ch,
 
                                                                              kernel_size=self.kernel_size,
                                                                              strides=1,
