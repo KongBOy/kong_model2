@@ -183,10 +183,13 @@ class G_Unet_Body_builder(Ckpt_op_builder):
                  coord_conv=False,
                  d_amount = 1,
                  bottle_divide=False,
+
+                 out_conv_block=False,
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
-        self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
+        if  (type(conv_block_num) == type(1)) :self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
+        elif(type(conv_block_num) == type([])):self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block_pyramid"           , unet_acti[:3], "out_%i" % out_ch]
         self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
         g_args = {
             "hid_ch"          : hid_ch,
@@ -207,7 +210,10 @@ class G_Unet_Body_builder(Ckpt_op_builder):
             "ch_upper_bound"  : ch_upper_bound,
             "coord_conv"      : coord_conv,
             "d_amount"        : d_amount,
-            "bottle_divide"   : bottle_divide, }
+            "bottle_divide"   : bottle_divide,
+
+            "out_conv_block"  : out_conv_block
+            }
 
 
         def _build_unet_body_part():

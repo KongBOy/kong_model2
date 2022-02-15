@@ -1,5 +1,5 @@
 import tensorflow as tf
-from step07_a_unet_component import Conv_block, UNet_down, UNet_up
+from step07_a_unet_component import Conv_Blocks, UNet_down, UNet_up
 from tensorflow.keras.layers import Activation, Concatenate
 ### 參考 DewarpNet 的 train_wc 用的 UNet
 ### 所有 pytorch BN 裡面有兩個參數的設定不確定～： affine=True, track_running_stats=True，目前思考覺得改道tf2全拿掉也可以
@@ -54,9 +54,12 @@ class Generator(tf.keras.models.Model):
                     #   skip_op=skip_op,
                     #   skip_merge_op=skip_merge_op
                       )
-        if(type(self.conv_block_num) != type([])):
+        ### 確保 self.conv_block_num 是 list 的狀態
+        if(type(self.conv_block_num) != type(tf.python.training.tracking.data_structures.ListWrapper([]))):  ### 用self 來接住 list 的話 tensorflow 會自動轉成 ListWrapper (別忘記我有繼承 tensorflow.keras.models.Model 喔～～)
             if  (out_conv_block is True):  self.conv_block_num = [self.conv_block_num] * (self.depth_level * 2) + [self.conv_block_num]
             elif(out_conv_block is False): self.conv_block_num = [self.conv_block_num] * (self.depth_level * 2) + [0]
+        # print("self.conv_block_num:", self.conv_block_num)
+
         ### 定義 Down 架構
         ### 最基本(比如最少層depth_level=2)的一定有 top, bottle
         self.d_top    = UNet_down(at_where="top"   ,
@@ -76,11 +79,12 @@ class Generator(tf.keras.models.Model):
                                                           conv_block_num=self.conv_block_num[layer_id - 1],
                                                           name=d_middle_name,
                                                           **self.common_kwargs )
-        self.d_bottle = UNet_down(at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level, ch_upper_bound=ch_upper_bound),
-                                                     acti=d_acti,
-                                                     conv_block_num=self.conv_block_num[self.depth_level - 1],
-                                                     name=f"D_{depth_level-1}->{depth_level}_bottle",
-                                                     **self.common_kwargs)
+        self.d_bottle = UNet_down(at_where="bottle",
+                                  out_ch=self.Get_Layer_hid_ch(to_L=depth_level, ch_upper_bound=ch_upper_bound),
+                                  acti=d_acti,
+                                  conv_block_num=self.conv_block_num[self.depth_level - 1],
+                                  name=f"D_{depth_level-1}->{depth_level}_bottle",
+                                  **self.common_kwargs)
 
         ### 定義 Up 架構
         self.up_arch_dict = {}
@@ -127,16 +131,21 @@ class Generator(tf.keras.models.Model):
                                                                 conv_block_num=self.conv_block_num[-1 - 1],  ### -1 是因為現在有新增 out_conv_block 在最尾巴， 所以原本的index要多-1
                                                                 name="U_1->0_top",
                                                                 **self.common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
-                self.up_arch_dict[f"u{go_dec}_top_out_conv"] = Conv_block(out_ch = self.unet_out_ch,
-                                                                      kernel_size=self.kernel_size,
-                                                                      strides=1,
-                                                                      padding="same",
-                                                                      acti=self.u_acti,
-                                                                      norm=self.norm,
-                                                                      use_bias=self.use_bias,
-                                                                      coord_conv=self.coord_conv,
-                                                                      name = "U_0_top_out_conv")
-                self.up_arch_dict[f"u{go_dec}_top_out_concat"] = Concatenate(name="concat")
+
+                self.up_arch_dict[f"u{go_dec}_top_out_concat"] = Concatenate(name="U_0_top_out_concat")
+
+                self.up_arch_dict[f"u{go_dec}_top_out_convs"]  = Conv_Blocks(out_ch       = self.hid_ch,
+                                                                             final_out_ch = self.unet_out_ch,
+
+                                                                             kernel_size=self.kernel_size,
+                                                                             strides=1,
+                                                                             padding="same",
+                                                                             norm=self.norm,
+                                                                             acti=self.u_acti,
+                                                                             use_bias=self.use_bias,
+                                                                             conv_block_num=self.conv_block_num[-1],
+                                                                             coord_conv=self.coord_conv,
+                                                                             name = "U_0_top_out_convs")
 
             # self.d_bottle = UNet_down(at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1)    , 512), name=f"D{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)
             # self.u_bottle = UNet_up  (at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1 - 1), 512), name=f"U{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)， 因為是返回上一層， out_ch 2的冪次要再 -1
@@ -212,12 +221,13 @@ class Generator(tf.keras.models.Model):
 
             if(self.out_conv_block is True):
                 if(self.no_concat_layer >= 1):  ### no_concat 的 Case
-                    if(self.debug): print(f"u{go_dec}_top_out_conv", self.up_arch_dict[f"u{go_dec}_top_out_conv"].name, "no concat")  ### debug 用
-                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_conv"](feature_up)  ### up 的 top 沒有 skip
+                    if(self.debug): print(f"u{go_dec}_top_out_convs", self.up_arch_dict[f"u{go_dec}_top_out_convs"].name, "no concat")  ### debug 用
+                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_convs"](feature_up)  ### up 的 top 沒有 skip
                 elif(self.no_concat_layer == 0):   ### concat 的 Case
-                    if(self.debug): print(f"u{go_dec}_top_out_conv", self.up_arch_dict[f"u{go_dec}_top_out_conv"].name, f"concat with {x_before_down[0, 0, 0, :3]}")  ### debug 用
-                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_concat"](x_before_down, feature_up)
-                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_conv"](feature_up)  ### up 的 top 沒有 skip
+                    if(self.debug): print(f"u{go_dec}_top_out_convs", self.up_arch_dict[f"u{go_dec}_top_out_convs"].name, f"concat with {x_before_down[0, 0, 0, :3]}")  ### debug 用
+                    b, h, w, c = feature_up.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_concat"]([x_before_down[:, :h, :w, :], feature_up])
+                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_convs"](feature_up)  ### up 的 top 沒有 skip
             outs.append(feature_up)
 
         #####################################################

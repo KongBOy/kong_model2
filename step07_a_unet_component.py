@@ -44,6 +44,25 @@ class Conv_block(tf.keras.layers.Layer):
 
         return x
 
+class Conv_Blocks(tf.keras.layers.Layer):
+    def __init__(self, out_ch,
+                       final_out_ch=None,
+                       kernel_size=3, strides=1, padding="same", norm="in",
+                       acti="lrelu",
+                       use_bias=True,
+                       conv_block_num=1,
+                       coord_conv=False, **kwargs):
+        super(Conv_Blocks, self).__init__(**kwargs)
+        if  (final_out_ch is None):
+            self.Conv_blocks = [ Conv_block(out_ch=out_ch,       kernel_size=kernel_size, strides=strides, padding=padding, acti=acti, norm=norm, use_bias=use_bias, coord_conv=coord_conv, name=f"Conv_block_{i}") for i in range(conv_block_num) ]
+        elif(final_out_ch is not None):
+            self.Conv_blocks = [ Conv_block(out_ch=out_ch,       kernel_size=kernel_size, strides=strides, padding=padding, acti=acti, norm=norm, use_bias=use_bias, coord_conv=coord_conv, name=f"Conv_block_{i}") for i in range(conv_block_num - 1) ] + \
+                               [ Conv_block(out_ch=final_out_ch, kernel_size=kernel_size, strides=strides, padding=padding, acti=acti, norm=norm, use_bias=use_bias, coord_conv=coord_conv, name=f"Conv_block_{conv_block_num - 1}")]
+
+    def call(self, x, training=None):
+        for block in self.Conv_blocks: x = block(x, training)
+        return x
+
 class UNet_down(tf.keras.layers.Layer):
     def __init__(self, at_where, out_ch,
                  kernel_size=4, strides=2, padding="same", norm="in",
