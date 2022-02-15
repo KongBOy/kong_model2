@@ -269,7 +269,17 @@ block2_8l_ch003_sig  = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).se
 
 
 if(__name__ == "__main__"):
-    # print(flow_rect_2_level_fk3.build())
-    # print(mask_unet_ch033_tanh_L7.build())
     print("build_model cost time:", time.time() - start_time)
-    pass
+
+    import numpy as np
+    import pdb
+    use_model = block1_L4_ch033_sig_no_Bias
+    model = use_model.build()
+
+    data = np.zeros(shape=(1, 512, 512, 3))
+    z, y, x  = model.generator(data)
+
+    print("z.shape", z.shape)
+    print("y.shape", y.shape)
+    print("x.shape", x.shape)
+

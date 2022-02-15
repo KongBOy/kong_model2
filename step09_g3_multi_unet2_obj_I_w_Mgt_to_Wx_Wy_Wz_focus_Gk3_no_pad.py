@@ -94,3 +94,20 @@ block1_L8_ch064_sig_limit = KModel_builder().set_model_name(MODEL_NAME.multi_flo
 block1_L8_ch032_sig_limit = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wx_Wy_Wz", I_to_Wx=step09_e5_flow_unet2_obj_Any_to_1ch_k3_no_pad.block1_L8_ch032_sig_limit, I_to_Wy=step09_e5_flow_unet2_obj_Any_to_1ch_k3_no_pad.block1_L8_ch032_sig_limit, I_to_Wz=step09_e5_flow_unet2_obj_Any_to_1ch_k3_no_pad.block1_L8_ch032_sig_limit).set_gen_op(I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see).set_train_step(train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz_focus)
 block1_L8_ch016_sig_limit = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wx_Wy_Wz", I_to_Wx=step09_e5_flow_unet2_obj_Any_to_1ch_k3_no_pad.block1_L8_ch016_sig_limit, I_to_Wy=step09_e5_flow_unet2_obj_Any_to_1ch_k3_no_pad.block1_L8_ch016_sig_limit, I_to_Wz=step09_e5_flow_unet2_obj_Any_to_1ch_k3_no_pad.block1_L8_ch016_sig_limit).set_gen_op(I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see).set_train_step(train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz_focus)
 block1_L8_ch008_sig_limit = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wx_Wy_Wz", I_to_Wx=step09_e5_flow_unet2_obj_Any_to_1ch_k3_no_pad.block1_L8_ch008_sig_limit, I_to_Wy=step09_e5_flow_unet2_obj_Any_to_1ch_k3_no_pad.block1_L8_ch008_sig_limit, I_to_Wz=step09_e5_flow_unet2_obj_Any_to_1ch_k3_no_pad.block1_L8_ch008_sig_limit).set_gen_op(I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see).set_train_step(train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz_focus)
+
+
+if(__name__ == "__main__"):
+    print("build_model cost time:", time.time() - start_time)
+
+    import numpy as np
+    import pdb
+    use_model = block1_L4_ch016_sig
+    model = use_model.build()
+
+    data = np.zeros(shape=(1, 512, 512, 3))
+    result = model.generator(data)
+    z, y, x  = model.generator(data)
+    # breakpoint()
+    print("z.shape", z.shape)
+    print("y.shape", y.shape)
+    print("x.shape", x.shape)

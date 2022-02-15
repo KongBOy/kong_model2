@@ -19,6 +19,7 @@ class Generator(tf.keras.models.Model):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **tf_kwargs):
+        self.debug = False  ### 手動設定吧
         '''
         d_acti: lrelu/ relu
         u_acti: relu/ lrelu
@@ -37,64 +38,85 @@ class Generator(tf.keras.models.Model):
         self.unet_acti = unet_acti
         self.d_amount  = d_amount
         self.bottle_divide = bottle_divide
-        common_kwargs = dict(kernel_size=kernel_size, strides=strides, padding=padding, norm=norm, conv_block_num=conv_block_num,
+        self.ch_upper_bound = ch_upper_bound
+        self.u_acti = u_acti
+        self.common_kwargs = dict(kernel_size=kernel_size, strides=strides, padding=padding, norm=norm, conv_block_num=conv_block_num,
                     #   d_acti=d_acti, u_acti=u_acti,
                       use_bias=use_bias,
                       coord_conv=coord_conv,
                     #   skip_op=skip_op,
                     #   skip_merge_op=skip_merge_op
                       )
+        ### 定義 Down 架構
         ### 最基本(比如最少層depth_level=2)的一定有 top, bottle
-        self.d_top    = UNet_down(at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=1              , ch_upper_bound=ch_upper_bound), acti=d_acti, name="D_0->1_top", **common_kwargs)  ### Layer 0 -> 1， to_L=1 代表 走進 第1層
+        self.d_top    = UNet_down(at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=1              , ch_upper_bound=ch_upper_bound), acti=d_acti, name="D_0->1_top", **self.common_kwargs)  ### Layer 0 -> 1， to_L=1 代表 走進 第1層
         self.d_middles = {}
         if(depth_level >= 3):
             for i in range(depth_level - 2):  ### -2 是 -top 和 -bottle 共兩層
                 layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)
                 d_middle_name = f"D_{layer_id-1}->{layer_id}_middle"
-                self.d_middles[d_middle_name] = UNet_down(at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id    , ch_upper_bound=ch_upper_bound), acti=d_acti, name=d_middle_name, **common_kwargs )
-        self.d_bottle = UNet_down(at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level    , ch_upper_bound=ch_upper_bound), acti=d_acti, name=f"D_{depth_level-1}->{depth_level}_bottle", **common_kwargs)
+                self.d_middles[d_middle_name] = UNet_down(at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id    , ch_upper_bound=ch_upper_bound), acti=d_acti, name=d_middle_name, **self.common_kwargs )
+        self.d_bottle = UNet_down(at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level    , ch_upper_bound=ch_upper_bound), acti=d_acti, name=f"D_{depth_level-1}->{depth_level}_bottle", **self.common_kwargs)
 
-        if(self.d_amount >= 1):
-            self.u_bottle = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=f"U_{depth_level}->{depth_level-1}_bottle", **common_kwargs)  ### 因為是返回上一層， 所以 -1
-            self.u_middles = {}
-            if(depth_level >= 3):
-                for i in range(depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
-                    layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)， 這邊的 +2 不能和 for 裡面的 -2 消掉喔！ 因為 for 裡是 代表跑幾次！ 不能消！
-                    # print("layer_id", layer_id)  ### debug 用
-                    u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
-                    # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
-                    self.u_middles[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=u_middle_name, **common_kwargs )
-            self.u_top    = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=ch_upper_bound), acti=u_acti, name="U_1->0_top", **common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
-            # self.d_bottle = UNet_down(at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1)    , 512), name=f"D{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)
-            # self.u_bottle = UNet_up  (at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1 - 1), 512), name=f"U{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)， 因為是返回上一層， out_ch 2的冪次要再 -1
-        if(self.d_amount >= 2):
-            self.u_bottle2 = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=f"U_{depth_level}->{depth_level-1}_bottle", **common_kwargs)  ### 因為是返回上一層， 所以 -1
-            self.u_middle2s = {}
-            if(depth_level >= 3):
-                for i in range(depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
-                    layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)， 這邊的 +2 不能和 for 裡面的 -2 消掉喔！ 因為 for 裡是 代表跑幾次！ 不能消！
-                    # print("layer_id", layer_id)  ### debug 用
-                    u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
-                    # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
-                    self.u_middle2s[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=u_middle_name, **common_kwargs )
-            self.u_top2    = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=ch_upper_bound), acti=u_acti, name="U_1->0_top", **common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
+        ### 定義 Up 架構
+        self.up_arch_dict = {}
+        self.Up_arch_define()
+        # if(self.d_amount >= 1):
+        #     self.u_bottle = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=f"U_{depth_level}->{depth_level-1}_bottle", **self.common_kwargs)  ### 因為是返回上一層， 所以 -1
+        #     self.u_middles = {}
+        #     if(depth_level >= 3):
+        #         for i in range(depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
+        #             layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)， 這邊的 +2 不能和 for 裡面的 -2 消掉喔！ 因為 for 裡是 代表跑幾次！ 不能消！
+        #             # print("layer_id", layer_id)  ### debug 用
+        #             u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
+        #             # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
+        #             self.u_middles[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=u_middle_name, **self.common_kwargs )
+        #     self.u_top    = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=ch_upper_bound), acti=u_acti, name="U_1->0_top", **self.common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
+        #     # self.d_bottle = UNet_down(at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1)    , 512), name=f"D{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)
+        #     # self.u_bottle = UNet_up  (at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1 - 1), 512), name=f"U{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)， 因為是返回上一層， out_ch 2的冪次要再 -1
+        # if(self.d_amount >= 2):
+        #     self.u_bottle2 = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=f"U_{depth_level}->{depth_level-1}_bottle", **self.common_kwargs)  ### 因為是返回上一層， 所以 -1
+        #     self.u_middle2s = {}
+        #     if(depth_level >= 3):
+        #         for i in range(depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
+        #             layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)， 這邊的 +2 不能和 for 裡面的 -2 消掉喔！ 因為 for 裡是 代表跑幾次！ 不能消！
+        #             # print("layer_id", layer_id)  ### debug 用
+        #             u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
+        #             # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
+        #             self.u_middle2s[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=u_middle_name, **self.common_kwargs )
+        #     self.u_top2    = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=ch_upper_bound), acti=u_acti, name="U_1->0_top", **self.common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
 
-        if(self.d_amount >= 3):
-            self.u_bottle3 = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=f"U_{depth_level}->{depth_level-1}_bottle", **common_kwargs)  ### 因為是返回上一層， 所以 -1
-            self.u_middle3s = {}
-            if(depth_level >= 3):
-                for i in range(depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
-                    layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)， 這邊的 +2 不能和 for 裡面的 -2 消掉喔！ 因為 for 裡是 代表跑幾次！ 不能消！
-                    # print("layer_id", layer_id)  ### debug 用
-                    u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
-                    # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
-                    self.u_middle3s[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=u_middle_name, **common_kwargs )
-            self.u_top3    = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=ch_upper_bound), acti=u_acti, name="U_1->0_top", **common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
+        # if(self.d_amount >= 3):
+        #     self.u_bottle3 = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=f"U_{depth_level}->{depth_level-1}_bottle", **self.common_kwargs)  ### 因為是返回上一層， 所以 -1
+        #     self.u_middle3s = {}
+        #     if(depth_level >= 3):
+        #         for i in range(depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
+        #             layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)， 這邊的 +2 不能和 for 裡面的 -2 消掉喔！ 因為 for 裡是 代表跑幾次！ 不能消！
+        #             # print("layer_id", layer_id)  ### debug 用
+        #             u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
+        #             # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
+        #             self.u_middle3s[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=u_middle_name, **self.common_kwargs )
+        #     self.u_top3    = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=ch_upper_bound), acti=u_acti, name="U_1->0_top", **self.common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
 
 
         ############################################################################################################################################################
         if(self.unet_acti == "tanh"):    self.tanh    = Activation(tf.nn.tanh,    name="out_tanh")
         if(self.unet_acti == "sigmoid"): self.sigmoid = Activation(tf.nn.sigmoid, name="out_sigmoid")
+
+    def Up_arch_define(self):
+        for go_dec in range(self.d_amount):
+            self.up_arch_dict[f"u{go_dec}_bottle" ] = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=self.depth_level - 1, ch_upper_bound=self.ch_upper_bound), acti=self.u_acti, name=f"U_{self.depth_level}->{self.depth_level-1}_bottle", **self.common_kwargs)  ### 因為是返回上一層， 所以 -1
+            self.up_arch_dict[f"u{go_dec}_middles"] = {}
+            if(self.depth_level >= 3):
+                for i in range(self.depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
+                    layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)， 這邊的 +2 不能和 for 裡面的 -2 消掉喔！ 因為 for 裡是 代表跑幾次！ 不能消！
+                    # print("layer_id", layer_id)  ### debug 用
+                    u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
+                    # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
+                    self.up_arch_dict[f"u{go_dec}_middles"][u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=self.ch_upper_bound), acti=self.u_acti, name=u_middle_name, **self.common_kwargs )
+            self.up_arch_dict[f"u{go_dec}_top"] = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=self.ch_upper_bound), acti=self.u_acti, name="U_1->0_top", **self.common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
+            # self.d_bottle = UNet_down(at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1)    , 512), name=f"D{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)
+            # self.u_bottle = UNet_up  (at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1 - 1), 512), name=f"U{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)， 因為是返回上一層， out_ch 2的冪次要再 -1
 
     def Get_Layer_hid_ch(self, to_L, ch_upper_bound=512):
         # print("Get_Layer_hid_ch ch_upper_bound", ch_upper_bound)
@@ -114,96 +136,143 @@ class Generator(tf.keras.models.Model):
 
         #####################################################
         ### Down top
-        # print(self.d_top.name)  ### debug 用
         x, skip = self.d_top(input_tensor)
         skips.append(skip)
+        if(self.debug): print(f"{self.d_top.name} skip: {skip[0, 0, 0, :3]}")  ### debug 用
+
         ### Down middle
         for name, d_middle in self.d_middles.items():
-            # print(name)  ### debug 用
             x, skip = d_middle(x)
             skips.append(skip)
+            if(self.debug): print(f"{name} skip: {skip[0, 0, 0, :3]}")  ### debug 用
         ### Down bottle
         # print(self.d_bottle.name)  ### debug 用
         x_bottle = self.d_bottle(x)  ### down 的 bottle沒有 skip
         #####################################################
-        if(self.bottle_divide is False):
-            x1_bottle = x_bottle
-            x2_bottle = x_bottle
-            x3_bottle = x_bottle
-        else:
-            n, h, w, c = x_bottle.shape
-            # print("n, h, w, c~~~~~~~~~~~~~~~~", n, h, w, c)
-            c_div = c // self.d_amount
-            x1_bottle  = x_bottle[..., c_div * 0 : c_div * (0 + 1)]  ### dec_id = 0
-            x2_bottle  = x_bottle[..., c_div * 1 : c_div * (1 + 1)]  ### dec_id = 1
-            x3_bottle  = x_bottle[..., c_div * 2 : c_div * (2 + 1)]  ### dec_id = 2
-
+        ### Bottle divide， 此寫法也相容 不divide的情況喔
+        n, h, w, c = x_bottle.shape
+        c_div = c // self.d_amount
+        x_bottle_divs = []
+        for dec_i in range(self.d_amount):
+            x_bottle_divs.append( x_bottle[..., c_div * dec_i : c_div * (dec_i + 1)] )
+            if(self.debug): print(f"dec_i:{dec_i}, bottle_feature:{x_bottle_divs[-1][0, 0, 0, :3]}")  ### debug 用
         #####################################################
-        skip_id = self.depth_level - 1 - 1  ### 第一個 -1 是因為 top_bottle 沒有skip， 第二個 -1 是因為 數量 轉 index
-        if(self.d_amount >= 1):
+        outs = []
+        if(self.debug): print("self.d_amount", self.d_amount)
+        for go_dec in range(self.d_amount):
+            skip_id = -1  ### 倒數第一個
+
             ### Up bottle
-            # print(self.u_bottle.name)  ### debug 用
-            if(self.no_concat_layer >= self.depth_level - 1): x1 = self.u_bottle(x1_bottle)
-            else:                                             x1 = self.u_bottle(x1_bottle, skips[skip_id])
-            skip_id -= 1
+            if(self.no_concat_layer >= self.depth_level - 1):  ### no_concat 的 Case
+                feature_up = self.up_arch_dict[f"u{go_dec}_bottle"](x_bottle_divs[go_dec])
+                if(self.debug): print(f"u{go_dec}_bottle ", self.up_arch_dict[f"u{go_dec}_bottle"].name, f"feature {x_bottle_divs[go_dec][0, 0, 0, :3]} no concat")  ### debug 用
+            else:  ### concat 的 Case
+                feature_up = self.up_arch_dict[f"u{go_dec}_bottle"](x_bottle_divs[go_dec], skips[skip_id])
+                if(self.debug): print(f"u{go_dec}_bottle ", self.up_arch_dict[f"u{go_dec}_bottle"].name, f"feature {x_bottle_divs[go_dec][0, 0, 0, :3]} concat with {skips[skip_id][0, 0, 0, :3]}")  ### debug 用
+            skip_id -= 1  ### 接著繼續倒數下一個
 
             ### Up middle
-            for go, (name, u_middle) in enumerate(list(self.u_middles.items())):
-                # print("up mid name:", name)  ### debug 用
+            for go, (name, u_middle) in enumerate(list(self.up_arch_dict[f"u{go_dec}_middles"].items())):
                 layer_id = self.depth_level - 1 - go
-                if (layer_id <= self.no_concat_layer): x1 = u_middle(x1)
-                else:                                  x1 = u_middle(x1, skips[skip_id])
-                skip_id -= 1
+                if (layer_id <= self.no_concat_layer):
+                    feature_up = u_middle(feature_up)
+                    if(self.debug): print(f"u{go_dec}_middles", f"{name} feature {feature_up[0, 0, 0, :3]} no concat")  ### debug 用
+                else:
+                    feature_up = u_middle(feature_up, skips[skip_id])
+                    if(self.debug): print(f"u{go_dec}_middles", f"{name} feature {feature_up[0, 0, 0, :3]} concat with {skips[skip_id][0, 0, 0, :3]}")  ### debug 用
+                skip_id -= 1  ### 接著繼續倒數下一個
             ### Up top
-            # print(self.u_top.name)  ### debug 用
-            x1 = self.u_top(x1)  ### up 的 top 沒有 skip
+            feature_up = self.up_arch_dict[f"u{go_dec}_top"](feature_up)  ### up 的 top 沒有 skip
+            if(self.debug): print(f"u{go_dec}_top    ", self.up_arch_dict[f"u{go_dec}_top"].name, "no concat")  ### debug 用
+            outs.append(feature_up)
         #####################################################
-        skip_id = self.depth_level - 1 - 1  ### 第一個 -1 是因為 top_bottle 沒有skip， 第二個 -1 是因為 數量 轉 index
-        if(self.d_amount >= 2):
-            ### Up bottle
-            if(self.no_concat_layer >= self.depth_level - 1): x2 = self.u_bottle2(x2_bottle)
-            else:                                             x2 = self.u_bottle2(x2_bottle, skips[skip_id])
-            skip_id -= 1
+        acti_outs = []
+        for out in outs:
+            if  (self.unet_acti == "tanh"):    acti_outs.append(self.tanh(out))
+            elif(self.unet_acti == "sigmoid"): acti_outs.append(self.sigmoid(out))
 
-            ### Up middle
-            for go, (name, u_middle2) in enumerate(list(self.u_middle2s.items())):
-                # print("up mid name:", name)  ### debug 用
-                layer_id = self.depth_level - 1 - go
-                if (layer_id <= self.no_concat_layer): x2 = u_middle2(x2)
-                else:                                  x2 = u_middle2(x2, skips[skip_id])
-                skip_id -= 1
-            ### Up top
-            # print(self.u_top.name)  ### debug 用
-            x2 = self.u_top2(x2)  ### up 的 top 沒有 skip
-        #####################################################
-        skip_id = self.depth_level - 1 - 1  ### 第一個 -1 是因為 top_bottle 沒有skip， 第二個 -1 是因為 數量 轉 index
-        if(self.d_amount >= 3):
-            ### Up bottle
-            if(self.no_concat_layer >= self.depth_level - 1): x3 = self.u_bottle3(x3_bottle)
-            else:                                             x3 = self.u_bottle3(x3_bottle, skips[skip_id])
-            skip_id -= 1
+        if(len(acti_outs) == 1): return acti_outs[0]  ### 如果list內容物只有一個， 相當於 x = [ 一個 ], x = [一個]  在外面他不會自動解開！要解開再return 喔！
+        else:                    return acti_outs     ### 如果list內容物一個以上， 相當於 x, y = [ 一個, 一個 ], x = 一個, y = 一個 ， 會自動解開～　所以整個list 回傳也沒問題！
 
-            ### Up middle
-            for go, (name, u_middle3) in enumerate(list(self.u_middle3s.items())):
-                # print("up mid name:", name)  ### debug 用
-                layer_id = self.depth_level - 1 - go
-                if (layer_id <= self.no_concat_layer): x3 = u_middle3(x3)
-                else:                                  x3 = u_middle3(x3, skips[skip_id])
-                skip_id -= 1
-            ### Up top
-            # print(self.u_top.name)  ### debug 用
-            x3 = self.u_top3(x3)  ### up 的 top 沒有 skip
-        #####################################################
-        ### UNet out
-        if(self.d_amount == 1):
-            if  (self.unet_acti == "tanh"):    return self.tanh(x1)
-            elif(self.unet_acti == "sigmoid"): return self.sigmoid(x1)
-        elif(self.d_amount == 2):
-            if  (self.unet_acti == "tanh"):    return self.tanh(x1), self.tanh(x2)
-            elif(self.unet_acti == "sigmoid"): return self.sigmoid(x1), self.sigmoid(x2)
-        elif(self.d_amount == 3):
-            if  (self.unet_acti == "tanh"):    return self.tanh(x1), self.tanh(x2), self.tanh(x3)
-            elif(self.unet_acti == "sigmoid"): return self.sigmoid(x1), self.sigmoid(x2), self.sigmoid(x3)
+        # #####################################################
+        # if(self.bottle_divide is False):
+        #     x1_bottle = x_bottle
+        #     x2_bottle = x_bottle
+        #     x3_bottle = x_bottle
+        # else:
+        #     n, h, w, c = x_bottle.shape
+        #     # print("n, h, w, c~~~~~~~~~~~~~~~~", n, h, w, c)
+        #     c_div = c // self.d_amount
+        #     x1_bottle  = x_bottle[..., c_div * 0 : c_div * (0 + 1)]  ### dec_id = 0
+        #     x2_bottle  = x_bottle[..., c_div * 1 : c_div * (1 + 1)]  ### dec_id = 1
+        #     x3_bottle  = x_bottle[..., c_div * 2 : c_div * (2 + 1)]  ### dec_id = 2
+
+        # #####################################################
+        # skip_id = self.depth_level - 1 - 1  ### 第一個 -1 是因為 top_bottle 沒有skip， 第二個 -1 是因為 數量 轉 index
+        # if(self.d_amount >= 1):
+        #     ### Up bottle
+        #     # print(self.u_bottle.name)  ### debug 用
+        #     if(self.no_concat_layer >= self.depth_level - 1): x1 = self.u_bottle(x1_bottle)
+        #     else:                                             x1 = self.u_bottle(x1_bottle, skips[skip_id])
+        #     skip_id -= 1
+
+        #     ### Up middle
+        #     for go, (name, u_middle) in enumerate(list(self.u_middles.items())):
+        #         # print("up mid name:", name)  ### debug 用
+        #         layer_id = self.depth_level - 1 - go
+        #         if (layer_id <= self.no_concat_layer): x1 = u_middle(x1)
+        #         else:                                  x1 = u_middle(x1, skips[skip_id])
+        #         skip_id -= 1
+        #     ### Up top
+        #     # print(self.u_top.name)  ### debug 用
+        #     x1 = self.u_top(x1)  ### up 的 top 沒有 skip
+        # #####################################################
+        # skip_id = self.depth_level - 1 - 1  ### 第一個 -1 是因為 top_bottle 沒有skip， 第二個 -1 是因為 數量 轉 index
+        # if(self.d_amount >= 2):
+        #     ### Up bottle
+        #     if(self.no_concat_layer >= self.depth_level - 1): x2 = self.u_bottle2(x2_bottle)
+        #     else:                                             x2 = self.u_bottle2(x2_bottle, skips[skip_id])
+        #     skip_id -= 1
+
+        #     ### Up middle
+        #     for go, (name, u_middle2) in enumerate(list(self.u_middle2s.items())):
+        #         # print("up mid name:", name)  ### debug 用
+        #         layer_id = self.depth_level - 1 - go
+        #         if (layer_id <= self.no_concat_layer): x2 = u_middle2(x2)
+        #         else:                                  x2 = u_middle2(x2, skips[skip_id])
+        #         skip_id -= 1
+        #     ### Up top
+        #     # print(self.u_top.name)  ### debug 用
+        #     x2 = self.u_top2(x2)  ### up 的 top 沒有 skip
+        # #####################################################
+        # skip_id = self.depth_level - 1 - 1  ### 第一個 -1 是因為 top_bottle 沒有skip， 第二個 -1 是因為 數量 轉 index
+        # if(self.d_amount >= 3):
+        #     ### Up bottle
+        #     if(self.no_concat_layer >= self.depth_level - 1): x3 = self.u_bottle3(x3_bottle)
+        #     else:                                             x3 = self.u_bottle3(x3_bottle, skips[skip_id])
+        #     skip_id -= 1
+
+        #     ### Up middle
+        #     for go, (name, u_middle3) in enumerate(list(self.u_middle3s.items())):
+        #         # print("up mid name:", name)  ### debug 用
+        #         layer_id = self.depth_level - 1 - go
+        #         if (layer_id <= self.no_concat_layer): x3 = u_middle3(x3)
+        #         else:                                  x3 = u_middle3(x3, skips[skip_id])
+        #         skip_id -= 1
+        #     ### Up top
+        #     # print(self.u_top.name)  ### debug 用
+        #     x3 = self.u_top3(x3)  ### up 的 top 沒有 skip
+        # #####################################################
+        # ### UNet out
+        # if(self.d_amount == 1):
+        #     if  (self.unet_acti == "tanh"):    return self.tanh(x1)
+        #     elif(self.unet_acti == "sigmoid"): return self.sigmoid(x1)
+        # elif(self.d_amount == 2):
+        #     if  (self.unet_acti == "tanh"):    return self.tanh(x1), self.tanh(x2)
+        #     elif(self.unet_acti == "sigmoid"): return self.sigmoid(x1), self.sigmoid(x2)
+        # elif(self.d_amount == 3):
+        #     if  (self.unet_acti == "tanh"):    return self.tanh(x1), self.tanh(x2), self.tanh(x3)
+        #     elif(self.unet_acti == "sigmoid"): return self.sigmoid(x1), self.sigmoid(x2), self.sigmoid(x3)
 
 
 if(__name__ == "__main__"):
