@@ -352,7 +352,7 @@ def train_step_Multi_output_W_w_M_to_Cx_Cy_focus(model_obj, in_data, gt_data, lo
 
     _train_step_Multi_output(model_obj, in_data=W_w_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=in_Mask)
 
-# @tf.function
+@tf.function
 def train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
