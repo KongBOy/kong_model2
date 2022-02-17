@@ -111,8 +111,7 @@ if(__name__ == "__main__"):
     use_model = block1_L5_ch016_sig
     use_model = use_model.build()
     print(use_model.generator(data))
-    
+
     from kong_util.tf_model_util import Show_model_weights
     Show_model_weights(use_model.generator)
     use_model.generator.summary()
-
