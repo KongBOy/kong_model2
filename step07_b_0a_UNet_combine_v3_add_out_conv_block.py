@@ -23,7 +23,7 @@ class Generator(tf.keras.models.Model):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **tf_kwargs):
-        self.debug = True  ### 手動設定吧
+        self.debug = False  ### 手動設定吧
         '''
         d_acti: lrelu/ relu
         u_acti: relu/ lrelu
