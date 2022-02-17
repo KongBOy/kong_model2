@@ -106,26 +106,30 @@ class UNet_down(tf.keras.layers.Layer):
         #   if(self.Skip_op is not None): self.Skip_op = self.Skip_op(in_ch=out_ch, ratio=out_ch // 32)
 
     def call(self, x, training=None):
+        ### Activation
         if  (self.at_where != "top"):  x = self.Acti(x)
 
+        ### Conv_Blocks
         for block in self.Conv_blocks: x = block(x, training)
         x_before_down = x
 
+        ### Down
         if(self.CoordConv is not None): x = self.CoordConv(x)
         x = self.Conv(x)
 
+        ### Norm
         if(self.at_where == "middle"):
             if  (self.norm == "bn"): x = self.Norm(x, training)
             elif(self.norm == "in"): x = self.Norm(x)
 
-        if(self.at_where != "bottle"):
-            if(self.Skip_op is None): skip = x
-            else:                     skip = self.Skip_op(x)
+        ### Skip
+        if(self.Skip_op is None):
+            skip = x
+        else:
+            skip          = self.Skip_op(x)
+            x_before_down = self.Skip_op(x_before_down)
 
-            if  (self.at_where == "middle"): return x, skip
-            elif(self.at_where == "top"): return x, skip, x_before_down
-
-        elif(self.at_where == "bottle"): return x
+        return x, skip, x_before_down
 
 class UNet_up(tf.keras.layers.Layer):
     def __init__(self, at_where, in_ch, out_ch,
@@ -161,13 +165,21 @@ class UNet_up(tf.keras.layers.Layer):
             if(self.Skip_merge_op == "concat"): self.Concat = Concatenate(name="concat")
 
     def call(self, x, skip=None, training=None):
+        ### Activation
         x = self.Acti(x)
+
+        ### Conv_Blocks
         for block in self.Conv_blocks: x = block(x, training)
+
+
         if(self.CoordConv is not None): x = self.CoordConv(x)
         # print(x.shape)
+
+        ### Up
         x = self.Conv_T(x)
         # print(x.shape)
 
+        ### Norm and Concat with Skip
         if(self.at_where != "top"):
             if  (self.norm == "bn"): x = self.Norm(x, training)
             elif(self.norm == "in"): x = self.Norm(x)
