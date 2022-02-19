@@ -352,6 +352,3 @@ if(__name__ == "__main__"):
     use_model = use_model.build()
     print(use_model.generator(data))
     use_model.generator.summary()
-
-    from kong_util.tf_model_util import Show_model_layer_names
-    pass
