@@ -1,6 +1,7 @@
 #############################################################################################################################################################################################################
 #############################################################################################################################################################################################################
 ### 把 kong_model2 加入 sys.path
+from bz2 import compress
 import os
 code_exe_path = os.path.realpath(__file__)                   ### 目前執行 step10_b.py 的 path
 code_exe_path_element = code_exe_path.split("\\")            ### 把 path 切分 等等 要找出 kong_model 在第幾層
@@ -62,14 +63,14 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L4_ch001.{run}"])
 # sb.run(cmd_python_step10_a + [f"L4_ch128.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"L5_ch002.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch004.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch008.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch016.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch032.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch002.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch004.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch008.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch016.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch032.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch064.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch001.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch128.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch128.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"L6_ch002.{run}"])
 # sb.run(cmd_python_step10_a + [f"L6_ch004.{run}"])
