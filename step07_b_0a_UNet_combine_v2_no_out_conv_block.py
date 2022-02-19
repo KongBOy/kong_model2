@@ -45,17 +45,37 @@ class Generator(tf.keras.models.Model):
                     #   skip_merge_op=skip_merge_op
                       )
         ### 最基本(比如最少層depth_level=2)的一定有 top, bottle
-        self.d_top    = UNet_down(at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=1              , ch_upper_bound=ch_upper_bound), acti=d_acti, name="D_0->1_top", **common_kwargs)  ### Layer 0 -> 1， to_L=1 代表 走進 第1層
+        self.d_top    = UNet_down(at_where="top",
+                                  in_ch =self.Get_Layer_hid_ch(to_L=1, ch_upper_bound=ch_upper_bound),
+                                  out_ch=self.Get_Layer_hid_ch(to_L=1, ch_upper_bound=ch_upper_bound),
+                                  acti=d_acti,
+                                  name="D_0->1_top",
+                                  **common_kwargs)  ### Layer 0 -> 1， to_L=1 代表 走進 第1層
         self.d_middles = {}
         if(depth_level >= 3):
             for i in range(depth_level - 2):  ### -2 是 -top 和 -bottle 共兩層
                 layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)
                 d_middle_name = f"D_{layer_id-1}->{layer_id}_middle"
-                self.d_middles[d_middle_name] = UNet_down(at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id    , ch_upper_bound=ch_upper_bound), acti=d_acti, name=d_middle_name, **common_kwargs )
-        self.d_bottle = UNet_down(at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level    , ch_upper_bound=ch_upper_bound), acti=d_acti, name=f"D_{depth_level-1}->{depth_level}_bottle", **common_kwargs)
+                self.d_middles[d_middle_name] = UNet_down(at_where="middle",
+                                                          in_ch =self.Get_Layer_hid_ch(to_L=layer_id, ch_upper_bound=ch_upper_bound),
+                                                          out_ch=self.Get_Layer_hid_ch(to_L=layer_id, ch_upper_bound=ch_upper_bound),
+                                                          acti=d_acti,
+                                                          name=d_middle_name,
+                                                          **common_kwargs )
+        self.d_bottle = UNet_down(at_where="bottle",
+                                  in_ch =self.Get_Layer_hid_ch(to_L=depth_level, ch_upper_bound=ch_upper_bound),
+                                  out_ch=self.Get_Layer_hid_ch(to_L=depth_level, ch_upper_bound=ch_upper_bound),
+                                  acti=d_acti,
+                                  name=f"D_{depth_level-1}->{depth_level}_bottle",
+                                  **common_kwargs)
 
         if(self.d_amount >= 1):
-            self.u_bottle = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=f"U_{depth_level}->{depth_level-1}_bottle", **common_kwargs)  ### 因為是返回上一層， 所以 -1
+            self.u_bottle = UNet_up(at_where="bottle",
+                                    in_ch =self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound),
+                                    out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound),
+                                    acti=u_acti,
+                                    name=f"U_{depth_level}->{depth_level-1}_bottle",
+                                    **common_kwargs)  ### 因為是返回上一層， 所以 -1
             self.u_middles = {}
             if(depth_level >= 3):
                 for i in range(depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
@@ -63,12 +83,27 @@ class Generator(tf.keras.models.Model):
                     # print("layer_id", layer_id)  ### debug 用
                     u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
                     # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
-                    self.u_middles[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=u_middle_name, **common_kwargs )
-            self.u_top    = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=ch_upper_bound), acti=u_acti, name="U_1->0_top", **common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
+                    self.u_middles[u_middle_name] = UNet_up(at_where="middle",
+                                                            in_ch =self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound),
+                                                            out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound),
+                                                            acti=u_acti,
+                                                            name=u_middle_name,
+                                                            **common_kwargs )
+            self.u_top    = UNet_up(at_where="top",
+                                    in_ch =self.Get_Layer_hid_ch(to_L=0, ch_upper_bound=ch_upper_bound),
+                                    out_ch=self.Get_Layer_hid_ch(to_L=0, ch_upper_bound=ch_upper_bound),
+                                    acti=u_acti,
+                                    name="U_1->0_top",
+                                    **common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
             # self.d_bottle = UNet_down(at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1)    , 512), name=f"D{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)
             # self.u_bottle = UNet_up  (at_where="bottle", out_ch=min(hid_ch * 2**(depth_level - 1 - 1), 512), name=f"U{depth_level} bottle")  ### L0(3), L1(hid_ch*2**0), L2(hid_ch*2**1), ..., L2(hid_ch*2**depth_level - 1)， 因為是返回上一層， out_ch 2的冪次要再 -1
         if(self.d_amount >= 2):
-            self.u_bottle2 = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=f"U_{depth_level}->{depth_level-1}_bottle", **common_kwargs)  ### 因為是返回上一層， 所以 -1
+            self.u_bottle2 = UNet_up(at_where="bottle",
+                                     in_ch =self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound),
+                                     out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound),
+                                     acti=u_acti,
+                                     name=f"U_{depth_level}->{depth_level-1}_bottle",
+                                     **common_kwargs)  ### 因為是返回上一層， 所以 -1
             self.u_middle2s = {}
             if(depth_level >= 3):
                 for i in range(depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
@@ -76,11 +111,26 @@ class Generator(tf.keras.models.Model):
                     # print("layer_id", layer_id)  ### debug 用
                     u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
                     # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
-                    self.u_middle2s[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=u_middle_name, **common_kwargs )
-            self.u_top2    = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=ch_upper_bound), acti=u_acti, name="U_1->0_top", **common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
+                    self.u_middle2s[u_middle_name] = UNet_up(at_where="middle",
+                                                             in_ch =self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound),
+                                                             out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound),
+                                                             acti=u_acti,
+                                                             name=u_middle_name,
+                                                             **common_kwargs )
+            self.u_top2    = UNet_up(at_where="top",
+                                     in_ch =self.Get_Layer_hid_ch(to_L=0, ch_upper_bound=ch_upper_bound),
+                                     out_ch=self.Get_Layer_hid_ch(to_L=0, ch_upper_bound=ch_upper_bound),
+                                     acti=u_acti,
+                                     name="U_1->0_top",
+                                     **common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
 
         if(self.d_amount >= 3):
-            self.u_bottle3 = UNet_up  (at_where="bottle", out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=f"U_{depth_level}->{depth_level-1}_bottle", **common_kwargs)  ### 因為是返回上一層， 所以 -1
+            self.u_bottle3 = UNet_up(at_where="bottle",
+                                     in_ch =self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound),
+                                     out_ch=self.Get_Layer_hid_ch(to_L=depth_level - 1, ch_upper_bound=ch_upper_bound),
+                                     acti=u_acti,
+                                     name=f"U_{depth_level}->{depth_level-1}_bottle",
+                                     **common_kwargs)  ### 因為是返回上一層， 所以 -1
             self.u_middle3s = {}
             if(depth_level >= 3):
                 for i in range(depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
@@ -88,8 +138,18 @@ class Generator(tf.keras.models.Model):
                     # print("layer_id", layer_id)  ### debug 用
                     u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
                     # u_middle_name = f"{6-layer_id}U_{layer_id}->{layer_id-1}_middle"  ### 這可以照順序排，不過以前train的 網路 名字會對不起來無法reload QAQ
-                    self.u_middle3s[u_middle_name] = UNet_up  (at_where="middle", out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound), acti=u_acti, name=u_middle_name, **common_kwargs )
-            self.u_top3    = UNet_up  (at_where="top"   , out_ch=self.Get_Layer_hid_ch(to_L=0              , ch_upper_bound=ch_upper_bound), acti=u_acti, name="U_1->0_top", **common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
+                    self.u_middle3s[u_middle_name] = UNet_up(at_where="middle", 
+                                                             in_ch =self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound),
+                                                             out_ch=self.Get_Layer_hid_ch(to_L=layer_id - 1, ch_upper_bound=ch_upper_bound),
+                                                             acti=u_acti,
+                                                             name=u_middle_name,
+                                                             **common_kwargs )
+            self.u_top3    = UNet_up(at_where="top", 
+                                     in_ch =self.Get_Layer_hid_ch(to_L=0, ch_upper_bound=ch_upper_bound),
+                                     out_ch=self.Get_Layer_hid_ch(to_L=0, ch_upper_bound=ch_upper_bound),
+                                     acti=u_acti,
+                                     name="U_1->0_top",
+                                     **common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
 
 
         ############################################################################################################################################################
@@ -120,11 +180,11 @@ class Generator(tf.keras.models.Model):
         ### Down middle
         for name, d_middle in self.d_middles.items():
             # print(name)  ### debug 用
-            x, skip = d_middle(x)
+            x, skip, _ = d_middle(x)
             skips.append(skip)
         ### Down bottle
         # print(self.d_bottle.name)  ### debug 用
-        x_bottle = self.d_bottle(x)  ### down 的 bottle沒有 skip
+        x_bottle, _, _ = self.d_bottle(x)  ### down 的 bottle沒有 skip
         #####################################################
         if(self.bottle_divide is False):
             x1_bottle = x_bottle
