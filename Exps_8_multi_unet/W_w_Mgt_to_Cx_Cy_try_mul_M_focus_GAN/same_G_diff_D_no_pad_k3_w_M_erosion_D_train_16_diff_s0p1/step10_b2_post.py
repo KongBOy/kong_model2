@@ -66,7 +66,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch004.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch008.{run}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch016.{run}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch032.{run}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch032.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch064.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch001.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch128.{run}"])
