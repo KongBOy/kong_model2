@@ -189,8 +189,20 @@ class G_Unet_Body_builder(Ckpt_op_builder):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
-        if  (type(conv_block_num) == type(1)) : self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
-        elif(type(conv_block_num) == type([])): self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block_pyramid"           , unet_acti[:3], "out_%i" % out_ch]
+        if  (type(conv_block_num) == type(1)) :
+            self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
+        elif(type(conv_block_num) == type([])):
+            side_string = ""
+            side_string_element = []
+            for side_num in range(1, 10):
+                side_num_count = 0
+                for go_block in range(depth_level):
+                    if(side_num == conv_block_num[go_block]): side_num_count += 1
+                if(side_num_count != 0):
+                    side_string_element.append(f"{side_num}side_{side_num_count}_")
+            side_string = "_".join(side_string_element)
+
+            self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block_pyramid_%s" % side_string, unet_acti[:3], "out_%i" % out_ch]
         self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
         g_args = {
             "hid_ch"          : hid_ch,
