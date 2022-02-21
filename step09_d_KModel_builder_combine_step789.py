@@ -197,7 +197,7 @@ class G_Unet_Body_builder(Ckpt_op_builder):
             for side_num in range(1, 10):
                 side_num_count = 0
                 for go_block in range(depth_level):
-                    if(side_num == conv_block_num[go_block]): side_num_count += 1
+                    if(side_num <= conv_block_num[go_block]): side_num_count += 1
                 if(side_num_count != 0):
                     side_string_element.append(f"{side_num}side_{side_num_count}_")
             side_string = "_".join(side_string_element)
