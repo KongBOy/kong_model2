@@ -108,3 +108,4 @@ if(__name__ == "__main__"):
     from kong_util.tf_model_util import Show_model_weights
     Show_model_weights(use_model.generator)
     use_model.generator.summary()
+    print(use_model.model_describe)
