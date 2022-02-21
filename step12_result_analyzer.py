@@ -139,7 +139,14 @@ class Col_results_analyzer(Result_analyzer):
         self.c_results = col_results
         self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
         self.c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_max_trained_epoch()去抓
+        self.check_exp_builder_change_to_result()
         print("Col_results_analyzer build finish")
+
+    def check_exp_builder_change_to_result(self):
+        from step10_b2_exp_builder import Exp_builder
+        for go_data, data in enumerate(self.c_results):
+            if(type(data) == type(Exp_builder())):
+                self.c_results[go_data] = data.build().result_obj
 
     def _step0_get_c_trained_epochs(self):
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
