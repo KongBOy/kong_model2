@@ -196,7 +196,7 @@ class G_Unet_Body_builder(Ckpt_op_builder):
             side_string_element = []
             for side_num in range(1, 10):
                 side_num_count = 0
-                for go_block in range(depth_level):
+                for go_block in range(depth_level + 1):  ### +1 是要走到正中央所以要多走一步
                     if(side_num <= conv_block_num[go_block]): side_num_count += 1
                 if(side_num_count != 0):
                     side_string_element.append(f"{side_num}side_{side_num_count}_")
