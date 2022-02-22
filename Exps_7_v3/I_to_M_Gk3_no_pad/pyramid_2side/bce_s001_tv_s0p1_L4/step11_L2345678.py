@@ -23,8 +23,10 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 
 import step10_a as side2
 #################################################################################################################################################################################################################################################################################################################################################################################################
+from step10_b2_exp_builder import Exp_builder
 
 ch032_1side_1__2side_all = [
+    side2.empty,
     side2.ch032_1side_1__2side_0,
     side2.ch032_1side_1__2side_1,
 ]
@@ -57,4 +59,20 @@ ch032_1side_5__2side_all = [
     side2.ch032_1side_5__2side_3,
     side2.ch032_1side_5__2side_4,
     side2.ch032_1side_5__2side_5,
+]
+
+ch032_1side_all__2side_all = [
+    ch032_1side_1__2side_all,
+    ch032_1side_2__2side_all,
+    ch032_1side_3__2side_all,
+    ch032_1side_4__2side_all,
+    ch032_1side_5__2side_all,
+]
+
+ch032_1side_all__2side_all = [
+    ch032_1side_1__2side_all,
+    ch032_1side_2__2side_all,
+    ch032_1side_3__2side_all,
+    ch032_1side_4__2side_all,
+    ch032_1side_5__2side_all,
 ]
