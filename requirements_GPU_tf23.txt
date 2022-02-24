@@ -1,5 +1,5 @@
 matplotlib
-opencv-python
+opencv-python==4.5.3.56
 tqdm
 tensorflow-gpu==2.3.0
 tensorflow_addons==0.11.2
