@@ -23,7 +23,7 @@ class Generator(tf.keras.models.Model):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **tf_kwargs):
-        self.debug = False  ### 手動設定吧
+        self.debug = True  ### 手動設定吧
         '''
         d_acti: lrelu/ relu
         u_acti: relu/ lrelu
@@ -116,6 +116,12 @@ class Generator(tf.keras.models.Model):
             self.up_arch_dict[f"u{go_dec}_middles"] = {}
             if(self.depth_level >= 3):
                 for i in range(self.depth_level - 2 - 1, 0 - 1, -1):  ### -2 是 -top 和 -bottle 共兩層， 最後的 start 和 stop 都 -1 是因為讓 range step 是 負一 要 -1 才會是我要的效果
+                    '''
+                    以 depth_level==5 舉例， 
+                    我想要的range效果是跑  2,      1,      0，
+                    layer_id 會+2 變      4,      3,      2，
+                    u_middle_name 為      4->3 和 3->2 和 2->1
+                    '''
                     layer_id = i + 1 + 1  ### +1 是 index轉layer_id， 再+1 是因為前面有top層。 middle 至少 一定從 走入Layer2開始(Down) 或 從Layer2開始返回(Up)， 這邊的 +2 不能和 for 裡面的 -2 消掉喔！ 因為 for 裡是 代表跑幾次！ 不能消！
                     # print("layer_id", layer_id)  ### debug 用
                     u_middle_name = f"U_{layer_id}->{layer_id-1}_middle"
