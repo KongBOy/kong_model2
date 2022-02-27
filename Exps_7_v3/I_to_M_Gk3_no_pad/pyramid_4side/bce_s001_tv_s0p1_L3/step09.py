@@ -28,56 +28,56 @@ start_time = time.time()
 #########################################################################################
 # "1" 3 6 10 15 21 28 36 45 55
 # side1 OK 1
-pyramid_1side_1__2side_1__3side_1_4side_1 = [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4]
+pyramid_1side_1__2side_1__3side_1_4side_1 = [4, 0, 0, 0, 0, 0, 4]
 
 # 1 "3" 6 10 15 21 28 36 45 55
 # side2 OK 4
-pyramid_1side_2__2side_1__3side_1_4side_1 = [4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4]
-pyramid_1side_2__2side_2__3side_1_4side_1 = [4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4]
-pyramid_1side_2__2side_2__3side_2_4side_1 = [4, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4]
+pyramid_1side_2__2side_1__3side_1_4side_1 = [4, 1, 0, 0, 0, 1, 4]
+pyramid_1side_2__2side_2__3side_1_4side_1 = [4, 2, 0, 0, 0, 2, 4]
+pyramid_1side_2__2side_2__3side_2_4side_1 = [4, 3, 0, 0, 0, 3, 4]
 
-pyramid_1side_2__2side_2__3side_2_4side_2 = [4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4]
+pyramid_1side_2__2side_2__3side_2_4side_2 = [4, 4, 0, 0, 0, 4, 4]
 
 # 1 3 "6" 10 15 21 28 36 45 55
 # side3 OK 10
-pyramid_1side_3__2side_1__3side_1_4side_1 = [4, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 4]
-pyramid_1side_3__2side_2__3side_1_4side_1 = [4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 4]
-pyramid_1side_3__2side_2__3side_2_4side_1 = [4, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 4]
-pyramid_1side_3__2side_3__3side_1_4side_1 = [4, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 4]
-pyramid_1side_3__2side_3__3side_2_4side_1 = [4, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 4]
-pyramid_1side_3__2side_3__3side_3_4side_1 = [4, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 4]
+pyramid_1side_3__2side_1__3side_1_4side_1 = [4, 1, 1, 0, 1, 1, 4]
+pyramid_1side_3__2side_2__3side_1_4side_1 = [4, 2, 1, 0, 1, 2, 4]
+pyramid_1side_3__2side_2__3side_2_4side_1 = [4, 3, 1, 0, 1, 3, 4]
+pyramid_1side_3__2side_3__3side_1_4side_1 = [4, 2, 2, 0, 2, 2, 4]
+pyramid_1side_3__2side_3__3side_2_4side_1 = [4, 3, 2, 0, 2, 3, 4]
+pyramid_1side_3__2side_3__3side_3_4side_1 = [4, 3, 3, 0, 3, 3, 4]
 
-pyramid_1side_3__2side_2__3side_2_4side_2 = [4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 4]
-pyramid_1side_3__2side_3__3side_2_4side_2 = [4, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4, 4]
-pyramid_1side_3__2side_3__3side_3_4side_2 = [4, 4, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 4]
+pyramid_1side_3__2side_2__3side_2_4side_2 = [4, 4, 1, 0, 1, 4, 4]
+pyramid_1side_3__2side_3__3side_2_4side_2 = [4, 4, 2, 0, 2, 4, 4]
+pyramid_1side_3__2side_3__3side_3_4side_2 = [4, 4, 3, 0, 3, 4, 4]
 
-pyramid_1side_3__2side_3__3side_3_4side_3 = [4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4]
+pyramid_1side_3__2side_3__3side_3_4side_3 = [4, 4, 4, 0, 4, 4, 4]
 
 # 1 3 6 "10" 15 21 28 36 45 55
 # side4 OK 20
-pyramid_1side_4__2side_1__3side_1_4side_1 = [4, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 4]
-pyramid_1side_4__2side_2__3side_1_4side_1 = [4, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 4]
-pyramid_1side_4__2side_2__3side_2_4side_1 = [4, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 3, 4]
-pyramid_1side_4__2side_3__3side_1_4side_1 = [4, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 4]
-pyramid_1side_4__2side_3__3side_2_4side_1 = [4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4]
-pyramid_1side_4__2side_3__3side_3_4side_1 = [4, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 4]
-pyramid_1side_4__2side_4__3side_1_4side_1 = [4, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 4]
-pyramid_1side_4__2side_4__3side_2_4side_1 = [4, 3, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 3, 4]
-pyramid_1side_4__2side_4__3side_3_4side_1 = [4, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 4]
-pyramid_1side_4__2side_4__3side_4_4side_1 = [4, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 4]
+pyramid_1side_4__2side_1__3side_1_4side_1 = [4, 1, 1, 1, 1, 1, 4]
+pyramid_1side_4__2side_2__3side_1_4side_1 = [4, 2, 1, 1, 1, 2, 4]
+pyramid_1side_4__2side_2__3side_2_4side_1 = [4, 3, 1, 1, 1, 3, 4]
+pyramid_1side_4__2side_3__3side_1_4side_1 = [4, 2, 2, 1, 2, 2, 4]
+pyramid_1side_4__2side_3__3side_2_4side_1 = [4, 3, 2, 1, 2, 3, 4]
+pyramid_1side_4__2side_3__3side_3_4side_1 = [4, 3, 3, 1, 3, 3, 4]
+pyramid_1side_4__2side_4__3side_1_4side_1 = [4, 2, 2, 2, 2, 2, 4]
+pyramid_1side_4__2side_4__3side_2_4side_1 = [4, 3, 2, 2, 2, 3, 4]
+pyramid_1side_4__2side_4__3side_3_4side_1 = [4, 3, 3, 2, 3, 3, 4]
+pyramid_1side_4__2side_4__3side_4_4side_1 = [4, 3, 3, 3, 3, 3, 4]
 
-pyramid_1side_4__2side_2__3side_2_4side_2 = [4, 4, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 4, 4]
-pyramid_1side_4__2side_3__3side_2_4side_2 = [4, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 4, 4]
-pyramid_1side_4__2side_3__3side_3_4side_2 = [4, 4, 3, 1, 0, 0, 0, 0, 0, 0, 0, 1, 3, 4, 4]
-pyramid_1side_4__2side_4__3side_2_4side_2 = [4, 4, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 4, 4]
-pyramid_1side_4__2side_4__3side_3_4side_2 = [4, 4, 3, 2, 0, 0, 0, 0, 0, 0, 0, 2, 3, 4, 4]
-pyramid_1side_4__2side_4__3side_4_4side_2 = [4, 4, 3, 3, 0, 0, 0, 0, 0, 0, 0, 3, 3, 4, 4]
+pyramid_1side_4__2side_2__3side_2_4side_2 = [4, 4, 1, 1, 1, 4, 4]
+pyramid_1side_4__2side_3__3side_2_4side_2 = [4, 4, 2, 1, 2, 4, 4]
+pyramid_1side_4__2side_3__3side_3_4side_2 = [4, 4, 3, 1, 3, 4, 4]
+pyramid_1side_4__2side_4__3side_2_4side_2 = [4, 4, 2, 2, 2, 4, 4]
+pyramid_1side_4__2side_4__3side_3_4side_2 = [4, 4, 3, 2, 3, 4, 4]
+pyramid_1side_4__2side_4__3side_4_4side_2 = [4, 4, 3, 3, 3, 4, 4]
 
-pyramid_1side_4__2side_3__3side_3_4side_3 = [4, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 1, 4, 4, 4]
-pyramid_1side_4__2side_4__3side_3_4side_3 = [4, 4, 4, 2, 0, 0, 0, 0, 0, 0, 0, 2, 4, 4, 4]
-pyramid_1side_4__2side_4__3side_4_4side_3 = [4, 4, 4, 3, 0, 0, 0, 0, 0, 0, 0, 3, 4, 4, 4]
+pyramid_1side_4__2side_3__3side_3_4side_3 = [4, 4, 4, 1, 4, 4, 4]
+pyramid_1side_4__2side_4__3side_3_4side_3 = [4, 4, 4, 2, 4, 4, 4]
+pyramid_1side_4__2side_4__3side_4_4side_3 = [4, 4, 4, 3, 4, 4, 4]
 
-pyramid_1side_4__2side_4__3side_4_4side_4 = [4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4]
+pyramid_1side_4__2side_4__3side_4_4side_4 = [4, 4, 4, 4, 4, 4, 4]
 
 #########################################################################################
 # "1" 3 6 10 15 21 28 36 45 55
