@@ -199,10 +199,10 @@ class G_Unet_Body_builder(Ckpt_op_builder):
                 for go_block in range(depth_level + 1):  ### +1 是要走到正中央所以要多走一步
                     if(side_num <= conv_block_num[go_block]): side_num_count += 1
                 if(side_num_count != 0):
-                    side_string_element.append(f"{side_num}side_{side_num_count}_")
+                    side_string_element.append(f"{side_num}s{side_num_count}")
             side_string = "_".join(side_string_element)
 
-            self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block_pyramid_%s" % side_string, unet_acti[:3], "out_%i" % out_ch]
+            self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "bl_pyr_%s" % side_string, unet_acti[:3], "out_%i" % out_ch]
         self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
         g_args = {
             "hid_ch"          : hid_ch,
