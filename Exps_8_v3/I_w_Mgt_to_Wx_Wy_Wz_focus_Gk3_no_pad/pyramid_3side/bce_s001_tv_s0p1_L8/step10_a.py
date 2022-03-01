@@ -42,8 +42,8 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
     6_mask_unet/自己命的名字/...
 '''
 
-use_db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper
-use_loss_obj = [G_bce_s001_loss_info_builder.set_loss_target("UNet_Mask").copy()]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
+use_db_obj = type8_blender_wc_try_mul_M
+use_loss_obj = [G_mae_s001_loss_info_builder.set_loss_target("UNet_z").copy(), G_mae_s001_loss_info_builder.set_loss_target("UNet_y").copy(), G_mae_s001_loss_info_builder.set_loss_target("UNet_x").copy()]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
 #############################################################
 ### 為了resul_analyze畫空白的圖，建一個empty的 Exp_builder
 empty = Exp_builder().set_basic("train", use_db_obj, ch032_limit_pyramid_1side_1__2side_0__3side_0, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_limit_pyramid_1side_1__2side_0__3side_0.kong_model.model_describe) .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="為了resul_analyze畫空白的圖，建一個empty的 Exp_builder")
@@ -281,7 +281,7 @@ if(__name__ == "__main__"):
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_b1_exp_obj_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        ch032_1side_4__2side_3__3side_2.build().run()
+        ch032_limit_1side_4__2side_3__3side_2.build().run()
         # print('no argument')
         sys.exit()
 

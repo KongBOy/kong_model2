@@ -15,20 +15,17 @@ sys.path.append(kong_model2_dir)
 # print("    kong_layer:", kong_layer)
 # print("    kong_model2_dir:", kong_model2_dir)
 #############################################################################################################################################################################################################
-from step08_b_use_G_generate_I_to_M import I_Generate_M_see
-from step09_c_train_step import train_step_Single_output_I_to_M
+from step08_b_use_G_generate_I_w_M_to_Wx_Wy_Wz_focus import I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see
+from step09_c_train_step import train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz_focus
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
+
+from Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_0side.bce_s001_tv_s0p1_L3.step09_0side_L3 import *
 
 import time
 start_time = time.time()
 ###############################################################################################################################################################################################
-###############################################################################################################################################################################################
-########################################################### Block1
-### Block1
 #########################################################################################
-pyramid_1side_1 = [0, 0, 0, 0, 0, 0, 0]
-#########################################################################################
-ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wx_Wy_Wz", I_to_Wx=ch032_pyramid_0side, I_to_Wy=ch032_pyramid_0side, I_to_Wz=ch032_pyramid_0side).set_gen_op(I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see).set_train_step(train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz_focus)
 #########################################################################################
 ###############################################################################################################################################################################################
 
@@ -40,9 +37,8 @@ if(__name__ == "__main__"):
     use_model = ch032_pyramid_0side
     use_model = use_model.build()
     result = use_model.generator(data)
-    print(result.shape)
+    print(result[0].shape)
 
     from kong_util.tf_model_util import Show_model_weights
     Show_model_weights(use_model.generator)
     use_model.generator.summary()
-    print(use_model.model_describe)
