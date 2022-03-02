@@ -43,10 +43,26 @@ if(__name__ == "__main__"):
     """
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
-    ana_name = "ch032_1side_all__2side_all"
+    ana_name = "ch032_0side_1side"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
+                                        ana_what="wc",
                                         row_col_results=ch032_1side_all__2side_all, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
                                             .Gather_all_see_final_img()
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_all__2side_all, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            .Gather_all_see_final_img()
+
+    '''
+    analyzer = Col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                    ana_what_sees="see",
+                                    ana_what="wc",
+                                    col_results=ch032_1side_all__2side_all, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                        .analyze_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                        .Gather_all_see_final_img()
+    '''
+

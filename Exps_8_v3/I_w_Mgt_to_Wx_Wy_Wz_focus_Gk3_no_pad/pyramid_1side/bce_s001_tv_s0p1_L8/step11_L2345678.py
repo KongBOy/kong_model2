@@ -22,6 +22,7 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 ###############################################################################################################################################################################################################
 
 import step10_a as side1
+import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_0side.bce_s001_tv_s0p1_L8.step10_a as L8_0side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 
 ch032_1side_1__2side_all = [ side1.ch032_1side_1]
@@ -34,7 +35,9 @@ ch032_1side_7__2side_all = [ side1.ch032_1side_7]
 ch032_1side_8__2side_all = [ side1.ch032_1side_8]
 ch032_1side_9__2side_all = [ side1.ch032_1side_9]
 
+### style 1
 ch032_1side_all__2side_all = [
+    [L8_0side.ch032_0side, ],
     ch032_1side_1__2side_all,
     ch032_1side_2__2side_all,
     ch032_1side_3__2side_all,
@@ -44,4 +47,10 @@ ch032_1side_all__2side_all = [
     ch032_1side_7__2side_all,
     ch032_1side_8__2side_all,
     ch032_1side_9__2side_all,
+]
+
+### style 2
+ch032_1side_all__2side_all = [
+    [L8_0side.ch032_0side, ],
+    [side1.ch032_1side_1, side1.ch032_1side_2, side1.ch032_1side_3, side1.ch032_1side_4, side1.ch032_1side_5, side1.ch032_1side_6, side1.ch032_1side_7, side1.ch032_1side_8, side1.ch032_1side_9, ],
 ]
