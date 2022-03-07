@@ -22,28 +22,34 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 ###############################################################################################################################################################################################################
 
 import step10_a as side2
+import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_0side.bce_s001_tv_s0p1_L6.step10_a as L6_0side
+import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_1side.bce_s001_tv_s0p1_L6.step10_a as L6_1side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 
 ch032_1side_1__2side_all = [
-    side2.ch032_1side_1__2side_0,
+    L6_0side.ch032_0side,
+    L6_1side.ch032_1side_1,
     side2.ch032_1side_1__2side_1,
 ]
 
 ch032_1side_2__2side_all = [
-    side2.ch032_1side_2__2side_0,
+    L6_0side.ch032_0side,
+    L6_1side.ch032_1side_2,
     side2.ch032_1side_2__2side_1,
     side2.ch032_1side_2__2side_2,
 ]
 
 ch032_1side_3__2side_all = [
-    side2.ch032_1side_3__2side_0,
+    L6_0side.ch032_0side,
+    L6_1side.ch032_1side_3,
     side2.ch032_1side_3__2side_1,
     side2.ch032_1side_3__2side_2,
     side2.ch032_1side_3__2side_3,
 ]
 
 ch032_1side_4__2side_all = [
-    side2.ch032_1side_4__2side_0,
+    L6_0side.ch032_0side,
+    L6_1side.ch032_1side_4,
     side2.ch032_1side_4__2side_1,
     side2.ch032_1side_4__2side_2,
     side2.ch032_1side_4__2side_3,
@@ -51,7 +57,8 @@ ch032_1side_4__2side_all = [
 ]
 
 ch032_1side_5__2side_all = [
-    side2.ch032_1side_5__2side_0,
+    L6_0side.ch032_0side,
+    L6_1side.ch032_1side_5,
     side2.ch032_1side_5__2side_1,
     side2.ch032_1side_5__2side_2,
     side2.ch032_1side_5__2side_3,
@@ -60,7 +67,8 @@ ch032_1side_5__2side_all = [
 ]
 
 ch032_1side_6__2side_all = [
-    side2.ch032_1side_6__2side_0,
+    L6_0side.ch032_0side,
+    L6_1side.ch032_1side_6,
     side2.ch032_1side_6__2side_1,
     side2.ch032_1side_6__2side_2,
     side2.ch032_1side_6__2side_3,
@@ -70,7 +78,8 @@ ch032_1side_6__2side_all = [
 ]
 
 ch032_1side_7__2side_all = [
-    side2.ch032_1side_7__2side_0,
+    L6_0side.ch032_0side,
+    L6_1side.ch032_1side_7,
     side2.ch032_1side_7__2side_1,
     side2.ch032_1side_7__2side_2,
     side2.ch032_1side_7__2side_3,

@@ -281,7 +281,7 @@ if(__name__ == "__main__"):
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_b1_exp_obj_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        ch032_limit_1side_4__2side_3__3side_2.build().run()
+        ch032_1side_4__2side_3__3side_2.build().run()
         # print('no argument')
         sys.exit()
 
