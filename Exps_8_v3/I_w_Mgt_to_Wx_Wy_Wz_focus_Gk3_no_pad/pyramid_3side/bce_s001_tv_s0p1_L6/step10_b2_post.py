@@ -89,7 +89,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_5.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_6.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_7__2side_1__3side_1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_7__2side_1__3side_1.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_7__2side_2__3side_1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_7__2side_2__3side_2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_7__2side_3__3side_1.{run}"])
