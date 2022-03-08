@@ -20,105 +20,106 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
     os.chdir(code_exe_dir)
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
-
-import step10_a as side4
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_2side.bce_s001_tv_s0p1_L4.step10_a as L4_1_2_side
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_3side.bce_s001_tv_s0p1_L4.step10_a as L4_1_3_side
+import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_0side.bce_s001_tv_s0p1_L3.step10_a as L3_0side
+import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_1side.bce_s001_tv_s0p1_L3.step10_a as L3_1side
+import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_2side.bce_s001_tv_s0p1_L3.step10_a as L3_2side
+import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_3side.bce_s001_tv_s0p1_L3.step10_a as L3_3side
+import step10_a as L3_4side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 # "1" (3 3side以前的結果也順便一起看吧)  6 10 15 21 28 36 45 55
 # side1 OK 1
 ch032_1side_1__2_3_side_all__4side_0 = [
-    [L4_1_2_side.ch032_1side_1__2side_0     , L4_1_2_side.ch032_1side_1__2side_1           , ],
-    [side4.empty                            , L4_1_3_side.ch032_1side_1__2side_1__3side_1  , ],
+    [L3_0side.ch032_0side   , L3_1side.ch032_1side_1 , L3_2side.ch032_1side_1__2side_1                  , ],
+    [L3_1side.ch032_1side_1 , L3_3side.empty         , L3_3side.ch032_1side_1__2side_1__3side_1         , ],
 ]
 
 ch032_1side_1__2_3_side_all__4side_1 = [
-    [side4.empty                            , side4.empty                                  , ],
-    [side4.empty                            , side4.ch032_1side_1__2side_1__3side_1_4side_1, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.ch032_1side_1__2side_1__3side_1_4side_1 , ],
 ]
 
 # 1 "3" (6 3side以前的結果也順便一起看吧)  10 15 21 28 36 45 55
 # side2 OK 4
 ch032_1side_2__2_3_side_all__4side_0 = [
-    [L4_1_2_side.ch032_1side_2__2side_0     , L4_1_2_side.ch032_1side_2__2side_1           , L4_1_2_side.ch032_1side_2__2side_2           , ],
-    [side4.empty                            , L4_1_3_side.ch032_1side_2__2side_1__3side_1  , L4_1_3_side.ch032_1side_2__2side_2__3side_1  , ],
-    [side4.empty                            , side4.empty                                  , L4_1_3_side.ch032_1side_2__2side_2__3side_2  , ],
+    [L3_0side.ch032_0side   , L3_1side.ch032_1side_2 , L3_2side.ch032_1side_2__2side_1                  , L3_2side.ch032_1side_2__2side_2                  , ],
+    [L3_1side.ch032_1side_1 , L3_3side.empty         , L3_3side.ch032_1side_2__2side_1__3side_1         , L3_3side.ch032_1side_2__2side_2__3side_1         , ],
+    [L3_1side.ch032_1side_2 , L3_3side.empty         , L3_3side.empty                                   , L3_3side.ch032_1side_2__2side_2__3side_2         , ],
 ]
 
 ch032_1side_2__2_3_side_all__4side_1 = [
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.ch032_1side_2__2side_1__3side_1_4side_1, side4.ch032_1side_2__2side_2__3side_1_4side_1, ],
-    [side4.empty                            , side4.empty                                  , side4.ch032_1side_2__2side_2__3side_2_4side_1, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.ch032_1side_2__2side_1__3side_1_4side_1 , L3_4side.ch032_1side_2__2side_2__3side_1_4side_1 , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.ch032_1side_2__2side_2__3side_2_4side_1 , ],
 ]
 ch032_1side_2__2_3_side_all__4side_2 = [
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.ch032_1side_2__2side_2__3side_2_4side_2, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.ch032_1side_2__2side_2__3side_2_4side_2 , ],
 ]
 
 # 1 3 "6" (10 3side以前的結果也順便一起看吧) 15 21 28 36 45 55
 # side3 OK 10
 ch032_1side_3__2_3_side_all__4side_0 = [
-    [L4_1_2_side.ch032_1side_3__2side_0     , L4_1_2_side.ch032_1side_3__2side_1           , L4_1_2_side.ch032_1side_3__2side_2           , L4_1_2_side.ch032_1side_3__2side_3           , ],
-    [side4.empty                            , L4_1_3_side.ch032_1side_3__2side_1__3side_1  , L4_1_3_side.ch032_1side_3__2side_2__3side_1  , L4_1_3_side.ch032_1side_3__2side_3__3side_1  , ],
-    [side4.empty                            , side4.empty                                  , L4_1_3_side.ch032_1side_3__2side_2__3side_2  , L4_1_3_side.ch032_1side_3__2side_3__3side_2  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , L4_1_3_side.ch032_1side_3__2side_3__3side_3  , ],
+    [L3_0side.ch032_0side   , L3_1side.ch032_1side_3 , L3_2side.ch032_1side_3__2side_1                  , L3_2side.ch032_1side_3__2side_2                  , L3_2side.ch032_1side_3__2side_3         , ],
+    [L3_1side.ch032_1side_1 , L3_3side.empty         , L3_3side.ch032_1side_3__2side_1__3side_1         , L3_3side.ch032_1side_3__2side_2__3side_1         , L3_3side.ch032_1side_3__2side_3__3side_1, ],
+    [L3_1side.ch032_1side_2 , L3_3side.empty         , L3_3side.empty                                   , L3_3side.ch032_1side_3__2side_2__3side_2         , L3_3side.ch032_1side_3__2side_3__3side_2, ],
+    [L3_1side.ch032_1side_3 , L3_3side.empty         , L3_3side.empty                                   , L3_3side.empty                                   , L3_3side.ch032_1side_3__2side_3__3side_3, ],
 ]
 
 ch032_1side_3__2_3_side_all__4side_1 = [
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.ch032_1side_3__2side_1__3side_1_4side_1, side4.ch032_1side_3__2side_2__3side_1_4side_1, side4.ch032_1side_3__2side_3__3side_1_4side_1, ],
-    [side4.empty                            , side4.empty                                  , side4.ch032_1side_3__2side_2__3side_2_4side_1, side4.ch032_1side_3__2side_3__3side_2_4side_1, ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.ch032_1side_3__2side_3__3side_3_4side_1, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                  , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.ch032_1side_3__2side_1__3side_1_4side_1 , L3_4side.ch032_1side_3__2side_2__3side_1_4side_1 , L3_4side.ch032_1side_3__2side_3__3side_1_4side_1, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.ch032_1side_3__2side_2__3side_2_4side_1 , L3_4side.ch032_1side_3__2side_3__3side_2_4side_1, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_3__2side_3__3side_3_4side_1, ],
 ]
 ch032_1side_3__2_3_side_all__4side_2 = [
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.ch032_1side_3__2side_2__3side_2_4side_2, side4.ch032_1side_3__2side_3__3side_2_4side_2, ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.ch032_1side_3__2side_3__3side_3_4side_2, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                  , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                  , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.ch032_1side_3__2side_2__3side_2_4side_2 , L3_4side.ch032_1side_3__2side_3__3side_2_4side_2, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_3__2side_3__3side_3_4side_2, ],
 ]
 ch032_1side_3__2_3_side_all__4side_3 = [
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.ch032_1side_3__2side_3__3side_3_4side_3, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                  , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                  , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                  , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_3__2side_3__3side_3_4side_3, ],
 ]
 
 # 1 3 6 "10" (15 3side以前的結果也順便一起看吧) 21 28 36 45 55
-# side4 OK 20
+# L3_4side OK 20
 ch032_1side_4__2_3_side_all__4side_0 = [
-    [L4_1_2_side.ch032_1side_4__2side_0     , L4_1_2_side.ch032_1side_4__2side_1           , L4_1_2_side.ch032_1side_4__2side_2           , L4_1_2_side.ch032_1side_4__2side_3           , L4_1_2_side.ch032_1side_4__2side_4           , ],
-    [side4.empty                            , L4_1_3_side.ch032_1side_4__2side_1__3side_1  , L4_1_3_side.ch032_1side_4__2side_2__3side_1  , L4_1_3_side.ch032_1side_4__2side_3__3side_1  , L4_1_3_side.ch032_1side_4__2side_4__3side_1  , ],
-    [side4.empty                            , side4.empty                                  , L4_1_3_side.ch032_1side_4__2side_2__3side_2  , L4_1_3_side.ch032_1side_4__2side_3__3side_2  , L4_1_3_side.ch032_1side_4__2side_4__3side_2  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , L4_1_3_side.ch032_1side_4__2side_3__3side_3  , L4_1_3_side.ch032_1side_4__2side_4__3side_3  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , L4_1_3_side.ch032_1side_4__2side_4__3side_4  , ],
+    [L3_0side.ch032_0side   , L3_1side.ch032_1side_4 , L3_2side.ch032_1side_4__2side_1                  , L3_2side.ch032_1side_4__2side_2                  , L3_2side.ch032_1side_4__2side_3                  , L3_2side.ch032_1side_4__2side_4                  , ],
+    [L3_1side.ch032_1side_1 , L3_3side.empty         , L3_3side.ch032_1side_4__2side_1__3side_1         , L3_3side.ch032_1side_4__2side_2__3side_1         , L3_3side.ch032_1side_4__2side_3__3side_1         , L3_3side.ch032_1side_4__2side_4__3side_1         , ],
+    [L3_1side.ch032_1side_2 , L3_3side.empty         , L3_3side.empty                                   , L3_3side.ch032_1side_4__2side_2__3side_2         , L3_3side.ch032_1side_4__2side_3__3side_2         , L3_3side.ch032_1side_4__2side_4__3side_2         , ],
+    [L3_1side.ch032_1side_3 , L3_3side.empty         , L3_3side.empty                                   , L3_3side.empty                                   , L3_3side.ch032_1side_4__2side_3__3side_3         , L3_3side.ch032_1side_4__2side_4__3side_3         , ],
+    [L3_1side.ch032_1side_4 , L3_3side.empty         , L3_3side.empty                                   , L3_3side.empty                                   , L3_3side.empty                                   , L3_3side.ch032_1side_4__2side_4__3side_4         , ],
 ]
 
 ch032_1side_4__2_3_side_all__4side_1 = [
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.ch032_1side_4__2side_1__3side_1_4side_1, side4.ch032_1side_4__2side_2__3side_1_4side_1, side4.ch032_1side_4__2side_3__3side_1_4side_1, side4.ch032_1side_4__2side_4__3side_1_4side_1, ],
-    [side4.empty                            , side4.empty                                  , side4.ch032_1side_4__2side_2__3side_2_4side_1, side4.ch032_1side_4__2side_3__3side_2_4side_1, side4.ch032_1side_4__2side_4__3side_2_4side_1, ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.ch032_1side_4__2side_3__3side_3_4side_1, side4.ch032_1side_4__2side_4__3side_3_4side_1, ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.ch032_1side_4__2side_4__3side_4_4side_1, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.ch032_1side_4__2side_1__3side_1_4side_1 , L3_4side.ch032_1side_4__2side_2__3side_1_4side_1 , L3_4side.ch032_1side_4__2side_3__3side_1_4side_1 , L3_4side.ch032_1side_4__2side_4__3side_1_4side_1 , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.ch032_1side_4__2side_2__3side_2_4side_1 , L3_4side.ch032_1side_4__2side_3__3side_2_4side_1 , L3_4side.ch032_1side_4__2side_4__3side_2_4side_1 , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_4__2side_3__3side_3_4side_1 , L3_4side.ch032_1side_4__2side_4__3side_3_4side_1 , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_4__2side_4__3side_4_4side_1 , ],
 ]
 ch032_1side_4__2_3_side_all__4side_2 = [
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.ch032_1side_4__2side_2__3side_2_4side_2, side4.ch032_1side_4__2side_3__3side_2_4side_2, side4.ch032_1side_4__2side_4__3side_2_4side_2, ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.ch032_1side_4__2side_3__3side_3_4side_2, side4.ch032_1side_4__2side_4__3side_3_4side_2, ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.ch032_1side_4__2side_4__3side_4_4side_2, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.ch032_1side_4__2side_2__3side_2_4side_2 , L3_4side.ch032_1side_4__2side_3__3side_2_4side_2 , L3_4side.ch032_1side_4__2side_4__3side_2_4side_2 , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_4__2side_3__3side_3_4side_2 , L3_4side.ch032_1side_4__2side_4__3side_3_4side_2 , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_4__2side_4__3side_4_4side_2 , ],
 ]
 ch032_1side_4__2_3_side_all__4side_3 = [
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.ch032_1side_4__2side_3__3side_3_4side_3, side4.ch032_1side_4__2side_4__3side_3_4side_3, ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.ch032_1side_4__2side_4__3side_4_4side_3, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_4__2side_3__3side_3_4side_3 , L3_4side.ch032_1side_4__2side_4__3side_3_4side_3 , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_4__2side_4__3side_4_4side_3 , ],
 ]
 ch032_1side_4__2_3_side_all__4side_4 = [
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.empty                                  , ],
-    [side4.empty                            , side4.empty                                  , side4.empty                                  , side4.empty                                  , side4.ch032_1side_4__2side_4__3side_4_4side_4, ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , ],
+    [L3_4side.empty         , L3_4side.empty         , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.empty                                   , L3_4side.ch032_1side_4__2side_4__3side_4_4side_4 , ],
 ]
