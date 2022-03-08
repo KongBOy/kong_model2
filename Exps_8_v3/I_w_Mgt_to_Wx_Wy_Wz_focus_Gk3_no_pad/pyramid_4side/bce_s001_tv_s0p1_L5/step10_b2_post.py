@@ -126,7 +126,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_1__3side_1_4side_1.{compress_and_WM_3D_all_from_begin}"])  ### 38
 
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_2__3side_1_4side_1.{compress_and_WM_3D_all_from_begin}"])  ### 38
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_2__3side_2_4side_1.{compress_and_WM_3D_all_from_begin}"])  ### 38
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_2__3side_2_4side_1.{compress_and_WM_3D_all_from_begin}"])  ### 38  沒train完
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_2__3side_2_4side_2.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_3__3side_1_4side_1.{compress_and_WM_3D_all_from_begin}"])  ### 27
