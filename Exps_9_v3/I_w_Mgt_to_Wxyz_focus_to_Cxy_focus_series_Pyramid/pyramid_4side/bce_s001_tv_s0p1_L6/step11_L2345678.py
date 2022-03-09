@@ -20,10 +20,10 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
     os.chdir(code_exe_dir)
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
-import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_0side.bce_s001_tv_s0p1_L6.step10_a as L6_0side
-import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_1side.bce_s001_tv_s0p1_L6.step10_a as L6_1side
-import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_2side.bce_s001_tv_s0p1_L6.step10_a as L6_2side
-import Exps_8_v3.I_w_Mgt_to_Wx_Wy_Wz_focus_Gk3_no_pad.pyramid_3side.bce_s001_tv_s0p1_L6.step10_a as L6_3side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_0side.bce_s001_tv_s0p1_L6.step10_a as L6_0side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_1side.bce_s001_tv_s0p1_L6.step10_a as L6_1side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_2side.bce_s001_tv_s0p1_L6.step10_a as L6_2side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_3side.bce_s001_tv_s0p1_L6.step10_a as L6_3side
 import step10_a as L6_4side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 # "1" (3 3side以前的結果也順便一起看吧)  6 10 15 21 28 36 45 55
