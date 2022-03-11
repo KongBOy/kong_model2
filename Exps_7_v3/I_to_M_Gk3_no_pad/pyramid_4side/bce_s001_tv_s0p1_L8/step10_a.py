@@ -29,7 +29,7 @@ exp_dir = template_dir
 #############################################################################################################################################################################################################
 
 from step06_a_datas_obj import *
-from step09 import *
+from step09_4side_L8 import *
 from step10_a2_loss_info_obj import *
 from step10_b2_exp_builder import Exp_builder
 
