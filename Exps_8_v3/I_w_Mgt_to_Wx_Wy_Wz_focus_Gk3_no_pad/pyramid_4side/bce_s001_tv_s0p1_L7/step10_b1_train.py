@@ -350,7 +350,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_8__2side_7__3side_4_4side_1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_8__2side_7__3side_4_4side_2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_8__2side_7__3side_4_4side_3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_8__2side_7__3side_4_4side_4.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_8__2side_7__3side_4_4side_4.{run}"])  ### 超出記憶體
 # sb.run(cmd_python_step10_a + [f"ch032_1side_8__2side_7__3side_5_4side_1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_8__2side_7__3side_5_4side_2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_8__2side_7__3side_5_4side_3.{run}"])
