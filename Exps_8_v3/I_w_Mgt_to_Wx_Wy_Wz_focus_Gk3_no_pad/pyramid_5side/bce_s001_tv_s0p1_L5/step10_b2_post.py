@@ -300,7 +300,7 @@ import subprocess as sb
 # 2side5 OK 35
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_1_4side_1_5s1.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_2_4side_1_5s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_2_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_2_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_2_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
 
