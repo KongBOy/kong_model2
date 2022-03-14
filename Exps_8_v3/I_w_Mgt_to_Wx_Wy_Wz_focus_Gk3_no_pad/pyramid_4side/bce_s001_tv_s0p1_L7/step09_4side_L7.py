@@ -18,7 +18,7 @@ from step08_b_use_G_generate_I_w_M_to_Wx_Wy_Wz_focus import I_w_M_Gen_Wx_Wy_Wz_f
 from step09_c_train_step import train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz_focus
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
-from Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_4side.bce_s001_tv_s0p1_L7.step09 import *
+from Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_4side.bce_s001_tv_s0p1_L7.step09_4side_L7 import *
 
 import time
 start_time = time.time()
