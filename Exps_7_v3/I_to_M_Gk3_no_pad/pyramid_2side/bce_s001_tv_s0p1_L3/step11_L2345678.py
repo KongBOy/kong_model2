@@ -20,30 +20,35 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
     os.chdir(code_exe_dir)
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
-
+import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_0side.bce_s001_tv_s0p1_L3.step10_a as L3_0side
+import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_1side.bce_s001_tv_s0p1_L3.step10_a as L3_1side
 import step10_a as side2
 #################################################################################################################################################################################################################################################################################################################################################################################################
 
 ch032_1side_1__2side_all = [
-    side2.ch032_1side_1__2side_0,
+    L3_0side.ch032_0side,
+    L3_1side.ch032_1side_1,
     side2.ch032_1side_1__2side_1,
 ]
 
 ch032_1side_2__2side_all = [
-    side2.ch032_1side_2__2side_0,
+    L3_0side.ch032_0side,
+    L3_1side.ch032_1side_2,
     side2.ch032_1side_2__2side_1,
     side2.ch032_1side_2__2side_2,
 ]
 
 ch032_1side_3__2side_all = [
-    side2.ch032_1side_3__2side_0,
+    L3_0side.ch032_0side,
+    L3_1side.ch032_1side_3,
     side2.ch032_1side_3__2side_1,
     side2.ch032_1side_3__2side_2,
     side2.ch032_1side_3__2side_3,
 ]
 
 ch032_1side_4__2side_all = [
-    side2.ch032_1side_4__2side_0,
+    L3_0side.ch032_0side,
+    L3_1side.ch032_1side_4,
     side2.ch032_1side_4__2side_1,
     side2.ch032_1side_4__2side_2,
     side2.ch032_1side_4__2side_3,

@@ -43,1304 +43,904 @@ if(__name__ == "__main__"):
     """
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
-    ##################################
-    ### 5side0
-    ##################################
-    # "1" (3 3side以前的結果也順便一起看吧)  6 10 15 21 28 36 45 55
-    # side1 OK 1
-    ana_name = "ch032_1side_1__2_3_side_all__4side_0_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_1__2_3_side_all__4side_0_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_1__2_3_side_all__4side_1_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_1__2_3_side_all__4side_1_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 "3" (6 3side以前的結果也順便一起看吧)  10 15 21 28 36 45 55
-    # side2 OK 4
-    ana_name = "ch032_1side_2__2_3_side_all__4side_0_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_2__2_3_side_all__4side_0_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_2__2_3_side_all__4side_1_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_2__2_3_side_all__4side_1_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_2__2_3_side_all__4side_2_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_2__2_3_side_all__4side_2_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-
-    # 1 3 "6" (10 3side以前的結果也順便一起看吧) 15 21 28 36 45 55
-    # side3 OK 10
-    ana_name = "ch032_1side_3__2_3_side_all__4side_0_5s0"
+    ########
+    # 1side_1
+    ########
+    ### 2side_1
+    ana_name = "ch032_1side_1_2side_1_3side_1_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_1_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ########
+    # 1side_2
+    ########
+    ### 2side_1
+    ana_name = "ch032_1side_2_2side_1_3side_1_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                    ana_what_sees="see",
+                                    ana_what="w3d",
+                                    row_col_results=ch032_1side_2_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                        # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                        # .Gather_all_see_final_img()
+    ### 2side_2
+    ana_name = "ch032_1side_2_2side_2_3side_1_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_2_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_2_2side_2_3side_2_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_2_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ########
+    # 1side_3
+    ########
+    ### 2side_1
+    ana_name = "ch032_1side_3_2side_1_3side_1_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_3_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_2
+    ana_name = "ch032_1side_3_2side_2_3side_1_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_3_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_3_2side_2_3side_2_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_3_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_3
+    ana_name = "ch032_1side_3_2side_3_3side_1_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_3_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_3_2side_3_3side_2_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_3_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_3_2side_3_3side_3_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_3_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    
+    ########
+    # 1side_4
+    ########
+    ### 2side_1
+    ana_name = "ch032_1side_4_2side_1_3side_1_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_2
+    ana_name = "ch032_1side_4_2side_2_3side_1_45side_all"
+    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="see",
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_4_2side_2_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_0_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_3__2_3_side_all__4side_1_5s0"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_3
+    ana_name = "ch032_1side_4_2side_3_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_1_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_3__2_3_side_all__4side_2_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_2_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_3__2_3_side_all__4side_3_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_3_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 "10" (15 3side以前的結果也順便一起看吧) 21 28 36 45 55
-    # side4 OK 20
-    ana_name = "ch032_1side_4__2_3_side_all__4side_0_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_0_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_1_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_1_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_2_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_2_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_3_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_3_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_4_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_4_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 "15" (21 3side以前的結果也順便一起看吧) 28 36 45 55
-    # side5 OK 35
-    ana_name = "ch032_1side_5__2_3_side_all__4side_0_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_0_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_1_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_1_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_2_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_2_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_3_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_3_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_4_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_4_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_5_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_5_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 "21" (28 3side以前的結果也順便一起看吧) 36 45 55
-    # side6 OK 56
-    ana_name = "ch032_1side_6__2_3_side_all__4side_0_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_0_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_1_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_1_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_2_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_2_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_3_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_3_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_4_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_4_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_5_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_5_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_6_5s0_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_6_5s0_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 "28" (36 3side以前的結果也順便一起看吧) 45 55
-    # side7 OK 84
-    ana_name = "ch032_1side_7__2_3_side_all__4side_0_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_0_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_1_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_1_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_2_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_2_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_3_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_3_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_4_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_4_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_5_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_5_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_6_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_6_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_7_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_7_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 28 "36" (45) 55
-    # side8 OK 120
-    ana_name = "ch032_1side_8__2_3_side_all__4side_0_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_0_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_1_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_1_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_2_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_2_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_3_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_3_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_4_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_4_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_5_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_5_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_6_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_6_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_7_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_7_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_8_5s0"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_8_5s0, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ##################################
-    ### 5side1
-    ##################################
-    # "1" (3 3side以前的結果也順便一起看吧)  6 10 15 21 28 36 45 55
-    # side1 OK 1
-    ana_name = "ch032_1side_1__2_3_side_all__4side_1_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_1__2_3_side_all__4side_1_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 "3" (6 3side以前的結果也順便一起看吧)  10 15 21 28 36 45 55
-    # side2 OK 4
-    ana_name = "ch032_1side_2__2_3_side_all__4side_1_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_2__2_3_side_all__4side_1_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_2__2_3_side_all__4side_2_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_2__2_3_side_all__4side_2_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-
-    # 1 3 "6" (10 3side以前的結果也順便一起看吧) 15 21 28 36 45 55
-    # side3 OK 10
-    ana_name = "ch032_1side_3__2_3_side_all__4side_1_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_1_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_3__2_3_side_all__4side_2_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_2_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_3__2_3_side_all__4side_3_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_3_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 "10" (15 3side以前的結果也順便一起看吧) 21 28 36 45 55
-    # side4 OK 20
-    ana_name = "ch032_1side_4__2_3_side_all__4side_1_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_1_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_2_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_2_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_3_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_3_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_4_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_4_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 "15" (21 3side以前的結果也順便一起看吧) 28 36 45 55
-    # side5 OK 35
-    ana_name = "ch032_1side_5__2_3_side_all__4side_1_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_1_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_2_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_2_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_3_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_3_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_4_5s1"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_4_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_5_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_4_2side_3_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_5_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 "21" (28 3side以前的結果也順便一起看吧) 36 45 55
-    # side6 OK 56
-    ana_name = "ch032_1side_6__2_3_side_all__4side_1_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_4_2side_3_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_1_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_2_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_4
+    ana_name = "ch032_1side_4_2side_4_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_2_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_3_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_4_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_4_2side_4_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_3_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_4_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_4_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_4_2side_4_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_4_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_5_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_4_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_4_2side_4_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_5_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_6_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_4_2side_4_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ########
+    # 1side_5
+    ########
+    ### 2side_1
+    ana_name = "ch032_1side_5_2side_1_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_6_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 "28" (36 3side以前的結果也順便一起看吧) 45 55
-    # side7 OK 84
-    ana_name = "ch032_1side_7__2_3_side_all__4side_1_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_2
+    ana_name = "ch032_1side_5_2side_2_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_1_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_2_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_2_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_2_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_3_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_3
+    ana_name = "ch032_1side_5_2side_3_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_3_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_4_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_3_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_4_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_5_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_3_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_5_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_6_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_4
+    ana_name = "ch032_1side_5_2side_4_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_6_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_7_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_4_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_4_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_7_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 28 "36" (45) 55
-    # side8 OK 120
-    ana_name = "ch032_1side_8__2_3_side_all__4side_1_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_4_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_4_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_1_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_2_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_4_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_4_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_2_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_3_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_4_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_5
+    ana_name = "ch032_1side_5_2side_5_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_3_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_4_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_5_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_5_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_4_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_5_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_5_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_5_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_5_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_6_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_5_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_5_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_6_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_7_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_5_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_5_2side_5_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_7_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_8_5s1"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_5_2side_5_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ########
+    # 1side_6
+    ########
+    ### 2side_1
+    ana_name = "ch032_1side_6_2side_1_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_8_5s1, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ##################################
-    ### 5side2
-    ##################################
-    # 1 "3" (6 3side以前的結果也順便一起看吧)  10 15 21 28 36 45 55
-    # side2 OK 4
-    ana_name = "ch032_1side_2__2_3_side_all__4side_2_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_2
+    ana_name = "ch032_1side_6_2side_2_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_2__2_3_side_all__4side_2_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-
-    # 1 3 "6" (10 3side以前的結果也順便一起看吧) 15 21 28 36 45 55
-    # side3 OK 10
-    ana_name = "ch032_1side_3__2_3_side_all__4side_2_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_2_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_2_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_3__2_3_side_all__4side_3_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_3
+    ana_name = "ch032_1side_6_2side_3_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_3_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 "10" (15 3side以前的結果也順便一起看吧) 21 28 36 45 55
-    # side4 OK 20
-    ana_name = "ch032_1side_4__2_3_side_all__4side_2_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_3_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_2_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_3_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_3_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_3_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_4_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_4
+    ana_name = "ch032_1side_6_2side_4_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_4_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 "15" (21 3side以前的結果也順便一起看吧) 28 36 45 55
-    # side5 OK 35
-    ana_name = "ch032_1side_5__2_3_side_all__4side_2_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_4_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_4_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_2_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_3_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_4_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_4_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_3_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_4_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_4_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_4_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_4_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_5_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_4_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_5
+    ana_name = "ch032_1side_6_2side_5_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_5_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 "21" (28 3side以前的結果也順便一起看吧) 36 45 55
-    # side6 OK 56
-    ana_name = "ch032_1side_6__2_3_side_all__4side_2_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_5_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_5_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_2_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_3_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_5_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_5_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_3_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_4_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_5_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_5_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_4_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_5_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_5_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_5_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_5_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_6_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_5_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_6
+    ana_name = "ch032_1side_6_2side_6_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_6_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 "28" (36 3side以前的結果也順便一起看吧) 45 55
-    # side7 OK 84
-    ana_name = "ch032_1side_7__2_3_side_all__4side_2_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_6_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_6_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_2_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_3_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_6_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_6_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_3_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_4_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_6_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_6_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_4_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_5_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_6_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_6_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_5_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_6_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_6_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_6_2side_6_3side_6_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_6_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_7_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_6_2side_6_3side_6_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ########
+    # 1side_7
+    ########
+    ### 2side_1
+    ana_name = "ch032_1side_7_2side_1_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_7_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 28 "36" (45) 55
-    # side8 OK 120
-    ana_name = "ch032_1side_8__2_3_side_all__4side_2_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_2
+    ana_name = "ch032_1side_7_2side_2_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_2_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_3_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_2_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_3_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_4_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_3
+    ana_name = "ch032_1side_7_2side_3_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_4_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_5_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_3_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_5_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_6_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_3_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_6_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_7_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_4
+    ana_name = "ch032_1side_7_2side_4_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_7_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_8_5s2"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_4_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_4_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_8_5s2, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ##################################
-    ### 5side3
-    ##################################
-    # 1 3 "6" (10 3side以前的結果也順便一起看吧) 15 21 28 36 45 55
-    # side3 OK 10
-    ana_name = "ch032_1side_3__2_3_side_all__4side_3_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_4_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_4_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_3__2_3_side_all__4side_3_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 "10" (15 3side以前的結果也順便一起看吧) 21 28 36 45 55
-    # side4 OK 20
-    ana_name = "ch032_1side_4__2_3_side_all__4side_3_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_4_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_4_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_3_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_4__2_3_side_all__4side_4_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_4_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_5
+    ana_name = "ch032_1side_7_2side_5_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_4_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 "15" (21 3side以前的結果也順便一起看吧) 28 36 45 55
-    # side5 OK 35
-    ana_name = "ch032_1side_5__2_3_side_all__4side_3_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_5_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_5_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_3_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_4_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_5_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_5_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_4_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_5_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_5_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_5_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_5_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 "21" (28 3side以前的結果也順便一起看吧) 36 45 55
-    # side6 OK 56
-    ana_name = "ch032_1side_6__2_3_side_all__4side_3_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_5_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_5_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_3_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_4_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_5_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_6
+    ana_name = "ch032_1side_7_2side_6_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_4_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_5_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_6_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_6_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_5_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_6_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_6_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_6_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_6_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 "28" (36 3side以前的結果也順便一起看吧) 45 55
-    # side7 OK 84
-    ana_name = "ch032_1side_7__2_3_side_all__4side_3_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_6_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_6_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_3_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_4_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_6_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_6_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_4_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_5_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_6_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_6_3side_6_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_5_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_6_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_6_3side_6_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_7
+    ana_name = "ch032_1side_7_2side_7_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_6_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_7_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_7_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_7_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_7_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 28 "36" (45) 55
-    # side8 OK 120
-    ana_name = "ch032_1side_8__2_3_side_all__4side_3_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_7_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_7_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_3_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_4_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_7_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_7_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_4_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_5_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_7_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_7_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_5_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_6_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_7_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_7_3side_6_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_6_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_7_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_7_3side_6_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_7_2side_7_3side_7_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_7_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_8_5s3"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_7_2side_7_3side_7_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ########
+    # 1side_8
+    ########
+    ### 2side_1
+    ana_name = "ch032_1side_8_2side_1_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_8_5s3, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ##################################
-    ### 5side4
-    ##################################
-    # 1 3 6 "10" (15 3side以前的結果也順便一起看吧) 21 28 36 45 55
-    # side4 OK 20
-    ana_name = "ch032_1side_4__2_3_side_all__4side_4_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_2
+    ana_name = "ch032_1side_8_2side_2_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_4__2_3_side_all__4side_4_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 "15" (21 3side以前的結果也順便一起看吧) 28 36 45 55
-    # side5 OK 35
-    ana_name = "ch032_1side_5__2_3_side_all__4side_4_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_2_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_4_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_5__2_3_side_all__4side_5_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_3
+    ana_name = "ch032_1side_8_2side_3_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_5_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 "21" (28 3side以前的結果也順便一起看吧) 36 45 55
-    # side6 OK 56
-    ana_name = "ch032_1side_6__2_3_side_all__4side_4_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_3_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_4_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_5_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_3_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_5_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_6_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_4
+    ana_name = "ch032_1side_8_2side_4_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_6_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 "28" (36 3side以前的結果也順便一起看吧) 45 55
-    # side7 OK 84
-    ana_name = "ch032_1side_7__2_3_side_all__4side_4_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_4_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_4_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_4_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_5_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_4_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_4_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_5_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_6_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_4_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_4_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_6_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_7_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_4_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_5
+    ana_name = "ch032_1side_8_2side_5_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_7_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 28 "36" (45) 55
-    # side8 OK 120
-    ana_name = "ch032_1side_8__2_3_side_all__4side_4_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_5_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_5_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_4_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_5_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_5_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_5_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_5_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_6_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_5_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_5_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_6_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_7_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_5_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_5_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_7_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_8_5s4"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_5_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_6
+    ana_name = "ch032_1side_8_2side_6_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_8_5s4, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ##################################
-    ### 5side5
-    ##################################
-    # 1 3 6 10 "15" (21 3side以前的結果也順便一起看吧) 28 36 45 55
-    # side5 OK 35
-    ana_name = "ch032_1side_5__2_3_side_all__4side_5_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_6_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_6_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_5__2_3_side_all__4side_5_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 "21" (28 3side以前的結果也順便一起看吧) 36 45 55
-    # side6 OK 56
-    ana_name = "ch032_1side_6__2_3_side_all__4side_5_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_6_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_6_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_5_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_6__2_3_side_all__4side_6_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_6_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_6_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_6_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 "28" (36 3side以前的結果也順便一起看吧) 45 55
-    # side7 OK 84
-    ana_name = "ch032_1side_7__2_3_side_all__4side_5_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_6_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_6_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_5_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_6_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_6_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_6_3side_6_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_6_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_7_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_6_3side_6_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_7
+    ana_name = "ch032_1side_8_2side_7_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_7_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 28 "36" (45) 55
-    # side8 OK 120
-    ana_name = "ch032_1side_8__2_3_side_all__4side_5_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_7_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_7_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_5_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_6_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_7_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_7_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_6_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_7_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_7_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_7_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_7_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_8_5s5"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_7_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_7_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_8_5s5, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ##################################
-    ### 5side6
-    ##################################
-    # 1 3 6 10 15 "21" (28 3side以前的結果也順便一起看吧) 36 45 55
-    # side6 OK 56
-    ana_name = "ch032_1side_6__2_3_side_all__4side_6_5s6"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_7_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_7_3side_6_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_6__2_3_side_all__4side_6_5s6, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 "28" (36 3side以前的結果也順便一起看吧) 45 55
-    # side7 OK 84
-    ana_name = "ch032_1side_7__2_3_side_all__4side_6_5s6"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_7_3side_6_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_7_3side_7_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_6_5s6, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_7__2_3_side_all__4side_7_5s6"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_7_3side_7_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ### 2side_8
+    ana_name = "ch032_1side_8_2side_8_3side_1_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_7_5s6, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 28 "36" (45) 55
-    # side8 OK 120
-    ana_name = "ch032_1side_8__2_3_side_all__4side_6_5s6"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_8_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_8_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_6_5s6, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_7_5s6"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_8_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_8_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_7_5s6, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_8_5s6"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_8_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_8_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_8_5s6, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ##################################
-    ### 5side7
-    ##################################
-    # 1 3 6 10 15 21 "28" (36 3side以前的結果也順便一起看吧) 45 55
-    # side7 OK 84
-    ana_name = "ch032_1side_7__2_3_side_all__4side_7_5s7"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_8_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_8_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_7__2_3_side_all__4side_7_5s7, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-
-    # 1 3 6 10 15 21 28 "36" (45) 55
-    # side8 OK 120
-    ana_name = "ch032_1side_8__2_3_side_all__4side_7_5s7"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_8_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_8_3side_6_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_7_5s7, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ana_name = "ch032_1side_8__2_3_side_all__4side_8_5s7"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_8_3side_6_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_8_3side_7_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_8_5s7, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
-    ##################################
-    ### 5side8
-    ##################################
-    # 1 3 6 10 15 21 28 "36" (45) 55
-    # side8 OK 120
-    ana_name = "ch032_1side_8__2_3_side_all__4side_8_5s8"
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_8_3side_7_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
+    ana_name = "ch032_1side_8_2side_8_3side_8_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
-                                        ana_what="mask",
-                                        row_col_results=ch032_1side_8__2_3_side_all__4side_8_5s8, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
+                                        ana_what="w3d",
+                                        row_col_results=ch032_1side_8_2side_8_3side_8_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
