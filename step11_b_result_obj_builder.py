@@ -105,8 +105,10 @@ class Result_train_builder(Result_sees_builder):
 
             '''
             v2:f"{exp_dir}/{db_category}-{describe_mid}-{model_name}-{describe_end}-{timestamp}"
+            v3:f"{exp_dir}/{db_category}-{describe_end}-{timestamp}"
+            v4:f"{exp_dir}/{describe_end}-{timestamp}"
             '''
-            result_name_element = [exp.db_obj.category.value]
+            result_name_element = []  ### v4 拿掉 db_category
             if(exp.describe_mid is not None): result_name_element += [exp.describe_mid]
             # result_name_element += [exp.model_obj.model_name.value]
             # result_name_element += [exp.model_obj.model_name.value + exp.model_obj.model_model_describe]
