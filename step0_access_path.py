@@ -33,6 +33,13 @@ CORE_AMOUNT_WM_VISUAL = 5  ### 8  ### 14  ### 500
 CORE_AMOUNT_SAVE_AS_JPG = 6  ### 12         ### Save_as_jpg
 CORE_AMOUNT_FIND_LTRD_AND_CROP = 6  ### 12  ### Find_ltrd_and_crop
 
+Change_name_used_Result_Read_Dirs = [
+    "K:/data_dir/",  ### 6T
+    "P:/data_dir/",  ### 4T
+    "H:/data_dir/",  ### 2T
+    "F:/kong_model2/data_dir/",  ### 400GB
+]
+
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
 import os
 

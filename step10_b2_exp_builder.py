@@ -1,7 +1,7 @@
 from step10_b1_exp_obj_load_and_train_and_test import Experiment
 from step11_b_result_obj_builder import Result_builder
 
-from step0_access_path import Result_Read_Dir
+from step0_access_path import Change_name_used_Result_Read_Dirs
 import os
 
 class Exp_builder():
@@ -109,13 +109,19 @@ class Exp_builder():
 
     def _change_result_name_final_rename(self, result_name_ord, result_name_dst, run_change=False, print_msg=False):
         exp_dir = self.exp.exp_dir
-        result_path_ord = Result_Read_Dir  + f"result/{exp_dir}/" + result_name_ord
-        result_path_dst = Result_Read_Dir  + f"result/{exp_dir}/" + result_name_dst
-        if(run_change): os.rename(result_path_ord, result_path_dst)
-        if(print_msg):
-            print(result_path_ord, "  rename to")
-            print(result_path_dst, "  finish~~")
-        self.exp.result_name = result_name_dst
+        for Result_Read_Dir in Change_name_used_Result_Read_Dirs:  ### 我目前有四個存資料的地方， 6T, 4T, 2T, 400GB 的硬碟這樣子
+            result_path_ord = Result_Read_Dir  + f"result/{exp_dir}/" + result_name_ord
+            result_path_dst = Result_Read_Dir  + f"result/{exp_dir}/" + result_name_dst
+            if(run_change):
+                if(os.path.isdir(result_path_ord)):
+                    os.rename(result_path_ord, result_path_dst)
+                    if(print_msg):
+                        print(f"{result_path_ord} rename to")
+                        print(f"{result_path_dst} finish~~")
+                else:
+                    print(f"result_path_ord: {result_path_ord} 已經不存在，也許之前已經改過名字， 現在又重複改到了， 因此不執行改名")
+
+        self.exp.result_name = result_name_dst  ### 有可能連續的 .change前面都不 run_change， 最後才run_change， 就需要更新目前的 result_name 才可以達到接續 change_name 的效果喔
 
     def _get_result_name_basic_v1(self):
         ''' v1： 0: db_name, 1: describe_mid, 2: timestamp,  3: model_name,   4: describe_end '''
@@ -220,7 +226,18 @@ class Exp_builder():
 
         result_name_ord = "-".join(result_name_components)
         del result_name_components[1:3]
-        result_name_dst = "-".join(result_name_components)        ### ### v2： 0: db_name, 1: describe_end, 2: timestamp
+        result_name_dst = "-".join(result_name_components)        ### v3： 0: db_name, 1: describe_end, 2: timestamp
+        self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
+        return self
+
+    def change_result_name_v3_to_v4_Remove_db_name(self, run_change=False, print_msg=False):
+        self.build_exp_temporary()
+        result_name_components = self.exp.result_name.split("-")  ### v3： 0: db_name, 1: describe_end, 2: timestamp
+
+        result_name_ord = "-".join(result_name_components)
+        print("result_name_ord", result_name_ord)
+        if("type8_blender" in result_name_components or "ch032" == result_name_components[0]): del result_name_components[0:1]
+        result_name_dst = "-".join(result_name_components)        ### v4： 0: describe_end, 2: timestamp
         self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
         return self
 
