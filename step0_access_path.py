@@ -38,6 +38,7 @@ Change_name_used_Result_Read_Dirs = [
     "P:/data_dir/",  ### 4T
     "H:/data_dir/",  ### 2T
     "F:/kong_model2/data_dir/",  ### 400GB
+    Result_Write_Dir,  ### 別台電腦再 kong_model2 裡面的result
 ]
 
 from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
