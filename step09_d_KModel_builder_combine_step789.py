@@ -10,7 +10,9 @@ class KModel:
         self.model_describe = ""
         self.epoch_log = tf.Variable(1)  ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
 
+        self.model_describe_elements_full = []
         self.model_describe_elements = []
+        self.model_describe_full = None
         self.model_describe = None
 
         self.generator        = None
@@ -138,8 +140,10 @@ class G_Unet_Body_builder(Ckpt_op_builder):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
-        self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
-        self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
+        self.kong_model.model_describe_elements_full = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
+        self.kong_model.model_describe_elements      = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num]
+        self.kong_model.model_describe_full = "_".join(self.kong_model.model_describe_elements_full)
+        self.kong_model.model_describe      = "_".join(self.kong_model.model_describe_elements)
         g_args = {
             "hid_ch"          : hid_ch,
             "depth_level"     : depth_level,
