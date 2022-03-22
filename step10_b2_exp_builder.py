@@ -112,6 +112,9 @@ class Exp_builder():
         for Result_Read_Dir in Change_name_used_Result_Read_Dirs:  ### 我目前有四個存資料的地方， 6T, 4T, 2T, 400GB 的硬碟這樣子
             result_path_ord = Result_Read_Dir  + f"result/{exp_dir}/" + result_name_ord
             result_path_dst = Result_Read_Dir  + f"result/{exp_dir}/" + result_name_dst
+            if(print_msg and run_change is False):
+                print(f"{result_path_ord} rename to")
+                print(f"{result_path_dst} just print msg~~")
             if(run_change):
                 if(os.path.isdir(result_path_ord)):
                     os.rename(result_path_ord, result_path_dst)
@@ -145,6 +148,15 @@ class Exp_builder():
         describe_end   = result_name_components[3]
         timestamp = result_name_components[4]
         return result_name_ord, db_category, describe_mid, model_name, describe_end, timestamp
+
+    def _get_result_name_basic_v4(self):
+        ''' v2： 0: db_name, 1: describe_mid, 2: model_name, 3: describe_end, 4: timestamp '''
+        result_name_ord = self.exp.result_name
+        result_name_components = result_name_ord.split("-")
+        # print("result_name_components", result_name_components)
+        describe_end  = result_name_components[0]
+        timestamp     = result_name_components[1]
+        return result_name_ord, describe_end, timestamp
 
     ##############################################################################################################################
     def change_result_name_v1_to_v2(self, run_change=False, print_msg=False):
@@ -235,9 +247,24 @@ class Exp_builder():
         result_name_components = self.exp.result_name.split("-")  ### v3： 0: db_name, 1: describe_end, 2: timestamp
 
         result_name_ord = "-".join(result_name_components)
-        print("result_name_ord", result_name_ord)
+        print("result_name_ord:", result_name_ord)
         if("type8_blender" in result_name_components or "ch032" == result_name_components[0]): del result_name_components[0:1]
         result_name_dst = "-".join(result_name_components)        ### v4： 0: describe_end, 2: timestamp
+        self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
+        return self
+
+    def change_result_name_v4_Remove_sig_out(self, run_change=False, print_msg=False):
+        self.build_exp_temporary()
+        result_name_ord, describe_end, timestamp = self._get_result_name_basic_v4()
+
+        print("result_name_ord:", result_name_ord)
+        prone_sig_out = describe_end  .replace("__sig_out_1", "")
+        prone_sig_out = prone_sig_out .replace("__sig_out_2", "")
+        prone_sig_out = prone_sig_out .replace("__sig_out_3", "")
+        prone_sig_out = prone_sig_out .replace("_sig_out_1", "")
+        prone_sig_out = prone_sig_out .replace("_sig_out_2", "")
+        prone_sig_out = prone_sig_out .replace("_sig_out_3", "")
+        result_name_dst = f"{prone_sig_out}-{timestamp}"  ### v4： 0: describe_end, 2: timestamp
         self._change_result_name_final_rename(result_name_ord, result_name_dst, run_change=run_change, print_msg=print_msg)
         return self
 
