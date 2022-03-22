@@ -469,6 +469,24 @@ class Row_col_results_analyzer(Result_analyzer):
 
         return r_c_imgs
 
+    def _get_in_img_or_gt_img(self, see_num, get_what):
+        path = None
+        ### 走訪所有results， 一旦發現有 in_img_path 就可以break囉！ 
+        for c_results in self.r_c_results:
+            for result in c_results:
+                if  (self.ana_what_sees == "see" ):
+                    if  (get_what == "in_img"): path = result.sees [see_num].in_img_path
+                    elif(get_what == "gt_img"): path = result.sees [see_num].gt_img_path
+                elif(self.ana_what_sees == "test"):
+                    if  (get_what == "in_img"): path = result.tests [see_num].in_img_path
+                    elif(get_what == "gt_img"): path = result.tests [see_num].gt_img_path
+                if(path is not None): break
+            if(path is not None): break
+
+        if(path is None): img = None  ### 如果 所有result 都沒有 指定的 img
+        else:             img = cv2.imread(path)
+        return img
+
     ########################################################################################################################################
     ### 各row各col 皆 不同result，但全部都看相同某個see；這analyzer不會有 multi_see 的method喔！因為row被拿去show不同的result了，就沒有空間給multi_see拉，所以參數就不用 single_see_multiprocess囉！
     def _draw_row_col_results_single_see(self, start_epoch, epoch_amount, see_num, r_c_titles, analyze_see_private_write_dir):
@@ -478,10 +496,15 @@ class Row_col_results_analyzer(Result_analyzer):
         ### 抓 in/gt imgs， 因為 同個see 內所有epoch 的 in/gt 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see_ 的外面 ，然後再用 參數傳入
         in_img = None
         gt_img = None
-        if  (self.ana_what_sees == "see"):  used_sees = self.r_c_results[0][0].sees
-        elif(self.ana_what_sees == "test"): used_sees = self.r_c_results[0][0].tests
-        if(self.show_in_img): in_img = cv2.imread(used_sees[see_num].in_img_path)
-        if(self.show_gt_img): gt_img = cv2.imread(used_sees[see_num].gt_flow_jpg_path)
+        if(self.show_in_img is True): in_img = self._get_in_img_or_gt_img(see_num=see_num, get_what="in_img")
+        if(self.show_gt_img is True): gt_img = self._get_in_img_or_gt_img(see_num=see_num, get_what="gt_img")
+
+        if(in_img is None and self.show_in_img is True):
+            print("所有的result 都沒有 in_img， 自動把 self.show_in_img 關掉")
+            self.show_in_img = False
+        if(gt_img is None and self.show_gt_img is True):
+            print("所有的result 都沒有 gt_img， 自動把 self.show_gt_img 關掉")
+            self.show_gt_img = False
 
         # for go_img in tqdm(range(self.r_c_min_trained_epoch)):
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount + 1)):  ### +1 是因為 0~epoch 都要做，  range 只到 end-1， 所以 +1 補回來～
