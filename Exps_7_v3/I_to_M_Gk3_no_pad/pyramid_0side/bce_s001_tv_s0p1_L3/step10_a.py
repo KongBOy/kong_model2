@@ -48,14 +48,14 @@ use_loss_obj = [G_bce_s001_loss_info_builder.set_loss_target("UNet_Mask").copy()
 ### 為了resul_analyze畫空白的圖，建一個empty的 Exp_builder
 empty = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_0side, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_0side.kong_model.model_describe) .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="為了resul_analyze畫空白的圖，建一個empty的 Exp_builder")
 #############################################################
-ch032_0side = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_0side, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_0side.kong_model.model_describe) .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="type8_blender-L3_ch032_bl_pyr__sig_out_1-20220310_104024")
+ch032_0side = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_0side, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_0side.kong_model.model_describe) .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="L3_ch032_bl_pyr-20220310_104024")  #.change_result_name_v4_Remove_sig_out(run_change=True, print_msg=True)  # .change_result_name_v3_to_v4_Remove_db_name(run_change=True, print_msg=True)
 #############################################################
 if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_b1_exp_obj_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        ch032_0side.build().run()
+        # ch032_0side.build().run()
         # print('no argument')
         sys.exit()
 
