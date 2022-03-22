@@ -194,7 +194,8 @@ class G_Unet_Body_builder(Ckpt_op_builder):
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
         if  (type(conv_block_num) == type(1)) :
-            self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
+            self.kong_model.model_describe_elements_full = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
+            self.kong_model.model_describe_elements      = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num]
         elif(type(conv_block_num) == type([])):
             side_string = ""
             side_string_element = []
@@ -206,8 +207,10 @@ class G_Unet_Body_builder(Ckpt_op_builder):
                     side_string_element.append(f"{side_num}s{side_num_count}_")
             side_string = "_".join(side_string_element)
 
-            self.kong_model.model_describe_elements = ["L%i" % depth_level, "ch%03i" % hid_ch, "bl_pyr_%s" % side_string, unet_acti[:3], "out_%i" % out_ch]
-        self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
+            self.kong_model.model_describe_elements_full = ["L%i" % depth_level, "ch%03i" % hid_ch, "bl_pyr_%s" % side_string, unet_acti[:3], "out_%i" % out_ch]
+            self.kong_model.model_describe_elements      = ["L%i" % depth_level, "ch%03i" % hid_ch, "bl_pyr_%s" % side_string]
+        self.kong_model.model_describe_full = "_".join(self.kong_model.model_describe_elements_full)
+        self.kong_model.model_describe      = "_".join(self.kong_model.model_describe_elements)
         g_args = {
             "hid_ch"          : hid_ch,
             "depth_level"     : depth_level,
