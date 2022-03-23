@@ -87,7 +87,7 @@ class Result:
         if( "see_print_msg"          not in args.keys()): args["see_print_msg"         ] = False
         if( "result_print_msg"       not in args.keys()): args["result_print_msg"      ] = False
         result_start = time.time()
-        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing {args['see_method_name']}, Current Result:{self.result_name}")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: doing {args['see_method_name']}, Current Result:{self.result_read_dir}")
         """
         step1： see_core_amount == 1 , single_see_core_amount == 1：單核心跑， 單個see 依序跑， see內的多個任務 依序跑
         step1： see_core_amount == 1 , single_see_core_amount  > 1：多核心跑， 單個see 依序跑， see內的多個任務 同時跑
@@ -118,7 +118,7 @@ class Result:
         """
         for see_num in range(start_see, start_see + see_amount):
             if(see_num < self.see_amount):  ### 防呆，以防直接使用 calculate_multiple_single_see_SSIM_LD 時 start_see 設的比0大 但 see_amount 設成 self.see_amount 或 純粹不小心算錯數字(要算準start_see + see_amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
-                print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Current Result:{self.result_name}, doing { self.sees[see_num].see_name}")  ### 這邊也顯示就不用每次都要往上滾很久才知道 現在正處在哪個 result裡囉！
+                print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Current Result:{self.result_read_dir}, doing { self.sees[see_num].see_name}")  ### 這邊也顯示就不用每次都要往上滾很久才知道 現在正處在哪個 result裡囉！
                 see_start = time.time()
                 if(args["see_method_name"] == "Npy_to_npz"):
                     self.sees[see_num].Npy_to_npz        (**args)
@@ -169,7 +169,7 @@ class Result:
 
                 ### 如果 單核心跑， 單個see 依序跑，顯示這個 see_cost_time 才有用喔！ 如果是 多核心跑， 多個see同時跑， 分配完see 馬上就會到這行， 不會記錄到 see 花的時間喔！
                 if(args["see_core_amount"] == 1):
-                    print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Current Result:{self.result_name}, doing { self.sees[see_num].see_name} finish, cost_time:{time.time() - see_start}")  ### 這邊也顯示就不用每次都要往上滾很久才知道 現在正處在哪個 result裡囉！
+                    print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Current Result:{self.result_read_dir}, doing { self.sees[see_num].see_name} finish, cost_time:{time.time() - see_start}")  ### 這邊也顯示就不用每次都要往上滾很久才知道 現在正處在哪個 result裡囉！
                     print("")
 
 
@@ -183,7 +183,7 @@ class Result:
     #     單個 see 裡面的 certain_epoch 重做 bm_rec_matplot_visual
     #     """
     #     if(see_num < self.see_amount):  ### 防呆，以防直接使用 save_all_single_see_as_matplot_visual 時 start_index 設的比0大 但 amount 設成 see_amount 或 純粹不小心算錯數字(要算準start_index + amount 真的麻煩，但是 這是為了 multiprocess 的設計才這樣寫的，只能權衡一下囉)
-    #         print(f"current result:{self.result_name}")
+    #         print(f"current result:{self.result_read_dir}")
     #         self.sees[see_num].Npy_to_npz(multiprocess=True)
     #         self.sees[see_num].Save_as_bm_rec_matplot_visual_at_certain_epoch(epoch, add_loss, bgr2rgb)
 

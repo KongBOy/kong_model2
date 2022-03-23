@@ -28,7 +28,7 @@ import step10_a as L7_3side
 ########
 # 1side_1
 ########
-ch032_1side_1_2side_1_34side_all = [
+ch032_1side_1__23side_all = [
     [L7_1side.ch032_1side_1          , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_1__2side_1 , L7_3side.ch032_1side_1__2side_1__3side_1 , ],
 ]
@@ -36,7 +36,7 @@ ch032_1side_1_2side_1_34side_all = [
 ########
 # 1side_2
 ########
-ch032_1side_2_2side_1_34side_all = [
+ch032_1side_2__23side_all = [
     [L7_1side.ch032_1side_2          , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_2__2side_1 , L7_3side.ch032_1side_2__2side_1__3side_1 , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_2__2side_2 , L7_3side.ch032_1side_2__2side_2__3side_1 , L7_3side.ch032_1side_2__2side_2__3side_2 , ],
@@ -45,7 +45,7 @@ ch032_1side_2_2side_1_34side_all = [
 ########
 # 1side_3
 ########
-ch032_1side_3_2side_1_34side_all = [
+ch032_1side_3__23side_all = [
     [L7_1side.ch032_1side_3          , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_3__2side_1 , L7_3side.ch032_1side_3__2side_1__3side_1 , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_3__2side_2 , L7_3side.ch032_1side_3__2side_2__3side_1 , L7_3side.ch032_1side_3__2side_2__3side_2 , L7_3side.empty                           , ],
@@ -55,7 +55,7 @@ ch032_1side_3_2side_1_34side_all = [
 ########
 # 1side_4
 ########
-ch032_1side_4_2side_1_34side_all = [
+ch032_1side_4__23side_all = [
     [L7_1side.ch032_1side_4          , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_4__2side_1 , L7_3side.ch032_1side_4__2side_1__3side_1 , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_4__2side_2 , L7_3side.ch032_1side_4__2side_2__3side_1 , L7_3side.ch032_1side_4__2side_2__3side_2 , L7_3side.empty                           , L7_3side.empty                           , ],
@@ -66,7 +66,7 @@ ch032_1side_4_2side_1_34side_all = [
 ########
 # 1side_5
 ########
-ch032_1side_5_2side_1_34side_all = [
+ch032_1side_5__23side_all = [
     [L7_1side.ch032_1side_5          , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_5__2side_1 , L7_3side.ch032_1side_5__2side_1__3side_1 , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_5__2side_2 , L7_3side.ch032_1side_5__2side_2__3side_1 , L7_3side.ch032_1side_5__2side_2__3side_2 , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
@@ -78,7 +78,7 @@ ch032_1side_5_2side_1_34side_all = [
 ########
 # 1side_6
 ########
-ch032_1side_6_2side_1_34side_all = [
+ch032_1side_6__23side_all = [
     [L7_1side.ch032_1side_6          , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_6__2side_1 , L7_3side.ch032_1side_6__2side_1__3side_1 , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_6__2side_2 , L7_3side.ch032_1side_6__2side_2__3side_1 , L7_3side.ch032_1side_6__2side_2__3side_2 , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
@@ -91,7 +91,7 @@ ch032_1side_6_2side_1_34side_all = [
 ########
 # 1side_7
 ########
-ch032_1side_7_2side_1_34side_all = [
+ch032_1side_7__23side_all = [
     [L7_1side.ch032_1side_7          , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_7__2side_1 , L7_3side.ch032_1side_7__2side_1__3side_1 , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_7__2side_2 , L7_3side.ch032_1side_7__2side_2__3side_1 , L7_3side.ch032_1side_7__2side_2__3side_2 , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
@@ -105,7 +105,7 @@ ch032_1side_7_2side_1_34side_all = [
 ########
 # 1side_8
 ########
-ch032_1side_8_2side_1_34side_all = [
+ch032_1side_8__23side_all = [
     [L7_1side.ch032_1side_8          , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_8__2side_1 , L7_3side.ch032_1side_8__2side_1__3side_1 , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],
     [L7_2side.ch032_1side_8__2side_2 , L7_3side.ch032_1side_8__2side_2__3side_1 , L7_3side.ch032_1side_8__2side_2__3side_2 , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , L7_3side.empty                           , ],

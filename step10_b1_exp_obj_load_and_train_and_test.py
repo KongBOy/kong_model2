@@ -144,7 +144,7 @@ class Experiment():
             # print("self.exp_dir:", self.exp_dir)
             # print("self.result_name:", self.result_name)
             self.result_obj   = Result_builder().set_exp_obj_use_gt_range(self.use_gt_range).set_by_result_name(self.exp_dir + "/" + self.result_name, self.db_obj).build()  ### 直接用 自己指定好的 result_name
-            print("Reload: %s ok~~" % (self.result_obj.result_name))
+            print("Reload: %s ok~~" % (self.result_obj.result_read_dir))
         else: self.result_obj = Result_builder().set_exp_obj_use_gt_range(self.use_gt_range).set_by_exp(self).build()  ### exp在train時 要自動建新的 result，才不會覆蓋到之前訓練的result，Result_builder()需要 db_obj 和 exp本身的describe_mid/end
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
         self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
@@ -159,7 +159,7 @@ class Experiment():
             if(self.model_obj.discriminator is not None): self.model_obj.ckpt_D.restore(self.ckpt_D_read_manager.latest_checkpoint)
             self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
             self.current_ep  = self.start_epoch
-            print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_name, self.start_epoch))
+            print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_read_dir, self.start_epoch))
 
         ####################################################################################################################
         ### 4.Loss_info, (5.save_code；train時才需要 loss_info_objs 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉)
@@ -405,7 +405,7 @@ class Experiment():
             # loss_info_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
     def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
-        print("current exp:", self.result_obj.result_name)
+        print("current exp:", self.result_obj.result_read_dir)
         epoch_cost_time = time.time() - e_start
         total_cost_time = time.time() - total_start
         print(self.phase)
