@@ -13,7 +13,7 @@ class Result_init_builder:
             self.result = result
 
     def build(self):
-        print(f"Result build finish, can use {self.result.result_name}")
+        print(f"Result build finish, can use {self.result.result_read_dir}")
         return self.result
 
 class Result_sees_builder(Result_init_builder):
@@ -168,7 +168,7 @@ class Result_train_builder(Result_sees_builder):
             ### 給 ana_describe，這是給 step12 用的，default 直 設 result.describe_end
             # self.result.ana_describe = result_name.split("-")[-1]
             # self.result.ana_describe = result_name.split("-")[-4]
-            self.result.ana_describe = result_name.split("-")[-2]
+            self.result.ana_describe = result_name.split("-")[0].split("/")[-1]
         else:
             self.result.ana_describe = "no result"
         return self
