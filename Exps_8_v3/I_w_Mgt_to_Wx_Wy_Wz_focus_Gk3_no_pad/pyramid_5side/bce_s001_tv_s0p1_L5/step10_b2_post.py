@@ -253,11 +253,11 @@ import subprocess as sb
 
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_2__3side_2_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_2__3side_2_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_2__3side_2_4side_2_5s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_2__3side_2_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
 
 # 1 3 "6" 10 15 21 28 36 45 55
 # 2side3 OK 10
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_3__3side_1_4side_1_5s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_3__3side_1_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_3__3side_2_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_3__3side_2_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
