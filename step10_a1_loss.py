@@ -335,10 +335,11 @@ if __name__ == '__main__':
     # pad_size = int((window_size - 1) / 2)
     from step0_access_path import Data_Access_Dir
 
-    img1_path = Data_Access_Dir + "1_1_8-pp_Page_465-YHc0001.exr"  ### "1_1_2-cp_Page_0654-XKI0001.exr"
-    img2_path = Data_Access_Dir + "1_1_1-pr_Page_141-PZU0001.exr"  ### "1_1_1-tc_Page_065-YGB0001.exr"
+    img1_path = "debug_data/" + "1_1_1-pr_Page_141-PZU0001.exr"  ### "1_1_2-cp_Page_0654-XKI0001.exr"
+    img2_path = "debug_data/" + "1_1_8-pp_Page_465-YHc0001.exr"  ### "1_1_1-tc_Page_065-YGB0001.exr"
     img1 = cv2.imread(img1_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
     img2 = cv2.imread(img2_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
+    img3 = cv2.imread(r"J:\swat3D\wc\1\1_1_1-pr_Page_141-PZU0001.exr", cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
 
     # img1_path = Data_Access_Dir + "2-0b-gt_a_mask.bmp"
     # img2_path = Data_Access_Dir + "2-epoch_0060_a_mask.bmp"
