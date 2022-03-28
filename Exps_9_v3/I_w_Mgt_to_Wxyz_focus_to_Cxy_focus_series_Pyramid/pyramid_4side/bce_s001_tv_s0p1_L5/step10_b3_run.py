@@ -154,7 +154,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_3_4side_2.{run}"])  ### 27 已run
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_3_4side_3.{run}"])  ### 27 已run
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_4_4side_1.{run}"])  ### 29 已run
-sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_4_4side_2.{run}"])  ### 29 已run
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_4_4side_2.{run}"])  ### 29 已run
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_4_4side_3.{run}"])  ### 38 已run
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_4_4side_4.{run}"])  ### 59 已run
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_1.{run}"])  ### 29 已run
