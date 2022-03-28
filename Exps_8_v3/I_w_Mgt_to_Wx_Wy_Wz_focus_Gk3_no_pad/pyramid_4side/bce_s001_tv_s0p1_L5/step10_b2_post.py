@@ -145,7 +145,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_4_4side_1.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_4_4side_2.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_4_4side_3.{compress_and_WM_3D_all_from_begin}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_4_4side_4.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_4_4side_4.{compress_and_WM_3D_all_from_begin}"])
 
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_1_4side_1.{compress_and_WM_3D_all_from_begin}"])  ### 29
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_2_4side_1.{compress_and_WM_3D_all_from_begin}"])  ### 38
