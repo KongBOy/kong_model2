@@ -28,7 +28,7 @@ start_time = time.time()
 ##################################
 # "1" 3 6 10 15 21 28 36 45 55
 # 2side1 OK 1
-ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=6, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_1__2side_1__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wx_Wy_Wz", I_to_Wx=ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1, I_to_Wy=ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1, I_to_Wz=ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1).set_gen_op(I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see).set_train_step(train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz_focus)
 
 
 ##################################

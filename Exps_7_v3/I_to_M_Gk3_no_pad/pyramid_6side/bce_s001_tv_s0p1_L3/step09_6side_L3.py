@@ -23,228 +23,331 @@ import time
 start_time = time.time()
 ###############################################################################################################################################################################################
 ##################################
-### 5side1
+### 6side1
 ##################################
-# "1" 3 6 10 15 21 28 36 45 55
-# side1 OK 1
-pyramid_1side_1__2side_1__3side_1_4side_1_5s1 = [5, 0, 0, 0, 0, 0, 5]
+##### 5side1
+# side1, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_1__2side_1__3side_1_4side_1_5s1_6s1 = [6, 0, 0, 0, 0, 0, 6]
 
-# 1 "3" 6 10 15 21 28 36 45 55
-# side2 OK 4
-pyramid_1side_2__2side_1__3side_1_4side_1_5s1 = [5, 1, 0, 0, 0, 1, 5]
-pyramid_1side_2__2side_2__3side_1_4side_1_5s1 = [5, 2, 0, 0, 0, 2, 5]
-pyramid_1side_2__2side_2__3side_2_4side_1_5s1 = [5, 3, 0, 0, 0, 3, 5]
+# side2, 1 "3" 6 10 15 21 28 36 45 55, 4
+pyramid_1side_2__2side_1__3side_1_4side_1_5s1_6s1 = [6, 1, 0, 0, 0, 1, 6]
+pyramid_1side_2__2side_2__3side_1_4side_1_5s1_6s1 = [6, 2, 0, 0, 0, 2, 6]
+pyramid_1side_2__2side_2__3side_2_4side_1_5s1_6s1 = [6, 3, 0, 0, 0, 3, 6]
 
-pyramid_1side_2__2side_2__3side_2_4side_2_5s1 = [5, 4, 0, 0, 0, 4, 5]
+pyramid_1side_2__2side_2__3side_2_4side_2_5s1_6s1 = [6, 4, 0, 0, 0, 4, 6]
 
-# 1 3 "6" 10 15 21 28 36 45 55
-# side3 OK 10
-pyramid_1side_3__2side_1__3side_1_4side_1_5s1 = [5, 1, 1, 0, 1, 1, 5]
-pyramid_1side_3__2side_2__3side_1_4side_1_5s1 = [5, 2, 1, 0, 1, 2, 5]
-pyramid_1side_3__2side_2__3side_2_4side_1_5s1 = [5, 3, 1, 0, 1, 3, 5]
-pyramid_1side_3__2side_3__3side_1_4side_1_5s1 = [5, 2, 2, 0, 2, 2, 5]
-pyramid_1side_3__2side_3__3side_2_4side_1_5s1 = [5, 3, 2, 0, 2, 3, 5]
-pyramid_1side_3__2side_3__3side_3_4side_1_5s1 = [5, 3, 3, 0, 3, 3, 5]
+# side3, 1 3 "6" 10 15 21 28 36 45 55, 10
+pyramid_1side_3__2side_1__3side_1_4side_1_5s1_6s1 = [6, 1, 1, 0, 1, 1, 6]
+pyramid_1side_3__2side_2__3side_1_4side_1_5s1_6s1 = [6, 2, 1, 0, 1, 2, 6]
+pyramid_1side_3__2side_2__3side_2_4side_1_5s1_6s1 = [6, 3, 1, 0, 1, 3, 6]
+pyramid_1side_3__2side_3__3side_1_4side_1_5s1_6s1 = [6, 2, 2, 0, 2, 2, 6]
+pyramid_1side_3__2side_3__3side_2_4side_1_5s1_6s1 = [6, 3, 2, 0, 2, 3, 6]
+pyramid_1side_3__2side_3__3side_3_4side_1_5s1_6s1 = [6, 3, 3, 0, 3, 3, 6]
 
-pyramid_1side_3__2side_2__3side_2_4side_2_5s1 = [5, 4, 1, 0, 1, 4, 5]
-pyramid_1side_3__2side_3__3side_2_4side_2_5s1 = [5, 4, 2, 0, 2, 4, 5]
-pyramid_1side_3__2side_3__3side_3_4side_2_5s1 = [5, 4, 3, 0, 3, 4, 5]
+pyramid_1side_3__2side_2__3side_2_4side_2_5s1_6s1 = [6, 4, 1, 0, 1, 4, 6]
+pyramid_1side_3__2side_3__3side_2_4side_2_5s1_6s1 = [6, 4, 2, 0, 2, 4, 6]
+pyramid_1side_3__2side_3__3side_3_4side_2_5s1_6s1 = [6, 4, 3, 0, 3, 4, 6]
 
-pyramid_1side_3__2side_3__3side_3_4side_3_5s1 = [5, 4, 4, 0, 4, 4, 5]
+pyramid_1side_3__2side_3__3side_3_4side_3_5s1_6s1 = [6, 4, 4, 0, 4, 4, 6]
 
-# 1 3 6 "10" 15 21 28 36 45 55
-# side4 OK 20
-pyramid_1side_4__2side_1__3side_1_4side_1_5s1 = [5, 1, 1, 1, 1, 1, 5]
-pyramid_1side_4__2side_2__3side_1_4side_1_5s1 = [5, 2, 1, 1, 1, 2, 5]
-pyramid_1side_4__2side_2__3side_2_4side_1_5s1 = [5, 3, 1, 1, 1, 3, 5]
-pyramid_1side_4__2side_3__3side_1_4side_1_5s1 = [5, 2, 2, 1, 2, 2, 5]
-pyramid_1side_4__2side_3__3side_2_4side_1_5s1 = [5, 3, 2, 1, 2, 3, 5]
-pyramid_1side_4__2side_3__3side_3_4side_1_5s1 = [5, 3, 3, 1, 3, 3, 5]
-pyramid_1side_4__2side_4__3side_1_4side_1_5s1 = [5, 2, 2, 2, 2, 2, 5]
-pyramid_1side_4__2side_4__3side_2_4side_1_5s1 = [5, 3, 2, 2, 2, 3, 5]
-pyramid_1side_4__2side_4__3side_3_4side_1_5s1 = [5, 3, 3, 2, 3, 3, 5]
-pyramid_1side_4__2side_4__3side_4_4side_1_5s1 = [5, 3, 3, 3, 3, 3, 5]
+# side4, 1 3 6 "10" 15 21 28 36 45 55, 20
+pyramid_1side_4__2side_1__3side_1_4side_1_5s1_6s1 = [6, 1, 1, 1, 1, 1, 6]
+pyramid_1side_4__2side_2__3side_1_4side_1_5s1_6s1 = [6, 2, 1, 1, 1, 2, 6]
+pyramid_1side_4__2side_2__3side_2_4side_1_5s1_6s1 = [6, 3, 1, 1, 1, 3, 6]
+pyramid_1side_4__2side_3__3side_1_4side_1_5s1_6s1 = [6, 2, 2, 1, 2, 2, 6]
+pyramid_1side_4__2side_3__3side_2_4side_1_5s1_6s1 = [6, 3, 2, 1, 2, 3, 6]
+pyramid_1side_4__2side_3__3side_3_4side_1_5s1_6s1 = [6, 3, 3, 1, 3, 3, 6]
+pyramid_1side_4__2side_4__3side_1_4side_1_5s1_6s1 = [6, 2, 2, 2, 2, 2, 6]
+pyramid_1side_4__2side_4__3side_2_4side_1_5s1_6s1 = [6, 3, 2, 2, 2, 3, 6]
+pyramid_1side_4__2side_4__3side_3_4side_1_5s1_6s1 = [6, 3, 3, 2, 3, 3, 6]
+pyramid_1side_4__2side_4__3side_4_4side_1_5s1_6s1 = [6, 3, 3, 3, 3, 3, 6]
 
-pyramid_1side_4__2side_2__3side_2_4side_2_5s1 = [5, 4, 1, 1, 1, 4, 5]
-pyramid_1side_4__2side_3__3side_2_4side_2_5s1 = [5, 4, 2, 1, 2, 4, 5]
-pyramid_1side_4__2side_3__3side_3_4side_2_5s1 = [5, 4, 3, 1, 3, 4, 5]
-pyramid_1side_4__2side_4__3side_2_4side_2_5s1 = [5, 4, 2, 2, 2, 4, 5]
-pyramid_1side_4__2side_4__3side_3_4side_2_5s1 = [5, 4, 3, 2, 3, 4, 5]
-pyramid_1side_4__2side_4__3side_4_4side_2_5s1 = [5, 4, 3, 3, 3, 4, 5]
+pyramid_1side_4__2side_2__3side_2_4side_2_5s1_6s1 = [6, 4, 1, 1, 1, 4, 6]
+pyramid_1side_4__2side_3__3side_2_4side_2_5s1_6s1 = [6, 4, 2, 1, 2, 4, 6]
+pyramid_1side_4__2side_3__3side_3_4side_2_5s1_6s1 = [6, 4, 3, 1, 3, 4, 6]
+pyramid_1side_4__2side_4__3side_2_4side_2_5s1_6s1 = [6, 4, 2, 2, 2, 4, 6]
+pyramid_1side_4__2side_4__3side_3_4side_2_5s1_6s1 = [6, 4, 3, 2, 3, 4, 6]
+pyramid_1side_4__2side_4__3side_4_4side_2_5s1_6s1 = [6, 4, 3, 3, 3, 4, 6]
 
-pyramid_1side_4__2side_3__3side_3_4side_3_5s1 = [5, 4, 4, 1, 4, 4, 5]
-pyramid_1side_4__2side_4__3side_3_4side_3_5s1 = [5, 4, 4, 2, 4, 4, 5]
-pyramid_1side_4__2side_4__3side_4_4side_3_5s1 = [5, 4, 4, 3, 4, 4, 5]
+pyramid_1side_4__2side_3__3side_3_4side_3_5s1_6s1 = [6, 4, 4, 1, 4, 4, 6]
+pyramid_1side_4__2side_4__3side_3_4side_3_5s1_6s1 = [6, 4, 4, 2, 4, 4, 6]
+pyramid_1side_4__2side_4__3side_4_4side_3_5s1_6s1 = [6, 4, 4, 3, 4, 4, 6]
 
-pyramid_1side_4__2side_4__3side_4_4side_4_5s1 = [5, 4, 4, 4, 4, 4, 5]
+pyramid_1side_4__2side_4__3side_4_4side_4_5s1_6s1 = [6, 4, 4, 4, 4, 4, 6]
 
-##################################
-### 5side2
-##################################
-# "1" 3 6 10 15 21 28 36 45 55
-# side3 OK 1
-pyramid_1side_2__2side_2__3side_2_4side_2_5s2 = [5, 5, 0, 0, 0, 5, 5]
+##### 5side2
+# side2, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_2__2side_2__3side_2_4side_2_5s2_6s1 = [6, 5, 0, 0, 0, 5, 6]
 
-# 1 "3" 6 10 15 21 28 36 45 55
-# side3 OK 4
-pyramid_1side_3__2side_2__3side_2_4side_2_5s2 = [5, 5, 1, 0, 1, 5, 5]
-pyramid_1side_3__2side_3__3side_2_4side_2_5s2 = [5, 5, 2, 0, 2, 5, 5]
-pyramid_1side_3__2side_3__3side_3_4side_2_5s2 = [5, 5, 3, 0, 3, 5, 5]
+# side3, 1 "3" 6 10 15 21 28 36 45 55, 4
+pyramid_1side_3__2side_2__3side_2_4side_2_5s2_6s1 = [6, 5, 1, 0, 1, 5, 6]
+pyramid_1side_3__2side_3__3side_2_4side_2_5s2_6s1 = [6, 5, 2, 0, 2, 5, 6]
+pyramid_1side_3__2side_3__3side_3_4side_2_5s2_6s1 = [6, 5, 3, 0, 3, 5, 6]
 
-pyramid_1side_3__2side_3__3side_3_4side_3_5s2 = [5, 5, 4, 0, 4, 5, 5]
+pyramid_1side_3__2side_3__3side_3_4side_3_5s2_6s1 = [6, 5, 4, 0, 4, 5, 6]
 
-# 1 3 "6" 10 15 21 28 36 45 55
-# side3 OK 10
-pyramid_1side_4__2side_2__3side_2_4side_2_5s2 = [5, 5, 1, 1, 1, 5, 5]
-pyramid_1side_4__2side_3__3side_2_4side_2_5s2 = [5, 5, 2, 1, 2, 5, 5]
-pyramid_1side_4__2side_3__3side_3_4side_2_5s2 = [5, 5, 3, 1, 3, 5, 5]
-pyramid_1side_4__2side_4__3side_2_4side_2_5s2 = [5, 5, 2, 2, 2, 5, 5]
-pyramid_1side_4__2side_4__3side_3_4side_2_5s2 = [5, 5, 3, 2, 3, 5, 5]
-pyramid_1side_4__2side_4__3side_4_4side_2_5s2 = [5, 5, 3, 3, 3, 5, 5]
+# side4, 1 3 "6" 10 15 21 28 36 45 55, 10
+pyramid_1side_4__2side_2__3side_2_4side_2_5s2_6s1 = [6, 5, 1, 1, 1, 5, 6]
+pyramid_1side_4__2side_3__3side_2_4side_2_5s2_6s1 = [6, 5, 2, 1, 2, 5, 6]
+pyramid_1side_4__2side_3__3side_3_4side_2_5s2_6s1 = [6, 5, 3, 1, 3, 5, 6]
+pyramid_1side_4__2side_4__3side_2_4side_2_5s2_6s1 = [6, 5, 2, 2, 2, 5, 6]
+pyramid_1side_4__2side_4__3side_3_4side_2_5s2_6s1 = [6, 5, 3, 2, 3, 5, 6]
+pyramid_1side_4__2side_4__3side_4_4side_2_5s2_6s1 = [6, 5, 3, 3, 3, 5, 6]
 
-pyramid_1side_4__2side_3__3side_3_4side_3_5s2 = [5, 5, 4, 1, 4, 5, 5]
-pyramid_1side_4__2side_4__3side_3_4side_3_5s2 = [5, 5, 4, 2, 4, 5, 5]
-pyramid_1side_4__2side_4__3side_4_4side_3_5s2 = [5, 5, 4, 3, 4, 5, 5]
+pyramid_1side_4__2side_3__3side_3_4side_3_5s2_6s1 = [6, 5, 4, 1, 4, 5, 6]
+pyramid_1side_4__2side_4__3side_3_4side_3_5s2_6s1 = [6, 5, 4, 2, 4, 5, 6]
+pyramid_1side_4__2side_4__3side_4_4side_3_5s2_6s1 = [6, 5, 4, 3, 4, 5, 6]
 
-pyramid_1side_4__2side_4__3side_4_4side_4_5s2 = [5, 5, 4, 4, 4, 5, 5]
+pyramid_1side_4__2side_4__3side_4_4side_4_5s2_6s1 = [6, 5, 4, 4, 4, 5, 6]
 
-##################################
-### 5side3
-##################################
-# "1" 3 6 10 15 21 28 36 45 55
-# side3 OK 1
-pyramid_1side_3__2side_3__3side_3_4side_3_5s3 = [5, 5, 5, 0, 5, 5, 5]
+##### 5side3
+# side3, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_3__2side_3__3side_3_4side_3_5s3_6s1 = [6, 5, 5, 0, 5, 5, 6]
 
-# 1 "3" 6 10 15 21 28 36 45 55
-# side3 OK 4
-pyramid_1side_4__2side_3__3side_3_4side_3_5s3 = [5, 5, 5, 1, 5, 5, 5]
-pyramid_1side_4__2side_4__3side_3_4side_3_5s3 = [5, 5, 5, 2, 5, 5, 5]
-pyramid_1side_4__2side_4__3side_4_4side_3_5s3 = [5, 5, 5, 3, 5, 5, 5]
+# side4, 1 "3" 6 10 15 21 28 36 45 55, 4
+pyramid_1side_4__2side_3__3side_3_4side_3_5s3_6s1 = [6, 5, 5, 1, 5, 5, 6]
+pyramid_1side_4__2side_4__3side_3_4side_3_5s3_6s1 = [6, 5, 5, 2, 5, 5, 6]
+pyramid_1side_4__2side_4__3side_4_4side_3_5s3_6s1 = [6, 5, 5, 3, 5, 5, 6]
 
-pyramid_1side_4__2side_4__3side_4_4side_4_5s3 = [5, 5, 5, 4, 5, 5, 5]
+pyramid_1side_4__2side_4__3side_4_4side_4_5s3_6s1 = [6, 5, 5, 4, 5, 5, 6]
+
+##### 5side4
+# side4, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s1 = [6, 5, 5, 5, 5, 5, 6]
 
 ##################################
-### 5side4
+### 6side2
 ##################################
-# "1" 3 6 10 15 21 28 36 45 55
-# side3 OK 1
-pyramid_1side_4__2side_4__3side_4_4side_4_5s4 = [5, 5, 5, 5, 5, 5, 5]
+##### 5side2
+# side2, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_2__2side_2__3side_2_4side_2_5s2_6s2 = [6, 6, 0, 0, 0, 6, 6]
+
+# side3, 1 "3" 6 10 15 21 28 36 45 55, 4
+pyramid_1side_3__2side_2__3side_2_4side_2_5s2_6s2 = [6, 6, 1, 0, 1, 6, 6]
+pyramid_1side_3__2side_3__3side_2_4side_2_5s2_6s2 = [6, 6, 2, 0, 2, 6, 6]
+pyramid_1side_3__2side_3__3side_3_4side_2_5s2_6s2 = [6, 6, 3, 0, 3, 6, 6]
+
+pyramid_1side_3__2side_3__3side_3_4side_3_5s2_6s2 = [6, 6, 4, 0, 4, 6, 6]
+
+# side4, 1 3 "6" 10 15 21 28 36 45 55, 10
+pyramid_1side_4__2side_2__3side_2_4side_2_5s2_6s2 = [6, 6, 1, 1, 1, 6, 6]
+pyramid_1side_4__2side_3__3side_2_4side_2_5s2_6s2 = [6, 6, 2, 1, 2, 6, 6]
+pyramid_1side_4__2side_3__3side_3_4side_2_5s2_6s2 = [6, 6, 3, 1, 3, 6, 6]
+pyramid_1side_4__2side_4__3side_2_4side_2_5s2_6s2 = [6, 6, 2, 2, 2, 6, 6]
+pyramid_1side_4__2side_4__3side_3_4side_2_5s2_6s2 = [6, 6, 3, 2, 3, 6, 6]
+pyramid_1side_4__2side_4__3side_4_4side_2_5s2_6s2 = [6, 6, 3, 3, 3, 6, 6]
+
+pyramid_1side_4__2side_3__3side_3_4side_3_5s2_6s2 = [6, 6, 4, 1, 4, 6, 6]
+pyramid_1side_4__2side_4__3side_3_4side_3_5s2_6s2 = [6, 6, 4, 2, 4, 6, 6]
+pyramid_1side_4__2side_4__3side_4_4side_3_5s2_6s2 = [6, 6, 4, 3, 4, 6, 6]
+
+pyramid_1side_4__2side_4__3side_4_4side_4_5s2_6s2 = [6, 6, 4, 4, 4, 6, 6]
+
+##### 5side3
+# side3, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_3__2side_3__3side_3_4side_3_5s3_6s2 = [6, 6, 5, 0, 5, 6, 6]
+
+# side4, 1 "3" 6 10 15 21 28 36 45 55, 4
+pyramid_1side_4__2side_3__3side_3_4side_3_5s3_6s2 = [6, 6, 5, 1, 5, 6, 6]
+pyramid_1side_4__2side_4__3side_3_4side_3_5s3_6s2 = [6, 6, 5, 2, 5, 6, 6]
+pyramid_1side_4__2side_4__3side_4_4side_3_5s3_6s2 = [6, 6, 5, 3, 5, 6, 6]
+
+pyramid_1side_4__2side_4__3side_4_4side_4_5s3_6s2 = [6, 6, 5, 4, 5, 6, 6]
+
+##### 5side4
+# side4, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s2 = [6, 6, 5, 5, 5, 6, 6]
+
+##################################
+### 6side3
+##################################
+##### 5side3
+# side3, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_3__2side_3__3side_3_4side_3_5s3_6s3 = [6, 6, 6, 0, 6, 6, 6]
+
+# side4, 1 "3" 6 10 15 21 28 36 45 55, 4
+pyramid_1side_4__2side_3__3side_3_4side_3_5s3_6s3 = [6, 6, 6, 1, 6, 6, 6]
+pyramid_1side_4__2side_4__3side_3_4side_3_5s3_6s3 = [6, 6, 6, 2, 6, 6, 6]
+pyramid_1side_4__2side_4__3side_4_4side_3_5s3_6s3 = [6, 6, 6, 3, 6, 6, 6]
+
+pyramid_1side_4__2side_4__3side_4_4side_4_5s3_6s3 = [6, 6, 6, 4, 6, 6, 6]
+
+##### 5side4
+# side4, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s3 = [6, 6, 6, 5, 6, 6, 6]
+
+##################################
+### 6side4
+##################################
+##### 5side4
+# side4, "1" 3 6 10 15 21 28 36 45 55, 1
+pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s4 = [6, 6, 6, 6, 6, 6, 6]
 
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
+###################
+############# 1s1
+######### 2s1
+##### 3s1
+### 4s1
+ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_1__2side_1__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
 
-##################################
-### 1side1
-##################################
-# "1" 3 6 10 15 21 28 36 45 55
-# 2side1 OK 1
-ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_1__2side_1__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+###################
+############# 1s2
+######### 2s1
+##### 3s1
+### 4s1
+ch032_pyramid_1side_2__2side_1__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_1__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
 
-##################################
-### 1side2
-##################################
-# "1" 3 6 10 15 21 28 36 45 55
-# 2side1 OK 1
-ch032_pyramid_1side_2__2side_1__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_1__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+######### 2s1
+##### 3s1
+### 4s1
+ch032_pyramid_1side_2__2side_2__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
 
-# 1 "3" 6 10 15 21 28 36 45 55
-# 2side2 OK 4
-ch032_pyramid_1side_2__2side_2__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s2
+### 4s1
+ch032_pyramid_1side_2__2side_2__3side_2_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2__3side_2_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_2__2side_2__3side_2_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2__3side_2_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_2__2side_2__3side_2_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2__3side_2_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_2__2side_2__3side_2_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2__3side_2_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
 
-ch032_pyramid_1side_2__2side_2__3side_2_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2__3side_2_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_2__2side_2__3side_2_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2__3side_2_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_2__2side_2__3side_2_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2__3side_2_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+###################
+############# 1s3
+######### 2s1
+##### 3s1
+### 4s1
+ch032_pyramid_1side_3__2side_1__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_1__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+######### 2s2
+##### 3s1
+### 4s1
+ch032_pyramid_1side_3__2side_2__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s2
+### 4s1
+ch032_pyramid_1side_3__2side_2__3side_2_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2__3side_2_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_3__2side_2__3side_2_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2__3side_2_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_2__3side_2_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2__3side_2_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_2__3side_2_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2__3side_2_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+######### 2s3
+##### 3s1
+### 4s1
+ch032_pyramid_1side_3__2side_3__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s2
+### 4s1
+ch032_pyramid_1side_3__2side_3__3side_2_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_2_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_3__2side_3__3side_2_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_2_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_3__3side_2_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_2_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_3__3side_2_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_2_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s3
+### 4s1
+ch032_pyramid_1side_3__2side_3__3side_3_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_3__2side_3__3side_3_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_3__3side_3_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_3__3side_3_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s3
+ch032_pyramid_1side_3__2side_3__3side_3_4side_3_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_3_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_3__3side_3_4side_3_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_3_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_3__3side_3_4side_3_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_3_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_3__3side_3_4side_3_5s3_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_3_5s3_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_3__3side_3_4side_3_5s3_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_3_5s3_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_3__2side_3__3side_3_4side_3_5s3_6s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_3_5s3_6s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
 
-
-##################################
-### 1side3
-##################################
-# "1" 3 6 10 15 21 28 36 45 55
-# 2side1 OK 1
-ch032_pyramid_1side_3__2side_1__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_1__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-
-# 1 "3" 6 10 15 21 28 36 45 55
-# 2side2 OK 4
-ch032_pyramid_1side_3__2side_2__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-ch032_pyramid_1side_3__2side_2__3side_2_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2__3side_2_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_3__2side_2__3side_2_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2__3side_2_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_3__2side_2__3side_2_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2__3side_2_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-# 1 3 "6" 10 15 21 28 36 45 55
-# 2side3 OK 10
-ch032_pyramid_1side_3__2side_3__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-ch032_pyramid_1side_3__2side_3__3side_2_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_2_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_3__2side_3__3side_2_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_2_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_3__2side_3__3side_2_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_2_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-ch032_pyramid_1side_3__2side_3__3side_3_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_3__2side_3__3side_3_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_3__2side_3__3side_3_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_3__2side_3__3side_3_4side_3_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_3_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_3__2side_3__3side_3_4side_3_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_3_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_3__2side_3__3side_3_4side_3_5s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3__3side_3_4side_3_5s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-
-##################################
-### 1side4
-##################################
-# "1" 3 6 10 15 21 28 36 45 55
-# 2side1 OK 1
-ch032_pyramid_1side_4__2side_1__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_1__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-# 1 "3" 6 10 15 21 28 36 45 55
-# 2side2 OK 4
-ch032_pyramid_1side_4__2side_2__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-ch032_pyramid_1side_4__2side_2__3side_2_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2__3side_2_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_2__3side_2_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2__3side_2_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_2__3side_2_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2__3side_2_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-
-# 1 3 "6" 10 15 21 28 36 45 55
-# 2side3 OK 10
-ch032_pyramid_1side_4__2side_3__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-ch032_pyramid_1side_4__2side_3__3side_2_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_2_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_3__3side_2_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_2_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_3__3side_2_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_2_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-ch032_pyramid_1side_4__2side_3__3side_3_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_3__3side_3_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_3__3side_3_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_3__3side_3_4side_3_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_3_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_3__3side_3_4side_3_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_3_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_3__3side_3_4side_3_5s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_3_5s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-# 1 3 6 "10" 15 21 28 36 45 55
-# 2side4 OK 20
-ch032_pyramid_1side_4__2side_4__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_1_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-ch032_pyramid_1side_4__2side_4__3side_2_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_2_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_2_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_2_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_2_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_2_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-ch032_pyramid_1side_4__2side_4__3side_3_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_3_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_3_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_3_4side_3_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_3_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_3_4side_3_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_3_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_3_4side_3_5s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_3_5s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-
-ch032_pyramid_1side_4__2side_4__3side_4_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_1_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_4_4side_2_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_2_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_4_4side_2_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_2_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_4_4side_3_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_3_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_4_4side_3_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_3_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_4_4side_3_5s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_3_5s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
-ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s4, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+###################
+############# 1s4
+######### 2s1
+##### 3s1
+### 4s1
+ch032_pyramid_1side_4__2side_1__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_1__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+######### 2s2
+##### 3s1
+### 4s1
+ch032_pyramid_1side_4__2side_2__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s2
+### 4s1
+ch032_pyramid_1side_4__2side_2__3side_2_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2__3side_2_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_4__2side_2__3side_2_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2__3side_2_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_2__3side_2_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2__3side_2_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_2__3side_2_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2__3side_2_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+######### 2s3
+##### 3s1
+### 4s1
+ch032_pyramid_1side_4__2side_3__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s2
+### 4s1
+ch032_pyramid_1side_4__2side_3__3side_2_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_2_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_4__2side_3__3side_2_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_2_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_3__3side_2_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_2_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_3__3side_2_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_2_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s3
+### 4s1
+ch032_pyramid_1side_4__2side_3__3side_3_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_4__2side_3__3side_3_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_3__3side_3_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_3__3side_3_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s3
+ch032_pyramid_1side_4__2side_3__3side_3_4side_3_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_3_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_3__3side_3_4side_3_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_3_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_3__3side_3_4side_3_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_3_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_3__3side_3_4side_3_5s3_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_3_5s3_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_3__3side_3_4side_3_5s3_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_3_5s3_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_3__3side_3_4side_3_5s3_6s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3__3side_3_4side_3_5s3_6s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+######### 2s4
+##### 3s1
+### 4s1
+ch032_pyramid_1side_4__2side_4__3side_1_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_1_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s2
+### 4s1
+ch032_pyramid_1side_4__2side_4__3side_2_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_2_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_4__2side_4__3side_2_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_2_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_2_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_2_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_2_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_2_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s3
+### 4s1
+ch032_pyramid_1side_4__2side_4__3side_3_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_4__2side_4__3side_3_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_3_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_3_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s3
+ch032_pyramid_1side_4__2side_4__3side_3_4side_3_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_3_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_3_4side_3_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_3_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_3_4side_3_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_3_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_3_4side_3_5s3_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_3_5s3_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_3_4side_3_5s3_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_3_5s3_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_3_4side_3_5s3_6s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_3_4side_3_5s3_6s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+##### 3s4
+### 4s1
+ch032_pyramid_1side_4__2side_4__3side_4_4side_1_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_1_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s2
+ch032_pyramid_1side_4__2side_4__3side_4_4side_2_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_2_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_2_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_2_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_2_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_2_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s3
+ch032_pyramid_1side_4__2side_4__3side_4_4side_3_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_3_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_3_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_3_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_3_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_3_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_3_5s3_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_3_5s3_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_3_5s3_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_3_5s3_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_3_5s3_6s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_3_5s3_6s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+### 4s4
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s1_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s1_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s2_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s2_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s2_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s2_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s3_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s3_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s3_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s3_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s3_6s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s3_6s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s1, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s2, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s3, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_4__3side_4_4side_4_5s4_6s4, ch_upper_bound= 2 ** 14).set_gen_op(I_Generate_M_see).set_train_step(train_step_Single_output_I_to_M)
 ###############################################################################################################################################################################################
 ###############################################################################################################################################################################################
 if(__name__ == "__main__"):
@@ -252,7 +355,7 @@ if(__name__ == "__main__"):
 
     print("build_model cost time:", time.time() - start_time)
     data = np.zeros(shape=(1, 512, 512, 1))
-    use_model = ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1
+    use_model = ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1_6s1
     use_model = use_model.build()
     result = use_model.generator(data)
     print(result.shape)

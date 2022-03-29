@@ -28,21 +28,26 @@ import subprocess as sb
 ###################
 ############# 1s1
 ######### 2s1
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_1__2side_1__3side_1_4side_1_5s1_6s1.{run}"])
 
 ###################
 ############# 1s2
 ######### 2s1
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_1__3side_1_4side_1_5s1_6s1.{run}"])
 
 ######### 2s1
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_1_4side_1_5s1_6s1.{run}"])
 
-### 3s2
+##### 3s2
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s2_6s2.{run}"])
@@ -50,29 +55,39 @@ import subprocess as sb
 ###################
 ############# 1s3
 ######### 2s1
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_1__3side_1_4side_1_5s1_6s1.{run}"])
 ######### 2s2
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_1_4side_1_5s1_6s1.{run}"])
-### 3s2
+##### 3s2
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_2_5s2_6s2.{run}"])
 ######### 2s3
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_1_4side_1_5s1_6s1.{run}"])
-### 3s2
+##### 3s2
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_2_5s2_6s2.{run}"])
-### 3s3
+##### 3s3
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_2_5s2_6s2.{run}"])
+### 4s3
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s2_6s2.{run}"])
@@ -83,29 +98,39 @@ import subprocess as sb
 ###################
 ############# 1s4
 ######### 2s1
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_1__3side_1_4side_1_5s1_6s1.{run}"])
 ######### 2s2
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_1_4side_1_5s1_6s1.{run}"])
-### 3s2
+##### 3s2
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s2_6s2.{run}"])
 ######### 2s3
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_1_4side_1_5s1_6s1.{run}"])
-### 3s2
+##### 3s2
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s2_6s2.{run}"])
-### 3s3
+##### 3s3
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s2_6s2.{run}"])
+### 4s3
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s2_6s2.{run}"])
@@ -113,35 +138,45 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3_6s2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3_6s3.{run}"])
 ######### 2s4
-### 3s1
+##### 3s1
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_1_4side_1_5s1_6s1.{run}"])
-### 3s2
+##### 3s2
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s2_6s2.{run}"])
-### 3s3
+##### 3s3
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s2_6s2.{run}"])
+### 4s3
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s2_6s2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3_6s2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3_6s3.{run}"])
-### 3s4
+##### 3s4
+### 4s1
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_1_5s1_6s1.{run}"])
+### 4s2
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s2_6s2.{run}"])
+### 4s3
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s2_6s2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3_6s2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3_6s3.{run}"])
+### 4s4
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s1_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s2_6s1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s2_6s2.{run}"])
@@ -152,8 +187,6 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s3.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s4.{run}"])
-
-
 ##################################
 ### 1side1
 ##################################

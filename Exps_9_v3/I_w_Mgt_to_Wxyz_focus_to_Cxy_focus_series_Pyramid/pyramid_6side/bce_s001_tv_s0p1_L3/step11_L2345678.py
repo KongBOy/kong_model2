@@ -20,12 +20,12 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
     os.chdir(code_exe_dir)
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_0side.bce_s001_tv_s0p1_L3.step10_a as L3_0side
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_1side.bce_s001_tv_s0p1_L3.step10_a as L3_1side
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_2side.bce_s001_tv_s0p1_L3.step10_a as L3_2side
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_3side.bce_s001_tv_s0p1_L3.step10_a as L3_3side
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_4side.bce_s001_tv_s0p1_L3.step10_a as L3_4side
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_5side.bce_s001_tv_s0p1_L3.step10_a as L3_5side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_0side.bce_s001_tv_s0p1_L3.step10_a as L3_0side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_1side.bce_s001_tv_s0p1_L3.step10_a as L3_1side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_2side.bce_s001_tv_s0p1_L3.step10_a as L3_2side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_3side.bce_s001_tv_s0p1_L3.step10_a as L3_3side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_4side.bce_s001_tv_s0p1_L3.step10_a as L3_4side
+import Exps_9_v3.I_w_Mgt_to_Wxyz_focus_to_Cxy_focus_series_Pyramid.pyramid_5side.bce_s001_tv_s0p1_L3.step10_a as L3_5side
 import step10_a as L3_6side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ###################

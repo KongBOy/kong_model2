@@ -34,7 +34,7 @@ Use_what_Model = step09_g3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus.block1_L5_ch06
 ##################################
 # "1" 3 6 10 15 21 28 36 45 55
 # 2side1 OK 1
-ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus", I_to_Wx_Wy_Wz=size, W_to_Cx_Cy=Use_what_Model).set_gen_op(I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see).set_train_step(train_step_Multi_output_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus)
+ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1 = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus", I_to_Wx_Wy_Wz=ch032_pyramid_1side_1__2side_1__3side_1_4side_1_5s1, W_to_Cx_Cy=Use_what_Model).set_gen_op(I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see).set_train_step(train_step_Multi_output_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus)
 
 
 ##################################
