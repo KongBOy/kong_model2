@@ -86,57 +86,57 @@ import subprocess as sb
 ##################################
 # "1" 3 6 10 15 21 28 36 45 55
 # 2side1 OK 1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_1__3side_1_4side_1_5s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_1__3side_1_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 
 # 1 "3" 6 10 15 21 28 36 45 55
 # 2side2 OK 4
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_1_4side_1_5s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_1_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_1_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
 
 
 # 1 3 "6" 10 15 21 28 36 45 55
 # 2side3 OK 10
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_1_4side_1_5s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_1_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_1_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_1_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s2.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3.{compress_and_WM_3D_all_from_begin}"])
 
 # 1 3 6 "10" 15 21 28 36 45 55
 # 2side4 OK 20
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_1_4side_1_5s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_1_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_1_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_1_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s2.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3.{compress_and_WM_3D_all_from_begin}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_1_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s2.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s2.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s3.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4.{compress_and_WM_3D_all_from_begin}"])
 
 
 ##################################
@@ -144,23 +144,23 @@ import subprocess as sb
 ##################################
 # "1" 3 6 10 15 21 28 36 45 55
 # 2side1 OK 1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_1__3side_1_4side_1_5s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_1__3side_1_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 
 # 1 "3" 6 10 15 21 28 36 45 55
 # 2side2 OK 4
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_1_4side_1_5s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_1_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_1_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
 
 # 1 3 "6" 10 15 21 28 36 45 55
 # 2side3 OK 10
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_1_4side_1_5s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_1_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_1_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s2.{compress_and_WM_3D_all_from_begin}"])
 
 # sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_1_5s1.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_2_5s1.{compress_and_WM_3D_all_from_begin}"])
@@ -332,8 +332,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_4_5s2.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_4_5s3.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_4_5s4.{compress_and_WM_3D_all_from_begin}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_5_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_5_5s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_5_5s1.{compress_and_WM_3D_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_5_5s2.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_5_5s3.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_5_5s4.{compress_and_WM_3D_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5__3side_5_4side_5_5s5.{compress_and_WM_3D_all_from_begin}"])
