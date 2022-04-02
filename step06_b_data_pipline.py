@@ -92,7 +92,7 @@ class img_mapping_util(norm_and_resize_mapping_util):
 
 ####################################################################################################
 ####################################################################################################
-class mov_mapping_util(norm_mapping_util):
+class flow_wc_mapping_util(norm_and_resize_mapping_util):
     def _step0_load_knpy(self, file_name):
         '''
         uv(flow):
@@ -115,72 +115,86 @@ class mov_mapping_util(norm_mapping_util):
         F = self._resize(F)
         return F
 
-    def step2_M_clip_and_C_normalize(self, F):
+    def step2_M_bin_and_C_normalize_wrong(self, F):
+        '''
+        Wrong 但 為了 相容性 仍保留～
+        normalize 完以後 mask 以外的區域不保證為0，
+        flow剛好是因為 本身值就接近 0~1，所以才會 剛好 mask 外 幾乎為0，
+        但 wc 就不是如此囉！
+        '''
         M     = F[..., 0:1]
         C     = F[..., 1:3]
-        M_pre = self._mask_binary_clip(M)
+        M_pre = self._mask_binarization(M)
         C_pre = self.check_use_range_and_db_range_then_normalize_data(C)
         F_pre = tf.concat([M_pre, C_pre], axis=-1)
         F_pre = self._resize(F_pre)
         return F_pre
 
-    def step2_M_clip_and_C_normalize_try_mul_M(self, wc):
+    def step2_M_bin_and_C_normalize_try_mul_M_right(self, F):
+        ''' 
+        Right 的方法
+        normalize 完以後 mask 以外的區域不保證為0， 所以應該還要再 * mask， 以確保 mask 外為0
+        這是寫完 wc 後才發現的問題， wc 是一定要 * mask，　因為 wc 本身值 不接近 0~1， normalize 完後 mask外有值！
+        flow 因為本身值就接近 0~1， 所以乘了看起來沒效果， 但理論上還是乘一下比較保險喔！
+        因為不乘的話 mask 外 有可能有雜雜的非0 存在喔～
+        '''
         M     = F[..., 0:1]
         C     = F[..., 1:3]
-        M_pre = self._mask_binary_clip(M)
+        M_pre = self._mask_binarization(M)
         C_pre = self.check_use_range_and_db_range_then_normalize_data(C)
-        C_pre = C_pre * M
+        C_pre = C_pre * M  ### 多了這一步，其他都跟 wrong 一樣
         F_pre = tf.concat([M_pre, C_pre], axis=-1)
         F_pre = self._resize(F_pre)
         return F_pre
 
-    # def step2_flow_split_to_M_and_C(self, F):
-    #     M = F[..., 0:1]
-    #     C = F[..., 1:3]
-    #     return M, C
-
-    # def step2_flow_split_to_M_and_C_then_M_clip_and_C_normalize(self, F):
-    #     M = F[..., 0:1]
-    #     M = self._mask_binary_clip(M)
-
-    #     C = F[..., 1:3]
-    #     C = self.check_use_range_and_db_range_then_normalize_data(C)
-    #     return M, C
 
     def step2_flow_extract_just_mask(self, F):
         M = F[..., 0:1]
         return M
 
-
+    ###############################################################################################
+    ###############################################################################################
     def step1_wc_load(self, file_name):
         raw_data = self._step0_load_knpy(file_name)
         wc = tf.reshape(raw_data, [self.img_resize[0], self.img_resize[1], 4])  ### ch1:z, ch2:y, ch3:x, ch4:後處理成mask了
         return wc   #[..., :3]
 
 
-    def step2_M_clip_and_W_normalize(self, wc):
-        M = wc[..., 3:4]
-        M = self._mask_binary_clip(M)
-        wc   = wc[...,  :3]
-        wc   = self.check_use_range_and_db_range_then_normalize_data(wc)
-        W = tf.concat([wc, M], axis=-1)
-        W = self._resize(W)
-        return W
+    def step2_M_bin_and_W_normalize_wrong(self, wc):
+        ''' Wrong 但 為了 相容性 仍保留～
+        normalize 完以後 mask 以外的區域不保證為0，
+        flow剛好是因為 本身值就接近 0~1，所以才會 剛好 mask 外 幾乎為0，
+        但 wc 就不是如此囉！
+        '''
+        M      = wc[..., 3:4]
+        M_pre  = self._mask_binarization(M)
+        wc     = wc[...,  :3]
+        wc_pre = self.check_use_range_and_db_range_then_normalize_data(wc)
+        W_pre = tf.concat([wc_pre, M_pre], axis=-1)
+        W_pre = self._resize(W_pre)
+        return W_pre
 
-    def step2_M_clip_and_W_normalize_try_mul_M(self, wc):
-        M = wc[..., 3:4]
-        M = self._mask_binary_clip(M)
-        wc = wc[...,  :3]
-        wc = self.check_use_range_and_db_range_then_normalize_data(wc)
-        wc = wc * M
-        W = tf.concat([wc, M], axis=-1)
+    def step2_M_bin_and_W_normalize_try_mul_M_right(self, wc):
+        ''' Right 的方法
+        normalize 完以後 mask 以外的區域不保證為0， 所以應該還要再 * mask， 以確保 mask 外為0
+        這是寫完 wc 後才發現的問題， wc 是一定要 * mask，　因為 wc 本身值 不接近 0~1， normalize 完後 mask外有值！
+        flow 因為本身值就接近 0~1， 所以乘了看起來沒效果， 但理論上還是乘一下比較保險喔！
+        因為不乘的話 mask 外 有可能有雜雜的非0 存在喔～
+        '''
+        M      = wc[..., 3:4]
+        M_pre  = self._mask_binarization(M)
+        wc     = wc[...,  :3]
+        wc_pre = self.check_use_range_and_db_range_then_normalize_data(wc)
+        wc_w_M_pre = wc_pre * M_pre  ### 多了這一步，其他都跟 wrong 一樣
+        W_w_M_pre = tf.concat([wc_w_M_pre, M_pre], axis=-1)
         W = self._resize(W)
-        return W
+        W_w_M_pre = self._resize(W_w_M_pre)
+        return W_w_M_pre
 
-class mask_mapping_util(norm_mapping_util):
+class mask_mapping_util(norm_and_resize_mapping_util):
     def _3ch_get_1ch(self, img): return img[..., 0]
 
-    def _mask_binary_clip(self, mask):
+    def _mask_binarization(self, mask):
         threshold = 0.8
         mask = tf.where(mask > threshold, 1, 0)
         mask = tf.cast(mask, tf.float32)
@@ -195,7 +209,7 @@ class tf_Data_element:
 
 ### 下面的 tf_Data_element_factory_builder/Factory 都是為了要建 tf_Data_element_factory 這個物件喔！
 ### 把img_db 包成class 是因為 tf.data.Dataset().map(f)的這個f，沒有辦法丟參數壓！所以只好包成class，把要傳的參數當 data_member囉！ 另一方面是好管理、好閱讀～
-class tf_Data_element_factory(img_mapping_util, mov_mapping_util, mask_mapping_util):
+class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mapping_util):
     def __init__(self):  ### file_format 是 bmp/jpg喔！
         self.ord_dir = None
         '''
