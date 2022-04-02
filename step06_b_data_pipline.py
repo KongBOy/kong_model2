@@ -21,7 +21,11 @@ tf.keras.backend.set_floatx('float32')  ### 這步非常非常重要！用了才
 # import pdb
 debug_dict = {}
 ####################################################################################################
-class norm_mapping_util():
+class norm_and_resize_mapping_util():
+    def _resize(self, data):
+        data = tf.image.resize(data, self.img_resize, method=tf.image.ResizeMethod.AREA)
+        return data
+
     def _norm_img_to_tanh(self, img):  ### 因為用tanh，所以把值弄到 [-1, 1]
         img = (img / 127.5) - 1
         return img
@@ -51,11 +55,7 @@ class norm_mapping_util():
 
 ####################################################################################################
 ####################################################################################################
-class img_mapping_util(norm_mapping_util):
-    def _resize(self, img):
-        img = tf.image.resize(img, self.img_resize, method=tf.image.ResizeMethod.AREA)
-        return img
-
+class img_mapping_util(norm_and_resize_mapping_util):
     def step0a_load_byte_img(self, file_name):
         byte_img = tf.io.read_file(file_name)
         return byte_img
@@ -71,22 +71,22 @@ class img_mapping_util(norm_mapping_util):
 
 
     def step1_uint8_resize(self, img):
-        img = self._resize(img)
         img  = tf.cast(img, tf.uint8)
+        img = self._resize(img)
         return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
 
 
     def step1_float32_resize_and_to_01(self, img):
         img  = tf.cast(img, tf.float32)
-        img = self._resize(img)
         img = self._norm_img_to_01(img)
+        img = self._resize(img)
         return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
 
 
     def step1_float32_resize_and_to_tanh(self, img):
         img  = tf.cast(img, tf.float32)
-        img = self._resize(img)
         img = self._norm_img_to_tanh(img)
+        img = self._resize(img)
         return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
 
 
@@ -112,6 +112,7 @@ class mov_mapping_util(norm_mapping_util):
     def step1_flow_load(self, file_name):
         raw_data = self._step0_load_knpy(file_name)
         F = tf.reshape(raw_data, [self.img_resize[0], self.img_resize[1], 3])  ### ch1:mask, ch2:y, ch3:x
+        F = self._resize(F)
         return F
 
     def step2_M_clip_and_C_normalize(self, F):
@@ -120,6 +121,7 @@ class mov_mapping_util(norm_mapping_util):
         M_pre = self._mask_binary_clip(M)
         C_pre = self.check_use_range_and_db_range_then_normalize_data(C)
         F_pre = tf.concat([M_pre, C_pre], axis=-1)
+        F_pre = self._resize(F_pre)
         return F_pre
 
     def step2_M_clip_and_C_normalize_try_mul_M(self, wc):
@@ -129,6 +131,7 @@ class mov_mapping_util(norm_mapping_util):
         C_pre = self.check_use_range_and_db_range_then_normalize_data(C)
         C_pre = C_pre * M
         F_pre = tf.concat([M_pre, C_pre], axis=-1)
+        F_pre = self._resize(F_pre)
         return F_pre
 
     # def step2_flow_split_to_M_and_C(self, F):
@@ -161,6 +164,7 @@ class mov_mapping_util(norm_mapping_util):
         wc   = wc[...,  :3]
         wc   = self.check_use_range_and_db_range_then_normalize_data(wc)
         W = tf.concat([wc, M], axis=-1)
+        W = self._resize(W)
         return W
 
     def step2_M_clip_and_W_normalize_try_mul_M(self, wc):
@@ -170,6 +174,7 @@ class mov_mapping_util(norm_mapping_util):
         wc = self.check_use_range_and_db_range_then_normalize_data(wc)
         wc = wc * M
         W = tf.concat([wc, M], axis=-1)
+        W = self._resize(W)
         return W
 
 class mask_mapping_util(norm_mapping_util):
@@ -482,16 +487,27 @@ class tf_Data_init_builder:
         # self.tf_data.rec_hope_max = rec_hope_max
         return self
 
-    def set_img_resize(self, model_name):
-        # print("doing tf_data resize according model_name")
-        # print("self.tf_data.db_obj.h = ", self.tf_data.db_obj.h)
-        # print("self.tf_data.db_obj.w = ", self.tf_data.db_obj.w)
-        # print("math.ceil(self.tf_data.db_obj.h / 128) * 128 = ", math.ceil(self.tf_data.db_obj.h / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
-        # print("math.ceil(self.tf_data.db_obj.w / 128) * 128 = ", math.ceil(self.tf_data.db_obj.w / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
-        if  ("unet" in model_name.value):
-            self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h / 128) * 128 , math.ceil(self.tf_data.db_obj.w / 128) * 128)  ### 128的倍數，且要是gt_img的兩倍大喔！
-        elif("rect" in model_name.value or "justG" in model_name.value):
-            self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h / 4) * 4, math.ceil(self.tf_data.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
+    def set_img_resize(self, img_resize):
+        self.tf_data.img_resize = img_resize
+        # '''
+        # tuple / list 或 <enum 'MODEL_NAME'>
+        # '''
+        # # print(type(img_resize))
+
+        # ### tuple / list 的 case
+        # if(type(img_resize) == type( () ) or type(img_resize) == type( [] )):
+        #     self.tf_data.img_resize = img_resize
+        # ### <enum 'MODEL_NAME'> 的 case
+        # else:
+        #     # print("doing tf_data resize according model_name")
+        #     # print("self.tf_data.db_obj.h = ", self.tf_data.db_obj.h)
+        #     # print("self.tf_data.db_obj.w = ", self.tf_data.db_obj.w)
+        #     # print("math.ceil(self.tf_data.db_obj.h / 128) * 128 = ", math.ceil(self.tf_data.db_obj.h / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
+        #     # print("math.ceil(self.tf_data.db_obj.w / 128) * 128 = ", math.ceil(self.tf_data.db_obj.w / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
+        #     if  ("unet" in img_resize.value):
+        #         self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h / 128) * 128 , math.ceil(self.tf_data.db_obj.w / 128) * 128)  ### 128的倍數，且要是gt_img的兩倍大喔！
+        #     elif("rect" in img_resize.value or "justG" in img_resize.value):
+        #         self.tf_data.img_resize = (math.ceil(self.tf_data.db_obj.h / 4) * 4, math.ceil(self.tf_data.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
         return self
 
     def build_by_db_get_method(self):
@@ -1599,49 +1615,49 @@ if(__name__ == "__main__"):
     # db_obj = Dataset_builder().set_basic(DB_C.type8_blender                      , DB_N.blender_os_hw768      , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", db_in_range=Range(0, 255), gt_format="knpy", db_gt_range=Range(0, 1), rec_hope_format="jpg", db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True).build()
     # print(db_obj)
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1), use_rec_hope_range=Range(0, 255)).build_by_db_get_method().build()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1), use_rec_hope_range=Range(0, 255)).build_by_db_get_method().build()
 
     '''in_img, gt_mask'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type9_try_segmentation.build()
     # print(db_obj)
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
     # print(db_obj)
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type8_blender_wc.build()
     # print(db_obj)
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type8_blender_wc_flow.build()
     # print(db_obj)
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type8_blender_wc_try_mul_M.build()
     # print(db_obj)
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     db_obj = type8_blender_wc_flow_try_mul_M.build()
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
-    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     # print("here")
     img1 = tf_data.train_db_combine.take(10)
@@ -1729,7 +1745,7 @@ if(__name__ == "__main__"):
     # db_obj = type8_blender_dis_wc_flow_try_mul_M.build()
     # print(db_obj)
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(model_obj.model_name).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     print(time.time() - start_time)
     print("finish")

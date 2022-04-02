@@ -65,6 +65,7 @@ class Experiment():
         self.phase         = "train"
         self.db_builder    = None
         self.db_obj        = None
+        self.img_resize    = None
         self.model_builder = None
         self.model_obj     = None
         self.loss_info_builders = None
@@ -146,8 +147,23 @@ class Experiment():
             self.result_obj   = Result_builder().set_exp_obj_use_gt_range(self.use_gt_range).set_by_result_name(self.exp_dir + "/" + self.result_name, self.db_obj).build()  ### 直接用 自己指定好的 result_name
             print("Reload: %s ok~~" % (self.result_obj.result_read_dir))
         else: self.result_obj = Result_builder().set_exp_obj_use_gt_range(self.use_gt_range).set_by_exp(self).build()  ### exp在train時 要自動建新的 result，才不會覆蓋到之前訓練的result，Result_builder()需要 db_obj 和 exp本身的describe_mid/end
-        ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 要參考 model_name 來決定如何 resize 喔！
-        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.model_obj.model_name).build_by_db_get_method().build()  ### tf_data 抓資料
+
+        ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 如果沒有設定 img_resize時，需要參考 model_name 來決定如何 resize， 所以才寫在 exp 裡面
+        if(self.img_resize is None):
+            print("沒有設定 img_resize， 就自動根據 db_obj 裡面設定的 h, w 和 model_obj 裡面的 model_name 來自動指定大小囉")        
+
+            # print("doing tf_data resize according model_name")
+            # print("self.db_obj.h = ", self.db_obj.h)
+            # print("self.db_obj.w = ", self.db_obj.w)
+            # print("math.ceil(self.db_obj.h / 128) * 128 = ", math.ceil(self.db_obj.h / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
+            # print("math.ceil(self.db_obj.w / 128) * 128 = ", math.ceil(self.db_obj.w / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
+            if  ("unet" in self.model_obj.model_name.value):
+                self.img_resize = (math.ceil(self.db_obj.h / 128) * 128 , math.ceil(self.db_obj.w / 128) * 128)  ### 128的倍數，且要是gt_img的兩倍大喔！
+            elif("rect" in self.model_obj.model_name.value or "justG" in self.model_obj.model_name.value):
+                self.img_resize = (math.ceil(self.db_obj.h / 4) * 4, math.ceil(self.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
+
+        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
+
         ### 3.model
         self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
         self.ckpt_write_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_write_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
