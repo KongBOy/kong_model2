@@ -113,7 +113,7 @@ if(__name__ == "__main__"):
 
     ### 2. db_obj 和 tf_data
     db_obj  = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
-    tf_data = tf_Data_builder().set_basic(db_obj, 1, train_shuffle=False).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1, train_shuffle=False).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_img_resize(( 512, 512) ).build_by_db_get_method().build()
 
     # ### 3. loss_info_obj
     G_mae_loss_infos = [Loss_info_builder().set_loss_type("mae").build(),

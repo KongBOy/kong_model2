@@ -52,6 +52,10 @@ class Exp_builder():
     #     self.result_name = result_name
     #     return self
 
+    def set_img_resize(self, img_resize):
+        self.exp.img_resize = img_resize
+        return self
+
     def set_result_name(self, result_name):
         self.exp.result_name = result_name
         # print("0.set_result_name", result_name)  ### 追蹤see的建立過程

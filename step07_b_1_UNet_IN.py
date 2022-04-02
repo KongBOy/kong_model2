@@ -411,7 +411,7 @@ if(__name__ == "__main__"):
     model_obj = flow_unet_IN_ch64_cnnNoBias.build()  ### 可替換成 上面 想測試的 model
     ### 2. db_obj 和 tf_data
     db_obj = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.blender_os_hw768 , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy").set_detail(have_train=True, have_see=True).build()
-    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).set_img_resize(( 512, 512) ).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
     # G_mae_loss_info = Loss_info_builder().set_loss_type("mae").build_g_loss_containors().build()

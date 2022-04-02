@@ -415,7 +415,7 @@ if(__name__ == "__main__"):
 
     ### 2. db_obj 和 tf_data
     db_obj = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book , DB_N.os_book_800data      , DB_GM.in_dis_gt_ord, h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", gt_format="jpg").set_detail(have_train=True, have_see=True).build()
-    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).set_img_resize(( 512, 512) ).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
     GAN_mae_loss_info = Loss_info_builder().build_gan_loss().build_gan_loss_containors().build()
