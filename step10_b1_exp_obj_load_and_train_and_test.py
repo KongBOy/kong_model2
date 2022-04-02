@@ -4,6 +4,7 @@ import tensorflow as tf
 import numpy as np
 import time
 import datetime
+import math
 from step0_access_path import Syn_write_to_read_dir, Result_Read_Dir, Result_Write_Dir, kong_model2_dir, JPG_QUALITY
 from step06_a_datas_obj import *
 from step06_b_data_pipline import tf_Data_builder
