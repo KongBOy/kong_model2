@@ -111,8 +111,7 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
 
     def step1_flow_load(self, file_name):
         raw_data = self._step0_load_knpy(file_name)
-        F = tf.reshape(raw_data, [self.img_resize[0], self.img_resize[1], 3])  ### ch1:mask, ch2:y, ch3:x
-        F = self._resize(F)
+        F = tf.reshape(raw_data, [self.db_h, self.db_w, 3])  ### ch1:mask, ch2:y, ch3:x
         return F
 
     def step2_M_bin_and_C_normalize_wrong(self, F):
@@ -156,7 +155,7 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
     ###############################################################################################
     def step1_wc_load(self, file_name):
         raw_data = self._step0_load_knpy(file_name)
-        wc = tf.reshape(raw_data, [self.img_resize[0], self.img_resize[1], 4])  ### ch1:z, ch2:y, ch3:x, ch4:後處理成mask了
+        wc = tf.reshape(raw_data, [self.db_h, self.db_w, 4])  ### ch1:z, ch2:y, ch3:x, ch4:後處理成mask了
         return wc   #[..., :3]
 
 
@@ -187,7 +186,6 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
         wc_pre = self.check_use_range_and_db_range_then_normalize_data(wc)
         wc_w_M_pre = wc_pre * M_pre  ### 多了這一步，其他都跟 wrong 一樣
         W_w_M_pre = tf.concat([wc_w_M_pre, M_pre], axis=-1)
-        W = self._resize(W)
         W_w_M_pre = self._resize(W_w_M_pre)
         return W_w_M_pre
 
@@ -221,6 +219,8 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
         self.file_format = None
         self.img_resize = None
 
+        self.db_h = None
+        self.db_w = None
         self.db_range  = None
         self.use_range = None
 
@@ -393,11 +393,13 @@ class tf_Data_element_factory_builder():
     def build(self):
         return self.tf_pipline_factory
 
-    def set_factory(self, ord_dir, file_format, img_resize, db_range, use_range):
+    def set_factory(self, ord_dir, file_format, img_resize, db_h, db_w, db_range, use_range):
         print("DB ord_dir:", ord_dir)
         self.tf_pipline_factory.ord_dir      = ord_dir
         self.tf_pipline_factory.file_format  = file_format
         self.tf_pipline_factory.img_resize   = img_resize
+        self.tf_pipline_factory.db_h         = db_h
+        self.tf_pipline_factory.db_w         = db_w
         self.tf_pipline_factory.db_range     = db_range
         self.tf_pipline_factory.use_range    = use_range
         return self
@@ -525,23 +527,23 @@ class tf_Data_init_builder:
         return self
 
     def build_by_db_get_method(self):
-        self.train_in_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.train_in_dir, file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_in_range, use_range=self.tf_data.use_in_range).build()
-        self.train_gt_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.train_gt_dir, file_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_gt_range, use_range=self.tf_data.use_gt_range).build()
-        self.test_in_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.test_in_dir,  file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_in_range, use_range=self.tf_data.use_in_range).build()
-        self.test_gt_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.test_gt_dir,  file_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_gt_range, use_range=self.tf_data.use_gt_range).build()
-        self.see_in_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.see_in_dir,   file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_in_range, use_range=self.tf_data.use_in_range).build()
-        self.see_gt_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.see_gt_dir,   file_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_gt_range, use_range=self.tf_data.use_gt_range).build()
+        self.train_in_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.train_in_dir, file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_in_range, use_range=self.tf_data.use_in_range).build()
+        self.train_gt_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.train_gt_dir, file_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_gt_range, use_range=self.tf_data.use_gt_range).build()
+        self.test_in_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.test_in_dir,  file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_in_range, use_range=self.tf_data.use_in_range).build()
+        self.test_gt_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.test_gt_dir,  file_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_gt_range, use_range=self.tf_data.use_gt_range).build()
+        self.see_in_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.see_in_dir,   file_format=self.tf_data.db_obj.in_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_in_range, use_range=self.tf_data.use_in_range).build()
+        self.see_gt_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.see_gt_dir,   file_format=self.tf_data.db_obj.gt_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_gt_range, use_range=self.tf_data.use_gt_range).build()
 
-        if("未指定" not in self.tf_data.db_obj.train_in2_dir): self.train_in2_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.train_in2_dir, file_format=self.tf_data.db_obj.in2_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_in2_range, use_range=self.tf_data.use_in_range).build()
-        if("未指定" not in self.tf_data.db_obj.train_gt2_dir): self.train_gt2_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.train_gt2_dir, file_format=self.tf_data.db_obj.gt2_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_gt2_range, use_range=self.tf_data.use_gt_range).build()
-        if("未指定" not in self.tf_data.db_obj.test_in2_dir ): self.test_in2_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.test_in2_dir,  file_format=self.tf_data.db_obj.in2_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_in2_range, use_range=self.tf_data.use_in_range).build()
-        if("未指定" not in self.tf_data.db_obj.test_gt2_dir ): self.test_gt2_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.test_gt2_dir,  file_format=self.tf_data.db_obj.gt2_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_gt2_range, use_range=self.tf_data.use_gt_range).build()
-        if("未指定" not in self.tf_data.db_obj.see_in2_dir  ): self.see_in2_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.see_in2_dir,   file_format=self.tf_data.db_obj.in2_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_in2_range, use_range=self.tf_data.use_in_range).build()
-        if("未指定" not in self.tf_data.db_obj.see_gt2_dir  ): self.see_gt2_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.see_gt2_dir,   file_format=self.tf_data.db_obj.gt2_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_gt2_range, use_range=self.tf_data.use_gt_range).build()
+        if("未指定" not in self.tf_data.db_obj.train_in2_dir): self.train_in2_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.train_in2_dir, file_format=self.tf_data.db_obj.in2_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_in2_range, use_range=self.tf_data.use_in_range).build()
+        if("未指定" not in self.tf_data.db_obj.train_gt2_dir): self.train_gt2_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.train_gt2_dir, file_format=self.tf_data.db_obj.gt2_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_gt2_range, use_range=self.tf_data.use_gt_range).build()
+        if("未指定" not in self.tf_data.db_obj.test_in2_dir ): self.test_in2_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.test_in2_dir,  file_format=self.tf_data.db_obj.in2_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_in2_range, use_range=self.tf_data.use_in_range).build()
+        if("未指定" not in self.tf_data.db_obj.test_gt2_dir ): self.test_gt2_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.test_gt2_dir,  file_format=self.tf_data.db_obj.gt2_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_gt2_range, use_range=self.tf_data.use_gt_range).build()
+        if("未指定" not in self.tf_data.db_obj.see_in2_dir  ): self.see_in2_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.see_in2_dir,   file_format=self.tf_data.db_obj.in2_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_in2_range, use_range=self.tf_data.use_in_range).build()
+        if("未指定" not in self.tf_data.db_obj.see_gt2_dir  ): self.see_gt2_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.see_gt2_dir,   file_format=self.tf_data.db_obj.gt2_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_gt2_range, use_range=self.tf_data.use_gt_range).build()
 
-        self.rec_hope_train_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_train_dir, file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
-        self.rec_hope_test_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_test_dir,  file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
-        self.rec_hope_see_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_see_dir,   file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
+        self.rec_hope_train_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_train_dir, file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
+        self.rec_hope_test_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_test_dir,  file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
+        self.rec_hope_see_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_see_dir,   file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
 
 
         if    (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_move_map):
