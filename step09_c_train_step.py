@@ -620,12 +620,26 @@ def train_step_Single_output_I_to_W(model_obj, in_data, gt_data, loss_info_objs=
     _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_wc, loss_info_objs=loss_info_objs)
 
 ####################################################
+####################################################
 @tf.function
 def train_step_Single_output_I_to_M(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
     I_to_C 是 Image_to_Coord 的縮寫
     '''
     gt_mask = gt_data[..., 0:1]
+
+    _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
+
+
+from step08_b_use_G_generate_I_to_M import tight_crop
+@tf.function
+def train_step_Single_output_I_to_M_tight_crop(model_obj, in_data, gt_data, loss_info_objs=None):
+    '''
+    I_to_C 是 Image_to_Coord 的縮寫
+    '''
+    gt_mask = gt_data[..., 0:1]
+    in_data = tight_crop(in_data, gt_mask, pad_size=20, resize=(256, 256))
+    gt_mask = tight_crop(gt_mask, gt_mask, pad_size=20, resize=(256, 256))
 
     _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
 
