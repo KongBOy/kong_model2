@@ -71,8 +71,8 @@ class img_mapping_util(norm_and_resize_mapping_util):
 
 
     def step1_uint8_resize(self, img):
-        img  = tf.cast(img, tf.uint8)
         img = self._resize(img)
+        img  = tf.cast(img, tf.uint8)  ### 一定要在 resize 之後 再 cast 成 uint8 喔！ 因為 resize 完會變 float32
         return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
 
 
