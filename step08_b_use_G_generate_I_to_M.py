@@ -306,7 +306,7 @@ def I_Generate_M_see(model_obj, phase, index, in_img, in_img_pre, gt_mask_coord,
 
     pred_mask, pred_mask_visual = use_model(model_obj, None, in_img_pre, None, None, exp_obj.use_gt_range, training=training)
 
-    print("bgr2rgb", bgr2rgb)
+    # print("bgr2rgb", bgr2rgb)
     if(bgr2rgb): in_img = in_img[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
 
     if(current_ep == 0 or see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
