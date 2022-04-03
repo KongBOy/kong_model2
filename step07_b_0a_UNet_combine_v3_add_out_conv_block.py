@@ -23,7 +23,7 @@ class Generator(tf.keras.models.Model):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **tf_kwargs):
-        self.debug = False  ### 手動設定吧
+        self.debug = True  ### 手動設定吧
         '''
         d_acti: lrelu/ relu
         u_acti: relu/ lrelu
@@ -456,7 +456,7 @@ if(__name__ == "__main__"):
 
     ### 2. db_obj 和 tf_data
     db_obj  = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
-    tf_data = tf_Data_builder().set_basic(db_obj, 1, train_shuffle=False).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_img_resize(model_obj.model_name).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, 1, train_shuffle=False).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_img_resize(( 512, 512) ).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
     loss_info_objs = [G_mae_s001_loss_info_builder.build()]
