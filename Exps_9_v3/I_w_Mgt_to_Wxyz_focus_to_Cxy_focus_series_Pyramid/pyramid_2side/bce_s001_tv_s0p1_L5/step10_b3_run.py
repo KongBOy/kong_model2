@@ -41,11 +41,11 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4.{run}"])
 
-sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_1.{run}"])
-sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2.{run}"])
-sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3.{run}"])
-sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4.{run}"])
-sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_2.{run}"])
