@@ -30,7 +30,7 @@ import subprocess as sb
 ##################################
 # "1" 3 6 10 15 21 28 36 45 55
 # 2side1 OK 1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_1__2side_1__3side_1_4side_1_5s1.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_1side_1__2side_1__3side_1_4side_1_5s1.{run}"])
 
 
 ##################################
@@ -38,15 +38,15 @@ import subprocess as sb
 ##################################
 # "1" 3 6 10 15 21 28 36 45 55
 # 2side1 OK 1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_1__3side_1_4side_1_5s1.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_1__3side_1_4side_1_5s1.{run}"])
 
 # 1 "3" 6 10 15 21 28 36 45 55
 # 2side2 OK 4
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_1_4side_1_5s1.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_1_4side_1_5s1.{run}"])
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_1_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s2.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_1_5s1.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s1.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s2.{run}"])
 
 
 ##################################
