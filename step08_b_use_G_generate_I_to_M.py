@@ -103,11 +103,11 @@ class I_to_M(Use_G_generate):
         bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
         '''
         in_img    = in_img[0].numpy()
-        gt_mask   = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
-        # print("gt_mask.dtype:", gt_mask.dtype)
-        # print("gt_mask.shape:", gt_mask.shape)
-        # print("gt_mask.max():", gt_mask.numpy().max())
-        # print("gt_mask.min():", gt_mask.numpy().min())
+        Mgt_visual   = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
+        # print("Mgt_visual.dtype:", Mgt_visual.dtype)
+        # print("Mgt_visual.shape:", Mgt_visual.shape)
+        # print("Mgt_visual.max():", Mgt_visual.numpy().max())
+        # print("Mgt_visual.min():", Mgt_visual.numpy().min())
 
         if(self.bgr2rgb): in_img = in_img[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
 
@@ -115,14 +115,14 @@ class I_to_M(Use_G_generate):
             Check_dir_exist_and_build(private_write_dir)                                   ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
             cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", in_img)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-            cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.jpg", gt_mask)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
+            cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.jpg", Mgt_visual)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(    private_mask_write_dir + "/" + "epoch_%04i_u1b1_mask.jpg" % current_ep, M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
             current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-            from matplot_fig_ax_util import Matplot_single_row_imgs
-            imgs = [ in_img.astype(np.uint8) ,   M_visual , gt_mask]
-            img_titles = ["in_img", "M", "gt_mask"]
+            from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
+            imgs = [ in_img.astype(np.uint8) ,   M_visual , Mgt_visual]
+            img_titles = ["in_img", "M", "Mgt_visual"]
 
             single_row_imgs = Matplot_single_row_imgs(
                                     imgs      =imgs,         ### 把要顯示的每張圖包成list
