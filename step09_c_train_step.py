@@ -1,3 +1,4 @@
+from distutils.log import debug
 import sys
 sys.path.append("kong_util")
 import tensorflow as tf
@@ -623,6 +624,33 @@ def train_step_Single_output_I_to_W(model_obj, in_data, gt_data, loss_info_objs=
 
 ####################################################
 ####################################################
+class Train_step_I_to_M():
+    def __init__(self, tight_crop=False, pad_size=20, resize=(256, 256)):
+        self.tight_crop = tight_crop
+        self.pad_size   = pad_size
+        self.resize     = resize
+
+    # @tf.function
+    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+        gt_mask = gt_data[..., 0:1]
+        if(self.tight_crop == True):
+            in_data = tight_crop(in_data, gt_mask, pad_size=self.pad_size, resize=self.resize)
+            gt_mask = tight_crop(gt_mask, gt_mask, pad_size=self.pad_size, resize=self.resize)
+
+        ### debug 時 記得把 @tf.function 拿掉
+        global debug_i
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+        ax[0].imshow(in_data[0])
+        ax[1].imshow(gt_mask[0])
+        fig.tight_layout()
+        # plt.show()
+        plt.savefig("debug_data/try_tight_crop/%03i" % debug_i)
+        plt.close()
+        debug_i += 1
+
+        _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
+
 @tf.function
 def train_step_Single_output_I_to_M(model_obj, in_data, gt_data, loss_info_objs=None):
     '''

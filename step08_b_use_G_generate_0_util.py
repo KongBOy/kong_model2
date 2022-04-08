@@ -155,7 +155,7 @@ def tight_crop(data, Mask, pad_size=20, resize=None):
 
     ### 對pad完的 data 重新定位
     if(l_pad < 0): l_pad = tf.constant(0, tf.int64)
-    if(r_pad < 0): r_pad = tf.constant(0, tf.int64)
+    if(t_pad < 0): t_pad = tf.constant(0, tf.int64)
     # l_pad = max(l_pad, 0)          ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
     # t_pad = max(t_pad, 0)          ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
     r_pad = r_pad + l_out + r_out  ### r_pad, d_pad 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad, t_pad 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out, t_out 喔！

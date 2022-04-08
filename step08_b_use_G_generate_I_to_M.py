@@ -64,6 +64,8 @@ class I_to_M(Use_G_generate):
     def __init__(self, tight_crop=False, pad_size=20, resize=None):
         super(I_to_M, self).__init__()
         self.tight_crop = tight_crop
+        self.pad_size = pad_size
+        self.resize   = resize
 
     def doing_things(self):
         current_ep = self.exp_obj.current_ep
@@ -82,15 +84,12 @@ class I_to_M(Use_G_generate):
         gt_mask_coord_pre = self.gt_pre
 
         if(self.tight_crop):
-            pad_size = 20
-            reisze = (256, 256)
-
             gt_mask_pre = gt_mask_coord_pre[..., 0:1]
 
-            in_img            = tight_crop(in_img, gt_mask_pre, pad_size, reisze)
-            in_img_pre        = tight_crop(in_img_pre, gt_mask_pre, pad_size, reisze)
-            gt_mask_coord     = tight_crop(gt_mask_coord, gt_mask_pre, pad_size, reisze)
-            gt_mask_coord_pre = tight_crop(gt_mask_coord_pre, gt_mask_pre, pad_size, reisze)
+            in_img            = tight_crop(in_img, gt_mask_pre, self.pad_size, self.resize)
+            in_img_pre        = tight_crop(in_img_pre, gt_mask_pre, self.pad_size, self.resize)
+            gt_mask_coord     = tight_crop(gt_mask_coord, gt_mask_pre, self.pad_size, self.resize)
+            gt_mask_coord_pre = tight_crop(gt_mask_coord_pre, gt_mask_pre, self.pad_size, self.resize)
 
 
         ''' use_model '''
@@ -137,6 +136,10 @@ class I_to_M(Use_G_generate):
             Fake_F 的部分
             '''
             if(self.phase == "test"):
+                ### 先粗略寫， 有時間再來敢先趕meeting
+                M = cv2.resize(M, (512, 512), interpolation=cv2.INTER_AREA)
+                M = M.reshape(512, 512, 1)
+
                 gather_mask_dir   = public_write_dir + "/pred_mask"
                 Check_dir_exist_and_build(gather_mask_dir)
                 cv2.imwrite(f"{gather_mask_dir}/{current_see_name}.jpg", M_visual)
@@ -145,6 +148,7 @@ class I_to_M(Use_G_generate):
                 fake_name = current_see_name.split(".")[0]
                 print("")
                 ###############################################################################
+                ### 準備存 fake_F
                 fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
                 fake_F = np.concatenate((M, fake_C), axis=-1)
                 fake_F = fake_F.astype(np.float32)
@@ -169,6 +173,7 @@ class I_to_M(Use_G_generate):
                 np.savez_compressed(fake_F_npy_path.replace(".npy", ".npz"), fake_F)
                 os.remove(fake_F_npy_path)
                 ###############################################################################
+                ### 準備存 fake_W
                 fake_W = np.zeros(shape=(h, w, 3), dtype=np.float32)
                 fake_W = np.concatenate((fake_W, M), axis=-1)
                 fake_W = fake_W.astype(np.float32)
