@@ -25,25 +25,21 @@ import step10_a as side2
 #################################################################################################################################################################################################################################################################################################################################################################################################
 
 ch032_1side_1__2side_all = [
-    side2.ch032_1side_1__2side_0,
     side2.ch032_1side_1__2side_1,
 ]
 
 ch032_1side_2__2side_all = [
-    side2.ch032_1side_2__2side_0,
     side2.ch032_1side_2__2side_1,
     side2.ch032_1side_2__2side_2,
 ]
 
 ch032_1side_3__2side_all = [
-    side2.ch032_1side_3__2side_0,
     side2.ch032_1side_3__2side_1,
     side2.ch032_1side_3__2side_2,
     side2.ch032_1side_3__2side_3,
 ]
 
 ch032_1side_4__2side_all = [
-    side2.ch032_1side_4__2side_0,
     side2.ch032_1side_4__2side_1,
     side2.ch032_1side_4__2side_2,
     side2.ch032_1side_4__2side_3,
@@ -51,7 +47,6 @@ ch032_1side_4__2side_all = [
 ]
 
 ch032_1side_5__2side_all = [
-    side2.ch032_1side_5__2side_0,
     side2.ch032_1side_5__2side_1,
     side2.ch032_1side_5__2side_2,
     side2.ch032_1side_5__2side_3,
@@ -60,7 +55,6 @@ ch032_1side_5__2side_all = [
 ]
 
 ch032_1side_6__2side_all = [
-    side2.ch032_1side_6__2side_0,
     side2.ch032_1side_6__2side_1,
     side2.ch032_1side_6__2side_2,
     side2.ch032_1side_6__2side_3,
@@ -70,7 +64,6 @@ ch032_1side_6__2side_all = [
 ]
 
 ch032_1side_7__2side_all = [
-    side2.ch032_1side_7__2side_0,
     side2.ch032_1side_7__2side_1,
     side2.ch032_1side_7__2side_2,
     side2.ch032_1side_7__2side_3,

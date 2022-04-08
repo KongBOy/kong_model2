@@ -20,10 +20,10 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
     os.chdir(code_exe_dir)
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_0side.bce_s001_tv_s0p1_L5.step10_a as L5_0side
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_1side.bce_s001_tv_s0p1_L5.step10_a as L5_1side
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_2side.bce_s001_tv_s0p1_L5.step10_a as L5_2side
-import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_3side.bce_s001_tv_s0p1_L5.step10_a as L5_3side
+import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_tight_crop_size256.pyramid_0side.bce_s001_tv_s0p1_L5.step10_a as L5_0side
+import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_tight_crop_size256.pyramid_1side.bce_s001_tv_s0p1_L5.step10_a as L5_1side
+import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_tight_crop_size256.pyramid_2side.bce_s001_tv_s0p1_L5.step10_a as L5_2side
+import Exps_7_v3.I_to_M_Gk3_no_pad.pyramid_tight_crop_size256.pyramid_3side.bce_s001_tv_s0p1_L5.step10_a as L5_3side
 import step10_a as L5_4side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ########
