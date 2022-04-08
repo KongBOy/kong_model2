@@ -2,6 +2,8 @@ import sys
 sys.path.append("kong_util")
 import tensorflow as tf
 import pdb
+from step08_b_use_G_generate_0_util import tight_crop
+
 from step10_a1_loss import *
 '''
 會想把 train_step 獨立一個.py 寫 function， 還不包成 class 的原因是：
@@ -631,7 +633,6 @@ def train_step_Single_output_I_to_M(model_obj, in_data, gt_data, loss_info_objs=
     _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
 
 
-from step08_b_use_G_generate_I_to_M import tight_crop
 @tf.function
 def train_step_Single_output_I_to_M_tight_crop(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
@@ -640,6 +641,15 @@ def train_step_Single_output_I_to_M_tight_crop(model_obj, in_data, gt_data, loss
     gt_mask = gt_data[..., 0:1]
     in_data = tight_crop(in_data, gt_mask, pad_size=20, resize=(256, 256))
     gt_mask = tight_crop(gt_mask, gt_mask, pad_size=20, resize=(256, 256))
+
+    ### debug 時 記得把 @tf.function 拿掉
+    # import matplotlib.pyplot as plt
+    # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
+    # ax[0].imshow(in_data[0])
+    # ax[1].imshow(gt_mask[0])
+    # # fig.tight_layout()
+    # plt.show()
+    # plt.close()
 
     _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
 

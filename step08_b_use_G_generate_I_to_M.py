@@ -5,7 +5,8 @@ from step06_a_datas_obj import Range
 
 import sys
 sys.path.append("kong_util")
-from build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
+from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
+from step08_b_use_G_generate_0_util import tight_crop
 
 import matplotlib.pyplot as plt
 import os
@@ -58,92 +59,10 @@ class Use_G_generate:
 #         ''' Not Implement'''
 #         pass
 
-def tight_crop(data, Mask, pad_size=20, resize=None):
-    import tensorflow as tf
-    '''
-    目前的寫法連 batch 都考慮進去囉
-    resize: [h, w]
-    '''
-    ### np.where( T/F_map 或 0/非0_array ) 可參考：https://numpy.org/doc/stable/reference/generated/numpy.where.html，
-    ### np.where( T/F_map 或 0/非0_array ) 只有放一個參數的時候， 相當於 np.nonzero()， 如果放三個參數時， 為true的地方 填入 第二個參數值， 為False的地方 填入 第三個參數值,
-    ### 不直接用 nonzero的原因是 tf 沒有 nonzero 但有 where， 為了 tf, numpy 都通用 這邊 numpy 就配合tf 用 where 囉～
-    ### 但也要注意 tf.where( T/F_map 或 0/非0_array ) return 回來的東西 跟 np.where( T/F_map 或 0/非0_array ) 回傳的東西 shape 不大一樣喔
-    ### np.where( T/F_map 或 0/非0_array ) -> tuple ( x非零indexs, y非零indexs, z非零indexs )
-    ### tf.where( T/F_map 或 0/非0_array ) -> tensor.shape( 所有非零點的個數, 3 ( 非零xyz_index) )
-    nonzero_map = Mask > 0
-    ### numpy 寫法：
-    # if  (len(Mask.shape) == 4): b_ind, y_ind, x_ind, c_ind = np.where(nonzero_map)
-    # elif(len(Mask.shape) == 3): y_ind, x_ind, c_ind = np.where(nonzero_map)
-    # elif(len(Mask.shape) == 2): y_ind, x_ind = np.where(nonzero_map)
-
-    ### tf 寫法
-    nonzero_index = tf.where(nonzero_map)
-    if  (len(Mask.shape) == 4): col_id = 1  ### BHWC， H在第1個col
-    elif(len(Mask.shape) == 3): col_id = 0  ### HWC ， H在第0個col
-    elif(len(Mask.shape) == 2): col_id = 0  ### HWC ， H在第0個col
-    y_ind = nonzero_index[:, col_id     : col_id + 1]
-    x_ind = nonzero_index[:, col_id + 1 : col_id + 2]
-
-    # x_min = x_ind.min()
-    # x_max = x_ind.max()
-    # y_min = y_ind.min()
-    # y_max = y_ind.max()
-    x_min = tf.reduce_min(x_ind)
-    x_max = tf.reduce_max(x_ind)
-    y_min = tf.reduce_min(y_ind)
-    y_max = tf.reduce_max(y_ind)
-
-    l_pad = x_min - pad_size
-    r_pad = x_max + pad_size
-    t_pad = y_min - pad_size
-    d_pad = y_max + pad_size
-    l_out = tf.constant(0, tf.int64)
-    r_out = tf.constant(0, tf.int64)
-    t_out = tf.constant(0, tf.int64)
-    d_out = tf.constant(0, tf.int64)
-    if  (len(data.shape) == 4): b, h, w, c = data.shape
-    elif(len(data.shape) == 3): h, w, c = data.shape
-    elif(len(data.shape) == 2): h, w = data.shape
-
-    ### 先 pad 再 crop
-    if(l_pad < 0): l_out = - l_pad
-    if(t_pad < 0): t_out = - t_pad
-    if(r_pad > w - 1): r_out = r_pad - (w - 1)
-    if(d_pad > h - 1): d_out = d_pad - (h - 1)
-
-    ### 看 pad 的範圍有沒有超過影像， 有的話就 pad
-    if(l_out > 0 or r_out > 0  or t_out > 0 or d_out > 0):
-        # if  (len(data.shape) == 4): data = np.pad(data, ( (0    ,     0), (t_out, d_out), (l_out, r_out), (    0,     0) ) , 'reflect')
-        # elif(len(data.shape) == 3): data = np.pad(data, ( (t_out, d_out), (l_out, r_out), (    0,     0) )                 , 'reflect')
-        # elif(len(data.shape) == 2): data = np.pad(data, ( (t_out, d_out), (l_out, r_out) )                                 , 'reflect')
-        if  (len(data.shape) == 4): data = tf.pad(data, ( (0    ,     0), (t_out, d_out), (l_out, r_out), (    0,     0) ) , 'REFLECT')
-        elif(len(data.shape) == 3): data = tf.pad(data, ( (t_out, d_out), (l_out, r_out), (    0,     0) )                 , 'REFLECT')
-        elif(len(data.shape) == 2): data = tf.pad(data, ( (t_out, d_out), (l_out, r_out) )                                 , 'REFLECT')
-    # breakpoint()
-
-    ### 對pad完的 data 重新定位
-    if(l_pad < 0): l_pad = tf.constant(0, tf.int64)
-    if(r_pad < 0): r_pad = tf.constant(0, tf.int64)
-    # l_pad = max(l_pad, 0)          ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
-    # t_pad = max(t_pad, 0)          ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
-    r_pad = r_pad + l_out + r_out  ### r_pad, d_pad 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad, t_pad 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out, t_out 喔！
-    d_pad = d_pad + t_out + d_out  ### r_pad, d_pad 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad, t_pad 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out, t_out 喔！
-
-    ### pad 完以後再 crop
-    if  (len(data.shape) == 4): data = data[:, t_pad : d_pad + 1, l_pad : r_pad + 1, :]  ### BHWC
-    elif(len(data.shape) == 3): data = data[t_pad : d_pad + 1, l_pad : r_pad + 1, :]     ### HWC
-    elif(len(data.shape) == 2): data = data[t_pad : d_pad + 1, l_pad : r_pad + 1]        ### HW
-
-    if(resize is not None): data = tf.image.resize(data, resize, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
-
-    # breakpoint()
-    return data
-
 
 class I_to_M(Use_G_generate):
     def __init__(self, tight_crop=False, pad_size=20, resize=None):
         super(I_to_M, self).__init__()
-        # self.tight_crop = tight_crop
         self.tight_crop = tight_crop
 
     def doing_things(self):
