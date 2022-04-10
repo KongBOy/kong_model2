@@ -628,7 +628,7 @@ class Train_step_I_to_M():
     def __init__(self, tight_crop=None):
         self.tight_crop = tight_crop
 
-    # @tf.function
+    @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
         gt_mask = gt_data[..., 0:1]
         if(self.tight_crop is not None):
@@ -637,16 +637,16 @@ class Train_step_I_to_M():
             self.tight_crop.reset_jit()
 
         ### debug 時 記得把 @tf.function 拿掉
-        global debug_i
-        import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
-        ax[0].imshow(in_data[0])
-        ax[1].imshow(gt_mask[0])
-        fig.tight_layout()
-        # plt.show()
-        plt.savefig("debug_data/try_tight_crop/%03i" % debug_i)
-        plt.close()
-        debug_i += 1
+        # global debug_i
+        # import matplotlib.pyplot as plt
+        # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+        # ax[0].imshow(in_data[0])
+        # ax[1].imshow(gt_mask[0])
+        # fig.tight_layout()
+        # # plt.show()
+        # plt.savefig("debug_data/try_tight_crop/%03i" % debug_i)
+        # plt.close()
+        # debug_i += 1
 
         _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
 
