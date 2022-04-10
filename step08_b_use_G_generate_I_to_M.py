@@ -64,6 +64,7 @@ class I_to_M(Use_G_generate):
     def __init__(self, tight_crop=None):
         super(I_to_M, self).__init__()
         self.tight_crop = tight_crop
+        self.tight_crop.jit_scale = 0  ### 防呆 test 的時候我們不用 random jit 囉！
 
     def doing_things(self):
         current_ep = self.exp_obj.current_ep
@@ -88,7 +89,7 @@ class I_to_M(Use_G_generate):
             in_img_pre        = self.tight_crop(in_img_pre, gt_mask_pre)
             gt_mask_coord     = self.tight_crop(gt_mask_coord, gt_mask_pre)
             gt_mask_coord_pre = self.tight_crop(gt_mask_coord_pre, gt_mask_pre)
-            self.tight_crop.reset_jit()
+            # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 
 
         ''' use_model '''
