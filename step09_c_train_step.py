@@ -625,17 +625,18 @@ def train_step_Single_output_I_to_W(model_obj, in_data, gt_data, loss_info_objs=
 ####################################################
 ####################################################
 class Train_step_I_to_M():
-    def __init__(self, tight_crop=False, pad_size=20, resize=(256, 256)):
+    def __init__(self, tight_crop=False, pad_size=20, resize=(256, 256), jit_scale=0):
         self.tight_crop = tight_crop
         self.pad_size   = pad_size
         self.resize     = resize
+        self.jit_scale  = jit_scale
 
     @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
         gt_mask = gt_data[..., 0:1]
         if(self.tight_crop == True):
-            in_data = tight_crop(in_data, gt_mask, pad_size=self.pad_size, resize=self.resize)
-            gt_mask = tight_crop(gt_mask, gt_mask, pad_size=self.pad_size, resize=self.resize)
+            in_data = tight_crop(in_data, gt_mask, pad_size=self.pad_size, resize=self.resize, jit_scale=self.jit_scale)
+            gt_mask = tight_crop(gt_mask, gt_mask, pad_size=self.pad_size, resize=self.resize, jit_scale=self.jit_scale)
 
         ### debug 時 記得把 @tf.function 拿掉
         # global debug_i
