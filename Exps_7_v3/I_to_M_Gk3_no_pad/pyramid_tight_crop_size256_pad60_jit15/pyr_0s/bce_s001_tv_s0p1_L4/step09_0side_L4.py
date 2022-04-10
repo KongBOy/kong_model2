@@ -29,7 +29,7 @@ start_time = time.time()
 #########################################################################################
 pyramid_0side = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 #########################################################################################
-ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=4, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_0side, ch_upper_bound= 2 ** 14).set_gen_op( I_to_M( Tight_crop(pad_size=60, resize=(256, 256), jit_scale=15) ) ).set_train_step( Train_step_I_to_M( Tight_crop(pad_size=60, resize=(256, 256), jit_scale=15) ) )
+ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=4, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_0side, ch_upper_bound= 2 ** 14).set_gen_op( I_to_M( Tight_crop(pad_size=60, resize=(256, 256), jit_scale= 0 ) ).set_train_step( Train_step_I_to_M( Tight_crop(pad_size=60, resize=(256, 256), jit_scale=15) ) )
 #########################################################################################
 ###############################################################################################################################################################################################
 
