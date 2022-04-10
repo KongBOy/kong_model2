@@ -61,11 +61,12 @@ class Use_G_generate:
 
 
 class I_to_M(Use_G_generate):
-    def __init__(self, tight_crop=False, pad_size=20, resize=None):
+    def __init__(self, tight_crop=False, pad_size=20, resize=None, jit_scale=0):
         super(I_to_M, self).__init__()
         self.tight_crop = tight_crop
         self.pad_size = pad_size
         self.resize   = resize
+        self.jit_scale = jit_scale
 
     def doing_things(self):
         current_ep = self.exp_obj.current_ep
@@ -86,10 +87,10 @@ class I_to_M(Use_G_generate):
         if(self.tight_crop):
             gt_mask_pre = gt_mask_coord_pre[..., 0:1]
 
-            in_img            = tight_crop(in_img, gt_mask_pre, self.pad_size, self.resize)
-            in_img_pre        = tight_crop(in_img_pre, gt_mask_pre, self.pad_size, self.resize)
-            gt_mask_coord     = tight_crop(gt_mask_coord, gt_mask_pre, self.pad_size, self.resize)
-            gt_mask_coord_pre = tight_crop(gt_mask_coord_pre, gt_mask_pre, self.pad_size, self.resize)
+            in_img            = tight_crop(in_img, gt_mask_pre, self.pad_size, self.resize, self.jit_scale)
+            in_img_pre        = tight_crop(in_img_pre, gt_mask_pre, self.pad_size, self.resize, self.jit_scale)
+            gt_mask_coord     = tight_crop(gt_mask_coord, gt_mask_pre, self.pad_size, self.resize, self.jit_scale)
+            gt_mask_coord_pre = tight_crop(gt_mask_coord_pre, gt_mask_pre, self.pad_size, self.resize, self.jit_scale)
 
 
         ''' use_model '''
