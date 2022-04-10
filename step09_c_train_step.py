@@ -632,9 +632,9 @@ class Train_step_I_to_M():
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
         gt_mask = gt_data[..., 0:1]
         if(self.tight_crop is not None):
+            self.tight_crop.reset_jit()
             in_data = self.tight_crop(in_data, gt_mask)
             gt_mask = self.tight_crop(gt_mask, gt_mask)
-            self.tight_crop.reset_jit()
 
         ### debug 時 記得把 @tf.function 拿掉
         # global debug_i
