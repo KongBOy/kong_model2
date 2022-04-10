@@ -90,7 +90,7 @@ def W_01_and_W_01_w_M_to_WM_and_visualize(W_raw, M, out_ch3=False):
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
-def tight_crop(data, Mask, pad_size=20, resize=None):
+def tight_crop(data, Mask, pad_size=20, resize=None, jit_scale=0):
     import tensorflow as tf
     '''
     目前的寫法連 batch 都考慮進去囉
@@ -116,19 +116,30 @@ def tight_crop(data, Mask, pad_size=20, resize=None):
     y_ind = nonzero_index[:, col_id     : col_id + 1]
     x_ind = nonzero_index[:, col_id + 1 : col_id + 2]
 
-    # x_min = x_ind.min()
-    # x_max = x_ind.max()
-    # y_min = y_ind.min()
-    # y_max = y_ind.max()
-    x_min = tf.reduce_min(x_ind)
-    x_max = tf.reduce_max(x_ind)
-    y_min = tf.reduce_min(y_ind)
-    y_max = tf.reduce_max(y_ind)
+    # l = x_ind.min()
+    # r = x_ind.max()
+    # t = y_ind.min()
+    # d = y_ind.max()
+    l = tf.reduce_min(x_ind)
+    r = tf.reduce_max(x_ind)
+    t = tf.reduce_min(y_ind)
+    d = tf.reduce_max(y_ind)
 
-    l_pad = x_min - pad_size
-    r_pad = x_max + pad_size
-    t_pad = y_min - pad_size
-    d_pad = y_max + pad_size
+    l_pad = l - pad_size
+    r_pad = r + pad_size
+    t_pad = t - pad_size
+    d_pad = d + pad_size
+
+    ### 隨機抖動 random jit
+    if(jit_scale > 0):  ### tf.random.uniform 不能夠接受 jit_scale = 0， 所以才必須要有這個if
+        l_pad += tf.random.uniform(shape=[], minval=-jit_scale, maxval=jit_scale, dtype=tf.int64)
+        r_pad += tf.random.uniform(shape=[], minval=-jit_scale, maxval=jit_scale, dtype=tf.int64)
+        t_pad += tf.random.uniform(shape=[], minval=-jit_scale, maxval=jit_scale, dtype=tf.int64)
+        d_pad += tf.random.uniform(shape=[], minval=-jit_scale, maxval=jit_scale, dtype=tf.int64)
+
+    ########### 先 pad 再 crop
+    ###### pad part
+    ### 看 超過影像範圍多少
     l_out = tf.constant(0, tf.int64)
     r_out = tf.constant(0, tf.int64)
     t_out = tf.constant(0, tf.int64)
@@ -137,7 +148,6 @@ def tight_crop(data, Mask, pad_size=20, resize=None):
     elif(len(data.shape) == 3): h, w, c = data.shape
     elif(len(data.shape) == 2): h, w = data.shape
 
-    ### 先 pad 再 crop
     if(l_pad < 0): l_out = - l_pad
     if(t_pad < 0): t_out = - t_pad
     if(r_pad > w - 1): r_out = r_pad - (w - 1)
@@ -153,7 +163,8 @@ def tight_crop(data, Mask, pad_size=20, resize=None):
         elif(len(data.shape) == 2): data = tf.pad(data, ( (t_out, d_out), (l_out, r_out) )                                 , 'REFLECT')
     # breakpoint()
 
-    ### 對pad完的 data 重新定位
+    ###### pad 完成了， 以下開始 crop
+    ### 對 pad完成 的 data 重新定位
     if(l_pad < 0): l_pad = tf.constant(0, tf.int64)
     if(t_pad < 0): t_pad = tf.constant(0, tf.int64)
     # l_pad = max(l_pad, 0)          ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
@@ -161,7 +172,7 @@ def tight_crop(data, Mask, pad_size=20, resize=None):
     r_pad = r_pad + l_out + r_out  ### r_pad, d_pad 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad, t_pad 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out, t_out 喔！
     d_pad = d_pad + t_out + d_out  ### r_pad, d_pad 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad, t_pad 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out, t_out 喔！
 
-    ### pad 完以後再 crop
+    ### 重新定位 完成了， 以下開始 crop
     if  (len(data.shape) == 4): data = data[:, t_pad : d_pad + 1, l_pad : r_pad + 1, :]  ### BHWC
     elif(len(data.shape) == 3): data = data[t_pad : d_pad + 1, l_pad : r_pad + 1, :]     ### HWC
     elif(len(data.shape) == 2): data = data[t_pad : d_pad + 1, l_pad : r_pad + 1]        ### HW
