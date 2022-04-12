@@ -8,3 +8,6 @@
 [submodule "kong_Blender"]
 	path = kong_Blender
 	url = https://github.com/KongBOy/kong_Blender.git
+[submodule "kong_Doc3D"]
+	path = kong_Doc3D
+	url = https://github.com/KongBOy/kong_Doc3D.git
