@@ -1117,6 +1117,27 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
             #     debug_dict[f"{i}--4-4a see_gt_pre_mask"] = see_gt_pre[0, ..., 0:1].numpy()
             #     debug_dict[f"{i}--4-4b see_gt_pre_move"] = see_gt_pre[0, ..., 1:3].numpy()
 
+            #     from step08_b_use_G_generate_0_util import Tight_crop
+            #     gt_mask_pre = see_gt_pre[..., 0:1]
+            #     tight_crop = Tight_crop(pad_size=20, resize=(256, 256))
+            #     crop_see_in     = tight_crop(see_in    , gt_mask_pre)
+            #     crop_see_in_pre = tight_crop(see_in_pre, gt_mask_pre)
+            #     crop_see_gt     = tight_crop(see_gt    , gt_mask_pre)
+            #     crop_see_gt_pre = tight_crop(see_gt_pre, gt_mask_pre)
+            #     tight_crop.reset_jit()  ### 測試看看沒設定 jit_scale 會不會跳出錯誤訊息
+
+            #     debug_dict[f"{i}--5-1 crop_see_in"    ] = crop_see_in
+            #     debug_dict[f"{i}--5-2 crop_see_in_pre"] = crop_see_in_pre
+            #     debug_dict[f"{i}--5-3 crop_see_gt"    ] = crop_see_gt
+            #     debug_dict[f"{i}--5-4 crop_see_gt_pre"] = crop_see_gt_pre
+
+            #     debug_dict[f"{i}--6-1  crop_see_in"     ] = crop_see_in[0].numpy()
+            #     debug_dict[f"{i}--6-2  crop_see_in_pre" ] = crop_see_in_pre[0].numpy()
+            #     debug_dict[f"{i}--6-3a crop_see_gt_mask"] = crop_see_gt[0, ..., 0:1].numpy()
+            #     debug_dict[f"{i}--6-3b crop_see_gt_move"] = crop_see_gt[0, ..., 1:3].numpy()
+            #     debug_dict[f"{i}--6-4a crop_see_gt_pre_mask"] = crop_see_gt_pre[0, ..., 0:1].numpy()
+            #     debug_dict[f"{i}--6-4b crop_see_gt_pre_move"] = crop_see_gt_pre[0, ..., 1:3].numpy()
+
         if(self.tf_data.db_obj.have_rec_hope):
             self.tf_data.rec_hope_train_db = self.rec_hope_train_factory.build_img_db()
             self.tf_data.rec_hope_test_db  = self.rec_hope_test_factory .build_img_db()
@@ -1642,10 +1663,10 @@ if(__name__ == "__main__"):
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    # db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
-    # print(db_obj)
-    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
+    print(db_obj)
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
@@ -1670,33 +1691,33 @@ if(__name__ == "__main__"):
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    db_obj = type8_blender_wc_flow_try_mul_M.build()
-    print(db_obj)
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
-    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    # db_obj = type8_blender_wc_flow_try_mul_M.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     # print("here")
-    img1 = tf_data.train_db_combine.take(10)
+    # img1 = tf_data.train_db_combine.take(10)
 
 
     ### 雖然來源相同， 不過兩個iter是獨立運作的
-    db1 = tf_data.train_db_combine
-    db2 = tf_data.train_db_combine
+    # db1 = tf_data.train_db_combine
+    # db2 = tf_data.train_db_combine
 
-    iter1 = iter(db1)
-    iter2 = iter(db2)
+    # iter1 = iter(db1)
+    # iter2 = iter(db2)
 
-    data1 = next(iter1)
-    data2 = next(iter2)
-    plt.figure()
-    plt.imshow(data1[0][1][0][..., :3])
-    plt.figure()
-    plt.imshow(data2[0][1][0][..., :3])
-    plt.show()
-    print("data1 == data2", data1)
+    # data1 = next(iter1)
+    # data2 = next(iter2)
+    # plt.figure()
+    # plt.imshow(data1[0][1][0][..., :3])
+    # plt.figure()
+    # plt.imshow(data2[0][1][0][..., :3])
+    # plt.show()
+    # print("data1 == data2", data1)
 
 
-    print(len(img1))
+    # print(len(img1))
     # print("here~ ", img1)
     # img2 = tf_data.train_db_combine.take(10)
     # print("here~~", img2)
@@ -1755,7 +1776,7 @@ if(__name__ == "__main__"):
     #     i = i + 1
     #     print(i)
 
-    plt.show()
+    # plt.show()
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type8_blender_dis_wc_flow_try_mul_M.build()
