@@ -318,7 +318,7 @@ class Train_step_W_w_M_to_Cx_Cy():
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
             in_data = self.tight_crop(in_data, gt_mask)
-            gt_mask = self.tight_crop(gt_mask, gt_mask)
+            gt_data = self.tight_crop(gt_data, gt_mask)
 
         in_Mask  = in_data[..., 3:4]
         in_W     = in_data[..., 0:3]
