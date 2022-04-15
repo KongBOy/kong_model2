@@ -301,6 +301,54 @@ def train_step_Multi_output_I_w_M_to_Cx_Cy_focus(model_obj, in_data, gt_data, lo
 
     _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=gt_mask)
 
+####################################################
+####################################################
+class Train_step_W_w_M_to_Cx_Cy():
+    def __init__(self, to_Cx_Cy=False, focus=False, tight_crop=None):
+        self.to_Cx_Cy   = to_Cx_Cy
+        self.focus      = focus
+        self.tight_crop = tight_crop
+
+    @tf.function
+    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+        '''
+        I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+        '''
+        gt_mask = in_data[..., 3:4]
+        if(self.tight_crop is not None):
+            self.tight_crop.reset_jit()
+            in_data = self.tight_crop(in_data, gt_mask)
+            gt_mask = self.tight_crop(gt_mask, gt_mask)
+
+        in_Mask  = in_data[..., 3:4]
+        in_W     = in_data[..., 0:3]
+        W_w_M = in_W * in_Mask
+
+        gt_c = gt_data[..., 1:3]
+        gt_cx = gt_data[..., 2:3]
+        gt_cy = gt_data[..., 1:2]
+        gt_datas = [gt_cx, gt_cy]  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
+        # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
+        # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
+
+        ## debug 時 記得把 @tf.function 拿掉
+        # import matplotlib.pyplot as plt
+        # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
+        # ax[0].imshow(in_data[0])
+        # ax[1].imshow(W_w_M[0])
+        # ax[2].imshow(gt_cx[0])
+        # ax[3].imshow(gt_cy[0])
+        # fig.tight_layout()
+        # plt.show()
+
+        if(self.to_Cx_Cy is False):
+            if(self.focus is False): _train_step_Single_output(model_obj, in_data=W_w_M, gt_data =gt_c    , loss_info_objs=loss_info_objs)
+            else:                    _train_step_Single_output(model_obj, in_data=W_w_M, gt_data =gt_c    , loss_info_objs=loss_info_objs, Mask=in_Mask)
+        else:
+            if(self.focus is False): _train_step_Multi_output (model_obj, in_data=W_w_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+            else:                    _train_step_Multi_output (model_obj, in_data=W_w_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=in_Mask)
+
+
 @tf.function
 def train_step_Multi_output_W_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_info_objs=None):
     '''

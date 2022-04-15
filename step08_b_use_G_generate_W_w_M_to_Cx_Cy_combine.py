@@ -15,8 +15,9 @@ import os
 import pdb
 
 class W_w_M_to_Cx_Cy(Use_G_generate):
-    def __init__(self, focus=False, tight_crop=None):
+    def __init__(self, to_Cx_Cy=False, focus=False, tight_crop=None):
         super(W_w_M_to_Cx_Cy, self).__init__()
+        self.to_Cx_Cy = to_Cx_Cy
         self.tight_crop = tight_crop
         self.focus = focus
         if(self.tight_crop is not None): self.tight_crop.jit_scale = 0  ### 防呆 test 的時候我們不用 random jit 囉！
@@ -33,6 +34,11 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
         public_write_dir      = "/".join(used_sees[self.index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
         # print("private_rec_write_dir:", private_rec_write_dir)
         '''
+        in_WM[0][0]： wc
+        in_WM[1][0]： dis_img
+            第一個[  ]是 取 wc 或 dis_img， 
+            第二個[ ] 是 取 batch
+
         in_WM_pre[..., 3:4] 為 M (1, h, w, 1)
         in_WM_pre[..., 0:3] 為 W (1, h, w, 3) 先z 再y 再x
 
@@ -48,23 +54,23 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
 
         if(self.tight_crop is not None):
             Mgt_pre = Mgt_C_pre[..., 0:1]
-
-            in_WM     = self.tight_crop(in_WM     , Mgt_pre)
-            in_WM_pre = self.tight_crop(in_WM_pre , Mgt_pre)
-            Mgt_C     = self.tight_crop(Mgt_C     , Mgt_pre)
-            Mgt_C_pre = self.tight_crop(Mgt_C_pre , Mgt_pre)
-            rec_hope  = self.tight_crop(rec_hope  , Mgt_pre)
+            dis_img      = self.tight_crop(in_WM[1]  , Mgt_pre)
+            in_WM_pre    = self.tight_crop(in_WM_pre , Mgt_pre)
+            Mgt_C        = self.tight_crop(Mgt_C     , Mgt_pre)
+            Mgt_C_pre    = self.tight_crop(Mgt_C_pre , Mgt_pre)
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 
         ### 這個是給後處理用的 dis_img
-        dis_img  = in_WM[1][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
+        dis_img  = dis_img [0].numpy()
         rec_hope = rec_hope[0].numpy()
 
         ''' use_model '''
         W_pre   = in_WM_pre[..., 0:3]
         Mgt_pre = in_WM_pre[..., 3:4]
         W_pre_W_M_pre = W_pre * Mgt_pre
-        Cx_raw_pre, Cy_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
+
+        if(self.to_Cx_Cy is False): C_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
+        else:                       Cx_raw_pre, Cy_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
         ''''''''''''
         ### visualize W_pre
         W_01 = Value_Range_Postprocess_to_01(W_pre)
@@ -81,7 +87,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
 
         ### Cx_pre, Cy_pre postprocess and visualize
         ### postprocess
-        C_raw_pre = np.concatenate([Cy_raw_pre, Cx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
+        if(self.to_Cx_Cy is True): C_raw_pre = np.concatenate([Cy_raw_pre, Cx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
         C_raw = Value_Range_Postprocess_to_01(C_raw_pre, self.exp_obj.use_gt_range)
         C_raw = C_raw[0]
         Cgt_pre = Mgt_C_pre[0, ..., 1:3].numpy()
@@ -107,6 +113,19 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             F_raw_visual   = F_raw_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             F_w_Mgt_visual = F_w_Mgt_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             Fgt_visual     = Fgt_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+
+        ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+        if(self.bgr2rgb):
+            rec_hope       = rec_hope  [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+            Fgt_visual     = Fgt_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+            dis_img        = dis_img   [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+
+            if(self.focus is False):
+                F_visual       = F_visual  [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+            else:
+                F_raw_visual   = F_raw_visual  [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+                F_w_Mgt_visual = F_w_Mgt_visual  [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+
 
         if(current_ep == 0 or self.see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
