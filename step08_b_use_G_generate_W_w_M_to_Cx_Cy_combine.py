@@ -68,9 +68,23 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
         W_pre   = in_WM_pre[..., 0:3]
         Mgt_pre = in_WM_pre[..., 3:4]
         W_pre_W_M_pre = W_pre * Mgt_pre
+        # fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(15, 5))
+        # ax[0, 0].imshow(W_pre[0])
+        # ax[0, 1].imshow(Mgt_pre[0])
+        # ax[0, 2].imshow(W_pre_W_M_pre[0])
 
-        if(self.to_Cx_Cy is False): C_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
-        else:                       Cx_raw_pre, Cy_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
+        if(self.to_Cx_Cy is False):
+            C_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
+            # ax[1, 0].imshow(C_raw_pre[0, ..., 0])
+            # ax[1, 1].imshow(C_raw_pre[0, ..., 1])
+            # fig.tight_layout()
+            # plt.show()
+        else:
+            Cx_raw_pre, Cy_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
+            # ax[1, 0].imshow(Cy_raw_pre[0])
+            # ax[1, 1].imshow(Cx_raw_pre[0])
+            # fig.tight_layout()
+            # plt.show()
         ''''''''''''
         ### visualize W_pre
         W_01 = Value_Range_Postprocess_to_01(W_pre)
