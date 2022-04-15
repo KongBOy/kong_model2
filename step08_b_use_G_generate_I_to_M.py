@@ -6,65 +6,19 @@ from step06_a_datas_obj import Range
 import sys
 sys.path.append("kong_util")
 from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
-from step08_b_use_G_generate_0_util import Tight_crop
+from step08_b_use_G_generate_0_util import Use_G_generate
 
 import matplotlib.pyplot as plt
 import os
 import pdb
 
-class Use_G_generate:
-    def __init__(self):
-        self.model_obj      = None
-        self.phase          = None
-        self.index          = None
-        self.in_ord         = None
-        self.in_pre         = None
-        self.gt_ord         = None
-        self.gt_pre         = None
-        self.rec_hope       = None
-        self.exp_obj        = None
-        self.training       = None
-        self.see_reset_init = None
-        self.postprocess    = None
-        self.npz_save       = None
-        self.add_loss       = None
-        self.bgr2rgb        = None
-
-    def __call__(self, model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
-        self.model_obj      = model_obj
-        self.phase          = phase
-        self.index          = index
-        self.in_ord         = in_ord
-        self.in_pre         = in_pre
-        self.gt_ord         = gt_ord
-        self.gt_pre         = gt_pre
-        self.rec_hope       = rec_hope
-        self.exp_obj        = exp_obj
-        self.training       = training
-        self.see_reset_init = see_reset_init
-        self.postprocess    = postprocess
-        self.npz_save       = npz_save
-        self.add_loss       = add_loss
-        self.bgr2rgb        = bgr2rgb
-        self.doing_things()
-
-    def doing_things(self):
-        pass
-
-# class Use_G_generate:
-#     def __call__(self,model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False):
-#         self.doing_things(model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False)
-
-#     def doing_things(self,model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False):
-#         ''' Not Implement'''
-#         pass
 
 
 class I_to_M(Use_G_generate):
     def __init__(self, tight_crop=None):
         super(I_to_M, self).__init__()
         self.tight_crop = tight_crop
-        self.tight_crop.jit_scale = 0  ### 防呆 test 的時候我們不用 random jit 囉！
+        if(self.tight_crop is not None): self.tight_crop.jit_scale = 0  ### 防呆 test 的時候我們不用 random jit 囉！
 
     def doing_things(self):
         current_ep = self.exp_obj.current_ep
