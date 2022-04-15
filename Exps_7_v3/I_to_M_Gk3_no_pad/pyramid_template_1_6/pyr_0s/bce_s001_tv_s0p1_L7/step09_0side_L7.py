@@ -16,7 +16,8 @@ sys.path.append(kong_model2_dir)
 # print("    kong_model2_dir:", kong_model2_dir)
 #############################################################################################################################################################################################################
 from step08_b_use_G_generate_I_to_M import I_to_M
-from step09_c_train_step import train_step_Single_output_I_to_M
+from step08_b_use_G_generate_0_util import Tight_crop
+from step09_c_train_step import Train_step_I_to_M
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
 import time
@@ -28,7 +29,7 @@ start_time = time.time()
 #########################################################################################
 pyramid_0side = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 #########################################################################################
-ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_0side, ch_upper_bound= 2 ** 14).set_gen_op( I_to_M() ).set_train_step(train_step_Single_output_I_to_M)
+ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_0side, ch_upper_bound= 2 ** 14).set_gen_op( I_to_M(  tight_crop=None ) ).set_train_step( Train_step_I_to_M(  tight_crop=None ) )
 #########################################################################################
 ###############################################################################################################################################################################################
 
