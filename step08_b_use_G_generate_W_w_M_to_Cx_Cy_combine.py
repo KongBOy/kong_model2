@@ -18,8 +18,8 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
     def __init__(self, to_Cx_Cy=False, focus=False, tight_crop=None):
         super(W_w_M_to_Cx_Cy, self).__init__()
         self.to_Cx_Cy = to_Cx_Cy
-        self.tight_crop = tight_crop
         self.focus = focus
+        self.tight_crop = tight_crop
         if(self.tight_crop is not None): self.tight_crop.jit_scale = 0  ### 防呆 test 的時候我們不用 random jit 囉！
 
     def doing_things(self):
