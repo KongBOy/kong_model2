@@ -1,0 +1,202 @@
+import numpy as np
+import cv2
+
+import sys
+sys.path.append("kong_util")
+from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
+from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
+from kong_util.flow_bm_util import check_flow_quality_then_I_w_F_to_R
+
+
+from step08_b_use_G_generate_0_util import Use_G_generate, Value_Range_Postprocess_to_01, W_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual, C_01_and_C_01_w_M_to_F_and_visualize
+
+import matplotlib.pyplot as plt
+import os
+import pdb
+
+class I_w_M_to_W(Use_G_generate):
+    def __init__(self, to_Wx_Wy_Wz=False, focus=False, tight_crop=None):
+        super(I_w_M_to_W, self).__init__()
+        self.to_Wx_Wy_Wz = to_Wx_Wy_Wz
+        self.focus = focus
+        self.tight_crop = tight_crop
+
+    def doing_things(self):
+        current_ep   = self.exp_obj.current_ep
+        current_time = self.exp_obj.current_time
+        if  (self.phase == "train"): used_sees = self.exp_obj.result_obj.sees
+        elif(self.phase == "test"):  used_sees = self.exp_obj.result_obj.tests
+
+        private_write_dir    = used_sees[self.index].see_write_dir   ### 每個 see 都有自己的資料夾 存 in/gt 之類的 輔助檔案 ，先定出位置
+        public_write_dir     = "/".join(used_sees[self.index].see_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
+        '''
+        gt_mask_coord[0] 為 mask  (1, h, w, 1)
+        gt_mask_coord[1] 為 coord (1, h, w, 2) 先y 在x
+
+        bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
+        '''
+
+        ''' 重新命名 讓我自己比較好閱讀'''
+        dis_img            = self.in_ord
+        dis_img_pre        = self.in_pre
+        Wgt_w_Mgt          = self.gt_ord
+        Wgt_w_Mgt_pre      = self.gt_pre
+        rec_hope           = self.rec_hope
+
+        ''' tight crop '''
+        if(self.tight_crop is not None):
+            Mgt_pre_ord   = Wgt_w_Mgt_pre[..., 0:1]
+
+            dis_img_pre   = self.tight_crop(dis_img_pre   , Mgt_pre_ord)
+            Wgt_w_Mgt     = self.tight_crop(Wgt_w_Mgt     , Mgt_pre_ord)
+            Wgt_w_Mgt_pre = self.tight_crop(Wgt_w_Mgt_pre , Mgt_pre_ord)
+
+            ### dis_img 在 tight_crop 完後 不 resize
+            tight_crop_resize = self.tight_crop.resize
+            self.tight_crop.reset_resize(None)
+            dis_img      = self.tight_crop(dis_img, Mgt_pre_ord)
+            self.tight_crop.reset_resize(tight_crop_resize)
+            # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
+
+
+        ''' use_model '''
+        Mgt_pre          = Wgt_w_Mgt_pre[..., 3:4]
+        Wgt_pre          = Wgt_w_Mgt_pre[..., 0:3]
+        I_pre_with_M_pre = dis_img_pre * Mgt_pre
+
+        if(self.to_Wx_Wy_Wz is False):
+            W_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
+        else:
+            Wz_raw_pre, Wy_raw_pre, Wx_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
+
+            W_raw_pre  = np.concatenate([Wz_raw_pre, Wy_raw_pre, Wx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
+
+        ### 後處理 Output (W_raw_pre)
+        W_raw_01 = Value_Range_Postprocess_to_01(W_raw_pre, self.exp_obj.use_gt_range)
+        W_raw_01 = W_raw_01[0].numpy()
+        ### 順便處理一下gt
+        Wgt_pre = Wgt_pre[0].numpy()
+        Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, self.exp_obj.use_gt_range)
+        ''''''''''''
+        ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        h, w, c = W_raw_01.shape
+        Mgt_pre = Mgt_pre [0].numpy()
+        Mgt_pre = Mgt_pre [:h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+
+        ### 視覺化 Output pred (W)
+        if(self.focus is False):
+            W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = W_01_visual_op(W_raw_01)
+        else:
+            W_w_Mgt_01 = W_raw_01 * Mgt_pre
+            W_raw_visual,   Wx_raw_visual,   Wy_raw_visual,   Wz_raw_visual   = W_01_visual_op(W_raw_01)
+            W_w_Mgt_visual, Wx_w_Mgt_visual, Wy_w_Mgt_visual, Wz_w_Mgt_visual = W_01_visual_op(W_w_Mgt_01)
+
+        ### 視覺化 Output gt (Wgt)
+        Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)
+        ''''''''''''''''''''''''''''''''''''''''''''''''
+        ### 視覺化 Input (I)
+        dis_img   = dis_img  [0].numpy()
+        rec_hope  = rec_hope[0].numpy()
+
+        ### 視覺化 Input (I_w_M)
+        I_w_M_01  = Value_Range_Postprocess_to_01(I_pre_with_M_pre, self.exp_obj.use_gt_range)
+        I_w_M_01 = I_w_M_01[0].numpy()
+        I_w_M_visual = (I_w_M_01 * 255).astype(np.uint8)
+
+        ### 視覺化 Mgt_pre
+        Mgt_visual = (Mgt_pre * 255).astype(np.uint8)
+
+
+        ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+        if(self.bgr2rgb):
+            dis_img      = dis_img[:, :, ::-1]
+            rec_hope     = rec_hope[:, :, ::-1]
+            I_w_M_visual = I_w_M_visual[:, :, ::-1]
+
+        if(current_ep == 0 or self.see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
+            Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
+
+            if(self.npz_save is False): np.save            (private_write_dir + "/" + "0b_u1b1-gt_W", Wgt_01)
+            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + "0b_u1b1-gt_W", Wgt_01)
+            cv2.imwrite(private_write_dir + "/" + "0b_u1b2-gt_W.jpg",  Wgt_visual)
+            cv2.imwrite(private_write_dir + "/" + "0b_u1b3-gt_Wx.jpg", Wxgt_visual)
+            cv2.imwrite(private_write_dir + "/" + "0b_u1b4-gt_Wy.jpg", Wygt_visual)
+            cv2.imwrite(private_write_dir + "/" + "0b_u1b5-gt_Wz.jpg", Wzgt_visual)
+            cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",   rec_hope)
+
+        if(self.focus is False):
+            if(self.npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1-W" % current_ep, W_raw_01)
+            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1-W" % current_ep, W_raw_01)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2-W_visual.jpg"  % current_ep, W_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3-Wx_visual.jpg" % current_ep, Wx_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4-Wy_visual.jpg" % current_ep, Wy_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b5-Wz_visual.jpg" % current_ep, Wz_visual)
+
+        else:
+            if(self.npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt" % current_ep, W_w_Mgt_01)
+            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt" % current_ep, W_w_Mgt_01)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2-W_raw_visual.jpg"    % current_ep, W_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3-W_w_Mgt_visual.jpg"  % current_ep, W_w_Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4-Wx_raw_visual.jpg"   % current_ep, Wx_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b5-Wx_w_Mgt_visual.jpg" % current_ep, Wx_w_Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b6-Wy_raw_visual.jpg"   % current_ep, Wy_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b7-Wy_w_Mgt_visual.jpg" % current_ep, Wy_w_Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b8-Wz_raw_visual.jpg"   % current_ep, Wz_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b9-Wz_w_Mgt_visual.jpg" % current_ep, Wz_w_Mgt_visual)
+
+        if(self.postprocess):
+            current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+            if(self.focus is False):
+                imgs       = [ dis_img ,   W_visual , Wgt_visual]
+                img_titles = ["dis_img", "Wpred",   "Wgt"]
+            else:
+                imgs       = [ dis_img ,  Mgt_visual, I_w_M_visual,  W_raw_visual, W_w_Mgt_visual,  Wgt_visual]
+                img_titles = ["dis_img", "Mgt",       "I_with_M",    "W_raw",      "W_w_Mgt",       "Wgt"]
+
+            single_row_imgs = Matplot_single_row_imgs(
+                                    imgs      = imgs,         ### 把要顯示的每張圖包成list
+                                    img_titles= img_titles,               ### 把每張圖要顯示的字包成list
+                                    fig_title = "%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
+                                    add_loss  = self.add_loss,
+                                    bgr2rgb   = self.bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+            single_row_imgs.Draw_img()
+            single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
+            print("save to:", self.exp_obj.result_obj.test_write_dir)
+
+            if(self.phase == "test"):
+                ### W_01 back to W then + M
+                gt_min = self.exp_obj.db_obj.db_gt_range.min
+                gt_max = self.exp_obj.db_obj.db_gt_range.max
+
+                if(self.focus is False): W = W_raw_01 * (gt_max - gt_min) + gt_min
+                else:                    W = W_w_Mgt_01 * (gt_max - gt_min) + gt_min
+                if(self.exp_obj.db_obj.get_method.value == "in_dis_gt_wc_try_mul_M"): W = W * Mgt_pre
+                WM = np.concatenate([W, Mgt_pre], axis=-1)
+                ### 確認寫得對不對
+                # fig, ax = plt.subplots(1, 2)
+                # ax[0].imshow(W_01)
+                # ax[1].imshow(W - gt_min)
+                # print(W.max())
+                # print(W.min())
+                # plt.show()
+
+                ### 定位出 存檔案的位置
+                gather_WM_npy_dir  = f"{public_write_dir}/pred_WM_{self.phase}-{current_time}/WM_npy_then_npz"
+                gather_WM_knpy_dir = f"{public_write_dir}/pred_WM_{self.phase}-{current_time}/WM_knpy"
+                Check_dir_exist_and_build(gather_WM_npy_dir)
+                Check_dir_exist_and_build(gather_WM_knpy_dir)
+
+                ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
+                WM_npy_path  = f"{gather_WM_npy_dir}/{current_see_name}_pred.npy"
+                WM_knpy_path = f"{gather_WM_knpy_dir}/{current_see_name}_pred.knpy"
+                np.save(WM_npy_path, WM)
+                Save_npy_path_as_knpy(WM_npy_path, WM_knpy_path)
+
+                ### .npy刪除(因為超占空間) 改存 .npz
+                np.savez_compressed(WM_npy_path.replace(".npy", ".npz"), WM)
+                os.remove(WM_npy_path)
+
+                # breakpoint()
