@@ -107,6 +107,9 @@ class Tight_crop():
             self.t_jit = tf.random.uniform(shape=[], minval=-self.jit_scale, maxval=self.jit_scale, dtype=tf.int64)
             self.d_jit = tf.random.uniform(shape=[], minval=-self.jit_scale, maxval=self.jit_scale, dtype=tf.int64)
         else: print("Tight_crop=0 無法 reset_jit， 請注意 建立 Tight_crop物件 的時候 jit_scale 有沒有設定數值， 目前不做事直接跳過 reset_jit動作")
+    
+    def reset_resize(self, resize):
+        self.resize = resize
 
     def __call__(self, data, Mask):
         '''
