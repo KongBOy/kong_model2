@@ -314,17 +314,17 @@ class Train_step_W_w_M_to_Cx_Cy():
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
         '''
-        gt_mask = in_data[..., 3:4]
+        Mgt_pre_ord = in_data[..., 3:4]
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
-            in_data = self.tight_crop(in_data, gt_mask)
-            gt_data = self.tight_crop(gt_data, gt_mask)
+            in_data = self.tight_crop(in_data, Mgt_pre_ord)
+            gt_data = self.tight_crop(gt_data, Mgt_pre_ord)
 
         in_Mask  = in_data[..., 3:4]
         in_W     = in_data[..., 0:3]
         W_w_M = in_W * in_Mask
 
-        gt_c = gt_data[..., 1:3]
+        gt_c  = gt_data[..., 1:3]
         gt_cx = gt_data[..., 2:3]
         gt_cy = gt_data[..., 1:2]
         gt_datas = [gt_cx, gt_cy]  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
