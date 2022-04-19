@@ -52,17 +52,19 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
         Mgt_C_pre         = self.gt_pre
         rec_hope          = self.rec_hope
 
+        ''' tight crop '''
         if(self.tight_crop is not None):
-            Mgt_pre = Mgt_C_pre[..., 0:1]
-            dis_img      = self.tight_crop(in_WM[1]  , Mgt_pre)
-            in_WM_pre    = self.tight_crop(in_WM_pre , Mgt_pre)
-            Mgt_C        = self.tight_crop(Mgt_C     , Mgt_pre)
-            Mgt_C_pre    = self.tight_crop(Mgt_C_pre , Mgt_pre)
-            # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
+            Mgt_pre_ord  = Mgt_C_pre[..., 0:1]
+            in_WM_pre    = self.tight_crop(in_WM_pre , Mgt_pre_ord)
+            Mgt_C        = self.tight_crop(Mgt_C     , Mgt_pre_ord)
+            Mgt_C_pre    = self.tight_crop(Mgt_C_pre , Mgt_pre_ord)
 
-        ### 這個是給後處理用的 dis_img
-        dis_img  = dis_img [0].numpy()
-        rec_hope = rec_hope[0].numpy()
+            ### dis_img 在 tight_crop 完後 不 resize
+            tight_crop_resize = self.tight_crop.resize
+            self.tight_crop.reset_resize(None)
+            dis_img      = self.tight_crop(in_WM[1]  , Mgt_pre_ord)
+            self.tight_crop.reset_resize(tight_crop_resize)
+            # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 
         ''' use_model '''
         W_pre   = in_WM_pre[..., 0:3]
@@ -85,48 +87,49 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             # ax[1, 1].imshow(Cx_raw_pre[0])
             # fig.tight_layout()
             # plt.show()
+            C_raw_pre = np.concatenate([Cy_raw_pre, Cx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
+
+        ### 後處理 Output (C_raw_pre)
+        C_raw = Value_Range_Postprocess_to_01(C_raw_pre, self.exp_obj.use_gt_range)
+        C_raw = C_raw[0]
+        ### 順便處理一下gt
+        Cgt_pre = Mgt_C_pre[0, ..., 1:3].numpy()
+        Cgt_01 = Value_Range_Postprocess_to_01(Cgt_pre, self.exp_obj.use_gt_range)
         ''''''''''''
-        ### visualize W_pre
+        # ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        # h, w, c = C_raw.shape
+        Mgt = Mgt_C_pre[0, ..., 0:1].numpy()
+        # Mgt = Mgt [:h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+
+        ### 視覺化 Output pred (F)
+        if(self.focus is False):
+            F,   F_visual,   Cx_visual,   Cy_visual   = C_01_concat_with_M_to_F_and_get_F_visual(C_raw,  Mgt)
+            F_visual   = F_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+        else:
+            F_raw , F_raw_visual , Cx_raw_visual , Cy_raw_visual, F_w_Mgt,   F_w_Mgt_visual,   Cx_w_Mgt_visual,   Cy_w_Mgt_visual = C_01_and_C_01_w_M_to_F_and_visualize(C_raw, Mgt)
+            F_raw_visual   = F_raw_visual   [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+            F_w_Mgt_visual = F_w_Mgt_visual [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+
+        ### 視覺化 Output gt (Fgt)
+        Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_01_concat_with_M_to_F_and_get_F_visual(Cgt_01, Mgt)
+        Fgt_visual = Fgt_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+        ''''''''''''''''''''''''''''''''''''''''''''''''
+        ### 視覺化 Input (W)
         W_01 = Value_Range_Postprocess_to_01(W_pre)
         W_01 = W_01[0].numpy()
         W_visual, Wx_visual, Wy_visual, Wz_visual  = W_01_visual_op(W_01)
 
-        ### visualize Mgt_pre
-        Mgt_visual = (Mgt_pre[0].numpy() * 255).astype(np.uint8)
-
-        ### visualize W_pre_W_M_pre
+        ### 視覺化 Input (W_w_M)
         W_w_M_01 = Value_Range_Postprocess_to_01(W_pre_W_M_pre)
         W_w_M_01 = W_w_M_01[0].numpy()
         W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual  = W_01_visual_op(W_w_M_01)
 
-        ### Cx_pre, Cy_pre postprocess and visualize
-        ### postprocess
-        if(self.to_Cx_Cy is True): C_raw_pre = np.concatenate([Cy_raw_pre, Cx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
-        C_raw = Value_Range_Postprocess_to_01(C_raw_pre, self.exp_obj.use_gt_range)
-        C_raw = C_raw[0]
-        Cgt_pre = Mgt_C_pre[0, ..., 1:3].numpy()
-        Cgt_01 = Value_Range_Postprocess_to_01(Cgt_pre, self.exp_obj.use_gt_range)
+        ### 視覺化 Mgt_pre
+        Mgt_visual = (Mgt_pre[0].numpy() * 255).astype(np.uint8)
 
-        Mgt = Mgt_C_pre[0, ..., 0:1].numpy()
-
-        ### Cx_pre, Cy_pre postprocess and visualize
-        ### postprocess
-        # C_pre = np.concatenate([Cy_pre, Cx_pre], axis=-1)  ### tensor 會自動轉 numpy
-        # C = Value_Range_Postprocess_to_01(C_pre, exp_obj.use_gt_range)
-        # C = C[0]
-        # Cgt = Fgt[0, ..., 1:3].numpy()
-
-        if(self.focus is False):
-            F,   F_visual,   Cx_visual,   Cy_visual   = C_01_concat_with_M_to_F_and_get_F_visual(C_raw,  Mgt)
-            Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_01_concat_with_M_to_F_and_get_F_visual(Cgt_01, Mgt)
-            F_visual   = F_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
-            Fgt_visual = Fgt_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
-        else:
-            F_raw , F_raw_visual , Cx_raw_visual , Cy_raw_visual, F_w_Mgt,   F_w_Mgt_visual,   Cx_w_Mgt_visual,   Cy_w_Mgt_visual = C_01_and_C_01_w_M_to_F_and_visualize(C_raw, Mgt)
-            Fgt   , Fgt_visual   , Cxgt_visual   , Cygt_visual  = C_01_concat_with_M_to_F_and_get_F_visual(Cgt_01, Mgt)
-            F_raw_visual   = F_raw_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
-            F_w_Mgt_visual = F_w_Mgt_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
-            Fgt_visual     = Fgt_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+        ### 這個是給後處理用的 dis_img
+        dis_img  = dis_img [0].numpy()
+        rec_hope = rec_hope[0].numpy()
 
         ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
         if(self.bgr2rgb):
@@ -270,11 +273,11 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
 
             if(self.focus is False):
-                imgs       = [ W_visual ,   Mgt_visual , W_w_M_visual,  F_visual ,    rec,   rec_hope],    ### 把要顯示的每張圖包成list
-                img_titles = ["W_01",        "Mgt",        "W_w_M",     "pred_F", "pred_rec", "rec_hope"], ### 把每張圖要顯示的字包成list
+                imgs       = [ W_visual ,   Mgt_visual , W_w_M_visual,  F_visual ,    rec,   rec_hope]     ### 把要顯示的每張圖包成list
+                img_titles = ["W_01",        "Mgt",        "W_w_M",     "pred_F", "pred_rec", "rec_hope"]  ### 把每張圖要顯示的字包成list
             else:
-                imgs       = [ W_visual ,   Mgt_visual , W_w_M_visual,  F_raw_visual, F_w_Mgt_visual,    rec,      rec_hope],         ### 把要顯示的每張圖包成list
-                img_titles = ["W_01",        "Mgt",        "W_w_M",   "F_raw_visual", "F_w_Mgt_visual",     "pred_rec", "rec_hope"],  ### 把每張圖要顯示的字包成list
+                imgs       = [ W_visual ,   Mgt_visual , W_w_M_visual,  F_raw_visual, F_w_Mgt_visual,    rec,      rec_hope]         ### 把要顯示的每張圖包成list
+                img_titles = ["W_01",        "Mgt",        "W_w_M",   "F_raw_visual", "F_w_Mgt_visual",     "pred_rec", "rec_hope"]  ### 把每張圖要顯示的字包成list
 
             single_row_imgs = Matplot_single_row_imgs(
                                     imgs       = imgs,
