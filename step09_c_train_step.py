@@ -317,8 +317,8 @@ class Train_step_W_w_M_to_Cx_Cy():
         Mgt_pre_ord = in_data[..., 3:4]
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
-            in_data = self.tight_crop(in_data, Mgt_pre_ord)
-            gt_data = self.tight_crop(gt_data, Mgt_pre_ord)
+            in_data, _ = self.tight_crop(in_data, Mgt_pre_ord)
+            gt_data, _ = self.tight_crop(gt_data, Mgt_pre_ord)
 
         in_Mask  = in_data[..., 3:4]
         in_W     = in_data[..., 0:3]
@@ -419,8 +419,8 @@ class Train_step_I_w_M_to_W():
         Mgt_pre_ord  = gt_data[..., 3:4]
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
-            in_data = self.tight_crop(in_data, Mgt_pre_ord)
-            gt_data = self.tight_crop(gt_data, Mgt_pre_ord)
+            in_data, _ = self.tight_crop(in_data, Mgt_pre_ord)
+            gt_data, _ = self.tight_crop(gt_data, Mgt_pre_ord)
 
         gt_mask  = gt_data[..., 3:4]
         I_with_M = in_data * gt_mask
@@ -733,8 +733,8 @@ class Train_step_I_to_M():
         gt_mask = gt_data[..., 0:1]
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
-            in_data = self.tight_crop(in_data, gt_mask)
-            gt_mask = self.tight_crop(gt_mask, gt_mask)
+            in_data, _ = self.tight_crop(in_data, gt_mask)
+            gt_mask, _ = self.tight_crop(gt_mask, gt_mask)
 
         ### debug 時 記得把 @tf.function 拿掉
         # global debug_i

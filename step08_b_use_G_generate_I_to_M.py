@@ -39,10 +39,10 @@ class I_to_M(Use_G_generate):
         if(self.tight_crop is not None):
             gt_mask_pre = gt_mask_coord_pre[..., 0:1]
 
-            in_img            = self.tight_crop(in_img, gt_mask_pre)
-            in_img_pre        = self.tight_crop(in_img_pre, gt_mask_pre)
-            gt_mask_coord     = self.tight_crop(gt_mask_coord, gt_mask_pre)
-            gt_mask_coord_pre = self.tight_crop(gt_mask_coord_pre, gt_mask_pre)
+            in_img           , _ = self.tight_crop(in_img, gt_mask_pre)
+            in_img_pre       , _ = self.tight_crop(in_img_pre, gt_mask_pre)
+            gt_mask_coord    , _ = self.tight_crop(gt_mask_coord, gt_mask_pre)
+            gt_mask_coord_pre, _ = self.tight_crop(gt_mask_coord_pre, gt_mask_pre)
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 
 
