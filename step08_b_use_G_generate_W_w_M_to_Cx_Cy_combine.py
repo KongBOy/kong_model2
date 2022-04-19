@@ -51,17 +51,17 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
         Mgt_C                 = self.gt_ord
         Mgt_C_pre             = self.gt_pre
         rec_hope              = self.rec_hope
+        dis_img_ord           = in_WM_and_dis_img[1]      ### 3240, 3240
+        in_WM_pre             = in_WM_and_dis_img_pre[0]
 
         ''' tight crop '''
         if(self.tight_crop is not None):
             Mgt_pre_for_crop  = Mgt_C_pre[..., 0:1]
 
-            in_WM_pre    = in_WM_and_dis_img_pre[0]
             in_WM_pre, _ = self.tight_crop(in_WM_pre , Mgt_pre_for_crop)
             Mgt_C    , _ = self.tight_crop(Mgt_C     , Mgt_pre_for_crop)
             Mgt_C_pre, _ = self.tight_crop(Mgt_C_pre , Mgt_pre_for_crop)
 
-            dis_img_ord  = in_WM_and_dis_img[1]      ### 1600, 1600
             dis_img_pre  = in_WM_and_dis_img_pre[1]  ###  512,  512
             ord_h, ord_w = dis_img_ord.shape[1:3]    ### BHWC， 取 HW
             pre_h, pre_w = dis_img_pre.shape[1:3]    ### BHWC， 取 HW
