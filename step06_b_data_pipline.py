@@ -4,7 +4,7 @@
 import sys
 sys.path.append("kong_util")
 # from util import get_dir_moves
-from util import get_db_amount
+from kong_util.util import get_db_amount
 import time
 
 from step06_a_datas_obj import DB_C, DB_N, DB_GM, VALUE_RANGE, Dataset_builder, Range
@@ -1375,8 +1375,8 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
 
             ###########################################################################################################################################
             ### 勿刪！用來測試寫得對不對！ 這要用sypder開才看的到喔
-            # for i, (see_in, see_in_pre, see_gt, see_gt_pre) in enumerate(tf.data.Dataset.zip((self.tf_data.see_in_db.batch(1), self.tf_data.see_in_db_pre.batch(1),
-            #                                                                                   self.tf_data.see_gt_db.batch(1), self.tf_data.see_gt_db_pre.batch(1)))):
+            # for i, (see_in, see_in_pre, see_gt, see_gt_pre) in enumerate(tf.data.Dataset.zip((self.tf_data.see_in_db.ord.batch(1), self.tf_data.see_in_db.pre.batch(1),
+            #                                                                                   self.tf_data.see_gt_db.ord.batch(1), self.tf_data.see_gt_db.pre.batch(1)))):
             #     debug_dict[f"{i}--3-1 see_in"    ] = see_in
             #     debug_dict[f"{i}--3-2 see_in_pre"] = see_in_pre
             #     debug_dict[f"{i}--3-3 see_gt"    ] = see_gt
@@ -1388,6 +1388,29 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
             #     debug_dict[f"{i}--4-3b see_gt_move"] = see_gt[0, ..., 1:3].numpy()
             #     debug_dict[f"{i}--4-4a see_gt_pre_mask"] = see_gt_pre[0, ..., 0:1].numpy()
             #     debug_dict[f"{i}--4-4b see_gt_pre_move"] = see_gt_pre[0, ..., 1:3].numpy()
+
+            #     # ##### flow 的 mask 是更新後還不錯的mask， 把他抓出來 更新 W 的 mask
+            #     # from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
+            #     # update_M_dir = "F:/kong_model2/debug_data/DB_update_wc_mask"
+            #     # npy_dir  = update_M_dir + "/npy"
+            #     # knpy_dir = update_M_dir + "/knpy"
+            #     # Check_dir_exist_and_build(update_M_dir)
+            #     # Check_dir_exist_and_build(npy_dir)
+            #     # Check_dir_exist_and_build(knpy_dir)
+            #     # W_w_M  = see_in[0][0].numpy()
+            #     # M_good = see_gt[0, ..., 0:1].numpy()
+            #     # W = W_w_M[..., 0:3]
+            #     # W_w_M_good = np.concatenate([W, M_good], axis=-1)
+            #     # npy_path  = f"{npy_dir}/{i + 1}_W_w_M_good.npy"
+            #     # knpy_path = f"{knpy_dir}/{i + 1}_W_w_M_good.knpy"
+            #     # np.save(npy_path, W_w_M_good)
+            #     # Save_npy_path_as_knpy(src_path=npy_path, dst_path=knpy_path)
+            #     # ### 視覺化一下
+            #     # # fig, ax = plt.subplots(nrows=1, ncols=2)
+            #     # # ax[0].imshow(W_w_M [..., 3])
+            #     # # ax[1].imshow(M_good[..., 0])
+            #     # # plt.show()
+            #     # print("see finish")
 
         if(self.tf_data.db_obj.have_rec_hope):
             self.tf_data.rec_hope_train_db = self.rec_hope_train_factory.build_img_db()
