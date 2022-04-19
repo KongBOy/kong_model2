@@ -314,14 +314,14 @@ class Train_step_W_w_M_to_Cx_Cy():
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
         '''
-        Mgt_pre_ord = in_data[..., 3:4]
+        Mgt_pre_for_crop = in_data[0][..., 3:4]
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
-            in_data, _ = self.tight_crop(in_data, Mgt_pre_ord)
-            gt_data, _ = self.tight_crop(gt_data, Mgt_pre_ord)
+            W_con_M, _ = self.tight_crop(in_data[0], Mgt_pre_for_crop)
+            gt_data, _ = self.tight_crop(gt_data   , Mgt_pre_for_crop)
 
-        in_Mask  = in_data[..., 3:4]
-        in_W     = in_data[..., 0:3]
+        in_Mask  = W_con_M[..., 3:4]
+        in_W     = W_con_M[..., 0:3]
         W_w_M = in_W * in_Mask
 
         gt_c  = gt_data[..., 1:3]

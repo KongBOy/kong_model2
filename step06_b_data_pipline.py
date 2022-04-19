@@ -70,6 +70,10 @@ class img_mapping_util(norm_and_resize_mapping_util):
     def step0b_decode_gif(self, byte_img): return tf.image.decode_gif(byte_img)[0]  ### gif 好像比較特殊，我猜是 THWC, T是時間
 
 
+    def step1_uint8(self, img):
+        img  = tf.cast(img, tf.uint8)  ### 一定要在 resize 之後 再 cast 成 uint8 喔！ 因為 resize 完會變 float32
+        return img[..., :3]  ### png有四個channel，第四個是透明度用不到所以只拿前三個channel囉
+
     def step1_uint8_resize(self, img):
         img = self._resize(img)
         img  = tf.cast(img, tf.uint8)  ### 一定要在 resize 之後 再 cast 成 uint8 喔！ 因為 resize 完會變 float32
@@ -261,7 +265,7 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
         elif(self.file_format == "png"): decoded_imgs = byte_imgs.map(self.step0b_decode_png)
         elif(self.file_format == "gif"): decoded_imgs = byte_imgs.map(self.step0b_decode_gif)
 
-        tf_data_element.ord = decoded_imgs.map(self.step1_uint8_resize)
+        tf_data_element.ord = decoded_imgs.map(self.step1_uint8)
         ### 測試 use_range 有沒有設成功
         # print("self.use_range:", self.use_range)
         # print("VALUE_RANGE.neg_one_to_one.value:", VALUE_RANGE.neg_one_to_one.value, self.use_range == VALUE_RANGE.neg_one_to_one.value)
@@ -1173,7 +1177,9 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
         self.tf_data.train_in2_db     = self.train_in2_factory.build_img_db()
         self.tf_data.test_in2_db      = self.test_in2_factory .build_img_db()
         self.tf_data.train_in_db.ord  = tf.data.Dataset.zip((self.tf_data.train_in_db.ord, self.tf_data.train_in2_db.ord))
-        self.tf_data.test_in_db.ord   = tf.data.Dataset.zip((self.tf_data.test_in_db.ord , self.tf_data.test_in2_db.ord))
+        self.tf_data.test_in_db .ord  = tf.data.Dataset.zip((self.tf_data.test_in_db.ord , self.tf_data.test_in2_db .ord))
+        self.tf_data.train_in_db.pre  = tf.data.Dataset.zip((self.tf_data.train_in_db.pre, self.tf_data.train_in2_db.pre))
+        self.tf_data.test_in_db .pre  = tf.data.Dataset.zip((self.tf_data.test_in_db.pre , self.tf_data.test_in2_db .pre))
 
         ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
         self.tf_data.train_amount    = get_db_amount(self.tf_data.db_obj.train_in_dir)
@@ -1243,6 +1249,7 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
             ''' 這裡的 train_in2_db 是 dis_img， 只是為了讓 F 來做 bm_rec 來 visualize 而已， 不會丟進去model裡面， 所以 不需要 train_in2_db_pre 喔！ 更不需要 zip 了'''
             self.tf_data.see_in2_db = self.see_in2_factory .build_img_db()
             self.tf_data.see_in_db.ord  = tf.data.Dataset.zip((self.tf_data.see_in_db.ord, self.tf_data.see_in2_db.ord))
+            self.tf_data.see_in_db.pre  = tf.data.Dataset.zip((self.tf_data.see_in_db.pre, self.tf_data.see_in2_db.pre))
 
             self.tf_data.see_gt_db  = self.see_gt_factory.build_M_C_db_wrong()
 
@@ -1298,7 +1305,9 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
         self.tf_data.train_in2_db = self.train_in2_factory.build_img_db()
         self.tf_data.test_in2_db  = self.test_in2_factory .build_img_db()
         self.tf_data.train_in_db.ord = tf.data.Dataset.zip((self.tf_data.train_in_db.ord, self.tf_data.train_in2_db.ord))
-        self.tf_data.test_in_db.ord  = tf.data.Dataset.zip((self.tf_data.test_in_db.ord, self.tf_data.test_in2_db.ord))
+        self.tf_data.test_in_db .ord = tf.data.Dataset.zip((self.tf_data.test_in_db .ord, self.tf_data.test_in2_db .ord))
+        self.tf_data.train_in_db.pre = tf.data.Dataset.zip((self.tf_data.train_in_db.pre, self.tf_data.train_in2_db.pre))
+        self.tf_data.test_in_db .pre = tf.data.Dataset.zip((self.tf_data.test_in_db .pre, self.tf_data.test_in2_db .pre))
 
         ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
         self.tf_data.train_amount = get_db_amount(self.tf_data.db_obj.train_in_dir)
@@ -1368,6 +1377,7 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
             ''' 這裡的 train_in2_db 是 dis_img， 只是為了讓 F 來做 bm_rec 來 visualize 而已， 不會丟進去model裡面， 所以 不需要 train_in2_db_pre 喔！ 更不需要 zip 了'''
             self.tf_data.see_in2_db = self.see_in2_factory .build_img_db()
             self.tf_data.see_in_db.ord  = tf.data.Dataset.zip((self.tf_data.see_in_db.ord, self.tf_data.see_in2_db.ord))
+            self.tf_data.see_in_db.pre  = tf.data.Dataset.zip((self.tf_data.see_in_db.pre, self.tf_data.see_in2_db.pre))
 
             self.tf_data.see_gt_db = self.see_gt_factory.build_M_C_db_wrong()
 
