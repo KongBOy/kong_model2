@@ -45,16 +45,16 @@ class I_w_M_to_W(Use_G_generate):
 
         ''' tight crop '''
         if(self.tight_crop is not None):
-            Mgt_pre_ord   = Wgt_w_Mgt_pre[..., 0:1]
+            Mgt_pre_for_crop   = Wgt_w_Mgt_pre[..., 0:1]
 
-            dis_img_pre   = self.tight_crop(dis_img_pre   , Mgt_pre_ord)
-            Wgt_w_Mgt     = self.tight_crop(Wgt_w_Mgt     , Mgt_pre_ord)
-            Wgt_w_Mgt_pre = self.tight_crop(Wgt_w_Mgt_pre , Mgt_pre_ord)
+            dis_img_pre  , _ = self.tight_crop(dis_img_pre   , Mgt_pre_for_crop)
+            Wgt_w_Mgt    , _ = self.tight_crop(Wgt_w_Mgt     , Mgt_pre_for_crop)
+            Wgt_w_Mgt_pre, _ = self.tight_crop(Wgt_w_Mgt_pre , Mgt_pre_for_crop)
 
             ### dis_img 在 tight_crop 完後 不 resize
             tight_crop_resize = self.tight_crop.resize
             self.tight_crop.reset_resize(None)
-            dis_img      = self.tight_crop(dis_img, Mgt_pre_ord)
+            dis_img      , _ = self.tight_crop(dis_img, Mgt_pre_for_crop)
             self.tight_crop.reset_resize(tight_crop_resize)
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 

@@ -314,17 +314,18 @@ class Train_step_W_w_M_to_Cx_Cy():
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
         '''
-        gt_mask = in_data[..., 3:4]
+        Mgt_pre_for_crop = in_data[0][..., 3:4]
+        W_con_M = in_data[0]
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
-            in_data = self.tight_crop(in_data, gt_mask)
-            gt_data = self.tight_crop(gt_data, gt_mask)
+            W_con_M, _ = self.tight_crop(W_con_M, Mgt_pre_for_crop)
+            gt_data, _ = self.tight_crop(gt_data, Mgt_pre_for_crop)
 
-        in_Mask  = in_data[..., 3:4]
-        in_W     = in_data[..., 0:3]
+        in_Mask  = W_con_M[..., 3:4]
+        in_W     = W_con_M[..., 0:3]
         W_w_M = in_W * in_Mask
 
-        gt_c = gt_data[..., 1:3]
+        gt_c  = gt_data[..., 1:3]
         gt_cx = gt_data[..., 2:3]
         gt_cy = gt_data[..., 1:2]
         gt_datas = [gt_cx, gt_cy]  ### 沒辦法當初設定成這樣子train， 就只能繼續保持這樣子了，要不然以前train好的東西 不能繼續用下去 QQ
@@ -416,11 +417,11 @@ class Train_step_I_w_M_to_W():
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
         '''
-        Mgt_pre_ord  = gt_data[..., 3:4]
+        Mgt_pre_for_crop  = gt_data[..., 3:4]
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
-            in_data = self.tight_crop(in_data, Mgt_pre_ord)
-            gt_data = self.tight_crop(gt_data, Mgt_pre_ord)
+            in_data, _ = self.tight_crop(in_data, Mgt_pre_for_crop)
+            gt_data, _ = self.tight_crop(gt_data, Mgt_pre_for_crop)
 
         gt_mask  = gt_data[..., 3:4]
         I_with_M = in_data * gt_mask
@@ -733,8 +734,8 @@ class Train_step_I_to_M():
         gt_mask = gt_data[..., 0:1]
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
-            in_data = self.tight_crop(in_data, gt_mask)
-            gt_mask = self.tight_crop(gt_mask, gt_mask)
+            in_data, _ = self.tight_crop(in_data, gt_mask)
+            gt_mask, _ = self.tight_crop(gt_mask, gt_mask)
 
         ### debug 時 記得把 @tf.function 拿掉
         # global debug_i

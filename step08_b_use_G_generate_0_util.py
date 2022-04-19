@@ -107,7 +107,7 @@ class Tight_crop():
             self.t_jit = tf.random.uniform(shape=[], minval=-self.jit_scale, maxval=self.jit_scale, dtype=tf.int64)
             self.d_jit = tf.random.uniform(shape=[], minval=-self.jit_scale, maxval=self.jit_scale, dtype=tf.int64)
         else: print("Tight_crop=0 無法 reset_jit， 請注意 建立 Tight_crop物件 的時候 jit_scale 有沒有設定數值， 目前不做事直接跳過 reset_jit動作")
-    
+
     def reset_resize(self, resize):
         self.resize = resize
 
@@ -185,23 +185,25 @@ class Tight_crop():
 
         ###### pad 完成了， 以下開始 crop
         ### 對 pad完成 的 data 重新定位
-        if(l_pad < 0): l_pad = tf.constant(0, tf.int64)
-        if(t_pad < 0): t_pad = tf.constant(0, tf.int64)
-        # l_pad = max(l_pad, 0)          ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
-        # t_pad = max(t_pad, 0)          ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
+        # l_pad = max(l_pad, 0)  ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
+        # t_pad = max(t_pad, 0)  ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
+        if(l_pad < 0): l_pad = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
+        if(t_pad < 0): t_pad = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
         r_pad = r_pad + l_out + r_out  ### r_pad, d_pad 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad, t_pad 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out, t_out 喔！
         d_pad = d_pad + t_out + d_out  ### r_pad, d_pad 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad, t_pad 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out, t_out 喔！
 
         ### 重新定位 完成了， 以下開始 crop
-        if  (len(data.shape) == 4): data = data[:, t_pad : d_pad + 1, l_pad : r_pad + 1, :]  ### BHWC
-        elif(len(data.shape) == 3): data = data[t_pad : d_pad + 1, l_pad : r_pad + 1, :]     ### HWC
-        elif(len(data.shape) == 2): data = data[t_pad : d_pad + 1, l_pad : r_pad + 1]        ### HW
+        d_pad += 1  ### index 轉 slice
+        r_pad += 1  ### index 轉 slice
+        if  (len(data.shape) == 4): data = data[:, t_pad : d_pad , l_pad : r_pad , :]  ### BHWC
+        elif(len(data.shape) == 3): data = data   [t_pad : d_pad , l_pad : r_pad , :]  ### HWC
+        elif(len(data.shape) == 2): data = data   [t_pad : d_pad , l_pad : r_pad]      ### HW
 
         ########### 全都處理完以後， resize 到指定的大小
         if(self.resize is not None): data = tf.image.resize(data, self.resize, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
         # breakpoint()
-        return data
+        return data, {"l_pad": l_pad, "t_pad": t_pad, "r_pad": r_pad, "d_pad": d_pad}
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
