@@ -54,11 +54,11 @@ import subprocess as sb
 
 # 1 3 6 "10" 15 21 28 36 45 55
 # side4 OK 20
-sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_1__3side_1_4side_1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_1__3side_1_4side_1.{run}"])
 
-sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_1_4side_1.{run}"])
-sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_1.{run}"])
-sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_1_4side_1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2.{run}"])
 
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_1_4side_1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_1.{run}"])
