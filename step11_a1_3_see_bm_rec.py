@@ -122,19 +122,16 @@ class See_bm_rec(See_info):
         start_time = time.time()
 
         ### See_method 第一部分：建立 存結果的資料夾
-        '''
         Check_dir_exist_and_build(self.see_write_dir)
         Check_dir_exist_and_build_new_dir(self.bm_rec_matplot_visual_write_dir)  ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
         Check_dir_exist_and_build_new_dir(self.bm_visual_write_dir)              ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
         Check_dir_exist_and_build_new_dir(self.rec_visual_write_dir)             ### 建立 存結果的資料夾，如果存在 要 刪掉重建，確保生成的都是新的結果
-        '''
         ### See_method 第二部分：取得see資訊
         self.get_see_base_info()  ### 取得 結果內的 某個see資料夾 內的所有影像 檔名 和 數量
         self.get_npz_info()
         self.get_flow_info()
         # print("here~~~~~~~~~~~~~~~~~~~~~", self.npz_epoch_amount)
 
-        '''
         ### See_method 第三部分：主要做的事情在這裡， 如果要有想設計平行處理的功能 就要有 1.single_see_core_amount 和 2.下面的if/elif/else 和 3._see_method 前兩個參數要為 start_index, task_amount 相關詞喔！
         if(single_see_core_amount == 1):  ### single_see_core_amount 大於1 代表 單核心跑， 就重新導向 最原始的function囉 把 see內的任務 依序完成！
             self._draw_bm_rec_matplot_visual_after_train(0, self.npz_epoch_amount, add_loss, bgr2rgb, jump_to)
@@ -148,18 +145,13 @@ class See_bm_rec(See_info):
             Save_as_jpg        (self.bm_rec_matplot_visual_write_dir, self.bm_rec_matplot_visual_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=CORE_AMOUNT_SAVE_AS_JPG)  ### matplot圖存完是png，改存成jpg省空間
         else:
             print("single_see_core_amount 設定錯誤， 需要 >= 1 的數字才對喔！ == 1 代表see內任務單核心跑， > 1 代表see內任務多核心跑")
-        '''
         ### dis_img原尺寸真的太大了(2xxx * 2xxx 左右)， 容量也超大， 縮小一樣清楚( 大概 1/4 左右還可以接受)， 所以就縮小囉， 才不會占空間
         Rescale_dir_imgs(self.rec_visual_write_dir, rescale=0.25)
 
-        '''
         ### See_method 第四部分：後處理 存 video
-        '''
         video_processes = []
-        '''
         # video_processes.append(Process( target=Video_combine_from_dir, args=(self.see_read_dir, self.see_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         video_processes.append(Process( target=Video_combine_from_dir, args=(self.bm_rec_matplot_visual_write_dir, self.bm_rec_matplot_visual_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉###
-        '''
         video_processes.append(Process( target=Video_combine_from_dir, args=(self.rec_visual_write_dir, self.rec_visual_write_dir) ) )  ### 存成jpg後 順便 把所有圖 串成影片，覺得好像還沒好到需要看影片，所以先註解掉之後有需要再打開囉
         for video_p in video_processes: video_p.start()
         for video_p in video_processes: video_p.join()
@@ -167,10 +159,8 @@ class See_bm_rec(See_info):
         ### See_method 第五部分：如果 write 和 read 資料夾不同，把 write完的結果 同步回 read資料夾喔！
         ###   記得順序是 先同步父 再 同步子 喔！
         if(self.bm_rec_matplot_visual_write_dir != self.bm_rec_matplot_visual_read_dir):
-            '''
             Syn_write_to_read_dir(write_dir=self.bm_rec_matplot_visual_write_dir, read_dir=self.bm_rec_matplot_visual_read_dir, build_new_dir=True)  ### 父
             Syn_write_to_read_dir(write_dir=self.bm_visual_write_dir,             read_dir=self.bm_visual_read_dir,             build_new_dir=True)  ### 子
-            '''
             Syn_write_to_read_dir(write_dir=self.rec_visual_write_dir,            read_dir=self.rec_visual_read_dir,            build_new_dir=True)  ### 子
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
