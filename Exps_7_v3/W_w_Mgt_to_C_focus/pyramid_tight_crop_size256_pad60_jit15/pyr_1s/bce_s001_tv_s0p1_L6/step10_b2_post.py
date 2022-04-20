@@ -25,10 +25,10 @@ from step10_c_exp_command import *
 ######################################################################################################################
 import subprocess as sb
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_1.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_7.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_1.{compress_and_bm_rec_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_2.{compress_and_bm_rec_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3.{compress_and_bm_rec_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4.{compress_and_bm_rec_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5.{compress_and_bm_rec_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6.{compress_and_bm_rec_all_from_begin}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_7.{compress_and_bm_rec_all_from_begin}"])
