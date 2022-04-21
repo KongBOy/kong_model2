@@ -15,9 +15,9 @@ import os
 import pdb
 
 class W_w_M_to_Cx_Cy(Use_G_generate):
-    def __init__(self, to_Cx_Cy=False, focus=False, tight_crop=None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None):
         super(W_w_M_to_Cx_Cy, self).__init__()
-        self.to_Cx_Cy = to_Cx_Cy
+        self.separate_out = separate_out
         self.focus = focus
         self.tight_crop = tight_crop
         if(self.tight_crop is not None): self.tight_crop.jit_scale = 0  ### 防呆 test 的時候我們不用 random jit 囉！
@@ -88,7 +88,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
         # ax[0, 1].imshow(Mgt_pre[0])
         # ax[0, 2].imshow(W_pre_W_M_pre[0])
 
-        if(self.to_Cx_Cy is False):
+        if(self.separate_out is False):
             C_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
             # ax[1, 0].imshow(C_raw_pre[0, ..., 0])
             # ax[1, 1].imshow(C_raw_pre[0, ..., 1])

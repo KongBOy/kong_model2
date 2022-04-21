@@ -304,8 +304,8 @@ def train_step_Multi_output_I_w_M_to_Cx_Cy_focus(model_obj, in_data, gt_data, lo
 ####################################################
 ####################################################
 class Train_step_W_w_M_to_Cx_Cy():
-    def __init__(self, to_Cx_Cy=False, focus=False, tight_crop=None):
-        self.to_Cx_Cy   = to_Cx_Cy
+    def __init__(self, separate_out=False, focus=False, tight_crop=None):
+        self.separate_out   = separate_out
         self.focus      = focus
         self.tight_crop = tight_crop
 
@@ -342,7 +342,7 @@ class Train_step_W_w_M_to_Cx_Cy():
         # fig.tight_layout()
         # plt.show()
 
-        if(self.to_Cx_Cy is False):
+        if(self.separate_out is False):
             if(self.focus is False): _train_step_Single_output(model_obj, in_data=W_w_M, gt_data =gt_c    , loss_info_objs=loss_info_objs)
             else:                    _train_step_Single_output(model_obj, in_data=W_w_M, gt_data =gt_c    , loss_info_objs=loss_info_objs, Mask=in_Mask)
         else:
