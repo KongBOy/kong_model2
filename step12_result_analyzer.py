@@ -18,7 +18,7 @@ import os
 import shutil
 
 class Result_analyzer:
-    def __init__(self, ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20):
+    def __init__(self, ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, fix_size=None):
         '''
         ana_what_sees: test / see
         '''
@@ -37,6 +37,7 @@ class Result_analyzer:
 
         self.fontsize = fontsize
         self.title_fontsize = title_fontsize
+        self.fix_size = fix_size
 
         '''
         大小寫都可以
@@ -136,8 +137,8 @@ class Result_analyzer:
 ########################################################################################################################################
 ########################################################################################################################################
 class Col_results_analyzer(Result_analyzer):
-    def __init__(self, ana_describe, ana_what_sees, ana_what, col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0):
-        super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize)
+    def __init__(self, ana_describe, ana_what_sees, ana_what, col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None):
+        super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
 
         self.c_results = col_results
         self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
@@ -253,6 +254,7 @@ class Col_results_analyzer(Result_analyzer):
                             fig_title      = "epoch=%04i" % go_epoch,   ### 圖上的大標題
                             fontsize       = self.fontsize,
                             title_fontsize = self.title_fontsize,
+                            fix_size       = self.fix_size,
                             bgr2rgb        = self.bgr2rgb,
                             add_loss       = self.add_loss)
             single_row_imgs.Draw_img()
@@ -436,8 +438,8 @@ class Col_results_analyzer(Result_analyzer):
 
 ### 目前小任務還沒有切multiprocess喔！
 class Row_col_results_analyzer(Result_analyzer):
-    def __init__(self, ana_describe, ana_what_sees, ana_what, row_col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0):
-        super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize)
+    def __init__(self, ana_describe, ana_what_sees, ana_what, row_col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None):
+        super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
         self.r_c_results = row_col_results
         self.r_c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_min_trained_epoch()去抓
         self.r_c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_max_trained_epoch()去抓
@@ -527,6 +529,7 @@ class Row_col_results_analyzer(Result_analyzer):
                                             fig_title        = "epoch=%04i" % go_epoch,   ### 圖上的大標題
                                             fontsize         = self.fontsize,
                                             title_fontsize   = self.title_fontsize,
+                                            fix_size         = self.fix_size,
                                             bgr2rgb          = self.bgr2rgb,
                                             add_loss         = self.add_loss)
             row_col_imgs.Draw_img()
