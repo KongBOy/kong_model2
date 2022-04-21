@@ -50,9 +50,9 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
-                                        row_col_results=ch032_1side_1__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=40)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
+                                        row_col_results=ch032_1side_1__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
     ########
     # 1side_2
     ########
@@ -60,9 +60,9 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
-                                        row_col_results=ch032_1side_2__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=40)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
+                                        row_col_results=ch032_1side_2__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
     ########
     # 1side_3
     ########
@@ -70,9 +70,9 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
-                                        row_col_results=ch032_1side_3__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=40)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
+                                        row_col_results=ch032_1side_3__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
     ########
     # 1side_4
     ########
@@ -80,9 +80,9 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
-                                        row_col_results=ch032_1side_4__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=40)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
+                                        row_col_results=ch032_1side_4__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
     ########
     # 1side_5
     ########
@@ -90,9 +90,9 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
-                                        row_col_results=ch032_1side_5__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=40)\
-                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
-                                            .Gather_all_see_final_img()
+                                        row_col_results=ch032_1side_5__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
+                                            # .Gather_all_see_final_img()
     ########
     # 1side_6
     ########
@@ -100,6 +100,6 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
-                                        row_col_results=ch032_1side_6__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=40)\
+                                        row_col_results=ch032_1side_6__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
