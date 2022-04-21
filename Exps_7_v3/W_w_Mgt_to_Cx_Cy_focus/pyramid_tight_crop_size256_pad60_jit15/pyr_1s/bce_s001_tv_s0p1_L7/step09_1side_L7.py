@@ -20,6 +20,10 @@ from step08_b_use_G_generate_0_util import Tight_crop
 from step09_c_train_step import Train_step_W_w_M_to_Cx_Cy
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
+import Exps_7_v3.Basic_Pyramid_1ch_model_for_import.pyr_1s.L7.step09_1side_L7 as pyr_1ch_model
+use_gen_op     =            W_w_M_to_Cx_Cy(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=60, resize=(256, 256), jit_scale=  0) )
+use_train_step = Train_step_W_w_M_to_Cx_Cy(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=60, resize=(256, 256), jit_scale= 15) )
+
 import time
 start_time = time.time()
 ###############################################################################################################################################################################################
@@ -36,27 +40,28 @@ pyramid_1side_6 = [1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1]
 pyramid_1side_7 = [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1]
 pyramid_1side_8 = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 #########################################################################################
-ch032_pyramid_1side_1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_1, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
-ch032_pyramid_1side_2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
-ch032_pyramid_1side_3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
-ch032_pyramid_1side_4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
-ch032_pyramid_1side_5 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_5, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
-ch032_pyramid_1side_6 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_6, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
-ch032_pyramid_1side_7 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_7, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
-ch032_pyramid_1side_8 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_8, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
+ch032_pyramid_1side_1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_multi_model_builders(op_type="I_or_W_to_Cx_Cy", I_to_Cx=pyr_1ch_model.ch032_pyramid_1side_1, I_to_Cy=pyr_1ch_model.ch032_pyramid_1side_1) .set_gen_op( use_gen_op ).set_train_step( use_train_step )
+ch032_pyramid_1side_2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_multi_model_builders(op_type="I_or_W_to_Cx_Cy", I_to_Cx=pyr_1ch_model.ch032_pyramid_1side_2, I_to_Cy=pyr_1ch_model.ch032_pyramid_1side_2) .set_gen_op( use_gen_op ).set_train_step( use_train_step )
+ch032_pyramid_1side_3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_multi_model_builders(op_type="I_or_W_to_Cx_Cy", I_to_Cx=pyr_1ch_model.ch032_pyramid_1side_3, I_to_Cy=pyr_1ch_model.ch032_pyramid_1side_3) .set_gen_op( use_gen_op ).set_train_step( use_train_step )
+ch032_pyramid_1side_4 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_multi_model_builders(op_type="I_or_W_to_Cx_Cy", I_to_Cx=pyr_1ch_model.ch032_pyramid_1side_4, I_to_Cy=pyr_1ch_model.ch032_pyramid_1side_4) .set_gen_op( use_gen_op ).set_train_step( use_train_step )
+ch032_pyramid_1side_5 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_multi_model_builders(op_type="I_or_W_to_Cx_Cy", I_to_Cx=pyr_1ch_model.ch032_pyramid_1side_5, I_to_Cy=pyr_1ch_model.ch032_pyramid_1side_5) .set_gen_op( use_gen_op ).set_train_step( use_train_step )
+ch032_pyramid_1side_6 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_multi_model_builders(op_type="I_or_W_to_Cx_Cy", I_to_Cx=pyr_1ch_model.ch032_pyramid_1side_6, I_to_Cy=pyr_1ch_model.ch032_pyramid_1side_6) .set_gen_op( use_gen_op ).set_train_step( use_train_step )
+ch032_pyramid_1side_7 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_multi_model_builders(op_type="I_or_W_to_Cx_Cy", I_to_Cx=pyr_1ch_model.ch032_pyramid_1side_7, I_to_Cy=pyr_1ch_model.ch032_pyramid_1side_7) .set_gen_op( use_gen_op ).set_train_step( use_train_step )
+ch032_pyramid_1side_8 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_multi_model_builders(op_type="I_or_W_to_Cx_Cy", I_to_Cx=pyr_1ch_model.ch032_pyramid_1side_8, I_to_Cy=pyr_1ch_model.ch032_pyramid_1side_8) .set_gen_op( use_gen_op ).set_train_step( use_train_step )
 #########################################################################################
 ###############################################################################################################################################################################################
-
 if(__name__ == "__main__"):
     import numpy as np
 
     print("build_model cost time:", time.time() - start_time)
     data = np.zeros(shape=(1, 512, 512, 1))
-    use_model = ch032_pyramid_1side_4
+    use_model = ch032_pyramid_1side_1
     use_model = use_model.build()
     result = use_model.generator(data)
-    print(result.shape)
+    print(result[0].shape)
+    print(result[1].shape)
 
     from kong_util.tf_model_util import Show_model_weights
     Show_model_weights(use_model.generator)
     use_model.generator.summary()
+    print(use_model.model_describe)

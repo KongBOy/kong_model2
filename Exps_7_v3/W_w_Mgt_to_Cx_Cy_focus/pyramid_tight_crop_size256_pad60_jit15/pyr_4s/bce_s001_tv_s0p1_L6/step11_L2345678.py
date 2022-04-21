@@ -20,10 +20,10 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
     os.chdir(code_exe_dir)
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
-import  Exps_7_v3.template_dir.pyramid_template_1_6.pyr_0s.bce_s001_tv_s0p1_L6.step10_a as L6_0side
-import  Exps_7_v3.template_dir.pyramid_template_1_6.pyr_1s.bce_s001_tv_s0p1_L6.step10_a as L6_1side
-import  Exps_7_v3.template_dir.pyramid_template_1_6.pyr_2s.bce_s001_tv_s0p1_L6.step10_a as L6_2side
-import  Exps_7_v3.template_dir.pyramid_template_1_6.pyr_3s.bce_s001_tv_s0p1_L6.step10_a as L6_3side
+import Exps_7_v3.W_w_Mgt_to_Cx_Cy_focus.pyramid_tight_crop_size256_pad60_jit15.pyr_0s.bce_s001_tv_s0p1_L6.step10_a as L6_0side
+import Exps_7_v3.W_w_Mgt_to_Cx_Cy_focus.pyramid_tight_crop_size256_pad60_jit15.pyr_1s.bce_s001_tv_s0p1_L6.step10_a as L6_1side
+import Exps_7_v3.W_w_Mgt_to_Cx_Cy_focus.pyramid_tight_crop_size256_pad60_jit15.pyr_2s.bce_s001_tv_s0p1_L6.step10_a as L6_2side
+import Exps_7_v3.W_w_Mgt_to_Cx_Cy_focus.pyramid_tight_crop_size256_pad60_jit15.pyr_3s.bce_s001_tv_s0p1_L6.step10_a as L6_3side
 import step10_a as L6_4side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ########

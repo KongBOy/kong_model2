@@ -20,6 +20,10 @@ from step08_b_use_G_generate_0_util import Tight_crop
 from step09_c_train_step import Train_step_W_w_M_to_Cx_Cy
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
+import Exps_7_v3.Basic_Pyramid_1ch_model_for_import.pyr_0s.L5.step09_0side_L5 as pyr_1ch_model
+use_gen_op     =            W_w_M_to_Cx_Cy(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=60, resize=(256, 256), jit_scale=  0) )
+use_train_step = Train_step_W_w_M_to_Cx_Cy(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=60, resize=(256, 256), jit_scale= 15) )
+
 import time
 start_time = time.time()
 ###############################################################################################################################################################################################
@@ -29,10 +33,9 @@ start_time = time.time()
 #########################################################################################
 pyramid_0side = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 #########################################################################################
-ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=5, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_0side, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
+ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_multi_model_builders(op_type="I_or_W_to_Cx_Cy", I_to_Cx=pyr_1ch_model.ch032_pyramid_0side, I_to_Cy=pyr_1ch_model.ch032_pyramid_0side) .set_gen_op( use_gen_op ).set_train_step( use_train_step )
 #########################################################################################
 ###############################################################################################################################################################################################
-
 if(__name__ == "__main__"):
     import numpy as np
 
@@ -41,7 +44,8 @@ if(__name__ == "__main__"):
     use_model = ch032_pyramid_0side
     use_model = use_model.build()
     result = use_model.generator(data)
-    print(result.shape)
+    print(result[0].shape)
+    print(result[1].shape)
 
     from kong_util.tf_model_util import Show_model_weights
     Show_model_weights(use_model.generator)
