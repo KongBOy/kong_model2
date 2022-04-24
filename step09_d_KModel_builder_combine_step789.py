@@ -42,6 +42,24 @@ class KModel:
             print(f"    {key}: {value}")
         # print("generator:", self.__dict__)
         return ""
+    
+    def describe_elements_prone(self):
+        import numpy as np
+        # print("describe_elements_prone:", self.model_describe_elements)
+        model_describe_elements = np.array(self.model_describe_elements)
+        for go_ele, ele in enumerate(model_describe_elements):
+            if("&&" not in ele): model_describe_elements[ go_ele + 1: ] = np.where(model_describe_elements[ go_ele + 1: ] == ele, "same", model_describe_elements[go_ele + 1: ])
+
+        go_ele = 0
+        while(go_ele < len(model_describe_elements) - 1):
+            # print("go_ele:", go_ele)
+            # print("model_describe_elements[go_ele]:", model_describe_elements[go_ele])
+            if(model_describe_elements[go_ele] == "same" and model_describe_elements[go_ele + 1] == "same"):
+                model_describe_elements = np.delete(model_describe_elements, go_ele)
+                go_ele -= 1
+            # print("model_describe_elements:", model_describe_elements)
+            go_ele += 1
+        self.model_describe_elements = model_describe_elements
 
 class KModel_init_builder:
     def __init__(self, kong_model=None):
@@ -302,6 +320,7 @@ class G_Unet_Body_builder(Ckpt_op_builder):
         for gen_name, model_builder in model_builders_dict.items():
             self.kong_model.model_describe_elements += [gen_name] + model_builder.kong_model.model_describe_elements + ["&&"]
         self.kong_model.model_describe_elements.pop()  ### 把結尾的 & pop 掉
+        self.kong_model.describe_elements_prone()
         self.kong_model.model_describe = "_".join(self.kong_model.model_describe_elements)
 
         def _build_multi_unet_body_part():
