@@ -45,8 +45,8 @@ class Experiment():
         #     shutil.rmtree(code_save_path + "/" + "kong_util")
         # print("self.exp_dir:", self.exp_dir )
         shutil.copytree(f"{kong_model2_dir}/kong_util", code_save_path + "/" + "kong_util")
-        shutil.copytree(f"{kong_model2_dir}/kong_Blender", code_save_path + "/" + "kong_Blender")
-        # shutil.copytree(f"{kong_model2_dir}/SIFT_dev", code_save_path + "/" + "SIFT_dev")  ### 因為檔名很容易太長， 這個到目前為止都還沒改動到， 覺得先不copy好了 (2022/04/21 決定的)
+        # shutil.copytree(f"{kong_model2_dir}/kong_Blender", code_save_path + "/" + "kong_Blender")  ### 因為檔名很容易太長， 這個到目前為止都還沒改動到， 覺得先不copy好了 (2022/04/22 決定的)
+        # shutil.copytree(f"{kong_model2_dir}/SIFT_dev", code_save_path + "/" + "SIFT_dev")          ### 因為檔名很容易太長， 這個到目前為止都還沒改動到， 覺得先不copy好了 (2022/04/21 決定的)
 
         code_exe_copy_src = "/".join(self.code_exe_path.split("\\")[:-1])
         code_exe_copy_dst = code_save_path + "/" + "/".join(self.code_exe_path.split("\\")[-3:-1])
