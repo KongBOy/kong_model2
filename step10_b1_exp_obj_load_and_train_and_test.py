@@ -66,6 +66,7 @@ class Experiment():
         self.phase         = "train"
         self.db_builder    = None
         self.db_obj        = None
+        self.tf_data       = None
         self.img_resize    = None
         self.model_builder = None
         self.model_obj     = None
@@ -92,6 +93,9 @@ class Experiment():
         self.epoch_save_freq = 5     ### 訓練 epoch_save_freq 個 epoch 存一次模型
         self.start_epoch     = 0
         self.current_ep      = self.start_epoch
+        self.current_it      = 0
+        self.ep_save_fq      = 1
+        self.total_iters           = None  ### 總共會  更新 幾次， 建立完tf_data後 才會知道所以現在指定None
 
         self.exp_bn_see_arg = False  ### 本來 bn 在 test 的時候就應該要丟 false，只是 現在batch_size=1， 丟 True 會變 IN ， 所以加這個flag 來控制
 
@@ -110,7 +114,6 @@ class Experiment():
         ### self.phase = "test_indicate" ### 這應該是可以刪掉了，因為在取db的時候，已經有包含了test_indecate的取法了！不用在特別區分出來 取資料囉！
         ### 參數設定結束
         ####################################################################################################################
-        self.tf_data      = None
         self.ckpt_read_manager  = None
         self.ckpt_write_manager = None
         self.ckpt_D_read_manager  = None
@@ -163,7 +166,8 @@ class Experiment():
             elif("rect" in self.model_obj.model_name.value or "justG" in self.model_obj.model_name.value):
                 self.img_resize = (math.ceil(self.db_obj.h / 4) * 4, math.ceil(self.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
 
-        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
+        self.tf_data = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
+        self.total_iters   = self.epochs * self.tf_data.train_amount  ### 總共會  更新 幾次
 
         ### 3.model
         self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
@@ -229,6 +233,7 @@ class Experiment():
 
         self.current_ep = self.start_epoch   ### 因為 epoch 的狀態 在 train 前後是不一樣的，所以需要用一個變數來記住，就用這個current_epoch來記錄囉！
         for epoch in range(self.start_epoch, self.epochs):
+            self.current_it = 0
             ###############################################################################################################################
             ###    step0 紀錄epoch開始訓練的時間
             epoch_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
@@ -243,7 +248,8 @@ class Experiment():
             if(self.current_ep == 0): print("Initializing Model~~~")  ### sample的時候就會initial model喔！
             ###############################################################################################################################
             ###     step1 用來看目前訓練的狀況
-            self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+            if(self.current_ep == 0 or (self.current_ep % self.ep_save_fq == 0) ):
+                self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
             ###############################################################################################################################
             ### 以上 current_ep = epoch   ### 代表還沒訓練
             ###     step2 訓練
@@ -277,6 +283,7 @@ class Experiment():
                 G_iter = iter(G_train_db_combine)
                 DG_iter = iter(DG_train_db_combine)
 
+                it = 0
                 for go_iter in trange(len(self.tf_data.train_db_combine)):
                     if(DG_train_many_diff is True):
                         ''' 訓練D '''
@@ -311,15 +318,26 @@ class Experiment():
                             # plt.show()
                             self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
 
+                    ### iter存圖
+                    self.current_it = it + 1  ### +1 代表 after_rain 的意思
+                    self.current_it_save_result()
+                    # if( (it + 1) % 10 == 0): break   ### debug用，看subprocess成不成功
             else:
-                for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
+                for it, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
+                    ### train
                     self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
-                    # break   ### debug用，看subprocess成不成功
+
+                    ### iter存圖
+                    self.current_it = it + 1  ### +1 代表 after_rain 的意思
+                    self.current_it_save_result()
+
+                    # if( (it + 1) % 10 == 0): break   ### debug用，看subprocess成不成功
             self.current_ep += 1  ### 超重要！別忘了加呀！
+            self.current_it  = 0  ### 超重要！別忘了加呀！ 因為進到下個epoch了， 所以iter變回0囉
             ### 以下 current_ep = epoch + 1   ### +1 代表訓練完了！變成下個epoch了！
             ###############################################################
             ###     step3 整個epoch 的 loss 算平均，存進tensorboard
-            self.train_step3_Loss_info_save_loss(self.current_ep)
+            # self.train_step3_Loss_info_save_loss()  ### 把他加進去 train_step1_see_current_img 裡面試試看， 所以這邊就不用做了喔
             ###############################################################################################################################
             ###     step4 儲存模型 (checkpoint) the model every "epoch_save_freq" epochs
             if (self.current_ep) % self.epoch_save_freq == 0:
@@ -349,6 +367,12 @@ class Experiment():
 
         ### 最後train完 記得也要看結果喔！
         self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+
+    def current_it_save_result(self):
+        if(self.it_save_fq is not None):
+            if( self.current_it % self.it_save_fq == 0 or  ### current_it 還要在 加1， 才可以湊足 % == 0 在對的位置 執行  train_step1_see_current_img
+                self.current_it == self.tf_data.train_amount):   ### 最後一個 it 我希望要存
+                self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
     def testing(self, add_loss=False, bgr2rgb=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
@@ -385,32 +409,35 @@ class Experiment():
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
+        self.train_step3_Loss_info_save_loss()
 
-    def train_step3_Loss_info_save_loss(self, epoch):
+    def train_step3_Loss_info_save_loss(self):
         if(self.board_create_flag is False):
-            for loss_info_obj in self.loss_info_objs:
+            for loss_info_obj in self.loss_info_objs:  ### 多output 的 case
                 print("loss_info_obj.logs_write_dir:", loss_info_obj.logs_write_dir)
                 loss_info_obj.summary_writer = tf.summary.create_file_writer(loss_info_obj.logs_write_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的，注意 只有第一次 要建立tensorboard喔！
             self.board_create_flag = True
 
-        for loss_info_obj in self.loss_info_objs:
+        for loss_info_obj in self.loss_info_objs:  ### 多output 的 case
             with loss_info_obj.summary_writer.as_default():
-                for loss_name, loss_containor in loss_info_obj.loss_containors.items():
+                for loss_name, loss_containor in loss_info_obj.loss_containors.items():  ### 單個output 裡的 多loss 的 case
                     ### tensorboard
-                    tf.summary.scalar(loss_name, loss_containor.result(), step=epoch)
-                    tf.summary.scalar("lr", self.lr_current, step=epoch)
+                    current_global_it = self.current_ep * self.tf_data.train_amount + self.current_it
+                    tf.summary.scalar(loss_name, loss_containor.result(), step=current_global_it)
+                    tf.summary.scalar("lr", self.lr_current, step=current_global_it)
 
                     ### 自己另存成 npy
                     loss_value = loss_containor.result().numpy()
-                    if(epoch == 1):  ### 第一次 直接把值存成np.array
-                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
+                    if( os.path.isfile( f"{loss_info_obj.logs_write_dir}/{loss_name}.npy" ) is False):  ### 第一次 直接把值存成np.array
+                        loss_npy_array = np.array( [None] * (self.total_iters + 1))  ### 我最末尾還會在做一個， 頭 尾 都做 所以要 +1
+                        loss_npy_array[current_global_it] = loss_value
+                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_npy_array))
 
                     else:  ### 第二次後，先把np.array先讀出來append值後 再存進去
-                        loss_array = np.load(loss_info_obj.logs_write_dir + "/" + loss_name + ".npy")  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
-                        loss_array = loss_array[:epoch]   ### 這是為了防止 如果程式在 step3,4之間中斷 這種 loss已經存完 但 model還沒存 的狀況，loss 會比想像中的多一步，所以加這行防止這種情況發生喔
-                        loss_array = np.append(loss_array, loss_value)
-                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_array))
-                        # print(loss_array)
+                        loss_npy_array = np.load(f"{loss_info_obj.logs_write_dir}/{loss_name}.npy", allow_pickle=True)  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
+                        loss_npy_array[current_global_it] = loss_value
+                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_npy_array))
+                        # print(loss_npy_array)
 
         ###    reset tensorboard 的 loss紀錄容器
         for loss_info_obj in self.loss_info_objs:

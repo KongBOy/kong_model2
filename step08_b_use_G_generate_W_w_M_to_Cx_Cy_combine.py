@@ -24,6 +24,10 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
 
     def doing_things(self):
         current_ep   = self.exp_obj.current_ep
+        current_it   = self.exp_obj.current_it
+        it_save_fq   = self.exp_obj.it_save_fq
+        if(it_save_fq is None): ep_it_string = "epoch%03i"        %  current_ep
+        else                  : ep_it_string = "epoch%03i_it%06i" % (current_ep, current_it)
         current_time = self.exp_obj.current_time
         if  (self.phase == "train"): used_sees = self.exp_obj.result_obj.sees
         elif(self.phase == "test"):  used_sees = self.exp_obj.result_obj.tests
@@ -181,21 +185,21 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
 
         if(self.focus is False):
             ###################
-            if(self.npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1_flow" % current_ep, F)
-            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1_flow" % current_ep, F)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2_flow.jpg" % current_ep, F_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3_Cx.jpg"   % current_ep, Cx_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4_Cy.jpg"   % current_ep, Cy_visual)
+            if(self.npz_save is False): np.save            (private_write_dir + "/" + f"{ep_it_string}-u1b1_flow", F)
+            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + f"{ep_it_string}-u1b1_flow", F)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b2_flow.jpg", F_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b3_Cx.jpg"  , Cx_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b4_Cy.jpg"  , Cy_visual)
 
         else:
-            if(self.npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1_F_w_Mgt" % current_ep, F_w_Mgt)          ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1_F_w_Mgt" % current_ep, F_w_Mgt)          ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2_F_raw.jpg"    % current_ep, F_raw_visual)     ### 把 生成的 F_visual 存進相對應的資料夾
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3_F_w_Mgt.jpg"  % current_ep, F_w_Mgt_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4_Cx_raw.jpg"   % current_ep, Cx_raw_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b5_Cx_w_Mgt.jpg" % current_ep, Cx_w_Mgt_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b6_Cy_raw.jpg"   % current_ep, Cy_raw_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b7_Cy_w_Mgt.jpg" % current_ep, Cy_w_Mgt_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            if(self.npz_save is False): np.save            (private_write_dir + "/" + f"{ep_it_string}-u1b1_F_w_Mgt", F_w_Mgt)          ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + f"{ep_it_string}-u1b1_F_w_Mgt", F_w_Mgt)          ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b2_F_raw.jpg"   , F_raw_visual)     ### 把 生成的 F_visual 存進相對應的資料夾
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b3_F_w_Mgt.jpg" , F_w_Mgt_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b4_Cx_raw.jpg"  , Cx_raw_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b5_Cx_w_Mgt.jpg", Cx_w_Mgt_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b6_Cy_raw.jpg"  , Cy_raw_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b7_Cy_w_Mgt.jpg", Cy_w_Mgt_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
 
         if(self.model_obj.discriminator is not None):
@@ -243,7 +247,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
                 single_row_imgs = Matplot_multi_row_imgs(
                                 rows_cols_imgs   = [ [F_w_Mgt_visual ,  fake_score , fake_score_w_M, F_w_Mgt_visual_w_RFM] , [Fgt_visual,     real_score,   real_score_w_M,  Fgt_visual_w_RFM]],   ### 把要顯示的每張圖包成list
                                 rows_cols_titles = [ ["F_w_Mgt_visual", "fake_score", "fake_score_w_M", "F_w_Mgt_visual_w_RFM"], ["F_w_Mgt_visual_w_RFM", "Fgt_visual", "real_score", "real_score_w_M", "Fgt_visual_w_RFM"]],  ### 把每張圖要顯示的字包成list
-                                fig_title        = "epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
+                                fig_title        = f"{ep_it_string}-Discriminator",  ### 圖上的大標題
                                 add_loss         = self.add_loss,
                                 bgr2rgb          = self.bgr2rgb,   ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
                                 where_colorbar   = [[None, True, True, None], [None, True, True, None]],
@@ -255,7 +259,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
                 # single_row_imgs = Matplot_single_row_imgs(
                 #                         imgs      =[ F_w_Mgt_visual ,  fake_score , fake_score_w_M, F_w_Mgt_visual_w_RFM,    Fgt_visual,     real_score,   real_score_w_M,  Fgt_visual_w_RFM],   ### 把要顯示的每張圖包成list
                 #                         img_titles=["F_w_Mgt_visual", "fake_score", "fake_score_w_M", "F_w_Mgt_visual_w_RFM", "Fgt_visual", "real_score", "real_score_w_M", "Fgt_visual_w_RFM"],  ### 把每張圖要顯示的字包成list
-                #                         fig_title ="epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
+                #                         fig_title =f"{ep_it_string}-Discriminator",  ### 圖上的大標題
                 #                         add_loss  =add_loss,
                 #                         bgr2rgb   =bgr2rgb,    ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
                 #                         where_colorbar = [None, True, True, None, None, True, True, None],
@@ -266,7 +270,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
                 single_row_imgs = Matplot_single_row_imgs(
                             imgs            = [ F_w_Mgt_visual ,  fake_score ,  Fgt_visual,   real_score],   ### 把要顯示的每張圖包成list
                             img_titles      = ["F_w_Mgt_visual", "fake_score", "Fgt_visual", "real_score"],  ### 把每張圖要顯示的字包成list
-                            fig_title       = "epoch_%04i_Discriminator" % current_ep,  ### 圖上的大標題
+                            fig_title       = f"{ep_it_string}-Discriminator",  ### 圖上的大標題
                             add_loss        = self.add_loss,
                             bgr2rgb         = self.bgr2rgb,  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
                             where_colorbar  = [None, True, None, True],
@@ -275,7 +279,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
                             one_ch_vmax=1)
 
             single_row_imgs.Draw_img()
-            single_row_imgs.Save_fig(dst_dir=private_write_dir, name="epoch_%04i_u1b8_Disc" % current_ep)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
+            single_row_imgs.Save_fig(dst_dir=private_write_dir, name=f"{ep_it_string}-u1b8_Disc")  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
             # print("save to:", private_write_dir)
             # breakpoint()
 
