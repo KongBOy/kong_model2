@@ -23,6 +23,10 @@ class I_w_M_to_W(Use_G_generate):
 
     def doing_things(self):
         current_ep   = self.exp_obj.current_ep
+        current_it   = self.exp_obj.current_it
+        it_save_fq   = self.exp_obj.it_save_fq
+        if(it_save_fq is None): ep_it_string = "epoch%03i"        %  current_ep
+        else                  : ep_it_string = "epoch%03i_it%06i" % (current_ep, current_it)
         current_time = self.exp_obj.current_time
         if  (self.phase == "train"): used_sees = self.exp_obj.result_obj.sees
         elif(self.phase == "test"):  used_sees = self.exp_obj.result_obj.tests
@@ -48,7 +52,7 @@ class I_w_M_to_W(Use_G_generate):
             Mgt_pre_for_crop   = Wgt_w_Mgt_pre[..., 0:1]
 
             dis_img_pre  , _ = self.tight_crop(dis_img_pre   , Mgt_pre_for_crop)
-            Wgt_w_Mgt    , _ = self.tight_crop(Wgt_w_Mgt     , Mgt_pre_for_crop)
+            # Wgt_w_Mgt    , _ = self.tight_crop(Wgt_w_Mgt     , Mgt_pre_for_crop)  ### 沒用到
             Wgt_w_Mgt_pre, _ = self.tight_crop(Wgt_w_Mgt_pre , Mgt_pre_for_crop)
 
             ### dis_img 在 tight_crop 完後 不 resize
@@ -128,24 +132,24 @@ class I_w_M_to_W(Use_G_generate):
             cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",   rec_hope)
 
         if(self.focus is False):
-            if(self.npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1-W" % current_ep, W_raw_01)
-            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1-W" % current_ep, W_raw_01)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2-W_visual.jpg"  % current_ep, W_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3-Wx_visual.jpg" % current_ep, Wx_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4-Wy_visual.jpg" % current_ep, Wy_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b5-Wz_visual.jpg" % current_ep, Wz_visual)
+            if(self.npz_save is False): np.save            (private_write_dir + "/" + f"{ep_it_string}-u1b1-W", W_raw_01)
+            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + f"{ep_it_string}-u1b1-W", W_raw_01)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b2-W_visual.jpg" , W_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b3-Wx_visual.jpg", Wx_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b4-Wy_visual.jpg", Wy_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b5-Wz_visual.jpg", Wz_visual)
 
         else:
-            if(self.npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt" % current_ep, W_w_Mgt_01)
-            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt" % current_ep, W_w_Mgt_01)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2-W_raw_visual.jpg"    % current_ep, W_raw_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3-W_w_Mgt_visual.jpg"  % current_ep, W_w_Mgt_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4-Wx_raw_visual.jpg"   % current_ep, Wx_raw_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b5-Wx_w_Mgt_visual.jpg" % current_ep, Wx_w_Mgt_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b6-Wy_raw_visual.jpg"   % current_ep, Wy_raw_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b7-Wy_w_Mgt_visual.jpg" % current_ep, Wy_w_Mgt_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b8-Wz_raw_visual.jpg"   % current_ep, Wz_raw_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b9-Wz_w_Mgt_visual.jpg" % current_ep, Wz_w_Mgt_visual)
+            if(self.npz_save is False): np.save            (private_write_dir + "/" + f"{ep_it_string}-u1b1-W_w_Mgt", W_w_Mgt_01)
+            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + f"{ep_it_string}-u1b1-W_w_Mgt", W_w_Mgt_01)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b2-W_raw_visual.jpg"   , W_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b3-W_w_Mgt_visual.jpg" , W_w_Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b4-Wx_raw_visual.jpg"  , Wx_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b5-Wx_w_Mgt_visual.jpg", Wx_w_Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b6-Wy_raw_visual.jpg"  , Wy_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b7-Wy_w_Mgt_visual.jpg", Wy_w_Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b8-Wz_raw_visual.jpg"  , Wz_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b9-Wz_w_Mgt_visual.jpg", Wz_w_Mgt_visual)
 
         if(self.postprocess):
             current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾

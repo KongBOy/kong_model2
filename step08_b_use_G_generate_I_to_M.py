@@ -22,6 +22,10 @@ class I_to_M(Use_G_generate):
 
     def doing_things(self):
         current_ep = self.exp_obj.current_ep
+        current_it   = self.exp_obj.current_it
+        it_save_fq   = self.exp_obj.it_save_fq
+        if(it_save_fq is None): ep_it_string = "epoch%03i"        %  current_ep
+        else                  : ep_it_string = "epoch%03i_it%06i" % (current_ep, current_it)
         current_time = self.exp_obj.current_time
         if  (self.phase == "train"): used_sees = self.exp_obj.result_obj.sees
         elif(self.phase == "test"):  used_sees = self.exp_obj.result_obj.tests
@@ -42,7 +46,11 @@ class I_to_M(Use_G_generate):
             in_img           , _ = self.tight_crop(in_img, gt_mask_pre)
             in_img_pre       , _ = self.tight_crop(in_img_pre, gt_mask_pre)
             gt_mask_coord    , _ = self.tight_crop(gt_mask_coord, gt_mask_pre)
-            gt_mask_coord_pre, _ = self.tight_crop(gt_mask_coord_pre, gt_mask_pre)
+            # gt_mask_coord_pre, _ = self.tight_crop(gt_mask_coord_pre, gt_mask_pre)  ### 沒用到
+            # fig, ax = plt.subplots(nrows=1, ncols=2)
+            # ax[0].imshow( gt_mask_pre[0])
+            # ax[1].imshow( gt_mask_coord[0, ..., 0:1])
+            # plt.show()
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 
 
@@ -57,6 +65,9 @@ class I_to_M(Use_G_generate):
         '''
         in_img    = in_img[0].numpy()
         Mgt_visual   = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
+        # plt.figure()
+        # plt.imshow(Mgt_visual)
+        # plt.show()
         # print("Mgt_visual.dtype:", Mgt_visual.dtype)
         # print("Mgt_visual.shape:", Mgt_visual.shape)
         # print("Mgt_visual.max():", Mgt_visual.numpy().max())
@@ -69,7 +80,7 @@ class I_to_M(Use_G_generate):
             Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
             cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", in_img)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
             cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.jpg", Mgt_visual)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        cv2.imwrite(    private_mask_write_dir + "/" + "epoch_%04i_u1b1_mask.jpg" % current_ep, M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+        cv2.imwrite(    private_mask_write_dir + "/" + f"{ep_it_string}-u1b1_mask.jpg", M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
             current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
