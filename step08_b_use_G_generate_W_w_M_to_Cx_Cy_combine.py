@@ -83,6 +83,14 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             ord_d_pad    = np.round(pre_boundary["d_pad"].numpy() * ratio_h_p2o).astype(np.int32)
             dis_img_ord  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
 
+        ### 視覺化一下
+        # fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(5 * 3, 5))
+        # ax[0].imshow(Mgt_C_pre[0, ..., 0:1])
+        # ax[1].imshow(Mgt_C_pre[0, ..., 1:2])
+        # ax[2].imshow(Mgt_C_pre[0, ..., 2:3])
+        # plt.tight_layout()
+        # plt.show()
+
         ''' use_model '''
         W_pre   = in_WM_pre[..., 0:3]
         Mgt_pre = in_WM_pre[..., 3:4]
