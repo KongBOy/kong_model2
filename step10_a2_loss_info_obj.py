@@ -61,7 +61,7 @@ class Loss_info:
                                   arrowprops=dict(arrowstyle="->",            ### 畫箭頭的資訊
                                                   connectionstyle= "arc3",
                                                 ))
-
+            plt.tight_layout()
             plt.savefig(self.logs_write_dir + "/" + loss_name + ".png")
             plt.close()
             # print("plot %s loss ok~"%loss_name )
