@@ -25,20 +25,17 @@ import Exps_7_v3.template_dir.pyramid_template_1_6.pyr_1s.bce_s001_tv_s0p1_L4.st
 import step10_a as side2
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ch032_1side_1__2side_all = [
-    L4_0side.ch032_0side,
     L4_1side.ch032_1side_1,
     side2.ch032_1side_1__2side_1,
 ]
 
 ch032_1side_2__2side_all = [
-    L4_0side.ch032_0side,
     L4_1side.ch032_1side_2,
     side2.ch032_1side_2__2side_1,
     side2.ch032_1side_2__2side_2,
 ]
 
 ch032_1side_3__2side_all = [
-    L4_0side.ch032_0side,
     L4_1side.ch032_1side_3,
     side2.ch032_1side_3__2side_1,
     side2.ch032_1side_3__2side_2,
@@ -46,7 +43,6 @@ ch032_1side_3__2side_all = [
 ]
 
 ch032_1side_4__2side_all = [
-    L4_0side.ch032_0side,
     L4_1side.ch032_1side_4,
     side2.ch032_1side_4__2side_1,
     side2.ch032_1side_4__2side_2,
@@ -55,7 +51,6 @@ ch032_1side_4__2side_all = [
 ]
 
 ch032_1side_5__2side_all = [
-    L4_0side.ch032_0side,
     L4_1side.ch032_1side_5,
     side2.ch032_1side_5__2side_1,
     side2.ch032_1side_5__2side_2,
@@ -65,6 +60,7 @@ ch032_1side_5__2side_all = [
 ]
 
 ch032_1side_all__2side_all = [
+    [L4_0side.ch032_0side,],
     ch032_1side_1__2side_all,
     ch032_1side_2__2side_all,
     ch032_1side_3__2side_all,

@@ -27,38 +27,30 @@ start_time = time.time()
 ########################################################### Block1
 ### Block1
 #########################################################################################
-pyramid_1side_1__2side_0 = [1, 0, 0, 0, 0, 0, 1]
 pyramid_1side_1__2side_1 = [2, 0, 0, 0, 0, 0, 2]
 
-pyramid_1side_2__2side_0 = [1, 1, 0, 0, 0, 1, 1]
 pyramid_1side_2__2side_1 = [2, 1, 0, 0, 0, 1, 2]
 pyramid_1side_2__2side_2 = [2, 2, 0, 0, 0, 2, 2]
 
-pyramid_1side_3__2side_0 = [1, 1, 1, 0, 1, 1, 1]
 pyramid_1side_3__2side_1 = [2, 1, 1, 0, 1, 1, 2]
 pyramid_1side_3__2side_2 = [2, 2, 1, 0, 1, 2, 2]
 pyramid_1side_3__2side_3 = [2, 2, 2, 0, 2, 2, 2]
 
-pyramid_1side_4__2side_0 = [1, 1, 1, 1, 1, 1, 1]
 pyramid_1side_4__2side_1 = [2, 1, 1, 1, 1, 1, 2]
 pyramid_1side_4__2side_2 = [2, 2, 1, 1, 1, 2, 2]
 pyramid_1side_4__2side_3 = [2, 2, 2, 1, 2, 2, 2]
 pyramid_1side_4__2side_4 = [2, 2, 2, 2, 2, 2, 2]
 
 #########################################################################################
-ch032_pyramid_1side_1__2side_0 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_1__2side_0, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 ch032_pyramid_1side_1__2side_1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_1__2side_1, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 
-ch032_pyramid_1side_2__2side_0 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_0, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 ch032_pyramid_1side_2__2side_1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_1, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 ch032_pyramid_1side_2__2side_2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_2__2side_2, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 
-ch032_pyramid_1side_3__2side_0 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_0, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 ch032_pyramid_1side_3__2side_1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_1, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 ch032_pyramid_1side_3__2side_2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_2, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 ch032_pyramid_1side_3__2side_3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_3__2side_3, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 
-ch032_pyramid_1side_4__2side_0 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_0, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 ch032_pyramid_1side_4__2side_1 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_1, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 ch032_pyramid_1side_4__2side_2 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_2, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
 ch032_pyramid_1side_4__2side_3 = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_1side_4__2side_3, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
