@@ -55,7 +55,8 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
         Mgt_C                 = self.gt_ord
         Mgt_C_pre             = self.gt_pre
         rec_hope              = self.rec_hope
-        dis_img_ord           = in_WM_and_dis_img[1]      ### 3240, 3240
+        dis_img_ord           = in_WM_and_dis_img[1]      ### 3024, 3024
+        dis_img_pre           = in_WM_and_dis_img_pre[1]  ###  512,  512
         in_WM_pre             = in_WM_and_dis_img_pre[0]
 
         ''' tight crop '''
@@ -66,17 +67,16 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             Mgt_C    , _ = self.tight_crop(Mgt_C     , Mgt_pre_for_crop)
             Mgt_C_pre, _ = self.tight_crop(Mgt_C_pre , Mgt_pre_for_crop)
 
-            dis_img_pre  = in_WM_and_dis_img_pre[1]  ###  512,  512
-            ord_h, ord_w = dis_img_ord.shape[1:3]    ### BHWC， 取 HW
-            pre_h, pre_w = dis_img_pre.shape[1:3]    ### BHWC， 取 HW
-            ### dis_img_ord 在 tight_crop 完後 不 resize
-            # tight_crop_resize = self.tight_crop.resize  ### 記住 crop 後 要 resize 到多大 256, 256
-            # self.tight_crop.reset_resize(None)          ### 設定 crop 後不resize
-            dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
-            # self.tight_crop.reset_resize(tight_crop_resize)  ### 把 crop 後 要 resize 到多大 設定條回來
-            # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
+            ##### dis_img_ord 在 tight_crop 要用 dis_img_pre 來反推喔！
+            ### 取得 crop 之前的大小
+            ord_h, ord_w = dis_img_ord.shape[1:3]    ### BHWC， 取 HW, 3024, 3024
+            pre_h, pre_w = dis_img_pre.shape[1:3]    ### BHWC， 取 HW,  512,  512 或 448, 448 之類的
+            ### 算出 ord 和 pre 之間的比例
             ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
             ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
+            ### 對 pre 做 crop
+            dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
+            ### 根據比例 放大回來 crop 出 ord
             ord_l_pad    = np.round(pre_boundary["l_pad"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_pad    = np.round(pre_boundary["r_pad"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_t_pad    = np.round(pre_boundary["t_pad"].numpy() * ratio_h_p2o).astype(np.int32)
