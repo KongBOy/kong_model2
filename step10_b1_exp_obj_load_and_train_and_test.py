@@ -95,7 +95,8 @@ class Experiment():
         self.current_ep      = self.start_epoch
         self.current_it      = 0
         self.ep_save_fq      = 1
-        self.total_iters           = None  ### 總共會  更新 幾次， 建立完tf_data後 才會知道所以現在指定None
+        self.it_save_fq      = None  ### 後來才加入的概念，原先沒有， 所以初始值設為None
+        self.total_iters     = None  ### 總共會  更新 幾次， 建立完tf_data後 才會知道所以現在指定None
 
         self.exp_bn_see_arg = False  ### 本來 bn 在 test 的時候就應該要丟 false，只是 現在batch_size=1， 丟 True 會變 IN ， 所以加這個flag 來控制
 
