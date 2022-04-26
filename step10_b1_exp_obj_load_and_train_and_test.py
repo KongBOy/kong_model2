@@ -161,10 +161,12 @@ class Experiment():
             # print("self.db_obj.w = ", self.db_obj.w)
             # print("math.ceil(self.db_obj.h / 128) * 128 = ", math.ceil(self.db_obj.h / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
             # print("math.ceil(self.db_obj.w / 128) * 128 = ", math.ceil(self.db_obj.w / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
-            if  ("unet" in self.model_obj.model_name.value):
-                self.img_resize = (math.ceil(self.db_obj.h / 128) * 128 , math.ceil(self.db_obj.w / 128) * 128)  ### 128的倍數，且要是gt_img的兩倍大喔！
-            elif("rect" in self.model_obj.model_name.value or "justG" in self.model_obj.model_name.value):
-                self.img_resize = (math.ceil(self.db_obj.h / 4) * 4, math.ceil(self.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
+            # if  ("unet" in self.model_obj.model_name.value):
+            #     self.img_resize = (math.ceil(self.db_obj.h / 128) * 128 , math.ceil(self.db_obj.w / 128) * 128)  ### 128的倍數，且要是gt_img的兩倍大喔！
+            # elif("rect" in self.model_obj.model_name.value or "justG" in self.model_obj.model_name.value):
+            #     self.img_resize = (math.ceil(self.db_obj.h / 4) * 4, math.ceil(self.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
+            self.img_resize = (self.db_obj.h, self.db_obj.w)
+            print("自動設定 img_resize 的結果為：", self.img_resize)
 
         self.tf_data = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
         self.total_iters   = self.epochs * self.tf_data.train_amount  ### 總共會  更新 幾次
