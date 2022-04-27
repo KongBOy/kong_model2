@@ -1039,6 +1039,12 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
 
 class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder):
     def build_by_in_dis_gt_mask_coord(self):
+        '''
+        in_ord: dis_img, shape = (1, ord_h, ord_w, 3), value:0 ~255
+        in_pre: dis_img, shape = (1,  db_h,  db_w, 3), value:0 ~  1
+        gt_ord: flow,    shape = (1,  db_h , db_w, 3), value:0 ~  1, ch0: mask, ch1:y, ch2:x
+        gt_pre: flow,    shape = (1,  db_h , db_w, 3), value:0 ~  1, ch0: mask, ch1:y, ch2:x
+        '''
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
         self._build_train_test_in_img_db()
@@ -1057,7 +1063,7 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
         ### 勿刪！用來測試寫得對不對！
         # import matplotlib.pyplot as plt
         # from util import method1
-        # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine.take(3)):
+        # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine):
         #     # if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
         #     # elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)
         #     debug_dict[f"{i}--1-1 train_in"    ] = train_in
@@ -1071,8 +1077,36 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
         #     debug_dict[f"{i}--2-3b train_gt_move"] = train_gt[0, ..., 1:3].numpy()
         #     debug_dict[f"{i}--2-4a train_gt_pre_mask"] = train_gt_pre[0, ..., 0:1].numpy()
         #     debug_dict[f"{i}--2-4b train_gt_pre_move"] = train_gt_pre[0, ..., 1:3].numpy()
+        #     # ####################
+        #     # ### 確認一下 tight_crop 的效果如何， mask 有沒有被 reflect pad 到
+        #     # from step08_b_use_G_generate_0_util import Tight_crop
+        #     # from kong_util.build_dataset_combine import Check_dir_exist_and_build
+        #     # print(name)
+        #     # Mgt_pre     = train_gt_pre[0, ..., 0:1].numpy()
+        #     # dis_img_pre = train_in_pre[0].numpy()
+        #     # flow_pre    = train_gt_pre[0].numpy()
+        #     # tight_crop = Tight_crop(pad_size= 100, resize=(256, 256))
+        #     # crop_dis_img_pre , boundary = tight_crop(dis_img_pre, Mgt_pre)
+        #     # crop_flow_pre    , boundary = tight_crop(flow_pre   , Mgt_pre)
 
-        #     # breakpoint()
+        #     # plt_img = 3
+        #     # fig, ax = plt.subplots(nrows=1, ncols=plt_img, figsize=(5 * plt_img, 5))
+        #     # ax[0].imshow(dis_img_pre)
+        #     # ax[1].imshow(crop_dis_img_pre)
+        #     # ax[2].imshow(crop_flow_pre[..., 0:1])
+
+        #     # import cv2
+        #     # debug_dir = r"C:\Users\TKU\Desktop\kong_model2\debug_data\doc3d_tight_crop_check"
+        #     # Check_dir_exist_and_build(debug_dir)
+        #     # cv2.imwrite(f"{debug_dir}/%06i_dis_img.png"      % i, (dis_img_pre * 255.).astype(np.uint8))
+        #     # cv2.imwrite(f"{debug_dir}/%06i_mask.png"         % i, (flow_pre[..., 0:1] * 255.).astype(np.uint8))
+        #     # cv2.imwrite(f"{debug_dir}/%06i_dis_img_crop.png" % i, (crop_dis_img_pre.numpy() * 255.).astype(np.uint8))
+        #     # cv2.imwrite(f"{debug_dir}/%06i_mask_crop.png"    % i, (crop_flow_pre[..., 0:1].numpy() * 255.).astype(np.uint8))
+        #     # plt.show()
+        #     # print("finish")
+        #     # # tight_crop.reset_jit()  ### 測試看看沒設定 jit_scale 會不會跳出錯誤訊息
+
+
         #     ### 用 matplot 視覺化， 也可以順便看一下 真的要使用data時， 要怎麼抓資料才正確
         #     train_in          = train_in[0]
         #     train_in_pre      = train_in_pre[0]
@@ -1820,17 +1854,17 @@ if(__name__ == "__main__"):
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    db_obj = type8_blender_kong_doc3d_in_W_and_I_gt_F.build()
-    print(db_obj)
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
-    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
-
-    ''' mask1ch, flow 2ch合併 的形式'''
-    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    # db_obj = type8_blender_kong_doc3d_in_I_gt_MC.build()
+    # db_obj = type8_blender_kong_doc3d_in_W_and_I_gt_F.build()
     # print(db_obj)
     # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
     # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+
+    ''' mask1ch, flow 2ch合併 的形式'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    db_obj = type8_blender_kong_doc3d_in_I_gt_MC.build()
+    print(db_obj)
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 448, 448) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     # print("here")
     # img1 = tf_data.train_db_combine.take(10)

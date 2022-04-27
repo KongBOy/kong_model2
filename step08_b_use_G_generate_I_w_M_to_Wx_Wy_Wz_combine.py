@@ -64,10 +64,10 @@ class I_w_M_to_W(Use_G_generate):
             ### 對 pre 做 crop
             dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
             ### 根據比例 放大回來 crop 出 ord
-            ord_l_pad    = np.round(pre_boundary["l_pad"].numpy() * ratio_w_p2o).astype(np.int32)
-            ord_r_pad    = np.round(pre_boundary["r_pad"].numpy() * ratio_w_p2o).astype(np.int32)
-            ord_t_pad    = np.round(pre_boundary["t_pad"].numpy() * ratio_h_p2o).astype(np.int32)
-            ord_d_pad    = np.round(pre_boundary["d_pad"].numpy() * ratio_h_p2o).astype(np.int32)
+            ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
+            ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
             dis_img_ord  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
 
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！

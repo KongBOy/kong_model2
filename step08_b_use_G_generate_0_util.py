@@ -140,70 +140,107 @@ class Tight_crop():
         # r = x_ind.max()
         # t = y_ind.min()
         # d = y_ind.max()
-        l = tf.reduce_min(x_ind)
-        r = tf.reduce_max(x_ind)
-        t = tf.reduce_min(y_ind)
-        d = tf.reduce_max(y_ind)
+        l = tf.reduce_min(x_ind)  ### index
+        r = tf.reduce_max(x_ind)  ### index
+        t = tf.reduce_min(y_ind)  ### index
+        d = tf.reduce_max(y_ind)  ### index
 
-        l_pad = l - self.pad_size
-        r_pad = r + self.pad_size
-        t_pad = t - self.pad_size
-        d_pad = d + self.pad_size
+        l_pad_ind = l - self.pad_size  ### index
+        r_pad_ind = r + self.pad_size  ### index
+        t_pad_ind = t - self.pad_size  ### index
+        d_pad_ind = d + self.pad_size  ### index
 
         ### 隨機抖動 random jit
         if(self.jit_scale > 0):  ### tf.random.uniform 不能夠接受 jit_scale = 0， 所以才必須要有這個if
-            l_pad += self.l_jit
-            r_pad += self.r_jit
-            t_pad += self.t_jit
-            d_pad += self.d_jit
+            l_pad_ind += self.l_jit  ### index
+            r_pad_ind += self.r_jit  ### index
+            t_pad_ind += self.t_jit  ### index
+            d_pad_ind += self.d_jit  ### index
 
         ########### 先 pad 再 crop
         ###### pad part
         ### 看 超過影像範圍多少
-        l_out = tf.constant(0, tf.int64)
-        r_out = tf.constant(0, tf.int64)
-        t_out = tf.constant(0, tf.int64)
-        d_out = tf.constant(0, tf.int64)
+        l_out_amo = tf.constant(0, tf.int64)  ### 格數
+        r_out_amo = tf.constant(0, tf.int64)  ### 格數
+        t_out_amo = tf.constant(0, tf.int64)  ### 格數
+        d_out_amo = tf.constant(0, tf.int64)  ### 格數
         if  (len(data.shape) == 4): b, h, w, c = data.shape
         elif(len(data.shape) == 3): h, w, c = data.shape
         elif(len(data.shape) == 2): h, w = data.shape
 
-        if(l_pad < 0): l_out = - l_pad
-        if(t_pad < 0): t_out = - t_pad
-        if(r_pad > w - 1): r_out = r_pad - (w - 1)
-        if(d_pad > h - 1): d_out = d_pad - (h - 1)
+        if(l_pad_ind < 0): l_out_amo = - l_pad_ind  ### l, t 負的 index 剛好 == 超出去的格數
+        if(t_pad_ind < 0): t_out_amo = - t_pad_ind  ### l, t 負的 index 剛好 == 超出去的格數
+        if(r_pad_ind > (w - 1) ): r_out_amo = r_pad_ind - (w - 1)  ### -1 是 格數 轉 index， index - index 後 就是 超出去的格數囉
+        if(d_pad_ind > (h - 1) ): d_out_amo = d_pad_ind - (h - 1)  ### -1 是 格數 轉 index， index - index 後 就是 超出去的格數囉
 
         ### 看 pad 的範圍有沒有超過影像， 有的話就 pad
-        if(l_out > 0 or r_out > 0  or t_out > 0 or d_out > 0):
-            # if  (len(data.shape) == 4): data = np.pad(data, ( (0    ,     0), (t_out, d_out), (l_out, r_out), (    0,     0) ) , 'reflect')
-            # elif(len(data.shape) == 3): data = np.pad(data, ( (t_out, d_out), (l_out, r_out), (    0,     0) )                 , 'reflect')
-            # elif(len(data.shape) == 2): data = np.pad(data, ( (t_out, d_out), (l_out, r_out) )                                 , 'reflect')
-            if  (len(data.shape) == 4): data = tf.pad(data, ( (0    ,     0), (t_out, d_out), (l_out, r_out), (    0,     0) ) , 'REFLECT')
-            elif(len(data.shape) == 3): data = tf.pad(data, ( (t_out, d_out), (l_out, r_out), (    0,     0) )                 , 'REFLECT')
-            elif(len(data.shape) == 2): data = tf.pad(data, ( (t_out, d_out), (l_out, r_out) )                                 , 'REFLECT')
+        if(l_out_amo > 0 or r_out_amo > 0  or t_out_amo > 0 or d_out_amo > 0):
+            ''' 
+            想用 reflect 的 padding 比較接近真實，
+            但是要注意！太超過不能用 reflect 的 padding 喔！
+            因為 mask 也會被reflect過去，
+            所以：
+                1. 超出在 頁面邊界 到 圖邊界 之間的範圍 用 reflect padding
+                2. 更超過 用 black padding 這樣子拉
+            '''
+            ### 計算 頁面邊界 到 圖邊界的格數囉
+            l_to_board_amo = l  ### l, t index 剛好就是 頁面邊界 到 圖邊界的格數囉
+            t_to_board_amo = t  ### l, t index 剛好就是 頁面邊界 到 圖邊界的格數囉
+            r_to_board_amo = (w - 1) - r  ### -1 是 格數 轉 index， w/h_index - r/d_index 後 就是 r, d 的 頁面邊界 到 圖邊界的格數囉
+            d_to_board_amo = (h - 1) - d  ### -1 是 格數 轉 index， w/h_index - r/d_index 後 就是 r, d 的 頁面邊界 到 圖邊界的格數囉
+
+            ### 計算 reflect_pad 的格數 ( 即to_board格數， 但別忘記是要在 out 的情況下 才有需要 pad 喔！ )
+            l_reflect_amo = tf.constant(0, tf.int64)
+            t_reflect_amo = tf.constant(0, tf.int64)
+            r_reflect_amo = tf.constant(0, tf.int64)
+            d_reflect_amo = tf.constant(0, tf.int64)
+            if( l_out_amo > 0): l_reflect_amo = tf.math.minimum(l_out_amo, l_to_board_amo) - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+            if( t_out_amo > 0): t_reflect_amo = tf.math.minimum(t_out_amo, t_to_board_amo) - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+            if( r_out_amo > 0): r_reflect_amo = tf.math.minimum(r_out_amo, r_to_board_amo) - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+            if( d_out_amo > 0): d_reflect_amo = tf.math.minimum(d_out_amo, d_to_board_amo) - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+            if  (len(data.shape) == 4): data = tf.pad(data, ( (0    ,     0), (t_reflect_amo, d_reflect_amo), (l_reflect_amo, r_reflect_amo), (    0,     0) ) , 'REFLECT')
+            elif(len(data.shape) == 3): data = tf.pad(data, ( (t_reflect_amo, d_reflect_amo), (l_reflect_amo, r_reflect_amo), (    0,     0) )                 , 'REFLECT')
+            elif(len(data.shape) == 2): data = tf.pad(data, ( (t_reflect_amo, d_reflect_amo), (l_reflect_amo, r_reflect_amo) )                                 , 'REFLECT')
+
+            ### 計算 剩下還需要pad多少黑邊格數( out格數 - reflect格數)
+            l_black_amo = tf.constant(0, tf.int64)
+            t_black_amo = tf.constant(0, tf.int64)
+            r_black_amo = tf.constant(0, tf.int64)
+            d_black_amo = tf.constant(0, tf.int64)
+            if(l_out_amo > l_to_board_amo): l_black_amo = l_out_amo - l_reflect_amo
+            if(t_out_amo > t_to_board_amo): t_black_amo = t_out_amo - t_reflect_amo
+            if(r_out_amo > r_to_board_amo): r_black_amo = r_out_amo - r_reflect_amo
+            if(d_out_amo > d_to_board_amo): d_black_amo = d_out_amo - d_reflect_amo
+            if  (len(data.shape) == 4): data = tf.pad(data, ( (0    ,     0), (t_black_amo, d_black_amo), (l_black_amo, r_black_amo), (    0,     0) ) , 'CONSTANT')
+            elif(len(data.shape) == 3): data = tf.pad(data, ( (t_black_amo, d_black_amo), (l_black_amo, r_black_amo), (    0,     0) )                 , 'CONSTANT')
+            elif(len(data.shape) == 2): data = tf.pad(data, ( (t_black_amo, d_black_amo), (l_black_amo, r_black_amo) )                                 , 'CONSTANT')
+            # plt.imshow(data)  ### 看 mask_pre 的 crop結果 才準喔， 因為 mask_pre 是很明確的 0 跟 1 的數值， 不會像 dis_img 邊界pad時可能有有模糊的空間
+            # plt.show()
         # breakpoint()
 
         ###### pad 完成了， 以下開始 crop
         ### 對 pad完成 的 data 重新定位
-        # l_pad = max(l_pad, 0)  ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
-        # t_pad = max(t_pad, 0)  ### l_pad, t_pad 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
-        if(l_pad < 0): l_pad = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
-        if(t_pad < 0): t_pad = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
-        r_pad = r_pad + l_out + r_out  ### r_pad, d_pad 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad, t_pad 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out, t_out 喔！
-        d_pad = d_pad + t_out + d_out  ### r_pad, d_pad 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad, t_pad 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out, t_out 喔！
+        # l_pad_ind = max(l_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
+        # t_pad_ind = max(t_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
+        if(l_pad_ind < 0): l_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
+        if(t_pad_ind < 0): t_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
+        r_pad_ind = r_pad_ind + l_out_amo + r_out_amo  ### r_pad_ind, d_pad_ind 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad_ind, t_pad_ind 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out_amo, t_out_amo 喔！
+        d_pad_ind = d_pad_ind + t_out_amo + d_out_amo  ### r_pad_ind, d_pad_ind 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad_ind, t_pad_ind 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out_amo, t_out_amo 喔！
 
         ### 重新定位 完成了， 以下開始 crop
-        d_pad += 1  ### index 轉 slice
-        r_pad += 1  ### index 轉 slice
-        if  (len(data.shape) == 4): data = data[:, t_pad : d_pad , l_pad : r_pad , :]  ### BHWC
-        elif(len(data.shape) == 3): data = data   [t_pad : d_pad , l_pad : r_pad , :]  ### HWC
-        elif(len(data.shape) == 2): data = data   [t_pad : d_pad , l_pad : r_pad]      ### HW
+        l_pad_slice = l_pad_ind  ### l, t 的 index 剛好 == slice
+        t_pad_slice = t_pad_ind  ### l, t 的 index 剛好 == slice
+        d_pad_slice = d_pad_ind + 1  ### index 轉 slice
+        r_pad_slice = r_pad_ind + 1  ### index 轉 slice
+        if  (len(data.shape) == 4): data = data[:, t_pad_slice : d_pad_slice , l_pad_slice : r_pad_slice , :]  ### BHWC
+        elif(len(data.shape) == 3): data = data   [t_pad_slice : d_pad_slice , l_pad_slice : r_pad_slice , :]  ### HWC
+        elif(len(data.shape) == 2): data = data   [t_pad_slice : d_pad_slice , l_pad_slice : r_pad_slice]      ### HW
 
         ########### 全都處理完以後， resize 到指定的大小
         if(self.resize is not None): data = tf.image.resize(data, self.resize, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
         # breakpoint()
-        return data, {"l_pad": l_pad, "t_pad": t_pad, "r_pad": r_pad, "d_pad": d_pad}
+        return data, {"l_pad_slice": l_pad_slice, "t_pad_slice": t_pad_slice, "r_pad_slice": r_pad_slice, "d_pad_slice": d_pad_slice}
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
