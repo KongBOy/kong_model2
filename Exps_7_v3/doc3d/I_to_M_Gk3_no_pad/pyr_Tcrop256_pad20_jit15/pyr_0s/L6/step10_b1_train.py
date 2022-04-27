@@ -25,4 +25,4 @@ from step10_c_exp_command import *
 ######################################################################################################################
 import subprocess as sb
 
-# sb.run(cmd_python_step10_a + [f"ch032_0side.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_0side.{run}"])
