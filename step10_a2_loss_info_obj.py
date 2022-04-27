@@ -65,7 +65,7 @@ class Loss_info:
             plt.savefig(self.logs_write_dir + "/" + loss_name + ".png")
             plt.close()
             # print("plot %s loss ok~"%loss_name )
-        print("plot loss ok~")
+        # print("plot loss ok~")
 
 
     def _load_loss_npy_dict(self):
