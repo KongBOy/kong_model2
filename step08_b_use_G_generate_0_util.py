@@ -197,6 +197,7 @@ class Tight_crop():
 
             ### 反覆迭代直到 剩下需要pad 的格數為0為止
             while( l_remian_amo > 0 or t_remian_amo > 0 or r_remian_amo > 0 or d_remian_amo > 0):
+                tf.autograph.experimental.set_loop_options(shape_invariants=[(data, tf.TensorShape([None, None, None, None]))])  ### 參考：https://www.tensorflow.org/api_docs/python/tf/autograph/experimental/set_loop_options
                 ### 計算 reflect_pad 的格數 ( 別忘記是要在 out 的情況下 才有需要 pad 喔！ )， 最多pad的格數 只能用 頁面邊界~圖邊界的格數喔！ 所以就看 要補的格數 和 頁面邊界~圖邊界 的格數 哪個小， 就用哪個來reflect pad
                 l_reflect_amo = tf.constant(0, tf.int64)
                 t_reflect_amo = tf.constant(0, tf.int64)
