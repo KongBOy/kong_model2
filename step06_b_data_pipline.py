@@ -1085,7 +1085,7 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
         #     # Mgt_pre     = train_gt_pre[0, ..., 0:1].numpy()
         #     # dis_img_pre = train_in_pre[0].numpy()
         #     # flow_pre    = train_gt_pre[0].numpy()
-        #     # tight_crop = Tight_crop(pad_size= 100, resize=(256, 256))
+        #     # tight_crop = Tight_crop(pad_size= 60, resize=(256, 256))
         #     # crop_dis_img_pre , boundary = tight_crop(dis_img_pre, Mgt_pre)
         #     # crop_flow_pre    , boundary = tight_crop(flow_pre   , Mgt_pre)
 
