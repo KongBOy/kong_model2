@@ -9,6 +9,7 @@ class KModel:
         self.model_name = None
         self.model_describe = ""
         self.epoch_log = tf.Variable(1)  ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
+        self.iter_log  = tf.Variable(1)  ### 用來記錄 在呼叫.save()時 是訓練到幾個epoch
 
         self.model_describe_elements_full = []
         self.model_describe_elements = []
@@ -98,14 +99,16 @@ class Ckpt_op_builder(KModel_init_builder):
         ### 建立 tf 存模型 的物件： checkpoint物件
         self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator,
                                                    optimizer_G=self.kong_model.optimizer_G,
-                                                   epoch_log=self.kong_model.epoch_log)
+                                                   epoch_log=self.kong_model.epoch_log,
+                                                   iter_log =self.kong_model.iter_log)
         print("ckpt_G finish")
 
     def _build_D_ckpt_part(self):
         ### 建立 tf 存模型 的物件： checkpoint物件
         self.kong_model.ckpt_D = tf.train.Checkpoint(discriminator=self.kong_model.discriminator,
                                                      optimizer_D=self.kong_model.optimizer_D,
-                                                     epoch_log=self.kong_model.epoch_log)
+                                                     epoch_log=self.kong_model.epoch_log,
+                                                     iter_log =self.kong_model.iter_log)
         print("ckpt_D finish")
 
 class G_Unet_Body_builder(Ckpt_op_builder):
@@ -357,7 +360,8 @@ class Old_model_and_512_256_Unet_builder(G_Unet_Body_builder):
                                                     min_train_move=self.kong_model.min_train_move,
                                                     max_db_move_x=self.kong_model.max_db_move_x,
                                                     max_db_move_y=self.kong_model.max_db_move_y,
-                                                    epoch_log=self.kong_model.epoch_log)
+                                                    epoch_log=self.kong_model.epoch_log,
+                                                    iter_log =self.kong_model.iter_log)
             print("build_unet", "finish")
             return self.kong_model
         self.build_ops.append(_build_unet)
@@ -438,7 +442,8 @@ class KModel_GD_and_mrfGD_builder(KModel_Mask_Flow_Generator_builder):
                                                    generator=self.kong_model.generator,
                                                    optimizer_G=self.kong_model.optimizer_G,
                                                    optimizer_D=self.kong_model.optimizer_D,
-                                                   epoch_log=self.kong_model.epoch_log)
+                                                   epoch_log=self.kong_model.epoch_log,
+                                                   iter_log =self.kong_model.iter_log)
 
     def use_rect2(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False, D_first_concat=True, D_kernel_size=4):
         self.first_k3 = first_k3
@@ -496,7 +501,8 @@ class KModel_justG_and_mrf_justG_builder(KModel_GD_and_mrfGD_builder):
         ### 建立 tf 存模型 的物件： checkpoint物件
         self.kong_model.ckpt = tf.train.Checkpoint(generator=self.kong_model.generator, 
                                                    optimizer_G=self.kong_model.optimizer_G,
-                                                   epoch_log=self.kong_model.epoch_log)
+                                                   epoch_log=self.kong_model.epoch_log,
+                                                   iter_log =self.kong_model.iter_log)
 
     def use_justG(self, first_k3=False, use_res_learning=True, resb_num=9, coord_conv=False):
         self.first_k3 = first_k3
