@@ -92,8 +92,14 @@ def W_01_and_W_01_w_M_to_WM_and_visualize(W_raw, M, out_ch3=False):
 ######################################################################################################################################################################################################
 import tensorflow as tf
 class Tight_crop():
-    def __init__(self, pad_size=20, resize=None, jit_scale=0):
-        self.pad_size  = pad_size
+    def __init__(self, pad_size=20, pad_method="reflect+black", resize=None, jit_scale=0):
+        '''
+        pad_method：
+            reflect all  ： 最真實， 但比較慢 ( 覺得最後精細train的時候再用這個， 現在先用比較快的方法吧 )
+            reflect+black： 已經算滿真實了
+        '''
+        self.pad_size   = pad_size
+        self.pad_method = pad_method
         self.resize    = resize
         self.jit_scale = jit_scale
 
@@ -175,63 +181,106 @@ class Tight_crop():
 
         ### 看 pad 的範圍有沒有超過影像， 有的話就 pad
         if(l_out_amo > 0 or r_out_amo > 0  or t_out_amo > 0 or d_out_amo > 0):
-            ''' 
-            想用 reflect 的 padding 比較接近真實，
-            但是要注意！太超過不能用 reflect 的 padding 喔！
-            因為 mask 也會被reflect過去，
-            所以：
-                1. 超出在 頁面邊界 到 圖邊界 之間的範圍 用 reflect padding
-                2. 如果還有更超過的， 用 1. 的結果 再次 reflect padding， 反覆迭代直到 剩下需要pad 的格數為0為止
-            '''
-            ### 剩下多少的格數 需要做 pad
-            l_remian_amo = l_out_amo
-            t_remian_amo = t_out_amo
-            r_remian_amo = r_out_amo
-            d_remian_amo = d_out_amo
+            if(self.pad_method == "reflect+black"):
+                ''' 
+                想用 reflect 的 padding 比較接近真實，
+                但是要注意！太超過不能用 reflect 的 padding 喔！
+                因為 mask 也會被reflect過去，
+                所以：
+                    1. 超出在 頁面邊界 到 圖邊界 之間的範圍 用 reflect padding
+                    2. 更超過 用 black padding 這樣子拉
+                '''
+                ### 計算 頁面邊界 到 圖邊界的格數囉
+                l_to_board_amo = l  ### l, t index 剛好就是 頁面邊界 到 圖邊界的格數囉
+                t_to_board_amo = t  ### l, t index 剛好就是 頁面邊界 到 圖邊界的格數囉
+                r_to_board_amo = (w - 1) - r  ### -1 是 格數 轉 index， w/h_index - r/d_index 後 就是 r, d 的 頁面邊界 到 圖邊界的格數囉
+                d_to_board_amo = (h - 1) - d  ### -1 是 格數 轉 index， w/h_index - r/d_index 後 就是 r, d 的 頁面邊界 到 圖邊界的格數囉
 
-            ### 計算 頁面邊界 到 圖邊界的格數囉
-            l_to_board_amo = l  ### l, t index 剛好就是 頁面邊界 到 圖邊界的格數囉
-            t_to_board_amo = t  ### l, t index 剛好就是 頁面邊界 到 圖邊界的格數囉
-            r_to_board_amo = (w - 1) - r  ### -1 是 格數 轉 index， w/h_index - r/d_index 後 就是 r, d 的 頁面邊界 到 圖邊界的格數囉
-            d_to_board_amo = (h - 1) - d  ### -1 是 格數 轉 index， w/h_index - r/d_index 後 就是 r, d 的 頁面邊界 到 圖邊界的格數囉
-
-            ### 反覆迭代直到 剩下需要pad 的格數為0為止
-            while( l_remian_amo > 0 or t_remian_amo > 0 or r_remian_amo > 0 or d_remian_amo > 0):
-                tf.autograph.experimental.set_loop_options(shape_invariants=[(data, tf.TensorShape([None, None, None, None]))])  ### 參考：https://www.tensorflow.org/api_docs/python/tf/autograph/experimental/set_loop_options
-                ### 計算 reflect_pad 的格數 ( 別忘記是要在 out 的情況下 才有需要 pad 喔！ )， 最多pad的格數 只能用 頁面邊界~圖邊界的格數喔！ 所以就看 要補的格數 和 頁面邊界~圖邊界 的格數 哪個小， 就用哪個來reflect pad
+                ### 計算 reflect_pad 的格數 ( 即to_board格數， 但別忘記是要在 out 的情況下 才有需要 pad 喔！ )
                 l_reflect_amo = tf.constant(0, tf.int64)
                 t_reflect_amo = tf.constant(0, tf.int64)
                 r_reflect_amo = tf.constant(0, tf.int64)
                 d_reflect_amo = tf.constant(0, tf.int64)
-                if(l_remian_amo > 0):  ###別忘記是要在 out 的情況下 才有需要 pad 喔！ l, t, r, d 同理， 註解就不重複打了
-                    ### 檢查 要pad的格數 是否會觸碰到 頁面邊界～                      l, t, r, d 同理， 註解就不重複打了
-                    if(l_remian_amo >= l_to_board_amo): l_reflect_amo = l_to_board_amo - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
-                    else                              : l_reflect_amo = l_remian_amo        ### 不會有碰觸到 邊界的問題， 放心的把 remain的格數 pad完吧
-                if(t_remian_amo > 0):
-                    if(t_remian_amo >= t_to_board_amo): t_reflect_amo = t_to_board_amo - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
-                    else                              : t_reflect_amo = t_remian_amo        ### 不會有碰觸到 邊界的問題， 放心的把 remain的格數 pad完吧
-                if(r_remian_amo > 0):
-                    if(r_remian_amo >= r_to_board_amo): r_reflect_amo = r_to_board_amo - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
-                    else                              : r_reflect_amo = r_remian_amo        ### 不會有碰觸到 邊界的問題， 放心的把 remain的格數 pad完吧
-                if(d_remian_amo > 0):
-                    if(d_remian_amo >= d_to_board_amo): d_reflect_amo = d_to_board_amo - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
-                    else                              : d_reflect_amo = d_remian_amo        ### 不會有碰觸到 邊界的問題， 放心的把 remain的格數 pad完吧
-                ### 做 pad
+                if( l_out_amo > 0): l_reflect_amo = tf.math.minimum(l_out_amo, l_to_board_amo) - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+                if( t_out_amo > 0): t_reflect_amo = tf.math.minimum(t_out_amo, t_to_board_amo) - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+                if( r_out_amo > 0): r_reflect_amo = tf.math.minimum(r_out_amo, r_to_board_amo) - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+                if( d_out_amo > 0): d_reflect_amo = tf.math.minimum(d_out_amo, d_to_board_amo) - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
                 if  (len(data.shape) == 4): data = tf.pad(data, ( (0    ,     0), (t_reflect_amo, d_reflect_amo), (l_reflect_amo, r_reflect_amo), (    0,     0) ) , 'REFLECT')
                 elif(len(data.shape) == 3): data = tf.pad(data, ( (t_reflect_amo, d_reflect_amo), (l_reflect_amo, r_reflect_amo), (    0,     0) )                 , 'REFLECT')
                 elif(len(data.shape) == 2): data = tf.pad(data, ( (t_reflect_amo, d_reflect_amo), (l_reflect_amo, r_reflect_amo) )                                 , 'REFLECT')
 
-                ### 計算 還有多少格數需要 pad
-                l_remian_amo -=  l_reflect_amo
-                t_remian_amo -=  t_reflect_amo
-                r_remian_amo -=  r_reflect_amo
-                d_remian_amo -=  d_reflect_amo
+                ### 計算 剩下還需要pad多少黑邊格數( out格數 - reflect格數)
+                l_black_amo = tf.constant(0, tf.int64)
+                t_black_amo = tf.constant(0, tf.int64)
+                r_black_amo = tf.constant(0, tf.int64)
+                d_black_amo = tf.constant(0, tf.int64)
+                if(l_out_amo > l_to_board_amo): l_black_amo = l_out_amo - l_reflect_amo
+                if(t_out_amo > t_to_board_amo): t_black_amo = t_out_amo - t_reflect_amo
+                if(r_out_amo > r_to_board_amo): r_black_amo = r_out_amo - r_reflect_amo
+                if(d_out_amo > d_to_board_amo): d_black_amo = d_out_amo - d_reflect_amo
+                if  (len(data.shape) == 4): data = tf.pad(data, ( (0    ,     0), (t_black_amo, d_black_amo), (l_black_amo, r_black_amo), (    0,     0) ) , 'CONSTANT')
+                elif(len(data.shape) == 3): data = tf.pad(data, ( (t_black_amo, d_black_amo), (l_black_amo, r_black_amo), (    0,     0) )                 , 'CONSTANT')
+                elif(len(data.shape) == 2): data = tf.pad(data, ( (t_black_amo, d_black_amo), (l_black_amo, r_black_amo) )                                 , 'CONSTANT')
 
-                ### 如果 仍有要補的空間(remain_amo > 0)， 更新一下 to_board_amo 給下一輪用(因為 pad完後 會有更多的 to_board_amo 空間可以使用)
-                if(l_remian_amo > 0): l_to_board_amo += l_reflect_amo
-                if(t_remian_amo > 0): t_to_board_amo += t_reflect_amo
-                if(r_remian_amo > 0): r_to_board_amo += r_reflect_amo
-                if(d_remian_amo > 0): d_to_board_amo += d_reflect_amo
+            elif(self.pad_method == "reflect all"):
+                ''' 
+                想用 reflect 的 padding 比較接近真實，
+                但是要注意！太超過不能用 reflect 的 padding 喔！
+                因為 mask 也會被reflect過去，
+                所以：
+                    1. 超出在 頁面邊界 到 圖邊界 之間的範圍 用 reflect padding
+                    2. 如果還有更超過的， 用 1. 的結果 再次 reflect padding， 反覆迭代直到 剩下需要pad 的格數為0為止
+                '''
+                ### 剩下多少的格數 需要做 pad
+                l_remian_amo = l_out_amo
+                t_remian_amo = t_out_amo
+                r_remian_amo = r_out_amo
+                d_remian_amo = d_out_amo
+
+                ### 計算 頁面邊界 到 圖邊界的格數囉
+                l_to_board_amo = l  ### l, t index 剛好就是 頁面邊界 到 圖邊界的格數囉
+                t_to_board_amo = t  ### l, t index 剛好就是 頁面邊界 到 圖邊界的格數囉
+                r_to_board_amo = (w - 1) - r  ### -1 是 格數 轉 index， w/h_index - r/d_index 後 就是 r, d 的 頁面邊界 到 圖邊界的格數囉
+                d_to_board_amo = (h - 1) - d  ### -1 是 格數 轉 index， w/h_index - r/d_index 後 就是 r, d 的 頁面邊界 到 圖邊界的格數囉
+
+                ### 反覆迭代直到 剩下需要pad 的格數為0為止
+                while( l_remian_amo > 0 or t_remian_amo > 0 or r_remian_amo > 0 or d_remian_amo > 0):
+                    tf.autograph.experimental.set_loop_options(maximum_iterations=5,
+                                                               shape_invariants=[(data, tf.TensorShape([None, None, None, None]))])  ### 參考：https://www.tensorflow.org/api_docs/python/tf/autograph/experimental/set_loop_options
+                    ### 計算 reflect_pad 的格數 ( 別忘記是要在 out 的情況下 才有需要 pad 喔！ )， 最多pad的格數 只能用 頁面邊界~圖邊界的格數喔！ 所以就看 要補的格數 和 頁面邊界~圖邊界 的格數 哪個小， 就用哪個來reflect pad
+                    l_reflect_amo = tf.constant(0, tf.int64)
+                    t_reflect_amo = tf.constant(0, tf.int64)
+                    r_reflect_amo = tf.constant(0, tf.int64)
+                    d_reflect_amo = tf.constant(0, tf.int64)
+                    if(l_remian_amo > 0):  ###別忘記是要在 out 的情況下 才有需要 pad 喔！ l, t, r, d 同理， 註解就不重複打了
+                        ### 檢查 要pad的格數 是否會觸碰到 頁面邊界～                      l, t, r, d 同理， 註解就不重複打了
+                        if(l_remian_amo >= l_to_board_amo): l_reflect_amo = l_to_board_amo - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+                        else                              : l_reflect_amo = l_remian_amo        ### 不會有碰觸到 邊界的問題， 放心的把 remain的格數 pad完吧
+                    if(t_remian_amo > 0):
+                        if(t_remian_amo >= t_to_board_amo): t_reflect_amo = t_to_board_amo - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+                        else                              : t_reflect_amo = t_remian_amo        ### 不會有碰觸到 邊界的問題， 放心的把 remain的格數 pad完吧
+                    if(r_remian_amo > 0):
+                        if(r_remian_amo >= r_to_board_amo): r_reflect_amo = r_to_board_amo - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+                        else                              : r_reflect_amo = r_remian_amo        ### 不會有碰觸到 邊界的問題， 放心的把 remain的格數 pad完吧
+                    if(d_remian_amo > 0):
+                        if(d_remian_amo >= d_to_board_amo): d_reflect_amo = d_to_board_amo - 1  ### 扣除board自己本身， 因為reflect是 board該格本身開始做 reflect， 所以 圖邊界 到 頁面邊界 之間 可用的空間就少一個囉， 少 board那格！
+                        else                              : d_reflect_amo = d_remian_amo        ### 不會有碰觸到 邊界的問題， 放心的把 remain的格數 pad完吧
+                    ### 做 pad
+                    if  (len(data.shape) == 4): data = tf.pad(data, ( (0    ,     0), (t_reflect_amo, d_reflect_amo), (l_reflect_amo, r_reflect_amo), (    0,     0) ) , 'REFLECT')
+                    elif(len(data.shape) == 3): data = tf.pad(data, ( (t_reflect_amo, d_reflect_amo), (l_reflect_amo, r_reflect_amo), (    0,     0) )                 , 'REFLECT')
+                    elif(len(data.shape) == 2): data = tf.pad(data, ( (t_reflect_amo, d_reflect_amo), (l_reflect_amo, r_reflect_amo) )                                 , 'REFLECT')
+
+                    ### 計算 還有多少格數需要 pad
+                    l_remian_amo -=  l_reflect_amo
+                    t_remian_amo -=  t_reflect_amo
+                    r_remian_amo -=  r_reflect_amo
+                    d_remian_amo -=  d_reflect_amo
+
+                    ### 如果 仍有要補的空間(remain_amo > 0)， 更新一下 to_board_amo 給下一輪用(因為 pad完後 會有更多的 to_board_amo 空間可以使用)
+                    if(l_remian_amo > 0): l_to_board_amo += l_reflect_amo
+                    if(t_remian_amo > 0): t_to_board_amo += t_reflect_amo
+                    if(r_remian_amo > 0): r_to_board_amo += r_reflect_amo
+                    if(d_remian_amo > 0): d_to_board_amo += d_reflect_amo
             # plt.imshow(data)  ### 看 mask_pre 的 crop結果 才準喔， 因為 mask_pre 是很明確的 0 跟 1 的數值， 不會像 dis_img 邊界pad時可能有有模糊的空間
             # plt.show()
         # breakpoint()
