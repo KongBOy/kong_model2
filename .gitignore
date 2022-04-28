@@ -17,7 +17,7 @@ dont track
 events*
 
 abc
-temp*
+temp_*
 
 
 # pdf轉jpg要用到的套件
@@ -25,3 +25,5 @@ temp*
 
 debug_data/try_*
 debug_data/*.png
+debug_data/DB_update_wc_mask/*
+debug_data/DB_become_doc3d/*
