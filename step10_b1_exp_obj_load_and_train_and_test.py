@@ -436,7 +436,8 @@ class Experiment():
         if(self.it_show_time_fq is not None):
             if( self.current_it % self.it_show_time_fq == 0):
                 self.train_step5_show_time()
-                self.it_start_time = time.time()  ### 重設 it 時間
+                self.it_start_time      = time.time()  ### 重設 it 時間
+                self.it_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
 
     def testing(self, add_loss=False, bgr2rgb=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
@@ -540,7 +541,8 @@ class Experiment():
         show_time_string += "esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (self.current_ep + 1)))) + "\n"
         if(it_fq_cost_time != 0):
             show_time_string += "  " + "in this epoch, the it cost time:" + "\n"
-            show_time_string += "    " + 'it_fq %i cost time: %.2f' % (self.it_show_time_fq, it_fq_cost_time)  + "\n"
+            show_time_string += "    " + "it %i ~ %i start at: %s"        % ((self.current_it - self.it_show_time_fq), self.current_it, self.it_start_timestamp)+ "\n"
+            show_time_string += "    " + 'it_fq %i cost time: %.2f'  % (self.it_show_time_fq, it_fq_cost_time)  + "\n"
             show_time_string += "    " + 'it_avg    cost time: %.3f' % (it_fq_cost_time / self.it_show_time_fq) + "\n"
             show_time_string += "    " + "current  cost time:%s"   % (time_util(total_cost_time)) + "\n"
             show_time_string += "    " + 'it esti total time:%s'   %  time_util( int(  self.tf_data.train_amount                     / self.it_show_time_fq * it_fq_cost_time) ) + "\n"
