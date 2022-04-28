@@ -78,6 +78,8 @@ class DB_NAME(Enum):
     blender_os_and_paper_hw512_have_dtd_hdr_mix_bg = "os_and_paper_hw512_dtd_hdr_mix_bg"
     os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M       = "os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M"
 
+    kong_doc3d = "kong_doc3d"
+
     ### 網路上載的 測試mask 的 DB
     car_db_try_segmentation = "car_db_try_segmentation"
 
@@ -95,8 +97,8 @@ class DB_GET_METHOD(Enum):
 
     in_img_gt_mask   = "in_img_gt_mask"
 
-    in_dis_gt_wc            = "in_dis_gt_wc"
-    in_dis_gt_wc_try_mul_M  = "in_dis_gt_wc_try_mul_M"
+    in_dis_gt_wc                = "in_dis_gt_wc"
+    in_dis_gt_wc_try_mul_M      = "in_dis_gt_wc_try_mul_M"
     in_dis_gt_wc_flow_try_mul_M = "in_dis_gt_wc_flow_try_mul_M"
 
     in_wc_gt_flow           = "in_wc_gt_flow"  ### train_in 除了wc外會多抓 dis_img 來 讓 F 可以做 bm_rec喔！
@@ -263,23 +265,43 @@ class Dataset_dir_builder(Dataset_basic_builder):
             gt_dir_name = "gt_ord_imgs"
         elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_flow or
              self.db.get_method == DB_GET_METHOD.in_dis_gt_mask_coord):
-            in_dir_name = "dis_imgs"
-            gt_dir_name = "flows"
+            if(self.db.db_name.value != "kong_doc3d"):
+                in_dir_name = "dis_imgs"
+                gt_dir_name = "flows"
+            else:
+                in_dir_name  = "0_dis_img"
+                gt_dir_name  = "1_uv-3_knpy"
         elif(self.db.get_method == DB_GET_METHOD.in_img_gt_mask):
             in_dir_name = "in_imgs"
             gt_dir_name = "gt_masks"
         elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_wc or self.db.get_method == DB_GET_METHOD.in_dis_gt_wc_try_mul_M):
-            in_dir_name = "dis_imgs"
-            gt_dir_name = "wcs"
+            if(self.db.db_name.value != "kong_doc3d"):
+                in_dir_name = "dis_imgs"
+                gt_dir_name = "wcs"
+            else:
+                in_dir_name  = "0_dis_img"
+                gt_dir_name  = "2_wc-5_W_w_M_knpy"
+
         elif(self.db.get_method == DB_GET_METHOD.in_wc_gt_flow or
              self.db.get_method == DB_GET_METHOD.in_wc_gt_flow_try_mul_M):
-            in_dir_name = "wcs"
-            in2_dir_name = "dis_imgs"
-            gt_dir_name = "flows"
+            if(self.db.db_name.value != "kong_doc3d"):
+                in_dir_name = "wcs"
+                in2_dir_name = "dis_imgs"
+                gt_dir_name = "flows"
+            else:
+                in_dir_name  = "2_wc-5_W_w_M_knpy"
+                in2_dir_name = "0_dis_img"
+                gt_dir_name  = "1_uv-3_knpy"
+
         elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_wc_flow_try_mul_M):
-            in_dir_name  = "dis_imgs"
-            gt_dir_name  = "wcs"
-            gt2_dir_name = "flows"
+            if(self.db.db_name.value != "kong_doc3d"):
+                in_dir_name  = "dis_imgs"
+                gt_dir_name  = "wcs"
+                gt2_dir_name = "flows"
+            else:
+                in_dir_name  = "0_dis_img"
+                gt_dir_name  = "2_wc-5_W_w_M_knpy"
+                gt2_dir_name = "1_uv-3_knpy"
 
 
 
@@ -297,9 +319,9 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.see_in2_dir   = self.db.db_dir + "/see/"   + in2_dir_name
         self.db.see_gt2_dir   = self.db.db_dir + "/see/"   + gt2_dir_name
 
-        self.db.rec_hope_train_dir = self.db.db_dir + "/train/rec_hope"
-        self.db.rec_hope_test_dir  = self.db.db_dir + f"/{self.db.test_db_name}/rec_hope"
-        self.db.rec_hope_see_dir   = self.db.db_dir + "/see/rec_hope"
+        self.db.rec_hope_train_dir = self.db.db_dir + "/train/0_rec_hope"
+        self.db.rec_hope_test_dir  = self.db.db_dir + f"/{self.db.test_db_name}/0_rec_hope"
+        self.db.rec_hope_see_dir   = self.db.db_dir + "/see/0_rec_hope"
     
         ### check 資料正確性的資料夾
         self.db.check_train_in_dir = self.db.db_dir + "/check" + "/train/" + in_dir_name
@@ -316,9 +338,9 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.check_see_in2_dir   = self.db.db_dir + "/check" + "/see/"   + in2_dir_name
         self.db.check_see_gt2_dir   = self.db.db_dir + "/check" + "/see/"   + gt2_dir_name
 
-        self.db.check_rec_hope_train_dir = self.db.db_dir + "/check" + "/train/rec_hope"
-        self.db.check_rec_hope_test_dir  = self.db.db_dir + "/check" + f"/{self.db.test_db_name}/rec_hope"
-        self.db.check_rec_hope_see_dir   = self.db.db_dir + "/check" + "/see/rec_hope"
+        self.db.check_rec_hope_train_dir = self.db.db_dir + "/check" + "/train/0_rec_hope"
+        self.db.check_rec_hope_test_dir  = self.db.db_dir + "/check" + f"/{self.db.test_db_name}/0_rec_hope"
+        self.db.check_rec_hope_see_dir   = self.db.db_dir + "/check" + "/see/0_rec_hope"
         return self
 
     def reset_test_db_name(self, test_db_name):
@@ -399,6 +421,11 @@ type8_blender_wc_flow                        = Dataset_builder().set_basic(DB_C.
 type8_blender_wc_flow_try_mul_M              = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_wc_gt_flow_try_mul_M, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", gt_format="knpy", in2_format="png", db_in_range=Range(-0.13532962, 0.1357405), db_gt_range=Range(0,   1), db_in2_range=(0, 255) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 
 type8_blender_dis_wc_flow_try_mul_M          = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_dis_gt_wc_flow_try_mul_M, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", gt2_format="knpy", db_in_range=Range(0, 255), db_gt_range=Range(-0.13532962, 0.1357405), db_gt2_range=Range(0,   1) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+
+type8_blender_kong_doc3d_in_I_gt_MC          = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.kong_doc3d,                                         DB_GM.in_dis_gt_mask_coord        , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                , gt_format="knpy", db_gt_range =Range(0, 1)                                                                  , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_kong_doc3d_in_I_gt_W           = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.kong_doc3d,                                         DB_GM.in_dis_gt_wc_try_mul_M      , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_kong_doc3d_in_W_and_I_gt_F     = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.kong_doc3d,                                         DB_GM.in_wc_gt_flow_try_mul_M     , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-1.2410645, 1.2485291) , in2_format="png", db_in2_range=Range(0, 255)                 , gt_format="knpy",  db_gt_range =Range(0,   1), rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_kong_doc3d                     = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.kong_doc3d,                                         DB_GM.in_dis_gt_wc_flow_try_mul_M , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)  , gt2_format="knpy", db_gt2_range=Range(0,   1), rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 
 if(__name__ == "__main__"):
     db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg,    DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", gt_format="bmp", db_in_range=Range(0, 255), db_gt_range=Range(0, 255)).set_detail(have_train=True, have_see=True).build()

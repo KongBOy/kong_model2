@@ -12,8 +12,8 @@ from step10_a2_loss_info_obj import *
 from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
-from util import time_util, get_dir_certain_file_names
-from build_dataset_combine import Save_as_jpg, Find_ltrd_and_crop
+from kong_util.util import time_util, get_dir_certain_file_names
+from kong_util.build_dataset_combine import Save_as_jpg, Find_ltrd_and_crop
 
 from tqdm import tqdm, trange
 
@@ -66,6 +66,7 @@ class Experiment():
         self.phase         = "train"
         self.db_builder    = None
         self.db_obj        = None
+        self.tf_data       = None
         self.img_resize    = None
         self.model_builder = None
         self.model_obj     = None
@@ -92,7 +93,20 @@ class Experiment():
         self.epoch_save_freq = 5     ### 訓練 epoch_save_freq 個 epoch 存一次模型
         self.start_epoch     = 0
         self.current_ep      = self.start_epoch
+        self.current_it      = 0
+        self.ep_see_fq       = 1  ### 因為下面寫了 I_see_fq， 覺得ep 應該也要有， 所以就先寫著備用， 目前還沒用到ˊ口ˋ
 
+        ##################################################################################################
+        ### iter 是後來才加入的概念，原先沒有， 所以初始值設為None
+        self.it_see_fq       = None  ### 執行幾個 iter 就要存一次 see
+        self.it_save_fq      = None  ### 執行幾個 iter 就要存一次 model
+        self.it_restart      = None  ### 有設定 it_save_fq 才會有 self.it_start_train， 在 reload 時 要跳到 第 it_restart 個 iter 開始訓練， 所以不給從外面設定喔！
+        self.it_down_step    = None  ### 執行到 第幾個iter 就開始 lr 下降， 可輸入 "half" 或 數字
+        self.it_down_fq      = None  ### 執行幾個 iter 就要 down 一次 lr
+        self.it_show_time_fq = None
+
+        self.total_iters     = None  ### 總共會  更新 幾次， 建立完tf_data後 才會知道所以現在指定None
+        ##################################################################################################
         self.exp_bn_see_arg = False  ### 本來 bn 在 test 的時候就應該要丟 false，只是 現在batch_size=1， 丟 True 會變 IN ， 所以加這個flag 來控制
 
         self.use_in_range = Range(min=0, max=1)
@@ -110,11 +124,17 @@ class Experiment():
         ### self.phase = "test_indicate" ### 這應該是可以刪掉了，因為在取db的時候，已經有包含了test_indecate的取法了！不用在特別區分出來 取資料囉！
         ### 參數設定結束
         ####################################################################################################################
-        self.tf_data      = None
         self.ckpt_read_manager  = None
         self.ckpt_write_manager = None
         self.ckpt_D_read_manager  = None
         self.ckpt_D_write_manager = None
+        ####################################################################################################################
+        ### 給 step5 show_time 用的
+        self.total_start_time   = None
+        self.ep_start_time      = None
+        self.ep_start_timestamp = None
+        self.it_start_time      = None
+        self.it_start_timestamp = None
 
 ################################################################################################################################################
 ################################################################################################################################################
@@ -158,12 +178,19 @@ class Experiment():
             # print("self.db_obj.w = ", self.db_obj.w)
             # print("math.ceil(self.db_obj.h / 128) * 128 = ", math.ceil(self.db_obj.h / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
             # print("math.ceil(self.db_obj.w / 128) * 128 = ", math.ceil(self.db_obj.w / 128) * 128 )  ### move_map的話好像要用floor再*2的樣子，覺得算了應該也不會再用那個了就直接改掉了
-            if  ("unet" in self.model_obj.model_name.value):
-                self.img_resize = (math.ceil(self.db_obj.h / 128) * 128 , math.ceil(self.db_obj.w / 128) * 128)  ### 128的倍數，且要是gt_img的兩倍大喔！
-            elif("rect" in self.model_obj.model_name.value or "justG" in self.model_obj.model_name.value):
-                self.img_resize = (math.ceil(self.db_obj.h / 4) * 4, math.ceil(self.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
+            # if  ("unet" in self.model_obj.model_name.value):
+            #     self.img_resize = (math.ceil(self.db_obj.h / 128) * 128 , math.ceil(self.db_obj.w / 128) * 128)  ### 128的倍數，且要是gt_img的兩倍大喔！
+            # elif("rect" in self.model_obj.model_name.value or "justG" in self.model_obj.model_name.value):
+            #     self.img_resize = (math.ceil(self.db_obj.h / 4) * 4, math.ceil(self.db_obj.w / 4) * 4)  ### dis_img(in_img的大小)的大小且要是4的倍數
+            self.img_resize = (self.db_obj.h, self.db_obj.w)
+            print("自動設定 img_resize 的結果為：", self.img_resize)
 
-        self.tf_data      = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
+        self.tf_data = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
+
+        ### 好像變成 it 設定專區， 那就順勢變成 it設定專區 吧～
+        self.total_iters = self.epochs * self.tf_data.train_amount  ### 總共會  更新 幾次
+        if(self.it_down_step == "half"): self.it_down_step = self.total_iters // 2  ### 知道total_iter後 即可知道 half iter 為多少， 如果 it_down_step設定half 這邊就可以直接指定給他囉～
+        if(self.it_see_fq is not None and self.it_show_time_fq is None): self.it_show_time_fq = self.it_see_fq  ### 防呆， 如果有用it 的概念 但忘記設定 it_show_time_fq， 就直接設定為 it_see_fq， 這樣在存圖時， 就可以順便看看時間囉！
 
         ### 3.model
         self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
@@ -176,6 +203,10 @@ class Experiment():
             if(self.model_obj.discriminator is not None): self.model_obj.ckpt_D.restore(self.ckpt_D_read_manager.latest_checkpoint)
             self.start_epoch = self.model_obj.ckpt.epoch_log.numpy()
             self.current_ep  = self.start_epoch
+            ### 如果有設定 it_save_fq， 代表之前在train時 已經有 it資訊了(紀錄train到第幾個it)， 這邊就把他讀出來囉
+            if(self.it_save_fq is not None):
+                self.it_restart = self.model_obj.ckpt.iter_log.numpy()  ### 跳到第幾個it開始訓練 的概念
+                self.current_it =  self.it_restart                      ### 目前的it 指定成 上次的it
             print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_read_dir, self.start_epoch))
 
         ####################################################################################################################
@@ -212,7 +243,7 @@ class Experiment():
         ### 第三階段：train 和 test
         ###  training 的部分 ###################################################################################################
         ###     以下的概念就是，每個模型都有自己的 generate_results 和 train_step，根據model_name 去各別import 各自的 function過來用喔！
-        total_start = time.time()
+        self.total_start_time = time.time()
 
         ### 多這 這段if 是因為 unet 有move_map的部分，所以要多做以下操作 把 move_map相關會用到的東西存起來
         if("unet" in self.model_obj.model_name.value and "flow" not in self.model_obj.model_name.value):
@@ -229,11 +260,24 @@ class Experiment():
 
         self.current_ep = self.start_epoch   ### 因為 epoch 的狀態 在 train 前後是不一樣的，所以需要用一個變數來記住，就用這個current_epoch來記錄囉！
         for epoch in range(self.start_epoch, self.epochs):
+            ### 設定 it 資訊
+            it_train_amount = self.tf_data.train_amount  ### 應該要 迭代 train_amount 次， 但有可能是 reload的情況， 會從中間的 iter開始迭代
+            # self.current_it  = 10000  ### debug用， 從中間切入看 lr 的狀況
+            # it_train_amount -= 10000  ### debug用，跳過前 it_restart 個訓練資料
+
+            ### 處理 it reload 的狀況
+            if(self.it_save_fq is not None and self.it_restart is not None):
+                self.current_it =  self.it_restart  ### 目前的it 指定成 上次的it
+                it_train_amount -= self.it_restart  ### 跳過前 it_restart 個訓練資料， 所以 it_train_amount -= 這樣子
+                self.it_restart = 0                 ### 功成身退， 設回 0 ， 減了他也沒影響， 這樣子在下個 epoch 時 才不會又 跳過前面的 iter
+            ################################
             ###############################################################################################################################
             ###    step0 紀錄epoch開始訓練的時間
-            epoch_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
-            print("Epoch: ", self.current_ep, "start at", epoch_start_timestamp)
-            e_start = time.time()
+            self.ep_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
+            self.ep_start_time = time.time()
+            self.it_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
+            self.it_start_time = time.time()
+            print("Epoch: ", self.current_ep, "start at", self.ep_start_timestamp)
             ###############################################################################################################################
             ###    step0 設定learning rate
             self.lr_current = self.lr_start if self.current_ep < self.epoch_down_step else self.lr_start * (self.epochs - self.current_ep) / (self.epochs - self.epoch_down_step)
@@ -243,7 +287,8 @@ class Experiment():
             if(self.current_ep == 0): print("Initializing Model~~~")  ### sample的時候就會initial model喔！
             ###############################################################################################################################
             ###     step1 用來看目前訓練的狀況
-            self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+            if(self.current_ep == 0 or (self.current_ep % self.ep_see_fq == 0) ):
+                self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
             ###############################################################################################################################
             ### 以上 current_ep = epoch   ### 代表還沒訓練
             ###     step2 訓練
@@ -277,7 +322,7 @@ class Experiment():
                 G_iter = iter(G_train_db_combine)
                 DG_iter = iter(DG_train_db_combine)
 
-                for go_iter in trange(len(self.tf_data.train_db_combine)):
+                for go_iter in trange(len(self.tf_data.train_db_combine.take(it_train_amount))):
                     if(DG_train_many_diff is True):
                         ''' 訓練D '''
                         if(D_train_many_diff is False): (_, train_in_pre, _, train_gt_pre, _) = next(D_iter)  ### 訓練多次時用 same資料， 取資料時機再for 外面
@@ -311,26 +356,39 @@ class Experiment():
                             # plt.show()
                             self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
 
+                    self.current_it += 1  ### +1 代表 after_rain 的意思
+                    ### iter 看要不要 存圖、設定lr、儲存模型 (思考後覺得要在 after_train做)
+                    self.current_it_See_result_or_set_LR_or_Save_Model()
+                    # if( self.current_it % 10 == 0): break   ### debug用，看subprocess成不成功
             else:
-                for n, (_, train_in_pre, _, train_gt_pre, _) in enumerate(tqdm(self.tf_data.train_db_combine)):
+                for _, train_in_pre, _, train_gt_pre, name in tqdm(self.tf_data.train_db_combine.take(it_train_amount)):
+                    ### train
+                    # print("%06i" % it, name)  ### debug用
                     self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
-                    # break   ### debug用，看subprocess成不成功
-            self.current_ep += 1  ### 超重要！別忘了加呀！
+                    self.current_it += 1  ### +1 代表 after_rain 的意思
+                    ### iter 看要不要 存圖、設定lr、儲存模型 (思考後覺得要在 after_train做)
+                    self.current_it_See_result_or_set_LR_or_Save_Model()
+                    # if(self.current_it % 10 == 0): break   ### debug用，看subprocess成不成功
+
+            self.current_ep += 1  ### 超重要！別忘了加呀！ 因為進到下個epoch了
+            self.current_it  = 0  ### 超重要！別忘了加呀！ 因為進到下個epoch了， 所以iter變回0囉
             ### 以下 current_ep = epoch + 1   ### +1 代表訓練完了！變成下個epoch了！
             ###############################################################
             ###     step3 整個epoch 的 loss 算平均，存進tensorboard
-            self.train_step3_Loss_info_save_loss(self.current_ep)
+            self.train_step3_Loss_info_save_loss()  ### 把他加進去 train_step1_see_current_img 裡面試試看， 所以這邊就不用做了喔， 結果還是拿出來了， 因為忘記 test, train_final_see 不需要 看 loss 呀~~
             ###############################################################################################################################
             ###     step4 儲存模型 (checkpoint) the model every "epoch_save_freq" epochs
             if (self.current_ep) % self.epoch_save_freq == 0:
-                # print("save epoch_log :", current_ep)
-                self.model_obj.ckpt.epoch_log.assign(self.current_ep)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
-                self.ckpt_write_manager.save()
-                if(self.model_obj.discriminator is not None): self.ckpt_D_write_manager.save()
-                print("save ok ~~~~~~~~~~~~~~~~~")
+                self.train_step4_save_model()
+                # # print("save epoch_log :", current_ep)
+                # self.model_obj.ckpt.epoch_log.assign(self.current_ep)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
+                # if(self.it_save_fq is not None):  self.model_obj.ckpt.iter_log.assign(self.current_it)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
+                # self.ckpt_write_manager.save()
+                # if(self.model_obj.discriminator is not None): self.ckpt_D_write_manager.save()
+                # print("save ok ~~~~~~~~~~~~~~~~~")
             ###############################################################################################################################
             ###    step5 紀錄、顯示 訓練相關的時間
-            self.train_step5_show_time(self.current_ep, e_start, total_start, epoch_start_timestamp)
+            self.train_step5_show_time()
             # break  ### debug用，看subprocess成不成功
             ###############################################################################################################################
             ###    step6 同步 result_write_dir 和 result_read_dir
@@ -349,6 +407,37 @@ class Experiment():
 
         ### 最後train完 記得也要看結果喔！
         self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+
+    def current_it_See_result_or_set_LR_or_Save_Model(self):
+        ### 執行 see, 存loss, show_time
+        if(self.it_see_fq is not None):
+            if( self.current_it % self.it_see_fq == 0 or
+                self.current_it == self.tf_data.train_amount):   ### 最後一個 it 我希望要存
+                self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+                self.train_step3_Loss_info_save_loss()
+
+        ### 設定　lr
+        if(self.it_down_step is not None):
+            if(self.it_down_fq is not None):
+                if( self.current_it % self.it_down_fq == 0):
+                    self.lr_current = self.lr_start if self.current_it < self.it_down_step else self.lr_start * (self.total_iters - self.current_it) / (self.total_iters - self.it_down_step)
+                    print("lr_current:", self.lr_current)
+            else:
+                self.it_down_fq = self.it_see_fq
+                print(f"可能忘記設定 self.it_down_fq 了， 所以 lr 目前都不會下降喔！ 所以自動防呆幫你設定成 self.it_see_fq 喔， 數值為 self.it_down_fq={self.it_see_fq}")
+
+        ### 儲存model
+        if(self.it_save_fq is not None):
+            if (self.current_it % self.it_save_fq == 0 or
+                self.current_it == self.tf_data.train_amount):   ### 最後一個 it 我希望要存
+                self.train_step4_save_model()
+
+        ### 顯示 時間
+        if(self.it_show_time_fq is not None):
+            if( self.current_it % self.it_show_time_fq == 0):
+                self.train_step5_show_time()
+                self.it_start_time      = time.time()  ### 重設 it 時間
+                self.it_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
 
     def testing(self, add_loss=False, bgr2rgb=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
@@ -386,31 +475,34 @@ class Experiment():
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
 
-    def train_step3_Loss_info_save_loss(self, epoch):
+
+    def train_step3_Loss_info_save_loss(self):
         if(self.board_create_flag is False):
-            for loss_info_obj in self.loss_info_objs:
-                print("loss_info_obj.logs_write_dir:", loss_info_obj.logs_write_dir)
+            for loss_info_obj in self.loss_info_objs:  ### 多output 的 case
+                # print("loss_info_obj.logs_write_dir:", loss_info_obj.logs_write_dir)  ###debug用
                 loss_info_obj.summary_writer = tf.summary.create_file_writer(loss_info_obj.logs_write_dir)  ### 建tensorboard，這會自動建資料夾喔！所以不用 Check_dir_exist... 之類的，注意 只有第一次 要建立tensorboard喔！
             self.board_create_flag = True
 
-        for loss_info_obj in self.loss_info_objs:
+        for loss_info_obj in self.loss_info_objs:  ### 多output 的 case
             with loss_info_obj.summary_writer.as_default():
-                for loss_name, loss_containor in loss_info_obj.loss_containors.items():
+                for loss_name, loss_containor in loss_info_obj.loss_containors.items():  ### 單個output 裡的 多loss 的 case
                     ### tensorboard
-                    tf.summary.scalar(loss_name, loss_containor.result(), step=epoch)
-                    tf.summary.scalar("lr", self.lr_current, step=epoch)
+                    current_global_it = self.current_ep * self.tf_data.train_amount + self.current_it
+                    tf.summary.scalar(loss_name, loss_containor.result(), step=current_global_it)
+                    tf.summary.scalar("lr", self.lr_current, step=current_global_it)
 
                     ### 自己另存成 npy
                     loss_value = loss_containor.result().numpy()
-                    if(epoch == 1):  ### 第一次 直接把值存成np.array
-                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_value.reshape(1)))
+                    if( os.path.isfile( f"{loss_info_obj.logs_write_dir}/{loss_name}.npy" ) is False):  ### 第一次 直接把值存成np.array
+                        loss_npy_array = np.array( [None] * (self.total_iters + 1))  ### 我最末尾還會在做一個， 頭 尾 都做 所以要 +1
+                        loss_npy_array[current_global_it] = loss_value
+                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_npy_array))
 
                     else:  ### 第二次後，先把np.array先讀出來append值後 再存進去
-                        loss_array = np.load(loss_info_obj.logs_write_dir + "/" + loss_name + ".npy")  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
-                        loss_array = loss_array[:epoch]   ### 這是為了防止 如果程式在 step3,4之間中斷 這種 loss已經存完 但 model還沒存 的狀況，loss 會比想像中的多一步，所以加這行防止這種情況發生喔
-                        loss_array = np.append(loss_array, loss_value)
-                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_array))
-                        # print(loss_array)
+                        loss_npy_array = np.load(f"{loss_info_obj.logs_write_dir}/{loss_name}.npy", allow_pickle=True)  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
+                        loss_npy_array[current_global_it] = loss_value
+                        np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_npy_array))
+                        # print(loss_npy_array)
 
         ###    reset tensorboard 的 loss紀錄容器
         for loss_info_obj in self.loss_info_objs:
@@ -421,27 +513,47 @@ class Experiment():
             ### 目前覺得好像也不大會去看matplot_visual，所以就先把這註解掉了
             # loss_info_obj.Draw_loss_during_train(epoch, self.epochs)  ### 在 train step1 generate_see裡已經把see的 matplot_visual圖畫出來了，再把 loss資訊加進去
 
-    def train_step5_show_time(self, epoch, e_start, total_start, epoch_start_timestamp):
+    def train_step4_save_model(self):
+        # print("save epoch_log :", current_ep)
+        self.model_obj.ckpt.epoch_log.assign(self.current_ep)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
+        if(self.it_save_fq is not None):
+            self.model_obj.ckpt.iter_log.assign(self.current_it)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
+        self.ckpt_write_manager.save()
+        if(self.model_obj.discriminator is not None): self.ckpt_D_write_manager.save()
+        print("Save Model finish ~~~~~~~~~~~~~~~~~")
+
+    def train_step5_show_time(self):
         print("current exp:", self.result_obj.result_read_dir)
-        epoch_cost_time = time.time() - e_start
-        total_cost_time = time.time() - total_start
-        print(self.phase)
-        print('epoch %i start at:%s, %s, %s' % (epoch, epoch_start_timestamp, self.machine_ip, self.machine_user))
-        print('epoch %i cost time:%.2f'      % (epoch, epoch_cost_time))
-        print("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))
-        print("total cost time:%s"           % (time_util(total_cost_time)))
-        print("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))
-        print("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1)))))
-        print("")
-        with open(self.result_obj.result_write_dir + "/" + "cost_time.txt", "a") as f:
-            f.write(self.phase)                                                                                         ; f.write("\n")
-            f.write('epoch %i start at:%s, %s, %s' % (epoch, epoch_start_timestamp, self.machine_ip, self.machine_user)); f.write("\n")
-            f.write('epoch cost time:%.2f'         % (epoch_cost_time))                                                 ; f.write("\n")
-            f.write("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))                     ; f.write("\n")
-            f.write("total cost time:%s"           % (time_util(total_cost_time)))                                      ; f.write("\n")
-            f.write("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))                        ; f.write("\n")
-            f.write("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (epoch + 1)))))        ; f.write("\n")
-            f.write("\n")
+        epoch_cost_time = time.time() - self.ep_start_time
+        total_cost_time = time.time() - self.total_start_time
+        it_fq_cost_time = 0
+        if(self.it_show_time_fq is not None):
+            if( self.current_it % self.it_show_time_fq == 0 or self.current_it == self.tf_data.train_amount):  ### 最後一個 it 我也希望要顯示it time
+                it_fq_cost_time = time.time() - self.it_start_time
+
+        show_time_string = ""
+        show_time_string +=  self.phase + "\n"
+        show_time_string += 'epoch %i start at:%s, %s, %s' % (self.current_ep, self.ep_start_timestamp, self.machine_ip, self.machine_user) + "\n"
+        show_time_string += 'epoch %i cost time:%.2f'      % (self.current_ep, epoch_cost_time) + "\n"
+        show_time_string += "batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount) + "\n"
+        show_time_string += "total cost time:%s"           % (time_util(total_cost_time)) + "\n"
+        show_time_string += "esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)) + "\n"
+        show_time_string += "esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (self.current_ep + 1)))) + "\n"
+        if(it_fq_cost_time != 0):
+            show_time_string += "  " + "in this epoch, the it cost time:" + "\n"
+            show_time_string += "    " + "it %i ~ %i start at: %s"        % ((self.current_it - self.it_show_time_fq), self.current_it, self.it_start_timestamp)+ "\n"
+            show_time_string += "    " + 'it_fq %i cost time: %.2f'  % (self.it_show_time_fq, it_fq_cost_time)  + "\n"
+            show_time_string += "    " + 'it_avg    cost time: %.3f' % (it_fq_cost_time / self.it_show_time_fq) + "\n"
+            show_time_string += "    " + "current  cost time:%s"   % (time_util(total_cost_time)) + "\n"
+            show_time_string += "    " + 'it esti total time:%s'   %  time_util( int(  self.tf_data.train_amount                     / self.it_show_time_fq * it_fq_cost_time) ) + "\n"
+            show_time_string += "    " + 'it esti least time:%s'   %  time_util( int( (self.tf_data.train_amount - self.current_it)  / self.it_show_time_fq * it_fq_cost_time) ) + "\n"
+            show_time_string += "\n"
+
+        ### 存到 記事簿
+        with open(self.result_obj.result_write_dir + "/" + "cost_time.txt", "a") as f: f.write(show_time_string)
+        ### 在 cmd 也 show出來
+        print(show_time_string, end="")
+
 
     def train_run_final_see(self):
         self.exp_init(reload_result=True, reload_model=True)

@@ -23,6 +23,10 @@ class I_w_M_to_W(Use_G_generate):
 
     def doing_things(self):
         current_ep   = self.exp_obj.current_ep
+        current_it   = self.exp_obj.current_it
+        it_see_fq   = self.exp_obj.it_see_fq
+        if(it_see_fq is None): ep_it_string = "epoch%03i"        %  current_ep
+        else                  : ep_it_string = "epoch%03i_it%06i" % (current_ep, current_it)
         current_time = self.exp_obj.current_time
         if  (self.phase == "train"): used_sees = self.exp_obj.result_obj.sees
         elif(self.phase == "test"):  used_sees = self.exp_obj.result_obj.tests
@@ -37,8 +41,8 @@ class I_w_M_to_W(Use_G_generate):
         '''
 
         ''' 重新命名 讓我自己比較好閱讀'''
-        dis_img            = self.in_ord
-        dis_img_pre        = self.in_pre
+        dis_img_ord        = self.in_ord  ### 3024, 3024
+        dis_img_pre        = self.in_pre  ###  512, 512 或 448, 448
         Wgt_w_Mgt          = self.gt_ord
         Wgt_w_Mgt_pre      = self.gt_pre
         rec_hope           = self.rec_hope
@@ -47,15 +51,25 @@ class I_w_M_to_W(Use_G_generate):
         if(self.tight_crop is not None):
             Mgt_pre_for_crop   = Wgt_w_Mgt_pre[..., 0:1]
 
-            dis_img_pre  , _ = self.tight_crop(dis_img_pre   , Mgt_pre_for_crop)
-            Wgt_w_Mgt    , _ = self.tight_crop(Wgt_w_Mgt     , Mgt_pre_for_crop)
+            # Wgt_w_Mgt    , _ = self.tight_crop(Wgt_w_Mgt     , Mgt_pre_for_crop)  ### 沒用到
             Wgt_w_Mgt_pre, _ = self.tight_crop(Wgt_w_Mgt_pre , Mgt_pre_for_crop)
 
-            ### dis_img 在 tight_crop 完後 不 resize
-            tight_crop_resize = self.tight_crop.resize
-            self.tight_crop.reset_resize(None)
-            dis_img      , _ = self.tight_crop(dis_img, Mgt_pre_for_crop)
-            self.tight_crop.reset_resize(tight_crop_resize)
+            ##### dis_img_ord 在 tight_crop 要用 dis_img_pre 來反推喔！
+            ### 取得 crop 之前的大小
+            ord_h, ord_w = dis_img_ord.shape[1:3]    ### BHWC， 取 HW, 3024, 3024
+            pre_h, pre_w = dis_img_pre.shape[1:3]    ### BHWC， 取 HW,  512,  512 或 448, 448 之類的
+            ### 算出 ord 和 pre 之間的比例
+            ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
+            ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
+            ### 對 pre 做 crop
+            dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
+            ### 根據比例 放大回來 crop 出 ord
+            ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
+            ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
+            dis_img_ord  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
+
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 
 
@@ -95,7 +109,7 @@ class I_w_M_to_W(Use_G_generate):
         Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)
         ''''''''''''''''''''''''''''''''''''''''''''''''
         ### 視覺化 Input (I)
-        dis_img   = dis_img  [0].numpy()
+        dis_img_ord = dis_img_ord[0].numpy()
         rec_hope  = rec_hope[0].numpy()
 
         ### 視覺化 Input (I_w_M)
@@ -109,13 +123,13 @@ class I_w_M_to_W(Use_G_generate):
 
         ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
         if(self.bgr2rgb):
-            dis_img      = dis_img[:, :, ::-1]
+            dis_img_ord  = dis_img_ord[:, :, ::-1]
             rec_hope     = rec_hope[:, :, ::-1]
             I_w_M_visual = I_w_M_visual[:, :, ::-1]
 
         if(current_ep == 0 or self.see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
 
@@ -128,33 +142,33 @@ class I_w_M_to_W(Use_G_generate):
             cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",   rec_hope)
 
         if(self.focus is False):
-            if(self.npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1-W" % current_ep, W_raw_01)
-            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1-W" % current_ep, W_raw_01)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2-W_visual.jpg"  % current_ep, W_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3-Wx_visual.jpg" % current_ep, Wx_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4-Wy_visual.jpg" % current_ep, Wy_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b5-Wz_visual.jpg" % current_ep, Wz_visual)
+            if(self.npz_save is False): np.save            (private_write_dir + "/" + f"{ep_it_string}-u1b1-W", W_raw_01)
+            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + f"{ep_it_string}-u1b1-W", W_raw_01)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b2-W_visual.jpg" , W_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b3-Wx_visual.jpg", Wx_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b4-Wy_visual.jpg", Wy_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b5-Wz_visual.jpg", Wz_visual)
 
         else:
-            if(self.npz_save is False): np.save            (private_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt" % current_ep, W_w_Mgt_01)
-            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt" % current_ep, W_w_Mgt_01)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2-W_raw_visual.jpg"    % current_ep, W_raw_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3-W_w_Mgt_visual.jpg"  % current_ep, W_w_Mgt_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4-Wx_raw_visual.jpg"   % current_ep, Wx_raw_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b5-Wx_w_Mgt_visual.jpg" % current_ep, Wx_w_Mgt_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b6-Wy_raw_visual.jpg"   % current_ep, Wy_raw_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b7-Wy_w_Mgt_visual.jpg" % current_ep, Wy_w_Mgt_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b8-Wz_raw_visual.jpg"   % current_ep, Wz_raw_visual)
-            cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b9-Wz_w_Mgt_visual.jpg" % current_ep, Wz_w_Mgt_visual)
+            if(self.npz_save is False): np.save            (private_write_dir + "/" + f"{ep_it_string}-u1b1-W_w_Mgt", W_w_Mgt_01)
+            if(self.npz_save is True ): np.savez_compressed(private_write_dir + "/" + f"{ep_it_string}-u1b1-W_w_Mgt", W_w_Mgt_01)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b2-W_raw_visual.jpg"   , W_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b3-W_w_Mgt_visual.jpg" , W_w_Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b4-Wx_raw_visual.jpg"  , Wx_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b5-Wx_w_Mgt_visual.jpg", Wx_w_Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b6-Wy_raw_visual.jpg"  , Wy_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b7-Wy_w_Mgt_visual.jpg", Wy_w_Mgt_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b8-Wz_raw_visual.jpg"  , Wz_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b9-Wz_w_Mgt_visual.jpg", Wz_w_Mgt_visual)
 
         if(self.postprocess):
             current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             if(self.focus is False):
-                imgs       = [ dis_img ,   W_visual , Wgt_visual]
-                img_titles = ["dis_img", "Wpred",   "Wgt"]
+                imgs       = [ dis_img_ord ,   W_visual , Wgt_visual]
+                img_titles = ["dis_img_ord", "Wpred",   "Wgt"]
             else:
-                imgs       = [ dis_img ,  Mgt_visual, I_w_M_visual,  W_raw_visual, W_w_Mgt_visual,  Wgt_visual]
-                img_titles = ["dis_img", "Mgt",       "I_with_M",    "W_raw",      "W_w_Mgt",       "Wgt"]
+                imgs       = [ dis_img_ord ,  Mgt_visual, I_w_M_visual,  W_raw_visual, W_w_Mgt_visual,  Wgt_visual]
+                img_titles = ["dis_img_ord", "Mgt",       "I_with_M",    "W_raw",      "W_w_Mgt",       "Wgt"]
 
             single_row_imgs = Matplot_single_row_imgs(
                                     imgs      = imgs,         ### 把要顯示的每張圖包成list

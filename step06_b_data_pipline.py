@@ -1039,6 +1039,12 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_img_builder):
 
 class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder):
     def build_by_in_dis_gt_mask_coord(self):
+        '''
+        in_ord: dis_img, shape = (1, ord_h, ord_w, 3), value:0 ~255
+        in_pre: dis_img, shape = (1,  db_h,  db_w, 3), value:0 ~  1
+        gt_ord: flow,    shape = (1,  db_h , db_w, 3), value:0 ~  1, ch0: mask, ch1:y, ch2:x
+        gt_pre: flow,    shape = (1,  db_h , db_w, 3), value:0 ~  1, ch0: mask, ch1:y, ch2:x
+        '''
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
         self._build_train_test_in_img_db()
@@ -1057,7 +1063,7 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
         ### 勿刪！用來測試寫得對不對！
         # import matplotlib.pyplot as plt
         # from util import method1
-        # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine.take(3)):
+        # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine):
         #     # if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
         #     # elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)
         #     debug_dict[f"{i}--1-1 train_in"    ] = train_in
@@ -1071,8 +1077,36 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
         #     debug_dict[f"{i}--2-3b train_gt_move"] = train_gt[0, ..., 1:3].numpy()
         #     debug_dict[f"{i}--2-4a train_gt_pre_mask"] = train_gt_pre[0, ..., 0:1].numpy()
         #     debug_dict[f"{i}--2-4b train_gt_pre_move"] = train_gt_pre[0, ..., 1:3].numpy()
+        #     # ####################
+        #     # ### 確認一下 tight_crop 的效果如何， mask 有沒有被 reflect pad 到
+        #     # from step08_b_use_G_generate_0_util import Tight_crop
+        #     # from kong_util.build_dataset_combine import Check_dir_exist_and_build
+        #     # print(name)
+        #     # Mgt_pre     = train_gt_pre[0, ..., 0:1].numpy()
+        #     # dis_img_pre = train_in_pre[0].numpy()
+        #     # flow_pre    = train_gt_pre[0].numpy()
+        #     # tight_crop = Tight_crop(pad_size= 60, resize=(256, 256))
+        #     # crop_dis_img_pre , boundary = tight_crop(dis_img_pre, Mgt_pre)
+        #     # crop_flow_pre    , boundary = tight_crop(flow_pre   , Mgt_pre)
 
-        #     # breakpoint()
+        #     # plt_img = 3
+        #     # fig, ax = plt.subplots(nrows=1, ncols=plt_img, figsize=(5 * plt_img, 5))
+        #     # ax[0].imshow(dis_img_pre)
+        #     # ax[1].imshow(crop_dis_img_pre)
+        #     # ax[2].imshow(crop_flow_pre[..., 0:1])
+
+        #     # import cv2
+        #     # debug_dir = r"C:\Users\TKU\Desktop\kong_model2\debug_data\doc3d_tight_crop_check"
+        #     # Check_dir_exist_and_build(debug_dir)
+        #     # cv2.imwrite(f"{debug_dir}/%06i_dis_img.png"      % i, (dis_img_pre * 255.).astype(np.uint8))
+        #     # cv2.imwrite(f"{debug_dir}/%06i_mask.png"         % i, (flow_pre[..., 0:1] * 255.).astype(np.uint8))
+        #     # cv2.imwrite(f"{debug_dir}/%06i_dis_img_crop.png" % i, (crop_dis_img_pre.numpy() * 255.).astype(np.uint8))
+        #     # cv2.imwrite(f"{debug_dir}/%06i_mask_crop.png"    % i, (crop_flow_pre[..., 0:1].numpy() * 255.).astype(np.uint8))
+        #     # plt.show()
+        #     # print("finish")
+        #     # # tight_crop.reset_jit()  ### 測試看看沒設定 jit_scale 會不會跳出錯誤訊息
+
+
         #     ### 用 matplot 視覺化， 也可以順便看一下 真的要使用data時， 要怎麼抓資料才正確
         #     train_in          = train_in[0]
         #     train_in_pre      = train_in_pre[0]
@@ -1124,10 +1158,10 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_dis_gt_flow_or_wc_builder)
             #     from step08_b_use_G_generate_0_util import Tight_crop
             #     gt_mask_pre = see_gt_pre[..., 0:1]
             #     tight_crop = Tight_crop(pad_size=20, resize=(256, 256))
-            #     crop_see_in     = tight_crop(see_in    , gt_mask_pre)
-            #     crop_see_in_pre = tight_crop(see_in_pre, gt_mask_pre)
-            #     crop_see_gt     = tight_crop(see_gt    , gt_mask_pre)
-            #     crop_see_gt_pre = tight_crop(see_gt_pre, gt_mask_pre)
+            #     crop_see_in    , _ = tight_crop(see_in    , gt_mask_pre)
+            #     crop_see_in_pre, _ = tight_crop(see_in_pre, gt_mask_pre)
+            #     crop_see_gt    , _ = tight_crop(see_gt    , gt_mask_pre)
+            #     crop_see_gt_pre, _ = tight_crop(see_gt_pre, gt_mask_pre)
             #     tight_crop.reset_jit()  ### 測試看看沒設定 jit_scale 會不會跳出錯誤訊息
 
             #     debug_dict[f"{i}--5-1 crop_see_in"    ] = crop_see_in
@@ -1333,12 +1367,12 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
         #     # if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
         #     # elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)
         #     debug_dict[f"{i}--1-1 train_in"    ] = train_in[0]  ### [0]第一個是 取 wc, [1] 是取 dis_img
-        #     debug_dict[f"{i}--1-2 train_in_pre"] = train_in_pre
+        #     debug_dict[f"{i}--1-2 train_in_pre"] = train_in_pre[0]
         #     debug_dict[f"{i}--1-3 train_gt"    ] = train_gt
         #     debug_dict[f"{i}--1-4 train_gt_pre"] = train_gt_pre
 
         #     debug_dict[f"{i}--2-1  train_in"     ] = train_in[0][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
-        #     debug_dict[f"{i}--2-2  train_in_pre" ] = train_in_pre[0].numpy()
+        #     debug_dict[f"{i}--2-2  train_in_pre" ] = train_in_pre[0][0].numpy()
         #     debug_dict[f"{i}--2-3a train_gt_mask"] = train_gt[0, ..., 0:1].numpy()
         #     debug_dict[f"{i}--2-3b train_gt_move"] = train_gt[0, ..., 1:3].numpy()
         #     debug_dict[f"{i}--2-4a train_gt_pre_mask"] = train_gt_pre[0, ..., 0:1].numpy()
@@ -1347,7 +1381,7 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
         #     # breakpoint()
         #     ### 用 matplot 視覺化， 也可以順便看一下 真的要使用data時， 要怎麼抓資料才正確
         #     train_in          = train_in[0][0]  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
-        #     train_in_pre      = train_in_pre[0]
+        #     train_in_pre      = train_in_pre[0][0]
         #     train_gt_mask     = train_gt    [0, ..., 0:1].numpy()
         #     train_gt_pre_mask = train_gt_pre[0, ..., 0:1].numpy()
         #     train_gt_move     = train_gt    [0, ..., 1:3].numpy()
@@ -1356,16 +1390,22 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
         #     train_gt_pre_move_visual = method1(train_gt_pre_move[..., 1], train_gt_pre_move[..., 0])
 
         #     ### 檢查 gt_mask 是否 == gt_pre_mask
-        #     print( "train_gt_mask == train_gt_pre_mask:", (train_gt_mask == train_gt_pre_mask).astype(np.uint8).sum() == train_gt_mask.shape[0] * train_gt_mask.shape[1])
+        #     #  # print( "train_gt_mask == train_gt_pre_mask:", (train_gt_mask == train_gt_pre_mask).astype(np.uint8).sum() == train_gt_mask.shape[0] * train_gt_mask.shape[1])
 
-        #     fig, ax = plt.subplots(1, 6)
-        #     fig.set_size_inches(30, 5)
-        #     ax[0].imshow(train_in)
-        #     ax[1].imshow(train_in_pre)
-        #     ax[2].imshow(train_gt_mask)
-        #     ax[3].imshow(train_gt_pre_mask)
-        #     ax[4].imshow(train_gt_move_visual)
-        #     ax[5].imshow(train_gt_pre_move_visual)
+        #     fig, ax = plt.subplots(3, 5)
+        #     fig.set_size_inches(25, 15)
+        #     ax[0, 0].imshow(train_in)
+        #     ax[0, 1].imshow(train_in_pre)
+        #     ax[0, 2].imshow(train_in_pre[..., 0:1])
+        #     ax[0, 3].imshow(train_in_pre[..., 1:2])
+        #     ax[0, 4].imshow(train_in_pre[..., 2:3])
+
+        #     ax[1, 0].imshow(train_gt_mask)
+        #     ax[1, 1].imshow(train_gt_pre_mask)
+        #     ax[1, 2].imshow(train_gt_move_visual)
+
+        #     ax[2, 0].imshow(train_gt_pre_move[..., 0:1])
+        #     ax[2, 1].imshow(train_gt_pre_move[..., 1:2])
         #     fig.tight_layout()
         #     plt.show()
 
@@ -1399,28 +1439,94 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
             #     debug_dict[f"{i}--4-4a see_gt_pre_mask"] = see_gt_pre[0, ..., 0:1].numpy()
             #     debug_dict[f"{i}--4-4b see_gt_pre_move"] = see_gt_pre[0, ..., 1:3].numpy()
 
-            #     # ##### flow 的 mask 是更新後還不錯的mask， 把他抓出來 更新 W 的 mask
+            #     # ####### Become doc3d
+            #     # ##### 弄成 doc3D 的 448*448， 用任何一個能抓到 flow/wc 的 get_method 都可以寫， 只是上次是用這個寫 update_wc， 就乾脆沿用繼續用這個 get_method 來寫囉～
             #     # from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
-            #     # update_M_dir = "F:/kong_model2/debug_data/DB_update_wc_mask"
-            #     # npy_dir  = update_M_dir + "/npy"
-            #     # knpy_dir = update_M_dir + "/knpy"
-            #     # Check_dir_exist_and_build(update_M_dir)
-            #     # Check_dir_exist_and_build(npy_dir)
-            #     # Check_dir_exist_and_build(knpy_dir)
-            #     # W_w_M  = see_in[0][0].numpy()
-            #     # M_good = see_gt[0, ..., 0:1].numpy()
-            #     # W = W_w_M[..., 0:3]
-            #     # W_w_M_good = np.concatenate([W, M_good], axis=-1)
-            #     # npy_path  = f"{npy_dir}/{i + 1}_W_w_M_good.npy"
-            #     # knpy_path = f"{knpy_dir}/{i + 1}_W_w_M_good.knpy"
-            #     # np.save(npy_path, W_w_M_good)
-            #     # Save_npy_path_as_knpy(src_path=npy_path, dst_path=knpy_path)
+            #     # import cv2
+            #     # wc      = see_in[0][0, ..., 0:3].numpy()
+            #     # dis_img = see_in[1][0].numpy()
+            #     # uv      = see_gt[0].numpy()
+            #     # mask    = see_gt[0][..., 0:1].numpy()
             #     # ### 視覺化一下
-            #     # # fig, ax = plt.subplots(nrows=1, ncols=2)
-            #     # # ax[0].imshow(W_w_M [..., 3])
-            #     # # ax[1].imshow(M_good[..., 0])
+            #     # fig, ax = plt.subplots(nrows=1, ncols=6, figsize=(5 * 6, 5))
+            #     # ax[0].imshow(wc[..., 0])
+            #     # ax[1].imshow(wc[..., 1])
+            #     # ax[2].imshow(wc[..., 2])
+            #     # ax[3].imshow(uv[..., 0])
+            #     # ax[4].imshow(uv[..., 1])
+            #     # ax[5].imshow(uv[..., 2])
+            #     # plt.tight_layout()
             #     # # plt.show()
-            #     # print("see finish")
+
+            #     # dis_img_doc3d = dis_img[..., ::-1]  ### tf2 讀出來是 rgb， cv2存圖是bgr， 所以要 rgb2bgr
+
+            #     # wc_ch_min = np.array([0.0        , -0.13532962, -0.080751580]).reshape(1, 1, 3)
+            #     # wc_ch_max = np.array([0.039187048,  0.1357405 ,  0.07755918 ]).reshape(1, 1, 3)
+            #     # wc_01 = (wc - wc_ch_min) / (wc_ch_max - wc_ch_min)
+
+            #     # wc_ch_min_doc3d = np.array([-0.67187124, -1.2280148, -1.2410645]).reshape(1, 1, 3)
+            #     # wc_ch_max_doc3d = np.array([ 0.63452387,  1.2387834,  1.2485291]).reshape(1, 1, 3)
+            #     # wc_doc3d = wc_01 * (wc_ch_max_doc3d - wc_ch_min_doc3d) + wc_ch_min_doc3d
+
+            #     # uv_doc3d   = cv2.resize(uv,       (448, 448)).astype(np.float32)
+            #     # wc_doc3d   = cv2.resize(wc_doc3d, (448, 448)).astype(np.float32)
+            #     # mask_doc3d = cv2.resize(mask,     (448, 448)).reshape(448, 448, 1)
+            #     # W_w_M_doc3d = np.concatenate((wc_doc3d, mask_doc3d), axis=-1).astype(np.float32)
+
+
+            #     # become_doc3d = "F:/kong_model2/debug_data/DB_become_doc3d/see"
+            #     # become_doc3d_dis_img_dir    = f"{become_doc3d}/0_dis_img"
+            #     # become_doc3d_uv_npy_dir     = f"{become_doc3d}/1_uv-1_npy"
+            #     # become_doc3d_uv_knpy_dir    = f"{become_doc3d}/1_uv-3_knpy"
+            #     # become_doc3d_wc_npy_dir     = f"{become_doc3d}/2_wc-1_npy"
+            #     # become_doc3d_W_w_M_npy_dir  = f"{become_doc3d}/2_wc-4_W_w_M_npy"
+            #     # become_doc3d_W_w_M_knpy_dir = f"{become_doc3d}/2_wc-5_W_w_M_knpy"
+            #     # Check_dir_exist_and_build(become_doc3d_dis_img_dir    )
+            #     # Check_dir_exist_and_build(become_doc3d_uv_npy_dir    )
+            #     # Check_dir_exist_and_build(become_doc3d_uv_knpy_dir   )
+            #     # Check_dir_exist_and_build(become_doc3d_wc_npy_dir    )
+            #     # Check_dir_exist_and_build(become_doc3d_W_w_M_npy_dir )
+            #     # Check_dir_exist_and_build(become_doc3d_W_w_M_knpy_dir)
+            #     # see_name = "see_%03i" % (i + 1)
+            #     # doc3d_dis_img_path    = become_doc3d_dis_img_dir    + "/" + see_name + ".png"
+            #     # doc3d_uv_npy_path     = become_doc3d_uv_npy_dir     + "/" + see_name + ".npy"
+            #     # doc3d_uv_knpy_path    = become_doc3d_uv_knpy_dir    + "/" + see_name + ".knpy"
+            #     # doc3d_wc_npy_path     = become_doc3d_wc_npy_dir     + "/" + see_name + ".npy"
+            #     # doc3d_W_w_M_npy_path  = become_doc3d_W_w_M_npy_dir  + "/" + see_name + ".npy"
+            #     # doc3d_W_w_M_knpy_path = become_doc3d_W_w_M_knpy_dir + "/" + see_name + ".knpy"
+
+            #     # cv2.imwrite(doc3d_dis_img_path, dis_img_doc3d)
+
+            #     # np.save(doc3d_uv_npy_path, uv_doc3d)
+            #     # Save_npy_path_as_knpy(src_path=doc3d_uv_npy_path, dst_path=doc3d_uv_knpy_path)
+
+            #     # np.save(doc3d_wc_npy_path, wc_doc3d)
+
+            #     # np.save(doc3d_W_w_M_npy_path, W_w_M_doc3d)
+            #     # Save_npy_path_as_knpy(src_path=doc3d_W_w_M_npy_path, dst_path=doc3d_W_w_M_knpy_path)
+
+            # #     # ##### flow 的 mask 是更新後還不錯的mask， 把他抓出來 更新 W 的 mask
+            # #     # from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
+            # #     # update_M_dir = "F:/kong_model2/debug_data/DB_update_wc_mask"
+            # #     # npy_dir  = update_M_dir + "/npy"
+            # #     # knpy_dir = update_M_dir + "/knpy"
+            # #     # Check_dir_exist_and_build(update_M_dir)
+            # #     # Check_dir_exist_and_build(npy_dir)
+            # #     # Check_dir_exist_and_build(knpy_dir)
+            # #     # W_w_M  = see_in[0][0].numpy()
+            # #     # M_good = see_gt[0, ..., 0:1].numpy()
+            # #     # W = W_w_M[..., 0:3]
+            # #     # W_w_M_good = np.concatenate([W, M_good], axis=-1)
+            # #     # npy_path  = f"{npy_dir}/{i + 1}_W_w_M_good.npy"
+            # #     # knpy_path = f"{knpy_dir}/{i + 1}_W_w_M_good.knpy"
+            # #     # np.save(npy_path, W_w_M_good)
+            # #     # Save_npy_path_as_knpy(src_path=npy_path, dst_path=knpy_path)
+            # #     # ### 視覺化一下
+            # #     # # fig, ax = plt.subplots(nrows=1, ncols=2)
+            # #     # # ax[0].imshow(W_w_M [..., 3])
+            # #     # # ax[1].imshow(M_good[..., 0])
+            # #     # # plt.show()
+            # #     # print("see finish")
 
         if(self.tf_data.db_obj.have_rec_hope):
             self.tf_data.rec_hope_train_db = self.rec_hope_train_factory.build_img_db()
@@ -1434,12 +1540,23 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_in_dis_gt_mask_coord_builder):
 
             ##########################################################################################################################################
             ### 勿刪！用來測試寫得對不對！
-            # import matplotlib.pyplot as plt
-            # for i, rec_hope_see in enumerate(self.tf_data.rec_hope_see_db_pre.take(5)):
+            # from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
+            # import cv2
+            # for i, rec_hope_see in enumerate(self.tf_data.rec_hope_see_db.ord):
+            #     ####### Become doc3d
+            #     rec_hope = rec_hope_see.numpy()[..., ::-1]  ### tf2 讀出來是 rgb， cv2存圖是bgr， 所以要 rgb2bgr
+
+            #     become_doc3d = "F:/kong_model2/debug_data/DB_become_doc3d/see"
+            #     become_doc3d_rec_hope_dir     = f"{become_doc3d}/0_rec_hope"
+            #     Check_dir_exist_and_build(become_doc3d_rec_hope_dir    )
+            #     see_name = "see_%03i" % (i + 1)
+            #     doc3d_rec_hope_path     = become_doc3d_rec_hope_dir     + "/" + see_name + ".png"
+            #     cv2.imwrite(doc3d_rec_hope_path, rec_hope)
+
             #     fig, ax = plt.subplots(nrows=1, ncols=1)
-            #     ax.imshow(rec_hope_see[0])
-            #     plt.show()
-            #     plt.close()
+            #     ax.imshow(rec_hope)
+            #     # plt.show()
+            #     # plt.close()
             ##########################################################################################################################################
         return self
 
@@ -1450,7 +1567,6 @@ class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_in_wc_gt_flow_builder):
         ### train_in
         self.tf_data.train_name_db = self.train_in_factory .build_name_db()
         self.tf_data.train_in_db   = self.train_in_factory .build_img_db()
-
         ### test_in
         self.tf_data.test_name_db  = self.test_in_factory.build_name_db()
         self.tf_data.test_in_db    = self.test_in_factory.build_img_db()
@@ -1724,10 +1840,31 @@ if(__name__ == "__main__"):
 
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    db_obj = type8_blender_wc_flow_try_mul_M.build()
+    # db_obj = type8_blender_wc_flow_try_mul_M.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+
+    ''' mask1ch, flow 2ch合併 的形式'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    # db_obj = type8_blender_kong_doc3d.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+
+    ''' mask1ch, flow 2ch合併 的形式'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    # db_obj = type8_blender_kong_doc3d_in_W_and_I_gt_F.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+
+    ''' mask1ch, flow 2ch合併 的形式'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    db_obj = type8_blender_kong_doc3d_in_I_gt_MC.build()
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
-    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 448, 448) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     # print("here")
     # img1 = tf_data.train_db_combine.take(10)

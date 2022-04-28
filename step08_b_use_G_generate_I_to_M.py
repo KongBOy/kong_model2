@@ -22,6 +22,10 @@ class I_to_M(Use_G_generate):
 
     def doing_things(self):
         current_ep = self.exp_obj.current_ep
+        current_it   = self.exp_obj.current_it
+        it_see_fq   = self.exp_obj.it_see_fq
+        if(it_see_fq is None): ep_it_string = "epoch%03i"        %  current_ep
+        else                  : ep_it_string = "epoch%03i_it%06i" % (current_ep, current_it)
         current_time = self.exp_obj.current_time
         if  (self.phase == "train"): used_sees = self.exp_obj.result_obj.sees
         elif(self.phase == "test"):  used_sees = self.exp_obj.result_obj.tests
@@ -31,23 +35,40 @@ class I_to_M(Use_G_generate):
         # print('public_write_dir:', public_write_dir)
 
         ''' 重新命名 讓我自己比較好閱讀'''
-        in_img            = self.in_ord
-        in_img_pre        = self.in_pre
+        dis_img_ord       = self.in_ord
+        dis_img_pre       = self.in_pre
         gt_mask_coord     = self.gt_ord
         gt_mask_coord_pre = self.gt_pre
 
         if(self.tight_crop is not None):
             gt_mask_pre = gt_mask_coord_pre[..., 0:1]
-
-            in_img           , _ = self.tight_crop(in_img, gt_mask_pre)
-            in_img_pre       , _ = self.tight_crop(in_img_pre, gt_mask_pre)
             gt_mask_coord    , _ = self.tight_crop(gt_mask_coord, gt_mask_pre)
-            gt_mask_coord_pre, _ = self.tight_crop(gt_mask_coord_pre, gt_mask_pre)
+            # gt_mask_coord_pre, _ = self.tight_crop(gt_mask_coord_pre, gt_mask_pre)  ### 沒用到
+            # fig, ax = plt.subplots(nrows=1, ncols=2)
+            # ax[0].imshow( gt_mask_pre[0])
+            # ax[1].imshow( gt_mask_coord[0, ..., 0:1])
+            # plt.show()
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
+
+            ##### dis_img_ord 在 tight_crop 要用 dis_img_pre 來反推喔！
+            ### 取得 crop 之前的大小
+            ord_h, ord_w = dis_img_ord.shape[1:3]    ### BHWC， 取 HW, 3024, 3024
+            pre_h, pre_w = dis_img_pre.shape[1:3]    ### BHWC， 取 HW,  512,  512 或 448, 448 之類的
+            ### 算出 ord 和 pre 之間的比例
+            ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
+            ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
+            ### 對 pre 做 crop
+            dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , gt_mask_pre)
+            ### 根據比例 放大回來 crop 出 ord
+            ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
+            ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
+            dis_img_ord  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
 
 
         ''' use_model '''
-        M_pre = self.model_obj.generator(in_img_pre, training=self.training)
+        M_pre = self.model_obj.generator(dis_img_pre, training=self.training)
         M_pre = M_pre[0].numpy()
         M = M_pre  ### 因為 mask 要用 BCE， 所以Range 只可能 Range(0, 1)， 沒有其他可能， 所以不用做 postprocess M 就直接是 M_pre 囉
         M_visual = (M * 255).astype(np.uint8)
@@ -55,27 +76,30 @@ class I_to_M(Use_G_generate):
         '''
         bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
         '''
-        in_img    = in_img[0].numpy()
+        dis_img_ord  = dis_img_ord[0].numpy()
         Mgt_visual   = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
+        # plt.figure()
+        # plt.imshow(Mgt_visual)
+        # plt.show()
         # print("Mgt_visual.dtype:", Mgt_visual.dtype)
         # print("Mgt_visual.shape:", Mgt_visual.shape)
         # print("Mgt_visual.max():", Mgt_visual.numpy().max())
         # print("Mgt_visual.min():", Mgt_visual.numpy().min())
 
-        if(self.bgr2rgb): in_img = in_img[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+        if(self.bgr2rgb): dis_img_ord = dis_img_ord[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
 
         if(current_ep == 0 or self.see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)                                   ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
-            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", in_img)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", dis_img_ord)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
             cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.jpg", Mgt_visual)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
-        cv2.imwrite(    private_mask_write_dir + "/" + "epoch_%04i_u1b1_mask.jpg" % current_ep, M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+        cv2.imwrite(    private_mask_write_dir + "/" + f"{ep_it_string}-u1b1_mask.jpg", M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
             current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
-            imgs = [ in_img.astype(np.uint8) ,   M_visual , Mgt_visual]
-            img_titles = ["in_img", "M", "Mgt_visual"]
+            imgs = [ dis_img_ord.astype(np.uint8) ,   M_visual , Mgt_visual]
+            img_titles = ["dis_img_ord", "M", "Mgt_visual"]
 
             single_row_imgs = Matplot_single_row_imgs(
                                     imgs      =imgs,         ### 把要顯示的每張圖包成list

@@ -20,6 +20,9 @@ from step08_b_use_G_generate_0_util import Tight_crop
 from step09_c_train_step import Train_step_I_to_M
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
+use_gen_op     =            I_to_M( Tight_crop(pad_size=20, resize=(256, 256), jit_scale= 0) )
+use_train_step = Train_step_I_to_M( Tight_crop(pad_size=20, resize=(256, 256), jit_scale=15) )
+
 use_what_gen_op     =            I_to_M( tight_crop=None )  ### Default: separate_out=False, focus=False, tight_crop=None
 use_what_train_step = Train_step_I_to_M( tight_crop=None )  ### Default: separate_out=False, focus=False, tight_crop=None
 
@@ -31,39 +34,25 @@ start_time = time.time()
 ### Block1
 #########################################################################################
 #3
-pyramid_1side_1__2side_0__3side_0 = [1, 0, 0, 0, 0, 0, 1]
-pyramid_1side_1__2side_1__3side_0 = [2, 0, 0, 0, 0, 0, 2]
 pyramid_1side_1__2side_1__3side_1 = [3, 0, 0, 0, 0, 0, 3]
 #6
-pyramid_1side_2__2side_0__3side_0 = [1, 1, 0, 0, 0, 1, 1]
-pyramid_1side_2__2side_1__3side_0 = [2, 1, 0, 0, 0, 1, 2]
 pyramid_1side_2__2side_1__3side_1 = [3, 1, 0, 0, 0, 1, 3]
-pyramid_1side_2__2side_2__3side_0 = [2, 2, 0, 0, 0, 2, 2]
 pyramid_1side_2__2side_2__3side_1 = [3, 2, 0, 0, 0, 2, 3]
 pyramid_1side_2__2side_2__3side_2 = [3, 3, 0, 0, 0, 3, 3]
 #10
-pyramid_1side_3__2side_0__3side_0 = [1, 1, 1, 0, 1, 1, 1]
-pyramid_1side_3__2side_1__3side_0 = [2, 1, 1, 0, 1, 1, 2]
 pyramid_1side_3__2side_1__3side_1 = [3, 1, 1, 0, 1, 1, 3]
-pyramid_1side_3__2side_2__3side_0 = [2, 2, 1, 0, 1, 2, 2]
 pyramid_1side_3__2side_2__3side_1 = [3, 2, 1, 0, 1, 2, 3]
 pyramid_1side_3__2side_2__3side_2 = [3, 3, 1, 0, 1, 3, 3]
-pyramid_1side_3__2side_3__3side_0 = [2, 2, 2, 0, 2, 2, 2]
 pyramid_1side_3__2side_3__3side_1 = [3, 2, 2, 0, 2, 2, 3]
 pyramid_1side_3__2side_3__3side_2 = [3, 3, 2, 0, 2, 3, 3]
 pyramid_1side_3__2side_3__3side_3 = [3, 3, 3, 0, 3, 3, 3]
 #15
-pyramid_1side_4__2side_0__3side_0 = [1, 1, 1, 1, 1, 1, 1]
-pyramid_1side_4__2side_1__3side_0 = [2, 1, 1, 1, 1, 1, 2]
 pyramid_1side_4__2side_1__3side_1 = [3, 1, 1, 1, 1, 1, 3]
-pyramid_1side_4__2side_2__3side_0 = [2, 2, 1, 1, 1, 2, 2]
 pyramid_1side_4__2side_2__3side_1 = [3, 2, 1, 1, 1, 2, 3]
 pyramid_1side_4__2side_2__3side_2 = [3, 3, 1, 1, 1, 3, 3]
-pyramid_1side_4__2side_3__3side_0 = [2, 2, 2, 1, 2, 2, 2]
 pyramid_1side_4__2side_3__3side_1 = [3, 2, 2, 1, 2, 2, 3]
 pyramid_1side_4__2side_3__3side_2 = [3, 3, 2, 1, 2, 3, 3]
 pyramid_1side_4__2side_3__3side_3 = [3, 3, 3, 1, 3, 3, 3]
-pyramid_1side_4__2side_4__3side_0 = [2, 2, 2, 2, 2, 2, 2]
 pyramid_1side_4__2side_4__3side_1 = [3, 2, 2, 2, 2, 2, 3]
 pyramid_1side_4__2side_4__3side_2 = [3, 3, 2, 2, 2, 3, 3]
 pyramid_1side_4__2side_4__3side_3 = [3, 3, 3, 2, 3, 3, 3]

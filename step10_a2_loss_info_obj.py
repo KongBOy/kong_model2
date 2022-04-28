@@ -28,20 +28,44 @@ class Loss_info:
 
     def see_loss_during_train(self, epochs):
         for loss_name in self.loss_containors.keys():
-            plt.figure(figsize=(20, 6))                              ### 建立畫布
-            plt.ylim(0, 0.01)
+            npy_loss_array = np.load(self.logs_write_dir + "/" + loss_name + ".npy", allow_pickle=True)  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss_array 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
+            iter_indexes = [ index for index, data in enumerate(npy_loss_array) if data is not None]  ### 把有值的地方 的 index 記錄下來
+            iter_values  = npy_loss_array[iter_indexes]                                               ### 把有值的地方 抓出來
+
+            plt.figure(figsize=(20, 6))            ### 建立畫布
+            plt.ylim(0, iter_values.max() + 0.05)  ### 多一點點邊邊
             plt.ylabel(loss_name)
-            npy_loss = np.load(self.logs_write_dir + "/" + loss_name + ".npy")  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
 
-            plt.xlim(0, epochs)
-            plt.xlabel("epoch_num")
-            x_epoch = np.arange(len(npy_loss))
+            plt.xlim(0, len(npy_loss_array))
+            plt.xlabel("total_iters")
 
-            plt.plot(x_epoch, npy_loss)
+            plt.scatter(iter_indexes, iter_values, s=10)                 ### 畫出 所有loss點的位置
+            plt.scatter(iter_indexes[-1], iter_values[-1], s=20, c="r")  ### 標出 目前所在的loss位置
+            plt.plot   (iter_indexes, iter_values)                       ### 連接 所有loss點
+
+            for go_iter, iter_index in enumerate(iter_indexes):  ### 標出 所有loss點的數值
+                ### 標出 最後一個點以外的loss點的數值
+                if(go_iter <= (len(iter_indexes) - 1 - 1) ):### 第一個-1 是 len() 轉index， 第二個-1 是 只做到 倒數第二個
+                    plt.annotate( text="%.3f" %  iter_values[go_iter],        ### 顯示的文字
+                                  xy=(iter_index, iter_values[go_iter]),      ### 要標註的目標點
+                                  xytext=( 0 , 3),                            ### 顯示的文字放哪裡
+                                  textcoords='offset points',                 ### 目前東西放哪裡的坐標系用什麼
+                                                )
+
+                ### 標出 最後一個 loss點的數值 
+                else:
+                    plt.annotate( text="%.3f" %  iter_values[go_iter],        ### 顯示的文字
+                                  xy=(iter_index, iter_values[go_iter]),      ### 要標註的目標點
+                                  xytext=( 20 , 10),                          ### 顯示的文字放哪裡
+                                  textcoords='offset points',                 ### 目前東西放哪裡的坐標系用什麼
+                                  arrowprops=dict(arrowstyle="->",            ### 畫箭頭的資訊
+                                                  connectionstyle= "arc3",
+                                                ))
+            plt.tight_layout()
             plt.savefig(self.logs_write_dir + "/" + loss_name + ".png")
             plt.close()
             # print("plot %s loss ok~"%loss_name )
-        print("plot loss ok~")
+        # print("plot loss ok~")
 
 
     def _load_loss_npy_dict(self):

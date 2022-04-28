@@ -22,7 +22,7 @@ class Exp_builder():
         self.exp.describe_end = describe_end
         return self
 
-    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=500, epoch_down_step=None, epoch_stop=500, exp_bn_see_arg=False):
+    def set_train_args(self, batch_size=1, train_shuffle=True, epochs=500, epoch_down_step=None, epoch_stop=500, exp_bn_see_arg=False, ep_see_fq=1):
         """
         train_shuffle：注意一下，這裡的train_shuffle無法重現 old shuffle 喔
         epochs：train的 總epoch數， epoch_down_step 設定為 epoch_down_step//2
@@ -39,6 +39,15 @@ class Exp_builder():
         self.exp.epoch_stop = epoch_stop
         self.exp.start_epoch = 0
         self.exp.exp_bn_see_arg = exp_bn_see_arg
+        self.exp.ep_see_fq = ep_see_fq
+        return self
+
+    def set_train_iter_args(self, it_see_fq=None, it_save_fq=None, it_down_step=None, it_down_fq=None, it_show_time_fq=None):
+        self.exp.it_see_fq      = it_see_fq
+        self.exp.it_save_fq     = it_save_fq
+        self.exp.it_down_step   = it_down_step
+        self.exp.it_down_fq     = it_down_fq
+        self.exp.it_show_time_fq = it_show_time_fq
         return self
 
     def set_train_in_gt_use_range(self, use_in_range, use_gt_range):
