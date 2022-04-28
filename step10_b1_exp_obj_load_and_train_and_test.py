@@ -12,8 +12,8 @@ from step10_a2_loss_info_obj import *
 from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
-from util import time_util, get_dir_certain_file_names
-from build_dataset_combine import Save_as_jpg, Find_ltrd_and_crop
+from kong_util.util import time_util, get_dir_certain_file_names
+from kong_util.build_dataset_combine import Save_as_jpg, Find_ltrd_and_crop
 
 from tqdm import tqdm, trange
 
@@ -103,6 +103,7 @@ class Experiment():
         self.it_restart      = None  ### 有設定 it_save_fq 才會有 self.it_start_train， 在 reload 時 要跳到 第 it_restart 個 iter 開始訓練， 所以不給從外面設定喔！
         self.it_down_step    = None  ### 執行到 第幾個iter 就開始 lr 下降， 可輸入 "half" 或 數字
         self.it_down_fq      = None  ### 執行幾個 iter 就要 down 一次 lr
+        self.it_show_time_fq = None
 
         self.total_iters     = None  ### 總共會  更新 幾次， 建立完tf_data後 才會知道所以現在指定None
         ##################################################################################################
@@ -130,8 +131,10 @@ class Experiment():
         ####################################################################################################################
         ### 給 step5 show_time 用的
         self.total_start_time   = None
-        self.ep_start           = None
+        self.ep_start_time      = None
         self.ep_start_timestamp = None
+        self.it_start_time      = None
+        self.it_start_timestamp = None
 
 ################################################################################################################################################
 ################################################################################################################################################
@@ -183,8 +186,11 @@ class Experiment():
             print("自動設定 img_resize 的結果為：", self.img_resize)
 
         self.tf_data = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
+
+        ### 好像變成 it 設定專區， 那就順勢變成 it設定專區 吧～
         self.total_iters = self.epochs * self.tf_data.train_amount  ### 總共會  更新 幾次
         if(self.it_down_step == "half"): self.it_down_step = self.total_iters // 2  ### 知道total_iter後 即可知道 half iter 為多少， 如果 it_down_step設定half 這邊就可以直接指定給他囉～
+        if(self.it_see_fq is not None and self.it_show_time_fq is None): self.it_show_time_fq = self.it_see_fq  ### 防呆， 如果有用it 的概念 但忘記設定 it_show_time_fq， 就直接設定為 it_see_fq， 這樣在存圖時， 就可以順便看看時間囉！
 
         ### 3.model
         self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
@@ -268,7 +274,9 @@ class Experiment():
             ###############################################################################################################################
             ###    step0 紀錄epoch開始訓練的時間
             self.ep_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
-            self.ep_start = time.time()
+            self.ep_start_time = time.time()
+            self.it_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
+            self.it_start_time = time.time()
             print("Epoch: ", self.current_ep, "start at", self.ep_start_timestamp)
             ###############################################################################################################################
             ###    step0 設定learning rate
@@ -407,7 +415,6 @@ class Experiment():
                 self.current_it == self.tf_data.train_amount):   ### 最後一個 it 我希望要存
                 self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
                 self.train_step3_Loss_info_save_loss()
-                self.train_step5_show_time()
 
         ### 設定　lr
         if(self.it_down_step is not None):
@@ -424,6 +431,12 @@ class Experiment():
             if (self.current_it % self.it_save_fq == 0 or
                 self.current_it == self.tf_data.train_amount):   ### 最後一個 it 我希望要存
                 self.train_step4_save_model()
+
+        ### 顯示 時間
+        if(self.it_show_time_fq is not None):
+            if( self.current_it % self.it_show_time_fq == 0):
+                self.train_step5_show_time()
+                self.it_start_time = time.time()  ### 重設 it 時間
 
     def testing(self, add_loss=False, bgr2rgb=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
@@ -510,10 +523,21 @@ class Experiment():
 
     def train_step5_show_time(self):
         print("current exp:", self.result_obj.result_read_dir)
-        epoch_cost_time = time.time() - self.ep_start
+        epoch_cost_time = time.time() - self.ep_start_time
         total_cost_time = time.time() - self.total_start_time
+        it_fq_cost_time = 0
+        if(self.it_show_time_fq is not None):
+            if( self.current_it % self.it_show_time_fq == 0 or
+                self.current_it == self.tf_data.train_amount):  ### 最後一個 it 我也希望要顯示it time
+                    it_fq_cost_time = time.time() - self.it_start_time
+
         print(self.phase)
         print('epoch %i start at:%s, %s, %s' % (self.current_ep, self.ep_start_timestamp, self.machine_ip, self.machine_user))
+        if(it_fq_cost_time != 0): 
+            print(f'it_fq {self.it_show_time_fq} cost time: {it_fq_cost_time}')
+            print( 'it_avg cost time: %.3f'  %  self.it_show_time_fq / self.it_show_time_fq)
+            print( 'it esti total time:%s'   %  time_util( int(  self.tf_data.train_amount                     / self.it_show_time_fq * it_fq_cost_time) ))
+            print( 'it esti least time:%s'   %  time_util( int( (self.tf_data.train_amount - self.current_it)  / self.it_show_time_fq * it_fq_cost_time) ))
         print('epoch %i cost time:%.2f'      % (self.current_ep, epoch_cost_time))
         print("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))
         print("total cost time:%s"           % (time_util(total_cost_time)))
