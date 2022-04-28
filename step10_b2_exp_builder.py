@@ -42,11 +42,12 @@ class Exp_builder():
         self.exp.ep_see_fq = ep_see_fq
         return self
 
-    def set_train_iter_args(self, it_see_fq=None, it_save_fq=None, it_down_step=None, it_down_fq=None):
+    def set_train_iter_args(self, it_see_fq=None, it_save_fq=None, it_down_step=None, it_down_fq=None, it_show_time_fq=None):
         self.exp.it_see_fq      = it_see_fq
         self.exp.it_save_fq     = it_save_fq
         self.exp.it_down_step   = it_down_step
         self.exp.it_down_fq     = it_down_fq
+        self.exp.it_show_time_fq = it_show_time_fq
         return self
 
     def set_train_in_gt_use_range(self, use_in_range, use_gt_range):

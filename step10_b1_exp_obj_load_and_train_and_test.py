@@ -436,7 +436,8 @@ class Experiment():
         if(self.it_show_time_fq is not None):
             if( self.current_it % self.it_show_time_fq == 0):
                 self.train_step5_show_time()
-                self.it_start_time = time.time()  ### 重設 it 時間
+                self.it_start_time      = time.time()  ### 重設 it 時間
+                self.it_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
 
     def testing(self, add_loss=False, bgr2rgb=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
@@ -527,32 +528,32 @@ class Experiment():
         total_cost_time = time.time() - self.total_start_time
         it_fq_cost_time = 0
         if(self.it_show_time_fq is not None):
-            if( self.current_it % self.it_show_time_fq == 0 or
-                self.current_it == self.tf_data.train_amount):  ### 最後一個 it 我也希望要顯示it time
-                    it_fq_cost_time = time.time() - self.it_start_time
+            if( self.current_it % self.it_show_time_fq == 0 or self.current_it == self.tf_data.train_amount):  ### 最後一個 it 我也希望要顯示it time
+                it_fq_cost_time = time.time() - self.it_start_time
 
-        print(self.phase)
-        print('epoch %i start at:%s, %s, %s' % (self.current_ep, self.ep_start_timestamp, self.machine_ip, self.machine_user))
-        if(it_fq_cost_time != 0): 
-            print(f'it_fq {self.it_show_time_fq} cost time: {it_fq_cost_time}')
-            print( 'it_avg cost time: %.3f'  %  self.it_show_time_fq / self.it_show_time_fq)
-            print( 'it esti total time:%s'   %  time_util( int(  self.tf_data.train_amount                     / self.it_show_time_fq * it_fq_cost_time) ))
-            print( 'it esti least time:%s'   %  time_util( int( (self.tf_data.train_amount - self.current_it)  / self.it_show_time_fq * it_fq_cost_time) ))
-        print('epoch %i cost time:%.2f'      % (self.current_ep, epoch_cost_time))
-        print("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))
-        print("total cost time:%s"           % (time_util(total_cost_time)))
-        print("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))
-        print("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (self.current_ep + 1)))))
-        print("")
-        with open(self.result_obj.result_write_dir + "/" + "cost_time.txt", "a") as f:
-            f.write(self.phase)                                                                                                     ; f.write("\n")
-            f.write('epoch %i start at:%s, %s, %s' % (self.current_ep, self.ep_start_timestamp, self.machine_ip, self.machine_user)); f.write("\n")
-            f.write('epoch cost time:%.2f'         % (epoch_cost_time))                                                             ; f.write("\n")
-            f.write("batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount))                                 ; f.write("\n")
-            f.write("total cost time:%s"           % (time_util(total_cost_time)))                                                  ; f.write("\n")
-            f.write("esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)))                                    ; f.write("\n")
-            f.write("esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (self.current_ep + 1)))))          ; f.write("\n")
-            f.write("\n")
+        show_time_string = ""
+        show_time_string +=  self.phase + "\n"
+        show_time_string += 'epoch %i start at:%s, %s, %s' % (self.current_ep, self.ep_start_timestamp, self.machine_ip, self.machine_user) + "\n"
+        show_time_string += 'epoch %i cost time:%.2f'      % (self.current_ep, epoch_cost_time) + "\n"
+        show_time_string += "batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount) + "\n"
+        show_time_string += "total cost time:%s"           % (time_util(total_cost_time)) + "\n"
+        show_time_string += "esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)) + "\n"
+        show_time_string += "esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (self.current_ep + 1)))) + "\n"
+        if(it_fq_cost_time != 0):
+            show_time_string += "  " + "in this epoch, the it cost time:" + "\n"
+            show_time_string += "    " + "it %i ~ %i start at: %s"        % ((self.current_it - self.it_show_time_fq), self.current_it, self.it_start_timestamp)+ "\n"
+            show_time_string += "    " + 'it_fq %i cost time: %.2f'  % (self.it_show_time_fq, it_fq_cost_time)  + "\n"
+            show_time_string += "    " + 'it_avg    cost time: %.3f' % (it_fq_cost_time / self.it_show_time_fq) + "\n"
+            show_time_string += "    " + "current  cost time:%s"   % (time_util(total_cost_time)) + "\n"
+            show_time_string += "    " + 'it esti total time:%s'   %  time_util( int(  self.tf_data.train_amount                     / self.it_show_time_fq * it_fq_cost_time) ) + "\n"
+            show_time_string += "    " + 'it esti least time:%s'   %  time_util( int( (self.tf_data.train_amount - self.current_it)  / self.it_show_time_fq * it_fq_cost_time) ) + "\n"
+            show_time_string += "\n"
+
+        ### 存到 記事簿
+        with open(self.result_obj.result_write_dir + "/" + "cost_time.txt", "a") as f: f.write(show_time_string)
+        ### 在 cmd 也 show出來
+        print(show_time_string, end="")
+
 
     def train_run_final_see(self):
         self.exp_init(reload_result=True, reload_model=True)
