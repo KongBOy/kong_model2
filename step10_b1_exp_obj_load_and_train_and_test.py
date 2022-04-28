@@ -135,6 +135,8 @@ class Experiment():
         self.ep_start_timestamp = None
         self.it_start_time      = None
         self.it_start_timestamp = None
+        self.it_sees_amo_in_one_epoch = None
+        self.it_sees_cur_in_one_epoch = None
 
 ################################################################################################################################################
 ################################################################################################################################################
@@ -191,6 +193,11 @@ class Experiment():
         self.total_iters = self.epochs * self.tf_data.train_amount  ### 總共會  更新 幾次
         if(self.it_down_step == "half"): self.it_down_step = self.total_iters // 2  ### 知道total_iter後 即可知道 half iter 為多少， 如果 it_down_step設定half 這邊就可以直接指定給他囉～
         if(self.it_see_fq is not None and self.it_show_time_fq is None): self.it_show_time_fq = self.it_see_fq  ### 防呆， 如果有用it 的概念 但忘記設定 it_show_time_fq， 就直接設定為 it_see_fq， 這樣在存圖時， 就可以順便看看時間囉！
+        if(self.it_see_fq is not None):
+            it_sees_amo_in_one_epoch      = self.tf_data.train_amount // self.it_see_fq
+            it_sees_amo_in_one_epoch_frac = self.tf_data.train_amount % self.it_see_fq
+            if(it_sees_amo_in_one_epoch_frac == 0): self.it_sees_amo_in_one_epoch = it_sees_amo_in_one_epoch
+            else                              : self.it_sees_amo_in_one_epoch = it_sees_amo_in_one_epoch + 1
 
         ### 3.model
         self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
@@ -530,6 +537,11 @@ class Experiment():
         if(self.it_show_time_fq is not None):
             if( self.current_it % self.it_show_time_fq == 0 or self.current_it == self.tf_data.train_amount):  ### 最後一個 it 我也希望要顯示it time
                 it_fq_cost_time = time.time() - self.it_start_time
+                ### 計算 it_sees_cur_in_one_epoch
+                it_sees_cur_in_one_epoch      = self.current_it // self.it_see_fq
+                it_sees_cur_in_one_epoch_frac = self.current_it % self.it_see_fq
+                if(it_sees_cur_in_one_epoch_frac == 0): self.it_sees_cur_in_one_epoch = it_sees_cur_in_one_epoch
+                else                                  : self.it_sees_cur_in_one_epoch = it_sees_cur_in_one_epoch + 1
 
         show_time_string = ""
         show_time_string +=  self.phase + "\n"
@@ -541,7 +553,8 @@ class Experiment():
         show_time_string += "esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (self.current_ep + 1)))) + "\n"
         if(it_fq_cost_time != 0):
             show_time_string += "  " + "in this epoch, the it cost time:" + "\n"
-            show_time_string += "    " + "it %i ~ %i start at: %s"        % ((self.current_it - self.it_show_time_fq), self.current_it, self.it_start_timestamp)+ "\n"
+            show_time_string += "    " + "it_sees: %i / %i"           % (self.it_sees_cur_in_one_epoch, self.it_sees_amo_in_one_epoch)+ "\n"
+            show_time_string += "    " + "it %i ~ %i start at: %s"   % ((self.current_it - self.it_show_time_fq), self.current_it, self.it_start_timestamp)+ "\n"
             show_time_string += "    " + 'it_fq %i cost time: %.2f'  % (self.it_show_time_fq, it_fq_cost_time)  + "\n"
             show_time_string += "    " + 'it_avg    cost time: %.3f' % (it_fq_cost_time / self.it_show_time_fq) + "\n"
             show_time_string += "    " + "current  cost time:%s"   % (time_util(total_cost_time)) + "\n"
