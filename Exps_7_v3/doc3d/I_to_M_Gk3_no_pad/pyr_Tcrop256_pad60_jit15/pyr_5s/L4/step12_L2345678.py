@@ -51,7 +51,7 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_1_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_1_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ########
@@ -62,7 +62,7 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_2_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_2_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_2
@@ -70,14 +70,14 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_2_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_2_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_2_2side_2_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_2_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_2_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ########
@@ -88,7 +88,7 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_3_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_3_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_2
@@ -96,14 +96,14 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_3_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_3_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_3_2side_2_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_3_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_3_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_3
@@ -111,21 +111,21 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_3_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_3_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_3_2side_3_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_3_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_3_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_3_2side_3_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_3_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_3_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     
@@ -137,7 +137,7 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_2
@@ -145,14 +145,14 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_4_2side_2_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_3
@@ -160,21 +160,21 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_4_2side_3_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_4_2side_3_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_4
@@ -182,28 +182,28 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_4_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_4_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_4_2side_4_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_4_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_4_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_4_2side_4_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_4_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_4_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_4_2side_4_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_4_2side_4_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_4_2side_4_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ########
@@ -214,7 +214,7 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_1_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_2
@@ -222,14 +222,14 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_2_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_2_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_2_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_3
@@ -237,21 +237,21 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_3_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_3_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_3_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_3_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_3_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_4
@@ -259,28 +259,28 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_4_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_4_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_4_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_4_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_4_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_4_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_4_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_4_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_4_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_4_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_4_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ### 2side_5
@@ -288,34 +288,34 @@ if(__name__ == "__main__"):
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_5_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_5_3side_1_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_5_3side_2_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_5_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_5_3side_2_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_5_3side_3_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_5_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_5_3side_3_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_5_3side_4_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_5_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_5_3side_4_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
     ana_name = "ch032_1side_5_2side_5_3side_5_45side_all"
     analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
-                                        row_col_results=ch032_1side_5_2side_5_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
+                                        row_col_results=ch032_1side_5_2side_5_3side_5_45side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
