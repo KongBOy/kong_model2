@@ -54,7 +54,9 @@ class Loss_info:
                                   xy=(iter_index, iter_values[go_iter]),      ### 要標註的目標點
                                   xytext=( 0 , 3 + text_y_shift),                            ### 顯示的文字放哪裡
                                   textcoords='offset points',                 ### 目前東西放哪裡的坐標系用什麼
-                                                )
+                                  arrowprops=dict(arrowstyle="->",            ### 畫箭頭的資訊
+                                                  connectionstyle= "arc3",
+                                                ))
 
                 ### 標出 最後一個 loss點的數值 
                 else:
