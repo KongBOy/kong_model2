@@ -45,8 +45,8 @@ class Loss_info:
 
             for go_iter, iter_index in enumerate(iter_indexes):  ### 標出 所有loss點的數值
                 ### 讓字不要疊在一起
-                text_y_shift = 0
-                if(go_iter % 2): text_y_shift = 10
+                text_y_shift = 5
+                if(go_iter % 2): text_y_shift = 15
 
                 ### 標出 最後一個點以外的loss點的數值
                 if(go_iter <= (len(iter_indexes) - 1 - 1) ):### 第一個-1 是 len() 轉index， 第二個-1 是 只做到 倒數第二個
