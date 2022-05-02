@@ -44,11 +44,15 @@ class Loss_info:
             plt.plot   (iter_indexes, iter_values)                       ### 連接 所有loss點
 
             for go_iter, iter_index in enumerate(iter_indexes):  ### 標出 所有loss點的數值
+                ### 讓字不要疊在一起
+                text_y_shift = 0
+                if(go_iter % 2): text_y_shift = 10
+
                 ### 標出 最後一個點以外的loss點的數值
                 if(go_iter <= (len(iter_indexes) - 1 - 1) ):### 第一個-1 是 len() 轉index， 第二個-1 是 只做到 倒數第二個
                     plt.annotate( text="%.3f" %  iter_values[go_iter],        ### 顯示的文字
                                   xy=(iter_index, iter_values[go_iter]),      ### 要標註的目標點
-                                  xytext=( 0 , 3),                            ### 顯示的文字放哪裡
+                                  xytext=( 0 , 3 + text_y_shift),                            ### 顯示的文字放哪裡
                                   textcoords='offset points',                 ### 目前東西放哪裡的坐標系用什麼
                                                 )
 
