@@ -23,9 +23,6 @@ from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 use_what_gen_op     =            I_to_M( Tight_crop(pad_size=20, resize=(256, 256), jit_scale= 0) )
 use_what_train_step = Train_step_I_to_M( Tight_crop(pad_size=20, resize=(256, 256), jit_scale=15) )
 
-use_what_gen_op     =            I_to_M( tight_crop=None )  ### Default: separate_out=False, focus=False, tight_crop=None
-use_what_train_step = Train_step_I_to_M( tight_crop=None )  ### Default: separate_out=False, focus=False, tight_crop=None
-
 import time
 start_time = time.time()
 ###############################################################################################################################################################################################
