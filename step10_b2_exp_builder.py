@@ -117,7 +117,7 @@ class Exp_builder():
         print("Auto_fill_result_name_Read start")
         from kong_util.util import get_dir_certain_file_paths
         code_exe_dir =  "\\".join( self.exp.code_exe_path.split("\\")[:-1] )  ### 舉例：'f:\\kong_model2\\Exps_7_v3\\doc3d\\I_to_M_Gk3_no_pad\\pyr_Tcrop256_pad20_jit15\\pyr_3s\\L3\\step09_3side_L3.py' 只取 'f:\\kong_model2\\Exps_7_v3\\doc3d\\I_to_M_Gk3_no_pad\\pyr_Tcrop256_pad20_jit15\\pyr_3s\\L3'
-        auto_fill_result_name_file_paths = get_dir_certain_file_paths(ord_dir=code_exe_dir, certain_word="Auto_fill_result_name_Read", certain_ext=".txt")
+        auto_fill_result_name_file_paths = get_dir_certain_file_paths(ord_dir=code_exe_dir, certain_word="Auto_fill_result_name", certain_ext=".txt")
         print("    Auto_fill_result_name_file_paths:", auto_fill_result_name_file_paths)
         auto_fill_result_names = []
         for auto_fill_result_name_file_path in auto_fill_result_name_file_paths:
