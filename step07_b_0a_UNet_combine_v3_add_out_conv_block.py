@@ -406,7 +406,7 @@ if(__name__ == "__main__"):
     import numpy as np
     from tqdm import tqdm
     from step06_a_datas_obj import *
-    from step06_b_data_pipline import tf_Data_builder
+    from step06_c0_tf_Data_builder import tf_Data_builder
     from step10_a2_loss_info_obj import *
     from step09_c_train_step import *
 

@@ -285,7 +285,7 @@ if(__name__ == "__main__"):
 
     from tqdm import tqdm
     from step06_a_datas_obj import DB_C, DB_N, DB_GM, Range
-    from step06_b_data_pipline import Dataset_builder, tf_Data_builder
+    from step06_c0_tf_Data_builder import Dataset_builder, tf_Data_builder
     from step09_d_KModel_builder_combine_step789 import MODEL_NAME, KModel_builder
     from step10_a2_loss_info_obj import Loss_info_builder
 

@@ -2,65 +2,70 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-class Multi_Generator(tf.keras.models.Model):
-    def __init__(self, op_type, gens_dict, **kwargs):
-        super(Multi_Generator, self).__init__(**kwargs)
-        self.gens_dict = gens_dict
+class Multi_Discriminator(tf.keras.models.Model):
+    def __init__(self, op_type, dics_dict, **kwargs):
+        super(Multi_Discriminator, self).__init__(**kwargs)
+        self.dics_dict = dics_dict
         self.op_type = op_type
 
-    def call(self, input_tensor, Mask=None, training=None):
-        if  (self.op_type == "I_to_M_and_C"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
-            I = input_tensor
-            M = self.gens_dict["I_to_M"](input_tensor)
-            C = self.gens_dict["I_to_C"](input_tensor)
-            return M, C
+    def call(self, inputs_dict, Mask=None, training=None):
+        if  (self.op_type == "Wxyz_and_Cxy"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
+            Wgt    = inputs_dict["Wgt"]
+            Wpred  = inputs_dict["Wpred"]
+            Cgt    = inputs_dict["Cgt"]
+            Cpred  = inputs_dict["Cpred"]
 
-        elif(self.op_type == "I_to_M_w_I_to_C"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
-            I = input_tensor
-            M = self.gens_dict["I_to_M"](input_tensor)
+            W_real = self.dics_dict["D_Wxyz"](Wpred)
+            W_fake = self.dics_dict["D_Wxyz"](Wgt)
+            C_real = self.dics_dict["D_Cxy" ](Cpred)
+            C_fake = self.dics_dict["D_Cxy" ](Cgt)
+            return W_real, W_fake, C_real, C_fake
+
+        elif(self.op_type == "Wxyz_and_Cxy"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
+            I = inputs_dict
+            M = self.dics_dict["I_to_M"](inputs_dict)
             M_w_I = M * I
-            C = self.gens_dict["M_w_I_to_C"](M_w_I)
+            C = self.dics_dict["M_w_I_to_C"](M_w_I)
             return M, C
         elif(self.op_type == "I_to_M_w_I_to_W_to_C"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
-            I = input_tensor
-            M = self.gens_dict["I_to_M"](input_tensor)
+            I = inputs_dict
+            M = self.dics_dict["I_to_M"](inputs_dict)
             M_w_I = M * I
-            W = self.gens_dict["M_w_I_to_W"](M_w_I)
-            C = self.gens_dict["W_to_C"](W)
+            W = self.dics_dict["M_w_I_to_W"](M_w_I)
+            C = self.dics_dict["W_to_C"](W)
             return M, W, C
 
         elif(self.op_type == "I_or_W_to_Cx_Cy"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
-            I = input_tensor
-            Cx = self.gens_dict["I_to_Cx"](I)
-            Cy = self.gens_dict["I_to_Cy"](I)
+            I = inputs_dict
+            Cx = self.dics_dict["I_to_Cx"](I)
+            Cy = self.dics_dict["I_to_Cy"](I)
             return Cx, Cy   ### 這個順序要跟 step8b_useG, step9c_train_step 對應到喔！
         elif(self.op_type == "I_to_Wx_Wy_Wz"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
-            I = input_tensor
-            Wx = self.gens_dict["I_to_Wx"](I)
-            Wy = self.gens_dict["I_to_Wy"](I)
-            Wz = self.gens_dict["I_to_Wz"](I)
+            I = inputs_dict
+            Wx = self.dics_dict["I_to_Wx"](I)
+            Wy = self.dics_dict["I_to_Wy"](I)
+            Wz = self.dics_dict["I_to_Wz"](I)
             return Wz, Wy, Wx   ### 這個順序要跟 step8b_useG, step9c_train_step 對應到喔！
         elif(self.op_type == "I_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
             '''
             注意 不能在這邊把 Wxyz concat 起來喔， 因為要分開算 loss！
             '''
-            # I_pre = input_tensor
-            # Wz_pre_raw, Wy_pre_raw, Wx_pre_raw = self.gens_dict["I_to_Wx_Wy_Wz"](I_pre)
+            # I_pre = inputs_dict
+            # Wz_pre_raw, Wy_pre_raw, Wx_pre_raw = self.dics_dict["I_to_Wx_Wy_Wz"](I_pre)
             # W_pre_raw = tf.concat([Wz_pre_raw, Wy_pre_raw, Wx_pre_raw], axis=-1)
             # W_pre_w_M = W_pre_raw * Mask
 
-            # Cx_pre_raw, Cy_pre_raw = self.gens_dict["W_to_Cx_Cy"](W_pre_w_M)
+            # Cx_pre_raw, Cy_pre_raw = self.dics_dict["W_to_Cx_Cy"](W_pre_w_M)
             # C_pre_raw = tf.concat([Cy_pre_raw, Cx_pre_raw], axis=-1)
             # C_pre_w_M = C_pre_raw * Mask
             # return W_pre_raw, W_pre_w_M, C_pre_raw, C_pre_w_M
 
-            I_pre = input_tensor
-            Wz_pre_raw, Wy_pre_raw, Wx_pre_raw = self.gens_dict["I_to_Wx_Wy_Wz"](I_pre)
+            I_pre = inputs_dict
+            Wz_pre_raw, Wy_pre_raw, Wx_pre_raw = self.dics_dict["I_to_Wx_Wy_Wz"](I_pre)
             W_pre_raw = tf.concat([Wz_pre_raw, Wy_pre_raw, Wx_pre_raw], axis=-1)
-            b, h, w, c = W_pre_raw.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-            W_pre_w_M = W_pre_raw * Mask[:, :h, :w, :]
+            W_pre_w_M = W_pre_raw * Mask
 
-            Cx_pre_raw, Cy_pre_raw = self.gens_dict["W_to_Cx_Cy"](W_pre_w_M)
+            Cx_pre_raw, Cy_pre_raw = self.dics_dict["W_to_Cx_Cy"](W_pre_w_M)
 
             return Wz_pre_raw, Wy_pre_raw, Wx_pre_raw, Cx_pre_raw, Cy_pre_raw
 
@@ -128,9 +133,9 @@ if(__name__ == "__main__"):
             see(model_obj, train_in_pre)
 
         if(n == 2):
-            print(model_obj.generator.gens_dict)
-            ckpt_I_to_M     = tf.train.Checkpoint(generator=model_obj.generator.gens_dict["I_to_M"])
-            ckpt_M_w_I_to_C = tf.train.Checkpoint(generator=model_obj.generator.gens_dict["M_w_I_to_C"])
+            print(model_obj.generator.dics_dict)
+            ckpt_I_to_M     = tf.train.Checkpoint(generator=model_obj.generator.dics_dict["I_to_M"])
+            ckpt_M_w_I_to_C = tf.train.Checkpoint(generator=model_obj.generator.dics_dict["M_w_I_to_C"])
 
             ckpt_path_I_to_M     = "F:/kong_model2/data_dir/result/6_mask_unet/5_2_bce_block1_45678l/type8_blender-2_4l_ch032-flow_unet2-block1_ch032_sig_bce_s001_4l_ep060_copy-20211204_203747/ckpt"
             ckpt_path_I_w_M_to_C = "F:/kong_model2/data_dir/result/7_flow_unet/5_2_mae_block1_45678l_I_with_Mgt_to_C/type8_blender_os_book-2_L5_ch032-flow_unet2-block1_L5_ch032_mae_s001-20211125_170346/ckpt"

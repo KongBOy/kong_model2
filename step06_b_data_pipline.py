@@ -1,21 +1,10 @@
-"""
-利用 step06_a_datas_obj的資訊 來建立 tf_data
-"""
-import sys
-sys.path.append("kong_util")
-# from util import get_dir_moves
-from kong_util.util import get_db_amount
-import time
 
-from step06_a_datas_obj import DB_C, DB_N, DB_GM, VALUE_RANGE, Dataset_builder, Range
+
+from step06_a_datas_obj import VALUE_RANGE, Range
 import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import tensorflow as tf
 
-import numpy as np
-import math
-
-import matplotlib.pyplot as plt
 tf.keras.backend.set_floatx('float32')  ### 這步非常非常重要！用了才可以加速！
 
 # import pdb
