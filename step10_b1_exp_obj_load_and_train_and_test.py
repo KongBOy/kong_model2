@@ -172,6 +172,15 @@ class Experiment():
         else:
             self.result_obj = Result_builder().set_exp_obj_use_gt_range(self.use_gt_range).set_by_exp(self).build()  ### exp在train時 要自動建新的 result，才不會覆蓋到之前訓練的result，Result_builder()需要 db_obj 和 exp本身的describe_mid/end
 
+            ### 存 Auto_fill_result_name 的檔案
+            if(self.phase == "train"):
+                code_exe_dir = "\\".join( self.code_exe_path.split("\\")[:-1] )  ### 舉例：'f:\\kong_model2\\Exps_7_v3\\doc3d\\I_to_M_Gk3_no_pad\\pyr_Tcrop256_pad20_jit15\\pyr_3s\\L3\\step09_3side_L3.py' 只取 'f:\\kong_model2\\Exps_7_v3\\doc3d\\I_to_M_Gk3_no_pad\\pyr_Tcrop256_pad20_jit15\\pyr_3s\\L3'
+                auto_fill_result_name_file_path = f"{code_exe_dir}/Auto_fill_result_name_{self.machine_ip}.txt"
+                auto_fill_result_name = self.result_obj.result_name.split("/")[-1]  ### 舉例：'Exps_7_v3/doc3d/I_to_M_Gk3_no_pad/pyr_Tcrop256_pad20_jit15/pyr_3s/L3/L3_ch032_bl_pyr__1s4__2s3__3s2-20220503_104724'， 只取 'L3_ch032_bl_pyr__1s4__2s3__3s2-20220503_104724'
+                with open(auto_fill_result_name_file_path, "a+") as f:
+                    f.write(auto_fill_result_name + "\n")
+                    print(f"auto_fill_result_name_file_path: {auto_fill_result_name_file_path}, add '{auto_fill_result_name}' finish ~~~")
+
 
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 如果沒有設定 img_resize時，需要參考 model_name 來決定如何 resize， 所以才寫在 exp 裡面
         if(self.img_resize is None):
