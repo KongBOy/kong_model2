@@ -82,7 +82,7 @@ class Exp_builder():
 
         也補上 建好result 馬上設定 loss_info_obj 拉，這樣 step11, step12 也能用了！
         '''
-        self.Auto_fill_result_name()
+        self.Auto_fill_result_name_Read()
         if(self.exp.result_name is not None):
             ''' 建 虛擬的 result_obj ，這樣就不用 exp_init() 就能使用 resul_obj裡面的東西囉'''
             if("test" in self.exp.phase):
@@ -113,11 +113,11 @@ class Exp_builder():
             # print("self.exp.loss_info_obj.logs_write_dir", self.exp.loss_info_obj.logs_write_dir)
             # print()  ### 追蹤see的建立過程
 
-    def Auto_fill_result_name(self):
-        print("Auto_fill_result_name start")
+    def Auto_fill_result_name_Read(self):
+        print("Auto_fill_result_name_Read start")
         from kong_util.util import get_dir_certain_file_paths
         code_exe_dir =  "\\".join( self.exp.code_exe_path.split("\\")[:-1] )  ### 舉例：'f:\\kong_model2\\Exps_7_v3\\doc3d\\I_to_M_Gk3_no_pad\\pyr_Tcrop256_pad20_jit15\\pyr_3s\\L3\\step09_3side_L3.py' 只取 'f:\\kong_model2\\Exps_7_v3\\doc3d\\I_to_M_Gk3_no_pad\\pyr_Tcrop256_pad20_jit15\\pyr_3s\\L3'
-        auto_fill_result_name_file_paths = get_dir_certain_file_paths(ord_dir=code_exe_dir, certain_word="Auto_fill_result_name", certain_ext=".txt")
+        auto_fill_result_name_file_paths = get_dir_certain_file_paths(ord_dir=code_exe_dir, certain_word="Auto_fill_result_name_Read", certain_ext=".txt")
         print("    Auto_fill_result_name_file_paths:", auto_fill_result_name_file_paths)
         auto_fill_result_names = []
         for auto_fill_result_name_file_path in auto_fill_result_name_file_paths:
@@ -125,6 +125,11 @@ class Exp_builder():
                 for line in f:
                     result_name = line.rstrip()
                     auto_fill_result_names.append(result_name)
+
+        ### 對 list 做一些處理
+        auto_fill_result_names.sort()  ### 比較能確保 越新的放越後面
+
+        ### 和 現在exp 的 result_name 比對
         current_exp_result_name = self.exp.model_builder.kong_model.model_describe
         current_exp_result_name_exists = [ auto_fill_result_name for auto_fill_result_name in auto_fill_result_names if current_exp_result_name in auto_fill_result_name ]
         ### 做事情
@@ -132,8 +137,8 @@ class Exp_builder():
         ### print 資訊
         if(   len(current_exp_result_name_exists) == 1): print(f"    自動填入 result_name: {current_exp_result_name_exists[-1]}")
         elif( len(current_exp_result_name_exists) >  1): print(f"    我們目前找到 {len(current_exp_result_name_exists)} 個 {current_exp_result_name}， 自動填入最新的{current_exp_result_name_exists[-1]}")
-        else                                           : print(f"    Auto_fill_result_name 找不到 已存在的 {current_exp_result_name} 不會自動填名字， 不做事直接跳過")
-        print("Auto_fill_result_name finish")
+        else                                           : print(f"    Auto_fill_result_name_Read 找不到 已存在的 {current_exp_result_name} 不會自動填名字， 不做事直接跳過")
+        print("Auto_fill_result_name_Read finish")
 
     def build(self):
         self.build_exp_temporary()
