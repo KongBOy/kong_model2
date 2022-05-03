@@ -557,10 +557,10 @@ class tf_Data_init_builder:
                self.tf_data.db_obj.get_method == DB_GM.in_rec_gt_ord):
             self.build_by_in_img_and_gt_img_db()
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_flow):          self.build_by_in_dis_gt_flow_or_wc(get_what="flow")
+        elif  (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_mask_coord):    self.build_by_in_dis_gt_mask_coord()
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_wc):            self.build_by_in_dis_gt_flow_or_wc(get_what="wc")
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_wc_try_mul_M):  self.build_by_in_dis_gt_wc_try_mul_M()
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_img_gt_mask):          self.build_by_in_img_gt_mask()
-        elif  (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_mask_coord):    self.build_by_in_dis_gt_mask_coord()
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_wc_gt_flow):           self.build_by_in_wc_gt_flow()
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_wc_gt_flow_try_mul_M): self.build_by_in_wc_gt_flow_try_mul_M()
         elif  (self.tf_data.db_obj.get_method == DB_GM.in_dis_gt_wc_flow_try_mul_M): self.build_by_in_dis_gt_wc_flow_try_mul_M()
