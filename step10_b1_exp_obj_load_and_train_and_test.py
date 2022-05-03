@@ -23,45 +23,11 @@ import getpass   ### 取得 本機 User 給 train_step5_show_time 紀錄
 start_time = time.time()
 
 class Experiment():
-    def step0_save_code(self):
-        '''
-        把 step.py 和 kong_util資料夾 存一份進result
-        '''
-        import shutil
-        from build_dataset_combine import Check_dir_exist_and_build
-        code_save_path = self.result_obj.train_code_write_dir                 ### 定位出 result存code的目的地
-        print("code_save_path:", code_save_path)
-        Check_dir_exist_and_build(code_save_path)                             ### 建立目的地資料夾
-
-        py_file_names = get_dir_certain_file_names(kong_model2_dir, certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
-        for py_file_name in py_file_names:
-            ### 這兩行可以 抓 step"幾" 然後只存 step"幾".py 喔，但還沒整理以前的code，保險起見還是全存好了，有空再細細處理~~
-            # py_file_name_step = int(py_file_name.split("_")[0][4:])          ### 抓出 step "幾"
-            # if(py_file_name_step >= 6 or py_file_name_step == 0):            ### step06 以上
-            shutil.copy(f"{kong_model2_dir}/{py_file_name}", f"{code_save_path}/{py_file_name}")     ### 存起來
-
-        ### 因為我現在有加 timestamp， 所以 不會有上一版 kong_util的問題， 所以可以註解掉囉～
-        # if(os.path.isdir(code_save_path + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
-        #     shutil.rmtree(code_save_path + "/" + "kong_util")
-        # print("self.exp_dir:", self.exp_dir )
-        shutil.copytree(f"{kong_model2_dir}/kong_util", code_save_path + "/" + "kong_util")
-        # shutil.copytree(f"{kong_model2_dir}/kong_Blender", code_save_path + "/" + "kong_Blender")  ### 因為檔名很容易太長， 這個到目前為止都還沒改動到， 覺得先不copy好了 (2022/04/22 決定的)
-        # shutil.copytree(f"{kong_model2_dir}/SIFT_dev", code_save_path + "/" + "SIFT_dev")          ### 因為檔名很容易太長， 這個到目前為止都還沒改動到， 覺得先不copy好了 (2022/04/21 決定的)
-
-        code_exe_copy_src = "/".join(self.code_exe_path.split("\\")[:-1])
-        code_exe_copy_dst = code_save_path + "/" + "/".join(self.code_exe_path.split("\\")[-3:-1])
-        # print("self.code_exe_path:", self.code_exe_path)  ### 舉例： c:\Users\CVML\Desktop\kong_model2\step10_6_mask\mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100\step10_a.py
-        # print("code_exe_copy_src:", code_exe_copy_src)    ### 舉例： c:/Users/CVML/Desktop/kong_model2/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
-        # print("code_exe_copy_dst:", code_exe_copy_dst)    ### 舉例： data_dir/result/6_mask_unet/5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-8b_6_6-flow_unet-mask_h_bg_ch032_sig_tv_s100_bce_s100_sobel_k5_s100_6l_ep060-20211116_125312/train_code_20211116_125312/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
-        shutil.copytree(code_exe_copy_src, code_exe_copy_dst)
-
-
-################################################################################################################################################
-################################################################################################################################################
     def __init__(self):
         self.machine_ip = None
         self.machine_user = None
         self.current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.code_exe_path = None
         ##############################################################################################################################
         self.phase         = "train"
         self.db_builder    = None
@@ -140,6 +106,40 @@ class Experiment():
 
 ################################################################################################################################################
 ################################################################################################################################################
+    def step0_save_code(self):
+        '''
+        把 step.py 和 kong_util資料夾 存一份進result
+        '''
+        import shutil
+        from kong_util.build_dataset_combine import Check_dir_exist_and_build
+        code_save_path = self.result_obj.train_code_write_dir                 ### 定位出 result存code的目的地
+        print("code_save_path:", code_save_path)
+        Check_dir_exist_and_build(code_save_path)                             ### 建立目的地資料夾
+
+        py_file_names = get_dir_certain_file_names(kong_model2_dir, certain_word="step")  ### 抓取目前目錄所有 有含 "step" 的檔名
+        for py_file_name in py_file_names:
+            ### 這兩行可以 抓 step"幾" 然後只存 step"幾".py 喔，但還沒整理以前的code，保險起見還是全存好了，有空再細細處理~~
+            # py_file_name_step = int(py_file_name.split("_")[0][4:])          ### 抓出 step "幾"
+            # if(py_file_name_step >= 6 or py_file_name_step == 0):            ### step06 以上
+            shutil.copy(f"{kong_model2_dir}/{py_file_name}", f"{code_save_path}/{py_file_name}")     ### 存起來
+
+        ### 因為我現在有加 timestamp， 所以 不會有上一版 kong_util的問題， 所以可以註解掉囉～
+        # if(os.path.isdir(code_save_path + "/" + "kong_util")):  ### 在train_reload時 如果有舊的kong_util，把舊的刪掉換新的
+        #     shutil.rmtree(code_save_path + "/" + "kong_util")
+        # print("self.exp_dir:", self.exp_dir )
+        shutil.copytree(f"{kong_model2_dir}/kong_util", code_save_path + "/" + "kong_util")
+        # shutil.copytree(f"{kong_model2_dir}/kong_Blender", code_save_path + "/" + "kong_Blender")  ### 因為檔名很容易太長， 這個到目前為止都還沒改動到， 覺得先不copy好了 (2022/04/22 決定的)
+        # shutil.copytree(f"{kong_model2_dir}/SIFT_dev", code_save_path + "/" + "SIFT_dev")          ### 因為檔名很容易太長， 這個到目前為止都還沒改動到， 覺得先不copy好了 (2022/04/21 決定的)
+
+        code_exe_copy_src = "/".join(self.code_exe_path.split("\\")[:-1])
+        code_exe_copy_dst = code_save_path + "/" + "/".join(self.code_exe_path.split("\\")[-3:-1])
+        # print("self.code_exe_path:", self.code_exe_path)  ### 舉例： c:\Users\CVML\Desktop\kong_model2\step10_6_mask\mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100\step10_a.py
+        # print("code_exe_copy_src:", code_exe_copy_src)    ### 舉例： c:/Users/CVML/Desktop/kong_model2/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
+        # print("code_exe_copy_dst:", code_exe_copy_dst)    ### 舉例： data_dir/result/6_mask_unet/5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100/type8_blender_os_book-8b_6_6-flow_unet-mask_h_bg_ch032_sig_tv_s100_bce_s100_sobel_k5_s100_6l_ep060-20211116_125312/train_code_20211116_125312/step10_6_mask/mask_5_8b_ch032_tv_s100_bce_s001_100_sobel_k5_s001_100
+        shutil.copytree(code_exe_copy_src, code_exe_copy_dst)
+
+################################################################################################################################################
+################################################################################################################################################
     def exp_init(self, reload_result=False, reload_model=False):  ### 共作四件事： 1.result, 2.data, 3.model(reload), 4.Loss_info
         ### 0.真的建立出 model_obj， 在這之前都還是 KModel_builder喔！ 會寫這麼麻煩是為了 想實現 "真的用到的時候再建構出來！" 這樣才省時間！
         self.model_obj = self.model_builder.build()
@@ -169,7 +169,9 @@ class Experiment():
             # print("self.result_name:", self.result_name)
             self.result_obj   = Result_builder().set_exp_obj_use_gt_range(self.use_gt_range).set_by_result_name(self.exp_dir + "/" + self.result_name, self.db_obj).build()  ### 直接用 自己指定好的 result_name
             print("Reload: %s ok~~" % (self.result_obj.result_read_dir))
-        else: self.result_obj = Result_builder().set_exp_obj_use_gt_range(self.use_gt_range).set_by_exp(self).build()  ### exp在train時 要自動建新的 result，才不會覆蓋到之前訓練的result，Result_builder()需要 db_obj 和 exp本身的describe_mid/end
+        else:
+            self.result_obj = Result_builder().set_exp_obj_use_gt_range(self.use_gt_range).set_by_exp(self).build()  ### exp在train時 要自動建新的 result，才不會覆蓋到之前訓練的result，Result_builder()需要 db_obj 和 exp本身的describe_mid/end
+
 
         ### 2.data，在這邊才建立而不在step6_b 就先建好是因為 如果沒有設定 img_resize時，需要參考 model_name 來決定如何 resize， 所以才寫在 exp 裡面
         if(self.img_resize is None):
