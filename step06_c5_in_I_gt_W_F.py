@@ -1,10 +1,12 @@
-
-from step06_c4_in_W_gt_F import tf_Data_in_wc_gt_flow_builder
+from step06_c0_tf_Data_initial_builder import tf_Data_init_builder
 from kong_util.util import get_db_amount
 import tensorflow as tf
 
-class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_in_wc_gt_flow_builder):
-    def build_by_in_dis_gt_wc_flow_try_mul_M(self):
+class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_init_builder):
+    def __init__(self, tf_data=None):
+        super(tf_Data_in_dis_gt_wc_flow_builder, self).__init__(tf_data)
+
+    def build_by_in_I_gt_W_and_F_try_mul_M(self):
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
         ### train_in

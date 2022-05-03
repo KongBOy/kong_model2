@@ -187,7 +187,7 @@ class I_w_M_to_W(Use_G_generate):
 
                 if(self.focus is False): W = W_raw_01 * (gt_max - gt_min) + gt_min
                 else:                    W = W_w_Mgt_01 * (gt_max - gt_min) + gt_min
-                if(self.exp_obj.db_obj.get_method.value == "in_dis_gt_wc_try_mul_M"): W = W * Mgt_pre
+                if(self.exp_obj.db_obj.get_method.value == "build_by_in_I_gt_W_hole_norm_then_mul_M_right"): W = W * Mgt_pre
                 WM = np.concatenate([W, Mgt_pre], axis=-1)
                 ### 確認寫得對不對
                 # fig, ax = plt.subplots(1, 2)

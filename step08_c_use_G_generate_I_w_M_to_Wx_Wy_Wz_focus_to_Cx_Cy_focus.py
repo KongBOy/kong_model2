@@ -181,7 +181,7 @@ def I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see(model_obj, phase, index, i
         gt_min = exp_obj.db_obj.db_gt_range.min
         gt_max = exp_obj.db_obj.db_gt_range.max
         W_w_M_c_M[..., 0:3] = W_w_M_c_M[..., 0:3] * (gt_max - gt_min) + gt_min
-        if(exp_obj.db_obj.get_method.value == "in_dis_gt_wc_try_mul_M"): W_w_M_c_M[..., 0:3] = W_w_M_c_M[..., 0:3] * use_M
+        if(exp_obj.db_obj.get_method.value == "build_by_in_I_gt_W_hole_norm_then_mul_M_right"): W_w_M_c_M[..., 0:3] = W_w_M_c_M[..., 0:3] * use_M
 
         if(phase == "test"):
             ### 定位出 存檔案的位置

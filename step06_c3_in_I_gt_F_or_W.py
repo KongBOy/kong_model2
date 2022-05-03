@@ -1,8 +1,11 @@
-from step06_c2_in_I_gt_F_then_MC import tf_Data_in_dis_gt_mask_coord_builder
+from step06_c0_tf_Data_initial_builder import tf_Data_init_builder
 from kong_util.util import get_db_amount
 
-class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_mask_coord_builder):
-    def build_by_in_dis_gt_flow_or_wc(self, get_what="flow"):
+class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
+    def __init__(self, tf_data=None):
+        super(tf_Data_in_dis_gt_flow_or_wc_builder, self).__init__(tf_data)
+
+    def build_by_in_I_gt_F_or_W_hole_norm_then_no_mul_M_wrong(self, get_what="flow"):
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
         self._build_train_test_in_img_db()
@@ -111,7 +114,7 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_in_dis_gt_mask_coord_builder)
         #########################################################################################################################################
         return self
 
-    def build_by_in_dis_gt_wc_try_mul_M(self):
+    def build_by_in_I_gt_W_hole_norm_then_mul_M_right(self):
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
         self._build_train_test_in_img_db()

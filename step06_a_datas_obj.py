@@ -88,21 +88,21 @@ class DB_GET_METHOD(Enum):
     in_dis_gt_move_map = "in_dis_gt_move_map"
     in_dis_gt_ord_pad  = "in_dis_gt_ord_pad"
     in_dis_gt_ord      = "in_dis_gt_ord"
-    in_rec_gt_ord      = "in_rec_gt_ord"
+    build_by_in_I_and_gt_I_db      = "build_by_in_I_and_gt_I_db"
     test_indicate      = "test_indicate"
 
-    in_dis_gt_flow     = "in_dis_gt_flow"
+    build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong     = "build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong"
 
-    in_dis_gt_mask_coord = "in_dis_gt_mask_coord"
+    build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong       = "build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong"
 
-    in_img_gt_mask   = "in_img_gt_mask"
+    build_by_in_img_gt_mask                              = "build_by_in_img_gt_mask"
 
-    in_dis_gt_wc                = "in_dis_gt_wc"
-    in_dis_gt_wc_try_mul_M      = "in_dis_gt_wc_try_mul_M"
-    in_dis_gt_wc_flow_try_mul_M = "in_dis_gt_wc_flow_try_mul_M"
+    build_by_in_I_gt_W_hole_norm_then_no_mul_M_wrong     = "build_by_in_I_gt_W_hole_norm_then_no_mul_M_wrong"
+    build_by_in_I_gt_W_hole_norm_then_mul_M_right        = "build_by_in_I_gt_W_hole_norm_then_mul_M_right"
+    build_by_in_I_gt_W_and_F_try_mul_M                   = "build_by_in_I_gt_W_and_F_try_mul_M"
 
-    in_wc_gt_flow           = "in_wc_gt_flow"  ### train_in 除了wc外會多抓 dis_img 來 讓 F 可以做 bm_rec喔！
-    in_wc_gt_flow_try_mul_M = "in_wc_gt_flow_try_mul_M"  ### train_in 除了wc外會多抓 dis_img 來 讓 F 可以做 bm_rec喔！
+    build_by_in_W_and_I_gt_F_MC_norm_then_no_mul_M_wrong = "build_by_in_W_and_I_gt_F_MC_norm_then_no_mul_M_wrong"  ### train_in 除了wc外會多抓 dis_img 來 讓 F 可以做 bm_rec喔！
+    build_by_in_W_and_I_gt_F_WC_norm_then_mul_M_right    = "build_by_in_W_and_I_gt_F_WC_norm_then_mul_M_right"  ### train_in 除了wc外會多抓 dis_img 來 讓 F 可以做 bm_rec喔！
 
 class VALUE_RANGE(Enum):
     zero_to_one    = Range( 0,   1)
@@ -260,21 +260,21 @@ class Dataset_dir_builder(Dataset_basic_builder):
         elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_ord):
             in_dir_name = "dis_imgs"
             gt_dir_name = "gt_ord_imgs"
-        elif(self.db.get_method == DB_GET_METHOD.in_rec_gt_ord):
+        elif(self.db.get_method == DB_GET_METHOD.build_by_in_I_and_gt_I_db):
             in_dir_name = "unet_rec_imgs"
             gt_dir_name = "gt_ord_imgs"
-        elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_flow or
-             self.db.get_method == DB_GET_METHOD.in_dis_gt_mask_coord):
+        elif(self.db.get_method == DB_GET_METHOD.build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong or
+             self.db.get_method == DB_GET_METHOD.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong):
             if(self.db.db_name.value != "kong_doc3d"):
                 in_dir_name = "dis_imgs"
                 gt_dir_name = "flows"
             else:
                 in_dir_name  = "0_dis_img"
                 gt_dir_name  = "1_uv-3_knpy"
-        elif(self.db.get_method == DB_GET_METHOD.in_img_gt_mask):
+        elif(self.db.get_method == DB_GET_METHOD.build_by_in_img_gt_mask):
             in_dir_name = "in_imgs"
             gt_dir_name = "gt_masks"
-        elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_wc or self.db.get_method == DB_GET_METHOD.in_dis_gt_wc_try_mul_M):
+        elif(self.db.get_method == DB_GET_METHOD.build_by_in_I_gt_W_hole_norm_then_no_mul_M_wrong or self.db.get_method == DB_GET_METHOD.build_by_in_I_gt_W_hole_norm_then_mul_M_right):
             if(self.db.db_name.value != "kong_doc3d"):
                 in_dir_name = "dis_imgs"
                 gt_dir_name = "wcs"
@@ -282,8 +282,8 @@ class Dataset_dir_builder(Dataset_basic_builder):
                 in_dir_name  = "0_dis_img"
                 gt_dir_name  = "2_wc-5_W_w_M_knpy"
 
-        elif(self.db.get_method == DB_GET_METHOD.in_wc_gt_flow or
-             self.db.get_method == DB_GET_METHOD.in_wc_gt_flow_try_mul_M):
+        elif(self.db.get_method == DB_GET_METHOD.build_by_in_W_and_I_gt_F_MC_norm_then_no_mul_M_wrong or
+             self.db.get_method == DB_GET_METHOD.build_by_in_W_and_I_gt_F_WC_norm_then_mul_M_right):
             if(self.db.db_name.value != "kong_doc3d"):
                 in_dir_name = "wcs"
                 in2_dir_name = "dis_imgs"
@@ -293,7 +293,7 @@ class Dataset_dir_builder(Dataset_basic_builder):
                 in2_dir_name = "0_dis_img"
                 gt_dir_name  = "1_uv-3_knpy"
 
-        elif(self.db.get_method == DB_GET_METHOD.in_dis_gt_wc_flow_try_mul_M):
+        elif(self.db.get_method == DB_GET_METHOD.build_by_in_I_gt_W_and_F_try_mul_M):
             if(self.db.db_name.value != "kong_doc3d"):
                 in_dir_name  = "dis_imgs"
                 gt_dir_name  = "wcs"
@@ -396,36 +396,44 @@ type7b_h500_w332_real_os_book_1532data_big   = Dataset_builder().set_basic(DB_C.
 type7b_h500_w332_real_os_book_400data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book                   , DB_N.os_book_400data                       , DB_GM.in_dis_gt_ord,      h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", gt_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 255)).set_detail(have_train=True, have_see=True, see_version="sees_ver3")
 type7b_h500_w332_real_os_book_800data        = Dataset_builder().set_basic(DB_C.type7b_h500_w332_real_os_book                   , DB_N.os_book_800data                       , DB_GM.in_dis_gt_ord,      h=500, w=332).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", gt_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 255)).set_detail(have_train=True, have_see=True, see_version="sees_ver3")
 ################################################################################################################################################################################################################################################################################################################################################################################################################################
-type8_blender_os_book_756                    = Dataset_builder().set_basic(DB_C.type8_blender,          DB_N.blender_os_hw756,                                 DB_GM.in_dis_gt_flow,       h=756, w=756)  .set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy",                      db_in_range=Range(0, 255), db_gt_range=Range(0,   1)                               ).set_detail(have_train=True, have_see=True,                     see_version="sees_ver4_blender")
-type9_try_segmentation                       = Dataset_builder().set_basic(DB_C.type9_try_segmentation, DB_N.car_db_try_segmentation,                          DB_GM.in_img_gt_mask,       h=1280, w=1918).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", gt_format="gif",                       db_in_range=Range(0, 255), db_gt_range=Range(0, 255)                               ).set_detail(have_train=True, have_see=False,                    see_version="sees_ver4_blender")
+type8_blender_os_book_756                    = Dataset_builder().set_basic(DB_C.type8_blender,          DB_N.blender_os_hw756,                                 DB_GM.build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong , h=756  , w= 756).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy"                       , db_in_range=Range(0, 255), db_gt_range=Range(0,   1)                               ).set_detail(have_train=True, have_see=True,                     see_version="sees_ver4_blender")
+type9_try_segmentation                       = Dataset_builder().set_basic(DB_C.type9_try_segmentation, DB_N.car_db_try_segmentation,                          DB_GM.build_by_in_img_gt_mask                          , h=1280 , w=1918).set_dir_by_basic().set_in_gt_format_and_range(in_format="jpg", gt_format="gif"                        , db_in_range=Range(0, 255), db_gt_range=Range(0, 255)                               ).set_detail(have_train=True, have_see=False,                    see_version="sees_ver4_blender")
 ### 1
-type8_blender_os_book_768                    = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_hw768,                               DB_GM.in_dis_gt_flow,       h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type9_mask_flow                              = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_hw768,                               DB_GM.in_dis_gt_mask_coord, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_os_book_768                    = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_hw768,                               DB_GM.build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong , h=768  , w= 768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type9_mask_flow                              = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_hw768,                               DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong   , h=768  , w= 768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 ### 2
-type8_blender_os_book_512_have_bg            = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_hw512_have_bg,                       DB_GM.in_dis_gt_flow,       h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type9_mask_flow_have_bg                      = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_hw512_have_bg,                       DB_GM.in_dis_gt_mask_coord, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_os_book_512_have_bg            = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_hw512_have_bg,                       DB_GM.build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong , h=512  , w= 512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type9_mask_flow_have_bg                      = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_hw512_have_bg,                       DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong   , h=512  , w= 512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 ### 3
-type8_blender_os_and_paper_hw512_have_bg     = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_and_paper_hw512_have_bg,             DB_GM.in_dis_gt_flow,       h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type9_mask_flow_have_bg_and_paper            = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_and_paper_hw512_have_bg,             DB_GM.in_dis_gt_mask_coord, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_os_and_paper_hw512_have_bg     = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_and_paper_hw512_have_bg,             DB_GM.build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong , h=512  , w= 512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type9_mask_flow_have_bg_and_paper            = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_and_paper_hw512_have_bg,             DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong   , h=512  , w= 512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 ### 4
-type8_blender_os_and_paper_hw512_have_dtd_bg = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_and_paper_hw512_have_dtd_bg,         DB_GM.in_dis_gt_flow,       h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type9_mask_flow_have_bg_dtd_and_paper        = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_and_paper_hw512_have_dtd_bg,         DB_GM.in_dis_gt_mask_coord, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-### 5
-type8_blender_os_and_paper_hw512_have_dtd_hdr_mix_bg = Dataset_builder().set_basic(DB_C.type8_blender   , DB_N.blender_os_and_paper_hw512_have_dtd_hdr_mix_bg, DB_GM.in_dis_gt_flow,       h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type9_mask_flow_have_bg_dtd_hdr_mix_and_paper        = Dataset_builder().set_basic(DB_C.type8_blender   , DB_N.blender_os_and_paper_hw512_have_dtd_hdr_mix_bg, DB_GM.in_dis_gt_mask_coord, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_os_and_paper_hw512_have_dtd_bg = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_and_paper_hw512_have_dtd_bg,         DB_GM.build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong , h=512  , w= 512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type9_mask_flow_have_bg_dtd_and_paper        = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.blender_os_and_paper_hw512_have_dtd_bg,         DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong   , h=512  , w= 512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+### 5 I_to_F
+type8_blender_os_and_paper_hw512_have_dtd_hdr_mix_bg = Dataset_builder().set_basic(DB_C.type8_blender   , DB_N.blender_os_and_paper_hw512_have_dtd_hdr_mix_bg, DB_GM.build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong , h=512  , w= 512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 
-type8_blender_wc                             = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_dis_gt_wc,         h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy",                        db_in_range=Range(0, 255), db_gt_range=Range(-0.13532962, 0.1357405) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type8_blender_wc_try_mul_M                   = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_dis_gt_wc_try_mul_M, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy",                        db_in_range=Range(0, 255), db_gt_range=Range(-0.13532962, 0.1357405) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+##### kong_dataset
+### I_to_M
+type9_mask_flow_have_bg_dtd_hdr_mix_and_paper = Dataset_builder().set_basic(DB_C.type8_blender , DB_N.blender_os_and_paper_hw512_have_dtd_hdr_mix_bg, DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong,        h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png",  db_in_range=Range(0, 255),                                                          gt_format="knpy", db_gt_range=Range(0, 1),                                                                 rec_hope_format="jpg",  db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+### I_w_M_to_W/Wxyz
+type8_blender_wc                              = Dataset_builder().set_basic(DB_C.type8_blender , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M      , DB_GM.build_by_in_I_gt_W_hole_norm_then_no_mul_M_wrong,      h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png",  db_in_range=Range(0, 255),                                                          gt_format="knpy", db_gt_range=Range(-0.13532962, 0.1357405)                                                                                                        ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_wc_try_mul_M                    = Dataset_builder().set_basic(DB_C.type8_blender , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M      , DB_GM.build_by_in_I_gt_W_hole_norm_then_mul_M_right,         h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png",  db_in_range=Range(0, 255),                                                          gt_format="knpy", db_gt_range=Range(-0.13532962, 0.1357405)                                                                                                        ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+### W_w_M_to_C/Cxy
+type8_blender_wc_flow                         = Dataset_builder().set_basic(DB_C.type8_blender , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M      , DB_GM.build_by_in_W_and_I_gt_F_MC_norm_then_no_mul_M_wrong,  h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-0.13532962, 0.1357405), in2_format="png", db_in2_range=(0, 255), gt_format="knpy", db_gt_range=Range(0,   1)                                                                                                                        ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+type8_blender_wc_flow_try_mul_M               = Dataset_builder().set_basic(DB_C.type8_blender , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M      , DB_GM.build_by_in_W_and_I_gt_F_WC_norm_then_mul_M_right,     h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-0.13532962, 0.1357405), in2_format="png", db_in2_range=(0, 255), gt_format="knpy", db_gt_range=Range(0,   1)                                                                                                                        ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+### I_w_M_to_W_to_C
+type8_blender_dis_wc_flow_try_mul_M           = Dataset_builder().set_basic(DB_C.type8_blender , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M      , DB_GM.build_by_in_I_gt_W_and_F_try_mul_M,                    h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png",  db_in_range=Range(0, 255),                                                          gt_format="knpy", db_gt_range=Range(-0.13532962, 0.1357405), gt2_format="knpy", db_gt2_range=Range(0,   1)                                                         ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 
-type8_blender_wc_flow                        = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_wc_gt_flow,        h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", gt_format="knpy", in2_format="png", db_in_range=Range(-0.13532962, 0.1357405), db_gt_range=Range(0,   1), db_in2_range=(0, 255) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type8_blender_wc_flow_try_mul_M              = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_wc_gt_flow_try_mul_M, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", gt_format="knpy", in2_format="png", db_in_range=Range(-0.13532962, 0.1357405), db_gt_range=Range(0,   1), db_in2_range=(0, 255) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-
-type8_blender_dis_wc_flow_try_mul_M          = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M,           DB_GM.in_dis_gt_wc_flow_try_mul_M, h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", gt2_format="knpy", db_in_range=Range(0, 255), db_gt_range=Range(-0.13532962, 0.1357405), db_gt2_range=Range(0,   1) ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-
-type8_blender_kong_doc3d_in_I_gt_MC          = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.kong_doc3d,                                         DB_GM.in_dis_gt_mask_coord        , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                , gt_format="knpy", db_gt_range =Range(0, 1)                                                                  , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type8_blender_kong_doc3d_in_I_gt_W           = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.kong_doc3d,                                         DB_GM.in_dis_gt_wc_try_mul_M      , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type8_blender_kong_doc3d_in_W_and_I_gt_F     = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.kong_doc3d,                                         DB_GM.in_wc_gt_flow_try_mul_M     , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-1.2410645, 1.2485291) , in2_format="png", db_in2_range=Range(0, 255)                 , gt_format="knpy",  db_gt_range =Range(0,   1), rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type8_blender_kong_doc3d                     = Dataset_builder().set_basic(DB_C.type8_blender           , DB_N.kong_doc3d,                                         DB_GM.in_dis_gt_wc_flow_try_mul_M , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)  , gt2_format="knpy", db_gt2_range=Range(0,   1), rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+##### doc3d
+### I_to_M
+type8_blender_kong_doc3d_in_I_gt_MC           = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong    , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(0, 1)                                                                  , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+### I_to_W
+type8_blender_kong_doc3d_in_I_gt_W            = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_hole_norm_then_mul_M_right     , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+### W_to_C
+type8_blender_kong_doc3d_in_W_and_I_gt_F      = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_W_and_I_gt_F_WC_norm_then_mul_M_right , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-1.2410645, 1.2485291) , in2_format="png", db_in2_range=Range(0, 255)                 , gt_format="knpy", db_gt_range =Range(0,   1)                                                                , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
+### I_w_M_to_W_to_C
+type8_blender_kong_doc3d                      = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_and_F_try_mul_M                , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)  , gt2_format="knpy", db_gt2_range=Range(0,   1), rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 
 if(__name__ == "__main__"):
     db = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg,    DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", gt_format="bmp", db_in_range=Range(0, 255), db_gt_range=Range(0, 255)).set_detail(have_train=True, have_see=True).build()

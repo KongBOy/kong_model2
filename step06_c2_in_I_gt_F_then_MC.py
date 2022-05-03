@@ -1,9 +1,11 @@
-
-from step06_c1_old import tf_Data_in_img_gt_mask_builder
+from step06_c0_tf_Data_initial_builder import tf_Data_init_builder
 from kong_util.util import get_db_amount
 
-class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_in_img_gt_mask_builder):
-    def build_by_in_dis_gt_mask_coord(self):
+class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_init_builder):
+    def __init__(self, tf_data=None):
+        super(tf_Data_in_dis_gt_mask_coord_builder, self).__init__(tf_data)
+
+    def build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong(self):
         '''
         in_ord: dis_img, shape = (1, ord_h, ord_w, 3), value:0 ~255
         in_pre: dis_img, shape = (1,  db_h,  db_w, 3), value:0 ~  1

@@ -1,10 +1,13 @@
-from step06_c0_tf_Data_builder import tf_Data_init_builder
+from step06_c0_tf_Data_initial_builder import tf_Data_init_builder
 from kong_util.util import get_db_amount
 
 import numpy as np
 import os
 
 class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
+    def __init__(self, tf_data=None):
+        super(tf_Data_in_dis_gt_move_map_builder, self).__init__(tf_data)
+
     def build_by_in_dis_gt_move_map(self):
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
@@ -89,7 +92,10 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
 
 
 class tf_Data_in_dis_gt_img_builder(tf_Data_in_dis_gt_move_map_builder):
-    def build_by_in_img_and_gt_img_db(self):
+    def __init__(self, tf_data=None):
+        super(tf_Data_in_dis_gt_img_builder, self).__init__(tf_data)
+
+    def build_by_in_I_and_gt_I_db(self):
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
         self._build_train_test_in_img_db()
@@ -128,6 +134,9 @@ class tf_Data_in_dis_gt_img_builder(tf_Data_in_dis_gt_move_map_builder):
 
 
 class tf_Data_in_img_gt_mask_builder(tf_Data_in_dis_gt_img_builder):
+    def __init__(self, tf_data=None):
+        super(tf_Data_in_img_gt_mask_builder, self).__init__(tf_data)
+
     def build_by_in_img_gt_mask(self):
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db

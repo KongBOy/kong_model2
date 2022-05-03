@@ -80,7 +80,7 @@ if(__name__ == "__main__"):
     from kong_util.tf_model_util import Show_model_layer_names, Show_model_weights
 
     from step06_a_datas_obj import *
-    from step06_c0_tf_Data_builder import tf_Data_builder
+    from step06_d_tf_Data_builder import tf_Data_builder
     from step10_a2_loss_info_obj import *
     from step09_c_train_step import *
 

@@ -285,7 +285,7 @@ if(__name__ == "__main__"):
 
     from tqdm import tqdm
     from step06_a_datas_obj import DB_C, DB_N, DB_GM, Range
-    from step06_c0_tf_Data_builder import Dataset_builder, tf_Data_builder
+    from step06_d_tf_Data_builder import Dataset_builder, tf_Data_builder
     from step09_d_KModel_builder_combine_step789 import MODEL_NAME, KModel_builder
     from step10_a2_loss_info_obj import Loss_info_builder
 
@@ -293,7 +293,7 @@ if(__name__ == "__main__"):
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_rect).use_flow_rect_7_level()
 
     ### 2. db_obj 和 tf_data
-    db_obj = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.blender_os_hw768 , DB_GM.in_dis_gt_flow, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy").set_detail(have_train=True, have_see=True).build()
+    db_obj = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.blender_os_hw768 , DB_GM.build_by_in_I_gt_F_or_W_hole_norm_then_no_mul_M_wrong, h=768, w=768).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy").set_detail(have_train=True, have_see=True).build()
     tf_data = tf_Data_builder().set_basic(db_obj, 1 , train_shuffle=False).set_data_use_range(use_in_range=Range(-1, 1), use_gt_range=Range(-1, 1)).set_img_resize(( 512, 512) ).build_by_db_get_method().build()
 
     ### 3. loss_info_obj
