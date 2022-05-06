@@ -15,9 +15,9 @@ import os
 import pdb
 
 class I_w_M_to_W(Use_G_generate):
-    def __init__(self, to_Wx_Wy_Wz=False, focus=False, tight_crop=None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None):
         super(I_w_M_to_W, self).__init__()
-        self.to_Wx_Wy_Wz = to_Wx_Wy_Wz
+        self.separate_out = separate_out
         self.focus = focus
         self.tight_crop = tight_crop
 
@@ -78,7 +78,7 @@ class I_w_M_to_W(Use_G_generate):
         Wgt_pre          = Wgt_w_Mgt_pre[..., 0:3]
         I_pre_with_M_pre = dis_img_pre * Mgt_pre
 
-        if(self.to_Wx_Wy_Wz is False):
+        if(self.separate_out is False):
             W_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
         else:
             Wz_raw_pre, Wy_raw_pre, Wx_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
