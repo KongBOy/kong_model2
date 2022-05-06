@@ -80,6 +80,7 @@ class I_w_M_to_W(Use_G_generate):
 
         if(self.separate_out is False):
             W_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
+            W_raw_pre = W_raw_pre.numpy()  ### 配合下面 走完這個if 就要轉成 numpy 了
         else:
             Wz_raw_pre, Wy_raw_pre, Wx_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
 
@@ -87,9 +88,9 @@ class I_w_M_to_W(Use_G_generate):
 
         ### 後處理 Output (W_raw_pre)
         W_raw_01 = Value_Range_Postprocess_to_01(W_raw_pre, self.exp_obj.use_gt_range)
-        W_raw_01 = W_raw_01[0].numpy()
+        W_raw_01 = W_raw_01[0]  ### 上面已轉numpy， 這邊不用轉
         ### 順便處理一下gt
-        Wgt_pre = Wgt_pre[0].numpy()
+        Wgt_pre = Wgt_pre[0].numpy()  ### 這個還沒轉numpy喔， 記得轉
         Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, self.exp_obj.use_gt_range)
         ''''''''''''
         ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
