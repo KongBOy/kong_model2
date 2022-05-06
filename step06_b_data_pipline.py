@@ -8,9 +8,26 @@ import tensorflow as tf
 tf.keras.backend.set_floatx('float32')  ### 這步非常非常重要！用了才可以加速！
 
 # import pdb
-debug_dict = {}
 ####################################################################################################
 class norm_and_resize_mapping_util():
+    def set_hole_norm(self):
+        self.norm_use_what_min = self.db_range.min
+        self.norm_use_what_max = self.db_range.max
+
+    def set_ch_norm(self):
+        ch_mins = tf.constant([ self.db_ch_ranges[0].min,
+                                self.db_ch_ranges[1].min,
+                                self.db_ch_ranges[2].min ], dtype=tf.float32)
+        ch_mins = tf.reshape(ch_mins, shape=(1, 1, 3))
+        ch_maxs = tf.constant([ self.db_ch_ranges[0].max,
+                                self.db_ch_ranges[1].max,
+                                self.db_ch_ranges[2].max ], dtype=tf.float32)
+        ch_maxs = tf.reshape(ch_maxs, shape=(1, 1, 3))
+
+        self.norm_use_what_min = ch_mins
+        self.norm_use_what_max = ch_maxs
+
+
     def _resize(self, data):
         data = tf.image.resize(data, self.img_resize, method=tf.image.ResizeMethod.AREA)
         return data
@@ -24,7 +41,9 @@ class norm_and_resize_mapping_util():
         return img
 
     def _norm_to_01_by_max_min_val(self, data):  ### 因為用tanh，所以把值弄到 [-1, 1]
-        data = (data - self.db_range.min) / (self.db_range.max - self.db_range.min)
+        # data = (data - self.db_range.min) / (self.db_range.max - self.db_range.min)
+        data = (data - self.norm_use_what_min) / (self.norm_use_what_max - self.norm_use_what_min)
+
         # print("self.db_range.max", self.db_range.max)
         # print("self.db_range.min", self.db_range.min)
         return data
@@ -33,7 +52,7 @@ class norm_and_resize_mapping_util():
         data = self._norm_to_01_by_max_min_val(data) * 2 - 1
         return data
 
-    def check_use_range_and_db_range_then_normalize_data(self, data):
+    def check_use_range_and_db_range_then_normalize_data_by_use_what_min_max(self, data):
         if  (self.use_range == self.db_range): pass  ### 此狀況比如 uv值方面blender都幫我們弄好了：值在 0~1 之間，所以不用normalize～
         elif(self.use_range == VALUE_RANGE.zero_to_one   .value): data = self._norm_to_01_by_max_min_val   (data)
         elif(self.use_range == VALUE_RANGE.neg_one_to_one.value): data = self._norm_to_tanh_by_max_min_val (data)  ### resize 和 值弄到 -1~1，假設(99%正確拉懶得考慮其他可能ˊ口ˋ)blender 的 flow一定0~1，所以不等於發生時 一定是要弄成 -1~1
@@ -107,7 +126,7 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
         F = tf.reshape(raw_data, [self.db_h, self.db_w, 3])  ### ch1:mask, ch2:y, ch3:x
         return F
 
-    def step2_M_bin_and_C_normalize_wrong(self, F):
+    def step2_M_bin_and_C_norm_by_use_what_min_max_no_mul_M_wrong_but_OK(self, F):
         '''
         Wrong 但 為了 相容性 仍保留～
         normalize 完以後 mask 以外的區域不保證為0，
@@ -117,12 +136,12 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
         M     = F[..., 0:1]
         C     = F[..., 1:3]
         M_pre = self._mask_binarization(M)
-        C_pre = self.check_use_range_and_db_range_then_normalize_data(C)
+        C_pre = self.check_use_range_and_db_range_then_normalize_data_by_use_what_min_max(C)
         F_pre = tf.concat([M_pre, C_pre], axis=-1)
         F_pre = self._resize(F_pre)
         return F_pre
 
-    def step2_M_bin_and_C_normalize_try_mul_M_right(self, F):
+    def step2_M_bin_and_C_norm_by_use_what_min_max_then_mul_M_right(self, F):
         ''' 
         Right 的方法
         normalize 完以後 mask 以外的區域不保證為0， 所以應該還要再 * mask， 以確保 mask 外為0
@@ -133,7 +152,7 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
         M     = F[..., 0:1]
         C     = F[..., 1:3]
         M_pre = self._mask_binarization(M)
-        C_pre = self.check_use_range_and_db_range_then_normalize_data(C)
+        C_pre = self.check_use_range_and_db_range_then_normalize_data_by_use_what_min_max(C)
         C_pre = C_pre * M  ### 多了這一步，其他都跟 wrong 一樣
         F_pre = tf.concat([M_pre, C_pre], axis=-1)
         F_pre = self._resize(F_pre)
@@ -152,7 +171,7 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
         return wc   #[..., :3]
 
 
-    def step2_M_bin_and_W_normalize_wrong(self, wc):
+    def step2_M_bin_and_W_norm_by_use_what_min_max_no_mul_M_wrong(self, wc):
         ''' Wrong 但 為了 相容性 仍保留～
         normalize 完以後 mask 以外的區域不保證為0，
         flow剛好是因為 本身值就接近 0~1，所以才會 剛好 mask 外 幾乎為0，
@@ -161,12 +180,12 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
         M      = wc[..., 3:4]
         M_pre  = self._mask_binarization(M)
         wc     = wc[...,  :3]
-        wc_pre = self.check_use_range_and_db_range_then_normalize_data(wc)
+        wc_pre = self.check_use_range_and_db_range_then_normalize_data_by_use_what_min_max(wc)
         W_pre = tf.concat([wc_pre, M_pre], axis=-1)
         W_pre = self._resize(W_pre)
         return W_pre
 
-    def step2_M_bin_and_W_normalize_try_mul_M_right(self, wc):
+    def step2_M_bin_and_W_norm_by_use_what_min_max_then_mul_M_right(self, wc):
         ''' Right 的方法
         normalize 完以後 mask 以外的區域不保證為0， 所以應該還要再 * mask， 以確保 mask 外為0
         這是寫完 wc 後才發現的問題， wc 是一定要 * mask，　因為 wc 本身值 不接近 0~1， normalize 完後 mask外有值！
@@ -176,7 +195,7 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
         M      = wc[..., 3:4]
         M_pre  = self._mask_binarization(M)
         wc     = wc[...,  :3]
-        wc_pre = self.check_use_range_and_db_range_then_normalize_data(wc)
+        wc_pre = self.check_use_range_and_db_range_then_normalize_data_by_use_what_min_max(wc)
         wc_w_M_pre = wc_pre * M_pre  ### 多了這一步，其他都跟 wrong 一樣
         W_w_M_pre = tf.concat([wc_w_M_pre, M_pre], axis=-1)
         W_w_M_pre = self._resize(W_w_M_pre)
@@ -191,13 +210,17 @@ class mask_mapping_util(norm_and_resize_mapping_util):
         mask = tf.cast(mask, tf.float32)
         return mask
 
+'''
+以上： 定義 mapping function
+以下： 使用 mapping function
+所以兩部分沒辦法融合 成一個function， 只要用mapping的方式， 一定是分成兩個part， 一個定義， 一個使用
+'''
 ####################################################################################################
 ####################################################################################################
 class tf_Data_element:
     def __init__(self):
         self.ord = None
         self.pre = None
-
 ### 下面的 tf_Data_element_factory_builder/Factory 都是為了要建 tf_Data_element_factory 這個物件喔！
 ### 把img_db 包成class 是因為 tf.data.Dataset().map(f)的這個f，沒有辦法丟參數壓！所以只好包成class，把要傳的參數當 data_member囉！ 另一方面是好管理、好閱讀～
 class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mapping_util):
@@ -216,6 +239,11 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
         self.db_w = None
         self.db_range  = None
         self.use_range = None
+        self.db_ch_ranges = None
+
+        ### 跟上面不大一樣， 是從內部執行中才決定， 不是從 builder 設定的喔
+        self.norm_use_what_min = None
+        self.norm_use_what_max = None
 
         ### 以下兩個是最重要需要求得的
         self.tf_data_element = tf_Data_element()
@@ -240,6 +268,9 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
 
     ####################################################################################################
     def build_img_db(self):
+        ### 使用hole_norm
+        self.set_hole_norm()
+
         tf_data_element = tf_Data_element()
         ### 測map速度用， 這兩行純讀檔 不map， 要用的時候拿掉這兩行註解， 把兩行外有座map動作的地方都註解調， 結論是map不怎麼花時間， 是shuffle 的 buffer_size 設太大 花時間！
         # tf_data_element = tf_Data_element()
@@ -273,12 +304,19 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
 
         tf_data_element.pre = self._build_file_name_db()
         tf_data_element.pre = tf_data_element.pre.map(self.step1_flow_load)
+
+        ### default 為了相容性配合以前使用 整個 db 的 min, max
+        self.set_hole_norm()
+
         return tf_data_element
 
     def build_mov_db(self):
         ''' 以前 誤會 flow 是 move map 時期的版本 '''
+        ### 使用hole_norm
+        self.set_hole_norm()
+
         tf_data_element = self._build_flow_base_db()
-        tf_data_element.pre = tf_data_element.pre.map(self.check_use_range_and_db_range_then_normalize_data)
+        tf_data_element.pre = tf_data_element.pre.map(self.check_use_range_and_db_range_then_normalize_data_by_use_what_min_max)
         return tf_data_element
 
     ###  mask+coord(先y再x) 3ch合併 的形式 (最原本的)
@@ -288,31 +326,40 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
         # tf_data_element = tf_Data_element()
         # tf_data_element.ord = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy", shuffle=False)
         # tf_data_element.pre = tf.data.Dataset.list_files(self.ord_dir + "/" + "*.knpy", shuffle=False)
+        ### 使用hole_norm
+        self.set_hole_norm()
+
         tf_data_element = self._build_flow_base_db()
-        tf_data_element.pre = tf_data_element.pre.map(self.check_use_range_and_db_range_then_normalize_data)
+        tf_data_element.pre = tf_data_element.pre.map(self.check_use_range_and_db_range_then_normalize_data_by_use_what_min_max)
         return tf_data_element
 
     ###  mask1ch, coord(先y再x) 2ch 的形式
-    def build_M_C_db_wrong(self):
+    def build_F_db_by_MC_hole_norm_no_mul_M_wrong_but_OK(self):
         ''' 因為 flow 去掉 M 後的 max=0.9980217, min=0.0， 幾乎就 0~1了， 
         normalize 完以後 mask 外的區域 也幾乎為0不便，
         所以之前忘記做這個train下去還是沒問題的，
         目前就先繼續錯下去好像也沒差，
         等告一段落時再統一改！
         '''
+        ### 使用hole_norm
+        self.set_hole_norm()
+
         tf_data_element = self._build_flow_base_db()
-        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_C_normalize_wrong)
+        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_C_norm_by_use_what_min_max_no_mul_M_wrong_but_OK)
         return tf_data_element
 
-    def build_M_C_db_right(self):
+    def build_F_db_by_MC_hole_norm_then_mul_M_right(self):
         ''' 因為 flow 去掉 M 後的 max=0.9980217, min=0.0， 幾乎就 0~1了， 
         normalize 完以後 mask 外的區域 也幾乎為0不便，
         所以之前忘記做這個train下去還是沒問題的，
         目前就先繼續錯下去好像也沒差，
         等告一段落時再統一改！
         '''
+        ### 使用hole_norm
+        self.set_hole_norm()
+
         tf_data_element = self._build_flow_base_db()
-        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_C_normalize_try_mul_M_right)
+        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_C_norm_by_use_what_min_max_then_mul_M_right)
         return tf_data_element
 
     #####################################################################################
@@ -325,25 +372,45 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
         tf_data_element.pre = tf_data_element.pre.map(self.step1_wc_load)
         return tf_data_element
 
-    def build_M_W_db_wrong(self):
+    def build_W_db_by_MW_hole_norm_no_mul_M_wrong(self):
         ''' Wrong 但 為了 相容性 仍保留～
         normalize 完以後 mask 以外的區域不保證為0，
         flow剛好是因為 本身值就接近 0~1，所以才會 剛好 mask 外 幾乎為0，
         但 wc 就不是如此囉！
         '''
+        ### 使用hole_norm
+        self.set_hole_norm()
+
         tf_data_element = self._build_wc_base_db()
-        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_W_normalize_wrong)
+        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_W_norm_by_use_what_min_max_no_mul_M_wrong)
         return tf_data_element
 
-    def build_M_W_db_right(self):
+    def build_W_db_by_MW_hole_norm_then_mul_M_right(self):
         ''' Right 的方法
         normalize 完以後 mask 以外的區域不保證為0， 所以應該還要再 * mask， 以確保 mask 外為0
         這是寫完 wc 後才發現的問題， wc 是一定要 * mask，　因為 wc 本身值 不接近 0~1， normalize 完後 mask外有值！
         flow 因為本身值就接近 0~1， 所以乘了看起來沒效果， 但理論上還是乘一下比較保險喔！
         因為不乘的話 mask 外 有可能有雜雜的非0 存在喔～
         '''
+        ### 使用hole_norm
+        self.set_hole_norm()
+
         tf_data_element = self._build_wc_base_db()
-        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_W_normalize_try_mul_M_right)
+        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_W_norm_by_use_what_min_max_then_mul_M_right)
+        return tf_data_element
+
+    def build_W_db_by_MW_ch_norm_then_mul_M_right(self):
+        ''' Right 的方法
+        normalize 完以後 mask 以外的區域不保證為0， 所以應該還要再 * mask， 以確保 mask 外為0
+        這是寫完 wc 後才發現的問題， wc 是一定要 * mask，　因為 wc 本身值 不接近 0~1， normalize 完後 mask外有值！
+        flow 因為本身值就接近 0~1， 所以乘了看起來沒效果， 但理論上還是乘一下比較保險喔！
+        因為不乘的話 mask 外 有可能有雜雜的非0 存在喔～
+        '''
+        ### 使用ch_norm
+        self.set_ch_norm()
+
+        tf_data_element = self._build_wc_base_db()
+        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_W_norm_by_use_what_min_max_then_mul_M_right)
         return tf_data_element
 
     #####################################################################################
@@ -386,7 +453,7 @@ class tf_Data_element_factory_builder():
     def build(self):
         return self.tf_pipline_factory
 
-    def set_factory(self, ord_dir, file_format, img_resize, db_h, db_w, db_range, use_range):
+    def set_factory(self, ord_dir, file_format, img_resize, db_h, db_w, db_range, use_range, db_ch_ranges=None):
         print("DB ord_dir:", ord_dir)
         self.tf_pipline_factory.ord_dir      = ord_dir
         self.tf_pipline_factory.file_format  = file_format
@@ -395,6 +462,7 @@ class tf_Data_element_factory_builder():
         self.tf_pipline_factory.db_w         = db_w
         self.tf_pipline_factory.db_range     = db_range
         self.tf_pipline_factory.use_range    = use_range
+        self.tf_pipline_factory.db_ch_ranges = db_ch_ranges
         return self
 
 

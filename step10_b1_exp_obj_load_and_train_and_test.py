@@ -7,7 +7,7 @@ import datetime
 import math
 from step0_access_path import Syn_write_to_read_dir, Result_Read_Dir, Result_Write_Dir, kong_model2_dir, JPG_QUALITY
 from step06_a_datas_obj import *
-from step06_d_tf_Data_builder import tf_Data_builder
+from step06_cFinal_tf_Data_builder import tf_Data_builder
 from step10_a2_loss_info_obj import *
 from step11_b_result_obj_builder import Result_builder
 import sys

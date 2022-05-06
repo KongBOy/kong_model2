@@ -406,7 +406,7 @@ if(__name__ == "__main__"):
     ### 嘗試 真的 load tf_data 進來 train 看看
     from tqdm import tqdm
     from step06_a_datas_obj import DB_C, DB_N, DB_GM, Range
-    from step06_d_tf_Data_builder import Dataset_builder, tf_Data_builder
+    from step06_cFinal_tf_Data_builder import Dataset_builder, tf_Data_builder
     from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
     from step10_a2_loss_info_obj import Loss_info_builder
 

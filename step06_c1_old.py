@@ -4,6 +4,8 @@ from kong_util.util import get_db_amount
 import numpy as np
 import os
 
+debug_dict = {}
+
 class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
     def __init__(self, tf_data=None):
         super(tf_Data_in_dis_gt_move_map_builder, self).__init__(tf_data)
@@ -197,3 +199,25 @@ class tf_Data_in_img_gt_mask_builder(tf_Data_in_dis_gt_img_builder):
         還沒弄see
         '''
         return self
+
+if(__name__ == "__main__"):
+    from step09_d_KModel_builder_combine_step789 import MODEL_NAME, KModel_builder
+    from step06_a_datas_obj import *
+    import time
+
+    start_time = time.time()
+
+    # db_obj = Dataset_builder().set_basic(DB_C.type5c_real_have_see_no_bg_gt_color, DB_N.no_bg_gt_gray3ch, DB_GM.in_dis_gt_ord, h=472, w=304).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", db_in_range=Range(0, 255), gt_format="bmp", db_gt_range=Range(0, 255)).set_detail(have_train=True, have_see=True).build()
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.rect).build_by_model_name()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=batch_size-1, train_shuffle=True).set_img_resize( model_obj.model_name).build_by_db_get_method().build()
+
+    # db_obj = Dataset_builder().set_basic(DB_C.type6_h_384_w_256_smooth_curl_fold_and_page, DB_N.smooth_complex_page_more_like_move_map, DB_GM.in_dis_gt_move_map, h=384, w=256).set_dir_by_basic().set_in_gt_format_and_range(in_format="bmp", db_in_range=Range(0, 255), gt_format="...", db_gt_range=Range(...)).set_detail(have_train=True, have_see=True).build()
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.unet).build_unet()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize( model_obj.model_name).build_by_db_get_method().build()
+
+    '''in_img, gt_mask'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    # db_obj = type9_try_segmentation.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet).hook_build_and_gen_op()
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
