@@ -29,6 +29,7 @@ class tf_Data_builder(tf_Data_in_img_gt_mask_builder, tf_Data_in_dis_gt_mask_coo
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_I_gt_W_hole_norm_then_no_mul_M_wrong):      self.build_by_in_I_gt_F_or_W_hole_norm_then_no_mul_M_wrong(get_what="wc")
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_I_gt_W_hole_norm_then_mul_M_right):         self.build_by_in_I_gt_W_hole_norm_then_mul_M_right()
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right):           self.build_by_in_I_gt_W_ch_norm_then_mul_M_right()
+        elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse): self.build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse()
         ### W_to_C
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_W_hole_norm_then_no_mul_M_wrong_and_I_gt_F_MC_norm_then_no_mul_M_wrong):  self.build_by_in_W_hole_norm_then_no_mul_M_wrong_and_I_gt_F_MC_norm_then_no_mul_M_wrong()  ### wrong
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong):          self.build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong()     ### right

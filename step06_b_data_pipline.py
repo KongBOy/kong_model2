@@ -201,6 +201,30 @@ class flow_wc_mapping_util(norm_and_resize_mapping_util):
         W_w_M_pre = self._resize(W_w_M_pre)
         return W_w_M_pre
 
+    def step2_M_bin_and_W_norm_by_use_what_min_max_then_mul_M_right_only_for_doc3d_x_value_reverse(self, wc):
+        ''' Right 的方法
+        normalize 完以後 mask 以外的區域不保證為0， 所以應該還要再 * mask， 以確保 mask 外為0
+        這是寫完 wc 後才發現的問題， wc 是一定要 * mask，　因為 wc 本身值 不接近 0~1， normalize 完後 mask外有值！
+        flow 因為本身值就接近 0~1， 所以乘了看起來沒效果， 但理論上還是乘一下比較保險喔！
+        因為不乘的話 mask 外 有可能有雜雜的非0 存在喔～
+        '''
+        M      = wc[..., 3:4]
+        M_pre  = self._mask_binarization(M)
+        wc     = wc[...,  :3]
+        wc_pre = self.check_use_range_and_db_range_then_normalize_data_by_use_what_min_max(wc)
+        ''' 多這邊而已 開始'''
+        wz_pre = wc_pre[..., 0:1]
+        wy_pre = wc_pre[..., 1:2]
+        wx_pre = wc_pre[..., 2:3]
+        wx_pre = 1. - wx_pre  ### doc3d x value 是反的喔！
+        wc_pre = tf.concat([wz_pre, wy_pre, wx_pre], axis=-1)
+        ''' 多這邊而已 結束'''
+
+        wc_w_M_pre = wc_pre * M_pre  ### 多了這一步，其他都跟 wrong 一樣
+        W_w_M_pre = tf.concat([wc_w_M_pre, M_pre], axis=-1)
+        W_w_M_pre = self._resize(W_w_M_pre)
+        return W_w_M_pre
+
 class mask_mapping_util(norm_and_resize_mapping_util):
     def _3ch_get_1ch(self, img): return img[..., 0]
 
@@ -397,6 +421,21 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
 
         tf_data_element = self._build_wc_base_db()
         tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_W_norm_by_use_what_min_max_then_mul_M_right)
+        return tf_data_element
+
+    def build_W_db_by_MW_hole_norm_then_mul_M_right_only_for_doc3d_x_value_reverse(self):
+        ''' Right 的方法
+        normalize 完以後 mask 以外的區域不保證為0， 所以應該還要再 * mask， 以確保 mask 外為0
+        這是寫完 wc 後才發現的問題， wc 是一定要 * mask，　因為 wc 本身值 不接近 0~1， normalize 完後 mask外有值！
+        flow 因為本身值就接近 0~1， 所以乘了看起來沒效果， 但理論上還是乘一下比較保險喔！
+        因為不乘的話 mask 外 有可能有雜雜的非0 存在喔～
+        '''
+        ### 使用hole_norm
+        self.set_hole_norm()
+
+        tf_data_element = self._build_wc_base_db()
+        # tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_W_norm_by_use_what_min_max_then_mul_M_right)
+        tf_data_element.pre = tf_data_element.pre.map(self.step2_M_bin_and_W_norm_by_use_what_min_max_then_mul_M_right_only_for_doc3d_x_value_reverse)
         return tf_data_element
 
     def build_W_db_by_MW_ch_norm_then_mul_M_right(self):

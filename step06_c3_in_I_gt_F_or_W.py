@@ -24,12 +24,14 @@ def debug_tf_data(tf_data, use_train_test_see="train"):
         debug_dict[f"{i}--1-3 gt_ord"] = gt_ord
         debug_dict[f"{i}--1-4 gt_pre"] = gt_pre
 
-        debug_dict[f"{i}--2-1 in_ord"       ] = in_ord[0].numpy()
-        debug_dict[f"{i}--2-2 in_pre"       ] = in_pre[0].numpy()
-        debug_dict[f"{i}--2-3 train_Mgt"    ] = gt_ord[0].numpy()
-        debug_dict[f"{i}--2-4 train_Mgt_pre"] = gt_pre[0].numpy()
-        debug_dict[f"{i}--2-5 train_Wgt"    ] = gt_ord[0].numpy()
-        debug_dict[f"{i}--2-6 train_Wgt_pre"] = gt_pre[0].numpy()
+        debug_dict[f"{i}--2-1 in_ord[0]"  ] = in_ord[0].numpy()
+        debug_dict[f"{i}--2-2 in_pre[0]"  ] = in_pre[0].numpy()
+        debug_dict[f"{i}--2-3 gt_ord[0]"  ] = gt_ord[0].numpy()
+        debug_dict[f"{i}--2-4 gt_pre[0]"  ] = gt_pre[0].numpy()
+        debug_dict[f"{i}--2-3 gt_Mgt"     ] = gt_ord[0, ..., 3:4].numpy()
+        debug_dict[f"{i}--2-4 gt_Mgt_pre" ] = gt_pre[0, ..., 3:4].numpy()
+        debug_dict[f"{i}--2-5 gt_W"       ] = gt_ord[0, ..., 0:3].numpy()
+        debug_dict[f"{i}--2-6 gt_W_pre"   ] = gt_pre[0, ..., 0:3].numpy()
 
         fig, ax = plt.subplots(2, 5)
         fig.set_size_inches(4.5 * 5, 4.5 * 2)
@@ -202,6 +204,37 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             self.tf_data.see_in_db   = self.see_in_factory.build_img_db()
             self.tf_data.see_name_db = self.see_in_factory.build_name_db()
             self.tf_data.see_gt_db   = self.see_gt_factory.build_W_db_by_MW_ch_norm_then_mul_M_right()
+            self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
+
+        if(self.tf_data.db_obj.have_rec_hope):
+            self.tf_data.rec_hope_train_db = self.rec_hope_train_factory.build_img_db()
+            self.tf_data.rec_hope_test_db  = self.rec_hope_test_factory .build_img_db()
+            self.tf_data.rec_hope_see_db   = self.rec_hope_see_factory  .build_img_db()
+
+            self.tf_data.rec_hope_train_amount = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
+            self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
+            self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+
+        ##########################################################################################################################################
+        ### 勿刪！用來測試寫得對不對！
+        # debug_tf_data(self.tf_data, use_train_test_see="train")
+        # debug_tf_data(self.tf_data, use_train_test_see="test")
+        # debug_tf_data(self.tf_data, use_train_test_see="see")
+
+    def build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse(self):
+        ##########################################################################################################################################
+        ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
+        self._build_train_test_in_img_db()
+        self.tf_data.train_gt_db = self.train_gt_factory.build_W_db_by_MW_hole_norm_then_mul_M_right_only_for_doc3d_x_value_reverse()
+        self.tf_data.test_gt_db  = self.test_gt_factory.build_W_db_by_MW_hole_norm_then_mul_M_right_only_for_doc3d_x_value_reverse()
+        ##########################################################################################################################################
+        ### 整理程式碼後發現，train_in,gt combine 和 test_in,gt combine 及 之後的shuffle 大家都一樣，寫成一個function給大家call囉
+        self._train_in_gt_and_test_in_gt_combine_then_train_shuffle()
+
+        if(self.tf_data.db_obj.have_see):
+            self.tf_data.see_in_db   = self.see_in_factory.build_img_db()
+            self.tf_data.see_name_db = self.see_in_factory.build_name_db()
+            self.tf_data.see_gt_db   = self.see_gt_factory.build_W_db_by_MW_hole_norm_then_mul_M_right_only_for_doc3d_x_value_reverse()
             self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
 
         if(self.tf_data.db_obj.have_rec_hope):
