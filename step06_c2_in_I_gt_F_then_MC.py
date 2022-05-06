@@ -1,6 +1,8 @@
 from step06_c0_tf_Data_initial_builder import tf_Data_init_builder
 from kong_util.util import get_db_amount
 
+debug_dict = {}
+
 class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_init_builder):
     def __init__(self, tf_data=None):
         super(tf_Data_in_dis_gt_mask_coord_builder, self).__init__(tf_data)
@@ -17,10 +19,10 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_init_builder):
         self._build_train_test_in_img_db()
 
         ### 拿到 gt_masks_db 的 train dataset，從 檔名 → tensor
-        self.tf_data.train_gt_db = self.train_gt_factory.build_M_C_db_wrong()
+        self.tf_data.train_gt_db = self.train_gt_factory.build_F_db_by_MC_hole_norm_no_mul_M_wrong_but_OK()
 
         ### 拿到 gt_masks_db 的 train dataset，從 檔名 → tensor
-        self.tf_data.test_gt_db = self.test_gt_factory.build_M_C_db_wrong()
+        self.tf_data.test_gt_db = self.test_gt_factory.build_F_db_by_MC_hole_norm_no_mul_M_wrong_but_OK()
 
         ##########################################################################################################################################
         ### 整理程式碼後發現，train_in,gt combine 和 test_in,gt combine 及 之後的shuffle 大家都一樣，寫成一個function給大家call囉
@@ -103,7 +105,7 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_init_builder):
             self.tf_data.see_in_db   = self.see_in_factory.build_img_db()
             self.tf_data.see_name_db = self.see_in_factory.build_name_db()
 
-            self.tf_data.see_gt_db   = self.see_gt_factory.build_M_C_db_wrong()
+            self.tf_data.see_gt_db   = self.see_gt_factory.build_F_db_by_MC_hole_norm_no_mul_M_wrong_but_OK()
 
             self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
             ###########################################################################################################################################
@@ -163,3 +165,22 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_init_builder):
             #     plt.close()
             ##########################################################################################################################################
         return self
+
+if(__name__ == "__main__"):
+    from step09_d_KModel_builder_combine_step789 import MODEL_NAME, KModel_builder
+    from step06_a_datas_obj import *
+    import time
+
+    ''' mask1ch, flow 2ch合併 的形式'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    # db_obj = type9_mask_flow_have_bg_dtd_hdr_mix_and_paper.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=10 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+
+    ''' mask1ch, flow 2ch合併 的形式'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    db_obj = type8_blender_kong_doc3d_in_I_gt_MC.build()
+    print(db_obj)
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 448, 448) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()

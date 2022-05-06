@@ -2,6 +2,8 @@ from step06_c0_tf_Data_initial_builder import tf_Data_init_builder
 from kong_util.util import get_db_amount
 import tensorflow as tf
 
+debug_dict = {}
+
 class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_init_builder):
     def __init__(self, tf_data=None):
         super(tf_Data_in_dis_gt_wc_flow_builder, self).__init__(tf_data)
@@ -22,14 +24,14 @@ class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_init_builder):
         self.tf_data.test_amount   = get_db_amount(self.tf_data.db_obj.test_in_dir)
 
         ### train_gt
-        self.tf_data.train_gt_db  = self.train_gt_factory .build_M_W_db_right()
-        self.tf_data.train_gt2_db = self.train_gt2_factory.build_M_C_db_wrong()
+        self.tf_data.train_gt_db  = self.train_gt_factory .build_W_db_by_MW_hole_norm_then_mul_M_right()
+        self.tf_data.train_gt2_db = self.train_gt2_factory.build_F_db_by_MC_hole_norm_no_mul_M_wrong_but_OK()
         self.tf_data.train_gt_db.ord = tf.data.Dataset.zip((self.tf_data.train_gt_db.ord, self.tf_data.train_gt2_db.ord))
         self.tf_data.train_gt_db.pre = tf.data.Dataset.zip((self.tf_data.train_gt_db.pre, self.tf_data.train_gt2_db.pre))
 
         ### test_gt
-        self.tf_data.test_gt_db  = self.test_gt_factory .build_M_W_db_right()
-        self.tf_data.test_gt2_db = self.test_gt2_factory.build_M_C_db_wrong()
+        self.tf_data.test_gt_db  = self.test_gt_factory .build_W_db_by_MW_hole_norm_then_mul_M_right()
+        self.tf_data.test_gt2_db = self.test_gt2_factory.build_F_db_by_MC_hole_norm_no_mul_M_wrong_but_OK()
         self.tf_data.test_gt_db.ord = tf.data.Dataset.zip((self.tf_data.test_gt_db.ord, self.tf_data.test_gt2_db.ord    ))
         self.tf_data.test_gt_db.pre = tf.data.Dataset.zip((self.tf_data.test_gt_db.pre, self.tf_data.test_gt2_db.pre))
         ##########################################################################################################################################
@@ -107,8 +109,8 @@ class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_init_builder):
             self.tf_data.see_in_db   = self.see_in_factory.build_img_db()
 
             ### see_gt
-            self.tf_data.see_gt_db  = self.see_gt_factory .build_M_W_db_right()
-            self.tf_data.see_gt2_db = self.see_gt2_factory.build_M_C_db_wrong()
+            self.tf_data.see_gt_db  = self.see_gt_factory .build_W_db_by_MW_hole_norm_then_mul_M_right()
+            self.tf_data.see_gt2_db = self.see_gt2_factory.build_F_db_by_MC_hole_norm_no_mul_M_wrong_but_OK()
             self.tf_data.see_gt_db.ord = tf.data.Dataset.zip((self.tf_data.see_gt_db.ord, self.tf_data.see_gt2_db.ord))
             self.tf_data.see_gt_db.pre = tf.data.Dataset.zip((self.tf_data.see_gt_db.pre, self.tf_data.see_gt2_db.pre))
 
@@ -156,3 +158,16 @@ class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_init_builder):
             #     plt.close()
             ##########################################################################################################################################
         return self
+
+if(__name__ == "__main__"):
+    from step09_d_KModel_builder_combine_step789 import MODEL_NAME, KModel_builder
+    from step06_a_datas_obj import *
+    import time
+
+    start_time = time.time()
+    ''' mask1ch, flow 2ch合併 的形式'''
+    ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    # db_obj = type8_blender_kong_doc3d.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
