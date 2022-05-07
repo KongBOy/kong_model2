@@ -197,11 +197,20 @@ class See_wc(See_info):
     ###         1.這樣這裡做的事情太多了~~
     ###         2.npy轉npz 我會把 npy刪掉，但這樣第二次執行時 self.npy_names 就會是空的，還要寫if來判斷何時讀 npy, npz ，覺得複雜~
     def _Draw_WM_matplot_visual(self, epoch, add_loss=False, bgr2rgb=False, jump_to=0):
+        ### 不知道
         # WM_range = {"xmin": 0, "xmax": 1, "ymin": 0, "ymax": 1, "zmin": 0.2, "zmax": 1}  ### zmin 用 0.2 是因為 直接看結果覺得下面空空的浪費
-        WM_range = {"xmin": -0.08075158, "xmax": 0.07755918, "ymin": -0.13532962, "ymax": 0.1357405, "zmin": 0.0, "zmax": 0.039187048}  ### zmin 用 0.2 是因為 直接看結果覺得下面空空的浪費
-
-        W_min = -0.135329262
-        W_max =  0.1357405
+        ### 柱狀
+        # WM_range = {"xmin": -0.08075158, "xmax": 0.07755918, "ymin": -0.13532962, "ymax": 0.1357405, "zmin": 0.0, "zmax": 0.039187048}  ### zmin 用 0.2 是因為 直接看結果覺得下面空空的浪費
+        # W_min = -0.135329262
+        # W_max =  0.1357405
+        ### doc3d hole norm
+        # WM_range = {"xmin": -1.2280148, "xmax": 1.2387834, "ymin": -1.2410645, "ymax": 1.2485291, "zmin": -0.67187124, "zmax": 0.63452387}  ### zmin 用 0.2 是因為 直接看結果覺得下面空空的浪費
+        # W_min = -1.2410645
+        # W_max =  1.2485291
+        ### doc3d ch_norm
+        WM_range = {"xmin": -1.2280148, "xmax": 1.2387834, "ymin": -1.2410645, "ymax": 1.2485291, "zmin": -0.67187124, "zmax": 0.63452387}  ### zmin 用 0.2 是因為 直接看結果覺得下面空空的浪費
+        W_min = np.array( [ WM_range["zmin"], WM_range["ymin"], WM_range["xmin"] ] ).reshape(1, 1, 3)
+        W_max = np.array( [ WM_range["zmax"], WM_range["ymax"], WM_range["xmax"] ] ).reshape(1, 1, 3)
 
         in_img     = cv2.imread(self.dis_img_path)
         WM_01      = np.load(self.WM_npz_epoch_read_paths[epoch])["arr_0"]  ### npz的讀法要["arr_0"]，因為我存npz的時候沒給key_value，預設就 arr_0 囉！
