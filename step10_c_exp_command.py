@@ -8,7 +8,10 @@
 # sb.run(["conda.bat", "activate", "tensorflow_cpu"])
 
 cmd_python_step10_a = ["python", "step10_a.py"]
-run = "build().run()"
+run                 = "build().run()"
+train               = "build().train()"
+train_reload        = "build().train_reload()"
+train_run_final_see = "build().train_run_final_see()"
 
 bm_rec_see_print_msg = False
 bm_rec_result_print_msg = True
