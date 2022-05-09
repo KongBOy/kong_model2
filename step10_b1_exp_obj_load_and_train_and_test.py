@@ -24,8 +24,8 @@ start_time = time.time()
 
 class Experiment():
     def __init__(self):
-        self.machine_ip = None
-        self.machine_user = None
+        self.machine_ip   = socket.gethostbyname(socket.gethostname())  ### 取得 本機 IP   給 train_step5_show_time 紀錄
+        self.machine_user = getpass.getuser()
         self.current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         self.code_exe_path = None
         ##############################################################################################################################
