@@ -440,14 +440,15 @@ class Train_step_I_w_M_to_W():
         # print("Wxgt.shape", Wxgt.shape)
         # import matplotlib.pyplot as plt
         # fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(12, 8))
-        # ax[0, 0].imshow(in_data[0])
-        # ax[0, 1].imshow(gt_mask[0])
-        # ax[0, 2].imshow(I_with_M[0])
-        # ax[1, 0].imshow(Wxgt[0])
-        # ax[1, 1].imshow(Wygt[0])
-        # ax[1, 2].imshow(Wzgt[0])
+        # ax[0, 0].imshow(in_data[0]   , vmin=0, vmax=1)
+        # ax[0, 1].imshow(gt_mask[0]   , vmin=0, vmax=1)
+        # ax[0, 2].imshow(I_with_M[0]  , vmin=0, vmax=1)
+        # ax[1, 0].imshow(Wxgt[0]      , vmin=0, vmax=1)
+        # ax[1, 1].imshow(Wygt[0]      , vmin=0, vmax=1)
+        # ax[1, 2].imshow(Wzgt[0]      , vmin=0, vmax=1)
         # fig.tight_layout()
         # plt.show()
+
         if(self.separate_out is False):
             if(self.focus is False): _train_step_Single_output(model_obj, in_data=I_with_M, gt_data=Wgt     , loss_info_objs=loss_info_objs)
             else:                    _train_step_Single_output(model_obj, in_data=I_with_M, gt_data=Wgt     , loss_info_objs=loss_info_objs, Mask=gt_mask)
