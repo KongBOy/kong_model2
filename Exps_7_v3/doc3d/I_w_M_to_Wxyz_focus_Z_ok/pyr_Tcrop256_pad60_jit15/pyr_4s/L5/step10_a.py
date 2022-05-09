@@ -42,7 +42,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
     6_mask_unet/自己命的名字/...
 '''
 
-use_db_obj = type8_blender_kong_doc3d_in_I_gt_W_ch_norm_only_for_doc3d_x_value_reverse
+use_db_obj = type8_blender_kong_doc3d_in_I_gt_W_ch_norm
 use_loss_obj = [G_mae_s001_loss_info_builder.set_loss_target("UNet_z").copy(), G_mae_s001_loss_info_builder.set_loss_target("UNet_y").copy(), G_mae_s001_loss_info_builder.set_loss_target("UNet_x").copy()]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
 #############################################################
 ### 為了resul_analyze畫空白的圖，建一個empty的 Exp_builder
