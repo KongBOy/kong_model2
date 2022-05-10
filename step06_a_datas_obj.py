@@ -340,13 +340,6 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.check_rec_hope_see_dir   = self.db.db_dir + "/check" + "/see/0_rec_hope"
         return self
 
-    def set_ch_ranges(self, in_ch_ranges=None, gt_ch_ranges=None, in2_ch_ranges=None, gt2_ch_ranges=None):
-        self.db.in_ch_ranges = in_ch_ranges
-        self.db.gt_ch_ranges = gt_ch_ranges
-        self.db.in2_ch_ranges = in2_ch_ranges
-        self.db.gt2_ch_ranges = gt2_ch_ranges
-        return self
-
     def reset_test_db_name(self, test_db_name):
         self.db.test_db_name      = test_db_name
         self.set_dir_by_basic()
@@ -370,6 +363,13 @@ class Dataset_format_builder(Dataset_dir_builder):
         self.db.db_gt2_range      = db_gt2_range
         self.db.db_rec_hope_range = db_rec_hope_range
 
+        return self
+
+    def set_ch_ranges(self, in_ch_ranges=None, gt_ch_ranges=None, in2_ch_ranges=None, gt2_ch_ranges=None):
+        self.db.in_ch_ranges = in_ch_ranges
+        self.db.gt_ch_ranges = gt_ch_ranges
+        self.db.in2_ch_ranges = in2_ch_ranges
+        self.db.gt2_ch_ranges = gt2_ch_ranges
         return self
 
 class Dataset_detail_builder(Dataset_format_builder):

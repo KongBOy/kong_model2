@@ -46,9 +46,9 @@ use_db_obj =  type8_blender_wc_try_mul_M
 use_loss_obj = [G_mae_s001_loss_info_builder.set_loss_target("UNet_W").copy()]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
 #############################################################
 ### 為了resul_analyze畫空白的圖，建一個empty的 Exp_builder
-empty = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_0side, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_0side.kong_model.model_describe) .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="為了resul_analyze畫空白的圖，建一個empty的 Exp_builder")
+empty = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_0side, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_0side.kong_model.model_describe) .set_train_args(epochs= 60).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="為了resul_analyze畫空白的圖，建一個empty的 Exp_builder")
 #############################################################
-ch032_0side = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_0side, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_0side.kong_model.model_describe) .set_train_args(epochs= 60, exp_bn_see_arg=None).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="L4_ch032_bl_pyr_-20220419_070807")
+ch032_0side = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_0side, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_0side.kong_model.model_describe) .set_train_args(epochs= 60).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="L4_ch032_bl_pyr_-20220419_070807")
 #############################################################
 if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
