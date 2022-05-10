@@ -227,7 +227,7 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
 
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
-        debug_tf_data(self.tf_data, use_train_test_see="train")
+        # debug_tf_data(self.tf_data, use_train_test_see="train")
         # debug_tf_data(self.tf_data, use_train_test_see="test")
         # debug_tf_data(self.tf_data, use_train_test_see="see")
 
