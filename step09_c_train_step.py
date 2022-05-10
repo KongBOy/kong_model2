@@ -412,7 +412,7 @@ class Train_step_I_w_M_to_W():
         self.focus        = focus
         self.tight_crop   = tight_crop
 
-    # @tf.function
+    @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
