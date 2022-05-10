@@ -208,8 +208,13 @@ class Experiment():
         if(self.it_down_step == "half"): self.it_down_step = self.total_iters // 2  ### 知道total_iter後 即可知道 half iter 為多少， 如果 it_down_step設定half 這邊就可以直接指定給他囉～
         if(self.it_see_fq is not None and self.it_show_time_fq is None): self.it_show_time_fq = self.it_see_fq  ### 防呆， 如果有用it 的概念 但忘記設定 it_show_time_fq， 就直接設定為 it_see_fq， 這樣在存圖時， 就可以順便看看時間囉！
         if(self.it_see_fq is not None):  ### 計算 1個epoch 裡面 共有幾個 iter_see
-            it_sees_amo_in_one_epoch      = self.tf_data.train_amount // self.it_see_fq
-            it_sees_amo_in_one_epoch_frac = self.tf_data.train_amount % self.it_see_fq
+            it_batch_amo_in_one_epoch      = self.tf_data.train_amount // self.batch_size
+            it_batch_amo_in_one_epoch_frac = self.tf_data.train_amount %  self.batch_size
+            if  (it_batch_amo_in_one_epoch_frac == 0): it_batch_amo_in_one_epoch = it_batch_amo_in_one_epoch
+            else                                     : it_batch_amo_in_one_epoch = it_batch_amo_in_one_epoch + 1
+
+            it_sees_amo_in_one_epoch      = it_batch_amo_in_one_epoch // self.it_see_fq
+            it_sees_amo_in_one_epoch_frac = it_batch_amo_in_one_epoch % self.it_see_fq
             if(it_sees_amo_in_one_epoch_frac == 0): self.it_sees_amo_in_one_epoch = it_sees_amo_in_one_epoch
             else                                  : self.it_sees_amo_in_one_epoch = it_sees_amo_in_one_epoch + 1
 
