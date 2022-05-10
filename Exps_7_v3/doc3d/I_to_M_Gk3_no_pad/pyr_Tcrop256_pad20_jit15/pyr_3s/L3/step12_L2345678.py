@@ -81,5 +81,5 @@ if(__name__ == "__main__"):
                                         ana_what_sees="see",
                                         ana_what="mask",
                                         row_col_results=ch032_1side_4__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=115, fix_size=(256, 256))\
-                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
-                                            # .Gather_all_see_final_img()
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
+                                            .Gather_all_see_final_img()
