@@ -33,33 +33,43 @@ def debug_tf_data(tf_data, use_train_test_see="train"):
         debug_dict[f"{i}--2-5 gt_W"       ] = gt_ord[0, ..., 0:3].numpy()
         debug_dict[f"{i}--2-6 gt_W_pre"   ] = gt_pre[0, ..., 0:3].numpy()
 
-        fig, ax = plt.subplots(2, 5)
-        fig.set_size_inches(4.5 * 5, 4.5 * 2)
+        canvas_base_size = 3
+        nrows = 3
+        ncols = 5
+        fig, ax = plt.subplots(nrows=nrows, ncols=ncols)
+        fig.set_size_inches(canvas_base_size * ncols, canvas_base_size * nrows)
         ### ord vs pre
         in_ord = in_ord[0]
         in_pre = in_pre[0]
-        ax[0, 0].imshow(in_ord)
-        ax[0, 1].imshow(in_pre)
+        ax[0, 0].imshow(in_ord, vmin=0, vmax=255)
+        ax[0, 1].imshow(in_pre, vmin=0, vmax=1)
 
         ### W_ord vs W_pre
         W_ord = gt_ord[0, ..., :3]
         W_pre = gt_pre[0, ..., :3]
-        ax[0, 2].imshow(W_ord)
-        ax[0, 3].imshow(W_pre)
+        ax[0, 2].imshow(W_ord, vmin=0, vmax=1)
+        ax[0, 3].imshow(W_pre, vmin=0, vmax=1)
 
-        ### Wx, Wy, Wz 看一下長什麼樣子
+        ### Wx, Wy, Wz 看一下ord長什麼樣子
+        Wx_ord = gt_ord[0, ..., 0]
+        Wy_ord = gt_ord[0, ..., 1]
+        Wz_ord = gt_ord[0, ..., 2]
+        ax[1, 0].imshow(Wx_ord, vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
+        ax[1, 1].imshow(Wy_ord, vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
+        ax[1, 2].imshow(Wz_ord, vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
+        ### Wx, Wy, Wz 看一下pre長什麼樣子
         Wx_pre = gt_pre[0, ..., 0]
         Wy_pre = gt_pre[0, ..., 1]
         Wz_pre = gt_pre[0, ..., 2]
-        ax[1, 0].imshow(Wx_pre)
-        ax[1, 1].imshow(Wy_pre)
-        ax[1, 2].imshow(Wz_pre)
+        ax[2, 0].imshow(Wx_pre, vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
+        ax[2, 1].imshow(Wy_pre, vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
+        ax[2, 2].imshow(Wz_pre, vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
 
         ### M_ord vs M_pre
         Mgt     = gt_ord[0, ..., 3:4]
         Mgt_pre = gt_pre[0, ..., 3:4]
-        ax[1, 3].imshow(Mgt)
-        ax[1, 4].imshow(Mgt_pre)
+        ax[2, 3].imshow(Mgt     , vmin=0, vmax=1)
+        ax[2, 4].imshow(Mgt_pre , vmin=0, vmax=1)
 
         ### W_pre * M
         W_pre_w_Mgt_pre = W_pre * Mgt_pre
@@ -75,7 +85,7 @@ def debug_tf_data(tf_data, use_train_test_see="train"):
 
         if(os.path.isdir(check_dst_dir) is False): os.makedirs(check_dst_dir)
         plt.savefig(f"{check_dst_dir}/" + "%05i" % (i + 1) ) 
-        # plt.show()
+        plt.show()
         plt.close()
 
 ##########################################################################################################################################
@@ -217,10 +227,11 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
 
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
-        # debug_tf_data(self.tf_data, use_train_test_see="train")
+        debug_tf_data(self.tf_data, use_train_test_see="train")
         # debug_tf_data(self.tf_data, use_train_test_see="test")
         # debug_tf_data(self.tf_data, use_train_test_see="see")
 
+    ### Kong_Doc3D V1 才用這個， 升級到 V2就不用了喔， 因為在DB方面就已經把x軸反轉了
     def build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse(self):
         ##########################################################################################################################################
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db
@@ -279,6 +290,8 @@ if(__name__ == "__main__"):
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type8_blender_kong_doc3d_in_I_gt_W.build()  ### 有 mul_M_right, hole_norm
     db_obj = type8_blender_kong_doc3d_in_I_gt_W_ch_norm.build()  ### 有 mul_M_right, ch_norm
+    ### Kong_Doc3D V1 才用這個， 升級到 V2就不用了喔， 因為在DB方面就已經把x軸反轉了
+    # db_obj = type8_blender_kong_doc3d_in_I_gt_W_ch_norm_only_for_doc3d_x_value_reverse.build()  ### 有 mul_M_right, ch_norm
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
