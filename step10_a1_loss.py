@@ -16,7 +16,10 @@ def mse_kong(gt_data, pred_data, lamb=tf.constant(1., tf.float32), Mask=None):
     if(Mask is None): loss = tf.reduce_mean(tf.math.square(gt_data - pred_data))
     else:
         Mask = Mask[:, :h, :w, :]    ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-        loss = tf.reduce_sum(tf.math.square((gt_data - pred_data) * Mask)) / ( tf.reduce_sum(Mask) * c)
+        # loss = tf.reduce_sum(tf.math.square((gt_data - pred_data) * Mask)) / ( tf.reduce_sum(Mask) * c)  ### v1 只考慮 batch_size = 1 的狀況， sum 的時機亂寫也沒關係
+        # print("loss v1", loss)
+        loss = tf.reduce_sum(tf.math.square((gt_data - pred_data) * Mask) / ( tf.reduce_sum(Mask, axis=[1, 2]) * c) ) / n  ### v2 考慮 batch_size = 1 或 >1 的狀況 都可以正確跑囉！
+        # print("loss v2", loss)
     return loss * lamb
 
 def mae_kong(gt_data, pred_data, lamb=tf.constant(1., tf.float32), Mask=None):
@@ -25,7 +28,10 @@ def mae_kong(gt_data, pred_data, lamb=tf.constant(1., tf.float32), Mask=None):
     if(Mask is None): loss = tf.reduce_mean(tf.math.abs(gt_data - pred_data))
     else:
         Mask = Mask[:, :h, :w, :]    ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-        loss = tf.reduce_sum(tf.math.abs((gt_data - pred_data) * Mask)) / ( tf.reduce_sum(Mask) * c)
+        # loss = tf.reduce_sum(tf.math.abs((gt_data - pred_data) * Mask)) / ( tf.reduce_sum(Mask) * c)
+        # print("loss v1", loss)
+        loss = tf.reduce_sum(tf.math.abs((gt_data - pred_data) * Mask) / ( tf.reduce_sum(Mask, axis=[1, 2]) * c) ) / n
+        # print("loss v2", loss)
     return loss * lamb
 
 class MSE(tf.keras.losses.Loss):
@@ -149,7 +155,8 @@ class BCE():
                 ##############################################################################################################################
                 ##############################################################################################################################
 
-                bce_loss = tf.reduce_sum( bce_loss * Mask ) / tf.reduce_sum(Mask * c)
+                # bce_loss = tf.reduce_sum( bce_loss * Mask ) / tf.reduce_sum(Mask * c)
+                bce_loss = tf.reduce_sum( bce_loss * Mask / ( tf.reduce_sum(Mask, axis=[1, 2]) * c ) ) / n
 
         # tf_bce_loss = self.tf_fun(gt_data, pred_data)
         # print("   bce_loss",    bce_loss)  ### 確認過和 tf2 一樣
