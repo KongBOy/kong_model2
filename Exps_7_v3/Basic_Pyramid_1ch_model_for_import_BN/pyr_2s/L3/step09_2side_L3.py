@@ -66,12 +66,20 @@ if(__name__ == "__main__"):
     import numpy as np
 
     print("build_model cost time:", time.time() - start_time)
-    data = np.zeros(shape=(1, 512, 512, 1))
+    data = np.zeros(shape=(1, 511, 511, 1))
     use_model = ch032_pyramid_1side_4__2side_2
     use_model = use_model.build()
     result = use_model.generator(data)
     print(result.shape)
 
-    from kong_util.tf_model_util import Show_model_weights
-    Show_model_weights(use_model.generator)
-    use_model.generator.summary()
+    import tensorflow as tf
+    import datetime
+    code_exe_dir = "\\".join(code_exe_path_element[:-1])
+    log_dir = f"{code_exe_dir}/use_Tensorboard_see_Graph/{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}"
+    tboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
+
+    img_inputs = tf.keras.Input(shape=(511, 511, 1))
+    use_model.generator(img_inputs)
+    use_model.generator.compile(optimizer='adam', loss='mae', metrics=['accuracy'])
+    use_model.generator.fit    (data, data, epochs=1, callbacks=[tboard_callback])
+    print(f"tensorboard --logdir={log_dir}")

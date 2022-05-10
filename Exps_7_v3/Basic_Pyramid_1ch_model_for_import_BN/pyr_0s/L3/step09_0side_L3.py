@@ -29,7 +29,7 @@ start_time = time.time()
 #########################################################################################
 pyramid_0side = [0, 0, 0, 0, 0, 0, 0]
 #########################################################################################
-ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_0side, ch_upper_bound= 2 ** 14)
+ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(norm="bn", out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=3, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_0side, ch_upper_bound= 2 ** 14)
 #########################################################################################
 ###############################################################################################################################################################################################
 
@@ -43,6 +43,14 @@ if(__name__ == "__main__"):
     result = use_model.generator(data)
     print(result.shape)
 
-    from kong_util.tf_model_util import Show_model_weights
-    Show_model_weights(use_model.generator)
-    use_model.generator.summary()
+    import tensorflow as tf
+    import datetime
+    code_exe_dir = "\\".join(code_exe_path_element[:-1])
+    log_dir = f"{code_exe_dir}/use_Tensorboard_see_Graph/{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}"
+    tboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
+
+    img_inputs = tf.keras.Input(shape=(511, 511, 1))
+    use_model.generator(img_inputs)
+    use_model.generator.compile(optimizer='adam', loss='mae', metrics=['accuracy'])
+    use_model.generator.fit    (data, data, epochs=1, callbacks=[tboard_callback])
+    print(f"tensorboard --logdir={log_dir}")
