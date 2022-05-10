@@ -1,6 +1,6 @@
 import tensorflow as tf
 from step07_a_unet_component import Conv_Blocks, UNet_down, UNet_up, Use_what_acti
-from tensorflow.keras.layers import Activation, Concatenate, Conv2D
+from tensorflow.keras.layers import Activation, Concatenate, Conv2D, BatchNormalization
 from tensorflow_addons.layers import InstanceNormalization
 
 ### 參考 DewarpNet 的 train_wc 用的 UNet
@@ -149,8 +149,8 @@ class Generator(tf.keras.models.Model):
                                                                 conv_block_num=self.conv_block_num[-1 - 1],  ### -1 是因為現在有新增 out_conv_block 在最尾巴， 所以原本的index要多-1
                                                                 name="U_1->0_top",
                                                                 **self.common_kwargs)  ### Layer 1 -> 0， to_L=0 代表 返回 第0層
-
-                self.up_arch_dict[f"u{go_dec}_top_out_IN"]     = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="U_0_top_out_IN")
+                if  (self.norm == "in"): self.up_arch_dict[f"u{go_dec}_top_out_IN"] = InstanceNormalization(axis=3, center=True, scale=True, beta_initializer="random_uniform", gamma_initializer="random_uniform", name="U_0_top_out_IN")
+                elif(self.norm == "bn"): self.up_arch_dict[f"u{go_dec}_top_out_BN"] = BatchNormalization(epsilon=1e-05, momentum=0.1, name="U_0_top_out_BN")  ### b_in_channel:64
 
                 self.up_arch_dict[f"u{go_dec}_top_out_concat"] = Concatenate(name="U_0_top_out_concat")
 
@@ -192,7 +192,7 @@ class Generator(tf.keras.models.Model):
 
         #####################################################
         ### Down top
-        x, x_after_down, x_before_down = self.d_top(input_tensor)
+        x, x_after_down, x_before_down = self.d_top(input_tensor, training=training)
         if(self.out_conv_block is True):  skips.append(x_before_down)  ### 如果有用 out_conv_block的話 記得也要多他的 skip 喔！ 而他的skip 一定只能用 x_before_down 不能用 after_down， 要不shape對不到
         if(self.debug):  print(f"{self.d_top.name} x_before_down: {x_before_down[0, 0, 0, :3]}")  ### debug 用
 
@@ -211,7 +211,7 @@ class Generator(tf.keras.models.Model):
 
         ### Down middle
         for name, d_middle in self.d_middles.items():
-            x, x_after_down, x_before_down = d_middle(x)
+            x, x_after_down, x_before_down = d_middle(x, training=training)
             if  (self.concat_before_down is False): skips.append(x_after_down)
             elif(self.concat_before_down is True):  skips.append(x_before_down)
             if(self.debug):
@@ -219,7 +219,7 @@ class Generator(tf.keras.models.Model):
                 elif(self.concat_before_down is True):  print(f"{name} x_before_down: {x_before_down[0, 0, 0, :3]}")  ### debug 用
         ### Down bottle
         # print(self.d_bottle.name)  ### debug 用
-        x_bottle, x_after_down, x_before_down = self.d_bottle(x)  ### down 的 bottle沒有需要用到 x_after_down
+        x_bottle, x_after_down, x_before_down = self.d_bottle(x, training)  ### down 的 bottle沒有需要用到 x_after_down
         if  (self.concat_before_down is False): pass
         elif(self.concat_before_down is True):  skips.append(x_before_down)
         if(self.debug):
@@ -246,10 +246,10 @@ class Generator(tf.keras.models.Model):
             ### Up bottle
             if(self.no_concat_layer >= self.depth_level - 1):  ### no_concat 的 Case
                 if(self.debug): print(f"u{go_dec}_bottle ", self.up_arch_dict[f"u{go_dec}_bottle"].name, f"feature {x_bottle_divs[go_dec][0, 0, 0, :3]} no concat")  ### debug 用
-                feature_up = self.up_arch_dict[f"u{go_dec}_bottle"](x_bottle_divs[go_dec])
+                feature_up = self.up_arch_dict[f"u{go_dec}_bottle"](x_bottle_divs[go_dec], training=training)
             else:  ### concat 的 Case
                 if(self.debug): print(f"u{go_dec}_bottle ", self.up_arch_dict[f"u{go_dec}_bottle"].name, f"feature {x_bottle_divs[go_dec][0, 0, 0, :3]} concat with {skips[skip_id][0, 0, 0, :3]}")  ### debug 用
-                feature_up = self.up_arch_dict[f"u{go_dec}_bottle"](x_bottle_divs[go_dec], skips[skip_id])
+                feature_up = self.up_arch_dict[f"u{go_dec}_bottle"](x_bottle_divs[go_dec], skips[skip_id], training=training)
             skip_id -= 1  ### 接著繼續倒數下一個
 
             ### Up middle
@@ -258,40 +258,40 @@ class Generator(tf.keras.models.Model):
                 if (layer_id <= self.no_concat_layer):
                     ### no_concat 的 Case
                     if(self.debug): print(f"u{go_dec}_middles", f"{name} feature {feature_up[0, 0, 0, :3]} no concat")  ### debug 用
-                    feature_up = u_middle(feature_up)
+                    feature_up = u_middle(feature_up, training=training)
                 else:
                     ### concat 的 Case
                     if(self.debug): print(f"u{go_dec}_middles", f"{name} feature {feature_up[0, 0, 0, :3]} concat with {skips[skip_id][0, 0, 0, :3]}")  ### debug 用
-                    feature_up = u_middle(feature_up, skips[skip_id])
+                    feature_up = u_middle(feature_up, skips[skip_id], training=training)
                 skip_id -= 1  ### 接著繼續倒數下一個
             ### Up top
-            feature_up = self.up_arch_dict[f"u{go_dec}_top"](feature_up)  ### up 的 top 沒有 skip
+            feature_up = self.up_arch_dict[f"u{go_dec}_top"](feature_up, training=training)  ### up 的 top 沒有 skip
             if(self.debug): print(f"u{go_dec}_top    ", self.up_arch_dict[f"u{go_dec}_top"].name, "no concat")  ### debug 用
 
             ### 如果要用 v3 的 輸出前要接 Conv_Blocks 的 Case
             if(self.out_conv_block is True):
                 ### IN
-                feature_up = self.up_arch_dict[f"u{go_dec}_top_out_IN"](feature_up)
+                feature_up = self.up_arch_dict[f"u{go_dec}_top_out_IN"](feature_up, training=training)
 
                 ### 看要不要 Concat
                 if(self.no_concat_layer >= 1):
                     ### no_concat 的 Case
                     if(self.debug): print(f"u{go_dec}_top_out_conv_blocks", self.up_arch_dict[f"u{go_dec}_top_out_conv_blocks"].name, "no concat")  ### debug 用
-                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_conv_blocks"](feature_up)
+                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_conv_blocks"](feature_up, training=training)
                 elif(self.no_concat_layer == 0):
                     ### concat 的 Case
                     if(self.debug): print(f"u{go_dec}_top_out_conv_blocks", self.up_arch_dict[f"u{go_dec}_top_out_conv_blocks"].name, f"concat with {skips[skip_id][0, 0, 0, :3]}")  ### debug 用
                     b, h, w, c = feature_up.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_concat"]([skips[skip_id][:, :h, :w, :], feature_up])
+                    feature_up = self.up_arch_dict[f"u{go_dec}_top_out_concat"]([skips[skip_id][:, :h, :w, :], feature_up], training=training)
 
                 ### Activation
-                feature_up = self.up_arch_dict[f"u{go_dec}_top_out_Acti"](feature_up)
+                feature_up = self.up_arch_dict[f"u{go_dec}_top_out_Acti"](feature_up, training=training)
 
                 ### Conv_Blocks
-                feature_up = self.up_arch_dict[f"u{go_dec}_top_out_conv_blocks"](feature_up)
+                feature_up = self.up_arch_dict[f"u{go_dec}_top_out_conv_blocks"](feature_up, training=training)
 
                 ### 1x1Conv
-                feature_up = self.up_arch_dict[f"u{go_dec}_top_out_1x1conv"](feature_up)
+                feature_up = self.up_arch_dict[f"u{go_dec}_top_out_1x1conv"](feature_up, training=training)
 
             ### 有可能有多個Decoder， 所以做完的結果 append 到 outs
             outs.append(feature_up)

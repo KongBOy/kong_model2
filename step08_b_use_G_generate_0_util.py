@@ -329,7 +329,7 @@ class Use_G_generate:
         self.add_loss       = None
         self.bgr2rgb        = None
 
-    def __call__(self, model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+    def __call__(self, model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=None, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
         self.model_obj      = model_obj
         self.phase          = phase
         self.index          = index
