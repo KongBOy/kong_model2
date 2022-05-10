@@ -20,7 +20,7 @@ from step08_b_use_G_generate_0_util import Tight_crop
 from step09_c_train_step import Train_step_I_w_M_to_W
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
-import Exps_7_v3.Basic_Pyramid_1ch_model_for_import.pyr_2s.L3.step09_2side_L3 as pyr_1ch_model
+import Exps_7_v3.Basic_Pyramid_1ch_model_for_import_BN.pyr_2s.L3.step09_2side_L3 as pyr_1ch_model
 use_gen_op     =            I_w_M_to_W(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale=  0) )
 use_train_step = Train_step_I_w_M_to_W(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale= 15) )
 

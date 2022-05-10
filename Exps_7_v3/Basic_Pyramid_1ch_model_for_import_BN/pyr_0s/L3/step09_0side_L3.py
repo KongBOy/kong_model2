@@ -37,7 +37,7 @@ if(__name__ == "__main__"):
     import numpy as np
 
     print("build_model cost time:", time.time() - start_time)
-    data = np.zeros(shape=(1, 512, 512, 1))
+    data = np.zeros(shape=(1, 511, 511, 1))
     use_model = ch032_pyramid_0side
     use_model = use_model.build()
     result = use_model.generator(data)
