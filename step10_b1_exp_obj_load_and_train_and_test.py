@@ -73,7 +73,7 @@ class Experiment():
 
         self.total_iters     = None  ### 總共會  更新 幾次， 建立完tf_data後 才會知道所以現在指定None
         ##################################################################################################
-        self.exp_bn_see_arg = False  ### 本來 bn 在 test 的時候就應該要丟 false，只是 現在batch_size=1， 丟 True 會變 IN ， 所以加這個flag 來控制
+        # self.exp_bn_see_arg = False  ### 本來 bn 在 test 的時候就應該要丟 false，只是 現在batch_size=1， 丟 True 會變 IN ， 所以加這個flag 來控制
 
         self.use_in_range = Range(min=0, max=1)
         self.use_gt_range = Range(min=0, max=1)
@@ -308,7 +308,7 @@ class Experiment():
             ###############################################################################################################################
             ###     step1 用來看目前訓練的狀況
             if(self.current_ep == 0 or (self.current_ep % self.ep_see_fq == 0) ):
-                self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+                self.train_step1_see_current_img(phase="train", training=False, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
             ###############################################################################################################################
             ### 以上 current_ep = epoch   ### 代表還沒訓練
             ###     step2 訓練
@@ -426,14 +426,14 @@ class Experiment():
             if(self.current_ep == self.epoch_stop): break   ### 想要有lr 下降，但又不想train滿 中途想離開就 設 epcoh_stop 囉！
 
         ### 最後train完 記得也要看結果喔！
-        self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+        self.train_step1_see_current_img(phase="train", training=False, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
 
     def current_it_See_result_or_set_LR_or_Save_Model(self):
         ### 執行 see, 存loss, show_time
         if(self.it_see_fq is not None):
             if( self.current_it % self.it_see_fq == 0 or
                 self.current_it == self.tf_data.train_amount):   ### 最後一個 it 我希望要存
-                self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
+                self.train_step1_see_current_img(phase="train", training=False, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
                 self.train_step3_Loss_info_save_loss()
 
         ### 設定　lr
@@ -583,7 +583,7 @@ class Experiment():
 
     def train_run_final_see(self):
         self.exp_init(reload_result=True, reload_model=True)
-        self.train_step1_see_current_img(phase="train", training=self.exp_bn_see_arg, see_reset_init=True, postprocess=True, npz_save=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        self.train_step1_see_current_img(phase="train", training=False, see_reset_init=True, postprocess=True, npz_save=True)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         ### 雖然 先jpg 再crop 後的結果 佔的空間比較大， 但可以確保 不管重複跑幾次 crop 都不會壞掉喔！ 而這個 train_run_final_see 很容易需要重跑， 所以就將就一下吧～～
         Save_as_jpg          (self.result_obj.result_write_dir, self.result_obj.result_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完
         Find_ltrd_and_crop   (self.result_obj.result_write_dir, self.result_obj.result_write_dir, padding=15, search_amount=2, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
