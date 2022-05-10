@@ -203,14 +203,15 @@ class Experiment():
         self.tf_data = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
 
         ### 好像變成 it 設定專區， 那就順勢變成 it設定專區 吧～
-        self.total_iters = self.epochs * self.tf_data.train_amount  ### 總共會  更新 幾次
+        self.total_iters = self.epochs * self.tf_data.train_amount // self.batch_size  ### 總共會  更新 幾次
+        if(self.tf_data.train_amount % self.batch_size != 0 ): self.total_iters += 1
         if(self.it_down_step == "half"): self.it_down_step = self.total_iters // 2  ### 知道total_iter後 即可知道 half iter 為多少， 如果 it_down_step設定half 這邊就可以直接指定給他囉～
         if(self.it_see_fq is not None and self.it_show_time_fq is None): self.it_show_time_fq = self.it_see_fq  ### 防呆， 如果有用it 的概念 但忘記設定 it_show_time_fq， 就直接設定為 it_see_fq， 這樣在存圖時， 就可以順便看看時間囉！
-        if(self.it_see_fq is not None):
+        if(self.it_see_fq is not None):  ### 計算 1個epoch 裡面 共有幾個 iter_see
             it_sees_amo_in_one_epoch      = self.tf_data.train_amount // self.it_see_fq
             it_sees_amo_in_one_epoch_frac = self.tf_data.train_amount % self.it_see_fq
             if(it_sees_amo_in_one_epoch_frac == 0): self.it_sees_amo_in_one_epoch = it_sees_amo_in_one_epoch
-            else                              : self.it_sees_amo_in_one_epoch = it_sees_amo_in_one_epoch + 1
+            else                                  : self.it_sees_amo_in_one_epoch = it_sees_amo_in_one_epoch + 1
 
         ### 3.model
         self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
