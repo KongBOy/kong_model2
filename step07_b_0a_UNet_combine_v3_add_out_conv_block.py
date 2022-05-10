@@ -271,7 +271,8 @@ class Generator(tf.keras.models.Model):
             ### 如果要用 v3 的 輸出前要接 Conv_Blocks 的 Case
             if(self.out_conv_block is True):
                 ### IN
-                feature_up = self.up_arch_dict[f"u{go_dec}_top_out_IN"](feature_up, training=training)
+                if  (self.norm == "in"):  feature_up = self.up_arch_dict[f"u{go_dec}_top_out_IN"](feature_up, training=training)
+                elif(self.norm == "bn"):  feature_up = self.up_arch_dict[f"u{go_dec}_top_out_BN"](feature_up, training=training)
 
                 ### 看要不要 Concat
                 if(self.no_concat_layer >= 1):
