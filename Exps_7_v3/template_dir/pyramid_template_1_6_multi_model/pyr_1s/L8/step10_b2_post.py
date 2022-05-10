@@ -25,12 +25,12 @@ from step10_c_exp_command import *
 ######################################################################################################################
 import subprocess as sb
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_7.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_8.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_9.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_1.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_2.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_7.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_8.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_9.{train}"])
