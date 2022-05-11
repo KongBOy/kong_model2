@@ -20,8 +20,8 @@ from step08_b_use_G_generate_0_util import Tight_crop
 from step09_c_train_step import Train_step_Wyx_w_M_to_Wz
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
-use_gen_op     =            Wyx_w_M_to_Wz( focus=True, Tight_crop(pad_size=20, resize=(256, 256), jit_scale= 0) )
-use_train_step = Train_step_Wyx_w_M_to_Wz( focus=True, Tight_crop(pad_size=20, resize=(256, 256), jit_scale=15) )
+use_gen_op     =            Wyx_w_M_to_Wz( focus=True, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale= 0) )
+use_train_step = Train_step_Wyx_w_M_to_Wz( focus=True, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale=15) )
 
 import time
 start_time = time.time()
@@ -32,7 +32,7 @@ start_time = time.time()
 #########################################################################################
 pyramid_0side = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 #########################################################################################
-ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=2, unet_acti="sigmoid", conv_block_num=pyramid_0side, ch_upper_bound= 2 ** 14).set_gen_op( use_what_gen_op ).set_train_step( use_what_train_step )
+ch032_pyramid_0side = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch= 32, depth_level=7, out_ch=1, unet_acti="sigmoid", conv_block_num=pyramid_0side, ch_upper_bound= 2 ** 14).set_gen_op( use_gen_op ).set_train_step( use_train_step )
 #########################################################################################
 ###############################################################################################################################################################################################
 
