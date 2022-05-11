@@ -23,10 +23,10 @@ class I_w_M_to_W(Use_G_generate):
 
     def doing_things(self):
         current_ep   = self.exp_obj.current_ep
-        current_it   = self.exp_obj.current_it
+        current_ep_it   = self.exp_obj.current_ep_it
         it_see_fq   = self.exp_obj.it_see_fq
         if(it_see_fq is None): ep_it_string = "epoch%03i"        %  current_ep
-        else                  : ep_it_string = "epoch%03i_it%06i" % (current_ep, current_it)
+        else                  : ep_it_string = "epoch%03i_it%06i" % (current_ep, current_ep_it)
         current_time = self.exp_obj.current_time
         if  (self.phase == "train"): used_sees = self.exp_obj.result_obj.sees
         elif(self.phase == "test"):  used_sees = self.exp_obj.result_obj.tests

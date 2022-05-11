@@ -20,9 +20,9 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
     os.chdir(code_exe_dir)
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
-import Exps_7_v3.W_w_Mgt_to_Cx_Cy_focus.pyramid_tight_crop_size256_pad60_jit15.pyr_0s.bce_s001_tv_s0p1_L6.step10_a as L6_0side
-import Exps_7_v3.W_w_Mgt_to_Cx_Cy_focus.pyramid_tight_crop_size256_pad60_jit15.pyr_1s.bce_s001_tv_s0p1_L6.step10_a as L6_1side
-import Exps_7_v3.W_w_Mgt_to_Cx_Cy_focus.pyramid_tight_crop_size256_pad60_jit15.pyr_2s.bce_s001_tv_s0p1_L6.step10_a as L6_2side
+import Exps_7_v3.doc3d.I_w_M_to_Wxyz_focus_Z_ok.pyr_Tcrop256_pad60_jit15.pyr_0s.L6.step10_a as L6_0side
+import Exps_7_v3.doc3d.I_w_M_to_Wxyz_focus_Z_ok.pyr_Tcrop256_pad60_jit15.pyr_1s.L6.step10_a as L6_1side
+import Exps_7_v3.doc3d.I_w_M_to_Wxyz_focus_Z_ok.pyr_Tcrop256_pad60_jit15.pyr_2s.L6.step10_a as L6_2side
 import step10_a as L6_3side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ########
