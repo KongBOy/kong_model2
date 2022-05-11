@@ -543,18 +543,18 @@ class Experiment():
                 for loss_name, loss_containor in loss_info_obj.loss_containors.items():  ### 單個output 裡的 多loss 的 case
                     ### tensorboard
                     tf.summary.scalar(loss_name, loss_containor.result(), step=self.current_ep_it)
-                    tf.summary.scalar("lr", self.lr_current, step=current_global_it)
+                    tf.summary.scalar("lr", self.lr_current, step=self.current_ex_it)
 
                     ### 自己另存成 npy
                     loss_value = loss_containor.result().numpy()
                     if( os.path.isfile( f"{loss_info_obj.logs_write_dir}/{loss_name}.npy" ) is False):  ### 第一次 直接把值存成np.array
                         loss_npy_array = np.array( [None] * (self.total_iters + 1))  ### 我最末尾還會在做一個， 頭 尾 都做 所以要 +1
-                        loss_npy_array[current_global_it] = loss_value
+                        loss_npy_array[self.current_ex_it] = loss_value
                         np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_npy_array))
 
                     else:  ### 第二次後，先把np.array先讀出來append值後 再存進去
                         loss_npy_array = np.load(f"{loss_info_obj.logs_write_dir}/{loss_name}.npy", allow_pickle=True)  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
-                        loss_npy_array[current_global_it] = loss_value
+                        loss_npy_array[self.current_ex_it] = loss_value
                         np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_npy_array))
                         # print(loss_npy_array)
 
