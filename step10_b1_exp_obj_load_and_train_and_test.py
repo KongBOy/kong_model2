@@ -233,8 +233,7 @@ class Experiment():
             ### 如果有設定 it_save_fq， 代表之前在train時 已經有 it資訊了(紀錄train到第幾個it)， 這邊就把他讀出來囉
             if(self.it_save_fq is not None):
                 self.it_restart = self.model_obj.ckpt.iter_log.numpy()  ### 跳到第幾個it開始訓練 的概念
-                self.current_ep_it = self.it_restart                    ### 目前的it 指定成 上次的it
-                self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
+                self.Current_ep_it_setting_and_update_current_exp_it(value=self.it_restart)  ### 目前的it 指定成 上次的it
             print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_read_dir, self.start_epoch))
 
         ####################################################################################################################
@@ -295,8 +294,7 @@ class Experiment():
 
             ### 處理 it reload 的狀況
             if(self.it_save_fq is not None and self.it_restart is not None):
-                self.current_ep_it = self.it_restart  ### 目前的it 指定成 上次的it
-                self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
+                self.Current_ep_it_setting_and_update_current_exp_it(value=self.it_restart)  ### 目前的it 指定成 上次的it
                 it_train_amount -= self.it_restart  ### 跳過前 it_restart 個訓練資料， 所以 it_train_amount -= 這樣子
                 self.it_restart = 0                 ### 功成身退， 設回 0 ， 減了他也沒影響， 這樣子在下個 epoch 時 才不會又 跳過前面的 iter
             ################################
@@ -384,8 +382,7 @@ class Experiment():
                             # plt.show()
                             self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
 
-                    self.current_ep_it += 1  ### +1 代表 after_rain 的意思
-                    self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
+                    self.Current_ep_it_setting_and_update_current_exp_it(value= self.current_ep_it + 1)  ### +1 代表 after_rain 的意思
                     ### iter 看要不要 存圖、設定lr、儲存模型 (思考後覺得要在 after_train做)
                     self.current_it_See_result_or_set_LR_or_Save_Model()
                     # if( self.current_ep_it % 10 == 0): break   ### debug用，看subprocess成不成功
@@ -394,15 +391,14 @@ class Experiment():
                     ### train
                     # print("%06i" % it, name)  ### debug用
                     self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
-                    self.current_ep_it += 1  ### +1 代表 after_rain 的意思
+                    self.Current_ep_it_setting_and_update_current_exp_it(value= self.current_ep_it + 1)  ### +1 代表 after_rain 的意思
                     self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
                     ### iter 看要不要 存圖、設定lr、儲存模型 (思考後覺得要在 after_train做)
                     self.current_it_See_result_or_set_LR_or_Save_Model()
                     # if(self.current_ep_it % 10 == 0): break   ### debug用，看subprocess成不成功
 
             self.current_ep += 1  ### 超重要！別忘了加呀！ 因為進到下個epoch了
-            self.current_ep_it  = 0  ### 超重要！別忘了加呀！ 因為進到下個epoch了， 所以iter變回0囉
-            self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
+            self.Current_ep_it_setting_and_update_current_exp_it(value= 0)  ### 超重要！別忘了加呀！ 因為進到下個epoch了， 所以iter變回0囉
             ### 以下 current_ep = epoch + 1   ### +1 代表訓練完了！變成下個epoch了！
             ###############################################################
             ###     step3 整個epoch 的 loss 算平均，存進tensorboard
@@ -462,6 +458,11 @@ class Experiment():
                 self.train_step5_show_time()
                 self.it_start_time      = time.time()  ### 重設 it 時間
                 self.it_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
+
+    def Current_ep_it_setting_and_update_current_exp_it(self, value):
+        self.current_ep_it = value
+        self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
+
 
     def LR_setting(self):
         ### 如果沒有 it下降， 就用ep下降， 直接縣性下降即可( 在epoch_down_step之後， 過一個epoch 下降一次 LR)
