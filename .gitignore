@@ -28,3 +28,6 @@ debug_data/*.png
 debug_data/doc3d*
 debug_data/DB_update_wc_mask/*
 debug_data/DB_become_doc3d/*
+
+*.pb
+*.gz

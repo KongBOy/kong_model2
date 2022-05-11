@@ -456,7 +456,47 @@ class Train_step_I_w_M_to_W():
             if(self.focus is False): _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
             else:                    _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=gt_mask)
 
-        
+class Train_step_Wyx_w_M_to_Wz():
+    def __init__(self, focus=False, tight_crop=None):
+        self.focus        = focus
+        self.tight_crop   = tight_crop
+
+    @tf.function
+    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+        '''
+        I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+        '''
+        Mgt_pre_for_crop  = gt_data[..., 3:4]
+        WM = in_data[0]
+        if(self.tight_crop is not None):
+            self.tight_crop.reset_jit()
+            WM,      _ = self.tight_crop(WM, Mgt_pre_for_crop)
+            gt_data, _ = self.tight_crop(gt_data, Mgt_pre_for_crop)
+
+        in_Wyx      = WM     [..., 1:3]
+        gt_mask     = gt_data[..., 3:4]  ### 模擬一下 之後的 Wyx 是從 model_out 來的， 可能會需要 * M
+        Wyx_with_M = in_Wyx * gt_mask    ### 模擬一下 之後的 Wyx 是從 model_out 來的， 可能會需要 * M
+
+        Wzgt = gt_data[..., 0:1]
+
+        ### debug 時 記得把 @tf.function 拿掉
+        # print("WM.shape", WM.shape)
+        # print("gt_data.shape", gt_data.shape)
+        # print("gt_mask.shape", gt_mask.shape)
+        # print("Wyx_with_M.shape", Wyx_with_M.shape)
+        # print("Wzgt.shape", Wzgt.shape)
+        # import matplotlib.pyplot as plt
+        # fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
+        # ax[0].imshow(in_data[0][0], vmin=0, vmax=1)
+        # ax[1].imshow(gt_mask[0]   , vmin=0, vmax=1)
+        # ax[2].imshow(Wzgt[0]      , vmin=0, vmax=1)
+        # fig.tight_layout()
+        # plt.show()
+
+        if(self.focus is False): _train_step_Single_output(model_obj, in_data=Wyx_with_M, gt_data=Wzgt     , loss_info_objs=loss_info_objs)
+        else:                    _train_step_Single_output(model_obj, in_data=Wyx_with_M, gt_data=Wzgt     , loss_info_objs=loss_info_objs, Mask=gt_mask)
+
+
 @tf.function
 def train_step_Multi_output_I_w_Mgt_to_Wx_Wy_Wz(model_obj, in_data, gt_data, loss_info_objs=None):
     '''
