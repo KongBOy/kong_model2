@@ -83,7 +83,7 @@ class Wyx_w_M_to_Wz(Use_G_generate):
 
         ### 後處理 Output (Wz_raw_pre)
         Wz_raw_01 = Value_Range_Postprocess_to_01(Wz_raw_pre, self.exp_obj.use_gt_range)
-        Wz_raw_01 = Wz_raw_01[0]  ### 上面已轉numpy， 這邊不用轉
+        Wz_raw_01 = Wz_raw_01[0].numpy()
         ### 順便處理一下gt
         WM_gt_pre = WM_gt_pre[0].numpy()  ### 這個還沒轉numpy喔， 記得轉
         WM_gt_01  = Value_Range_Postprocess_to_01(WM_gt_pre, self.exp_obj.use_gt_range)
