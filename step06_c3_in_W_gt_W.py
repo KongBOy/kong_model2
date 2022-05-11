@@ -120,6 +120,7 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
 
     def build_by_in_W_gt_W_hole_norm_then_mul_M_right(self):
         ##########################################################################################################################################
+        ##### IN 部分
         self.tf_data.train_name_db = self.train_in_factory .build_name_db()
         self.tf_data.train_in_db   = self.train_in_factory .build_W_db_by_MW_hole_norm_then_mul_M_right()
         self.tf_data.test_name_db  = self.test_in_factory  .build_name_db()
@@ -132,6 +133,11 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
         self.tf_data.train_in_db.pre  = tf.data.Dataset.zip((self.tf_data.train_in_db.pre, self.tf_data.train_in2_db.pre))
         self.tf_data.test_in_db .pre  = tf.data.Dataset.zip((self.tf_data.test_in_db.pre , self.tf_data.test_in2_db .pre))
 
+        ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
+        self.tf_data.train_amount    = get_db_amount(self.tf_data.db_obj.train_in_dir)
+        self.tf_data.test_amount     = get_db_amount(self.tf_data.db_obj.test_in_dir)
+
+        ##### GT 部分
         self.tf_data.train_gt_db = self.train_gt_factory.build_W_db_by_MW_hole_norm_then_mul_M_right()
         self.tf_data.test_gt_db  = self.test_gt_factory .build_W_db_by_MW_hole_norm_then_mul_M_right()
         ##########################################################################################################################################
@@ -141,6 +147,10 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
         if(self.tf_data.db_obj.have_see):
             self.tf_data.see_in_db   = self.see_in_factory.build_W_db_by_MW_hole_norm_then_mul_M_right()
             self.tf_data.see_name_db = self.see_in_factory.build_name_db()
+            self.tf_data.see_in2_db = self.see_in2_factory .build_img_db()
+            self.tf_data.see_in_db.ord  = tf.data.Dataset.zip((self.tf_data.see_in_db.ord, self.tf_data.see_in2_db.ord))
+            self.tf_data.see_in_db.pre  = tf.data.Dataset.zip((self.tf_data.see_in_db.pre, self.tf_data.see_in2_db.pre))
+
             self.tf_data.see_gt_db   = self.see_gt_factory.build_W_db_by_MW_hole_norm_then_mul_M_right()
             self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
 
@@ -163,6 +173,7 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
 
     def build_by_in_W_gt_W_ch_norm_then_mul_M_right(self):
         ##########################################################################################################################################
+        ##### IN 部分
         self.tf_data.train_name_db = self.train_in_factory .build_name_db()
         self.tf_data.train_in_db   = self.train_in_factory .build_W_db_by_MW_ch_norm_then_mul_M_right()
         self.tf_data.test_name_db  = self.test_in_factory  .build_name_db()
@@ -175,6 +186,11 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
         self.tf_data.train_in_db.pre  = tf.data.Dataset.zip((self.tf_data.train_in_db.pre, self.tf_data.train_in2_db.pre))
         self.tf_data.test_in_db .pre  = tf.data.Dataset.zip((self.tf_data.test_in_db.pre , self.tf_data.test_in2_db .pre))
 
+        ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
+        self.tf_data.train_amount    = get_db_amount(self.tf_data.db_obj.train_in_dir)
+        self.tf_data.test_amount     = get_db_amount(self.tf_data.db_obj.test_in_dir)
+
+        ##### GT 部分
         self.tf_data.train_gt_db = self.train_gt_factory.build_W_db_by_MW_ch_norm_then_mul_M_right()
         self.tf_data.test_gt_db  = self.test_gt_factory .build_W_db_by_MW_ch_norm_then_mul_M_right()
         ##########################################################################################################################################
@@ -184,6 +200,10 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
         if(self.tf_data.db_obj.have_see):
             self.tf_data.see_in_db   = self.see_in_factory.build_W_db_by_MW_ch_norm_then_mul_M_right()
             self.tf_data.see_name_db = self.see_in_factory.build_name_db()
+            self.tf_data.see_in2_db = self.see_in2_factory .build_img_db()
+            self.tf_data.see_in_db.ord  = tf.data.Dataset.zip((self.tf_data.see_in_db.ord, self.tf_data.see_in2_db.ord))
+            self.tf_data.see_in_db.pre  = tf.data.Dataset.zip((self.tf_data.see_in_db.pre, self.tf_data.see_in2_db.pre))
+
             self.tf_data.see_gt_db   = self.see_gt_factory.build_W_db_by_MW_ch_norm_then_mul_M_right()
             self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
 
@@ -198,7 +218,7 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
 
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
-        debug_tf_data(self.tf_data, use_train_test_see="train")
+        # debug_tf_data(self.tf_data, use_train_test_see="train")
         # debug_tf_data(self.tf_data, use_train_test_see="test")
         # debug_tf_data(self.tf_data, use_train_test_see="see")
 
