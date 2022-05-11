@@ -487,9 +487,9 @@ class Train_step_Wyx_w_M_to_Wz():
         # print("Wzgt.shape", Wzgt.shape)
         # import matplotlib.pyplot as plt
         # fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
-        # ax[0, 0].imshow(in_data[0][0], vmin=0, vmax=1)
-        # ax[0, 1].imshow(gt_mask[0]   , vmin=0, vmax=1)
-        # ax[0, 2].imshow(Wzgt[0]      , vmin=0, vmax=1)
+        # ax[0].imshow(in_data[0][0], vmin=0, vmax=1)
+        # ax[1].imshow(gt_mask[0]   , vmin=0, vmax=1)
+        # ax[2].imshow(Wzgt[0]      , vmin=0, vmax=1)
         # fig.tight_layout()
         # plt.show()
 
