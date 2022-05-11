@@ -2,12 +2,13 @@ from step06_a_datas_obj          import DB_GM
 from step06_c1_old               import tf_Data_in_img_gt_mask_builder
 from step06_c2_in_I_gt_F_then_MC import tf_Data_in_dis_gt_mask_coord_builder
 from step06_c3_in_I_gt_F_or_W    import tf_Data_in_dis_gt_flow_or_wc_builder
+from step06_c3_in_W_gt_W         import tf_Data_in_W_gt_W_builder
 from step06_c4_in_W_gt_F         import tf_Data_in_wc_gt_flow_builder
 from step06_c5_in_I_gt_W_F       import tf_Data_in_dis_gt_wc_flow_builder
 
 import time
 
-class tf_Data_builder(tf_Data_in_img_gt_mask_builder, tf_Data_in_dis_gt_mask_coord_builder, tf_Data_in_dis_gt_flow_or_wc_builder, tf_Data_in_wc_gt_flow_builder, tf_Data_in_dis_gt_wc_flow_builder):
+class tf_Data_builder(tf_Data_in_img_gt_mask_builder, tf_Data_in_dis_gt_mask_coord_builder, tf_Data_in_dis_gt_flow_or_wc_builder, tf_Data_in_W_gt_W_builder, tf_Data_in_wc_gt_flow_builder, tf_Data_in_dis_gt_wc_flow_builder):
     def __init__(self, tf_data=None):
         super(tf_Data_builder, self).__init__(tf_data)
 
@@ -30,6 +31,11 @@ class tf_Data_builder(tf_Data_in_img_gt_mask_builder, tf_Data_in_dis_gt_mask_coo
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_I_gt_W_hole_norm_then_mul_M_right):         self.build_by_in_I_gt_W_hole_norm_then_mul_M_right()
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right):           self.build_by_in_I_gt_W_ch_norm_then_mul_M_right()
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse): self.build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse()
+        ### W_to_W
+        elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_W_gt_W_hole_norm_then_mul_M_right):         self.build_by_in_W_gt_W_hole_norm_then_mul_M_right()
+        elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_W_gt_W_ch_norm_then_mul_M_right):           self.build_by_in_W_gt_W_ch_norm_then_mul_M_right()
+
+
         ### W_to_C
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_W_hole_norm_then_no_mul_M_wrong_and_I_gt_F_MC_norm_then_no_mul_M_wrong):  self.build_by_in_W_hole_norm_then_no_mul_M_wrong_and_I_gt_F_MC_norm_then_no_mul_M_wrong()  ### wrong
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong):          self.build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong()     ### right
