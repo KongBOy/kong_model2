@@ -102,6 +102,9 @@ class DB_GET_METHOD(Enum):
     build_by_in_I_gt_W_hole_norm_then_mul_M_right        = "build_by_in_I_gt_W_hole_norm_then_mul_M_right"
     build_by_in_I_gt_W_ch_norm_then_mul_M_right          = "build_by_in_I_gt_W_ch_norm_then_mul_M_right"
     build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse = "build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse"
+    ### W_to_W
+    build_by_in_W_gt_W_hole_norm_then_mul_M_right        = "build_by_in_W_gt_W_hole_norm_then_mul_M_right"
+    build_by_in_W_gt_W_ch_norm_then_mul_M_right          = "build_by_in_W_gt_W_ch_norm_then_mul_M_right"
     
     ### W_to_C
     build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong         = "build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong"          ### train_in 除了wc外會多抓 dis_img 來 讓 F 可以做 bm_rec喔！
@@ -289,6 +292,12 @@ class Dataset_dir_builder(Dataset_basic_builder):
             in_dir_name  = "0_dis_img"
             gt_dir_name  = "2_wc-5_W_w_M_knpy"
 
+        elif(self.db.get_method == DB_GET_METHOD.build_by_in_W_gt_W_ch_norm_then_mul_M_right or
+             self.db.get_method == DB_GET_METHOD.build_by_in_W_gt_W_hole_norm_then_mul_M_right):
+            in_dir_name  = "2_wc-5_W_w_M_knpy"
+            in2_dir_name = "0_dis_img"
+            gt_dir_name  = "2_wc-5_W_w_M_knpy"
+
         elif(self.db.get_method == DB_GET_METHOD.build_by_in_W_hole_norm_then_no_mul_M_wrong_and_I_gt_F_MC_norm_then_no_mul_M_wrong or
              self.db.get_method == DB_GET_METHOD.build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong):
             in_dir_name  = "2_wc-5_W_w_M_knpy"
@@ -340,13 +349,6 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.check_rec_hope_see_dir   = self.db.db_dir + "/check" + "/see/0_rec_hope"
         return self
 
-    def set_ch_ranges(self, in_ch_ranges=None, gt_ch_ranges=None, in2_ch_ranges=None, gt2_ch_ranges=None):
-        self.db.in_ch_ranges = in_ch_ranges
-        self.db.gt_ch_ranges = gt_ch_ranges
-        self.db.in2_ch_ranges = in2_ch_ranges
-        self.db.gt2_ch_ranges = gt2_ch_ranges
-        return self
-
     def reset_test_db_name(self, test_db_name):
         self.db.test_db_name      = test_db_name
         self.set_dir_by_basic()
@@ -370,6 +372,13 @@ class Dataset_format_builder(Dataset_dir_builder):
         self.db.db_gt2_range      = db_gt2_range
         self.db.db_rec_hope_range = db_rec_hope_range
 
+        return self
+
+    def set_ch_ranges(self, in_ch_ranges=None, gt_ch_ranges=None, in2_ch_ranges=None, gt2_ch_ranges=None):
+        self.db.in_ch_ranges = in_ch_ranges
+        self.db.gt_ch_ranges = gt_ch_ranges
+        self.db.in2_ch_ranges = in2_ch_ranges
+        self.db.gt2_ch_ranges = gt2_ch_ranges
         return self
 
 class Dataset_detail_builder(Dataset_format_builder):
@@ -434,9 +443,13 @@ type8_blender_dis_wc_flow_try_mul_M           = Dataset_builder().set_basic(DB_C
 type8_blender_kong_doc3d_in_I_gt_MC           = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong    , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(0, 1)                                                                  , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 ### I_to_W
 type8_blender_kong_doc3d_in_I_gt_W            = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_hole_norm_then_mul_M_right     , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
-type8_blender_kong_doc3d_in_I_gt_W_ch_norm    = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender") .set_ch_ranges(gt_ch_ranges=[Range(-0.67187124, 0.63452387), Range(-1.2410645, 1.2485291), Range(-1.2280148, 1.2387834)])
-type8_blender_kong_doc3d_in_I_gt_W_ch_norm_v2 = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender") .set_ch_ranges(gt_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)])  ### Z的Range不一樣 和 X軸相反 min/max 值對調
+type8_blender_kong_doc3d_in_I_gt_W_ch_norm    = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender") .set_ch_ranges(gt_ch_ranges=[Range(-0.67187124, 0.63452387), Range(-1.2410645, 1.2485291), Range(-1.2280148, 1.2387834)])  ### V1
+type8_blender_kong_doc3d_in_I_gt_W_ch_norm_v2 = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender") .set_ch_ranges(gt_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)])  ### V2:Z的Range不一樣 和 X軸相反 min/max 值對調
 # type8_blender_kong_doc3d_in_I_gt_W_ch_norm_only_for_doc3d_x_value_reverse    = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender") .set_ch_ranges(gt_ch_ranges=[Range(-0.67187124, 0.63452387), Range(-1.2410645, 1.2485291), Range(-1.2280148, 1.2387834)])
+
+### W_to_W
+###   hole norm 感覺用不到 就先不寫出來了
+type8_blender_kong_doc3d_in_W_gt_W_ch_norm_v2 = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_W_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-1.2410645, 1.2485291), in2_format="png", db_in2_range=Range(0, 255)                 , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender") .set_ch_ranges(in_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)], gt_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)])  ### V2: Z的Range不一樣 和 X軸相反 min/max 值對調
 
 ### W_to_C
 type8_blender_kong_doc3d_in_W_and_I_gt_F      = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-1.2410645, 1.2485291) , in2_format="png", db_in2_range=Range(0, 255)                 , gt_format="knpy", db_gt_range =Range(0,   1)                                                                , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
