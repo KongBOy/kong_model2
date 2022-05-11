@@ -59,19 +59,31 @@ class Experiment():
         self.epoch_save_freq = 5     ### 訓練 epoch_save_freq 個 epoch 存一次模型
         self.start_epoch     = 0
         self.current_ep      = self.start_epoch
-        self.current_it      = 0
+        self.current_ep_it   = 0  ### 在 當下 epopch 當中的 哪一個it
+        self.current_ex_it   = 0  ### 在 整個 exp    當中的 哪一個 it
         self.ep_see_fq       = 1  ### 因為下面寫了 I_see_fq， 覺得ep 應該也要有， 所以就先寫著備用， 目前還沒用到ˊ口ˋ
 
         ##################################################################################################
         ### iter 是後來才加入的概念，原先沒有， 所以初始值設為None
-        self.it_see_fq       = None  ### 執行幾個 iter 就要存一次 see
-        self.it_save_fq      = None  ### 執行幾個 iter 就要存一次 model
-        self.it_restart      = None  ### 有設定 it_save_fq 才會有 self.it_start_train， 在 reload 時 要跳到 第 it_restart 個 iter 開始訓練， 所以不給從外面設定喔！
-        self.it_down_step    = None  ### 執行到 第幾個iter 就開始 lr 下降， 可輸入 "half" 或 數字
-        self.it_down_fq      = None  ### 執行幾個 iter 就要 down 一次 lr
-        self.it_show_time_fq = None
+        self.one_ep_iters = None  ### (算出來的1) 一個epoch內 總共會  更新 幾次， 建立完tf_data後 才會知道所以現在指定None
+        self.total_iters  = None  ### (算出來的2) 整個訓練 包含所有 epochs 總共會  更新 幾次， 建立完tf_data後 才會知道所以現在指定None
 
-        self.total_iters     = None  ### 總共會  更新 幾次， 建立完tf_data後 才會知道所以現在指定None
+        self.it_see_fq       = None  ### (人工指定) 執行幾個 iter 就要存一次 see
+        self.it_save_fq      = None  ### (人工指定) 執行幾個 iter 就要存一次 model
+        self.it_restart      = None  ### (人工指定) 有設定 it_save_fq 才會有 self.it_start_train， 在 reload 時 要跳到 第 it_restart 個 iter 開始訓練， 所以不給從外面設定喔！
+        self.it_down_step    = None  ### (人工指定) 執行到 第幾個iter 就開始 lr 下降， 可輸入 "half" 或 數字
+        self.it_down_fq      = None  ### (人工指定) 執行幾個 iter 就要 down 一次 lr
+        self.it_show_time_fq = None  ### (人工指定) 執行幾個 iter 顯示一次時間資訊
+        ######################################
+        ### 給 step5 show_time 用的
+        self.total_start_time   = None  ### (跑才知道)
+        self.ep_start_time      = None  ### (跑才知道)
+        self.ep_start_timestamp = None  ### (跑才知道)
+        self.it_start_time      = None  ### (跑才知道)
+        self.it_start_timestamp = None  ### (跑才知道)
+        self.it_sees_amo_in_one_epoch = None  ### (算出來的3) 1個epoch內 會有幾個 it_see_fq
+        self.it_sees_cur_in_one_epoch = None  ### (跑才知道) 目前正在哪個 it_see_fq
+
         ##################################################################################################
         # self.exp_bn_see_arg = False  ### 本來 bn 在 test 的時候就應該要丟 false，只是 現在batch_size=1， 丟 True 會變 IN ， 所以加這個flag 來控制
 
@@ -94,15 +106,6 @@ class Experiment():
         self.ckpt_write_manager = None
         self.ckpt_D_read_manager  = None
         self.ckpt_D_write_manager = None
-        ####################################################################################################################
-        ### 給 step5 show_time 用的
-        self.total_start_time   = None
-        self.ep_start_time      = None
-        self.ep_start_timestamp = None
-        self.it_start_time      = None
-        self.it_start_timestamp = None
-        self.it_sees_amo_in_one_epoch = None
-        self.it_sees_cur_in_one_epoch = None
 
 ################################################################################################################################################
 ################################################################################################################################################
@@ -202,21 +205,19 @@ class Experiment():
 
         self.tf_data = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
 
-        ### 好像變成 it 設定專區， 那就順勢變成 it設定專區 吧～
-        self.total_iters = self.epochs * self.tf_data.train_amount // self.batch_size  ### 總共會  更新 幾次
-        if(self.tf_data.train_amount % self.batch_size != 0 ): self.total_iters += 1
-        if(self.it_down_step == "half"): self.it_down_step = self.total_iters // 2  ### 知道total_iter後 即可知道 half iter 為多少， 如果 it_down_step設定half 這邊就可以直接指定給他囉～
-        if(self.it_see_fq is not None and self.it_show_time_fq is None): self.it_show_time_fq = self.it_see_fq  ### 防呆， 如果有用it 的概念 但忘記設定 it_show_time_fq， 就直接設定為 it_see_fq， 這樣在存圖時， 就可以順便看看時間囉！
-        if(self.it_see_fq is not None):  ### 計算 1個epoch 裡面 共有幾個 iter_see
-            it_batch_amo_in_one_epoch      = self.tf_data.train_amount // self.batch_size
-            it_batch_amo_in_one_epoch_frac = self.tf_data.train_amount %  self.batch_size
-            if  (it_batch_amo_in_one_epoch_frac == 0): it_batch_amo_in_one_epoch = it_batch_amo_in_one_epoch
-            else                                     : it_batch_amo_in_one_epoch = it_batch_amo_in_one_epoch + 1
+        ##### 好像變成 it 設定專區， 那就順勢變成 it設定專區 吧～
+        ### (算出來的1) 1個epoch內 會 更新 幾次
+        self.one_ep_iters = self.tf_data.train_amount // self.batch_size  if(self.tf_data.train_amount % self.batch_size) == 0 else self.tf_data.train_amount // self.batch_size + 1
+        ### (算出來的2) 整個exp 總共會  更新 幾次
+        self.total_iters = self.epochs * self.one_ep_iters
 
-            it_sees_amo_in_one_epoch      = it_batch_amo_in_one_epoch // self.it_see_fq
-            it_sees_amo_in_one_epoch_frac = it_batch_amo_in_one_epoch % self.it_see_fq
-            if(it_sees_amo_in_one_epoch_frac == 0): self.it_sees_amo_in_one_epoch = it_sees_amo_in_one_epoch
-            else                                  : self.it_sees_amo_in_one_epoch = it_sees_amo_in_one_epoch + 1
+        ### 知道total_iter後 即可知道 half iter 為多少， 如果 it_down_step設定half 這邊就可以直接指定給他囉～
+        if(self.it_down_step == "half"): self.it_down_step = self.total_iters // 2
+        ### 防呆， 如果有用it 的概念 但忘記設定 it_show_time_fq， 就直接設定為 it_see_fq， 這樣在存圖時， 就可以順便看看時間囉！
+        if(self.it_see_fq is not None and self.it_show_time_fq is None): self.it_show_time_fq = self.it_see_fq
+        ### (算出來的3) 計算 1個epoch 裡面 共有幾個 iter_see
+        if(self.it_see_fq is not None):
+            self.it_sees_amo_in_one_epoch = self.one_ep_iters // self.it_see_fq if(self.one_ep_iters % self.it_see_fq == 0 ) else self.one_ep_iters // self.it_see_fq + 1
 
         ### 3.model
         self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
@@ -232,7 +233,8 @@ class Experiment():
             ### 如果有設定 it_save_fq， 代表之前在train時 已經有 it資訊了(紀錄train到第幾個it)， 這邊就把他讀出來囉
             if(self.it_save_fq is not None):
                 self.it_restart = self.model_obj.ckpt.iter_log.numpy()  ### 跳到第幾個it開始訓練 的概念
-                self.current_it =  self.it_restart                      ### 目前的it 指定成 上次的it
+                self.current_ep_it = self.it_restart                    ### 目前的it 指定成 上次的it
+                self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
             print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_read_dir, self.start_epoch))
 
         ####################################################################################################################
@@ -287,13 +289,14 @@ class Experiment():
         self.current_ep = self.start_epoch   ### 因為 epoch 的狀態 在 train 前後是不一樣的，所以需要用一個變數來記住，就用這個current_epoch來記錄囉！
         for epoch in range(self.start_epoch, self.epochs):
             ### 設定 it 資訊
-            it_train_amount = self.tf_data.train_amount  ### 應該要 迭代 train_amount 次， 但有可能是 reload的情況， 會從中間的 iter開始迭代
-            # self.current_it  = 10000  ### debug用， 從中間切入看 lr 的狀況
+            it_train_amount = self.one_ep_iters  ### 一個epoch內應該要 迭代幾次， 但有可能是 reload的情況， 會從中間的 iter開始迭代
+            # self.current_ep_it  = 10000  ### debug用， 從中間切入看 lr 的狀況
             # it_train_amount -= 10000  ### debug用，跳過前 it_restart 個訓練資料
 
             ### 處理 it reload 的狀況
             if(self.it_save_fq is not None and self.it_restart is not None):
-                self.current_it =  self.it_restart  ### 目前的it 指定成 上次的it
+                self.current_ep_it = self.it_restart  ### 目前的it 指定成 上次的it
+                self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
                 it_train_amount -= self.it_restart  ### 跳過前 it_restart 個訓練資料， 所以 it_train_amount -= 這樣子
                 self.it_restart = 0                 ### 功成身退， 設回 0 ， 減了他也沒影響， 這樣子在下個 epoch 時 才不會又 跳過前面的 iter
             ################################
@@ -306,9 +309,8 @@ class Experiment():
             print("Epoch: ", self.current_ep, "start at", self.ep_start_timestamp)
             ###############################################################################################################################
             ###    step0 設定learning rate
-            self.lr_current = self.lr_start if self.current_ep < self.epoch_down_step else self.lr_start * (self.epochs - self.current_ep) / (self.epochs - self.epoch_down_step)
-            self.model_obj.optimizer_G.lr = self.lr_current
-            if(self.model_obj.optimizer_D is not None): self.model_obj.optimizer_D.lr = self.lr_current
+            self.LR_setting()
+
             ###############################################################################################################################
             if(self.current_ep == 0): print("Initializing Model~~~")  ### sample的時候就會initial model喔！
             ###############################################################################################################################
@@ -316,7 +318,7 @@ class Experiment():
             if(self.current_ep == 0 or (self.current_ep % self.ep_see_fq == 0) ):
                 self.train_step1_see_current_img(phase="train", training=False, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
             ###############################################################################################################################
-            ### 以上 current_ep = epoch   ### 代表還沒訓練
+            ### 以上 current_ep = epoch   ### 代表還沒訓練(Before train)
             ###     step2 訓練
             if(self.model_obj.discriminator is not None):
                 ''' 超重要！ 初始化graph， 必須要走過所有運算流程才行(包含 gradient 和 apply_gradient)， 所以 把 train_step.D_training, G_training 都設True 喔！ '''
@@ -382,22 +384,25 @@ class Experiment():
                             # plt.show()
                             self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs, D_training=False, G_training=True)
 
-                    self.current_it += 1  ### +1 代表 after_rain 的意思
+                    self.current_ep_it += 1  ### +1 代表 after_rain 的意思
+                    self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
                     ### iter 看要不要 存圖、設定lr、儲存模型 (思考後覺得要在 after_train做)
                     self.current_it_See_result_or_set_LR_or_Save_Model()
-                    # if( self.current_it % 10 == 0): break   ### debug用，看subprocess成不成功
+                    # if( self.current_ep_it % 10 == 0): break   ### debug用，看subprocess成不成功
             else:
                 for _, train_in_pre, _, train_gt_pre, name in tqdm(self.tf_data.train_db_combine.take(it_train_amount)):
                     ### train
                     # print("%06i" % it, name)  ### debug用
                     self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
-                    self.current_it += 1  ### +1 代表 after_rain 的意思
+                    self.current_ep_it += 1  ### +1 代表 after_rain 的意思
+                    self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
                     ### iter 看要不要 存圖、設定lr、儲存模型 (思考後覺得要在 after_train做)
                     self.current_it_See_result_or_set_LR_or_Save_Model()
-                    # if(self.current_it % 10 == 0): break   ### debug用，看subprocess成不成功
+                    # if(self.current_ep_it % 10 == 0): break   ### debug用，看subprocess成不成功
 
             self.current_ep += 1  ### 超重要！別忘了加呀！ 因為進到下個epoch了
-            self.current_it  = 0  ### 超重要！別忘了加呀！ 因為進到下個epoch了， 所以iter變回0囉
+            self.current_ep_it  = 0  ### 超重要！別忘了加呀！ 因為進到下個epoch了， 所以iter變回0囉
+            self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
             ### 以下 current_ep = epoch + 1   ### +1 代表訓練完了！變成下個epoch了！
             ###############################################################
             ###     step3 整個epoch 的 loss 算平均，存進tensorboard
@@ -408,7 +413,7 @@ class Experiment():
                 self.train_step4_save_model()
                 # # print("save epoch_log :", current_ep)
                 # self.model_obj.ckpt.epoch_log.assign(self.current_ep)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
-                # if(self.it_save_fq is not None):  self.model_obj.ckpt.iter_log.assign(self.current_it)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
+                # if(self.it_save_fq is not None):  self.model_obj.ckpt.iter_log.assign(self.current_ep_it)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
                 # self.ckpt_write_manager.save()
                 # if(self.model_obj.discriminator is not None): self.ckpt_D_write_manager.save()
                 # print("save ok ~~~~~~~~~~~~~~~~~")
@@ -437,33 +442,56 @@ class Experiment():
     def current_it_See_result_or_set_LR_or_Save_Model(self):
         ### 執行 see, 存loss, show_time
         if(self.it_see_fq is not None):
-            if( self.current_it % self.it_see_fq == 0 or
-                self.current_it == self.tf_data.train_amount):   ### 最後一個 it 我希望要存
+            if( self.current_ep_it % self.it_see_fq == 0):  ### or ### 後來覺得 ep內 最後一個 it 不要存see， 因為 我目前的設定是 ep 是 Before_train存see， it 是 After_train存see， ep內最後一個 it 如果 after存 會跟 ep的before 重複存了！ 目前 doc3d 只train 1個 ep 只會重複一次沒問題， 之後多train epochs 就會多重複 epochs 次囉！
+                # self.current_ep_it == self.one_ep_iters):   ### ep內最後一個 it 我希望要存see
                 self.train_step1_see_current_img(phase="train", training=False, postprocess=False, npz_save=False)   ### 介面目前的設計雖然規定一定要丟 training 這個參數， 但其實我底層在實作時 也會視情況 不需要 training 就不會用到喔，像是 IN 拉，所以如果是 遇到使用 IN 的generator，這裡的 training 亂丟 None也沒問題喔～因為根本不會用他這樣～
                 self.train_step3_Loss_info_save_loss()
 
         ### 設定　lr
-        if(self.it_down_step is not None):
-            if(self.it_down_fq is not None):
-                if( self.current_it % self.it_down_fq == 0):
-                    self.lr_current = self.lr_start if self.current_it < self.it_down_step else self.lr_start * (self.total_iters - self.current_it) / (self.total_iters - self.it_down_step)
-                    print("lr_current:", self.lr_current)
-            else:
-                self.it_down_fq = self.it_see_fq
-                print(f"可能忘記設定 self.it_down_fq 了， 所以 lr 目前都不會下降喔！ 所以自動防呆幫你設定成 self.it_see_fq 喔， 數值為 self.it_down_fq={self.it_see_fq}")
+        self.LR_setting()
 
         ### 儲存model
         if(self.it_save_fq is not None):
-            if (self.current_it % self.it_save_fq == 0 or
-                self.current_it == self.tf_data.train_amount):   ### 最後一個 it 我希望要存
+            if (self.current_ep_it % self.it_save_fq == 0 or
+                self.current_ex_it == self.total_iters):   ### 整個exp的最後一個 it 我希望要存
                 self.train_step4_save_model()
 
         ### 顯示 時間
         if(self.it_show_time_fq is not None):
-            if( self.current_it % self.it_show_time_fq == 0):
+            if( self.current_ep_it % self.it_show_time_fq == 0):
                 self.train_step5_show_time()
                 self.it_start_time      = time.time()  ### 重設 it 時間
                 self.it_start_timestamp = time.strftime("%Y/%m/%d-%H:%M:%S", time.localtime())
+
+    def LR_setting(self):
+        ### 如果沒有 it下降， 就用ep下降， 直接縣性下降即可( 在epoch_down_step之後， 過一個epoch 下降一次 LR)
+        if(self.it_down_step is None):
+            self.lr_current = self.lr_start if self.current_ep < self.epoch_down_step else self.lr_start * (self.epochs - self.current_ep) / (self.epochs - self.epoch_down_step)
+
+        ### it 下降比較複雜點， 需要階梯式的下降( 在it_down_step之後， 需要保持 it_down_fq 個 it 其 LR 數值要一樣， 過了 it_down_fq 再下降)
+        elif(self.it_down_step is not None):
+            if(self.it_down_fq is not None):
+                it_down_amount = (self.total_iters - self.it_down_step) // self.it_down_fq  ### LR總共會下降幾次， 用//就好， 如果有餘數就給 最後一個 it_down
+                lr_down_hole_value = self.lr_start / it_down_amount  ### LR 一次下降多少 單位
+                lr_down_half_value = lr_down_hole_value / 2          ### LR 一次下降多少 單位 的一半
+
+                current_it_down_id = (self.current_ex_it - self.it_down_step) // self.it_down_fq  ### 計算 current_it_down_id 身處在 哪個下降區間
+                lr_down_value = 0  ### LR要下降的多少
+                if(current_it_down_id >= 0):  ### >=0 代表 current_ex_it 有過 it_down_step 可以開始下降了
+                    if(current_it_down_id == 0): lr_down_value = lr_down_half_value  ### 第1個區間 下降 半個單位
+                    else                       : lr_down_value = lr_down_half_value + lr_down_hole_value * current_it_down_id  ### 之後的區間 承接第1個區間 的半個單位， 都下降一個單位
+                self.lr_current = self.lr_start - lr_down_value
+                
+                # if( self.current_ep_it % self.it_down_fq == 0):  ### 觸碰到 it_sown_fq 才下調 lr， 才可以階梯式的下降喔
+                #     self.lr_current = self.lr_start if self.current_ep_it < self.it_down_step else self.lr_start * (self.total_iters - self.current_ep_it) / (self.total_iters - self.it_down_step)
+                #     print("lr_current:", self.lr_current)
+            else:
+                self.it_down_fq = self.it_see_fq
+                print(f"可能忘記設定 self.it_down_fq 了， 所以 lr 目前都不會下降喔！ 所以自動防呆幫你設定成 self.it_see_fq 喔， 數值為 self.it_down_fq={self.it_see_fq}")
+
+        ### LR apply 進 optimizer_G 或 optimizer_D
+        self.model_obj.optimizer_G.lr = self.lr_current
+        if(self.model_obj.optimizer_D is not None): self.model_obj.optimizer_D.lr = self.lr_current
 
     def testing(self, add_loss=False, bgr2rgb=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
@@ -513,8 +541,7 @@ class Experiment():
             with loss_info_obj.summary_writer.as_default():
                 for loss_name, loss_containor in loss_info_obj.loss_containors.items():  ### 單個output 裡的 多loss 的 case
                     ### tensorboard
-                    current_global_it = self.current_ep * self.tf_data.train_amount + self.current_it
-                    tf.summary.scalar(loss_name, loss_containor.result(), step=current_global_it)
+                    tf.summary.scalar(loss_name, loss_containor.result(), step=self.current_ep_it)
                     tf.summary.scalar("lr", self.lr_current, step=current_global_it)
 
                     ### 自己另存成 npy
@@ -543,7 +570,7 @@ class Experiment():
         # print("save epoch_log :", current_ep)
         self.model_obj.ckpt.epoch_log.assign(self.current_ep)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
         if(self.it_save_fq is not None):
-            self.model_obj.ckpt.iter_log.assign(self.current_it)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
+            self.model_obj.ckpt.iter_log.assign(self.current_ep_it)  ### 要存+1才對喔！因為 這個時間點代表的是 本次epoch已做完要進下一個epoch了！
         self.ckpt_write_manager.save()
         if(self.model_obj.discriminator is not None): self.ckpt_D_write_manager.save()
         print("Save Model finish ~~~~~~~~~~~~~~~~~")
@@ -554,11 +581,11 @@ class Experiment():
         total_cost_time = time.time() - self.total_start_time
         it_fq_cost_time = 0
         if(self.it_show_time_fq is not None):
-            if( self.current_it % self.it_show_time_fq == 0 or self.current_it == self.tf_data.train_amount):  ### 最後一個 it 我也希望要顯示it time
+            if( self.current_ep_it % self.it_show_time_fq == 0 or self.current_ep_it == self.one_ep_iters):  ### ep內最後一個 it 我也希望要顯示it time
                 it_fq_cost_time = time.time() - self.it_start_time
                 ### 計算 it_sees_cur_in_one_epoch
-                it_sees_cur_in_one_epoch      = self.current_it // self.it_see_fq
-                it_sees_cur_in_one_epoch_frac = self.current_it % self.it_see_fq
+                it_sees_cur_in_one_epoch      = self.current_ep_it // self.it_see_fq
+                it_sees_cur_in_one_epoch_frac = self.current_ep_it % self.it_see_fq
                 if(it_sees_cur_in_one_epoch_frac == 0): self.it_sees_cur_in_one_epoch = it_sees_cur_in_one_epoch
                 else                                  : self.it_sees_cur_in_one_epoch = it_sees_cur_in_one_epoch + 1
 
@@ -566,19 +593,19 @@ class Experiment():
         show_time_string +=  self.phase + "\n"
         show_time_string += 'epoch %i start at:%s, %s, %s' % (self.current_ep, self.ep_start_timestamp, self.machine_ip, self.machine_user) + "\n"
         show_time_string += 'epoch %i cost time:%.2f'      % (self.current_ep, epoch_cost_time) + "\n"
-        show_time_string += "batch cost time:%.2f average" % (epoch_cost_time / self.tf_data.train_amount) + "\n"
+        show_time_string += "batch cost time:%.2f average" % (epoch_cost_time / self.one_ep_iters) + "\n"
         show_time_string += "total cost time:%s"           % (time_util(total_cost_time)) + "\n"
         show_time_string += "esti total time:%s"           % (time_util(epoch_cost_time * self.epochs)) + "\n"
         show_time_string += "esti least time:%s"           % (time_util(epoch_cost_time * (self.epochs - (self.current_ep + 1)))) + "\n"
         if(it_fq_cost_time != 0):
             show_time_string += "  " + "in this epoch, the it cost time:" + "\n"
             show_time_string += "    " + "it_sees: %i / %i"           % (self.it_sees_cur_in_one_epoch, self.it_sees_amo_in_one_epoch)+ "\n"
-            show_time_string += "    " + "it %i ~ %i start at: %s"   % ((self.current_it - self.it_show_time_fq), self.current_it, self.it_start_timestamp)+ "\n"
+            show_time_string += "    " + "it %i ~ %i start at: %s"   % ((self.current_ep_it - self.it_show_time_fq), self.current_ep_it, self.it_start_timestamp)+ "\n"
             show_time_string += "    " + 'it_fq %i cost time: %.2f'  % (self.it_show_time_fq, it_fq_cost_time)  + "\n"
             show_time_string += "    " + 'it_avg    cost time: %.3f' % (it_fq_cost_time / self.it_show_time_fq) + "\n"
             show_time_string += "    " + "current  cost time:%s"   % (time_util(total_cost_time)) + "\n"
-            show_time_string += "    " + 'it esti total time:%s'   %  time_util( int(  self.tf_data.train_amount                     / self.it_show_time_fq * it_fq_cost_time) ) + "\n"
-            show_time_string += "    " + 'it esti least time:%s'   %  time_util( int( (self.tf_data.train_amount - self.current_it)  / self.it_show_time_fq * it_fq_cost_time) ) + "\n"
+            show_time_string += "    " + 'it esti total time:%s'   %  time_util( int(  self.one_ep_iters                        / self.it_show_time_fq * it_fq_cost_time) ) + "\n"
+            show_time_string += "    " + 'it esti least time:%s'   %  time_util( int( (self.one_ep_iters - self.current_ep_it)  / self.it_show_time_fq * it_fq_cost_time) ) + "\n"
             show_time_string += "\n"
 
         ### 存到 記事簿
