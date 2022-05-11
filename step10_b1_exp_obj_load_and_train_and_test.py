@@ -234,7 +234,10 @@ class Experiment():
             if(self.it_save_fq is not None):
                 self.it_restart = self.model_obj.ckpt.iter_log.numpy()  ### 跳到第幾個it開始訓練 的概念
                 self.Current_ep_it_setting_and_update_current_exp_it(value=self.it_restart)  ### 目前的it 指定成 上次的it
-            print("Reload: %s Model ok~~ start_epoch=%i" % (self.result_obj.result_read_dir, self.start_epoch))
+            print("Reload: %s Model ok~~ " % self.result_obj.result_read_dir)
+            print("    start_epoch=%i", self.start_epoch)
+            if(self.it_save_fq is not None):
+                print("    start_itor=%i", self.it_restart)
 
         ####################################################################################################################
         ### 4.Loss_info, (5.save_code；train時才需要 loss_info_objs 和 把code存起來喔！test時不用～所以把存code部分拿進train裡囉)
