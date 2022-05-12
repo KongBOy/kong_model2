@@ -56,7 +56,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2.{train}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3.{train}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_1.{train}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2.{train_reload}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3.{train}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4.{train}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_1.{train}"])
