@@ -14,3 +14,6 @@
 [submodule "kong_Analyze_11_code"]
 	path = kong_Analyze_11_code
 	url = https://github.com/KongBOy/analyze_11_code.git
+[submodule "Kong_Note"]
+	path = Kong_Note
+	url = https://github.com/KongBOy/Kong_Note.git
