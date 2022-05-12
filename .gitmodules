@@ -11,3 +11,6 @@
 [submodule "kong_Doc3D"]
 	path = kong_Doc3D
 	url = https://github.com/KongBOy/kong_Doc3D.git
+[submodule "kong_Analyze_11_code"]
+	path = kong_Analyze_11_code
+	url = https://github.com/KongBOy/analyze_11_code.git
