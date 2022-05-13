@@ -2,13 +2,15 @@ import tensorflow as tf
 
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
 import sys
 sys.path.append("kong_util")
 from Disc_and_receptive_field_util import tf_M_resize_then_erosion_by_kong
 
-def norm_to_0_1_by_max_min(data):  ### data 為 np.array才行
-    return (data - data.min()) / (data.max() - data.min())
+def norm_to_0_1_by_max_min(data, Mask=None):  ### data 為 np.array才行
+    if(Mask is None): return  (data - data.min()) / (data.max() - data.min())
+    else:             return ((data - data.min()) / (data.max() - data.min())) * Mask
 
 def mse_kong(gt_data, pred_data, lamb=tf.constant(1., tf.float32), Mask=None):
     n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
@@ -164,12 +166,13 @@ class BCE():
         return bce_loss * self.bce_scale
 
 
-class Sobel_MAE(tf.keras.losses.Loss):
-    def __init__(self, sobel_kernel_size, sobel_kernel_scale=1, stride=1, **args):
-        super().__init__(name="Sobel_MAE")
+class Sobel_MAE():
+    def __init__(self, sobel_kernel_size, sobel_kernel_scale=1, stride=1, erose_M=False, **args):
+        # super().__init__(name="Sobel_MAE")
         self.sobel_kernel_size  = sobel_kernel_size
         self.sobel_kernel_scale = sobel_kernel_scale
         self.stride       = stride
+        self.erose_M      = erose_M
 
     def _create_sobel_kernel_xy(self):
         print("doing _create_sobel_kernel_xy")
@@ -254,12 +257,12 @@ class Sobel_MAE(tf.keras.losses.Loss):
         kernel：(2, k_size, k_size)
         pad_size： (k_size - 1) / 2
         '''
-        image_shape = image.get_shape()
+        n, h, w, c = image.shape
 
-        kernels = self._create_sobel_kernel_xy()  ### 寫這邊的主要用意是想要 "有用到的時候再建立"， 如果以平常的寫法的話不好， 因為每次用都要建新的， 但是因注意現在因為有用 @tf.function， 只會在一開始建圖的時候建立一次， 之後不會再建立囉！ 所以這邊可以這樣寫覺得～
-        kernels_num = kernels.shape[-1]
-        kernels_tf  = tf.constant(kernels, dtype=tf.float32)
-        kernels_tf  = tf.tile(kernels_tf, [1, 1, image_shape[-1], 1], name='sobel_filters')  ### (3, 3, C, 2)
+        kernels = self._create_sobel_kernel_xy()                               ### 結果為：(ksize, ksize, 1, 2)， 最後的2裡面 第一個是 x_kernel, 第二個是 y_kernel， 補充一下 寫這邊的主要用意是想要 "有用到的時候再建立"， 如果以平常的寫法的話不好， 因為每次用都要建新的， 但是因注意現在因為有用 @tf.function， 只會在一開始建圖的時候建立一次， 之後不會再建立囉！ 所以這邊可以這樣寫覺得～
+        kernels_num = kernels.shape[-1]                                        ### 目前共兩個， x_kernel, y_kernel
+        kernels_tf  = tf.constant(kernels, dtype=tf.float32)                   ### numpy 轉 tf
+        kernels_tf  = tf.tile(kernels_tf, [1, 1, c, 1], name='sobel_filters')  ### 結果為：(ksize, ksize, C, 2)
 
         pad_size  = int((self.sobel_kernel_size - 1) / 2)
         pad_sizes = [[0, 0], [pad_size, pad_size], [pad_size, pad_size], [0, 0]]  ### BHWC
@@ -267,32 +270,85 @@ class Sobel_MAE(tf.keras.losses.Loss):
 
         strides = [1, stride, stride, 1]  ### BHWC
         output = tf.nn.depthwise_conv2d(padded, kernels_tf, strides, 'VALID')  ### (1, 448, 448, 6=3(C)*2(dx 和 dy))
-        output = tf.reshape(output, shape=image_shape + [kernels_num])  ### (1, 448, 448, 3, 2 -> 分別是 dx 和 dy)
+        output = tf.reshape(output, shape= (n, h, w, c, kernels_num) )         ### (1, 448, 448, 3, 2 -> 分別是 dx 和 dy)
         return output
 
-    def call(self, gt_data, pred_data, Mask=None):
+    def debug_visual_3ch(self, sobel_result_3ch):
+        ### 算出 M
+        Mask = ((sobel_result_3ch[..., 0:1] != 0) & (sobel_result_3ch[..., 1:2] != 0) & (sobel_result_3ch[..., 2:3] != 0))  ###.astype(np.uint8)
+        Mask = tf.cast(Mask, tf.uint8)
+        Mask = Mask.numpy()
+
+        ### 取出 三個channel
+        ch1 = sobel_result_3ch.numpy()[..., 0:1]
+        ch2 = sobel_result_3ch.numpy()[..., 1:2]
+        ch3 = sobel_result_3ch.numpy()[..., 2:3]
+
+        ##### 要怎麼視覺化可以自己決定
+        ### 只看值， 不管方向， 直接絕對值 把 正負拿掉
+        ch1_abs = abs(ch1)
+        ch2_abs = abs(ch2)
+        ch3_abs = abs(ch3)
+        ### 弄到 01 之間
+        # ch1_01 = norm_to_0_1_by_max_min(ch1, Mask)
+        # ch2_01 = norm_to_0_1_by_max_min(ch2, Mask)
+        # ch3_01 = norm_to_0_1_by_max_min(ch3, Mask)
+
+
+        ### matplot 畫出來
+        show_size = 5
+        nrows = 1
+        ncols = 3
+        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
+        ax[0].imshow(ch1_abs[0], cmap="gray")  ### BHWC，所以要 [0]
+        ax[1].imshow(ch2_abs[0], cmap="gray")  ### BHWC，所以要 [0]
+        ax[2].imshow(ch3_abs[0], cmap="gray")  ### BHWC，所以要 [0]
+        plt.tight_layout()
+        return fig, ax
+
+    # @tf.function  ### GPU debug用
+    def __call__(self, gt_data, pred_data, Mask=None):
         n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         print("Sobel_MAE.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
         img1_sobel_xy = self.Calculate_sobel_edges(image=gt_data)
         img1_sobel_x = img1_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
         img1_sobel_y = img1_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
-
         img2_sobel_xy = self.Calculate_sobel_edges(image=pred_data)
         img2_sobel_x = img2_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
         img2_sobel_y = img2_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
-        grad_loss = mae_kong(img1_sobel_x, img2_sobel_x, Mask=Mask) + mae_kong(img1_sobel_y, img2_sobel_y, Mask=Mask)
 
-        # import matplotlib.pyplot as plt
-        # show_size = 5
-        # nrows = 2
-        # ncols = 2
-        # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
-        # ax[0, 0].imshow(norm_to_0_1_by_max_min(img1_sobel_x[0].numpy()))  ### BHWC，所以要 [0]
-        # ax[0, 1].imshow(norm_to_0_1_by_max_min(img1_sobel_y[0].numpy()))  ### BHWC，所以要 [0]
-        # ax[1, 0].imshow(norm_to_0_1_by_max_min(img2_sobel_x[0].numpy()))  ### BHWC，所以要 [0]
-        # ax[1, 1].imshow(norm_to_0_1_by_max_min(img2_sobel_y[0].numpy()))  ### BHWC，所以要 [0]
-        # plt.tight_layout()
+        ### debug用， 視覺化一下 馬上做完 seobel 後的效果
+        # self.debug_visual_3ch(img1_sobel_x)
+        # self.debug_visual_3ch(img1_sobel_y)
+        # self.debug_visual_3ch(img2_sobel_x)
+        # self.debug_visual_3ch(img2_sobel_y)
+
+        ### 通常是用在 WC 上面， 用在 dis_img 感覺沒用， 想法是 把邊緣 大大的值蓋過去， 剩下的就會是 中間的紋理囉
+        if(self.erose_M and Mask is not None):
+            ### 變小多少 就跟 sobel 用的 kernel_size 一樣大小
+            erose_kernel = tf.ones((self.sobel_kernel_size, self.sobel_kernel_size, 1))
+            ### debug用， 顯示 erose前的 M
+            # plt.figure()
+            # plt.imshow(Mask[0])
+            ### 這行做事情： 侵蝕M 讓 M變小一點， 變小多少 就跟 sobel 用的 kernel_size 一樣大小
+            Mask = tf.nn.erosion2d (Mask, filters=erose_kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)) + 1  ### 別忘記要 + 1
+            ### debug用， 顯示 erose後的 M
+            # plt.figure()
+            # plt.imshow(Mask[0])
+            ### 這兩行做事情： sobel 的結果 乘上縮小的 M， 把邊緣 大大的值蓋過去， 剩下的就會是 中間的紋理囉
+            img1_sobel_x = img1_sobel_x * Mask
+            img1_sobel_y = img1_sobel_y * Mask
+            ### debug用， 視覺化一下 乘完後的效果
+            # self.debug_visual_3ch(img1_sobel_x)
+            # self.debug_visual_3ch(img1_sobel_y)
+
+        ### debug用
+        # plt.show()
+        grad_loss = mae_kong(img1_sobel_x, img2_sobel_x, Mask=Mask) + \
+                    mae_kong(img1_sobel_y, img2_sobel_y, Mask=Mask)
+
+        # print("img1_sobel_x.shape", img1_sobel_x.numpy().shape)
         # print("img1_sobel_x.max()", img1_sobel_x.numpy().max())
         # print("img1_sobel_x.min()", img1_sobel_x.numpy().min())
         # print("img1_sobel_y.max()", img1_sobel_y.numpy().max())
@@ -342,22 +398,15 @@ if __name__ == '__main__':
     # pad_size = int((window_size - 1) / 2)
     from step0_access_path import Data_Access_Dir
 
-    img1_path = "debug_data/" + "1_1_1-pr_Page_141-PZU0001.exr"  ### "1_1_2-cp_Page_0654-XKI0001.exr"
-    img2_path = "debug_data/" + "1_1_8-pp_Page_465-YHc0001.exr"  ### "1_1_1-tc_Page_065-YGB0001.exr"
-    img1 = cv2.imread(img1_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
-    img2 = cv2.imread(img2_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
-    img3 = cv2.imread(r"J:\swat3D\wc\1\1_1_1-pr_Page_141-PZU0001.exr", cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
-
+    '''
     # img1_path = Data_Access_Dir + "2-0b-gt_a_mask.bmp"
     # img2_path = Data_Access_Dir + "2-epoch_0060_a_mask.bmp"
     # img1 = cv2.imread(img1_path)  ### HWC
     # img2 = cv2.imread(img2_path)  ### HWC
-
-    ### debug用
-    # cv2.imshow("img1", img1)
-    # cv2.imshow("img2", img2)
-
-
+    img1_path = "debug_data/" + "1_1_1-pr_Page_141-PZU0001.exr"  ### "1_1_2-cp_Page_0654-XKI0001.exr"
+    img2_path = "debug_data/" + "1_1_8-pp_Page_465-YHc0001.exr"  ### "1_1_1-tc_Page_065-YGB0001.exr"
+    img1 = cv2.imread(img1_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
+    img2 = cv2.imread(img2_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)  ### HWC
     # sobel_mae = Sobel_MAE(sobel_kernel_size=3)
     sobel_mae = Sobel_MAE(sobel_kernel_size=5)
     total_variance_loss = Total_Variance()
@@ -368,11 +417,37 @@ if __name__ == '__main__':
     img2 = tf.expand_dims(img2, 0)  ### BHWC 這是 丟進 tf_cnn 網路 的標準格式 (1, 448, 448, 3)， 順便直接用 tf.expand_expand_dims 轉成 tensor， 不用 np.expand_dims
     print(f"img1.shape={img1.shape}")
     print(f"img2.shape={img2.shape}")
-    ############################################################################################################
 
+    ### 測試用 GradientTape 能不能跑
     with tf.GradientTape() as kong_tape:
         grad_loss_value = sobel_mae(img1, img2)
         tv_loss_value = total_variance_loss(img1)
+        grad_loss = grad_loss_value
     print("grad_loss_value:", grad_loss_value)
     print("tv_loss_value:", tv_loss_value)
-    # generator_gradients = kong_tape .gradient(grad_loss)
+    generator_gradients = kong_tape .gradient(grad_loss)
+    ############################################################################################################
+    '''
+
+    W_w_M_v2_1_path = "debug_data/" + "W_w_M_v2-1_2_1-tc_Page_142-OnX0001.npy"
+    W_w_M_v2_2_path = "debug_data/" + "W_w_M_v2-1_2_3-pp_Page_171-vRo0001.npy"
+    W_w_M_1 = np.load(W_w_M_v2_1_path)
+    W_w_M_2 = np.load(W_w_M_v2_2_path)
+    W_w_M_1 = W_w_M_1[np.newaxis, ...]
+    W_w_M_2 = W_w_M_2[np.newaxis, ...]
+    sobel_mae = Sobel_MAE(sobel_kernel_size=3, erose_M=True)
+    Mask = W_w_M_1[..., 3:4]
+    sobel_mae(W_w_M_1, W_w_M_2, Mask=Mask)
+    ### 測試用 GradientTape 能不能跑
+    # with tf.GradientTape() as kong_tape:
+    #     grad_loss = sobel_mae(W_w_M_1, W_w_M_2, Mask=Mask)
+
+
+    Wz = norm_to_0_1_by_max_min(W_w_M_1[0, ..., 0:1])
+    Wy = norm_to_0_1_by_max_min(W_w_M_1[0, ..., 1:2])
+    Wx = norm_to_0_1_by_max_min(W_w_M_1[0, ..., 2:3])
+    fig, ax = plt.subplots(nrows=1, ncols=3)
+    ax[0].imshow(Wz)
+    ax[1].imshow(Wx)
+    ax[2].imshow(Wy)
+    plt.show()
