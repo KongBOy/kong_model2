@@ -309,8 +309,8 @@ class Sobel_MAE():
         sobel_y_result = sobel_xy_result[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
 
         ### debug用， 視覺化一下 馬上做完 seobel 後的效果
-        self.debug_visual_only_3ch_can_use(sobel_x_result, vmin=0, vmax=1)
-        self.debug_visual_only_3ch_can_use(sobel_y_result, vmin=0, vmax=1)
+        # self.debug_visual_only_3ch_can_use(sobel_x_result, vmin=0, vmax=1)
+        # self.debug_visual_only_3ch_can_use(sobel_y_result, vmin=0, vmax=1)
 
         ### 通常是用在 WC 上面， 用在 dis_img 感覺沒用， 想法是 把邊緣 大大的值蓋過去， 剩下的就會是 中間的紋理囉
         if(self.erose_M and Mask is not None):
@@ -328,8 +328,8 @@ class Sobel_MAE():
             sobel_x_result = sobel_x_result * Mask
             sobel_y_result = sobel_y_result * Mask
             ### debug用， 視覺化一下 乘完後的效果
-            self.debug_visual_only_3ch_can_use(sobel_x_result, vmin=0, vmax=1)
-            self.debug_visual_only_3ch_can_use(sobel_y_result, vmin=0, vmax=1)
+            # self.debug_visual_only_3ch_can_use(sobel_x_result, vmin=0, vmax=1)
+            # self.debug_visual_only_3ch_can_use(sobel_y_result, vmin=0, vmax=1)
 
         return sobel_x_result, sobel_y_result
 
