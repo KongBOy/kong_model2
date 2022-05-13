@@ -174,106 +174,7 @@ class Sobel_MAE():
         self.stride       = stride
         self.erose_M      = erose_M
 
-    def _create_sobel_kernel_xy(self):
-        print("doing _create_sobel_kernel_xy")
-        # if(self.sobel_kernel_size == 3):
-        #     kernels = [ [[-1, -2, -1],
-        #                  [ 0,  0,  0],
-        #                  [ 1,  2,  1]],   ### matrix_y, (1, 3, 3)
-        #                 [[-1,  0,  1],
-        #                  [-2,  0,  2],
-        #                  [-1,  0,  1]] ]  ### matrix_x, (1, 3, 3)
-        # elif(self.sobel_kernel_size == 5):
-        #     kernels = [ [[-0.25, -0.4, -0.5,  -0.4, -0.25],
-        #                  [-0.20, -0.5,  -1,   -0.5, -0.20],
-        #                  [   0,    0,    0,    0,    0   ],
-        #                  [ 0.20,  0.5,   1,    0.5,  0.20],
-        #                  [ 0.25,  0.4,  0.5,   0.4,  0.25]],   ### matrix_y, (1, 5, 5)
-        #                 [[-0.25, -0.2,  0,  0.2, 0.25],
-        #                  [-0.40, -0.5,  0,  0.5, 0.40],
-        #                  [-0.50,  -1 ,  0,   1 , 0.50],
-        #                  [-0.40, -0.5,  0,  0.5, 0.40],
-        #                  [-0.25, -0.2,  0,  0.2, 0.25]] ]  ### matrix_x, (1, 5, 5)
-        # kernels = np.asarray(kernels, dtype=np.float32)  ### (2, 3, 3)
-        # print("kernels", kernels)
-        '''
-        超棒參考：https://stackoverflow.com/questions/9567882/sobel-filter-kernel-of-large-size
-
-        x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西， kernel 看起來也會是垂直的，以 sobel_kernel_size=3 為例
-            [[-1, -2, -1],
-             [ 0,  0,  0],
-             [ 1,  2,  1]]
-        y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西， kernel 看起來也會是水平的，以 sobel_kernel_size=3 為例
-            [[-1, -2, -1],
-             [ 0,  0,  0],
-             [ 1,  2,  1]]
-        '''
-        center_dist_max = (self.sobel_kernel_size - 1) / 2  ### 以1維來看，離中心最遠的距離， 比如 sobel_kernel_size=5, center_dist_max = 2
-        x_1d = np.arange(-center_dist_max, center_dist_max + 1)  ### 比如 sobel_kernel_size=5, x_dir = [-2, -1, 0, 1, 2]
-        x_2d = np.expand_dims(x_1d, 0)               ### shape 從 (5) 變 (1, 5)
-        x_2d = np.tile(x_2d, (self.sobel_kernel_size, 1))  ### 結果的 shape 為 (5, 5)
-        y_2d = x_2d.copy().T
-
-        xy_dist_2d = x_2d ** 2 + y_2d ** 2  ### 算一下 各個點 離中心點的距離 平方， 為什麼平方可以看 StackOverflow， 簡單說 是 本身的距離 * 方向帶有的距離， 所以是 距離平方
-        kernel_x = x_2d / xy_dist_2d  ### 距離越遠， 梯度值貢獻越小， 所以用除的， 因為 中心點 會 除以0 變nan， 在下面會統一指定中心算出的nan為0
-        kernel_y = y_2d / xy_dist_2d  ### 距離越遠， 梯度值貢獻越小， 所以用除的， 因為 中心點 會 除以0 變nan， 在下面會統一指定中心算出的nan為0
-        kernels = np.array( [kernel_x, kernel_y] )  ### 我現在就先放 x 再放 y， 代表 前面找垂直， 後面找水平
-        kernels[np.isnan(kernels)] = 0  ### 因為 中心點 會 除以0 變nan， 在這邊統一指定為0喔～
-
-        ##########################################################################################
-        # ### 手動指定
-
-        # ### prewitt
-        # self.sobel_kernel_size = 3
-        # kernels = [ [[-1,  0,  1],
-        #              [-1,  0,  1],
-        #              [-1,  0,  1]],   ### matrix_y, (1, 3, 3)
-        #             [[-1, -1, -1],
-        #              [ 0,  0,  0],
-        #              [ 1,  1,  1]] ]  ### matrix_x, (1, 3, 3)
-        # ############################################
-        # ### 模仿 total variance
-        # self.sobel_kernel_size = 3
-        # kernels = [ [[ 0,  0,  0],
-        #              [-1,  0,  1],
-        #              [ 0,  0,  0]],   ### matrix_y, (1, 3, 3)
-        #             [[ 0, -1,  0],
-        #              [ 0,  0,  0],
-        #              [ 0,  1,  0]] ]  ### matrix_x, (1, 3, 3)
-        # ############################################
-        # kernels = np.array(kernels, dtype=np.float32)
-        # print("kernels", kernels)
-        ##########################################################################################
-
-        kernels = kernels * self.sobel_kernel_scale  ### * self.sobel_kernel_scale 後來根據 StackOverflow 的解釋是說 只是為了方便人看 成一個東西變整數， 其實不需要也沒問題～
-        kernels = np.transpose(kernels, (1, 2, 0))  ### (3, 3, 2)
-        kernels = np.expand_dims(kernels, -2)       ### (3, 3, 1, 2)
-        return kernels
-
-    def Calculate_sobel_edges(self, image, stride=1):
-        print("doing Calculate_sobel_edges")
-        '''
-        image：BHWC
-        kernel：(2, k_size, k_size)
-        pad_size： (k_size - 1) / 2
-        '''
-        n, h, w, c = image.shape
-
-        kernels = self._create_sobel_kernel_xy()                               ### 結果為：(ksize, ksize, 1, 2)， 最後的2裡面 第一個是 x_kernel, 第二個是 y_kernel， 補充一下 寫這邊的主要用意是想要 "有用到的時候再建立"， 如果以平常的寫法的話不好， 因為每次用都要建新的， 但是因注意現在因為有用 @tf.function， 只會在一開始建圖的時候建立一次， 之後不會再建立囉！ 所以這邊可以這樣寫覺得～
-        kernels_num = kernels.shape[-1]                                        ### 目前共兩個， x_kernel, y_kernel
-        kernels_tf  = tf.constant(kernels, dtype=tf.float32)                   ### numpy 轉 tf
-        kernels_tf  = tf.tile(kernels_tf, [1, 1, c, 1], name='sobel_filters')  ### 結果為：(ksize, ksize, C, 2)
-
-        pad_size  = int((self.sobel_kernel_size - 1) / 2)
-        pad_sizes = [[0, 0], [pad_size, pad_size], [pad_size, pad_size], [0, 0]]  ### BHWC
-        padded = tf.pad(image, pad_sizes, mode='REFLECT')
-
-        strides = [1, stride, stride, 1]  ### BHWC
-        output = tf.nn.depthwise_conv2d(padded, kernels_tf, strides, 'VALID')  ### (1, 448, 448, 6=3(C)*2(dx 和 dy))
-        output = tf.reshape(output, shape= (n, h, w, c, kernels_num) )         ### (1, 448, 448, 3, 2 -> 分別是 dx 和 dy)
-        return output
-
-    def debug_visual_3ch(self, sobel_result_3ch):
+    def debug_visual_only_3ch_can_use(self, sobel_result_3ch, vmin=None, vmax=None):
         ### 算出 M
         Mask = ((sobel_result_3ch[..., 0:1] != 0) & (sobel_result_3ch[..., 1:2] != 0) & (sobel_result_3ch[..., 2:3] != 0))  ###.astype(np.uint8)
         Mask = tf.cast(Mask, tf.uint8)
@@ -300,31 +201,116 @@ class Sobel_MAE():
         nrows = 1
         ncols = 3
         fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
-        ax[0].imshow(ch1_abs[0], cmap="gray")  ### BHWC，所以要 [0]
-        ax[1].imshow(ch2_abs[0], cmap="gray")  ### BHWC，所以要 [0]
-        ax[2].imshow(ch3_abs[0], cmap="gray")  ### BHWC，所以要 [0]
+        ax[0].imshow(ch1_abs[0], cmap="gray", vmin=vmin, vmax=vmax)  ### BHWC，所以要 [0]
+        ax[1].imshow(ch2_abs[0], cmap="gray", vmin=vmin, vmax=vmax)  ### BHWC，所以要 [0]
+        ax[2].imshow(ch3_abs[0], cmap="gray", vmin=vmin, vmax=vmax)  ### BHWC，所以要 [0]
         plt.tight_layout()
         return fig, ax
 
-    # @tf.function  ### GPU debug用
-    def __call__(self, gt_data, pred_data, Mask=None):
-        n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-        gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-        Mask    = Mask   [:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+    def _create_sobel_kernel_xy(self):
+        print("doing _create_sobel_kernel_xy")
+        # if(self.sobel_kernel_size == 3):
+        #     kernels_xy = [ [[-1, -2, -1],
+        #                  [ 0,  0,  0],
+        #                  [ 1,  2,  1]],   ### matrix_y, (1, 3, 3)
+        #                 [[-1,  0,  1],
+        #                  [-2,  0,  2],
+        #                  [-1,  0,  1]] ]  ### matrix_x, (1, 3, 3)
+        # elif(self.sobel_kernel_size == 5):
+        #     kernels_xy = [ [[-0.25, -0.4, -0.5,  -0.4, -0.25],
+        #                  [-0.20, -0.5,  -1,   -0.5, -0.20],
+        #                  [   0,    0,    0,    0,    0   ],
+        #                  [ 0.20,  0.5,   1,    0.5,  0.20],
+        #                  [ 0.25,  0.4,  0.5,   0.4,  0.25]],   ### matrix_y, (1, 5, 5)
+        #                 [[-0.25, -0.2,  0,  0.2, 0.25],
+        #                  [-0.40, -0.5,  0,  0.5, 0.40],
+        #                  [-0.50,  -1 ,  0,   1 , 0.50],
+        #                  [-0.40, -0.5,  0,  0.5, 0.40],
+        #                  [-0.25, -0.2,  0,  0.2, 0.25]] ]  ### matrix_x, (1, 5, 5)
+        # kernels_xy = np.asarray(kernels_xy, dtype=np.float32)  ### (2, 3, 3)
+        # print("kernels_xy", kernels_xy)
+        '''
+        超棒參考：https://stackoverflow.com/questions/9567882/sobel-filter-kernel-of-large-size
 
-        print("Sobel_MAE.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
-        img1_sobel_xy = self.Calculate_sobel_edges(image=gt_data)
-        img1_sobel_x = img1_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
-        img1_sobel_y = img1_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
-        img2_sobel_xy = self.Calculate_sobel_edges(image=pred_data)
-        img2_sobel_x = img2_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
-        img2_sobel_y = img2_sobel_xy[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
+        x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西， kernel 看起來也會是垂直的，以 sobel_kernel_size=3 為例
+            [[-1, -2, -1],
+             [ 0,  0,  0],
+             [ 1,  2,  1]]
+        y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西， kernel 看起來也會是水平的，以 sobel_kernel_size=3 為例
+            [[-1, -2, -1],
+             [ 0,  0,  0],
+             [ 1,  2,  1]]
+        '''
+        center_dist_max = (self.sobel_kernel_size - 1) / 2  ### 以1維來看，離中心最遠的距離， 比如 sobel_kernel_size=5, center_dist_max = 2
+        x_1d = np.arange(-center_dist_max, center_dist_max + 1)  ### 比如 sobel_kernel_size=5, x_dir = [-2, -1, 0, 1, 2]
+        x_2d = np.expand_dims(x_1d, 0)               ### shape 從 (5) 變 (1, 5)
+        x_2d = np.tile(x_2d, (self.sobel_kernel_size, 1))  ### 結果的 shape 為 (5, 5)
+        y_2d = x_2d.copy().T
+
+        xy_dist_2d = x_2d ** 2 + y_2d ** 2  ### 算一下 各個點 離中心點的距離 平方， 為什麼平方可以看 StackOverflow， 簡單說 是 本身的距離 * 方向帶有的距離， 所以是 距離平方
+        kernel_x = x_2d / xy_dist_2d  ### 距離越遠， 梯度值貢獻越小， 所以用除的， 因為 中心點 會 除以0 變nan， 在下面會統一指定中心算出的nan為0
+        kernel_y = y_2d / xy_dist_2d  ### 距離越遠， 梯度值貢獻越小， 所以用除的， 因為 中心點 會 除以0 變nan， 在下面會統一指定中心算出的nan為0
+        kernels_xy = np.array( [kernel_x, kernel_y] )  ### 我現在就先放 x 再放 y， 代表 前面找垂直， 後面找水平
+        kernels_xy[np.isnan(kernels_xy)] = 0  ### 因為 中心點 會 除以0 變nan， 在這邊統一指定為0喔～
+
+        ##########################################################################################
+        # ### 手動指定
+
+        # ### prewitt
+        # self.sobel_kernel_size = 3
+        # kernels_xy = [ [[-1,  0,  1],
+        #              [-1,  0,  1],
+        #              [-1,  0,  1]],   ### matrix_y, (1, 3, 3)
+        #             [[-1, -1, -1],
+        #              [ 0,  0,  0],
+        #              [ 1,  1,  1]] ]  ### matrix_x, (1, 3, 3)
+        # ############################################
+        # ### 模仿 total variance
+        # self.sobel_kernel_size = 3
+        # kernels_xy = [ [[ 0,  0,  0],
+        #              [-1,  0,  1],
+        #              [ 0,  0,  0]],   ### matrix_y, (1, 3, 3)
+        #             [[ 0, -1,  0],
+        #              [ 0,  0,  0],
+        #              [ 0,  1,  0]] ]  ### matrix_x, (1, 3, 3)
+        # ############################################
+        # kernels_xy = np.array(kernels_xy, dtype=np.float32)
+        # print("kernels_xy", kernels_xy)
+        ##########################################################################################
+
+        kernels_xy = kernels_xy * self.sobel_kernel_scale  ### * self.sobel_kernel_scale 後來根據 StackOverflow 的解釋是說 只是為了方便人看 成一個東西變整數， 其實不需要也沒問題～
+        kernels_xy = np.transpose(kernels_xy, (1, 2, 0))  ### (3, 3, 2)
+        kernels_xy = np.expand_dims(kernels_xy, -2)       ### (3, 3, 1, 2)
+        return kernels_xy
+
+    def Calculate_sobel_edges(self, image, stride=1, Mask=None):
+        print("doing Calculate_sobel_edges")
+        '''
+        image：BHWC
+        kernel：(2, k_size, k_size)
+        pad_size： (k_size - 1) / 2
+        '''
+        n, h, w, c = image.shape
+
+        kernels_xy = self._create_sobel_kernel_xy()                               ### 結果為：(ksize, ksize, 1, 2)， 最後的2裡面 第一個是 x_kernel, 第二個是 y_kernel， 補充一下 寫這邊的主要用意是想要 "有用到的時候再建立"， 如果以平常的寫法的話不好， 因為每次用都要建新的， 但是因注意現在因為有用 @tf.function， 只會在一開始建圖的時候建立一次， 之後不會再建立囉！ 所以這邊可以這樣寫覺得～
+        kernels_num = kernels_xy.shape[-1]                                        ### 目前共兩個， x_kernel, y_kernel
+        kernels_tf  = tf.constant(kernels_xy, dtype=tf.float32)                   ### numpy 轉 tf
+        kernels_tf  = tf.tile(kernels_tf, [1, 1, c, 1], name='sobel_filters')     ### 結果為：(ksize, ksize, C, 2)
+
+        pad_size  = int((self.sobel_kernel_size - 1) / 2)
+        pad_sizes = [[0, 0], [pad_size, pad_size], [pad_size, pad_size], [0, 0]]  ### BHWC
+        padded = tf.pad(image, pad_sizes, mode='REFLECT')
+
+        strides = [1, stride, stride, 1]  ### BHWC
+        sobel_xy_result = tf.nn.depthwise_conv2d(padded, kernels_tf, strides, 'VALID')  ### (1, 448, 448, 6=3(C)*2(dx 和 dy))
+        sobel_xy_result = tf.reshape(sobel_xy_result, shape= (n, h, w, c, kernels_num) )         ### (1, 448, 448, 3, 2 -> 分別是 dx 和 dy)
+
+        sobel_x_result = sobel_xy_result[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
+        sobel_y_result = sobel_xy_result[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
 
         ### debug用， 視覺化一下 馬上做完 seobel 後的效果
-        # self.debug_visual_3ch(img1_sobel_x)
-        # self.debug_visual_3ch(img1_sobel_y)
-        # self.debug_visual_3ch(img2_sobel_x)
-        # self.debug_visual_3ch(img2_sobel_y)
+        self.debug_visual_only_3ch_can_use(sobel_x_result, vmin=0, vmax=1)
+        self.debug_visual_only_3ch_can_use(sobel_y_result, vmin=0, vmax=1)
 
         ### 通常是用在 WC 上面， 用在 dis_img 感覺沒用， 想法是 把邊緣 大大的值蓋過去， 剩下的就會是 中間的紋理囉
         if(self.erose_M and Mask is not None):
@@ -339,11 +325,23 @@ class Sobel_MAE():
             # plt.figure()
             # plt.imshow(Mask[0])
             ### 這兩行做事情： sobel 的結果 乘上縮小的 M， 把邊緣 大大的值蓋過去， 剩下的就會是 中間的紋理囉
-            img1_sobel_x = img1_sobel_x * Mask
-            img1_sobel_y = img1_sobel_y * Mask
+            sobel_x_result = sobel_x_result * Mask
+            sobel_y_result = sobel_y_result * Mask
             ### debug用， 視覺化一下 乘完後的效果
-            # self.debug_visual_3ch(img1_sobel_x)
-            # self.debug_visual_3ch(img1_sobel_y)
+            self.debug_visual_only_3ch_can_use(sobel_x_result, vmin=0, vmax=1)
+            self.debug_visual_only_3ch_can_use(sobel_y_result, vmin=0, vmax=1)
+
+        return sobel_x_result, sobel_y_result
+
+    # @tf.function  ### GPU debug用
+    def __call__(self, gt_data, pred_data, Mask=None):
+        n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        Mask    = Mask   [:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+
+        print("Sobel_MAE.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
+        img1_sobel_x, img1_sobel_y = self.Calculate_sobel_edges(image=gt_data,   Mask=Mask)
+        img2_sobel_x, img2_sobel_y = self.Calculate_sobel_edges(image=pred_data, Mask=Mask)
 
         ### debug用
         # plt.show()
@@ -452,4 +450,5 @@ if __name__ == '__main__':
     ax[0].imshow(Wz)
     ax[1].imshow(Wx)
     ax[2].imshow(Wy)
+    plt.tight_layout()
     plt.show()
