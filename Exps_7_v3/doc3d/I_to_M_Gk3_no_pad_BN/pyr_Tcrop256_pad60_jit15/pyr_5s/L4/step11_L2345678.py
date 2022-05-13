@@ -20,11 +20,11 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
     os.chdir(code_exe_dir)
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
-import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop256_pad60_jit15.pyr_0s.L4.step10_a as L4_0side
-import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop256_pad60_jit15.pyr_1s.L4.step10_a as L4_1side
-import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop256_pad60_jit15.pyr_2s.L4.step10_a as L4_2side
-import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop256_pad60_jit15.pyr_3s.L4.step10_a as L4_3side
-import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop256_pad60_jit15.pyr_4s.L4.step10_a as L4_4side
+import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad_BN.pyr_Tcrop256_pad60_jit15.pyr_0s.L4.step10_a as L4_0side
+import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad_BN.pyr_Tcrop256_pad60_jit15.pyr_1s.L4.step10_a as L4_1side
+import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad_BN.pyr_Tcrop256_pad60_jit15.pyr_2s.L4.step10_a as L4_2side
+import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad_BN.pyr_Tcrop256_pad60_jit15.pyr_3s.L4.step10_a as L4_3side
+import Exps_7_v3.doc3d.I_to_M_Gk3_no_pad_BN.pyr_Tcrop256_pad60_jit15.pyr_4s.L4.step10_a as L4_4side
 import step10_a as L4_5side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ########
