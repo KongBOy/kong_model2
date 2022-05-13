@@ -29,4 +29,4 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_2.{train}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3.{train}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_4.{train}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5.{train}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5.{compress_all}"])
