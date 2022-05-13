@@ -310,6 +310,8 @@ class Sobel_MAE():
     def __call__(self, gt_data, pred_data, Mask=None):
         n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        Mask    = Mask   [:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+
         print("Sobel_MAE.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
         img1_sobel_xy = self.Calculate_sobel_edges(image=gt_data)
         img1_sobel_x = img1_sobel_xy[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
