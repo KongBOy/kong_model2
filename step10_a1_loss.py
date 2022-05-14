@@ -174,37 +174,83 @@ class Sobel_MAE():
         self.stride       = stride
         self.erose_M      = erose_M
 
-    def debug_visual_only_3ch_can_use(self, sobel_result_3ch, vmin=None, vmax=None):
-        ### 算出 M
-        Mask = ((sobel_result_3ch[..., 0:1] != 0) & (sobel_result_3ch[..., 1:2] != 0) & (sobel_result_3ch[..., 2:3] != 0))  ###.astype(np.uint8)
-        Mask = tf.cast(Mask, tf.uint8)
-        Mask = Mask.numpy()
+    def Visualize_sobel_result(self, sobel_result, vmin=None, vmax=None, Mask=None):
+        def _draw_util(fig_cur, ax_cur, data, vmin, vmax):
+            ### 畫圖
+            ax_img = ax_cur.imshow(data, cmap="gray", vmin=vmin, vmax=vmax)  ### 畫出 數值
+            ax_cur.set_title("value: %.4f ~ %.4f" % (vmin, vmax) )           ### 標題標上 min~max
 
-        ### 取出 三個channel
-        ch1 = sobel_result_3ch.numpy()[..., 0:1]
-        ch2 = sobel_result_3ch.numpy()[..., 1:2]
-        ch3 = sobel_result_3ch.numpy()[..., 2:3]
+            ### 畫出 colorbar
+            divider = make_axes_locatable(ax_cur)  ### 參考：https://matplotlib.org/stable/gallery/axes_grid1/simple_colorbar.html#sphx-glr-gallery-axes-grid1-simple-colorbar-py
+            cax = divider.append_axes("right", size="5%", pad=0.1)
+            fig_cur.colorbar(ax_img, cax=cax, orientation="vertical")
+
+
+        '''
+        輸入的 sobel_result 要 BHWC 喔！
+        '''
+        sobel_result = sobel_result[0].numpy()  ### BHWC，所以要 [0]
+        h, w, c = sobel_result.shape
+        ### 算出 M
+        if(Mask is None):
+            if   (c == 1): Mask =  (sobel_result[..., 0:1] != 0).astype(np.uint8)
+            elif (c == 2): Mask = ((sobel_result[..., 0:1] != 0) & (sobel_result[..., 1:2] != 0)).astype(np.uint8)
+            elif (c == 3): Mask = ((sobel_result[..., 0:1] != 0) & (sobel_result[..., 1:2] != 0) & (sobel_result[..., 2:3] != 0)).astype(np.uint8)
+
+        ### (只看M內的部分)
+        sobel_result *= Mask
+
+        ### 取出 channel
+        if (c >= 1): ch1 = sobel_result[..., 0:1]
+        if (c >= 2): ch2 = sobel_result[..., 1:2]
+        if (c >= 3): ch3 = sobel_result[..., 2:3]
 
         ##### 要怎麼視覺化可以自己決定
+        ### 最原始的值
+        if (c >= 1): ch1 = ch1
+        if (c >= 2): ch2 = ch2
+        if (c >= 3): ch3 = ch3
         ### 只看值， 不管方向， 直接絕對值 把 正負拿掉
-        ch1_abs = abs(ch1)
-        ch2_abs = abs(ch2)
-        ch3_abs = abs(ch3)
+        # if (c >= 1): ch1 = abs(ch1)
+        # if (c >= 2): ch2 = abs(ch2)
+        # if (c >= 3): ch3 = abs(ch3)
         ### 弄到 01 之間
-        # ch1_01 = norm_to_0_1_by_max_min(ch1, Mask)
-        # ch2_01 = norm_to_0_1_by_max_min(ch2, Mask)
-        # ch3_01 = norm_to_0_1_by_max_min(ch3, Mask)
+        # if (c >= 1): ch1 = norm_to_0_1_by_max_min(ch1)
+        # if (c >= 2): ch2 = norm_to_0_1_by_max_min(ch2)
+        # if (c >= 3): ch3 = norm_to_0_1_by_max_min(ch3)
 
-
+        from mpl_toolkits.axes_grid1 import make_axes_locatable
         ### matplot 畫出來
         show_size = 5
         nrows = 1
-        ncols = 3
+        ncols = c
+        if(vmin is None):
+            if (c >= 1): vmin_ch1 = ch1.min()
+            if (c >= 2): vmin_ch2 = ch2.min()
+            if (c >= 3): vmin_ch3 = ch3.min()
+        else:
+            if (c >= 1): vmin_ch1 = vmin
+            if (c >= 2): vmin_ch2 = vmin
+            if (c >= 3): vmin_ch3 = vmin
+        if(vmax is None):
+            if (c >= 1): vmax_ch1 = ch1.max()
+            if (c >= 2): vmax_ch2 = ch2.max()
+            if (c >= 3): vmax_ch3 = ch3.max()
+        else:
+            if (c >= 1): vmax_ch1 = vmax
+            if (c >= 2): vmax_ch2 = vmax
+            if (c >= 3): vmax_ch3 = vmax
+
         fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(show_size * ncols, show_size * nrows))
-        ax[0].imshow(ch1_abs[0], cmap="gray", vmin=vmin, vmax=vmax)  ### BHWC，所以要 [0]
-        ax[1].imshow(ch2_abs[0], cmap="gray", vmin=vmin, vmax=vmax)  ### BHWC，所以要 [0]
-        ax[2].imshow(ch3_abs[0], cmap="gray", vmin=vmin, vmax=vmax)  ### BHWC，所以要 [0]
+        if  (c == 1):    _draw_util(fig_cur=fig, ax_cur=ax, data=ch1, vmin=vmin_ch1, vmax=vmax_ch1)
+        elif( c > 1):
+            if (c >= 0): _draw_util(fig_cur=fig, ax_cur=ax[0], data=ch1, vmin=vmin_ch1, vmax=vmax_ch1)
+            if (c >= 2): _draw_util(fig_cur=fig, ax_cur=ax[1], data=ch2, vmin=vmin_ch2, vmax=vmax_ch2)
+            if (c >= 3): _draw_util(fig_cur=fig, ax_cur=ax[2], data=ch3, vmin=vmin_ch3, vmax=vmax_ch3)
+
         plt.tight_layout()
+
+        # plt.show()  ### debug用
         return fig, ax
 
     def _create_sobel_kernel_xy(self):
@@ -302,15 +348,15 @@ class Sobel_MAE():
         padded = tf.pad(image, pad_sizes, mode='REFLECT')
 
         strides = [1, stride, stride, 1]  ### BHWC
-        sobel_xy_result = tf.nn.depthwise_conv2d(padded, kernels_tf, strides, 'VALID')  ### (1, 448, 448, 6=3(C)*2(dx 和 dy))
-        sobel_xy_result = tf.reshape(sobel_xy_result, shape= (n, h, w, c, kernels_num) )         ### (1, 448, 448, 3, 2 -> 分別是 dx 和 dy)
+        sobel_xy_result = tf.nn.depthwise_conv2d(padded, kernels_tf, strides, 'VALID')    ### 假設 c=3 的例子：(1, 448, 448, 6=3(C)*2(dx 和 dy))
+        sobel_xy_result = tf.reshape(sobel_xy_result, shape= (n, h, w, c, kernels_num) )  ### 假設 c=3 的例子：(1, 448, 448, 3, 2 -> 分別是 dx 和 dy)
 
         sobel_x_result = sobel_xy_result[..., 0]  ### x方向的梯度， 意思是找出左右變化多的地方， 所以會找出垂直的東西
         sobel_y_result = sobel_xy_result[..., 1]  ### y方向的梯度， 意思是找出上下變化多的地方， 所以會找出水平的東西
 
         ### debug用， 視覺化一下 馬上做完 seobel 後的效果
-        # self.debug_visual_only_3ch_can_use(sobel_x_result, vmin=0, vmax=1)
-        # self.debug_visual_only_3ch_can_use(sobel_y_result, vmin=0, vmax=1)
+        # self.Visualize_sobel_result(sobel_x_result)
+        # self.Visualize_sobel_result(sobel_y_result)
 
         ### 通常是用在 WC 上面， 用在 dis_img 感覺沒用， 想法是 把邊緣 大大的值蓋過去， 剩下的就會是 中間的紋理囉
         if(self.erose_M and Mask is not None):
@@ -328,8 +374,8 @@ class Sobel_MAE():
             sobel_x_result = sobel_x_result * Mask
             sobel_y_result = sobel_y_result * Mask
             ### debug用， 視覺化一下 乘完後的效果
-            # self.debug_visual_only_3ch_can_use(sobel_x_result, vmin=0, vmax=1)
-            # self.debug_visual_only_3ch_can_use(sobel_y_result, vmin=0, vmax=1)
+            # self.Visualize_sobel_result(sobel_x_result)
+            # self.Visualize_sobel_result(sobel_y_result)
 
         return sobel_x_result, sobel_y_result
 
@@ -435,17 +481,22 @@ if __name__ == '__main__':
     W_w_M_2 = np.load(W_w_M_v2_2_path)
     W_w_M_1 = W_w_M_1[np.newaxis, ...]
     W_w_M_2 = W_w_M_2[np.newaxis, ...]
+
     sobel_mae = Sobel_MAE(sobel_kernel_size=3, erose_M=True)
-    Mask = W_w_M_1[..., 3:4]
-    sobel_mae(W_w_M_1, W_w_M_2, Mask=Mask)
+    W_1    = W_w_M_1[..., 0:3]
+    W_2    = W_w_M_2[..., 0:3]
+    Mask_1 = W_w_M_1[..., 3:4]
+    Mask_2 = W_w_M_2[..., 3:4]
+    sobel_mae(W_1, W_2, Mask=Mask_1)
+    # sobel_mae(W_2, W_1, Mask=Mask_2)
     ### 測試用 GradientTape 能不能跑
     # with tf.GradientTape() as kong_tape:
-    #     grad_loss = sobel_mae(W_w_M_1, W_w_M_2, Mask=Mask)
+    #     grad_loss = sobel_mae(W_w_M_1, W_2, Mask=Mask)
 
 
-    Wz = norm_to_0_1_by_max_min(W_w_M_1[0, ..., 0:1])
-    Wy = norm_to_0_1_by_max_min(W_w_M_1[0, ..., 1:2])
-    Wx = norm_to_0_1_by_max_min(W_w_M_1[0, ..., 2:3])
+    Wz = norm_to_0_1_by_max_min(W_1[0, ..., 0:1])
+    Wy = norm_to_0_1_by_max_min(W_1[0, ..., 1:2])
+    Wx = norm_to_0_1_by_max_min(W_1[0, ..., 2:3])
     fig, ax = plt.subplots(nrows=1, ncols=3)
     ax[0].imshow(Wz)
     ax[1].imshow(Wx)

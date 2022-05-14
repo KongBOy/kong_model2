@@ -1,3 +1,4 @@
+from cv2 import Sobel
 import numpy as np
 import cv2
 
@@ -15,10 +16,12 @@ import os
 import pdb
 
 class Wyx_w_M_to_Wz(Use_G_generate):
-    def __init__(self, focus=False, tight_crop=None):
+    def __init__(self, focus=False, tight_crop=None, sobel=None, sobel_only=False):
         super(Wyx_w_M_to_Wz, self).__init__()
         self.focus = focus
         self.tight_crop = tight_crop
+        self.sobel      = sobel
+        self.sobel_only = sobel_only
 
     def doing_things(self):
         current_ep    = self.exp_obj.current_ep
@@ -78,8 +81,22 @@ class Wyx_w_M_to_Wz(Use_G_generate):
         Wyx_pre            = WM_in_pre[..., 1:3]
         Mgt_pre            = WM_gt_pre[..., 3:4]  ### 模擬一下 之後的 Wyx 是從 model_out 來的， 可能會需要 * M
         Wyx_pre_with_M_pre = Wyx_pre * Mgt_pre    ### 模擬一下 之後的 Wyx 是從 model_out 來的， 可能會需要 * M
+        ### 沒有用 sobel 就跟以前一樣， 丟 Wyx_pre_with_M_pre
+        if  (self.sobel is None):
+            in_data = Wyx_pre_with_M_pre
+        ### 有用 sobel 的話， 看是要 1.只丟sobel 還是 2. 跟Wxy一起丟
+        elif(self.sobel is not None):
+            Sob_Wyx_Gx, Sob_Wyx_Gy = self.sobel.Calculate_sobel_edges(Wyx_pre, Mask=Mgt_pre)
+            Sob_Wyx_Gxy = np.concatenate([Sob_Wyx_Gx, Sob_Wyx_Gy], axis=-1)  ### 舉例：model_output_raw  ==  C_pre_raw
+            ### 1.只丟 sobel 的結果
+            if(self.sobel_only is True):
+                in_data = Sob_Wyx_Gxy
+            ### 2.要把 sobel 和 Wyx 一起丟進去
+            else:
+                Wyx_and_Sob_Wyx_Gxy = np.concatenate([Wyx_pre_with_M_pre, Sob_Wyx_Gxy], axis=-1)  ### 舉例：model_output_raw  ==  C_pre_raw
+                in_data = Wyx_and_Sob_Wyx_Gxy
 
-        Wz_raw_pre = self.model_obj.generator(Wyx_pre_with_M_pre, training=self.training)
+        Wz_raw_pre = self.model_obj.generator(in_data, training=self.training)
 
         ### 後處理 Output (Wz_raw_pre)
         Wz_raw_01 = Value_Range_Postprocess_to_01(Wz_raw_pre, self.exp_obj.use_gt_range)
@@ -110,6 +127,17 @@ class Wyx_w_M_to_Wz(Use_G_generate):
         WM_in_01  = Value_Range_Postprocess_to_01(WM_in_pre, self.exp_obj.use_in_range)
         Win_visual, Wxin_visual, Wyin_visual, Wzin_visual = W_01_visual_op(WM_in_01)
 
+        ### 視覺化 Input (Sob_Wyx_Gxy)
+        if(self.sobel is not None):
+            Sob_Wy_Gx = Sob_Wyx_Gx[:, :h, :w, 0:1]  ### Wy 其 x方向的梯度， [:, :h, :w, ] 是因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！ ### (Sob_Wyx_Gx - Sob_Wyx_Gx.min()) / (Sob_Wyx_Gx.max() - Sob_Wyx_Gx.min()) * Mgt_pre
+            Sob_Wx_Gx = Sob_Wyx_Gx[:, :h, :w, 1:2]  ### Wx 其 x方向的梯度， [:, :h, :w, ] 是因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！ ### (Sob_Wyx_Gx - Sob_Wyx_Gx.min()) / (Sob_Wyx_Gx.max() - Sob_Wyx_Gx.min()) * Mgt_pre
+            Sob_Wy_Gy = Sob_Wyx_Gy[:, :h, :w, 0:1]  ### Wy 其 y方向的梯度， [:, :h, :w, ] 是因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！ ### (Sob_Wyx_Gx - Sob_Wyx_Gx.min()) / (Sob_Wyx_Gx.max() - Sob_Wyx_Gx.min()) * Mgt_pre
+            Sob_Wx_Gy = Sob_Wyx_Gy[:, :h, :w, 1:2]  ### Wx 其 y方向的梯度， [:, :h, :w, ] 是因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！ ### (Sob_Wyx_Gx - Sob_Wyx_Gx.min()) / (Sob_Wyx_Gx.max() - Sob_Wyx_Gx.min()) * Mgt_pre
+            Sob_Wy_Gx_fig, _ = self.sobel.Visualize_sobel_result(Sob_Wy_Gx)
+            Sob_Wx_Gx_fig, _ = self.sobel.Visualize_sobel_result(Sob_Wx_Gx)
+            Sob_Wy_Gy_fig, _ = self.sobel.Visualize_sobel_result(Sob_Wy_Gy)
+            Sob_Wx_Gy_fig, _ = self.sobel.Visualize_sobel_result(Sob_Wx_Gy)
+
         ### 視覺化 Mgt_pre
         Mgt_visual = (Mgt_pre * 255).astype(np.uint8)
 
@@ -132,6 +160,12 @@ class Wyx_w_M_to_Wz(Use_G_generate):
             cv2.imwrite(private_write_dir + "/" + "0a_u1a3-Wx_w_Mgt.jpg", Wxin_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a4-Wy_w_Mgt.jpg", Wyin_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a5-Wz_w_Mgt.jpg", Wzin_visual)
+
+            if(self.sobel is not None):
+                Sob_Wx_Gx_fig.savefig(private_write_dir + "/" + "0a_u1a3_2-Sob_Wx_Gx_w_Mgt.png"); plt.close()  ### 記得用完要把圖關掉
+                Sob_Wx_Gy_fig.savefig(private_write_dir + "/" + "0a_u1a3_3-Sob_Wx_Gy_w_Mgt.png"); plt.close()  ### 記得用完要把圖關掉
+                Sob_Wy_Gx_fig.savefig(private_write_dir + "/" + "0a_u1a4_2-Sob_Wy_Gx_w_Mgt.png"); plt.close()  ### 記得用完要把圖關掉
+                Sob_Wy_Gy_fig.savefig(private_write_dir + "/" + "0a_u1a4_3-Sob_Wy_Gy_w_Mgt.png"); plt.close()  ### 記得用完要把圖關掉
 
             ### GT 部分
             if(self.npz_save is False): np.save            (private_write_dir + "/" + "0b_u1b1-gt_W", WM_gt_01)

@@ -457,9 +457,11 @@ class Train_step_I_w_M_to_W():
             else:                    _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=gt_mask)
 
 class Train_step_Wyx_w_M_to_Wz():
-    def __init__(self, focus=False, tight_crop=None):
+    def __init__(self, focus=False, tight_crop=None, sobel=None, sobel_only=False):
         self.focus        = focus
         self.tight_crop   = tight_crop
+        self.sobel        = sobel
+        self.sobel_only   = sobel_only
 
     @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
@@ -476,8 +478,22 @@ class Train_step_Wyx_w_M_to_Wz():
         in_Wyx      = WM     [..., 1:3]
         gt_mask     = gt_data[..., 3:4]  ### 模擬一下 之後的 Wyx 是從 model_out 來的， 可能會需要 * M
         Wyx_with_M = in_Wyx * gt_mask    ### 模擬一下 之後的 Wyx 是從 model_out 來的， 可能會需要 * M
-
         Wzgt = gt_data[..., 0:1]
+
+        if  (self.sobel is None):
+            in_data = Wyx_with_M
+        elif(self.sobel is not None):
+            Sob_Wyx_Gx, Sob_Wyx_Gy = self.sobel.Calculate_sobel_edges(in_Wyx, Mask=gt_mask)
+            Sob_Wyx_Gxy = tf.concat([Sob_Wyx_Gx, Sob_Wyx_Gy], axis=-1)  ### 舉例：model_output_raw  ==  C_pre_raw
+            ### 代表 只丟 sobel 的結果
+            if(self.sobel_only is True):
+                in_data = Sob_Wyx_Gxy
+            ### 代表 要把 sobel 和 Wyx 一起丟進去
+            else:
+                Wyx_and_Sob_Wyx_Gxy = tf.concat([Wyx_with_M, Sob_Wyx_Gxy], axis=-1)  ### 舉例：model_output_raw  ==  C_pre_raw
+                in_data = Wyx_and_Sob_Wyx_Gxy
+        gt_data = Wzgt
+
 
         ### debug 時 記得把 @tf.function 拿掉
         # print("WM.shape", WM.shape)
@@ -493,8 +509,8 @@ class Train_step_Wyx_w_M_to_Wz():
         # fig.tight_layout()
         # plt.show()
 
-        if(self.focus is False): _train_step_Single_output(model_obj, in_data=Wyx_with_M, gt_data=Wzgt     , loss_info_objs=loss_info_objs)
-        else:                    _train_step_Single_output(model_obj, in_data=Wyx_with_M, gt_data=Wzgt     , loss_info_objs=loss_info_objs, Mask=gt_mask)
+        if(self.focus is False): _train_step_Single_output(model_obj, in_data=in_data, gt_data=gt_data, loss_info_objs=loss_info_objs)
+        else:                    _train_step_Single_output(model_obj, in_data=in_data, gt_data=gt_data, loss_info_objs=loss_info_objs, Mask=gt_mask)
 
 
 @tf.function
