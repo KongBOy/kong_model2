@@ -234,7 +234,8 @@ if(__name__ == "__main__"):
 
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     ''' kong_doc3d'''
-    db_obj = type8_blender_kong_doc3d_in_W_gt_W_ch_norm_v2.build()  ### 有 mul_M_right, ch_norm
+    # db_obj = type8_blender_kong_doc3d_in_W_gt_W_ch_norm_v2.build()  ### 有 mul_M_right, ch_norm
+    db_obj = type8_blender_in_W_gt_W_ch_norm_cylinder.build()  ### 有 mul_M_right, ch_norm
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
