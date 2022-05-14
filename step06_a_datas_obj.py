@@ -426,7 +426,7 @@ type9_mask_flow_have_bg_dtd_and_paper        = Dataset_builder().set_basic(DB_C.
 ### 5 I_to_F
 type8_blender_os_and_paper_hw512_have_dtd_hdr_mix_bg = Dataset_builder().set_basic(DB_C.type8_blender   , DB_N.blender_os_and_paper_hw512_have_dtd_hdr_mix_bg, DB_GM.build_by_in_I_gt_F_hole_norm_then_no_mul_M_wrong , h=512  , w= 512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png", gt_format="knpy", rec_hope_format="jpg", db_in_range=Range(0, 255), db_gt_range=Range(0, 1), db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 
-##### kong_dataset
+##### 柱狀 kong_dataset
 ### I_to_M
 type9_mask_flow_have_bg_dtd_hdr_mix_and_paper = Dataset_builder().set_basic(DB_C.type8_blender , DB_N.blender_os_and_paper_hw512_have_dtd_hdr_mix_bg, DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong,        h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png",  db_in_range=Range(0, 255),                                                          gt_format="knpy", db_gt_range=Range(0, 1),                                                                 rec_hope_format="jpg",  db_rec_hope_range=Range(0, 255)).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 ### I_w_M_to_W/Wxyz
@@ -438,7 +438,7 @@ type8_blender_wc_flow_try_mul_M               = Dataset_builder().set_basic(DB_C
 ### I_w_M_to_W_to_C
 type8_blender_dis_wc_flow_try_mul_M           = Dataset_builder().set_basic(DB_C.type8_blender , DB_N.os_and_paper_hw512_dtd_hdr_bg_I_to_W_w_M      , DB_GM.build_by_in_I_gt_W_and_F_try_mul_M,                    h=512, w=512).set_dir_by_basic().set_in_gt_format_and_range(in_format="png",  db_in_range=Range(0, 255),                                                          gt_format="knpy", db_gt_range=Range(-0.13532962, 0.1357405), gt2_format="knpy", db_gt2_range=Range(0,   1)                                                         ).set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 
-##### doc3d v1
+##### Doc3d v1, v2
 ### I_to_M
 type8_blender_kong_doc3d_in_I_gt_MC           = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong    , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(0, 1)                                                                  , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver4_blender")
 ### I_to_W
