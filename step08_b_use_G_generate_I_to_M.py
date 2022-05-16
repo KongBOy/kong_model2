@@ -76,7 +76,8 @@ class I_to_M(Use_G_generate):
         '''
         bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
         '''
-        dis_img_ord  = dis_img_ord[0].numpy()
+        dis_img_ord  =  dis_img_ord[0].numpy().astype(np.uint8)
+        dis_img_pre  = (dis_img_pre[0].numpy() * 255 ).astype(np.uint8)
         Mgt_visual   = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
         # plt.figure()
         # plt.imshow(Mgt_visual)
@@ -86,20 +87,23 @@ class I_to_M(Use_G_generate):
         # print("Mgt_visual.max():", Mgt_visual.numpy().max())
         # print("Mgt_visual.min():", Mgt_visual.numpy().min())
 
-        if(self.bgr2rgb): dis_img_ord = dis_img_ord[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+        if(self.bgr2rgb):
+            dis_img_ord = dis_img_ord[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+            dis_img_pre = dis_img_pre[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
 
         if(current_ep == 0 or self.see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)                                   ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
             cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", dis_img_ord)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img_pre.jpg"    , dis_img_pre)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
             cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.jpg", Mgt_visual)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(    private_mask_write_dir + "/" + f"{ep_it_string}-u1b1_mask.jpg", M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
             current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
-            imgs = [ dis_img_ord.astype(np.uint8) ,   M_visual , Mgt_visual]
-            img_titles = ["dis_img_ord", "M", "Mgt_visual"]
+            imgs       = [ dis_img_ord,   dis_img_pre,   M_visual , Mgt_visual]
+            img_titles = ["dis_img_ord",  "dis_img_pre",   "M",   "Mgt_visual"]
 
             single_row_imgs = Matplot_single_row_imgs(
                                     imgs      =imgs,         ### 把要顯示的每張圖包成list
