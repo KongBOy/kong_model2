@@ -20,8 +20,8 @@ from step08_b_use_G_generate_0_util import Tight_crop
 from step09_c_train_step import Train_step_I_to_M
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
-use_what_gen_op     =            I_to_M( Tight_crop(pad_size=60, resize=(256, 256), jit_scale= 0) )
-use_what_train_step = Train_step_I_to_M( Tight_crop(pad_size=60, resize=(256, 256), jit_scale=15) )
+use_what_gen_op     =            I_to_M( Tight_crop(pad_size=60, resize=(255, 255), jit_scale= 0) )
+use_what_train_step = Train_step_I_to_M( Tight_crop(pad_size=60, resize=(255, 255), jit_scale=15) )
 
 import time
 start_time = time.time()
