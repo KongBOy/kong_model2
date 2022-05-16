@@ -189,7 +189,9 @@ class Sobel_MAE():
         '''
         輸入的 sobel_result 要 BHWC 喔！
         '''
-        sobel_result = sobel_result[0].numpy()  ### BHWC，所以要 [0]
+        if( type(sobel_result)) != type(np.array([])): sobel_result = sobel_result.numpy()
+
+        sobel_result = sobel_result[0]  ### BHWC，所以要 [0]
         h, w, c = sobel_result.shape
         ### 算出 M
         if(Mask is None):
@@ -374,8 +376,15 @@ class Sobel_MAE():
             sobel_x_result = sobel_x_result * Mask
             sobel_y_result = sobel_y_result * Mask
             ### debug用， 視覺化一下 乘完後的效果
-            # self.Visualize_sobel_result(sobel_x_result)
-            # self.Visualize_sobel_result(sobel_y_result)
+
+            ### 用 opencv 內建的 sobel 來比較， 幾乎一模一樣， 只差在 opencv 有多乘上一個係數
+            # cv2_sobelx  = cv2.Sobel(image[0].numpy(), cv2.CV_64F, 1, 0, ksize=self.sobel_kernel_size) * Mask[0].numpy()
+            # cv2_sobely  = cv2.Sobel(image[0].numpy(), cv2.CV_64F, 0, 1, ksize=self.sobel_kernel_size) * Mask[0].numpy()
+            # cv2_sobelxy = cv2.Sobel(image[0].numpy(), cv2.CV_64F, 1, 1, ksize=self.sobel_kernel_size) * Mask[0].numpy()
+            # self.Visualize_sobel_result(cv2_sobelx[np.newaxis, ...])
+            # self.Visualize_sobel_result(cv2_sobely[np.newaxis, ...])
+            # self.Visualize_sobel_result(cv2_sobelxy[np.newaxis, ...])
+            # plt.show()
 
         return sobel_x_result, sobel_y_result
 
@@ -383,7 +392,7 @@ class Sobel_MAE():
     def __call__(self, gt_data, pred_data, Mask=None):
         n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-        Mask    = Mask   [:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        if(Mask is not None): Mask    = Mask   [:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
 
         print("Sobel_MAE.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
         img1_sobel_x, img1_sobel_y = self.Calculate_sobel_edges(image=gt_data,   Mask=Mask)
