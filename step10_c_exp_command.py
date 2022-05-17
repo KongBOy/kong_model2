@@ -12,6 +12,7 @@ run                 = "build().run()"
 train               = "build().train()"
 train_reload        = "build().train_reload()"
 train_run_final_see = "build().train_run_final_see()"
+test                = "build().test(test_db_name='%s', %s)"   ### 第一個放 test_db_name, 第二個放 knpy_save=True/False
 
 bm_rec_see_print_msg = False
 bm_rec_result_print_msg = True
