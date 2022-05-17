@@ -118,9 +118,11 @@ class I_to_M(Use_G_generate):
             Fake_F 的部分
             '''
             if(self.phase == "test"):
+                fake_h = 448
+                fake_w = 448
                 ### 先粗略寫， 有時間再來敢先趕meeting
-                M = cv2.resize(M, (512, 512), interpolation=cv2.INTER_AREA)
-                M = M.reshape(512, 512, 1)
+                M = cv2.resize(M, (fake_w, fake_h), interpolation=cv2.INTER_AREA)
+                M = M.reshape(fake_h, fake_w, 1)
 
                 gather_mask_dir   = public_write_dir + "/pred_mask"
                 Check_dir_exist_and_build(gather_mask_dir)
@@ -224,7 +226,7 @@ def I_Generate_M_see(model_obj, phase, index, in_img, in_img_pre, gt_mask_coord,
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-        from matplot_fig_ax_util import Matplot_single_row_imgs
+        from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
         imgs = [ in_img ,   pred_mask_visual , gt_mask]
         img_titles = ["in_img", "pred_mask", "gt_mask"]
 
