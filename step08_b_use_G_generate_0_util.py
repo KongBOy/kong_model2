@@ -5,7 +5,7 @@ from step06_a_datas_obj import Range
 
 import sys
 sys.path.append("kong_util")
-from build_dataset_combine import  method1
+from kong_util.build_dataset_combine import method1, Check_dir_exist_and_build, Save_npy_path_as_knpy
 
 import matplotlib.pyplot as plt
 ######################################################################################################################################################################################################
@@ -90,7 +90,6 @@ def W_01_and_W_01_w_M_to_WM_and_visualize(W_raw, M, out_ch3=False):
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
-import tensorflow as tf
 class Tight_crop():
     def __init__(self, pad_size=20, pad_method="reflect+black", resize=None, jit_scale=0):
         '''
@@ -107,6 +106,7 @@ class Tight_crop():
         if(self.jit_scale > 0):  self.reset_jit()
 
     def reset_jit(self):
+        import tensorflow as tf
         if(self.jit_scale > 0):
             self.l_jit = tf.random.uniform(shape=[], minval=-self.jit_scale, maxval=self.jit_scale, dtype=tf.int64)
             self.r_jit = tf.random.uniform(shape=[], minval=-self.jit_scale, maxval=self.jit_scale, dtype=tf.int64)
@@ -118,6 +118,15 @@ class Tight_crop():
         self.resize = resize
 
     def __call__(self, data, Mask):
+        import tensorflow as tf
+        if  (len(data.shape) == 4): b, h, w, c = data.shape
+        elif(len(data.shape) == 3): h, w, c = data.shape
+        elif(len(data.shape) == 2): h, w = data.shape
+
+        # if( tf.math.equal(tf.reduce_sum(Mask), tf.constant(0, tf.float32) )):
+        #     print("Mask 全黑， 不做 tight_crop")
+        #     return data, {"l_pad_slice": tf.constant(0, tf.int64), "t_pad_slice": tf.constant(0, tf.int64), "r_pad_slice": tf.constant(w, tf.int64), "d_pad_slice": tf.constant(h, tf.int64)}
+
         '''
         目前的寫法連 batch 都考慮進去囉
         resize: [h, w]
@@ -170,9 +179,6 @@ class Tight_crop():
         r_out_amo = tf.constant(0, tf.int64)  ### 格數
         t_out_amo = tf.constant(0, tf.int64)  ### 格數
         d_out_amo = tf.constant(0, tf.int64)  ### 格數
-        if  (len(data.shape) == 4): b, h, w, c = data.shape
-        elif(len(data.shape) == 3): h, w, c = data.shape
-        elif(len(data.shape) == 2): h, w = data.shape
 
         if(l_pad_ind < 0): l_out_amo = - l_pad_ind  ### l, t 負的 index 剛好 == 超出去的格數
         if(t_pad_ind < 0): t_out_amo = - t_pad_ind  ### l, t 負的 index 剛好 == 超出去的格數
@@ -357,3 +363,114 @@ class Use_G_generate:
 #     def doing_things(self,model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False):
 #         ''' Not Implement'''
 #         pass
+
+######################################################################################################################################################################################################
+######################################################################################################################################################################################################
+
+### doc3d v2 [Z: Range(-0.50429183, 0.46694446), Y: Range(-1.2410645, 1.2485291), X: Range(-1.2387834, 1.2280148)]
+def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None, final_resize=None, by_the_way_fake_F=False, dis_img=None, dis_img_format=".png", zmin=None, zmax=None, ymin=None, ymax=None, xmin=None, xmax=None):
+    '''
+    wc_type 有兩種： 
+        Wzxy
+        Wzyx
+    '''
+    fname = fname[ :-4]
+
+    dis_img_dir       = f"{dst_dir}/0_dis_img"
+    uv_npy_dir        = f"{dst_dir}/1_uv-1_npy"
+    uv_knpy_dir       = f"{dst_dir}/1_uv-3_knpy"
+    wc_npy_dir        = f"{dst_dir}/2_wc-1_npy"
+    W_w_M_npy_dir     = f"{dst_dir}/2_wc-4_W_w_M_npy"
+    W_w_M_knpy_dir    = f"{dst_dir}/2_wc-5_W_w_M_knpy"
+    W_w_M_visual_dir  = f"{dst_dir}/2_wc-6_W_w_M_visual"
+    dis_img_path      = f"{dis_img_dir}/{fname}.{dis_img_format}"
+    uv_npy_path       = f"{uv_npy_dir}/{fname}.npy"
+    uv_knpy_path      = f"{uv_knpy_dir}/{fname}.knpy"
+    wc_npy_path       = f"{wc_npy_dir}/{fname}.npy"
+    W_w_M_npy_path    = f"{W_w_M_npy_dir}/{fname}.npy"
+    W_w_M_knpy_path   = f"{W_w_M_knpy_dir}/{fname}.knpy"
+    W_w_M_visual_path = f"{W_w_M_visual_dir}/{fname}.png"
+    Check_dir_exist_and_build(wc_npy_dir)
+    Check_dir_exist_and_build(W_w_M_npy_dir)
+    Check_dir_exist_and_build(W_w_M_knpy_dir)
+    Check_dir_exist_and_build(W_w_M_visual_dir)
+
+    ### 作處理前 要先 resize 到多大
+    if(first_resize is not None): wc = cv2.resize(wc, first_resize)
+
+    ### 紀錄一下原始 shape
+    h, w, c = wc.shape
+
+    ### 在 448 的狀態下 做 padding
+    wc = np.pad(wc, ( (pad_size, pad_size), (pad_size, pad_size), (0, 0)), "constant" )
+
+    ### Mask
+    Mask = ((wc[..., 0:1] > 0) & (wc[..., 1:2] > 0) & (wc[..., 2:3] > 0)).astype(np.uint8)
+
+        
+    ### 做完處理後 最後 要 resize 到多大
+    if(final_resize is not None):
+        wc   = cv2.resize(wc,   final_resize)
+        Mask = cv2.resize(Mask, final_resize)
+        Mask = Mask[..., np.newaxis]  ### Mask 做完 resize ， 因為ch1， 會被cv2 自動拿掉， 這邊要再補回來喔
+
+    ### 提取 Wx, Wy, Wz
+    if  (wc_type.lower() == "Wzyx".lower() ):
+        Wz = wc[..., 0:1]
+        Wy = wc[..., 1:2]
+        Wx = wc[..., 2:3]
+    elif(wc_type.lower() == "Wzxy".lower() ):
+        Wz = wc[..., 0:1]
+        Wx = wc[..., 1:2]
+        Wy = wc[..., 2:3]
+
+    ### 值放回原始range
+    if(None not in [zmin, zmax]): Wz = Wz * (zmax - zmin) + zmin
+    if(None not in [ymin, ymax]): Wy = Wy * (ymax - ymin) + ymin
+    if(None not in [xmin, xmax]): Wx = Wx * (xmax - xmin) + xmin
+
+    #########################################################
+    ### wc 統一轉成 Wzyx
+    wc = np.concatenate([Wz, Wy, Wx], axis=-1)
+    ### wc 和 W_w_M
+    wc = wc * Mask
+    W_w_M = np.concatenate( (wc, Mask), axis= -1 )
+
+    ### 轉 type
+    wc    = wc    .astype(np.float32)
+    W_w_M = W_w_M .astype(np.float32)
+
+    ### 存起來
+    np.save(wc_npy_path    , wc)
+    np.save(W_w_M_npy_path , W_w_M)
+    Save_npy_path_as_knpy(W_w_M_npy_path, W_w_M_knpy_path)
+
+    ### 視覺化 和 存起來
+    fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(5 * 4, 5))
+    ax[0].imshow(Wz)
+    ax[1].imshow(Wy)
+    ax[2].imshow(Wx)
+    ax[3].imshow(Mask)
+    plt.tight_layout()
+    plt.savefig(W_w_M_visual_path)
+    # plt.show()
+    plt.close()
+
+    if(by_the_way_fake_F):
+        Check_dir_exist_and_build(uv_npy_dir)
+        Check_dir_exist_and_build(uv_knpy_dir)
+
+        fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
+        fake_F = np.concatenate([Mask, fake_C], axis=-1)
+        np.save(uv_npy_path, fake_F)
+        Save_npy_path_as_knpy(uv_npy_path, uv_knpy_path)
+
+    if(dis_img is not None):
+        ### 作處理前 要先 resize 到多大
+        if(first_resize is not None): dis_img = cv2.resize(dis_img, first_resize)
+        ### 在 448 的狀態下 做 padding
+        dis_img = np.pad(dis_img, ( (pad_size, pad_size), (pad_size, pad_size), (0,0)), "edge" )
+        ### 做完處理後 最後 要 resize 到多大
+        if(final_resize is not None): dis_img = cv2.resize(dis_img, final_resize)
+        Check_dir_exist_and_build(dis_img_dir)
+        cv2.imwrite(dis_img_path, dis_img)
