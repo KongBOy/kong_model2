@@ -326,13 +326,15 @@ class Use_G_generate:
         self.see_reset_init = None
         self.postprocess    = None
         self.npz_save       = None
+        self.knpy_save      = None
         self.add_loss       = None
         self.bgr2rgb        = None
 
-    def __call__(self, model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=None, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+    def __call__(self, model_obj, phase, index, fname, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=None, see_reset_init=True, postprocess=False, npz_save=False, knpy_save=False, add_loss=False, bgr2rgb=True):
         self.model_obj      = model_obj
         self.phase          = phase
         self.index          = index
+        self.fname          = fname
         self.in_ord         = in_ord
         self.in_pre         = in_pre
         self.gt_ord         = gt_ord
@@ -343,6 +345,7 @@ class Use_G_generate:
         self.see_reset_init = see_reset_init
         self.postprocess    = postprocess
         self.npz_save       = npz_save
+        self.knpy_save      = knpy_save
         self.add_loss       = add_loss
         self.bgr2rgb        = bgr2rgb
         self.doing_things()

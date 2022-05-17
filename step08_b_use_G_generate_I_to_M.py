@@ -100,14 +100,15 @@ class I_to_M(Use_G_generate):
         cv2.imwrite(    private_mask_write_dir + "/" + f"{ep_it_string}-u1b1_mask.jpg", M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
-            current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+            current_see_name = self.fname   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+
             from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
             imgs       = [ dis_img_ord,   dis_img_pre,   M_visual , Mgt_visual]
             img_titles = ["dis_img_ord",  "dis_img_pre",   "M",   "Mgt_visual"]
 
             single_row_imgs = Matplot_single_row_imgs(
                                     imgs      =imgs,         ### 把要顯示的每張圖包成list
-                                    img_titles=img_titles,               ### 把每張圖要顯示的字包成list
+                                    img_titles=img_titles,   ### 把每張圖要顯示的字包成list
                                     fig_title ="%s, epoch=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
                                     add_loss  =self.add_loss,
                                     bgr2rgb   =self.bgr2rgb)
@@ -117,7 +118,7 @@ class I_to_M(Use_G_generate):
             '''
             Fake_F 的部分
             '''
-            if(self.phase == "test"):
+            if(self.phase == "test" and self.knpy_save is True):
                 ### 先粗略寫， 有時間再來敢先趕meeting
                 M = cv2.resize(M, (512, 512), interpolation=cv2.INTER_AREA)
                 M = M.reshape(512, 512, 1)

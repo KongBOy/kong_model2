@@ -62,7 +62,7 @@ class Result_sees_builder(Result_init_builder):
 
         used_see_dir = db_obj.test_db_name
         if(db_obj.test_db_name == "see"): used_see_dir = "test_" + used_see_dir
-        self.result.tests = [ See(self.result, used_see_dir + "/test_%03i" % test_i) for test_i in range(self.result.test_amount)]
+        self.result.tests = [ See(self.result, used_see_dir + "/test_%03i" % test_i) for test_i in range(self.result.test_amount)]  ### 只用號碼 不用 file_name 給see 的好處是， 不會受到 test 檔案命名的影響， 儘管test檔名很長也沒差
         # print("test_amount:", self.result.test_amount)
         # print("self.result.tests", self.result.tests)
         pass
