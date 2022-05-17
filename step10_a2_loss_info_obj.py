@@ -1022,6 +1022,11 @@ mae_s100_sobel_k5_s020_loss_info_builder = Loss_info_builder().set_loss_type("ma
 mae_s100_sobel_k5_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 40)
 mae_s100_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 60)
 mae_s100_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 80)
+
+mae_s001_sobel_k05_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True)
+mae_s001_sobel_k15_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True)
+mae_s001_sobel_k25_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True)
+mae_s001_sobel_k35_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True)
 ##########################################################################################################################################################################
 ### 10
 mae_s001_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale=  1)
