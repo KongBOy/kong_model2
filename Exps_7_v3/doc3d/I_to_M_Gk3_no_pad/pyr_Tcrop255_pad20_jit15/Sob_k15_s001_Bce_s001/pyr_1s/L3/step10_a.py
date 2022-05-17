@@ -43,7 +43,7 @@ exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要�
 '''
 
 use_db_obj = type8_blender_kong_doc3d_in_I_gt_MC
-use_loss_obj = [G_bce_s001_sobel_k15_s001_EroseM_loss_info_builder.set_loss_target("UNet_Mask").copy()]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
+use_loss_obj = [G_bce_s001_sobel_k15_s001_loss_info_builder.set_loss_target("UNet_Mask").copy()]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
 #############################################################
 ### 為了resul_analyze畫空白的圖，建一個empty的 Exp_builder
 empty = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_1side_1, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_1side_1.kong_model.model_describe) .set_train_args(epochs=  1) .set_train_iter_args(it_see_fq=900, it_save_fq=900 * 2, it_down_step="half", it_down_fq=900).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="為了resul_analyze畫空白的圖，建一個empty的 Exp_builder")
