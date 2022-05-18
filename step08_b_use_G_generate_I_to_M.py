@@ -151,37 +151,37 @@ class I_to_M(Use_G_generate):
                 fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{fake_name}.knpy"
                 np.save(fake_F_npy_path, fake_F)
                 Save_npy_path_as_knpy(fake_F_npy_path, fake_F_knpy_path)
-                print("fake_F_npy_path :", fake_F_npy_path)
-                print("fake_F_knpy_path:", fake_F_knpy_path)
+                print("fake_F_npy_path     :", fake_F_npy_path)
+                print("fake_F_knpy_path    :", fake_F_knpy_path)
 
                 ### .npy刪除(因為超占空間) 改存 .npz
                 np.savez_compressed(fake_F_npy_path.replace(".npy", ".npz"), fake_F)
                 os.remove(fake_F_npy_path)
                 ###############################################################################
-                ### 準備存 fake_W
+                ### 準備存 fake_W_w_M (我是覺得不用存 W 了， 因為已經包含再 W_w_M 裡面了)
                 fake_W = np.zeros(shape=(h, w, 3), dtype=np.float32)
-                fake_W = np.concatenate((fake_W, M), axis=-1)
-                fake_W = fake_W.astype(np.float32)
+                fale_W_w_M = np.concatenate((fake_W, M), axis=-1)
+                fale_W_w_M = fale_W_w_M.astype(np.float32)
 
                 ### 定位出 存檔案的位置
-                gather_fake_W_dir = public_write_dir + "/pred_mask/fake_W"
-                gather_fake_W_npy_dir  = gather_fake_W_dir + "/1 npy"
-                gather_fake_W_knpy_dir = gather_fake_W_dir + "/2 knpy"
-                Check_dir_exist_and_build(gather_fake_W_dir)
-                Check_dir_exist_and_build(gather_fake_W_npy_dir)
-                Check_dir_exist_and_build(gather_fake_W_knpy_dir)
+                gather_fale_W_w_M_dir = public_write_dir + "/pred_mask/fale_W_w_M"
+                gather_fale_W_w_M_npy_dir  = gather_fale_W_w_M_dir + "/1 npy"
+                gather_fale_W_w_M_knpy_dir = gather_fale_W_w_M_dir + "/2 knpy"
+                Check_dir_exist_and_build(gather_fale_W_w_M_dir)
+                Check_dir_exist_and_build(gather_fale_W_w_M_npy_dir)
+                Check_dir_exist_and_build(gather_fale_W_w_M_knpy_dir)
 
                 ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
-                fake_W_npy_path  = f"{gather_fake_W_npy_dir}/{fake_name}.npy"
-                fake_W_knpy_path = f"{gather_fake_W_knpy_dir}/{fake_name}.knpy"
-                np.save(fake_W_npy_path, fake_W)
-                Save_npy_path_as_knpy(fake_W_npy_path, fake_W_knpy_path)
-                print("fake_W_npy_path :", fake_W_npy_path)
-                print("fake_W_knpy_path:", fake_W_knpy_path)
+                fale_W_w_M_npy_path  = f"{gather_fale_W_w_M_npy_dir}/{fake_name}.npy"
+                fale_W_w_M_knpy_path = f"{gather_fale_W_w_M_knpy_dir}/{fake_name}.knpy"
+                np.save(fale_W_w_M_npy_path, fale_W_w_M)
+                Save_npy_path_as_knpy(fale_W_w_M_npy_path, fale_W_w_M_knpy_path)
+                print("fale_W_w_M_npy_path :", fale_W_w_M_npy_path)
+                print("fale_W_w_M_knpy_path:", fale_W_w_M_knpy_path)
 
                 ### .npy刪除(因為超占空間) 改存 .npz
-                np.savez_compressed(fake_W_npy_path.replace(".npy", ".npz"), fake_W)
-                os.remove(fake_W_npy_path)
+                np.savez_compressed(fale_W_w_M_npy_path.replace(".npy", ".npz"), fale_W_w_M)
+                os.remove(fale_W_w_M_npy_path)
 
 
 
