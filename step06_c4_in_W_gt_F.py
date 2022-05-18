@@ -41,9 +41,9 @@ def debug_tf_data(tf_data, use_train_test_see="train"):
         ### 用 matplot 視覺化， 也可以順便看一下 真的要使用data時， 要怎麼抓資料才正確
         in_ord            = in_ord[0][0]  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
         in_pre            = in_pre[0][0]
-        train_gt_mask     = gt_ord    [0, ..., 0:1].numpy()
+        train_gt_mask     = gt_ord[0, ..., 0:1].numpy()
         train_gt_pre_mask = gt_pre[0, ..., 0:1].numpy()
-        train_gt_move     = gt_ord    [0, ..., 1:3].numpy()
+        train_gt_move     = gt_ord[0, ..., 1:3].numpy()
         train_gt_pre_move = gt_pre[0, ..., 1:3].numpy()
         train_gt_move_visual     = method1(train_gt_move[..., 1]    , train_gt_move[..., 0])
         train_gt_pre_move_visual = method1(train_gt_pre_move[..., 1], train_gt_pre_move[..., 0])
@@ -89,20 +89,19 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_init_builder):
         self.tf_data.train_name_db = self.train_in_factory .build_name_db()
         self.tf_data.train_in_db   = self.train_in_factory .build_W_db_by_MW_hole_norm_no_mul_M_wrong()
 
-        self.tf_data.test_in_db    = self.test_in_factory.build_W_db_by_MW_hole_norm_no_mul_M_wrong()
-        self.tf_data.test_name_db  = self.test_in_factory.build_name_db()
+        self.tf_data.test_in_db    = self.test_in_factory  .build_W_db_by_MW_hole_norm_no_mul_M_wrong()
+        self.tf_data.test_name_db  = self.test_in_factory  .build_name_db()
 
-        ''' 這裡的 train_in2_db 是 dis_img， 只是為了讓 F 來做 bm_rec 來 visualize 而已， 不會丟進去model裡面， 所以 不需要 train_in2_db_pre 喔！ 更不需要 zip 了'''
-        self.tf_data.train_in2_db     = self.train_in2_factory.build_img_db()
-        self.tf_data.test_in2_db      = self.test_in2_factory .build_img_db()
-        self.tf_data.train_in_db.ord  = tf.data.Dataset.zip((self.tf_data.train_in_db.ord, self.tf_data.train_in2_db.ord))
-        self.tf_data.test_in_db .ord  = tf.data.Dataset.zip((self.tf_data.test_in_db.ord , self.tf_data.test_in2_db .ord))
-        self.tf_data.train_in_db.pre  = tf.data.Dataset.zip((self.tf_data.train_in_db.pre, self.tf_data.train_in2_db.pre))
-        self.tf_data.test_in_db .pre  = tf.data.Dataset.zip((self.tf_data.test_in_db.pre , self.tf_data.test_in2_db .pre))
+        self.tf_data.train_in2_db  = self.train_in2_factory.build_img_db()
+        self.tf_data.test_in2_db   = self.test_in2_factory .build_img_db()
+        self.tf_data.train_in_db .ord  = tf.data.Dataset.zip((self.tf_data.train_in_db .ord , self.tf_data.train_in2_db .ord))
+        self.tf_data.test_in_db  .ord  = tf.data.Dataset.zip((self.tf_data.test_in_db  .ord , self.tf_data.test_in2_db  .ord))
+        self.tf_data.train_in_db .pre  = tf.data.Dataset.zip((self.tf_data.train_in_db .pre , self.tf_data.train_in2_db .pre))
+        self.tf_data.test_in_db  .pre  = tf.data.Dataset.zip((self.tf_data.test_in_db  .pre , self.tf_data.test_in2_db  .pre))
 
         ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
-        self.tf_data.train_amount    = get_db_amount(self.tf_data.db_obj.train_in_dir)
-        self.tf_data.test_amount     = get_db_amount(self.tf_data.db_obj.test_in_dir)
+        self.tf_data.train_amount = get_db_amount(self.tf_data.db_obj.train_in_dir)
+        self.tf_data.test_amount  = get_db_amount(self.tf_data.db_obj.test_in_dir)
 
         ### 拿到 gt_masks_db 的 train dataset，從 檔名 → tensor
         self.tf_data.train_gt_db = self.train_gt_factory.build_F_db_by_MC_hole_norm_no_mul_M_wrong_but_OK()
@@ -117,7 +116,6 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_init_builder):
             self.tf_data.see_in_db   = self.see_in_factory.build_W_db_by_MW_hole_norm_no_mul_M_wrong()
             self.tf_data.see_name_db = self.see_in_factory.build_name_db()
 
-            ''' 這裡的 train_in2_db 是 dis_img， 只是為了讓 F 來做 bm_rec 來 visualize 而已， 不會丟進去model裡面， 所以 不需要 train_in2_db_pre 喔！ 更不需要 zip 了'''
             self.tf_data.see_in2_db = self.see_in2_factory .build_img_db()
             self.tf_data.see_in_db.ord  = tf.data.Dataset.zip((self.tf_data.see_in_db.ord, self.tf_data.see_in2_db.ord))
             self.tf_data.see_in_db.pre  = tf.data.Dataset.zip((self.tf_data.see_in_db.pre, self.tf_data.see_in2_db.pre))
@@ -161,16 +159,15 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_init_builder):
         self.tf_data.train_name_db = self.train_in_factory .build_name_db()
         self.tf_data.train_in_db   = self.train_in_factory .build_W_db_by_MW_hole_norm_then_mul_M_right()
 
-        self.tf_data.test_name_db = self.test_in_factory.build_name_db()
-        self.tf_data.test_in_db   = self.test_in_factory.build_W_db_by_MW_hole_norm_then_mul_M_right()
+        self.tf_data.test_name_db  = self.test_in_factory .build_name_db()
+        self.tf_data.test_in_db    = self.test_in_factory .build_W_db_by_MW_hole_norm_then_mul_M_right()
 
-        ''' 這裡的 train_in2_db 是 dis_img， 只是為了讓 F 來做 bm_rec 來 visualize 而已， 不會丟進去model裡面， 所以 不需要 train_in2_db_pre 喔！ 更不需要 zip 了'''
         self.tf_data.train_in2_db = self.train_in2_factory.build_img_db()
         self.tf_data.test_in2_db  = self.test_in2_factory .build_img_db()
-        self.tf_data.train_in_db.ord = tf.data.Dataset.zip((self.tf_data.train_in_db.ord, self.tf_data.train_in2_db.ord))
-        self.tf_data.test_in_db .ord = tf.data.Dataset.zip((self.tf_data.test_in_db .ord, self.tf_data.test_in2_db .ord))
-        self.tf_data.train_in_db.pre = tf.data.Dataset.zip((self.tf_data.train_in_db.pre, self.tf_data.train_in2_db.pre))
-        self.tf_data.test_in_db .pre = tf.data.Dataset.zip((self.tf_data.test_in_db .pre, self.tf_data.test_in2_db .pre))
+        self.tf_data.train_in_db .ord = tf.data.Dataset.zip((self.tf_data.train_in_db .ord, self.tf_data.train_in2_db .ord))
+        self.tf_data.test_in_db  .ord = tf.data.Dataset.zip((self.tf_data.test_in_db  .ord, self.tf_data.test_in2_db  .ord))
+        self.tf_data.train_in_db .pre = tf.data.Dataset.zip((self.tf_data.train_in_db .pre, self.tf_data.train_in2_db .pre))
+        self.tf_data.test_in_db  .pre = tf.data.Dataset.zip((self.tf_data.test_in_db  .pre, self.tf_data.test_in2_db  .pre))
 
         ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
         self.tf_data.train_amount = get_db_amount(self.tf_data.db_obj.train_in_dir)
@@ -189,7 +186,6 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_init_builder):
             self.tf_data.see_in_db   = self.see_in_factory.build_W_db_by_MW_hole_norm_then_mul_M_right()
             self.tf_data.see_name_db = self.see_in_factory.build_name_db()
 
-            ''' 這裡的 train_in2_db 是 dis_img， 只是為了讓 F 來做 bm_rec 來 visualize 而已， 不會丟進去model裡面， 所以 不需要 train_in2_db_pre 喔！ 更不需要 zip 了'''
             self.tf_data.see_in2_db = self.see_in2_factory .build_img_db()
             self.tf_data.see_in_db.ord  = tf.data.Dataset.zip((self.tf_data.see_in_db.ord, self.tf_data.see_in2_db.ord))
             self.tf_data.see_in_db.pre  = tf.data.Dataset.zip((self.tf_data.see_in_db.pre, self.tf_data.see_in2_db.pre))
