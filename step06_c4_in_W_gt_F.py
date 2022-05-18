@@ -9,7 +9,11 @@ def debug_tf_data(tf_data, use_train_test_see="train"):
     import tensorflow as tf
     import matplotlib.pyplot as plt
     import os
-    from util import method1
+    import numpy as np
+    from kong_util.util import method1
+    from step10_a1_loss import Sobel_MAE
+
+    sob_obj = Sobel_MAE(sobel_kernel_size=11, sobel_kernel_scale=1, stride=1, erose_M=True)
 
     debug_what_db = None
     if  (use_train_test_see == "train"): debug_what_db = tf_data.train_db_combine
@@ -25,46 +29,79 @@ def debug_tf_data(tf_data, use_train_test_see="train"):
         '''
         # if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
         # elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)
-        debug_dict[f"{i}--1-1 in_ord"] = in_ord[0]  ### [0]第一個是 取 wc, [1] 是取 dis_img
-        debug_dict[f"{i}--1-2 in_pre"] = in_pre[0]
-        debug_dict[f"{i}--1-3 gt_ord"] = gt_ord
-        debug_dict[f"{i}--1-4 gt_pre"] = gt_pre
+        debug_dict[f"{i}--1-1 Win_ord"] = in_ord[0]  ### [0]第一個是 取 wc, [1] 是取 dis_img
+        debug_dict[f"{i}--1-2 Win_pre"] = in_pre[0]
+        debug_dict[f"{i}--1-3 Iin_ord"] = in_ord[1]  ### [0]第一個是 取 wc, [1] 是取 dis_img
+        debug_dict[f"{i}--1-4 Iin_pre"] = in_pre[1]
+        debug_dict[f"{i}--1-5 Fgt_ord"] = gt_ord
+        debug_dict[f"{i}--1-6 Fgt_pre"] = gt_pre
 
-        debug_dict[f"{i}--2-1  in_ord"] = in_ord[0][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
-        debug_dict[f"{i}--2-2  in_pre"] = in_pre[0][0].numpy()
-        debug_dict[f"{i}--2-3a train_gt_ord_mask"] = gt_ord[0, ..., 0:1].numpy()
-        debug_dict[f"{i}--2-3b train_gt_ord_move"] = gt_ord[0, ..., 1:3].numpy()
-        debug_dict[f"{i}--2-4a train_gt_pre_mask"] = gt_pre[0, ..., 0:1].numpy()
-        debug_dict[f"{i}--2-4b train_gt_pre_move"] = gt_pre[0, ..., 1:3].numpy()
+        debug_dict[f"{i}--2-1  Win_ord"] = in_ord[0][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
+        debug_dict[f"{i}--2-2  Win_pre"] = in_pre[0][0].numpy()
+        debug_dict[f"{i}--2-3  Iin_ord"] = in_ord[1][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
+        debug_dict[f"{i}--2-4  Iin_pre"] = in_pre[1][0].numpy()
+        debug_dict[f"{i}--2-5a Mgt_ord"] = gt_ord[0, ..., 0:1].numpy()
+        debug_dict[f"{i}--2-5b Cgt_ord"] = gt_ord[0, ..., 1:3].numpy()
+        debug_dict[f"{i}--2-6a Mgt_pre"] = gt_pre[0, ..., 0:1].numpy()
+        debug_dict[f"{i}--2-6b Cgt_pre"] = gt_pre[0, ..., 1:3].numpy()
 
         # breakpoint()
         ### 用 matplot 視覺化， 也可以順便看一下 真的要使用data時， 要怎麼抓資料才正確
-        in_ord            = in_ord[0][0]  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
-        in_pre            = in_pre[0][0]
-        train_gt_mask     = gt_ord[0, ..., 0:1].numpy()
-        train_gt_pre_mask = gt_pre[0, ..., 0:1].numpy()
-        train_gt_move     = gt_ord[0, ..., 1:3].numpy()
-        train_gt_pre_move = gt_pre[0, ..., 1:3].numpy()
-        train_gt_move_visual     = method1(train_gt_move[..., 1]    , train_gt_move[..., 0])
-        train_gt_pre_move_visual = method1(train_gt_pre_move[..., 1], train_gt_pre_move[..., 0])
+        Win_ord = in_ord[0][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
+        Win_pre = in_pre[0][0].numpy()
+        Iin_ord = in_ord[1][0].numpy()  ### [0]第一個是 取 wc, [1] 是取 dis_img， 第二個[0]是取 batch
+        Iin_pre = in_pre[1][0].numpy()
+        Mgt_ord = gt_ord[0, ..., 0:1].numpy()
+        Mgt_pre = gt_pre[0, ..., 0:1].numpy()
+        Cgt_ord = gt_ord[0, ..., 1:3].numpy()
+        Cgt_pre = gt_pre[0, ..., 1:3].numpy()
+        Cgt_ord_visual = method1(Cgt_ord[..., 1], Cgt_ord[..., 0])
+        Cgt_pre_visual = method1(Cgt_pre[..., 1], Cgt_pre[..., 0])
+
+        Wzyx_Gx, Wzyx_Gy = sob_obj.Calculate_sobel_edges(Win_pre[np.newaxis, ...], Mask=Mgt_pre[np.newaxis, ...])
+        Cyx_Gx , Cyx_Gy  = sob_obj.Calculate_sobel_edges(Cgt_pre[np.newaxis, ...], Mask=Mgt_pre[np.newaxis, ...])
+
+        Wz_Gx = Wzyx_Gx[..., 0]
+        Wy_Gx = Wzyx_Gx[..., 1]
+        Wx_Gx = Wzyx_Gx[..., 2]
+        Wz_Gy = Wzyx_Gy[..., 0]
+        Wy_Gy = Wzyx_Gy[..., 1]
+        Wx_Gy = Wzyx_Gy[..., 2]
+
+        Cy_Gx = Cyx_Gx[..., 0]
+        Cx_Gx = Cyx_Gx[..., 1]
+        Cy_Gy = Cyx_Gy[..., 0]
+        Cx_Gy = Cyx_Gy[..., 1]
 
         ### 檢查 gt_mask 是否 == gt_pre_mask
-        #  # print( "train_gt_mask == train_gt_pre_mask:", (train_gt_mask == train_gt_pre_mask).astype(np.uint8).sum() == train_gt_mask.shape[0] * train_gt_mask.shape[1])
+        #  # print( "Mgt_ord == Mgt_pre:", (Mgt_ord == Mgt_pre).astype(np.uint8).sum() == Mgt_ord.shape[0] * Mgt_ord.shape[1])
 
-        fig, ax = plt.subplots(3, 5)
-        fig.set_size_inches(3 * 5, 3 * 3)
-        ax[0, 0].imshow(in_ord)
-        ax[0, 1].imshow(in_pre)
-        ax[0, 2].imshow(in_pre[..., 0:1])
-        ax[0, 3].imshow(in_pre[..., 1:2])
-        ax[0, 4].imshow(in_pre[..., 2:3])
+        fig, ax = plt.subplots(4, 6)
+        fig.set_size_inches(2 * 6, 2 * 4)
+        ax[0, 0].imshow(Win_ord)
+        ax[0, 1].imshow(Win_pre)
+        ax[0, 2].imshow(Win_pre[..., 0:1])
+        ax[0, 3].imshow(Win_pre[..., 1:2])
+        ax[0, 4].imshow(Win_pre[..., 2:3])
 
-        ax[1, 0].imshow(train_gt_mask)
-        ax[1, 1].imshow(train_gt_pre_mask)
-        ax[1, 2].imshow(train_gt_move_visual)
+        ax[1, 0].imshow(Wz_Gx[0])
+        ax[1, 1].imshow(Wz_Gy[0])
+        ax[1, 2].imshow(Wy_Gx[0])
+        ax[1, 3].imshow(Wy_Gy[0])
+        ax[1, 4].imshow(Wx_Gx[0])
+        ax[1, 5].imshow(Wx_Gy[0])
 
-        ax[2, 0].imshow(train_gt_pre_move[..., 0:1])
-        ax[2, 1].imshow(train_gt_pre_move[..., 1:2])
+        ax[2, 0].imshow(Mgt_ord)
+        ax[2, 1].imshow(Mgt_pre)
+        ax[2, 2].imshow(Cgt_ord_visual)
+        ax[2, 3].imshow(Cgt_pre[..., 0:1])
+        ax[2, 4].imshow(Cgt_pre[..., 1:2])
+
+        ax[3, 2].imshow(Cy_Gx[0])
+        ax[3, 3].imshow(Cy_Gy[0])
+        ax[3, 0].imshow(Cx_Gx[0])
+        ax[3, 1].imshow(Cx_Gy[0])
+
         fig.tight_layout()
         plt.show()
 
@@ -331,7 +368,7 @@ class tf_Data_in_wc_gt_flow_builder(tf_Data_init_builder):
             ##########################################################################################################################################
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
-        debug_tf_data(self.tf_data, use_train_test_see="train")
+        # debug_tf_data(self.tf_data, use_train_test_see="train")
         # debug_tf_data(self.tf_data, use_train_test_see="test")
         # debug_tf_data(self.tf_data, use_train_test_see="see")
         return self
@@ -347,14 +384,14 @@ if(__name__ == "__main__"):
     ''' 柱狀 '''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
     # db_obj = type8_blender_wc_flow.build()
-    db_obj = type8_blender_wc_flow_try_mul_M.build()
-    print(db_obj)
-    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
-    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    # db_obj = type8_blender_wc_flow_try_mul_M.build()
+    # print(db_obj)
+    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
 
     ''' kong_doc3d '''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    # db_obj = type8_blender_kong_doc3d_in_W_and_I_gt_F.build()
-    # print(db_obj)
-    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    db_obj = type8_blender_kong_doc3d_in_W_and_I_gt_F.build()
+    print(db_obj)
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
