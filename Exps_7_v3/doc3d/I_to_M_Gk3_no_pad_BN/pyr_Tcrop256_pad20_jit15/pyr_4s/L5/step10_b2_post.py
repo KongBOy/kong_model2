@@ -139,7 +139,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_1_4side_1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_2_4side_1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_2_4side_2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_3_4side_1.{run}"])
+sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_3_4side_1.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_3_4side_2.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_3_4side_3.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4__3side_4_4side_1.{run}"])
