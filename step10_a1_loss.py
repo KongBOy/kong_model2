@@ -256,7 +256,7 @@ class Sobel_MAE():
         return fig, ax
 
     def _create_sobel_kernel_xy(self):
-        print("doing _create_sobel_kernel_xy")
+        # print("doing _create_sobel_kernel_xy")
         # if(self.sobel_kernel_size == 3):
         #     kernels_xy = [ [[-1, -2, -1],
         #                  [ 0,  0,  0],
@@ -332,7 +332,7 @@ class Sobel_MAE():
         return kernels_xy
 
     def Calculate_sobel_edges(self, image, stride=1, Mask=None):
-        print("doing Calculate_sobel_edges")
+        # print("doing Calculate_sobel_edges")
         '''
         image：BHWC
         kernel：(2, k_size, k_size)
