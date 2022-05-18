@@ -32,7 +32,7 @@ class See_info:
         self.see_read_dir  = self.result_read_dir  + "/" + self.see_name
         self.see_write_dir = self.result_write_dir + "/" + self.see_name
 
-    def get_name_savely(self, search_dir_1, search_dir_2=".", certain_word=".", certain_ext="."):
+    def get_name_savely(self, search_dir_1, search_dir_2=".", certain_word=".", certain_ext=".", print_msg=False):
         names = get_dir_certain_file_names(search_dir_1, certain_word=certain_word, certain_ext=certain_ext)
         if(len(names) > 0): return names[-1]
 
@@ -41,11 +41,12 @@ class See_info:
         if(len(names) > 0): return names[-1]
 
         ### 如果 search_dir_1, 2 就代表真的找不到了
-        print(f"{search_dir_1} 找不到 {certain_word}{certain_ext} 字眼的檔案")
-        print(f"{search_dir_2} 找不到 {certain_word}{certain_ext} 字眼的檔案")
-        return None
+        if(print_msg):
+            print(f"{search_dir_1} 找不到 {certain_word}{certain_ext} 字眼的檔案")
+            print(f"{search_dir_2} 找不到 {certain_word}{certain_ext} 字眼的檔案")
+            return None
 
-    def get_path_savely(self, search_dir_1, search_dir_2=".", certain_word=".", certain_ext="."):
+    def get_path_savely(self, search_dir_1, search_dir_2=".", certain_word=".", certain_ext=".", print_msg=False):
         names = get_dir_certain_file_names(search_dir_1, certain_word=certain_word, certain_ext=certain_ext)
         if(len(names) > 0): return f"{search_dir_1}/{names[-1]}"
 
@@ -54,9 +55,10 @@ class See_info:
         if(len(names) > 0): return f"{search_dir_2}/{names[-1]}"
 
         ### 如果 search_dir_1, 2 就代表真的找不到了
-        print(f"{search_dir_1} 找不到 {certain_word}{certain_ext} 字眼的檔案")
-        print(f"{search_dir_2} 找不到 {certain_word}{certain_ext} 字眼的檔案")
-        return None
+        if(print_msg):
+            print(f"{search_dir_1} 找不到 {certain_word}{certain_ext} 字眼的檔案")
+            print(f"{search_dir_2} 找不到 {certain_word}{certain_ext} 字眼的檔案")
+            return None
 
     def get_see_base_info(self):
         ''' 我有把 see_file_amount 這個attr拿掉囉！ 因為 應用的時候需要一直 -1, -2, -3 很煩， -1, -2, -3 分別代表什麼數字都直接定義清楚這樣子拉！'''
