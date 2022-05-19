@@ -52,7 +52,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
         ''' 重新命名 讓我自己比較好閱讀'''
         in_WM_and_dis_img     = self.in_ord
         in_WM_and_dis_img_pre = self.in_pre
-        Mgt_C                 = self.gt_ord
+        Mgt_C_ord             = self.gt_ord
         Mgt_C_pre             = self.gt_pre
         rec_hope              = self.rec_hope
         dis_img_ord           = in_WM_and_dis_img[1]      ### 3024, 3024
@@ -64,7 +64,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             Mgt_pre_for_crop  = Mgt_C_pre[..., 0:1]
 
             in_WM_pre, _ = self.tight_crop(in_WM_pre , Mgt_pre_for_crop)
-            Mgt_C    , _ = self.tight_crop(Mgt_C     , Mgt_pre_for_crop)
+            Mgt_C_ord, _ = self.tight_crop(Mgt_C_ord , Mgt_pre_for_crop)
             Mgt_C_pre, _ = self.tight_crop(Mgt_C_pre , Mgt_pre_for_crop)
 
             ##### dis_img_ord 在 tight_crop 要用 dis_img_pre 來反推喔！
@@ -106,6 +106,28 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             # ax[1, 1].imshow(C_raw_pre[0, ..., 1])
             # fig.tight_layout()
             # plt.show()
+
+            ''' Sobel 部分 '''
+            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+            loss_info_obj = self.exp_obj.loss_info_objs[0]
+            loss_fun_dict = loss_info_obj.loss_fun_dict
+            sob_objs = []
+            for loss_name, func_obj in loss_fun_dict.items():
+                if("sobel" in loss_name):
+                    sob_objs.append(func_obj)
+
+            ### 如果 gt_loss 沒有使用 sobel， 就自己建一個出來
+            if(len(sob_objs) == 0):
+                from step10_a1_loss import Sobel_MAE
+                sob_objs.append(Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True))
+
+            ### 把 所有的 model_out 套用上 相對應的 sobel
+            Cyx_raw_Gx, Cyx_raw_Gy = sob_objs[0].Calculate_sobel_edges(C_raw_pre)
+            Cy_raw_Gx = Cyx_raw_Gx[..., 1]
+            Cx_raw_Gx = Cyx_raw_Gx[..., 2]
+            Cy_raw_Gy = Cyx_raw_Gy[..., 1]
+            Cx_raw_Gy = Cyx_raw_Gy[..., 2]
+
         else:
             Cx_raw_pre, Cy_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
             # ax[1, 0].imshow(Cy_raw_pre[0])
@@ -113,6 +135,28 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             # fig.tight_layout()
             # plt.show()
             C_raw_pre = np.concatenate([Cy_raw_pre, Cx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
+
+            ''' Sobel 部分 '''
+            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+            sob_objs = []
+            sob_objs_len = len(sob_objs)
+            for go_l, loss_info_obj in enumerate(self.exp_obj.loss_info_objs):  ### 走訪   所有 loss_info_objs
+                loss_fun_dict = loss_info_obj.loss_funs_dict                    ### 把   目前的 loss_info_obj  的 loss_fun_dict 抓出來
+                for loss_name, func_obj in loss_fun_dict.items():               ### 走訪 目前的 loss_info_obj  的 當中的所有 loss
+                    if("sobel" in loss_name): sob_objs.append(func_obj)         ### 如果 其中有使用到 sobel， 把它append 進去 sob_objs
+
+                ### 如果 gt_loss 沒有使用 sobel， 就自己建一個出來
+                if(sob_objs_len == len(sob_objs)):        ### 如果 sob_objs 的長度沒變， 代表 目前的loss_info_obj 當中的 gt_loss 沒有用 sobel
+                    from step10_a1_loss import Sobel_MAE  ### 自己建一個
+                    sob_objs.append(Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True))
+                ### 更新一下 目前的 sob_objs 的 長度
+                sob_objs_len = len(sob_objs)
+
+            ### 把 所有的 model_out 套用上 相對應的 sobel
+            for go_sob, sob_obj in enumerate(sob_objs):
+                if(go_sob == 0): Cy_raw_Gx, Cy_raw_Gy = sob_obj.Calculate_sobel_edges(Cy_raw_pre)
+                if(go_sob == 1): Cx_raw_Gx, Cx_raw_Gy = sob_obj.Calculate_sobel_edges(Cx_raw_pre)
+
 
         ### 後處理 Output (C_raw_pre)
         C_raw = Value_Range_Postprocess_to_01(C_raw_pre, self.exp_obj.use_gt_range)
@@ -122,7 +166,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
         Cgt_01 = Value_Range_Postprocess_to_01(Cgt_pre, self.exp_obj.use_gt_range)
         ''''''''''''
         # ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-        # h, w, c = C_raw.shape
+        h, w, c = C_raw.shape
         Mgt = Mgt_C_pre[0, ..., 0:1].numpy()
         # Mgt = Mgt [:h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
 
@@ -134,6 +178,13 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             F_raw , F_raw_visual , Cx_raw_visual , Cy_raw_visual, F_w_Mgt,   F_w_Mgt_visual,   Cx_w_Mgt_visual,   Cy_w_Mgt_visual = C_01_and_C_01_w_M_to_F_and_visualize(C_raw, Mgt)
             F_raw_visual   = F_raw_visual   [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             F_w_Mgt_visual = F_w_Mgt_visual [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+
+            ''' raw 乘完M 後 Sobel 部分 ，  這部分是只有 fucus is True 才需要 '''
+            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+            ### 把 所有的 model_out 套用上 相對應的 sobel
+            for go_sob, sob_obj in enumerate(sob_objs):
+                if(go_sob == 0): Cy_w_M_Gx, Cy_w_M_Gy = sob_obj.Calculate_sobel_edges(Cy_raw_pre, Mask=Mgt_pre[:, :h, :w, :])
+                if(go_sob == 1): Cx_w_M_Gx, Cx_w_M_Gy = sob_obj.Calculate_sobel_edges(Cx_raw_pre, Mask=Mgt_pre[:, :h, :w, :])
 
         ### 視覺化 Output gt (Fgt)
         Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_01_concat_with_M_to_F_and_get_F_visual(Cgt_01, Mgt)
@@ -292,7 +343,8 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             # breakpoint()
 
         if(self.postprocess):
-            current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+            current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+
             bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord, flow=F_w_Mgt)
             '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
             cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
@@ -300,17 +352,42 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             if(self.focus is False):
                 imgs       = [ W_visual ,   Mgt_visual , W_w_M_visual,  F_visual ,    rec,   rec_hope]     ### 把要顯示的每張圖包成list
                 img_titles = ["W_01",        "Mgt",        "W_w_M",     "pred_F", "pred_rec", "rec_hope"]  ### 把每張圖要顯示的字包成list
-            else:
-                imgs       = [ W_visual ,   Mgt_visual , W_w_M_visual,  F_raw_visual, F_w_Mgt_visual,    rec,      rec_hope]         ### 把要顯示的每張圖包成list
-                img_titles = ["W_01",        "Mgt",        "W_w_M",   "F_raw_visual", "F_w_Mgt_visual",     "pred_rec", "rec_hope"]  ### 把每張圖要顯示的字包成list
 
-            single_row_imgs = Matplot_single_row_imgs(
-                                    imgs       = imgs,
-                                    img_titles = img_titles,
-                                    fig_title  = "%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
-                                    add_loss   = self.add_loss,
-                                    bgr2rgb    = self.bgr2rgb,  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
-                                    w_same_as_first=True)
+                ''' Sobel 部分 '''
+                ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+                Cx_raw_Gx = Cx_raw_Gx[0].numpy()
+                Cx_raw_Gy = Cx_raw_Gy[0].numpy()
+                Cy_raw_Gx = Cy_raw_Gx[0].numpy()
+                Cy_raw_Gy = Cy_raw_Gy[0].numpy()
+                imgs       += [[Cx_raw_Gx, Cx_raw_Gy, Cy_raw_Gx, Cy_raw_Gy]]
+                img_titles += [["Cx_Gx"  , "Cx_Gy"  , "Cy_Gx"  , "Cy_Gy"  ]]
+
+            else:
+                imgs       = [[ W_visual ,   Mgt_visual , W_w_M_visual,  F_raw_visual, F_w_Mgt_visual,    rec,      rec_hope]]         ### 把要顯示的每張圖包成list
+                img_titles = [["W_01",        "Mgt",        "W_w_M",   "F_raw_visual", "F_w_Mgt_visual",     "pred_rec", "rec_hope"]]  ### 把每張圖要顯示的字包成list
+
+                ''' Sobel 部分 '''
+                ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+                Cx_raw_Gx = Cx_raw_Gx[0].numpy()
+                Cx_raw_Gy = Cx_raw_Gy[0].numpy()
+                Cy_raw_Gx = Cy_raw_Gx[0].numpy()
+                Cy_raw_Gy = Cy_raw_Gy[0].numpy()
+                Cx_w_M_Gx = Cx_w_M_Gx[0].numpy()
+                Cx_w_M_Gy = Cx_w_M_Gy[0].numpy()
+                Cy_w_M_Gx = Cy_w_M_Gx[0].numpy()
+                Cy_w_M_Gy = Cy_w_M_Gy[0].numpy()
+                imgs       += [[ Cx_w_M_Gx ,  Cx_w_M_Gy ,  Cy_w_M_Gx ,  Cy_w_M_Gy ]]
+                imgs       += [[ Cx_raw_Gx ,  Cx_raw_Gy ,  Cy_raw_Gx ,  Cy_raw_Gy ]]
+                img_titles += [["Cx_w_M_Gx", "Cx_w_M_Gy", "Cy_w_M_Gx", "Cy_w_M_Gy"]]
+                img_titles += [["Cx_raw_Gx", "Cx_raw_Gy", "Cy_raw_Gx", "Cy_raw_Gy"]]
+
+            single_row_imgs = Matplot_multi_row_imgs(
+                                    rows_cols_imgs   = imgs,
+                                    rows_cols_titles = img_titles,
+                                    fig_title        = "%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
+                                    add_loss         = self.add_loss,
+                                    bgr2rgb          = self.bgr2rgb,  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                                    fix_size         = (500, 500))
             single_row_imgs.Draw_img()
             single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
             print("save to:", self.exp_obj.result_obj.test_write_dir)
