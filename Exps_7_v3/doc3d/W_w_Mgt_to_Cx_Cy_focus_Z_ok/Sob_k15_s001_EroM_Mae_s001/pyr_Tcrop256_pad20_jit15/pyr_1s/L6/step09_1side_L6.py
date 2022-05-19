@@ -21,8 +21,8 @@ from step09_c_train_step import Train_step_W_w_M_to_Cx_Cy
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
 import Exps_7_v3.Basic_Pyramid_1ch_model_for_import.pyr_1s.L6.step09_1side_L6 as pyr_1ch_model
-use_gen_op     =            W_w_M_to_Cx_Cy(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )
-use_train_step = Train_step_W_w_M_to_Cx_Cy(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15) )
+use_gen_op     =            W_w_M_to_Cx_Cy(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale=  0) )
+use_train_step = Train_step_W_w_M_to_Cx_Cy(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale= 15) )
 
 import time
 start_time = time.time()
