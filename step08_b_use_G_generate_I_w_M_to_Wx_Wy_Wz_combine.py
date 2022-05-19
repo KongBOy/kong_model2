@@ -43,7 +43,7 @@ class I_w_M_to_W(Use_G_generate):
         ''' 重新命名 讓我自己比較好閱讀'''
         dis_img_ord        = self.in_ord  ### 3024, 3024
         dis_img_pre        = self.in_pre  ###  512, 512 或 448, 448
-        Wgt_w_Mgt          = self.gt_ord
+        Wgt_w_Mgt_ord      = self.gt_ord
         Wgt_w_Mgt_pre      = self.gt_pre
         rec_hope           = self.rec_hope
 
@@ -51,7 +51,7 @@ class I_w_M_to_W(Use_G_generate):
         if(self.tight_crop is not None):
             Mgt_pre_for_crop   = Wgt_w_Mgt_pre[..., 0:1]
 
-            # Wgt_w_Mgt    , _ = self.tight_crop(Wgt_w_Mgt     , Mgt_pre_for_crop)  ### 沒用到
+            Wgt_w_Mgt_ord, _ = self.tight_crop(Wgt_w_Mgt_ord , Mgt_pre_for_crop)  ### 給 test concat 用
             Wgt_w_Mgt_pre, _ = self.tight_crop(Wgt_w_Mgt_pre , Mgt_pre_for_crop)
 
             ##### dis_img_ord 在 tight_crop 要用 dis_img_pre 來反推喔！
@@ -74,6 +74,7 @@ class I_w_M_to_W(Use_G_generate):
 
 
         ''' use_model '''
+        Mgt_ord          = Wgt_w_Mgt_ord[0, ..., 3:4]  ### 給 test concat 用
         Mgt_pre          = Wgt_w_Mgt_pre[..., 3:4]
         Wgt_pre          = Wgt_w_Mgt_pre[..., 0:3]
         I_pre_with_M_pre = dis_img_pre * Mgt_pre
@@ -155,7 +156,7 @@ class I_w_M_to_W(Use_G_generate):
             W_raw_visual,   Wx_raw_visual,   Wy_raw_visual,   Wz_raw_visual   = W_01_visual_op(W_raw_01)
             W_w_Mgt_visual, Wx_w_Mgt_visual, Wy_w_Mgt_visual, Wz_w_Mgt_visual = W_01_visual_op(W_w_Mgt_01)
 
-            ''' Sobel 部分 '''
+            ''' raw 乘完M 後 Sobel 部分 ，  這部分是只有 fucus is True 才需要 '''
             ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
             ### 把 所有的 model_out 套用上 相對應的 sobel
             for go_sob, sob_obj in enumerate(sob_objs):
@@ -222,7 +223,7 @@ class I_w_M_to_W(Use_G_generate):
             cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b9-Wz_w_Mgt_visual.jpg", Wz_w_Mgt_visual)
 
         if(self.postprocess):
-            current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+            current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             if(self.focus is False):
                 imgs       = [ [ dis_img_ord  , dis_img_pre   , Mgt_visual , I_w_M_visual   , W_visual , Wgt_visual],
                                [ Wx_visual    , Wy_visual     , Wz_visual            ] ]
@@ -276,15 +277,43 @@ class I_w_M_to_W(Use_G_generate):
             single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
             print("save to:", self.exp_obj.result_obj.test_write_dir)
 
-            if(self.phase == "test"):
-                ### W_01 back to W then + M
-                gt_min = self.exp_obj.db_obj.db_gt_range.min
-                gt_max = self.exp_obj.db_obj.db_gt_range.max
+            if(self.phase == "test" and self.knpy_save is True):
+                db_h = self.exp_obj.db_obj.h
+                db_w = self.exp_obj.db_obj.w
 
-                if(self.focus is False): W = W_raw_01 * (gt_max - gt_min) + gt_min
-                else:                    W = W_w_Mgt_01 * (gt_max - gt_min) + gt_min
-                if(self.exp_obj.db_obj.get_method.value == "build_by_in_I_gt_W_hole_norm_then_mul_M_right"): W = W * Mgt_pre
-                WM = np.concatenate([W, Mgt_pre], axis=-1)
+                ##### 1. W_01 值 back to W， 如果用focus 因為 M 的任務 分出去了， 所以 結果要 * M
+                ##### 2. concat M
+                ##### 3. resoze 回原始大小
+                ##### 4. dtype 調 float32
+                ### 1. W_01 back to W， 看用 哪種 norm 就用哪種方式還原
+                if("ch_norm" in self.exp_obj.db_obj.get_method.value):
+                    gt_ch0_range, gt_ch1_range, gt_ch2_range = self.exp_obj.db_obj.gt_ch_ranges
+                    gt_min = np.array([gt_ch0_range.min,
+                                       gt_ch1_range.min,
+                                       gt_ch2_range.min]).reshape(1, 1, 3)
+                    gt_max = np.array([gt_ch0_range.max,
+                                       gt_ch1_range.max,
+                                       gt_ch2_range.max]).reshape(1, 1, 3)
+                else:
+                    gt_min = self.exp_obj.db_obj.db_gt_range.min
+                    gt_max = self.exp_obj.db_obj.db_gt_range.max
+
+                ### 看 W 要不要 乘M
+                if(self.focus is False):
+                    W = W_raw_01 * (gt_max - gt_min) + gt_min
+                    W = W * Mgt_pre
+                else:
+                    W = W_w_Mgt_01 * (gt_max - gt_min) + gt_min
+
+                ### 2. concat M
+                WM = np.concatenate([W, Mgt_ord], axis=-1)
+
+                ### 3. resoze 回原始大小
+                WM = cv2.resize(WM, (db_w, db_h))
+
+                ### 4. dtype 調 float32
+                WM = WM.astype(np.float32)
+
                 ### 確認寫得對不對
                 # fig, ax = plt.subplots(1, 2)
                 # ax[0].imshow(W_01)
