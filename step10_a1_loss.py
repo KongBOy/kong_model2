@@ -256,7 +256,7 @@ class Sobel_MAE():
         return fig, ax
 
     def _create_sobel_kernel_xy(self):
-        print("doing _create_sobel_kernel_xy")
+        # print("doing _create_sobel_kernel_xy")
         # if(self.sobel_kernel_size == 3):
         #     kernels_xy = [ [[-1, -2, -1],
         #                  [ 0,  0,  0],
@@ -332,7 +332,7 @@ class Sobel_MAE():
         return kernels_xy
 
     def Calculate_sobel_edges(self, image, stride=1, Mask=None):
-        print("doing Calculate_sobel_edges")
+        # print("doing Calculate_sobel_edges")
         '''
         image：BHWC
         kernel：(2, k_size, k_size)
@@ -376,11 +376,14 @@ class Sobel_MAE():
             sobel_x_result = sobel_x_result * Mask
             sobel_y_result = sobel_y_result * Mask
             ### debug用， 視覺化一下 乘完後的效果
+            # self.Visualize_sobel_result(sobel_x_result)
+            # self.Visualize_sobel_result(sobel_y_result)
 
-            ### 用 opencv 內建的 sobel 來比較， 幾乎一模一樣， 只差在 opencv 有多乘上一個係數
+            ### 用 opencv 內建的 sobel 來比較， 幾乎一模一樣， 只差在 opencv 有多乘上一個係數， kernel_size 最大只支援到 31
             # cv2_sobelx  = cv2.Sobel(image[0].numpy(), cv2.CV_64F, 1, 0, ksize=self.sobel_kernel_size) * Mask[0].numpy()
             # cv2_sobely  = cv2.Sobel(image[0].numpy(), cv2.CV_64F, 0, 1, ksize=self.sobel_kernel_size) * Mask[0].numpy()
             # cv2_sobelxy = cv2.Sobel(image[0].numpy(), cv2.CV_64F, 1, 1, ksize=self.sobel_kernel_size) * Mask[0].numpy()
+            # # cv2_sobelx  = cv2.blur(cv2_sobelx, (5, 5))  ### 覺得blur完以後好像 也沒有很有效的消除 grad 的 條紋
             # self.Visualize_sobel_result(cv2_sobelx[np.newaxis, ...])
             # self.Visualize_sobel_result(cv2_sobely[np.newaxis, ...])
             # self.Visualize_sobel_result(cv2_sobelxy[np.newaxis, ...])

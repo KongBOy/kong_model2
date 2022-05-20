@@ -100,7 +100,7 @@ class I_to_M(Use_G_generate):
         cv2.imwrite(    private_mask_write_dir + "/" + f"{ep_it_string}-u1b1_mask.jpg", M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
-            current_see_name = self.fname   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+            current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
 
             from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
             imgs       = [ dis_img_ord,   dis_img_pre,   M_visual , Mgt_visual]
@@ -119,22 +119,21 @@ class I_to_M(Use_G_generate):
             Fake_F 的部分
             '''
             if(self.phase == "test" and self.knpy_save is True):
-                fake_h = 448
-                fake_w = 448
+                db_h = self.exp_obj.db_obj.h
+                db_w = self.exp_obj.db_obj.w
+
                 ### 先粗略寫， 有時間再來敢先趕meeting
-                M = cv2.resize(M, (fake_w, fake_h), interpolation=cv2.INTER_AREA)
-                M = M.reshape(fake_h, fake_w, 1)
+                M = cv2.resize(M, (db_w, db_h))
+                M = M.reshape(db_h, db_w, 1)
 
                 gather_mask_dir   = public_write_dir + "/pred_mask"
                 Check_dir_exist_and_build(gather_mask_dir)
                 cv2.imwrite(f"{gather_mask_dir}/{current_see_name}.jpg", M_visual)
 
-                h, w = M.shape[:2]
-                fake_name = current_see_name.split(".")[0]
                 print("")
                 ###############################################################################
                 ### 準備存 fake_F
-                fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
+                fake_C = np.zeros(shape=(db_h, db_w, 2), dtype=np.float32)
                 fake_F = np.concatenate((M, fake_C), axis=-1)
                 fake_F = fake_F.astype(np.float32)
 
@@ -147,41 +146,41 @@ class I_to_M(Use_G_generate):
                 Check_dir_exist_and_build(gather_fake_F_knpy_dir)
 
                 ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
-                fake_F_npy_path  = f"{gather_fake_F_npy_dir}/{fake_name}.npy"
-                fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{fake_name}.knpy"
+                fake_F_npy_path  = f"{gather_fake_F_npy_dir}/{current_see_name}.npy"
+                fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{current_see_name}.knpy"
                 np.save(fake_F_npy_path, fake_F)
                 Save_npy_path_as_knpy(fake_F_npy_path, fake_F_knpy_path)
-                print("fake_F_npy_path :", fake_F_npy_path)
-                print("fake_F_knpy_path:", fake_F_knpy_path)
+                print("fake_F_npy_path     :", fake_F_npy_path)
+                print("fake_F_knpy_path    :", fake_F_knpy_path)
 
                 ### .npy刪除(因為超占空間) 改存 .npz
                 np.savez_compressed(fake_F_npy_path.replace(".npy", ".npz"), fake_F)
                 os.remove(fake_F_npy_path)
                 ###############################################################################
-                ### 準備存 fake_W
-                fake_W = np.zeros(shape=(h, w, 3), dtype=np.float32)
-                fake_W = np.concatenate((fake_W, M), axis=-1)
-                fake_W = fake_W.astype(np.float32)
+                ### 準備存 fake_W_w_M (我是覺得不用存 W 了， 因為已經包含再 W_w_M 裡面了)
+                fake_W = np.zeros(shape=(db_h, db_w, 3), dtype=np.float32)
+                fale_W_w_M = np.concatenate((fake_W, M), axis=-1)
+                fale_W_w_M = fale_W_w_M.astype(np.float32)
 
                 ### 定位出 存檔案的位置
-                gather_fake_W_dir = public_write_dir + "/pred_mask/fake_W"
-                gather_fake_W_npy_dir  = gather_fake_W_dir + "/1 npy"
-                gather_fake_W_knpy_dir = gather_fake_W_dir + "/2 knpy"
-                Check_dir_exist_and_build(gather_fake_W_dir)
-                Check_dir_exist_and_build(gather_fake_W_npy_dir)
-                Check_dir_exist_and_build(gather_fake_W_knpy_dir)
+                gather_fale_W_w_M_dir = public_write_dir + "/pred_mask/fale_W_w_M"
+                gather_fale_W_w_M_npy_dir  = gather_fale_W_w_M_dir + "/1 npy"
+                gather_fale_W_w_M_knpy_dir = gather_fale_W_w_M_dir + "/2 knpy"
+                Check_dir_exist_and_build(gather_fale_W_w_M_dir)
+                Check_dir_exist_and_build(gather_fale_W_w_M_npy_dir)
+                Check_dir_exist_and_build(gather_fale_W_w_M_knpy_dir)
 
                 ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
-                fake_W_npy_path  = f"{gather_fake_W_npy_dir}/{fake_name}.npy"
-                fake_W_knpy_path = f"{gather_fake_W_knpy_dir}/{fake_name}.knpy"
-                np.save(fake_W_npy_path, fake_W)
-                Save_npy_path_as_knpy(fake_W_npy_path, fake_W_knpy_path)
-                print("fake_W_npy_path :", fake_W_npy_path)
-                print("fake_W_knpy_path:", fake_W_knpy_path)
+                fale_W_w_M_npy_path  = f"{gather_fale_W_w_M_npy_dir}/{current_see_name}.npy"
+                fale_W_w_M_knpy_path = f"{gather_fale_W_w_M_knpy_dir}/{current_see_name}.knpy"
+                np.save(fale_W_w_M_npy_path, fale_W_w_M)
+                Save_npy_path_as_knpy(fale_W_w_M_npy_path, fale_W_w_M_knpy_path)
+                print("fale_W_w_M_npy_path :", fale_W_w_M_npy_path)
+                print("fale_W_w_M_knpy_path:", fale_W_w_M_knpy_path)
 
                 ### .npy刪除(因為超占空間) 改存 .npz
-                np.savez_compressed(fake_W_npy_path.replace(".npy", ".npz"), fake_W)
-                os.remove(fake_W_npy_path)
+                np.savez_compressed(fale_W_w_M_npy_path.replace(".npy", ".npz"), fale_W_w_M)
+                os.remove(fale_W_w_M_npy_path)
 
 
 
