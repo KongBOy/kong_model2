@@ -38,7 +38,7 @@ def debug_tf_data(tf_data, use_train_test_see="train"):
         debug_dict[f"{i}--2-6 gt_W_pre"   ] = gt_pre[0, ..., 0:3].numpy()
 
         canvas_base_size = 3
-        nrows = 4
+        nrows = 3
         ncols = 7
         fig, ax = plt.subplots(nrows=nrows, ncols=ncols)
         fig.set_size_inches(canvas_base_size * ncols, canvas_base_size * nrows)
@@ -48,13 +48,13 @@ def debug_tf_data(tf_data, use_train_test_see="train"):
         Wx_in_ord = in_ord[0][0, ..., 0]
         Wy_in_ord = in_ord[0][0, ..., 1]
         Wz_in_ord = in_ord[0][0, ..., 2]
-        M_in      = in_ord[0][0, ..., 3:4]
+        M_in_ord  = in_ord[0][0, ..., 3:4]
         I_in_ord  = in_ord[1][0]
         ax[0, 0].imshow(W_in_ord , vmin=tf_data.db_obj.db_in_range.min, vmax=tf_data.db_obj.db_in_range.max)
         ax[0, 1].imshow(Wx_in_ord, vmin=tf_data.db_obj.db_in_range.min, vmax=tf_data.db_obj.db_in_range.max)
         ax[0, 2].imshow(Wy_in_ord, vmin=tf_data.db_obj.db_in_range.min, vmax=tf_data.db_obj.db_in_range.max)
         ax[0, 3].imshow(Wz_in_ord, vmin=tf_data.db_obj.db_in_range.min, vmax=tf_data.db_obj.db_in_range.max)
-        ax[0, 4].imshow(M_in     , vmin=tf_data.use_in_range.min, vmax=tf_data.use_in_range.max)
+        ax[0, 4].imshow(M_in_ord , vmin=tf_data.use_in_range.min, vmax=tf_data.use_in_range.max)
         ax[0, 5].imshow(I_in_ord)
         ### IN Wx, Wy, Wz, M 看一下pre長什麼樣子
         W_in_pre  = in_pre[0][0, ..., 0:3]
@@ -69,36 +69,55 @@ def debug_tf_data(tf_data, use_train_test_see="train"):
         ax[1, 3].imshow(Wz_in_pre, vmin=tf_data.use_in_range.min, vmax=tf_data.use_in_range.max)
         ax[1, 4].imshow(M_in_pre  , vmin=tf_data.use_in_range.min, vmax=tf_data.use_in_range.max)
         ax[0, 6].imshow(I_in_pre)
-
-        ### GT Wx, Wy, Wz, M 看一下ord長什麼樣子
-        W_gt_ord  = gt_ord[0, ..., 0:3]
-        Wx_gt_ord = gt_ord[0, ..., 0]
-        Wy_gt_ord = gt_ord[0, ..., 1]
-        Wz_gt_ord = gt_ord[0, ..., 2]
-        Mgt       = gt_ord[0, ..., 3:4]
-        ax[2, 0].imshow(W_gt_ord , vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
-        ax[2, 1].imshow(Wx_gt_ord, vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
-        ax[2, 2].imshow(Wy_gt_ord, vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
-        ax[2, 3].imshow(Wz_gt_ord, vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
-        ax[2, 4].imshow(Mgt      , vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
-        ### GT Wx, Wy, Wz, M 看一下pre長什麼樣子
-        W_gt_pre  = gt_pre[0, ..., 0:3]
-        Wx_gt_pre = gt_pre[0, ..., 0]
-        Wy_gt_pre = gt_pre[0, ..., 1]
-        Wz_gt_pre = gt_pre[0, ..., 2]
-        M_gt_pre   = gt_pre[0, ..., 3:4]
-        ax[3, 0].imshow(W_gt_pre , vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
-        ax[3, 1].imshow(Wx_gt_pre, vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
-        ax[3, 2].imshow(Wy_gt_pre, vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
-        ax[3, 3].imshow(Wz_gt_pre, vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
-        ax[3, 4].imshow(M_gt_pre  , vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
-
-
         ### W_pre * M
         W_in_pre_w_M_in_pre = W_in_pre * M_in_pre
-        W_gt_pre_w_M_gt_pre = W_gt_pre * M_gt_pre
         ax[1, 5].imshow(W_in_pre_w_M_in_pre  , vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
-        ax[3, 5].imshow(W_gt_pre_w_M_gt_pre  , vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
+
+        ##### GT 也 是 W， 已經看過跟 IN 一樣了， 所以就先不show囉
+        ### GT Wx, Wy, Wz, M 看一下ord長什麼樣子
+        # W_gt_ord  = gt_ord[0, ..., 0:3]
+        # Wx_gt_ord = gt_ord[0, ..., 0]
+        # Wy_gt_ord = gt_ord[0, ..., 1]
+        # Wz_gt_ord = gt_ord[0, ..., 2]
+        # Mgt       = gt_ord[0, ..., 3:4]
+        # ax[2, 0].imshow(W_gt_ord , vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
+        # ax[2, 1].imshow(Wx_gt_ord, vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
+        # ax[2, 2].imshow(Wy_gt_ord, vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
+        # ax[2, 3].imshow(Wz_gt_ord, vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
+        # ax[2, 4].imshow(Mgt      , vmin=tf_data.db_obj.db_gt_range.min, vmax=tf_data.db_obj.db_gt_range.max)
+        ### GT Wx, Wy, Wz, M 看一下pre長什麼樣子
+        # W_gt_pre  = gt_pre[0, ..., 0:3]
+        # Wx_gt_pre = gt_pre[0, ..., 0]
+        # Wy_gt_pre = gt_pre[0, ..., 1]
+        # Wz_gt_pre = gt_pre[0, ..., 2]
+        # M_gt_pre   = gt_pre[0, ..., 3:4]
+        # ax[3, 0].imshow(W_gt_pre , vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
+        # ax[3, 1].imshow(Wx_gt_pre, vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
+        # ax[3, 2].imshow(Wy_gt_pre, vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
+        # ax[3, 3].imshow(Wz_gt_pre, vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
+        # ax[3, 4].imshow(M_gt_pre  , vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
+        ### W_pre * M
+        # W_gt_pre_w_M_gt_pre = W_gt_pre * M_gt_pre
+        # ax[3, 5].imshow(W_gt_pre_w_M_gt_pre  , vmin=tf_data.use_gt_range.min, vmax=tf_data.use_gt_range.max)
+
+
+        ### sobel
+        from step10_a1_loss import Sobel_MAE
+        import numpy as np
+        sob_obj = Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True)
+        Wzyx_Gx, Wzyx_Gy = sob_obj.Calculate_sobel_edges(W_in_ord[np.newaxis, ...], Mask=M_in_ord[np.newaxis, ...])
+        Wz_Gx = Wzyx_Gx[0, ..., 0]
+        Wz_Gy = Wzyx_Gy[0, ..., 0]
+        Wy_Gy = Wzyx_Gy[0, ..., 1]
+        Wy_Gx = Wzyx_Gx[0, ..., 1]
+        Wx_Gx = Wzyx_Gx[0, ..., 2]
+        Wx_Gy = Wzyx_Gy[0, ..., 2]
+        ax[2, 0].imshow(Wz_Gx)
+        ax[2, 1].imshow(Wz_Gy)
+        ax[2, 2].imshow(Wy_Gy)
+        ax[2, 3].imshow(Wy_Gx)
+        ax[2, 4].imshow(Wx_Gx)
+        ax[2, 5].imshow(Wx_Gy)
 
         fig.tight_layout()
 
@@ -233,9 +252,10 @@ if(__name__ == "__main__"):
     start_time = time.time()
 
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
+    ''' 柱狀'''
+    # db_obj = type8_blender_in_W_gt_W_ch_norm_cylinder.build()  ### 有 mul_M_right, ch_norm
     ''' kong_doc3d'''
-    # db_obj = type8_blender_kong_doc3d_in_W_gt_W_ch_norm_v2.build()  ### 有 mul_M_right, ch_norm
-    db_obj = type8_blender_in_W_gt_W_ch_norm_cylinder.build()  ### 有 mul_M_right, ch_norm
+    db_obj = type8_blender_kong_doc3d_in_W_gt_W_ch_norm_v2.build()  ### 有 mul_M_right, ch_norm
     print(db_obj)
     model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
     tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=False).set_img_resize(( 512, 512) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
