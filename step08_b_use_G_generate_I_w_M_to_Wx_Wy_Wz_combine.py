@@ -86,7 +86,7 @@ class I_w_M_to_W(Use_G_generate):
             ''' Sobel 部分 '''
             ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
             loss_info_obj = self.exp_obj.loss_info_objs[0]
-            loss_fun_dict = loss_info_obj.loss_fun_dict
+            loss_fun_dict = loss_info_obj.loss_funs_dict
             sob_objs = []
             for loss_name, func_obj in loss_fun_dict.items():
                 if("sobel" in loss_name):
