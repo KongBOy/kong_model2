@@ -365,7 +365,7 @@ class Sobel_MAE():
         if(self.erose_M and Mask is not None):
             ### 變小多少 就跟 sobel 用的 kernel_size 一樣大小
             erose_kernel_size = self.sobel_kernel_size
-            if(self.erose_More): erose_kernel_size += 8
+            if(self.erose_More): erose_kernel_size += 8  ### 目前用眼睛看覺得+8不錯
             erose_kernel = tf.ones((self.sobel_kernel_size, self.sobel_kernel_size, 1))
             ### debug用， 顯示 erose前的 M
             # plt.figure()
