@@ -14,6 +14,7 @@ from step08_b_use_G_generate_0_util import Use_G_generate, Value_Range_Postproce
 import matplotlib.pyplot as plt
 import os
 import pdb
+from step10_a1_loss import Sobel_MAE
 
 class Wyx_w_M_to_Wz(Use_G_generate):
     def __init__(self, focus=False, tight_crop=None, sobel=None, sobel_only=False):
