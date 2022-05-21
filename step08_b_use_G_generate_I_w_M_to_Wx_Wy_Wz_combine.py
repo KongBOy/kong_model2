@@ -73,7 +73,7 @@ class I_w_M_to_W(Use_G_generate):
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 
 
-        ''' use_model '''
+        ''' use_model '''''''''''''''''''''''''''''''''''''''
         Mgt_ord          = Wgt_w_Mgt_ord[0, ..., 3:4]  ### 給 test concat 用
         Mgt_pre          = Wgt_w_Mgt_pre[..., 3:4]
         Wgt_pre          = Wgt_w_Mgt_pre[..., 0:3]
@@ -105,7 +105,7 @@ class I_w_M_to_W(Use_G_generate):
             Wz_raw_Gy = Wzyx_raw_Gy[..., 0]
             Wy_raw_Gy = Wzyx_raw_Gy[..., 1]
             Wx_raw_Gy = Wzyx_raw_Gy[..., 2]
-
+            ''''''''''''''''''''''''
         else:
             Wz_raw_pre, Wy_raw_pre, Wx_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
             W_raw_pre  = np.concatenate([Wz_raw_pre, Wy_raw_pre, Wx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
@@ -131,7 +131,7 @@ class I_w_M_to_W(Use_G_generate):
                 if(go_sob == 0): Wz_raw_Gx, Wz_raw_Gy = sob_obj.Calculate_sobel_edges(Wz_raw_pre)
                 if(go_sob == 1): Wy_raw_Gx, Wy_raw_Gy = sob_obj.Calculate_sobel_edges(Wy_raw_pre)
                 if(go_sob == 2): Wx_raw_Gx, Wx_raw_Gy = sob_obj.Calculate_sobel_edges(Wx_raw_pre)
-
+            ''''''''''''''''''''''''
 
 
 
@@ -142,7 +142,7 @@ class I_w_M_to_W(Use_G_generate):
         Wgt_pre = Wgt_pre[0].numpy()  ### 這個還沒轉numpy喔， 記得轉
         Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, self.exp_obj.use_gt_range)
 
-        ''''''''''''
+        ''''''''''''''''''''''''''''''''''''''''''''''''
         ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         h, w, c = W_raw_01.shape
         Mgt_pre = Mgt_pre [0].numpy()
