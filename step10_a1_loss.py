@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 import sys
 sys.path.append("kong_util")
-from Disc_and_receptive_field_util import tf_M_resize_then_erosion_by_kong
+from kong_util.Disc_and_receptive_field_util import tf_M_resize_then_erosion_by_kong
 
 def norm_to_0_1_by_max_min(data, Mask=None):  ### data 為 np.array才行
     if(Mask is None): return  (data - data.min()) / (data.max() - data.min())
@@ -167,12 +167,13 @@ class BCE():
 
 
 class Sobel_MAE():
-    def __init__(self, sobel_kernel_size, sobel_kernel_scale=1, stride=1, erose_M=False, **args):
+    def __init__(self, sobel_kernel_size, sobel_kernel_scale=1, stride=1, erose_M=False, erose_More=False, **args):
         # super().__init__(name="Sobel_MAE")
         self.sobel_kernel_size  = sobel_kernel_size
         self.sobel_kernel_scale = sobel_kernel_scale
         self.stride       = stride
         self.erose_M      = erose_M
+        self.erose_More   = erose_More
 
     def Visualize_sobel_result(self, sobel_result, vmin=None, vmax=None, Mask=None):
         def _draw_util(fig_cur, ax_cur, data, vmin, vmax):
@@ -363,6 +364,8 @@ class Sobel_MAE():
         ### 通常是用在 WC 上面， 用在 dis_img 感覺沒用， 想法是 把邊緣 大大的值蓋過去， 剩下的就會是 中間的紋理囉
         if(self.erose_M and Mask is not None):
             ### 變小多少 就跟 sobel 用的 kernel_size 一樣大小
+            erose_kernel_size = self.sobel_kernel_size
+            if(self.erose_More): erose_kernel_size += 8
             erose_kernel = tf.ones((self.sobel_kernel_size, self.sobel_kernel_size, 1))
             ### debug用， 顯示 erose前的 M
             # plt.figure()
