@@ -39,6 +39,7 @@ class I_to_M(Use_G_generate):
         dis_img_pre       = self.in_pre
         gt_mask_coord     = self.gt_ord
         gt_mask_coord_pre = self.gt_pre
+        rec_hope          = self.rec_hope
 
         if(self.tight_crop is not None):
             gt_mask_pre = gt_mask_coord_pre[..., 0:1]
@@ -58,17 +59,17 @@ class I_to_M(Use_G_generate):
             ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
             ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
             ### 對 pre 做 crop
-            dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , gt_mask_pre)
+            dis_img_pre_croped_resized, pre_boundary = self.tight_crop(dis_img_pre  , gt_mask_pre)
             ### 根據比例 放大回來 crop 出 ord
             ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
             ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
-            dis_img_ord  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
+            dis_img_ord_croped_not_accurate  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
 
 
         ''' use_model '''
-        M_pre = self.model_obj.generator(dis_img_pre, training=self.training)
+        M_pre = self.model_obj.generator(dis_img_pre_croped_resized, training=self.training)
         M_pre = M_pre[0].numpy()
         M = M_pre  ### 因為 mask 要用 BCE， 所以Range 只可能 Range(0, 1)， 沒有其他可能， 所以不用做 postprocess M 就直接是 M_pre 囉
         M_visual = (M * 255).astype(np.uint8)
@@ -76,8 +77,11 @@ class I_to_M(Use_G_generate):
         '''
         bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
         '''
-        dis_img_ord  = dis_img_ord[0].numpy()
-        Mgt_visual   = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
+        dis_img_ord_croped_not_accurate  =  dis_img_ord_croped_not_accurate[0].numpy().astype(np.uint8)
+        dis_img_pre_croped_resized  = (dis_img_pre_croped_resized[0].numpy() * 255 ).astype(np.uint8)
+        dis_img_pre         = (dis_img_pre       [0].numpy() * 255 ).astype(np.uint8)
+        Mgt_visual          = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
+        rec_hope            = rec_hope[0].numpy()
         # plt.figure()
         # plt.imshow(Mgt_visual)
         # plt.show()
@@ -86,24 +90,30 @@ class I_to_M(Use_G_generate):
         # print("Mgt_visual.max():", Mgt_visual.numpy().max())
         # print("Mgt_visual.min():", Mgt_visual.numpy().min())
 
-        if(self.bgr2rgb): dis_img_ord = dis_img_ord[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+        if(self.bgr2rgb):
+            dis_img_ord_croped_not_accurate = dis_img_ord_croped_not_accurate[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+            dis_img_pre_croped_resized = dis_img_pre_croped_resized[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+            dis_img_pre        = dis_img_pre       [:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+            rec_hope           = rec_hope          [:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
 
         if(current_ep == 0 or self.see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)                                   ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
-            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", dis_img_ord)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", dis_img_ord_croped_not_accurate)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg"    , dis_img_pre_croped_resized)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
             cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.jpg", Mgt_visual)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(    private_mask_write_dir + "/" + f"{ep_it_string}-u1b1_mask.jpg", M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
-            current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+            current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+
             from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
-            imgs = [ dis_img_ord.astype(np.uint8) ,   M_visual , Mgt_visual]
-            img_titles = ["dis_img_ord", "M", "Mgt_visual"]
+            imgs       = [ dis_img_ord_croped_not_accurate,   dis_img_pre_croped_resized,   M_visual , Mgt_visual]
+            img_titles = ["dis_img_ord_croped_not_accurate",  "dis_img_pre_croped_resized",   "M",   "Mgt_visual"]
 
             single_row_imgs = Matplot_single_row_imgs(
                                     imgs      =imgs,         ### 把要顯示的每張圖包成list
-                                    img_titles=img_titles,               ### 把每張圖要顯示的字包成list
+                                    img_titles=img_titles,   ### 把每張圖要顯示的字包成list
                                     fig_title ="%s, epoch=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
                                     add_loss  =self.add_loss,
                                     bgr2rgb   =self.bgr2rgb)
@@ -113,69 +123,87 @@ class I_to_M(Use_G_generate):
             '''
             Fake_F 的部分
             '''
-            if(self.phase == "test"):
-                ### 先粗略寫， 有時間再來敢先趕meeting
-                M = cv2.resize(M, (512, 512), interpolation=cv2.INTER_AREA)
-                M = M.reshape(512, 512, 1)
+            if(self.phase == "test" and self.knpy_save is True):
+                db_h = self.exp_obj.db_obj.h
+                db_w = self.exp_obj.db_obj.w
+
+                if(self.tight_crop is None):
+                    M = cv2.resize(M, (db_w, db_h))  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 所以要 back 回 pre的原始大小喔！
+                    M = M.reshape(db_h, db_w, 1)     ### 把 ch加回來
+                else:
+                    M = self.tight_crop.croped_back(M, pre_boundary, back_w=448, back_h=448)
 
                 gather_mask_dir   = public_write_dir + "/pred_mask"
                 Check_dir_exist_and_build(gather_mask_dir)
                 cv2.imwrite(f"{gather_mask_dir}/{current_see_name}.jpg", M_visual)
 
-                h, w = M.shape[:2]
-                fake_name = current_see_name.split(".")[0]
                 print("")
                 ###############################################################################
+                ### 定位出 存檔案的Base位置
+                gather_base_dir = public_write_dir + f"/Gather_Pred-{current_time}"
+                Check_dir_exist_and_build(gather_base_dir)
+
+                ###############################################################################
+                ### 準備存 dis_img
+                gather_dis_img_dir  = gather_base_dir + "/0_dis_img_pre"
+                Check_dir_exist_and_build(gather_dis_img_dir)
+                dis_img_pre_path  = f"{gather_dis_img_dir}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
+                cv2.imwrite(dis_img_pre_path, dis_img_pre)
+                ###############################################################################
+                ### 準備存 rec_hope
+                gather_rec_hope_dir  = gather_base_dir + "/0_rec_hope"
+                Check_dir_exist_and_build(gather_rec_hope_dir)
+                rec_hope_path  = f"{gather_rec_hope_dir}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
+                cv2.imwrite(rec_hope_path, rec_hope)
+
+                ###############################################################################
                 ### 準備存 fake_F
-                fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
+                fake_C = np.zeros(shape=(db_h, db_w, 2), dtype=np.float32)
                 fake_F = np.concatenate((M, fake_C), axis=-1)
                 fake_F = fake_F.astype(np.float32)
 
                 ### 定位出 存檔案的位置
-                gather_fake_F_dir = public_write_dir + "/pred_mask/fake_F"
-                gather_fake_F_npy_dir  = gather_fake_F_dir + "/1 npy_then_npz"
-                gather_fake_F_knpy_dir = gather_fake_F_dir + "/2 knpy"
-                Check_dir_exist_and_build(gather_fake_F_dir)
+                gather_fake_F_npy_dir  = gather_base_dir + "/1_uv-1_npy_then_npz"
+                gather_fake_F_knpy_dir = gather_base_dir + "/1_uv-3_knpy"
                 Check_dir_exist_and_build(gather_fake_F_npy_dir)
                 Check_dir_exist_and_build(gather_fake_F_knpy_dir)
 
                 ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
-                fake_F_npy_path  = f"{gather_fake_F_npy_dir}/{fake_name}.npy"
-                fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{fake_name}.knpy"
+                fake_F_npy_path  = f"{gather_fake_F_npy_dir}/{current_see_name}.npy"
+                fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{current_see_name}.knpy"
                 np.save(fake_F_npy_path, fake_F)
                 Save_npy_path_as_knpy(fake_F_npy_path, fake_F_knpy_path)
-                print("fake_F_npy_path :", fake_F_npy_path)
-                print("fake_F_knpy_path:", fake_F_knpy_path)
+                print("fake_F_npy_path     :", fake_F_npy_path)
+                print("fake_F_knpy_path    :", fake_F_knpy_path)
 
                 ### .npy刪除(因為超占空間) 改存 .npz
                 np.savez_compressed(fake_F_npy_path.replace(".npy", ".npz"), fake_F)
                 os.remove(fake_F_npy_path)
                 ###############################################################################
-                ### 準備存 fake_W
-                fake_W = np.zeros(shape=(h, w, 3), dtype=np.float32)
-                fake_W = np.concatenate((fake_W, M), axis=-1)
-                fake_W = fake_W.astype(np.float32)
+                ### 準備存 fake_W_w_M (我是覺得不用存 W 了， 因為已經包含再 W_w_M 裡面了)
+                fake_W = np.zeros(shape=(db_h, db_w, 3), dtype=np.float32)
+                fale_W_w_M = np.concatenate((fake_W, M), axis=-1)
+                fale_W_w_M = fale_W_w_M.astype(np.float32)
 
                 ### 定位出 存檔案的位置
-                gather_fake_W_dir = public_write_dir + "/pred_mask/fake_W"
-                gather_fake_W_npy_dir  = gather_fake_W_dir + "/1 npy"
-                gather_fake_W_knpy_dir = gather_fake_W_dir + "/2 knpy"
-                Check_dir_exist_and_build(gather_fake_W_dir)
-                Check_dir_exist_and_build(gather_fake_W_npy_dir)
-                Check_dir_exist_and_build(gather_fake_W_knpy_dir)
+                gather_fale_W_w_M_npy_dir  = gather_base_dir + "/2_wc-4_W_w_M_npy_then_npz"
+                gather_fale_W_w_M_knpy_dir = gather_base_dir + "/2_wc-5_W_w_M_knpy"
+                Check_dir_exist_and_build(gather_fale_W_w_M_npy_dir)
+                Check_dir_exist_and_build(gather_fale_W_w_M_knpy_dir)
 
                 ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
-                fake_W_npy_path  = f"{gather_fake_W_npy_dir}/{fake_name}.npy"
-                fake_W_knpy_path = f"{gather_fake_W_knpy_dir}/{fake_name}.knpy"
-                np.save(fake_W_npy_path, fake_W)
-                Save_npy_path_as_knpy(fake_W_npy_path, fake_W_knpy_path)
-                print("fake_W_npy_path :", fake_W_npy_path)
-                print("fake_W_knpy_path:", fake_W_knpy_path)
+                fale_W_w_M_npy_path  = f"{gather_fale_W_w_M_npy_dir}/{current_see_name}.npy"
+                fale_W_w_M_knpy_path = f"{gather_fale_W_w_M_knpy_dir}/{current_see_name}.knpy"
+                np.save(fale_W_w_M_npy_path, fale_W_w_M)
+                Save_npy_path_as_knpy(fale_W_w_M_npy_path, fale_W_w_M_knpy_path)
+                print("fale_W_w_M_npy_path :", fale_W_w_M_npy_path)
+                print("fale_W_w_M_knpy_path:", fale_W_w_M_knpy_path)
 
                 ### .npy刪除(因為超占空間) 改存 .npz
-                np.savez_compressed(fake_W_npy_path.replace(".npy", ".npz"), fake_W)
-                os.remove(fake_W_npy_path)
+                np.savez_compressed(fale_W_w_M_npy_path.replace(".npy", ".npz"), fale_W_w_M)
+                os.remove(fale_W_w_M_npy_path)
 
+                ###############################################################################
 
 
 ######################################################################################################################################################################################################
@@ -220,7 +248,7 @@ def I_Generate_M_see(model_obj, phase, index, in_img, in_img_pre, gt_mask_coord,
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-        from matplot_fig_ax_util import Matplot_single_row_imgs
+        from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
         imgs = [ in_img ,   pred_mask_visual , gt_mask]
         img_titles = ["in_img", "pred_mask", "gt_mask"]
 

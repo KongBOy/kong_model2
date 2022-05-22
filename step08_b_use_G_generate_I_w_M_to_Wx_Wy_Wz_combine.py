@@ -43,7 +43,7 @@ class I_w_M_to_W(Use_G_generate):
         ''' 重新命名 讓我自己比較好閱讀'''
         dis_img_ord        = self.in_ord  ### 3024, 3024
         dis_img_pre        = self.in_pre  ###  512, 512 或 448, 448
-        Wgt_w_Mgt          = self.gt_ord
+        Wgt_w_Mgt_ord      = self.gt_ord
         Wgt_w_Mgt_pre      = self.gt_pre
         rec_hope           = self.rec_hope
 
@@ -51,7 +51,7 @@ class I_w_M_to_W(Use_G_generate):
         if(self.tight_crop is not None):
             Mgt_pre_for_crop   = Wgt_w_Mgt_pre[..., 0:1]
 
-            # Wgt_w_Mgt    , _ = self.tight_crop(Wgt_w_Mgt     , Mgt_pre_for_crop)  ### 沒用到
+            Wgt_w_Mgt_ord, _ = self.tight_crop(Wgt_w_Mgt_ord , Mgt_pre_for_crop)  ### 給 test concat 用
             Wgt_w_Mgt_pre, _ = self.tight_crop(Wgt_w_Mgt_pre , Mgt_pre_for_crop)
 
             ##### dis_img_ord 在 tight_crop 要用 dis_img_pre 來反推喔！
@@ -73,7 +73,8 @@ class I_w_M_to_W(Use_G_generate):
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 
 
-        ''' use_model '''
+        ''' use_model '''''''''''''''''''''''''''''''''''''''
+        Mgt_ord          = Wgt_w_Mgt_ord[0, ..., 3:4]  ### 給 test concat 用
         Mgt_pre          = Wgt_w_Mgt_pre[..., 3:4]
         Wgt_pre          = Wgt_w_Mgt_pre[..., 0:3]
         I_pre_with_M_pre = dis_img_pre * Mgt_pre
@@ -81,10 +82,58 @@ class I_w_M_to_W(Use_G_generate):
         if(self.separate_out is False):
             W_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
             W_raw_pre = W_raw_pre.numpy()  ### 配合下面 走完這個if 就要轉成 numpy 了
+
+            ''' Sobel 部分 '''
+            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+            loss_info_obj = self.exp_obj.loss_info_objs[0]
+            loss_fun_dict = loss_info_obj.loss_funs_dict
+            sob_objs = []
+            for loss_name, func_obj in loss_fun_dict.items():
+                if("sobel" in loss_name):
+                    sob_objs.append(func_obj)
+
+            ### 如果 gt_loss 沒有使用 sobel， 就自己建一個出來
+            if(len(sob_objs) == 0):
+                from step10_a1_loss import Sobel_MAE
+                sob_objs.append(Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True))
+
+            ### 把 所有的 model_out 套用上 相對應的 sobel
+            Wzyx_raw_Gx, Wzyx_raw_Gy = sob_objs[0].Calculate_sobel_edges(W_raw_pre)
+            Wz_raw_Gx = Wzyx_raw_Gx[..., 0]
+            Wy_raw_Gx = Wzyx_raw_Gx[..., 1]
+            Wx_raw_Gx = Wzyx_raw_Gx[..., 2]
+            Wz_raw_Gy = Wzyx_raw_Gy[..., 0]
+            Wy_raw_Gy = Wzyx_raw_Gy[..., 1]
+            Wx_raw_Gy = Wzyx_raw_Gy[..., 2]
+            ''''''''''''''''''''''''
         else:
             Wz_raw_pre, Wy_raw_pre, Wx_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
-
             W_raw_pre  = np.concatenate([Wz_raw_pre, Wy_raw_pre, Wx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
+
+            ''' Sobel 部分 '''
+            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+            sob_objs = []
+            sob_objs_len = len(sob_objs)
+            for go_l, loss_info_obj in enumerate(self.exp_obj.loss_info_objs):  ### 走訪   所有 loss_info_objs
+                loss_fun_dict = loss_info_obj.loss_funs_dict                    ### 把   目前的 loss_info_obj  的 loss_fun_dict 抓出來
+                for loss_name, func_obj in loss_fun_dict.items():               ### 走訪 目前的 loss_info_obj  的 當中的所有 loss
+                    if("sobel" in loss_name): sob_objs.append(func_obj)         ### 如果 其中有使用到 sobel， 把它append 進去 sob_objs
+
+                ### 如果 gt_loss 沒有使用 sobel， 就自己建一個出來
+                if(sob_objs_len == len(sob_objs)):        ### 如果 sob_objs 的長度沒變， 代表 目前的loss_info_obj 當中的 gt_loss 沒有用 sobel
+                    from step10_a1_loss import Sobel_MAE  ### 自己建一個
+                    sob_objs.append(Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True))
+                ### 更新一下 目前的 sob_objs 的 長度
+                sob_objs_len = len(sob_objs)
+
+            ### 把 所有的 model_out 套用上 相對應的 sobel
+            for go_sob, sob_obj in enumerate(sob_objs):
+                if(go_sob == 0): Wz_raw_Gx, Wz_raw_Gy = sob_obj.Calculate_sobel_edges(Wz_raw_pre)
+                if(go_sob == 1): Wy_raw_Gx, Wy_raw_Gy = sob_obj.Calculate_sobel_edges(Wy_raw_pre)
+                if(go_sob == 2): Wx_raw_Gx, Wx_raw_Gy = sob_obj.Calculate_sobel_edges(Wx_raw_pre)
+            ''''''''''''''''''''''''
+
+
 
         ### 後處理 Output (W_raw_pre)
         W_raw_01 = Value_Range_Postprocess_to_01(W_raw_pre, self.exp_obj.use_gt_range)
@@ -92,7 +141,8 @@ class I_w_M_to_W(Use_G_generate):
         ### 順便處理一下gt
         Wgt_pre = Wgt_pre[0].numpy()  ### 這個還沒轉numpy喔， 記得轉
         Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, self.exp_obj.use_gt_range)
-        ''''''''''''
+
+        ''''''''''''''''''''''''''''''''''''''''''''''''
         ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         h, w, c = W_raw_01.shape
         Mgt_pre = Mgt_pre [0].numpy()
@@ -106,11 +156,20 @@ class I_w_M_to_W(Use_G_generate):
             W_raw_visual,   Wx_raw_visual,   Wy_raw_visual,   Wz_raw_visual   = W_01_visual_op(W_raw_01)
             W_w_Mgt_visual, Wx_w_Mgt_visual, Wy_w_Mgt_visual, Wz_w_Mgt_visual = W_01_visual_op(W_w_Mgt_01)
 
+            ''' raw 乘完M 後 Sobel 部分 ，  這部分是只有 fucus is True 才需要 '''
+            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+            ### 把 所有的 model_out 套用上 相對應的 sobel
+            for go_sob, sob_obj in enumerate(sob_objs):
+                if(go_sob == 0): Wz_w_M_Gx, Wz_w_M_Gy = sob_obj.Calculate_sobel_edges(Wz_raw_pre, Mask=Mgt_pre[np.newaxis, ...])
+                if(go_sob == 1): Wy_w_M_Gx, Wy_w_M_Gy = sob_obj.Calculate_sobel_edges(Wy_raw_pre, Mask=Mgt_pre[np.newaxis, ...])
+                if(go_sob == 2): Wx_w_M_Gx, Wx_w_M_Gy = sob_obj.Calculate_sobel_edges(Wx_raw_pre, Mask=Mgt_pre[np.newaxis, ...])
+
         ### 視覺化 Output gt (Wgt)
         Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)
         ''''''''''''''''''''''''''''''''''''''''''''''''
         ### 視覺化 Input (I)
-        dis_img_ord = dis_img_ord[0].numpy()
+        dis_img_ord =  dis_img_ord[0].numpy()
+        dis_img_pre = (dis_img_pre[0].numpy() * 255 ).astype(np.uint8)
         rec_hope  = rec_hope[0].numpy()
 
         ### 視覺化 Input (I_w_M)
@@ -131,6 +190,7 @@ class I_w_M_to_W(Use_G_generate):
         if(current_ep == 0 or self.see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
             cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre.jpg" , dis_img_pre)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
 
@@ -163,33 +223,97 @@ class I_w_M_to_W(Use_G_generate):
             cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b9-Wz_w_Mgt_visual.jpg", Wz_w_Mgt_visual)
 
         if(self.postprocess):
-            current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+            current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             if(self.focus is False):
-                imgs       = [ dis_img_ord ,   W_visual , Wgt_visual]
-                img_titles = ["dis_img_ord", "Wpred",   "Wgt"]
-            else:
-                imgs       = [ dis_img_ord ,  Mgt_visual, I_w_M_visual,  W_raw_visual, W_w_Mgt_visual,  Wgt_visual]
-                img_titles = ["dis_img_ord", "Mgt",       "I_with_M",    "W_raw",      "W_w_Mgt",       "Wgt"]
+                imgs       = [ [ dis_img_ord  , dis_img_pre   , Mgt_visual , I_w_M_visual   , W_visual , Wgt_visual],
+                               [ Wx_visual    , Wy_visual     , Wz_visual            ] ]
+                img_titles = [ ["dis_img_ord" , "dis_img_pre" , "Mgt"      , "I_with_M"     , "Wpred"      , "Wgt"     ],
+                               ["Wx"          , "Wy"          , "Wz"                 ] ]
 
-            single_row_imgs = Matplot_single_row_imgs(
-                                    imgs      = imgs,         ### 把要顯示的每張圖包成list
-                                    img_titles= img_titles,               ### 把每張圖要顯示的字包成list
-                                    fig_title = "%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
-                                    add_loss  = self.add_loss,
-                                    bgr2rgb   = self.bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                ''' Sobel 部分 '''
+                ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+                Wx_raw_Gx = Wx_raw_Gx[0].numpy()
+                Wx_raw_Gy = Wx_raw_Gy[0].numpy()
+                Wy_raw_Gx = Wy_raw_Gx[0].numpy()
+                Wy_raw_Gy = Wy_raw_Gy[0].numpy()
+                Wz_raw_Gx = Wz_raw_Gx[0].numpy()
+                Wz_raw_Gy = Wz_raw_Gy[0].numpy()
+                imgs       += [Wx_raw_Gx, Wx_raw_Gy, Wy_raw_Gx, Wy_raw_Gy, Wz_raw_Gx, Wz_raw_Gy]
+                img_titles += ["Wx_Gx"  , "Wx_Gy"  , "Wy_Gx"  , "Wy_Gy"  , "Wz_Gx"  , "Wz_Gy"  ]
+
+            else:
+                imgs       = [ [ dis_img_ord   , dis_img_pre     , Mgt_visual    , I_w_M_visual    , W_raw_visual  , W_w_Mgt_visual  , Wgt_visual],
+                               [ Wx_raw_visual , Wx_w_Mgt_visual , Wy_raw_visual , Wy_w_Mgt_visual , Wz_raw_visual , Wz_w_Mgt_visual            ] ]
+                img_titles = [ ["dis_img_ord"  , "dis_img_pre"   , "Mgt"         , "I_with_M"      , "W_raw"       , "W_w_Mgt"       , "Wgt"],
+                               ["Wx_raw"       , "Wx_w_Mgt"      , "Wy_raw"      , "Wy_w_Mgt"      , "Wz_raw"      , "Wz_w_Mgt"        ]  ]
+
+                ''' Sobel 部分 '''
+                ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+                Wx_raw_Gx = Wx_raw_Gx[0].numpy()
+                Wx_raw_Gy = Wx_raw_Gy[0].numpy()
+                Wy_raw_Gx = Wy_raw_Gx[0].numpy()
+                Wy_raw_Gy = Wy_raw_Gy[0].numpy()
+                Wz_raw_Gx = Wz_raw_Gx[0].numpy()
+                Wz_raw_Gy = Wz_raw_Gy[0].numpy()
+                Wx_w_M_Gx = Wx_w_M_Gx[0].numpy()
+                Wx_w_M_Gy = Wx_w_M_Gy[0].numpy()
+                Wy_w_M_Gx = Wy_w_M_Gx[0].numpy()
+                Wy_w_M_Gy = Wy_w_M_Gy[0].numpy()
+                Wz_w_M_Gx = Wz_w_M_Gx[0].numpy()
+                Wz_w_M_Gy = Wz_w_M_Gy[0].numpy()
+                imgs       += [[ Wx_w_M_Gx ,  Wx_w_M_Gy ,  Wy_w_M_Gx ,  Wy_w_M_Gy ,  Wz_w_M_Gx ,  Wz_w_M_Gy ]]
+                imgs       += [[ Wx_raw_Gx ,  Wx_raw_Gy ,  Wy_raw_Gx ,  Wy_raw_Gy ,  Wz_raw_Gx ,  Wz_raw_Gy ]]
+                img_titles += [["Wx_w_M_Gx", "Wx_w_M_Gy", "Wy_w_M_Gx", "Wy_w_M_Gy", "Wz_w_M_Gx", "Wz_w_M_Gy"]]
+                img_titles += [["Wx_raw_Gx", "Wx_raw_Gy", "Wy_raw_Gx", "Wy_raw_Gy", "Wz_raw_Gx", "Wz_raw_Gy"]]
+
+            single_row_imgs = Matplot_multi_row_imgs(
+                                    rows_cols_imgs   = imgs,         ### 把要顯示的每張圖包成list
+                                    rows_cols_titles = img_titles,               ### 把每張圖要顯示的字包成list
+                                    fig_title        = "%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
+                                    add_loss         = self.add_loss,
+                                    bgr2rgb          = self.bgr2rgb, 
+                                    fix_size         =(256, 256))  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
             single_row_imgs.Draw_img()
             single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
             print("save to:", self.exp_obj.result_obj.test_write_dir)
 
-            if(self.phase == "test"):
-                ### W_01 back to W then + M
-                gt_min = self.exp_obj.db_obj.db_gt_range.min
-                gt_max = self.exp_obj.db_obj.db_gt_range.max
+            if(self.phase == "test" and self.knpy_save is True):
+                db_h = self.exp_obj.db_obj.h
+                db_w = self.exp_obj.db_obj.w
 
-                if(self.focus is False): W = W_raw_01 * (gt_max - gt_min) + gt_min
-                else:                    W = W_w_Mgt_01 * (gt_max - gt_min) + gt_min
-                if(self.exp_obj.db_obj.get_method.value == "build_by_in_I_gt_W_hole_norm_then_mul_M_right"): W = W * Mgt_pre
-                WM = np.concatenate([W, Mgt_pre], axis=-1)
+                ##### 1. W_01 值 back to W， 如果用focus 因為 M 的任務 分出去了， 所以 結果要 * M
+                ##### 2. concat M
+                ##### 3. resoze 回原始大小
+                ##### 4. dtype 調 float32
+                ### 1. W_01 back to W， 看用 哪種 norm 就用哪種方式還原
+                if("ch_norm" in self.exp_obj.db_obj.get_method.value):
+                    gt_ch0_range, gt_ch1_range, gt_ch2_range = self.exp_obj.db_obj.gt_ch_ranges
+                    gt_min = np.array([gt_ch0_range.min,
+                                       gt_ch1_range.min,
+                                       gt_ch2_range.min]).reshape(1, 1, 3)
+                    gt_max = np.array([gt_ch0_range.max,
+                                       gt_ch1_range.max,
+                                       gt_ch2_range.max]).reshape(1, 1, 3)
+                else:
+                    gt_min = self.exp_obj.db_obj.db_gt_range.min
+                    gt_max = self.exp_obj.db_obj.db_gt_range.max
+
+                ### 看 W 要不要 乘M
+                if(self.focus is False):
+                    W = W_raw_01 * (gt_max - gt_min) + gt_min
+                    W = W * Mgt_pre
+                else:
+                    W = W_w_Mgt_01 * (gt_max - gt_min) + gt_min
+
+                ### 2. concat M
+                WM = np.concatenate([W, Mgt_ord], axis=-1)
+
+                ### 3. resoze 回原始大小
+                WM = cv2.resize(WM, (db_w, db_h))
+
+                ### 4. dtype 調 float32
+                WM = WM.astype(np.float32)
+
                 ### 確認寫得對不對
                 # fig, ax = plt.subplots(1, 2)
                 # ax[0].imshow(W_01)

@@ -5,7 +5,7 @@ from step06_a_datas_obj import Range
 
 import sys
 sys.path.append("kong_util")
-from build_dataset_combine import  method1
+from kong_util.build_dataset_combine import method1, Check_dir_exist_and_build, Save_npy_path_as_knpy
 
 import matplotlib.pyplot as plt
 ######################################################################################################################################################################################################
@@ -90,7 +90,6 @@ def W_01_and_W_01_w_M_to_WM_and_visualize(W_raw, M, out_ch3=False):
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
-import tensorflow as tf
 class Tight_crop():
     def __init__(self, pad_size=20, pad_method="reflect+black", resize=None, jit_scale=0):
         '''
@@ -107,6 +106,7 @@ class Tight_crop():
         if(self.jit_scale > 0):  self.reset_jit()
 
     def reset_jit(self):
+        import tensorflow as tf
         if(self.jit_scale > 0):
             self.l_jit = tf.random.uniform(shape=[], minval=-self.jit_scale, maxval=self.jit_scale, dtype=tf.int64)
             self.r_jit = tf.random.uniform(shape=[], minval=-self.jit_scale, maxval=self.jit_scale, dtype=tf.int64)
@@ -118,6 +118,15 @@ class Tight_crop():
         self.resize = resize
 
     def __call__(self, data, Mask):
+        import tensorflow as tf
+        if  (len(data.shape) == 4): b, h, w, c = data.shape
+        elif(len(data.shape) == 3): h, w, c = data.shape
+        elif(len(data.shape) == 2): h, w = data.shape
+
+        # if( tf.math.equal(tf.reduce_sum(Mask), tf.constant(0, tf.float32) )):
+        #     print("Mask 全黑， 不做 tight_crop")
+        #     return data, {"l_pad_slice": tf.constant(0, tf.int64), "t_pad_slice": tf.constant(0, tf.int64), "r_pad_slice": tf.constant(w, tf.int64), "d_pad_slice": tf.constant(h, tf.int64)}
+
         '''
         目前的寫法連 batch 都考慮進去囉
         resize: [h, w]
@@ -170,9 +179,6 @@ class Tight_crop():
         r_out_amo = tf.constant(0, tf.int64)  ### 格數
         t_out_amo = tf.constant(0, tf.int64)  ### 格數
         d_out_amo = tf.constant(0, tf.int64)  ### 格數
-        if  (len(data.shape) == 4): b, h, w, c = data.shape
-        elif(len(data.shape) == 3): h, w, c = data.shape
-        elif(len(data.shape) == 2): h, w = data.shape
 
         if(l_pad_ind < 0): l_out_amo = - l_pad_ind  ### l, t 負的 index 剛好 == 超出去的格數
         if(t_pad_ind < 0): t_out_amo = - t_pad_ind  ### l, t 負的 index 剛好 == 超出去的格數
@@ -287,12 +293,14 @@ class Tight_crop():
 
         ###### pad 完成了， 以下開始 crop
         ### 對 pad完成 的 data 重新定位
-        # l_pad_ind = max(l_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
-        # t_pad_ind = max(t_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
-        if(l_pad_ind < 0): l_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
-        if(t_pad_ind < 0): t_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
-        r_pad_ind = r_pad_ind + l_out_amo + r_out_amo  ### r_pad_ind, d_pad_ind 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad_ind, t_pad_ind 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out_amo, t_out_amo 喔！
-        d_pad_ind = d_pad_ind + t_out_amo + d_out_amo  ### r_pad_ind, d_pad_ind 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad_ind, t_pad_ind 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out_amo, t_out_amo 喔！
+        # l_pad_ind = max(l_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0 ， 但位移後 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+        # t_pad_ind = max(t_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0 ， 但位移後 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+        if(l_pad_ind < 0):  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0， 但位移後 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+            l_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
+            r_pad_ind += l_out_amo                ### 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+        if(t_pad_ind < 0):  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0， 但位移後 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+            t_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
+            d_pad_ind += t_out_amo               ### 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
 
         ### 重新定位 完成了， 以下開始 crop
         l_pad_slice = l_pad_ind  ### l, t 的 index 剛好 == slice
@@ -307,7 +315,66 @@ class Tight_crop():
         if(self.resize is not None): data = tf.image.resize(data, self.resize, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
         # breakpoint()
-        return data, {"l_pad_slice": l_pad_slice, "t_pad_slice": t_pad_slice, "r_pad_slice": r_pad_slice, "d_pad_slice": d_pad_slice}
+        return data, {"l_pad_slice": l_pad_slice, "t_pad_slice": t_pad_slice, "r_pad_slice": r_pad_slice, "d_pad_slice": d_pad_slice,
+                      "l_out_amo"  : l_out_amo  , "t_out_amo"  : t_out_amo  , "r_out_amo"  : r_out_amo  , "d_out_amo"  : d_out_amo  }
+
+    ### 要把 data_pre_croped_resized 的 結果 反向操作 回 data_pre
+    def croped_back(self, cropped_resized_data, boundary, back_w, back_h):
+        import tensorflow as tf
+        l_out_amo = boundary["l_out_amo"]
+        t_out_amo = boundary["t_out_amo"]
+        r_out_amo = boundary["r_out_amo"]
+        d_out_amo = boundary["d_out_amo"]
+        l_pad_slice = boundary["l_pad_slice"]
+        t_pad_slice = boundary["t_pad_slice"]
+        r_pad_slice = boundary["r_pad_slice"]
+        d_pad_slice = boundary["d_pad_slice"]
+
+        ####### 從 croped_resize 回復到 croped 的大小
+        croped_w = r_pad_slice - l_pad_slice
+        croped_h = d_pad_slice - t_pad_slice
+        cropped_data = tf.image.resize(cropped_resized_data, (croped_h, croped_w) )
+
+        ####### 把 croped 的狀況有兩種， 1.一種是 超出img範圍往外pad， 2.一種是 img範圍內 往內crop
+        ##### 1. 要把 往外pad  的部分切掉
+        ##### 2. 要把 往內crop 的部分補回來
+        ###  不能這樣寫， 因為譬如 l_out, r_out 同時 == 0， 會變 [0:-0]， 結果為空array， 但應該是要全取才對， 所以只好像下面 一步步展開來做
+        # if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :, t_out_amo : -d_out_amo,  boundary["l_out_amo"] : -r_out_amo, :]
+        # elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[    t_out_amo : -d_out_amo,  boundary["l_out_amo"] : -r_out_amo, :]
+        # elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[    t_out_amo : -d_out_amo,  boundary["l_out_amo"] : -r_out_amo]
+
+        ##### 1. 要把 往外pad  的部分切掉 ( out_amount > 0， 代表往外pad)
+        if(l_out_amo > 0):
+            if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :,                        :                        ,  l_out_amo :                        , :]
+            elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[                           :                        ,  l_out_amo :                        , :]
+            elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[                           :                        ,  l_out_amo :                        ]
+            r_pad_slice -= l_out_amo  ### 更新一下座標
+        if(t_out_amo > 0):
+            if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :,  t_out_amo :                        ,                        :                        , :]
+            elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[     t_out_amo :                        ,                        :                        , :]
+            elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[     t_out_amo :                        ,                        :                        ]
+            d_pad_slice -= t_out_amo  ### 更新一下座標
+        if(r_out_amo > 0):
+            if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :,                        :                        ,                        : -r_out_amo , :]
+            elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[                           :                        ,                        : -r_out_amo , :]
+            elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[                           :                        ,                        : -r_out_amo ]
+        if(d_out_amo > 0):
+            if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :,                        : -d_out_amo ,                        :                        , :]
+            elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[                           : -d_out_amo ,                        :                        , :]
+            elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[                           : -d_out_amo ,                        :                        ]
+
+
+        ##### 2. 要把 往內crop 的部分補回來 ( out_amount == 0， 代表沒有往外pad， 意思就是 保持原樣 或者 往內crop， 要把往內crop的部分補回來，以下的操作 往內crop 漢 保持不變case 都適用， out_amount > 0， 代表有往外pad， 就不用pad囉， 所以 pad_back 就設0 )
+        r_pad_back = (back_w - r_pad_slice) if(r_out_amo == 0) else 0  ### slice - slice 會變回格數， img_最右slice - r_pad_slice 即 右邊要pad 回去的格數
+        l_pad_back = (l_pad_slice - 0)      if(l_out_amo == 0) else 0  ### slice - slice 會變回格數， l_pad_slice - img_最左slice 即 左邊要pad 回去的格數
+        d_pad_back = (back_h - d_pad_slice) if(d_out_amo == 0) else 0  ### slice - slice 會變回格數， img_最下slice - d_pad_slice 即 下邊要pad 回去的格數
+        t_pad_back = (t_pad_slice - 0)      if(t_out_amo == 0) else 0  ### slice - slice 會變回格數， t_pad_slice - img_最上slice 即 上邊要pad 回去的格數
+
+        ### pad 回去
+        if  (len(cropped_data.shape) == 4): data = tf.pad(cropped_data, ( (0    ,     0), (t_pad_back, d_pad_back), (l_pad_back, r_pad_back), (    0,     0) ) , 'CONSTANT')
+        elif(len(cropped_data.shape) == 3): data = tf.pad(cropped_data, ( (t_pad_back, d_pad_back), (l_pad_back, r_pad_back), (    0,     0) )                 , 'CONSTANT')
+        elif(len(cropped_data.shape) == 2): data = tf.pad(cropped_data, ( (t_pad_back, d_pad_back), (l_pad_back, r_pad_back) )                                 , 'CONSTANT')
+        return data.numpy()
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
@@ -326,13 +393,15 @@ class Use_G_generate:
         self.see_reset_init = None
         self.postprocess    = None
         self.npz_save       = None
+        self.knpy_save      = None
         self.add_loss       = None
         self.bgr2rgb        = None
 
-    def __call__(self, model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=None, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=True):
+    def __call__(self, model_obj, phase, index, fname, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=None, see_reset_init=True, postprocess=False, npz_save=False, knpy_save=False, add_loss=False, bgr2rgb=True):
         self.model_obj      = model_obj
         self.phase          = phase
         self.index          = index
+        self.fname          = fname
         self.in_ord         = in_ord
         self.in_pre         = in_pre
         self.gt_ord         = gt_ord
@@ -343,6 +412,7 @@ class Use_G_generate:
         self.see_reset_init = see_reset_init
         self.postprocess    = postprocess
         self.npz_save       = npz_save
+        self.knpy_save      = knpy_save
         self.add_loss       = add_loss
         self.bgr2rgb        = bgr2rgb
         self.doing_things()
@@ -357,3 +427,114 @@ class Use_G_generate:
 #     def doing_things(self,model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False):
 #         ''' Not Implement'''
 #         pass
+
+######################################################################################################################################################################################################
+######################################################################################################################################################################################################
+
+### doc3d v2 [Z: Range(-0.50429183, 0.46694446), Y: Range(-1.2410645, 1.2485291), X: Range(-1.2387834, 1.2280148)]
+def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None, final_resize=None, by_the_way_fake_F=False, dis_img=None, dis_img_format=".png", zmin=None, zmax=None, ymin=None, ymax=None, xmin=None, xmax=None):
+    '''
+    wc_type 有兩種： 
+        Wzxy
+        Wzyx
+    '''
+    fname = fname[ :-4]
+
+    dis_img_dir       = f"{dst_dir}/0_dis_img"
+    uv_npy_dir        = f"{dst_dir}/1_uv-1_npy"
+    uv_knpy_dir       = f"{dst_dir}/1_uv-3_knpy"
+    wc_npy_dir        = f"{dst_dir}/2_wc-1_npy"
+    W_w_M_npy_dir     = f"{dst_dir}/2_wc-4_W_w_M_npy"
+    W_w_M_knpy_dir    = f"{dst_dir}/2_wc-5_W_w_M_knpy"
+    W_w_M_visual_dir  = f"{dst_dir}/2_wc-6_W_w_M_visual"
+    dis_img_path      = f"{dis_img_dir}/{fname}.{dis_img_format}"
+    uv_npy_path       = f"{uv_npy_dir}/{fname}.npy"
+    uv_knpy_path      = f"{uv_knpy_dir}/{fname}.knpy"
+    wc_npy_path       = f"{wc_npy_dir}/{fname}.npy"
+    W_w_M_npy_path    = f"{W_w_M_npy_dir}/{fname}.npy"
+    W_w_M_knpy_path   = f"{W_w_M_knpy_dir}/{fname}.knpy"
+    W_w_M_visual_path = f"{W_w_M_visual_dir}/{fname}.png"
+    Check_dir_exist_and_build(wc_npy_dir)
+    Check_dir_exist_and_build(W_w_M_npy_dir)
+    Check_dir_exist_and_build(W_w_M_knpy_dir)
+    Check_dir_exist_and_build(W_w_M_visual_dir)
+
+    ### 作處理前 要先 resize 到多大
+    if(first_resize is not None): wc = cv2.resize(wc, first_resize)
+
+    ### 紀錄一下原始 shape
+    h, w, c = wc.shape
+
+    ### 在 448 的狀態下 做 padding
+    wc = np.pad(wc, ( (pad_size, pad_size), (pad_size, pad_size), (0, 0)), "constant" )
+
+    ### Mask
+    Mask = ((wc[..., 0:1] > 0) & (wc[..., 1:2] > 0) & (wc[..., 2:3] > 0)).astype(np.uint8)
+
+        
+    ### 做完處理後 最後 要 resize 到多大
+    if(final_resize is not None):
+        wc   = cv2.resize(wc,   final_resize)
+        Mask = cv2.resize(Mask, final_resize)
+        Mask = Mask[..., np.newaxis]  ### Mask 做完 resize ， 因為ch1， 會被cv2 自動拿掉， 這邊要再補回來喔
+
+    ### 提取 Wx, Wy, Wz
+    if  (wc_type.lower() == "Wzyx".lower() ):
+        Wz = wc[..., 0:1]
+        Wy = wc[..., 1:2]
+        Wx = wc[..., 2:3]
+    elif(wc_type.lower() == "Wzxy".lower() ):
+        Wz = wc[..., 0:1]
+        Wx = wc[..., 1:2]
+        Wy = wc[..., 2:3]
+
+    ### 值放回原始range
+    if(None not in [zmin, zmax]): Wz = Wz * (zmax - zmin) + zmin
+    if(None not in [ymin, ymax]): Wy = Wy * (ymax - ymin) + ymin
+    if(None not in [xmin, xmax]): Wx = Wx * (xmax - xmin) + xmin
+
+    #########################################################
+    ### wc 統一轉成 Wzyx
+    wc = np.concatenate([Wz, Wy, Wx], axis=-1)
+    ### wc 和 W_w_M
+    wc = wc * Mask
+    W_w_M = np.concatenate( (wc, Mask), axis= -1 )
+
+    ### 轉 type
+    wc    = wc    .astype(np.float32)
+    W_w_M = W_w_M .astype(np.float32)
+
+    ### 存起來
+    np.save(wc_npy_path    , wc)
+    np.save(W_w_M_npy_path , W_w_M)
+    Save_npy_path_as_knpy(W_w_M_npy_path, W_w_M_knpy_path)
+
+    ### 視覺化 和 存起來
+    fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(5 * 4, 5))
+    ax[0].imshow(Wz)
+    ax[1].imshow(Wy)
+    ax[2].imshow(Wx)
+    ax[3].imshow(Mask)
+    plt.tight_layout()
+    plt.savefig(W_w_M_visual_path)
+    # plt.show()
+    plt.close()
+
+    if(by_the_way_fake_F):
+        Check_dir_exist_and_build(uv_npy_dir)
+        Check_dir_exist_and_build(uv_knpy_dir)
+
+        fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
+        fake_F = np.concatenate([Mask, fake_C], axis=-1)
+        np.save(uv_npy_path, fake_F)
+        Save_npy_path_as_knpy(uv_npy_path, uv_knpy_path)
+
+    if(dis_img is not None):
+        ### 作處理前 要先 resize 到多大
+        if(first_resize is not None): dis_img = cv2.resize(dis_img, first_resize)
+        ### 在 448 的狀態下 做 padding
+        dis_img = np.pad(dis_img, ( (pad_size, pad_size), (pad_size, pad_size), (0,0)), "edge" )
+        ### 做完處理後 最後 要 resize 到多大
+        if(final_resize is not None): dis_img = cv2.resize(dis_img, final_resize)
+        Check_dir_exist_and_build(dis_img_dir)
+        cv2.imwrite(dis_img_path, dis_img)

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 import sys
 sys.path.append("kong_util")
-from Disc_and_receptive_field_util import tf_M_resize_then_erosion_by_kong
+from kong_util.Disc_and_receptive_field_util import tf_M_resize_then_erosion_by_kong
 
 def norm_to_0_1_by_max_min(data, Mask=None):  ### data 為 np.array才行
     if(Mask is None): return  (data - data.min()) / (data.max() - data.min())
@@ -167,12 +167,13 @@ class BCE():
 
 
 class Sobel_MAE():
-    def __init__(self, sobel_kernel_size, sobel_kernel_scale=1, stride=1, erose_M=False, **args):
+    def __init__(self, sobel_kernel_size, sobel_kernel_scale=1, stride=1, erose_M=False, erose_More=False, **args):
         # super().__init__(name="Sobel_MAE")
         self.sobel_kernel_size  = sobel_kernel_size
         self.sobel_kernel_scale = sobel_kernel_scale
         self.stride       = stride
         self.erose_M      = erose_M
+        self.erose_More   = erose_More
 
     def Visualize_sobel_result(self, sobel_result, vmin=None, vmax=None, Mask=None):
         def _draw_util(fig_cur, ax_cur, data, vmin, vmax):
@@ -189,7 +190,9 @@ class Sobel_MAE():
         '''
         輸入的 sobel_result 要 BHWC 喔！
         '''
-        sobel_result = sobel_result[0].numpy()  ### BHWC，所以要 [0]
+        if( type(sobel_result)) != type(np.array([])): sobel_result = sobel_result.numpy()
+
+        sobel_result = sobel_result[0]  ### BHWC，所以要 [0]
         h, w, c = sobel_result.shape
         ### 算出 M
         if(Mask is None):
@@ -254,7 +257,7 @@ class Sobel_MAE():
         return fig, ax
 
     def _create_sobel_kernel_xy(self):
-        print("doing _create_sobel_kernel_xy")
+        # print("doing _create_sobel_kernel_xy")
         # if(self.sobel_kernel_size == 3):
         #     kernels_xy = [ [[-1, -2, -1],
         #                  [ 0,  0,  0],
@@ -330,7 +333,7 @@ class Sobel_MAE():
         return kernels_xy
 
     def Calculate_sobel_edges(self, image, stride=1, Mask=None):
-        print("doing Calculate_sobel_edges")
+        # print("doing Calculate_sobel_edges")
         '''
         image：BHWC
         kernel：(2, k_size, k_size)
@@ -361,6 +364,8 @@ class Sobel_MAE():
         ### 通常是用在 WC 上面， 用在 dis_img 感覺沒用， 想法是 把邊緣 大大的值蓋過去， 剩下的就會是 中間的紋理囉
         if(self.erose_M and Mask is not None):
             ### 變小多少 就跟 sobel 用的 kernel_size 一樣大小
+            erose_kernel_size = self.sobel_kernel_size
+            if(self.erose_More): erose_kernel_size += 8  ### 目前用眼睛看覺得+8不錯
             erose_kernel = tf.ones((self.sobel_kernel_size, self.sobel_kernel_size, 1))
             ### debug用， 顯示 erose前的 M
             # plt.figure()
@@ -377,13 +382,23 @@ class Sobel_MAE():
             # self.Visualize_sobel_result(sobel_x_result)
             # self.Visualize_sobel_result(sobel_y_result)
 
+            ### 用 opencv 內建的 sobel 來比較， 幾乎一模一樣， 只差在 opencv 有多乘上一個係數， kernel_size 最大只支援到 31
+            # cv2_sobelx  = cv2.Sobel(image[0].numpy(), cv2.CV_64F, 1, 0, ksize=self.sobel_kernel_size) * Mask[0].numpy()
+            # cv2_sobely  = cv2.Sobel(image[0].numpy(), cv2.CV_64F, 0, 1, ksize=self.sobel_kernel_size) * Mask[0].numpy()
+            # cv2_sobelxy = cv2.Sobel(image[0].numpy(), cv2.CV_64F, 1, 1, ksize=self.sobel_kernel_size) * Mask[0].numpy()
+            # # cv2_sobelx  = cv2.blur(cv2_sobelx, (5, 5))  ### 覺得blur完以後好像 也沒有很有效的消除 grad 的 條紋
+            # self.Visualize_sobel_result(cv2_sobelx[np.newaxis, ...])
+            # self.Visualize_sobel_result(cv2_sobely[np.newaxis, ...])
+            # self.Visualize_sobel_result(cv2_sobelxy[np.newaxis, ...])
+            # plt.show()
+
         return sobel_x_result, sobel_y_result
 
     # @tf.function  ### GPU debug用
     def __call__(self, gt_data, pred_data, Mask=None):
         n, h, w, c = pred_data.shape     ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-        Mask    = Mask   [:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+        if(Mask is not None): Mask    = Mask   [:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
 
         print("Sobel_MAE.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
         img1_sobel_x, img1_sobel_y = self.Calculate_sobel_edges(image=gt_data,   Mask=Mask)

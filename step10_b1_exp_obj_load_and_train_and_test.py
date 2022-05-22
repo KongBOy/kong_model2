@@ -497,7 +497,7 @@ class Experiment():
         self.model_obj.optimizer_G.lr = self.lr_current
         if(self.model_obj.optimizer_D is not None): self.model_obj.optimizer_D.lr = self.lr_current
 
-    def testing(self, add_loss=False, bgr2rgb=False):
+    def testing(self, add_loss=False, bgr2rgb=False, knpy_save=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
         for test_index, (test_in, test_in_pre, test_gt, test_gt_pre, test_name, rec_hope) in enumerate(tqdm(zip(self.tf_data.test_in_db.ord.batch(1)       .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_in_db.pre .batch(1)      .take(self.tf_data.test_amount),
@@ -505,9 +505,11 @@ class Experiment():
                                                                                                                 self.tf_data.test_gt_db.pre.batch(1)       .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.test_name_db.ord.batch(1)     .take(self.tf_data.test_amount),
                                                                                                                 self.tf_data.rec_hope_test_db.ord.batch(1) .take(self.tf_data.test_amount)))):
+            test_name = test_name[0].numpy().decode("utf-8")
             # self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
-            self.model_obj.generate_sees  (self.model_obj, "test", test_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, self, training=False, see_reset_init=True, postprocess=True, npz_save=True)
-        Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir, read_dir=self.result_obj.test_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
+            self.model_obj.generate_sees  (self.model_obj, "test", test_index, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, self, training=False, see_reset_init=True, postprocess=True, npz_save=True, knpy_save=knpy_save)
+        Save_as_jpg          (ord_dir  =self.result_obj.test_write_dir, dst_dir =self.result_obj.test_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完
+        Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir, read_dir=self.result_obj.test_read_dir , build_new_dir=False, print_msg=False, copy_sub_dir=True)
 
     def train_step1_see_current_img(self, phase="train", training=False, see_reset_init=False, postprocess=False, npz_save=False):
         """
@@ -518,17 +520,18 @@ class Experiment():
         """
         # sample_start_time = time.time()
 
-        for see_index, (test_in, test_in_pre, test_gt, test_gt_pre, _, rec_hope_pre) in enumerate(tqdm(zip(self.tf_data.see_in_db.ord.batch(1)   ,
+        for see_index, (test_in, test_in_pre, test_gt, test_gt_pre, see_name, rec_hope_pre) in enumerate(tqdm(zip(self.tf_data.see_in_db.ord.batch(1)   ,
                                                                                                            self.tf_data.see_in_db.pre.batch(1)   ,
                                                                                                            self.tf_data.see_gt_db.ord.batch(1)   ,
                                                                                                            self.tf_data.see_gt_db.pre.batch(1)   ,
                                                                                                            self.tf_data.see_name_db.ord.batch(1) ,
                                                                                                            self.tf_data.rec_hope_see_db.pre.batch(1)))):
+            see_name = see_name[0].numpy().decode("utf-8")
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, self.result_obj.result_write_dir, self, see_reset_init, postprocess=postprocess, npz_save=npz_save)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif("flow"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj     , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save)
-            elif("rect"  in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj.rect, phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save)
-            elif("justG" in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj     , phase, see_index, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save)
+                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj     , phase, see_index, see_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, self.result_obj.result_write_dir, self, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif("flow"  in self.model_obj.model_name.value):     self.model_obj.generate_sees(self.model_obj     , phase, see_index, see_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)
+            elif("rect"  in self.model_obj.model_name.value):     self.model_obj.generate_sees(self.model_obj.rect, phase, see_index, see_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)
+            elif("justG" in self.model_obj.model_name.value):     self.model_obj.generate_sees(self.model_obj     , phase, see_index, see_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
@@ -638,12 +641,12 @@ class Experiment():
     #     Syn_write_to_read_dir(write_dir=self.result_obj.result_write_dir, read_dir=self.result_obj.result_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
     #     print("test see finish")
 
-    def test(self, test_db_name="test"):  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
+    def test(self, test_db_name="test", knpy_save=False):  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         """
         """
         self.db_builder.reset_test_db_name(test_db_name)
         self.exp_init(reload_result=True, reload_model=True)
-        self.testing()  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
+        self.testing(knpy_save=knpy_save)  ### 有時候製作 fake_exp 的時候 ， 只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要reset一下
         print("test finish")
 
     def board_rebuild(self):
@@ -667,9 +670,9 @@ class Experiment():
         elif(self.phase == "train_indicate"): pass  ### 待完成Z
         elif("test" in self.phase):
             # if(self.phase == "test_see"): self.test_see()
-            if  (self.phase == "test_see"  ): self.test(test_db_name="see")
-            elif(self.phase == "test_train"): self.test(test_db_name="train")
-            else:                         self.test(test_db_name=self.phase)  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
+            if  (self.phase == "test_see"  ): self.test(test_db_name="see"      , knpy_save=False)
+            elif(self.phase == "test_train"): self.test(test_db_name="train"    , knpy_save=False)
+            else:                             self.test(test_db_name=self.phase , knpy_save=False)  ### 精神不好先暫時用 flow_mask flag 來區別 跟 flow 做不同的動作
         elif(self.phase == "board_rebuild"):  self.board_rebuild()
         elif(self.phase == "copy_ckpt"): self.copy_ckpt()
         elif(self.phase.lower() == "ok"): pass      ### 不做事情，只是個標記而以這樣子

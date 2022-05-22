@@ -359,7 +359,10 @@ G_sobel_k5_s220_loss_info_builder = Loss_info_builder().set_loss_type("sobel", s
 G_sobel_k5_s240_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=240)  #.build_gan_loss().build_gan_loss_containors()
 G_sobel_k5_s260_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=260)  #.build_gan_loss().build_gan_loss_containors()
 G_sobel_k7_loss_info_builder      = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=7, sobel_kernel_scale=260)  #.build_gan_loss().build_gan_loss_containors()
-### 3-erose_M
+G_sobel_k15_loss_info_builder     = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=15, sobel_kernel_scale=  1)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k25_loss_info_builder     = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=25, sobel_kernel_scale=  1)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k35_loss_info_builder     = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=35, sobel_kernel_scale=  1)  #.build_gan_loss().build_gan_loss_containors()
+### 3-Erose_M
 G_sobel_k3_erose_M_loss_info_builder      = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=3, sobel_kernel_scale=  1, erose_M=True)  #.build_gan_loss().build_gan_loss_containors()
 G_sobel_k5_erose_M_loss_info_builder      = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True)  #.build_gan_loss().build_gan_loss_containors()
 G_sobel_k5_erose_M_s010_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale= 10, erose_M=True)  #.build_gan_loss().build_gan_loss_containors()
@@ -377,6 +380,30 @@ G_sobel_k5_erose_M_s220_loss_info_builder = Loss_info_builder().set_loss_type("s
 G_sobel_k5_erose_M_s240_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=240, erose_M=True)  #.build_gan_loss().build_gan_loss_containors()
 G_sobel_k5_erose_M_s260_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=260, erose_M=True)  #.build_gan_loss().build_gan_loss_containors()
 G_sobel_k7_erose_M_loss_info_builder      = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=7, sobel_kernel_scale=260, erose_M=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k15_erose_M_loss_info_builder     = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=15, sobel_kernel_scale=  1, erose_M=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k25_erose_M_loss_info_builder     = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=25, sobel_kernel_scale=  1, erose_M=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k35_erose_M_loss_info_builder     = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=35, sobel_kernel_scale=  1, erose_M=True)  #.build_gan_loss().build_gan_loss_containors()
+### 3-Erose_More
+G_sobel_k3_erose_More_loss_info_builder      = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=3, sobel_kernel_scale=  1, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_loss_info_builder      = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s010_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale= 10, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s020_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale= 20, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s040_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale= 40, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s060_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale= 60, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s080_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale= 80, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s100_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=100, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s120_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=120, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s140_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=140, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s160_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=160, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s180_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=180, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s200_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=200, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s220_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=220, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s240_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=240, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k5_erose_More_s260_loss_info_builder = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=5, sobel_kernel_scale=260, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k7_erose_More_loss_info_builder      = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=7, sobel_kernel_scale=260, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k15_erose_More_loss_info_builder     = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=15, sobel_kernel_scale=  1, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k25_erose_More_loss_info_builder     = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=25, sobel_kernel_scale=  1, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
+G_sobel_k35_erose_More_loss_info_builder     = Loss_info_builder().set_loss_type("sobel", sobel_kernel_size=35, sobel_kernel_scale=  1, erose_M=True, erose_More=True)  #.build_gan_loss().build_gan_loss_containors()
 
 ##########################################################################################################################################################################
 ### 4
@@ -437,6 +464,17 @@ G_bce_s100_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_loss_type("
 G_bce_s100_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 80)
 G_bce_s100_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=100, sobel_kernel_size=5, sobel_kernel_scale=100)
 
+### 大kernel測試
+G_bce_s001_sobel_k05_s001_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=  1, sobel_kernel_size= 5, sobel_kernel_scale=  1)
+G_bce_s001_sobel_k15_s001_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=  1, sobel_kernel_size=15, sobel_kernel_scale=  1)
+G_bce_s001_sobel_k25_s001_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=  1, sobel_kernel_size=25, sobel_kernel_scale=  1)
+G_bce_s001_sobel_k35_s001_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=  1, sobel_kernel_size=35, sobel_kernel_scale=  1)
+
+### Erose_M ， 注意 不能給 I_to_M 用喔， 是給 I_to_M 之後的 model 用的
+G_bce_s001_sobel_k05_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=  1, sobel_kernel_size= 5, sobel_kernel_scale=  1, erose_M=True)
+G_bce_s001_sobel_k15_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=  1, sobel_kernel_size=15, sobel_kernel_scale=  1, erose_M=True)
+G_bce_s001_sobel_k25_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=  1, sobel_kernel_size=25, sobel_kernel_scale=  1, erose_M=True)
+G_bce_s001_sobel_k35_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("bce+sobel", bce_scale=  1, sobel_kernel_size=35, sobel_kernel_scale=  1, erose_M=True)
 ##########################################################################################################################################################################
 ### 6
 G_tv_s0p1_bce_s001_loss_info_builder  = Loss_info_builder().set_loss_type("tv+bce", tv_scale= 0.1, bce_scale=1)  #.build_gan_loss().build_gan_loss_containors()
@@ -1005,6 +1043,16 @@ mae_s100_sobel_k5_s020_loss_info_builder = Loss_info_builder().set_loss_type("ma
 mae_s100_sobel_k5_s060_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 40)
 mae_s100_sobel_k5_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 60)
 mae_s100_sobel_k5_s080_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=100, sobel_kernel_size=5, sobel_kernel_scale= 80)
+
+mae_s001_sobel_k05_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True)
+mae_s001_sobel_k15_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True)
+mae_s001_sobel_k25_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True)
+mae_s001_sobel_k35_s001_EroseM_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True)
+
+mae_s001_sobel_k05_s001_EroseMore_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True, erose_More=True)
+mae_s001_sobel_k15_s001_EroseMore_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True, erose_More=True)
+mae_s001_sobel_k25_s001_EroseMore_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True, erose_More=True)
+mae_s001_sobel_k35_s001_EroseMore_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1, erose_M=True, erose_More=True)
 ##########################################################################################################################################################################
 ### 10
 mae_s001_tv_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+tv", mae_scale=  1, tv_scale=  1)

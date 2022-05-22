@@ -14,6 +14,7 @@ from step08_b_use_G_generate_0_util import Use_G_generate, Value_Range_Postproce
 import matplotlib.pyplot as plt
 import os
 import pdb
+from step10_a1_loss import Sobel_MAE
 
 class Wyx_w_M_to_Wz(Use_G_generate):
     def __init__(self, focus=False, tight_crop=None, sobel=None, sobel_only=False):
@@ -98,13 +99,43 @@ class Wyx_w_M_to_Wz(Use_G_generate):
 
         Wz_raw_pre = self.model_obj.generator(in_data, training=self.training)
 
+        ''' IN/GT Sobel 視覺化部分 '''
+        ##### IN
+        in_sob_objs = []
+        if(self.sobel is not None): in_sob_objs.append(self.sobel)
+        else                      : in_sob_objs.append(Sobel_MAE(sobel_kernel_size=15, sobel_kernel_scale=1, stride=1, erose_M=True))  ### 如果 input 沒有使用 sobel， 就自己建一個出來
+        Win_yx_Gx_visual, Win_yx_Gy_visual = in_sob_objs[0].Calculate_sobel_edges(Wyx_pre, Mask=Mgt_pre)
+        Win_y_Gx_visual = Win_yx_Gx_visual[0, ..., 0:1].numpy()
+        Win_x_Gx_visual = Win_yx_Gx_visual[0, ..., 1:2].numpy()
+        Win_y_Gy_visual = Win_yx_Gy_visual[0, ..., 0:1].numpy()
+        Win_x_Gy_visual = Win_yx_Gy_visual[0, ..., 1:2].numpy()
+
+        ##### GT
+        ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+        loss_info_obj = self.exp_obj.loss_info_objs[0]
+        loss_fun_dict = loss_info_obj.loss_funs_dict
+        gt_sob_objs = []
+        for loss_name, func_obj in loss_fun_dict.items():
+            if("sobel" in loss_name):
+                gt_sob_objs.append(func_obj)
+
+        ### 如果 gt_loss 沒有使用 sobel， 就自己建一個出來
+        if(len(gt_sob_objs) == 0):
+            gt_sob_objs.append(Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True))
+
+        ### 把 所有的 model_out 套用上 相對應的 sobel
+        Wz_raw_Gx, Wz_raw_Gy = gt_sob_objs[0].Calculate_sobel_edges(Wz_raw_pre)
+        Wz_raw_Gx = Wz_raw_Gx[0].numpy()
+        Wz_raw_Gy = Wz_raw_Gy[0].numpy()
+        ''' Sobel end '''''''''''''''''''''
+
         ### 後處理 Output (Wz_raw_pre)
         Wz_raw_01 = Value_Range_Postprocess_to_01(Wz_raw_pre, self.exp_obj.use_gt_range)
         Wz_raw_01 = Wz_raw_01[0].numpy()
         ### 順便處理一下gt
         WM_gt_pre = WM_gt_pre[0].numpy()  ### 這個還沒轉numpy喔， 記得轉
         WM_gt_01  = Value_Range_Postprocess_to_01(WM_gt_pre, self.exp_obj.use_gt_range)
-        ''''''''''''
+        ''''''''''''''''''''''''''''''''''''''''''''''''
         ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         h, w, c = Wz_raw_01.shape
         Mgt_pre = Mgt_pre [0].numpy()
@@ -118,6 +149,15 @@ class Wyx_w_M_to_Wz(Use_G_generate):
 
             Wz_w_Mgt_01     =  Wz_raw_01 * Mgt_pre
             Wz_w_Mgt_visual = (Wz_w_Mgt_01 * 255).astype(np.uint8)
+
+            ''' Sobel部分：raw 乘完M 後 Sobel 部分 ，  這部分是只有 fucus is True 才需要 '''
+            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+            ### 把 所有的 model_out 套用上 相對應的 sobel
+            for go_sob, sob_obj in enumerate(gt_sob_objs):
+                if(go_sob == 0): W_z_w_M_Gx_visual, W_z_w_M_Gy_visual = sob_obj.Calculate_sobel_edges(Wz_raw_pre, Mask=Mgt_pre[np.newaxis, ...])
+                W_z_w_M_Gx_visual = W_z_w_M_Gx_visual[0].numpy()
+                W_z_w_M_Gy_visual = W_z_w_M_Gy_visual[0].numpy()
+            ''' Sobel end '''''''''''''''''''''
 
         ### 視覺化 Output gt (Wgt)
         Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(WM_gt_01)
@@ -189,20 +229,32 @@ class Wyx_w_M_to_Wz(Use_G_generate):
             cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}-u1b9-Wz_w_Mgt_visual.jpg", Wz_w_Mgt_visual)
 
         if(self.postprocess):
-            current_see_name = used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
+            current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             if(self.focus is False):
-                imgs       = [ dis_img_ord , Win_visual,   Wz_visual , Wzgt_visual]
-                img_titles = ["dis_img_ord", "Wxy_in",     "Wzpred",   "Wzgt"]
-            else:
-                imgs       = [ dis_img_ord ,  Mgt_visual, Win_visual,  Wz_raw_visual, Wz_w_Mgt_visual,  Wzgt_visual]
-                img_titles = ["dis_img_ord",   "Mgt",       "Wxy_in",     "Wz_raw",      "Wz_w_Mgt",       "Wzgt"]
+                imgs        = [[ dis_img_ord , Wxin_visual,  Wyin_visual,  Wz_visual , Wzgt_visual]]
+                img_titles  = [["dis_img_ord",    "Wx_in",     "Wy_in",     "Wz_pred",   "Wzgt"]]
 
-            single_row_imgs = Matplot_single_row_imgs(
-                                    imgs      = imgs,         ### 把要顯示的每張圖包成list
-                                    img_titles= img_titles,               ### 把每張圖要顯示的字包成list
+                imgs       += [[Win_x_Gx_visual, Win_x_Gy_visual, Win_y_Gx_visual, Win_y_Gy_visual, Wz_raw_Gx, Wz_raw_Gy]]
+                img_titles += [["Win_x_Gx_visual", "Win_x_Gy_visual", "Win_y_Gx_visual", "Win_y_Gy_visual", "Wz_raw_Gx", "Wz_raw_Gy"]]
+            else:
+                imgs        = [[ dis_img_ord ,  Mgt_visual, Wxin_visual, Wyin_visual,  Wz_raw_visual, Wz_w_Mgt_visual,  Wzgt_visual]]
+                img_titles  = [["dis_img_ord",   "Mgt",       "Wx_in",       "Wy_in",     "Wz_raw",      "Wz_w_Mgt",       "Wzgt"]]
+
+                imgs       += [[Win_x_Gx_visual, Win_x_Gy_visual, Win_y_Gx_visual, Win_y_Gy_visual, Wz_raw_Gx, Wz_raw_Gy, W_z_w_M_Gx_visual, W_z_w_M_Gy_visual]]
+                img_titles += [["Win_x_Gx_visual", "Win_x_Gy_visual", "Win_y_Gx_visual", "Win_y_Gy_visual", "Wz_raw_Gx", "Wz_raw_Gy", "W_z_w_M_Gx_visual", "W_z_w_M_Gy_visual"]]
+
+                # [W_z_w_M_Gx_visual, W_z_w_M_Gy_visual]
+                # imgs       += [[Win_x_Gx_visual, Win_x_Gy_visual, Win_y_Gx_visual, Win_y_Gy_visual]]
+                # img_titles += 
+                # [Wz_raw_Gx, Wz_raw_Gy]
+
+            single_row_imgs = Matplot_multi_row_imgs(
+                                    rows_cols_imgs   = imgs,         ### 把要顯示的每張圖包成list
+                                    rows_cols_titles = img_titles,               ### 把每張圖要顯示的字包成list
                                     fig_title = "%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
                                     add_loss  = self.add_loss,
-                                    bgr2rgb   = self.bgr2rgb)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                                    bgr2rgb   = self.bgr2rgb,
+                                    fix_size  =(256, 256))  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
             single_row_imgs.Draw_img()
             single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
             print("save to:", self.exp_obj.result_obj.test_write_dir)
