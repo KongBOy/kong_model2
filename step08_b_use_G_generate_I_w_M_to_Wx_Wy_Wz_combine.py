@@ -314,6 +314,35 @@ class I_w_M_to_W(Use_G_generate):
                 ### 4. dtype 調 float32
                 WM = WM.astype(np.float32)
 
+                ### debug 程式碼 start
+                # WM_256 = cv2.resize(WM, (256, 256))
+                # from step10_a1_loss import Sobel_MAE
+                # sob_obj = Sobel_MAE(sobel_kernel_size=15, sobel_kernel_scale=1, stride=1, erose_M=True)
+                # temp_M = WM_256[..., 3:4]
+                # Wzyx_Gx, Wzyx_Gy = sob_obj.Calculate_sobel_edges(WM_256[np.newaxis, ...].astype(np.float32), Mask=temp_M[np.newaxis, ...].astype(np.float32))
+
+                # Wz_Gx = Wzyx_Gx[0, ..., 0:1]
+                # Wy_Gx = Wzyx_Gx[0, ..., 1:2]
+                # Wx_Gx = Wzyx_Gx[0, ..., 2:3]
+                # Wz_Gy = Wzyx_Gy[0, ..., 0:1]
+                # Wy_Gy = Wzyx_Gy[0, ..., 1:2]
+                # Wx_Gy = Wzyx_Gy[0, ..., 2:3]
+
+                # import matplotlib.pyplot as plt
+                # fig, ax = plt.subplots(nrows=1, ncols=7, figsize=(5 * 7, 5 * 1))
+                # ax[0].imshow(Wz_Gx)
+                # ax[1].imshow(Wz_Gy)
+                # ax[2].imshow(Wy_Gx)
+                # ax[3].imshow(Wy_Gy)
+                # ax[4].imshow(Wx_Gx)
+                # ax[5].imshow(Wx_Gy)
+                # ax[6].imshow(WM_256)
+                # plt.show()
+                # print("finish")
+                ### debug 程式碼 end
+
+
+
                 ### 確認寫得對不對
                 # fig, ax = plt.subplots(1, 2)
                 # ax[0].imshow(W_01)
