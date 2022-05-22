@@ -293,12 +293,14 @@ class Tight_crop():
 
         ###### pad 完成了， 以下開始 crop
         ### 對 pad完成 的 data 重新定位
-        # l_pad_ind = max(l_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
-        # t_pad_ind = max(t_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0
-        if(l_pad_ind < 0): l_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
-        if(t_pad_ind < 0): t_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
-        r_pad_ind = r_pad_ind + l_out_amo + r_out_amo  ### r_pad_ind, d_pad_ind 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad_ind, t_pad_ind 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out_amo, t_out_amo 喔！
-        d_pad_ind = d_pad_ind + t_out_amo + d_out_amo  ### r_pad_ind, d_pad_ind 自己如果超過的話， 因為會pad出去， 所以要加上 超過的部分， 在來還要考慮如果 l_pad_ind, t_pad_ind 超出去的話， 因為index最小為0， 代表 左、上 超出去的部分 要補到 右、下 的部分， 所以要多加 l_out_amo, t_out_amo 喔！
+        # l_pad_ind = max(l_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0 ， 但位移後 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+        # t_pad_ind = max(t_pad_ind, 0)  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0 ， 但位移後 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+        if(l_pad_ind < 0):  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0， 但位移後 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+            l_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
+            r_pad_ind += l_out_amo                ### 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+        if(t_pad_ind < 0):  ### l_pad_ind, t_pad_ind 可能會被剪到 負的， 但index最小是0喔 ， 所以最小取0， 但位移後 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
+            t_pad_ind = tf.constant(0, tf.int64)  ### tf.autograph 沒有辦法用 max()， 只好乖乖寫if囉
+            d_pad_ind += t_out_amo               ### 多出來的 位置 就要加回去給 r_pad_ind, d_pad_ind 囉～
 
         ### 重新定位 完成了， 以下開始 crop
         l_pad_slice = l_pad_ind  ### l, t 的 index 剛好 == slice
@@ -313,7 +315,66 @@ class Tight_crop():
         if(self.resize is not None): data = tf.image.resize(data, self.resize, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
         # breakpoint()
-        return data, {"l_pad_slice": l_pad_slice, "t_pad_slice": t_pad_slice, "r_pad_slice": r_pad_slice, "d_pad_slice": d_pad_slice}
+        return data, {"l_pad_slice": l_pad_slice, "t_pad_slice": t_pad_slice, "r_pad_slice": r_pad_slice, "d_pad_slice": d_pad_slice,
+                      "l_out_amo"  : l_out_amo  , "t_out_amo"  : t_out_amo  , "r_out_amo"  : r_out_amo  , "d_out_amo"  : d_out_amo  }
+
+    ### 要把 data_pre_croped_resized 的 結果 反向操作 回 data_pre
+    def croped_back(self, cropped_resized_data, boundary, back_w, back_h):
+        import tensorflow as tf
+        l_out_amo = boundary["l_out_amo"]
+        t_out_amo = boundary["t_out_amo"]
+        r_out_amo = boundary["r_out_amo"]
+        d_out_amo = boundary["d_out_amo"]
+        l_pad_slice = boundary["l_pad_slice"]
+        t_pad_slice = boundary["t_pad_slice"]
+        r_pad_slice = boundary["r_pad_slice"]
+        d_pad_slice = boundary["d_pad_slice"]
+
+        ####### 從 croped_resize 回復到 croped 的大小
+        croped_w = r_pad_slice - l_pad_slice
+        croped_h = d_pad_slice - t_pad_slice
+        cropped_data = tf.image.resize(cropped_resized_data, (croped_h, croped_w) )
+
+        ####### 把 croped 的狀況有兩種， 1.一種是 超出img範圍往外pad， 2.一種是 img範圍內 往內crop
+        ##### 1. 要把 往外pad  的部分切掉
+        ##### 2. 要把 往內crop 的部分補回來
+        ###  不能這樣寫， 因為譬如 l_out, r_out 同時 == 0， 會變 [0:-0]， 結果為空array， 但應該是要全取才對， 所以只好像下面 一步步展開來做
+        # if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :, t_out_amo : -d_out_amo,  boundary["l_out_amo"] : -r_out_amo, :]
+        # elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[    t_out_amo : -d_out_amo,  boundary["l_out_amo"] : -r_out_amo, :]
+        # elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[    t_out_amo : -d_out_amo,  boundary["l_out_amo"] : -r_out_amo]
+
+        ##### 1. 要把 往外pad  的部分切掉 ( out_amount > 0， 代表往外pad)
+        if(l_out_amo > 0):
+            if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :,                        :                        ,  l_out_amo :                        , :]
+            elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[                           :                        ,  l_out_amo :                        , :]
+            elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[                           :                        ,  l_out_amo :                        ]
+            r_pad_slice -= l_out_amo  ### 更新一下座標
+        if(t_out_amo > 0):
+            if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :,  t_out_amo :                        ,                        :                        , :]
+            elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[     t_out_amo :                        ,                        :                        , :]
+            elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[     t_out_amo :                        ,                        :                        ]
+            d_pad_slice -= t_out_amo  ### 更新一下座標
+        if(r_out_amo > 0):
+            if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :,                        :                        ,                        : -r_out_amo , :]
+            elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[                           :                        ,                        : -r_out_amo , :]
+            elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[                           :                        ,                        : -r_out_amo ]
+        if(d_out_amo > 0):
+            if  (len(cropped_data.shape) == 4): cropped_data = cropped_data[ :,                        : -d_out_amo ,                        :                        , :]
+            elif(len(cropped_data.shape) == 3): cropped_data = cropped_data[                           : -d_out_amo ,                        :                        , :]
+            elif(len(cropped_data.shape) == 2): cropped_data = cropped_data[                           : -d_out_amo ,                        :                        ]
+
+
+        ##### 2. 要把 往內crop 的部分補回來 ( out_amount == 0， 代表沒有往外pad， 意思就是 保持原樣 或者 往內crop， 要把往內crop的部分補回來，以下的操作 往內crop 漢 保持不變case 都適用， out_amount > 0， 代表有往外pad， 就不用pad囉， 所以 pad_back 就設0 )
+        r_pad_back = (back_w - r_pad_slice) if(r_out_amo == 0) else 0  ### slice - slice 會變回格數， img_最右slice - r_pad_slice 即 右邊要pad 回去的格數
+        l_pad_back = (l_pad_slice - 0)      if(l_out_amo == 0) else 0  ### slice - slice 會變回格數， l_pad_slice - img_最左slice 即 左邊要pad 回去的格數
+        d_pad_back = (back_h - d_pad_slice) if(d_out_amo == 0) else 0  ### slice - slice 會變回格數， img_最下slice - d_pad_slice 即 下邊要pad 回去的格數
+        t_pad_back = (t_pad_slice - 0)      if(t_out_amo == 0) else 0  ### slice - slice 會變回格數， t_pad_slice - img_最上slice 即 上邊要pad 回去的格數
+
+        ### pad 回去
+        if  (len(cropped_data.shape) == 4): data = tf.pad(cropped_data, ( (0    ,     0), (t_pad_back, d_pad_back), (l_pad_back, r_pad_back), (    0,     0) ) , 'CONSTANT')
+        elif(len(cropped_data.shape) == 3): data = tf.pad(cropped_data, ( (t_pad_back, d_pad_back), (l_pad_back, r_pad_back), (    0,     0) )                 , 'CONSTANT')
+        elif(len(cropped_data.shape) == 2): data = tf.pad(cropped_data, ( (t_pad_back, d_pad_back), (l_pad_back, r_pad_back) )                                 , 'CONSTANT')
+        return data.numpy()
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
