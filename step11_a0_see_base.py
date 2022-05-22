@@ -33,11 +33,11 @@ class See_info:
         self.see_write_dir = self.result_write_dir + "/" + self.see_name
 
     def get_name_savely(self, search_dir_1, search_dir_2=".", certain_word=".", certain_ext=".", print_msg=False):
-        names = get_dir_certain_file_names(search_dir_1, certain_word=certain_word, certain_ext=certain_ext)
+        names = get_dir_certain_file_names(search_dir_1, certain_word=certain_word, certain_ext=certain_ext, print_msg=print_msg)
         if(len(names) > 0): return names[-1]
 
         ### 如果 search_dir_1 找不到就去 search_dir_2 找
-        names = get_dir_certain_file_names(search_dir_2, certain_word=certain_word, certain_ext=certain_ext)
+        names = get_dir_certain_file_names(search_dir_2, certain_word=certain_word, certain_ext=certain_ext, print_msg=print_msg)
         if(len(names) > 0): return names[-1]
 
         ### 如果 search_dir_1, 2 就代表真的找不到了
@@ -47,11 +47,11 @@ class See_info:
             return None
 
     def get_path_savely(self, search_dir_1, search_dir_2=".", certain_word=".", certain_ext=".", print_msg=False):
-        names = get_dir_certain_file_names(search_dir_1, certain_word=certain_word, certain_ext=certain_ext)
+        names = get_dir_certain_file_names(search_dir_1, certain_word=certain_word, certain_ext=certain_ext, print_msg=print_msg)
         if(len(names) > 0): return f"{search_dir_1}/{names[-1]}"
 
         ### 如果 search_dir_1 找不到就去 search_dir_2 找
-        names = get_dir_certain_file_names(search_dir_2, certain_word=certain_word, certain_ext=certain_ext)
+        names = get_dir_certain_file_names(search_dir_2, certain_word=certain_word, certain_ext=certain_ext, print_msg=print_msg)
         if(len(names) > 0): return f"{search_dir_2}/{names[-1]}"
 
         ### 如果 search_dir_1, 2 就代表真的找不到了

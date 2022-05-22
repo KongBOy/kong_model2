@@ -77,8 +77,33 @@ class Wyx_w_M_to_Wz(Use_G_generate):
 
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
 
+        ### debug 程式碼 start
+        # used_W = WM_in_pre[0].numpy()
+        # sob_obj = Sobel_MAE(sobel_kernel_size=5+4, sobel_kernel_scale=1, stride=1, erose_M=True)
+        # # used_W = cv2.resize(used_W, (256, 256))
+        # M      = used_W[..., 3:4]
+        # Wzyx_Gx, Wzyx_Gy = sob_obj.Calculate_sobel_edges(used_W[np.newaxis, ...], Mask=M[np.newaxis, ...])
 
-        ''' use_model '''
+        # Wz_Gx = Wzyx_Gx[0, ..., 0:1]
+        # Wy_Gx = Wzyx_Gx[0, ..., 1:2]
+        # Wx_Gx = Wzyx_Gx[0, ..., 2:3]
+        # Wz_Gy = Wzyx_Gy[0, ..., 0:1]
+        # Wy_Gy = Wzyx_Gy[0, ..., 1:2]
+        # Wx_Gy = Wzyx_Gy[0, ..., 2:3]
+
+        # import matplotlib.pyplot as plt   
+        # fig, ax = plt.subplots(nrows=1, ncols=7, figsize=(5 * 7, 5 * 1))
+        # ax[0].imshow(Wz_Gx)
+        # ax[1].imshow(Wz_Gy)
+        # ax[2].imshow(Wy_Gx)
+        # ax[3].imshow(Wy_Gy)
+        # ax[4].imshow(Wx_Gx)
+        # ax[5].imshow(Wx_Gy)
+        # ax[6].imshow(used_W)
+        # plt.show()
+        ### debug 程式碼 end
+
+        ''' use_model '''''''''''''''''''''''''''''''''''''''
         Wyx_pre            = WM_in_pre[..., 1:3]
         Mgt_pre            = WM_gt_pre[..., 3:4]  ### 模擬一下 之後的 Wyx 是從 model_out 來的， 可能會需要 * M
         Wyx_pre_with_M_pre = Wyx_pre * Mgt_pre    ### 模擬一下 之後的 Wyx 是從 model_out 來的， 可能會需要 * M
