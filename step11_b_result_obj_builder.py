@@ -17,7 +17,7 @@ class Result_init_builder:
         return self.result
 
 class Result_sees_builder(Result_init_builder):
-    def _build_sees(self, sees_ver):
+    def _build_sees(self, sees_ver, db_obj):
         if  (sees_ver == "sees_ver1"):
             self.result.sees = [See(self.result, "see-%03i" % see_num) for see_num in range(32)]
         elif(sees_ver == "sees_ver2"):
@@ -47,6 +47,10 @@ class Result_sees_builder(Result_init_builder):
             self.result.sees = [See(self.result, "see_001-real") , See(self.result, "see_002-real") , See(self.result, "see_003-real"), See(self.result, "see_004-real"),
                                 See(self.result, "see_008-train"),
                                 See(self.result, "see_009-test") , See(self.result, "see_010-test") ]
+        else:
+            self.result.see_amount = len( get_dir_img_file_names(db_obj.see_in_dir) )
+            if(self.result.see_amount == 0): self.result.see_amount += len( get_dir_certain_file_names(db_obj.see_in_dir, certain_word=".knpy") )  ### in_dir 有可能 是 W
+            self.result.sees = [ See(self.result, see_name="seet_%03i" % see_i) for see_i in range(self.result.see_amount)]  ### 只用號碼 不用 file_name 給see 的好處是， 不會受到 test 檔案命名的影響， 儘管test檔名很長也沒差
 
         self.result.see_amount = len(self.result.sees)
         # self.result.see_file_amount = self.result.sees[0].see_file_amount   ### 覺得 see 已經有 see_file_amount了，result 就不需要這attr了， 想用 要知道 要去 sees[...] 取 喔！
@@ -60,9 +64,9 @@ class Result_sees_builder(Result_init_builder):
         if(self.result.test_amount == 0): self.result.test_amount += len( get_dir_certain_file_names(db_obj.test_in_dir, certain_word=".knpy") )
         # print("self.result.test_amount", self.result.test_amount)
 
-        used_see_dir = db_obj.test_db_name
-        if(db_obj.test_db_name == "see"): used_see_dir = "test_" + used_see_dir
-        self.result.tests = [ See(self.result, used_see_dir + "/test_%03i" % test_i) for test_i in range(self.result.test_amount)]  ### 只用號碼 不用 file_name 給see 的好處是， 不會受到 test 檔案命名的影響， 儘管test檔名很長也沒差
+        used_see_name = db_obj.test_db_name
+        if(db_obj.test_db_name == "see"): used_see_name = "test_" + used_see_name
+        self.result.tests = [ See(self.result, see_name=used_see_name + "/test_%03i" % test_i) for test_i in range(self.result.test_amount)]  ### 只用號碼 不用 file_name 給see 的好處是， 不會受到 test 檔案命名的影響， 儘管test檔名很長也沒差
         # print("test_amount:", self.result.test_amount)
         # print("self.result.tests", self.result.tests)
         pass
@@ -160,7 +164,7 @@ class Result_train_builder(Result_sees_builder):
         # self.result.sees_ver = self._use_result_name_find_sees_ver()
         '''
         self.result.sees_ver = db_obj.see_version
-        self._build_sees(self.result.sees_ver)
+        self._build_sees(self.result.sees_ver, db_obj)
         self._build_tests(db_obj)
 
 
