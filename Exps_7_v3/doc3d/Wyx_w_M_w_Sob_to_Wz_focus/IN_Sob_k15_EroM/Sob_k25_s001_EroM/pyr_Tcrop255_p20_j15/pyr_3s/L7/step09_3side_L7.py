@@ -21,7 +21,7 @@ from step09_c_train_step import Train_step_Wyx_w_M_to_Wz
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
 from step10_a1_loss import Sobel_MAE
-Sob_k15_s001_erose_M = Sobel_MAE(sobel_kernel_size=15, sobel_kernel_scale=1, erose_M=True)
+Sob_k5_s001_erose_M = Sobel_MAE(sobel_kernel_size=15, sobel_kernel_scale=1, erose_M=True)
 
 use_gen_op     =            Wyx_w_M_to_Wz( focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 0), sobel=Sob_k5_s001_erose_M, sobel_only=True )
 use_train_step = Train_step_Wyx_w_M_to_Wz( focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=15), sobel=Sob_k5_s001_erose_M, sobel_only=True )
