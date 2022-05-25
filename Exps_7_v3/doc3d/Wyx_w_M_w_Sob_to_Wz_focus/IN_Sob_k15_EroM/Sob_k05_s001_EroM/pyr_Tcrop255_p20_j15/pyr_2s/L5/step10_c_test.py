@@ -50,4 +50,4 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_3.{test % ('', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_4.{test % ('', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5.{test % ('', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel3', 'knpy_save=False')}"])
+sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel3', 'knpy_save=False')}"])

@@ -23,6 +23,10 @@
         "default": "right",
         "jupyter-notebook": "left"
     },
-    "window.zoomLevel": -1,
     "explorer.confirmDragAndDrop": false,
+    "workbench.editor.languageDetection": false,
+    "timeline.excludeSources": [
+        "timeline.localHistory"
+    ],
+    "window.zoomLevel": -1,
 }
