@@ -783,8 +783,9 @@ def train_step_Single_output_I_to_W(model_obj, in_data, gt_data, loss_info_objs=
 ####################################################
 ####################################################
 class Train_step_I_to_M():
-    def __init__(self, tight_crop=None):
+    def __init__(self, tight_crop=None, color_jit = None):
         self.tight_crop = tight_crop
+        self.color_jit = color_jit
 
     @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
@@ -794,17 +795,35 @@ class Train_step_I_to_M():
             in_data, _ = self.tight_crop(in_data, gt_mask)
             gt_mask, _ = self.tight_crop(gt_mask, gt_mask)
 
-        ### debug 時 記得把 @tf.function 拿掉
-        # global debug_i
-        # import matplotlib.pyplot as plt
-        # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
-        # ax[0].imshow(in_data[0])
-        # ax[1].imshow(gt_mask[0])
-        # fig.tight_layout()
-        # # plt.show()
-        # plt.savefig("debug_data/try_tight_crop/%03i" % debug_i)
-        # plt.close()
-        # debug_i += 1
+            ### debug 時 記得把 @tf.function 拿掉
+            # global debug_i
+            # import matplotlib.pyplot as plt
+            # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+            # ax[0].imshow(in_data[0])
+            # ax[1].imshow(gt_mask[0])
+            # fig.tight_layout()
+            # # plt.show()
+            # plt.savefig("debug_data/try_tight_crop/%03i" % debug_i)
+            # plt.close()
+            # debug_i += 1
+
+        if(self.color_jit is not None):
+            in_data = self.color_jit(in_data, gt_mask)
+
+            ### debug 時 記得把 @tf.function 拿掉
+            # global debug_i
+            # import matplotlib.pyplot as plt
+            # fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+            # ax[0].imshow(in_data[0])
+            # ax[1].imshow(gt_mask[0])
+            # min_val = in_data[0].numpy().min()
+            # max_val = in_data[0].numpy().max()
+            # fig.text(x=0.5, y= 0.955, s="min:%.2f, max:%.2f" % (min_val, max_val), fontsize=12, c=(0., 0., 0., 1.),  horizontalalignment='center',)
+            # fig.tight_layout()
+            # # plt.show()
+            # plt.savefig("debug_data/try_color_jit/%03i" % debug_i)
+            # plt.close()
+            # debug_i += 1
 
         _train_step_Single_output(model_obj=model_obj, in_data=in_data, gt_data=gt_mask, loss_info_objs=loss_info_objs)
 

@@ -375,6 +375,37 @@ class Tight_crop():
         elif(len(cropped_data.shape) == 3): data = tf.pad(cropped_data, ( (t_pad_back, d_pad_back), (l_pad_back, r_pad_back), (    0,     0) )                 , 'CONSTANT')
         elif(len(cropped_data.shape) == 2): data = tf.pad(cropped_data, ( (t_pad_back, d_pad_back), (l_pad_back, r_pad_back) )                                 , 'CONSTANT')
         return data.numpy()
+######################################################################################################################################################################################################
+######################################################################################################################################################################################################
+class Color_jit():
+    def __init__(self, do_ratio=0.5):
+        '''
+        do_ratio ： 要做 color_jit 的機率， 0 ~ 1 之間的數字
+        '''
+        self.do_ratio   = do_ratio
+
+    def __call__(self, img, Mask, clip_value_min=0, clip_value_max=1):  ### Mask 是想讓背景保持不變，但目前視覺化完後覺得 好像背景跟著變應該會比較好， 先保留好了反正也只是沒用到不影響
+        ### 參考https://lufor129.medium.com/tensorflow-%E5%9C%96%E7%89%87%E6%95%B8%E6%93%9A%E5%A2%9E%E5%BC%B7-%E4%BA%8C-%E5%9C%96%E7%89%87%E8%99%95%E7%90%86%E5%87%BD%E6%95%B8-1083fb176f9#44d2
+        import tensorflow as tf
+        if(tf.random.uniform(shape=[1], minval=0, maxval=1, dtype=tf.float32)[0] <= self.do_ratio):
+            ### 視覺化一下 大概的效果長怎樣， 可以拉slider喔覺得寫得還不錯ˊ口ˋ
+            # from Dataset_Analyze.step6_tf_aug_analyze import analyze_tf_aug
+            # analyze_tf_aug(img=img, Mask=Mask)
+
+            ### 1. 亮度 -0.5 ~ 0.5
+            img = tf.image.random_brightness(img, max_delta=0.40)
+            ### 2. 對比 0.5 ~ 3
+            img = tf.image.random_contrast  (img, lower=0.5, upper=3)
+
+            ### 3. 色相 -0.45 ~ 0.45
+            img = tf.image.random_hue       (img, max_delta=0.45)
+            ### 4. 飽和 0 ~ 4
+            img = tf.image.random_saturation(img, lower=0, upper=4.0)
+
+
+            ### 把 超出值域的值用clip去掉， 怎麼樣算超出值域 要從外面傳進來喔～
+            img = tf.clip_by_value(img, clip_value_min=clip_value_min, clip_value_max=clip_value_max)
+        return img
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
