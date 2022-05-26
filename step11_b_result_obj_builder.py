@@ -50,7 +50,7 @@ class Result_sees_builder(Result_init_builder):
         else:
             self.result.see_amount = len( get_dir_img_file_names(db_obj.see_in_dir) )
             if(self.result.see_amount == 0): self.result.see_amount += len( get_dir_certain_file_names(db_obj.see_in_dir, certain_word=".knpy") )  ### in_dir 有可能 是 W
-            self.result.sees = [ See(self.result, see_name="seet_%03i" % see_i) for see_i in range(self.result.see_amount)]  ### 只用號碼 不用 file_name 給see 的好處是， 不會受到 test 檔案命名的影響， 儘管test檔名很長也沒差
+            self.result.sees = [ See(self.result, see_name="see_%03i" % see_i) for see_i in range(self.result.see_amount)]  ### 只用號碼 不用 file_name 給see 的好處是， 不會受到 test 檔案命名的影響， 儘管test檔名很長也沒差
 
         self.result.see_amount = len(self.result.sees)
         # self.result.see_file_amount = self.result.sees[0].see_file_amount   ### 覺得 see 已經有 see_file_amount了，result 就不需要這attr了， 想用 要知道 要去 sees[...] 取 喔！
