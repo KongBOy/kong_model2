@@ -16,7 +16,7 @@ sys.path.append(kong_model2_dir)
 # print("    kong_model2_dir:", kong_model2_dir)
 #############################################################################################################################################################################################################
 from step08_b_use_G_generate_I_to_M import I_to_M
-from step08_b_use_G_generate_0_util import Tight_crop
+from step08_b_use_G_generate_0_util import Tight_crop, Color_jit
 from step09_c_train_step import Train_step_I_to_M
 from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 
