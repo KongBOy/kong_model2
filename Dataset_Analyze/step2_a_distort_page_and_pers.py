@@ -1,10 +1,30 @@
-import sys
-sys.path.append("kong_util")
+#############################################################################################################################################################################################################
+#############################################################################################################################################################################################################
+### 把 kong_model2 加入 sys.path
+import os
+code_exe_path = os.path.realpath(__file__)                   ### 目前執行 step10_b.py 的 path
+code_exe_path_element = code_exe_path.split("\\")            ### 把 path 切分 等等 要找出 kong_model 在第幾層
+code_dir = "\\".join(code_exe_path_element[:-1])
+kong_layer = code_exe_path_element.index("kong_model2")      ### 找出 kong_model2 在第幾層
+kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer + 1])  ### 定位出 kong_model2 的 dir
+import sys                                                   ### 把 kong_model2 加入 sys.path
+sys.path.append(kong_model2_dir)
+sys.path.append(kong_model2_dir + "\\kong_util")
+sys.path.append(code_dir)
+# print(__file__.split("\\")[-1])
+# print("    code_exe_path:", code_exe_path)
+# print("    code_exe_path_element:", code_exe_path_element)
+# print("    code_dir:", code_dir)
+# print("    kong_layer:", kong_layer)
+# print("    kong_model2_dir:", kong_model2_dir)
+#############################################################################################################################################################################################################
+
+
 import time
 import numpy as np
 import matplotlib.pyplot as plt
-from util import get_xy_map, Show_3d_scatter_along_xy, method2, Show_move_map_apply, time_util
-from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
+from kong_util.util import get_xy_map, Show_3d_scatter_along_xy, method2, Show_move_map_apply, time_util
+from kong_util.build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
 from step0_access_path import Data_Access_Dir
 from step3_apply_mov2ord_img import apply_move
 
@@ -177,6 +197,7 @@ def distort_just_perspect(dst_dir, start_index, row, col, write_npy=True):
         pers_move = build_perspective_move_map(row, col, ratio_col_t=go_ratio_col_t[go_step], ratio_row=go_ratio_row[go_step], ratio_col_d=1)  ### 建立 perspective_move
         pers_move = pers_move.astype(np.float32)
         if(write_npy) : np.save(Data_Access_Dir + dst_dir + "/" + "move_maps/%06i" % (start_index + go_step), pers_move)   ### 把move_map存起來，記得要轉成float32！
+        print(Data_Access_Dir + dst_dir + "/" + "move_maps/%06i" % (start_index + go_step))
         print("%06i process 1 mesh cost time:" % (start_index + go_step), "%.3f" % (time.time() - dis_start_time), "total_time:", time_util(time.time() - start_time))
         move_maps.append(pers_move)
     return np.array(move_maps, dtype=np.float32)
