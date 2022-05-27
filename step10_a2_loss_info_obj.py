@@ -326,6 +326,7 @@ GAN_s001_loss_info_builder = Loss_info_builder().set_loss_type("GAN", GAN_scale=
 # 所以 也可以跟 model 一樣 先建好
 # 然後還要在 exp 裡面 再次設定喔！
 G_mse_s001_loss_info_builder = Loss_info_builder().set_loss_type("mse", mae_scale=  1)
+
 G_mae_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae", mae_scale=  1)
 G_mae_s020_loss_info_builder = Loss_info_builder().set_loss_type("mae", mae_scale= 20)
 G_mae_s040_loss_info_builder = Loss_info_builder().set_loss_type("mae", mae_scale= 40)
