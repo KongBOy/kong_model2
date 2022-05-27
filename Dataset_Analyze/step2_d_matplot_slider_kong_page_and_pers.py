@@ -11,7 +11,7 @@ from step2_a_distort_page_and_pers import build_page_move_map, build_perspective
 
 fig, ax = plt.subplots()
 fig.set_size_inches(5, 8)
-plt.subplots_adjust(left=0.13, bottom=0.20)
+fig.subplots_adjust(left=0.13, bottom=0.20)
 plt.xlim(128 - 200 * 0.8, 128 + 200 * 0.8)
 plt.ylim(192 - 300 * 0.8, 192 + 300 * 0.8)
 
