@@ -74,13 +74,14 @@ ch032_1side_6__2side_3 = Exp_builder().set_basic("train", use_db_obj, ch032_pyra
 ch032_1side_6__2side_4 = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_1side_6__2side_4, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_1side_6__2side_4.kong_model.model_describe) .set_train_args(epochs=  1) .set_train_iter_args(it_see_fq=900, it_save_fq=900 * 2, it_down_step="half", it_down_fq=900).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="")
 ch032_1side_6__2side_5 = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_1side_6__2side_5, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_1side_6__2side_5.kong_model.model_describe) .set_train_args(epochs=  1) .set_train_iter_args(it_see_fq=900, it_save_fq=900 * 2, it_down_step="half", it_down_fq=900).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="")
 ch032_1side_6__2side_6 = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_1side_6__2side_6, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_1side_6__2side_6.kong_model.model_describe) .set_train_args(epochs=  1) .set_train_iter_args(it_see_fq=900, it_save_fq=900 * 2, it_down_step="half", it_down_fq=900).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="")
+ch032_1side_6__2side_6_ep_downl_later = Exp_builder().set_basic("train", use_db_obj, ch032_pyramid_1side_6__2side_6, use_loss_obj, exp_dir=exp_dir, code_exe_path=code_exe_path, describe_end=ch032_pyramid_1side_6__2side_6.kong_model.model_describe) .set_train_args(epochs=  1) .set_train_iter_args(it_see_fq=900, it_save_fq=900 * 2, it_down_step=45000, it_down_fq=900).set_train_in_gt_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).set_result_name(result_name="")
 #############################################################
 if(__name__ == "__main__"):
     print("build exps cost time:", time.time() - start_time)
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_b1_exp_obj_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        ch032_1side_1__2side_0.build().run()
+        ch032_1side_6__2side_6_ep_downl_later.build().run()
         # print('no argument')
         sys.exit()
 
