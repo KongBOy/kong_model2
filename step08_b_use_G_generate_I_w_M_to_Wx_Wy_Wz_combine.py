@@ -45,7 +45,7 @@ class I_w_M_to_W(Use_G_generate):
 
         ''' tight crop '''''''''''''''''''''''''''''''''''''''
         if(self.tight_crop is not None):
-            Mgt_pre_for_crop   = Wgt_w_Mgt_pre[..., 0:1]
+            Mgt_pre_for_crop   = Wgt_w_Mgt_pre[..., 3:4]
 
             Wgt_w_Mgt_ord, _ = self.tight_crop(Wgt_w_Mgt_ord , Mgt_pre_for_crop)  ### 給 test concat 用
             Wgt_w_Mgt_pre, _ = self.tight_crop(Wgt_w_Mgt_pre , Mgt_pre_for_crop)
