@@ -9,7 +9,7 @@ from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi
 from kong_util.flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 
-from step08_b_use_G_generate_0_util import Use_G_generate, Value_Range_Postprocess_to_01, W_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual, C_01_and_C_01_w_M_to_F_and_visualize
+from step08_b_use_G_generate_0_util import Use_G_generate, Value_Range_Postprocess_to_01, WcM_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual, C_01_and_C_01_w_M_to_F_and_visualize
 
 import matplotlib.pyplot as plt
 import os
@@ -185,12 +185,12 @@ class Wyx_w_M_to_Wz(Use_G_generate):
             ''' Sobel end '''''''''''''''''''''
 
         ### 視覺化 Output gt (Wgt)
-        Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(WM_gt_01)
+        Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = WcM_01_visual_op(WM_gt_01)
         ''''''''''''''''''''''''''''''''''''''''''''''''
         ### 視覺化 Input (Wyx)
         WM_in_pre = WM_in_pre[0].numpy()
         WM_in_01  = Value_Range_Postprocess_to_01(WM_in_pre, self.exp_obj.use_in_range)
-        Win_visual, Wxin_visual, Wyin_visual, Wzin_visual = W_01_visual_op(WM_in_01)
+        Win_visual, Wxin_visual, Wyin_visual, Wzin_visual = WcM_01_visual_op(WM_in_01)
 
         ### 視覺化 Input (Sob_Wyx_Gxy)
         if(self.sobel is not None):
