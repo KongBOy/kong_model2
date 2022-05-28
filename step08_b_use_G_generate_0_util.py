@@ -61,11 +61,12 @@ def C_01_and_C_01_w_M_to_F_and_visualize(C, M, out_ch3=False):
     F_w_M, F_w_M_visual, Cx_w_M_visual, Cy_w_M_visual = C_01_concat_with_M_to_F_and_get_F_visual(C_w_M, M, out_ch3=out_ch3)
     return F, F_visual, Cx_visual, Cy_visual, F_w_M, F_w_M_visual, Cx_w_M_visual, Cy_w_M_visual
 
-def W_01_visual_op(W_01, out_ch3=False):
-    W_visual  = (W_01[..., 0:3] * 255).astype(np.uint8)
-    Wz_visual = (W_01[..., 0:1] * 255).astype(np.uint8)
-    Wy_visual = (W_01[..., 1:2] * 255).astype(np.uint8)
-    Wx_visual = (W_01[..., 2:3] * 255).astype(np.uint8)
+def WcM_01_visual_op(WcM_01, out_ch3=False):
+    ''' W_concat_M 的縮寫， 前三ch W， 第四ch為M'''
+    W_visual  = (WcM_01[..., 0:3] * 255).astype(np.uint8)
+    Wz_visual = (WcM_01[..., 0:1] * 255).astype(np.uint8)
+    Wy_visual = (WcM_01[..., 1:2] * 255).astype(np.uint8)
+    Wx_visual = (WcM_01[..., 2:3] * 255).astype(np.uint8)
     if(out_ch3):
         Wx_visual = np.tile(Wx_visual, (1, 1, 3))
         Wy_visual = np.tile(Wy_visual, (1, 1, 3))
@@ -77,7 +78,7 @@ def W_01_concat_with_M_to_WM_and_get_W_visual(W, M, out_ch3=False):
     h, w, c = W.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
     M = M[:h, :w, :]   ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
     WM = np.concatenate([W, M], axis=-1)
-    W_visual, Wx_visual, Wy_visual, Wz_visual = W_01_visual_op(W, out_ch3=out_ch3)
+    W_visual, Wx_visual, Wy_visual, Wz_visual = WcM_01_visual_op(W, out_ch3=out_ch3)
     return WM, W_visual, Wx_visual, Wy_visual, Wz_visual
 
 def W_01_and_W_01_w_M_to_WM_and_visualize(W_raw, M, out_ch3=False):

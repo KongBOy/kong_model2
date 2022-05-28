@@ -5,7 +5,7 @@ from step06_a_datas_obj import Range
 
 import sys
 
-from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_visual_op, W_01_and_W_01_w_M_to_WM_and_visualize, C_01_and_C_01_w_M_to_F_and_visualize, C_01_concat_with_M_to_F_and_get_F_visual
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, WcM_01_visual_op, W_01_and_W_01_w_M_to_WM_and_visualize, C_01_and_C_01_w_M_to_F_and_visualize, C_01_concat_with_M_to_F_and_get_F_visual
 from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 sys.path.append("kong_util")
@@ -56,11 +56,11 @@ def I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see(model_obj, phase, index, i
     ### 後處理： 拿掉 batch 和 弄成01 和 轉成 numpy
     # W_01_w_M = Value_Range_Postprocess_to_01(W_pre_w_M, exp_obj.use_gt_range)
     # W_01_w_M = W_01_w_M[0].numpy()
-    # W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual  = W_01_visual_op(W_01_w_M)
+    # W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual  = WcM_01_visual_op(W_01_w_M)
 
     # W_01_raw = Value_Range_Postprocess_to_01(W_pre_raw, exp_obj.use_gt_range)
     # W_01_raw = W_01_raw.numpy()
-    # Wx_raw_visual, Wx_raw_visual, Wy_raw_visual, Wz_raw_visual = W_01_visual_op(W_01_raw)
+    # Wx_raw_visual, Wx_raw_visual, Wy_raw_visual, Wz_raw_visual = WcM_01_visual_op(W_01_raw)
 
     # ### C_w_M
     # C_01_w_M = Value_Range_Postprocess_to_01(C_pre_w_M, exp_obj.use_gt_range)
@@ -91,7 +91,7 @@ def I_w_M_Gen_Wx_Wy_Wz_focus_Gen_Cx_Cy_focus_to_F_see(model_obj, phase, index, i
     '''model gt visualize'''
     Wgt_pre = gt_WM_F_pre[0][0].numpy()
     Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, exp_obj.use_gt_range)
-    Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)
+    Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = WcM_01_visual_op(Wgt_01)
 
     Cgt_pre = gt_WM_F_pre[1][0, ..., 1:3].numpy()
     Cgt_01  = Value_Range_Postprocess_to_01(Cgt_pre, exp_obj.use_gt_range)
