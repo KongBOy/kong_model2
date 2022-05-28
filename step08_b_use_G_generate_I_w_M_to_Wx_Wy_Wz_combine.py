@@ -1,14 +1,10 @@
 import numpy as np
 import cv2
 
-import sys
-sys.path.append("kong_util")
 from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
 from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
-from kong_util.flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
-
-from step08_b_use_G_generate_0_util import Use_G_generate, Value_Range_Postprocess_to_01, W_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual, C_01_and_C_01_w_M_to_F_and_visualize
+from step08_b_use_G_generate_0_util import Use_G_generate, Value_Range_Postprocess_to_01, WcM_01_visual_op
 
 import matplotlib.pyplot as plt
 import os
@@ -22,11 +18,11 @@ class I_w_M_to_W(Use_G_generate):
         self.tight_crop = tight_crop
 
     def doing_things(self):
-        current_ep   = self.exp_obj.current_ep
-        current_ep_it   = self.exp_obj.current_ep_it
-        it_see_fq   = self.exp_obj.it_see_fq
+        current_ep    = self.exp_obj.current_ep
+        current_ep_it = self.exp_obj.current_ep_it
+        it_see_fq     = self.exp_obj.it_see_fq
         if(it_see_fq is None): ep_it_string = "epoch%03i"        %  current_ep
-        else                  : ep_it_string = "epoch%03i_it%06i" % (current_ep, current_ep_it)
+        else                 : ep_it_string = "epoch%03i_it%06i" % (current_ep, current_ep_it)
         current_time = self.exp_obj.current_time
         if  (self.phase == "train"): used_sees = self.exp_obj.result_obj.sees
         elif(self.phase == "test"):  used_sees = self.exp_obj.result_obj.tests
@@ -47,7 +43,7 @@ class I_w_M_to_W(Use_G_generate):
         Wgt_w_Mgt_pre      = self.gt_pre
         rec_hope           = self.rec_hope
 
-        ''' tight crop '''
+        ''' tight crop '''''''''''''''''''''''''''''''''''''''
         if(self.tight_crop is not None):
             Mgt_pre_for_crop   = Wgt_w_Mgt_pre[..., 0:1]
 
@@ -71,9 +67,9 @@ class I_w_M_to_W(Use_G_generate):
             dis_img_ord  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
 
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
+        ''' tight crop end '''''''''''''''''''''''''''''''''
 
-
-        ''' use_model '''''''''''''''''''''''''''''''''''''''
+        ''' use_model '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         Mgt_ord          = Wgt_w_Mgt_ord[0, ..., 3:4]  ### 給 test concat 用
         Mgt_pre          = Wgt_w_Mgt_pre[..., 3:4]
         Wgt_pre          = Wgt_w_Mgt_pre[..., 0:3]
@@ -83,7 +79,7 @@ class I_w_M_to_W(Use_G_generate):
             W_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
             W_raw_pre = W_raw_pre.numpy()  ### 配合下面 走完這個if 就要轉成 numpy 了
 
-            ''' Sobel 部分 '''
+            ''' Sobel 部分 '''''''''''''''''''''''''''''''''''''''
             ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
             loss_info_obj = self.exp_obj.loss_info_objs[0]
             loss_fun_dict = loss_info_obj.loss_funs_dict
@@ -105,12 +101,12 @@ class I_w_M_to_W(Use_G_generate):
             Wz_raw_Gy = Wzyx_raw_Gy[..., 0]
             Wy_raw_Gy = Wzyx_raw_Gy[..., 1]
             Wx_raw_Gy = Wzyx_raw_Gy[..., 2]
-            ''''''''''''''''''''''''
+            ''' Sobel end '''''''''''''''''''''''''''''''''''''''
         else:
             Wz_raw_pre, Wy_raw_pre, Wx_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
             W_raw_pre  = np.concatenate([Wz_raw_pre, Wy_raw_pre, Wx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
 
-            ''' Sobel 部分 '''
+            ''' Sobel 部分 '''''''''''''''''''''''''''''''''''''''
             ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
             sob_objs = []
             sob_objs_len = len(sob_objs)
@@ -131,18 +127,13 @@ class I_w_M_to_W(Use_G_generate):
                 if(go_sob == 0): Wz_raw_Gx, Wz_raw_Gy = sob_obj.Calculate_sobel_edges(Wz_raw_pre)
                 if(go_sob == 1): Wy_raw_Gx, Wy_raw_Gy = sob_obj.Calculate_sobel_edges(Wy_raw_pre)
                 if(go_sob == 2): Wx_raw_Gx, Wx_raw_Gy = sob_obj.Calculate_sobel_edges(Wx_raw_pre)
-            ''''''''''''''''''''''''
-
-
+            ''' Sobel end '''''''''''''''''''''''''''''''''''''''
 
         ### 後處理 Output (W_raw_pre)
         W_raw_01 = Value_Range_Postprocess_to_01(W_raw_pre, self.exp_obj.use_gt_range)
         W_raw_01 = W_raw_01[0]  ### 上面已轉numpy， 這邊不用轉
-        ### 順便處理一下gt
-        Wgt_pre = Wgt_pre[0].numpy()  ### 這個還沒轉numpy喔， 記得轉
-        Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, self.exp_obj.use_gt_range)
+        ''' use_model end '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-        ''''''''''''''''''''''''''''''''''''''''''''''''
         ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         h, w, c = W_raw_01.shape
         Mgt_pre = Mgt_pre [0].numpy()
@@ -150,11 +141,11 @@ class I_w_M_to_W(Use_G_generate):
 
         ### 視覺化 Output pred (W)
         if(self.focus is False):
-            W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = W_01_visual_op(W_raw_01)
+            W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = WcM_01_visual_op(W_raw_01)
         else:
             W_w_Mgt_01 = W_raw_01 * Mgt_pre
-            W_raw_visual,   Wx_raw_visual,   Wy_raw_visual,   Wz_raw_visual   = W_01_visual_op(W_raw_01)
-            W_w_Mgt_visual, Wx_w_Mgt_visual, Wy_w_Mgt_visual, Wz_w_Mgt_visual = W_01_visual_op(W_w_Mgt_01)
+            W_raw_visual,   Wx_raw_visual,   Wy_raw_visual,   Wz_raw_visual   = WcM_01_visual_op(W_raw_01)
+            W_w_Mgt_visual, Wx_w_Mgt_visual, Wy_w_Mgt_visual, Wz_w_Mgt_visual = WcM_01_visual_op(W_w_Mgt_01)
 
             ''' raw 乘完M 後 Sobel 部分 ，  這部分是只有 fucus is True 才需要 '''
             ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
@@ -165,7 +156,9 @@ class I_w_M_to_W(Use_G_generate):
                 if(go_sob == 2): Wx_w_M_Gx, Wx_w_M_Gy = sob_obj.Calculate_sobel_edges(Wx_raw_pre, Mask=Mgt_pre[np.newaxis, ...])
 
         ### 視覺化 Output gt (Wgt)
-        Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)
+        Wgt_pre = Wgt_pre[0].numpy()  ### 這個還沒轉numpy喔， 記得轉
+        Wgt_01  = Value_Range_Postprocess_to_01(Wgt_pre, self.exp_obj.use_gt_range)
+        Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = WcM_01_visual_op(Wgt_01)
         ''''''''''''''''''''''''''''''''''''''''''''''''
         ### 視覺化 Input (I)
         dis_img_ord =  dis_img_ord[0].numpy()
