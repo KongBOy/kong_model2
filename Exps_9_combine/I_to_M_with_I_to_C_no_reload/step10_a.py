@@ -30,6 +30,11 @@ from step09_f1_multi_unet2_obj_I_to_M_w_I_to_C import *
 from step10_a2_loss_info_obj import *
 from step10_b2_exp_builder import Exp_builder
 
+rm_paths = [path for path in sys.path if "kong_model2" in path]
+for rm_path in rm_paths: sys.path.remove(rm_path)
+rm_moduless = [module for module in sys.modules if "step09" in module]
+for rm_module in rm_moduless: del sys.modules[rm_module]
+
 import Exps_7_flow_unet.I_to_M         .bce_s001.a_normal.step10_a as I_to_M_exp_builder
 #############################################################################################################################################################################################################
 '''

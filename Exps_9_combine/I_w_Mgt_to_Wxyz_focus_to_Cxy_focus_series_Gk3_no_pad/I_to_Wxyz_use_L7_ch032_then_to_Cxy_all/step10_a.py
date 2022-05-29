@@ -29,6 +29,11 @@ from step06_a_datas_obj import *
 from step10_a2_loss_info_obj import *
 from step10_b2_exp_builder import Exp_builder
 
+rm_paths = [path for path in sys.path if "kong_model2" in path]
+for rm_path in rm_paths: sys.path.remove(rm_path)
+rm_moduless = [module for module in sys.modules if "step09" in module]
+for rm_module in rm_moduless: del sys.modules[rm_module]
+
 
 import Exps_8_multi_unet.I_w_Mgt_to_Wx_Wy_Wz_try_mul_M_focus_Gk3_no_pad  .step10_a as I_to_Wxyz_exp_builder
 import Exps_8_multi_unet.W_w_Mgt_to_Cx_Cy_try_mul_M_focus_Gk3_no_pad     .step10_a as W_to_Cxy_exp_builder
