@@ -30,6 +30,11 @@ from step09_i3_multi_unet2_obj_W_w_Mgt_to_Cx_Cy_focus_GAN_G_L5_ch032_D_all impor
 from step10_a2_loss_info_obj import *
 from step10_b2_exp_builder import Exp_builder
 
+rm_paths = [path for path in sys.path if "kong_model2" in path]
+for rm_path in rm_paths: sys.path.remove(rm_path)
+rm_moduless = [module for module in sys.modules if "step09" in module]
+for rm_module in rm_moduless: del sys.modules[rm_module]
+
 #############################################################################################################################################################################################################
 '''
 exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要巢狀也沒問題～

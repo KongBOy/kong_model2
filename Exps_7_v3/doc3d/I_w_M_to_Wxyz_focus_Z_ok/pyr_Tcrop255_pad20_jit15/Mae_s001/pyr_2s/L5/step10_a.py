@@ -33,6 +33,11 @@ from step09_2side_L5 import *
 from step10_a2_loss_info_obj import *
 from step10_b2_exp_builder import Exp_builder
 
+rm_paths = [path for path in sys.path if "kong_model2" in path]
+for rm_path in rm_paths: sys.path.remove(rm_path)
+rm_moduless = [module for module in sys.modules if "step09" in module]
+for rm_module in rm_moduless: del sys.modules[rm_module]
+
 #############################################################################################################################################################################################################
 '''
 exp_dir 是 決定 result_dir 的 "上一層"資料夾 名字喔！ exp_dir要巢狀也沒問題～
@@ -86,3 +91,8 @@ if(__name__ == "__main__"):
 
     ### 以下是給 step10_b_subprocess.py 用的，相當於cmd打 python step10_b1_exp_obj_load_and_train_and_test.py 某個exp.build().run()
     eval(sys.argv[1])
+
+#############################################################################################################################################################################################################
+# sys.path.remove(code_dir)
+# rm_moduless = [module for module in sys.modules if "step09_2side_L5" in module]
+# for rm_module in rm_moduless: del sys.modules[rm_module]
