@@ -60,7 +60,7 @@ class KModel:
                 go_ele -= 1
             # print("model_describe_elements:", model_describe_elements)
             go_ele += 1
-        self.model_describe_elements = model_describe_elements
+        self.model_describe_elements = model_describe_elements.tolist()  ### 轉回List， 才能 做 list 的相加的運算
 
 class KModel_init_builder:
     def __init__(self, kong_model=None):

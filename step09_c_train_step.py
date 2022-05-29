@@ -205,6 +205,56 @@ def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None, 
     # loss_info_objs.loss_containors["mask_bce_loss"]      (gen_loss)
     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
 ####################################################
+class Train_step_I_w_M_to_W_to_C():
+    def __init__(self, separate_out=False, focus=False, tight_crop=None):
+        self.separate_out   = separate_out
+        self.focus      = focus
+        self.tight_crop = tight_crop
+
+    @tf.function
+    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+        '''
+        還沒有仔細寫
+        '''
+        I_pre   = in_data
+        Wgt     = gt_data[0]
+        Fgt     = gt_data[1]
+
+        Mgt_pre_for_crop = gt_data[0][..., 3:4]
+        if(self.tight_crop is not None):
+            self.tight_crop.reset_jit()
+            I_pre, _ = self.tight_crop(I_pre, Mgt_pre_for_crop)
+            Wgt  , _ = self.tight_crop(Wgt, Mgt_pre_for_crop)
+            Fgt  , _ = self.tight_crop(Fgt, Mgt_pre_for_crop)
+
+        Mgt_pre = Wgt[..., 3:4]  ### 配合抓DB的方式用 in_dis_gt_wc_flow 的話：第一個 [0]是W， [1]是F， [0][..., 3:4] 或 [1][..., 0:1] 都可以取道Mask
+
+        I_pre_w_M_pre = I_pre * Mgt_pre
+
+        Wzgt = Wgt[..., 0:1]
+        Wygt = Wgt[..., 1:2]
+        Wxgt = Wgt[..., 2:3]
+        Cxgt = Fgt[..., 2:3]
+        Cygt = Fgt[..., 1:2]
+        gt_datas = [Wzgt, Wygt, Wxgt, Cxgt, Cygt]
+
+        ## debug 時 記得把 @tf.function 拿掉
+        # import matplotlib.pyplot as plt
+        # fig, ax = plt.subplots(nrows=1, ncols=8, figsize=(40, 5))
+        # ax[0].imshow(I_pre[0])
+        # ax[1].imshow(Mgt_pre[0])
+        # ax[2].imshow(I_pre_w_M_pre[0])
+        # ax[3].imshow(Wzgt[0])
+        # ax[4].imshow(Wygt[0])
+        # ax[5].imshow(Wxgt[0])
+        # ax[6].imshow(Cxgt[0])
+        # ax[7].imshow(Cygt[0])
+        # fig.tight_layout()
+        # plt.show()
+
+        if(self.focus is False): _train_step_Multi_output(model_obj, in_data=I_pre_w_M_pre, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+        else:                    _train_step_Multi_output(model_obj, in_data=I_pre_w_M_pre, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=Mgt_pre)
+
 @tf.function
 def train_step_Multi_output_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus(model_obj, in_data, gt_data, loss_info_objs=None):
     I_pre   = in_data
@@ -463,7 +513,7 @@ class Train_step_Wyx_w_M_to_Wz():
         self.sobel        = sobel
         self.sobel_only   = sobel_only
 
-    @tf.function
+    # @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
@@ -787,7 +837,7 @@ class Train_step_I_to_M():
         self.tight_crop = tight_crop
         self.color_jit = color_jit
 
-    @tf.function
+    # @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
         gt_mask = gt_data[..., 0:1]
         if(self.tight_crop is not None):

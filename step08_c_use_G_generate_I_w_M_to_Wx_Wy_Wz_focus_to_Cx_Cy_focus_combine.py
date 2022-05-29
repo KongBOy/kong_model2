@@ -39,7 +39,8 @@ class I_w_M_to_W_to_C(Use_G_generate):
         '''
 
         ''' 重新命名 讓我自己比較好閱讀'''
-        I_pre   = self.in_pre
+        dis_img_ord = self.in_ord
+        dis_img_pre = self.in_pre
         Wgt_ord = self.gt_ord [0]
         Wgt_pre = self.gt_pre [0]
         Fgt_ord = self.gt_ord [1]
@@ -47,12 +48,44 @@ class I_w_M_to_W_to_C(Use_G_generate):
 
         rec_hope = self.rec_hope
 
-        ''' use model '''''''''''''''''''''
-        Mgt     = self.Wgt_ord[0][..., 3:4]  ### [0]第一個是 取 wc, [1] 是取 flow, 第二個[0]是取 batch， 這次試試看用 M 不用 M_pre
-        Mgt_pre = self.Wgt_pre[0][..., 3:4]  ### 但是思考了一下，因為我現在focus train， 頁面外面是 灰色的， 如果 頁面外面 Mask 外面 有一大片 微小的值 會不會 GG呢 ??? 好像改回 Mgt_pre 比較安全???
+        ''' tight crop '''''''''''''''''''''''''''''''''''''''
+        if(self.tight_crop is not None):
+            Mgt_pre_for_crop   = Wgt_pre[..., 3:4]
+
+            Wgt_pre, _ = self.tight_crop(Wgt_pre , Mgt_pre_for_crop)  ### 給 test concat 用
+            Fgt_pre, _ = self.tight_crop(Fgt_pre , Mgt_pre_for_crop)
+
+            ##### dis_img_ord 在 tight_crop 要用 dis_img_pre 來反推喔！
+            ### 取得 crop 之前的大小
+            ord_h, ord_w = dis_img_ord.shape[1:3]    ### BHWC， 取 HW, 3024, 3024
+            pre_h, pre_w = dis_img_pre.shape[1:3]    ### BHWC， 取 HW,  512,  512 或 448, 448 之類的
+            ### 算出 ord 和 pre 之間的比例
+            ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
+            ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
+            ### 對 pre 做 crop
+            dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
+            ### 根據比例 放大回來 crop 出 ord
+            ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
+            ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
+
+            ord_l_out_amo = np.round(pre_boundary["l_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_t_out_amo = np.round(pre_boundary["t_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_r_out_amo = np.round(pre_boundary["r_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
+            ord_d_out_amo = np.round(pre_boundary["d_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
+            dis_img_ord   = np.pad(dis_img_ord.numpy(), ( (0, 0), (ord_t_out_amo, ord_d_out_amo), (ord_l_out_amo, ord_r_out_amo), (0, 0)  ))  ### BHWC
+            dis_img_ord   = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
+            # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
+        ''' tight crop end '''''''''''''''''''''''''''''''''
+
+
+        ''' use model '''''''''''''''''''''''''''''''''''''''
+        Mgt     = Wgt_ord[..., 3:4]  ### [0]第一個是 取 wc, [1] 是取 flow, 第二個[0]是取 batch， 這次試試看用 M 不用 M_pre
+        Mgt_pre = Wgt_pre[..., 3:4]  ### 但是思考了一下，因為我現在focus train， 頁面外面是 灰色的， 如果 頁面外面 Mask 外面 有一大片 微小的值 會不會 GG呢 ??? 好像改回 Mgt_pre 比較安全???
         used_M   = Mgt_pre
 
-        I_pre_w_M = I_pre * used_M  ### 這次試試看用 M 不用 M_pre
+        I_pre_w_M = dis_img_pre * used_M  ### 這次試試看用 M 不用 M_pre
         if(self.separate_out is False):
             W_pre_raw, C_pre_raw = self.model_obj(I_pre_w_M, Mask=used_M, training=self.training)
         else:
@@ -65,12 +98,97 @@ class I_w_M_to_W_to_C(Use_G_generate):
         C_01_raw = Value_Range_Postprocess_to_01(C_pre_raw, self.exp_obj.use_gt_range)
         W_01_raw = W_01_raw[0]
         C_01_raw = C_01_raw[0]
+        used_M   = used_M[0].numpy()
+
+
+        ''' Sobel 部分 '''''''''''''''''''''''''''''''''''''''
+        ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+        sob_objs = []
+        sob_objs_len = len(sob_objs)
+        for go_l, loss_info_obj in enumerate(self.exp_obj.loss_info_objs):  ### 走訪   所有 loss_info_objs
+            loss_fun_dict = loss_info_obj.loss_funs_dict                    ### 把   目前的 loss_info_obj  的 loss_fun_dict 抓出來
+            for loss_name, func_obj in loss_fun_dict.items():               ### 走訪 目前的 loss_info_obj  的 當中的所有 loss
+                if("sobel" in loss_name): sob_objs.append(func_obj)         ### 如果 其中有使用到 sobel， 把它append 進去 sob_objs
+
+            ### 如果 gt_loss 沒有使用 sobel， 就自己建一個出來
+            if(sob_objs_len == len(sob_objs)):        ### 如果 sob_objs 的長度沒變， 代表 目前的loss_info_obj 當中的 gt_loss 沒有用 sobel
+                from step10_a1_loss import Sobel_MAE  ### 自己建一個
+                sob_objs.append(Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True))
+            ### 更新一下 目前的 sob_objs 的 長度
+            sob_objs_len = len(sob_objs)
+
+        ### 把 所有的 model_out 套用上 相對應的 sobel
+        if(self.separate_out is False):
+            for go_sob, sob_obj in enumerate(sob_objs):
+                if(go_sob == 0): Wzyx_raw_Gx, Wzyx_raw_Gy = sob_obj.Calculate_sobel_edges(W_pre_raw)
+                if(go_sob == 1): Cyx_raw_Gx , Cyx_raw_Gy  = sob_obj.Calculate_sobel_edges(C_pre_raw)
+            Wz_raw_Gx = Wzyx_raw_Gx[..., 0]
+            Wy_raw_Gx = Wzyx_raw_Gx[..., 1]
+            Wx_raw_Gx = Wzyx_raw_Gx[..., 2]
+            Wz_raw_Gy = Wzyx_raw_Gy[..., 0]
+            Wy_raw_Gy = Wzyx_raw_Gy[..., 1]
+            Wx_raw_Gy = Wzyx_raw_Gy[..., 2]
+            Cy_raw_Gx = Cyx_raw_Gx [..., 0]
+            Cx_raw_Gx = Cyx_raw_Gx [..., 1]
+            Cy_raw_Gy = Cyx_raw_Gy [..., 0]
+            Cx_raw_Gy = Cyx_raw_Gy [..., 1]
+            if(self.focus):
+                if(go_sob == 0): Wzyx_w_M_Gx, Wzyx_w_M_Gy = sob_obj.Calculate_sobel_edges(W_pre_raw, Mask=used_M[np.newaxis, ...])
+                if(go_sob == 1): Cyx_w_M_Gx , Cyx_w_M_Gy  = sob_obj.Calculate_sobel_edges(C_pre_raw, Mask=used_M[np.newaxis, ...])
+            Wz_w_M_Gx = Wzyx_w_M_Gx[..., 0]
+            Wy_w_M_Gx = Wzyx_w_M_Gx[..., 1]
+            Wx_w_M_Gx = Wzyx_w_M_Gx[..., 2]
+            Wz_w_M_Gy = Wzyx_w_M_Gy[..., 0]
+            Wy_w_M_Gy = Wzyx_w_M_Gy[..., 1]
+            Wx_w_M_Gy = Wzyx_w_M_Gy[..., 2]
+            Cy_w_M_Gx = Cyx_w_M_Gx [..., 0]
+            Cx_w_M_Gx = Cyx_w_M_Gx [..., 1]
+            Cy_w_M_Gy = Cyx_w_M_Gy [..., 0]
+            Cx_w_M_Gy = Cyx_w_M_Gy [..., 1]
+        else:
+            for go_sob, sob_obj in enumerate(sob_objs):
+                if(go_sob == 0): Wz_raw_Gx, Wz_raw_Gy = sob_obj.Calculate_sobel_edges(Wz_pre_raw)
+                if(go_sob == 1): Wy_raw_Gx, Wy_raw_Gy = sob_obj.Calculate_sobel_edges(Wy_pre_raw)
+                if(go_sob == 2): Wx_raw_Gx, Wx_raw_Gy = sob_obj.Calculate_sobel_edges(Wx_pre_raw)
+                if(go_sob == 3): Cy_raw_Gx, Cy_raw_Gy = sob_obj.Calculate_sobel_edges(Cy_pre_raw)
+                if(go_sob == 4): Cx_raw_Gx, Cx_raw_Gy = sob_obj.Calculate_sobel_edges(Cx_pre_raw)
+            if(self.focus):
+                for go_sob, sob_obj in enumerate(sob_objs):
+                    if(go_sob == 0): Wz_w_M_Gx, Wz_w_M_Gy = sob_obj.Calculate_sobel_edges(Wz_pre_raw, Mask=used_M[np.newaxis, ...])
+                    if(go_sob == 1): Wy_w_M_Gx, Wy_w_M_Gy = sob_obj.Calculate_sobel_edges(Wy_pre_raw, Mask=used_M[np.newaxis, ...])
+                    if(go_sob == 2): Wx_w_M_Gx, Wx_w_M_Gy = sob_obj.Calculate_sobel_edges(Wx_pre_raw, Mask=used_M[np.newaxis, ...])
+                    if(go_sob == 3): Cy_w_M_Gx, Cy_w_M_Gy = sob_obj.Calculate_sobel_edges(Cy_pre_raw, Mask=used_M[np.newaxis, ...])
+                    if(go_sob == 4): Cx_w_M_Gx, Cx_w_M_Gy = sob_obj.Calculate_sobel_edges(Cx_pre_raw, Mask=used_M[np.newaxis, ...])
+        Wz_raw_Gx = Wz_raw_Gx[0].numpy()
+        Wz_raw_Gy = Wz_raw_Gy[0].numpy()
+        Wy_raw_Gx = Wy_raw_Gx[0].numpy()
+        Wy_raw_Gy = Wy_raw_Gy[0].numpy()
+        Wx_raw_Gx = Wx_raw_Gx[0].numpy()
+        Wx_raw_Gy = Wx_raw_Gy[0].numpy()
+        Cy_raw_Gx = Cy_raw_Gx[0].numpy()
+        Cy_raw_Gy = Cy_raw_Gy[0].numpy()
+        Cx_raw_Gx = Cx_raw_Gx[0].numpy()
+        Cx_raw_Gy = Cx_raw_Gy[0].numpy()
+
+        Wz_w_M_Gx = Wz_w_M_Gx[0].numpy()
+        Wz_w_M_Gy = Wz_w_M_Gy[0].numpy()
+        Wy_w_M_Gx = Wy_w_M_Gx[0].numpy()
+        Wy_w_M_Gy = Wy_w_M_Gy[0].numpy()
+        Wx_w_M_Gx = Wx_w_M_Gx[0].numpy()
+        Wx_w_M_Gy = Wx_w_M_Gy[0].numpy()
+        Cy_w_M_Gx = Cy_w_M_Gx[0].numpy()
+        Cy_w_M_Gy = Cy_w_M_Gy[0].numpy()
+        Cx_w_M_Gx = Cx_w_M_Gx[0].numpy()
+        Cx_w_M_Gy = Cx_w_M_Gy[0].numpy()
+        ''' Sobel end '''''''''''''''''''''''''''''''''''''''
+
+
         ''' use_model end '''''''''''''''''''''''''''''''''''''''
 
         '''model in visualize'''
         I_01_w_M  = Value_Range_Postprocess_to_01(I_pre_w_M, self.exp_obj.use_gt_range)
         I_w_M_visual = (I_01_w_M[0].numpy() * 255).astype(np.uint8)
-        Mgt_visual   = (used_M[0].numpy() * 255).astype(np.uint8)
+        Mgt_visual   = (used_M * 255).astype(np.uint8)
 
         '''model out visualize'''  ### 後處理： 拿掉 batch 和 弄成01 和 轉成 numpy
         if(self.focus is False):
@@ -92,21 +210,25 @@ class I_w_M_to_W_to_C(Use_G_generate):
         Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_01_concat_with_M_to_F_and_get_F_visual(Cgt_01, used_M)
 
         ''' model postprocess輔助 visualize'''
-        dis_img_visual  = (I_pre[0].numpy() * 255).astype(np.uint8)
-        rec_hope = rec_hope[0].numpy()
+        dis_img_ord         = dis_img_ord[0]
+        dis_img_pre         = dis_img_pre[0].numpy()
+        dis_img_pre_visual  = (dis_img_pre * 255).astype(np.uint8)
+        rec_hope            = rec_hope[0].numpy()
 
         '''cv2 bgr 與 rgb 的調整'''
         ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
         if(self.bgr2rgb):
-            dis_img_visual = dis_img_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
-            rec_hope = rec_hope[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
-            I_w_M_visual = I_w_M_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+            dis_img_ord        = dis_img_ord       [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+            dis_img_pre_visual = dis_img_pre_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+            rec_hope           = rec_hope          [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+            I_w_M_visual       = I_w_M_visual      [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
 
         if(current_ep == 0 or self.see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_rec_write_dir)    ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_npz_write_dir)    ### 建立 放輔助檔案 的資料夾
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_visual)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre.jpg",  dis_img_pre_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
 
@@ -125,48 +247,56 @@ class I_w_M_to_W_to_C(Use_G_generate):
             cv2.imwrite(private_write_dir + "/" + "0b_u2b4-gt_b_Cygt.jpg",   Cygt_visual)
             cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",          rec_hope)
 
-        if(self.npz_save is False): np.save            (private_write_dir     + "/" + "epoch_%04i_u1b1-W_w_Mgt" % ep_it_string, W_w_M_c_M)
-        if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + "epoch_%04i_u1b1-W_w_Mgt" % ep_it_string, W_w_M_c_M)
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b2-W_raw_visual.jpg"    % ep_it_string, W_raw_visual)
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b3-W_w_M_visual.jpg"    % ep_it_string, W_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b4-Wx_raw_visual.jpg"   % ep_it_string, Wx_raw_visual)
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b5-Wx_w_M_visual.jpg"   % ep_it_string, Wx_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b6-Wy_raw_visual.jpg"   % ep_it_string, Wy_raw_visual)
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b7-Wy_w_M_visual.jpg"   % ep_it_string, Wy_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b8-Wz_raw_visual.jpg"   % ep_it_string, Wz_raw_visual)
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u1b9-Wz_w_M_visual.jpg"   % ep_it_string, Wz_w_M_visual)
+        if(self.npz_save is False): np.save            (private_write_dir     + "/" + f"{ep_it_string}_u1b1-W_w_Mgt", W_w_M_c_M)
+        if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + f"{ep_it_string}_u1b1-W_w_Mgt", W_w_M_c_M)
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b2-W_raw_visual.jpg" , W_raw_visual)
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b3-W_w_M_visual.jpg" , W_w_M_visual)
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b4-Wx_raw_visual.jpg", Wx_raw_visual)
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b5-Wx_w_M_visual.jpg", Wx_w_M_visual)
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b6-Wy_raw_visual.jpg", Wy_raw_visual)
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b7-Wy_w_M_visual.jpg", Wy_w_M_visual)
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b8-Wz_raw_visual.jpg", Wz_raw_visual)
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b9-Wz_w_M_visual.jpg", Wz_w_M_visual)
 
-        if(self.npz_save is False): np.save            (private_write_dir     + "/" + "epoch_%04i_u2b1-F_w_Mgt" % ep_it_string, F_w_Mgt)
-        if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + "epoch_%04i_u2b1-F_w_Mgt" % ep_it_string, F_w_Mgt)
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b2-F_raw.jpg"    % ep_it_string, F_raw_visual)     ### 把 生成的 F_visual 存進相對應的資料夾
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b3-F_w_Mgt.jpg"  % ep_it_string, F_w_M_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b4-Cx_raw.jpg"   % ep_it_string, Cx_raw_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b5-Cx_w_Mgt.jpg" % ep_it_string, Cx_w_M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b6-Cy_raw.jpg"   % ep_it_string, Cy_raw_visual)    ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-        cv2.imwrite(private_write_dir + "/" + "epoch_%04i_u2b7-Cy_w_Mgt.jpg" % ep_it_string, Cy_w_M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+        if(self.npz_save is False): np.save            (private_write_dir     + "/" + f"{ep_it_string}_u2b1-F_w_Mgt", F_w_Mgt)
+        if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + f"{ep_it_string}_u2b1-F_w_Mgt", F_w_Mgt)
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b2-F_raw.jpg"   , F_raw_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b3-F_w_Mgt.jpg" , F_w_M_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b4-Cx_raw.jpg"  , Cx_raw_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b5-Cx_w_Mgt.jpg", Cx_w_M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b6-Cy_raw.jpg"  , Cy_raw_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b7-Cy_w_Mgt.jpg", Cy_w_M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
             current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-            bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_visual, flow=F_w_Mgt)
+            bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord, flow=F_w_Mgt)
             '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
-            # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img_visual, F=Fgt)
+            # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img_pre_visual, F=Fgt)
             cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
 
             if(self.focus is False):
-                r_c_imgs   = [ [dis_img_visual , Mgt_visual        , I_w_M_visual  , rec             , rec_hope ],
+                r_c_imgs   = [ [dis_img_pre_visual , Mgt_visual    , I_w_M_visual  , rec             , rec_hope ],
                                [W_visual       , Wx_visual         , Wy_visual     , Wz_visual       , ],
-                               [F_visual       , Cx_visual         , Cy_visual     , ] ]
+                               [Wx_raw_Gx      , Wx_raw_Gy         , Wy_raw_Gx     , Wy_raw_Gy       , Wz_raw_Gx     , Wz_raw_Gy    , Wx_w_M_Gx     , Wx_w_M_Gy    , Wy_w_M_Gx    , Wy_w_M_Gy    , Wz_w_M_Gx    , Wz_w_M_Gy     ],
+                               [F_visual       , Cx_visual         , Cy_visual     , ],
+                               [Cx_raw_Gx      , Cx_raw_Gy         , Cy_raw_Gx     , Cy_raw_Gy       , Cx_w_M_Gx     , Cx_w_M_Gy    , Cy_w_M_Gx     , Cy_w_M_Gy] ]
                 r_c_titles = [ ["dis_img"      , "Mgt"             , "I_with_M"    , "rec"           , "rec_hope"],
                                ["W"            , "Wx"              , "Wy"          , "Wz"            ,    ],
-                               ["F"            , "Cx"              , "Cy"          , ] ]
+                               ["Wx_raw_Gx"    , "Wx_raw_Gy"       , "Wy_raw_Gx"   , "Wy_raw_Gy"     , "Wz_raw_Gx"   , "Wz_raw_Gy"     , "Wx_w_M_Gx"     , "Wx_w_M_Gy"  , "Wy_w_M_Gx"  , "Wy_w_M_Gy"  , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
+                               ["F"            , "Cx"              , "Cy"          , ],
+                               ["Cx_raw_Gx"    , "Cx_raw_Gy"       , "Cy_raw_Gx"   , "Cy_raw_Gy"     , "Cx_w_M_Gx"   , "Cx_w_M_Gy"     , "Cy_w_M_Gx"     , "Cy_w_M_Gy"] ]
 
             else:
-                r_c_imgs   = [ [dis_img_visual , Mgt_visual        , I_w_M_visual  , rec             , rec_hope ],
+                r_c_imgs   = [ [dis_img_pre_visual , Mgt_visual        , I_w_M_visual  , rec             , rec_hope ],
                                [Wgt_visual     , W_raw_visual      , W_w_M_visual  , Wx_raw_visual   , Wx_w_M_visual , Wy_raw_visual, Wy_w_M_visual , Wz_raw_visual, Wz_w_M_visual ],
-                               [Fgt_visual     , F_raw_visual      , F_w_M_visual  , Cx_raw_visual   , Cx_w_M_visual , Cy_raw_visual, Cy_w_M_visual ] ]
+                               [Wx_raw_Gx      , Wx_raw_Gy         , Wy_raw_Gx     , Wy_raw_Gy       , Wz_raw_Gx     , Wz_raw_Gy    , Wx_w_M_Gx     , Wx_w_M_Gy    , Wy_w_M_Gx    , Wy_w_M_Gy    , Wz_w_M_Gx    , Wz_w_M_Gy     ],
+                               [Fgt_visual     , F_raw_visual      , F_w_M_visual  , Cx_raw_visual   , Cx_w_M_visual , Cy_raw_visual, Cy_w_M_visual ,],
+                               [Cx_raw_Gx      , Cx_raw_Gy         , Cy_raw_Gx     , Cy_raw_Gy       , Cx_w_M_Gx     , Cx_w_M_Gy    , Cy_w_M_Gx     , Cy_w_M_Gy] ]
                 r_c_titles = [ ["dis_img"      , "Mgt"             , "I_with_M"    , "rec"           , "rec_hope"],
-                               ["Wgt"          , "W_raw"           , "W_w_M"       , "Wx_raw"        , "Wx_w_M"      , "Wy_raw"     , "Wy_w_M"      , "Wz_raw"     , "Wz_w_M"      ],
-                               ["Fgt"          , "F_raw"           , "F_w_M"       , "Cx_raw"        , "rec_hope"      , "Cx_w_M_visual" , "Cy_w_M_visual" ] ]
+                               ["Wgt"          , "W_raw"           , "W_w_M"       , "Wx_raw"        , "Wx_w_M"      , "Wy_raw"        , "Wy_w_M"        , "Wz_raw"     , "Wz_w_M"      ],
+                               ["Wx_raw_Gx"    , "Wx_raw_Gy"       , "Wy_raw_Gx"   , "Wy_raw_Gy"     , "Wz_raw_Gx"   , "Wz_raw_Gy"     , "Wx_w_M_Gx"     , "Wx_w_M_Gy"  , "Wy_w_M_Gx"  , "Wy_w_M_Gy"  , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
+                               ["Fgt"          , "F_raw"           , "F_w_M"       , "Cx_raw"        , "rec_hope"    , "Cx_w_M_visual" , "Cy_w_M_visual" , ],
+                               ["Cx_raw_Gx"    , "Cx_raw_Gy"       , "Cy_raw_Gx"   , "Cy_raw_Gy"     , "Cx_w_M_Gx"   , "Cx_w_M_Gy"     , "Cy_w_M_Gx"     , "Cy_w_M_Gy"] ]
 
             single_row_imgs = Matplot_multi_row_imgs(
                                     rows_cols_imgs   = r_c_imgs,         ### 把要顯示的每張圖包成list
@@ -174,8 +304,7 @@ class I_w_M_to_W_to_C(Use_G_generate):
                                     fig_title        = "%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
                                     add_loss         = self.add_loss,
                                     bgr2rgb          = self.bgr2rgb,
-                                    one_ch_vmin      = 0,
-                                    one_ch_vmax      = 255)  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                                    fix_size         =(256, 256))  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
             single_row_imgs.Draw_img()
             single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
             print("save to:", self.exp_obj.result_obj.test_write_dir)
