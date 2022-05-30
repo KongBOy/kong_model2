@@ -9,7 +9,7 @@ from build_dataset_combine import Check_dir_exist_and_build
 from matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
-from step08_b_use_G_generate_0_util import W_01_visual_op, Value_Range_Postprocess_to_01
+from step08_b_use_G_generate_0_util import WcM_01_visual_op, Value_Range_Postprocess_to_01
 
 ######################################################################################################################################################################################################
 def wc_visual_op(wc):
@@ -51,8 +51,8 @@ def I_Generate_W_see(model_obj, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_
 
     W_01, Wgt_01    = I_Generate_W(model_obj, None, in_img_pre, None, Wgt_w_Mgt_pre, exp_obj.use_gt_range, training=training)
 
-    W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = W_01_visual_op(W_01)
-    Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)
+    W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = WcM_01_visual_op(W_01)
+    Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = WcM_01_visual_op(Wgt_01)
     # print("wc.shape:          ", wc.shape)
     # print("wc_visual.shape:   ", wc_visual.shape)
     # print("gt_wc.shape:       ", gt_wc.shape)

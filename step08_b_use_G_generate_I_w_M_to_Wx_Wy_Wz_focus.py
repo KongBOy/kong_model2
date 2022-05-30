@@ -5,7 +5,7 @@ from step06_a_datas_obj import Range
 
 import sys
 
-from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_visual_op
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, WcM_01_visual_op
 sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
 from matplot_fig_ax_util import Matplot_single_row_imgs
@@ -68,9 +68,9 @@ def I_w_M_Gen_Wx_Wy_Wz_focus_to_W_see(model_obj, phase, index, in_img, in_img_pr
     W_w_Mgt_01 = W_raw_01 * Mgt_pre
 
 
-    W_raw_visual,   Wx_raw_visual,   Wy_raw_visual,   Wz_raw_visual   = W_01_visual_op(W_raw_01)
-    W_w_Mgt_visual, Wx_w_Mgt_visual, Wy_w_Mgt_visual, Wz_w_Mgt_visual = W_01_visual_op(W_w_Mgt_01)
-    Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(Wgt_01)
+    W_raw_visual,   Wx_raw_visual,   Wy_raw_visual,   Wz_raw_visual   = WcM_01_visual_op(W_raw_01)
+    W_w_Mgt_visual, Wx_w_Mgt_visual, Wy_w_Mgt_visual, Wz_w_Mgt_visual = WcM_01_visual_op(W_w_Mgt_01)
+    Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = WcM_01_visual_op(Wgt_01)
     # print("Wgt_visual", Wgt_visual.max())
     # print("Wgt_visual", Wgt_visual.min())
     Mgt_visual = (Mgt_pre * 255).astype(np.uint8)
