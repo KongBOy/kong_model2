@@ -63,7 +63,7 @@ class I_w_M_to_W_to_C(Use_G_generate):
             ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
             ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
             ### 對 pre 做 crop
-            dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
+            dis_img_pre_croped_resized, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
             ### 根據比例 放大回來 crop 出 ord
             ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
@@ -85,7 +85,7 @@ class I_w_M_to_W_to_C(Use_G_generate):
         Mgt_pre = Wgt_pre[..., 3:4]  ### 但是思考了一下，因為我現在focus train， 頁面外面是 灰色的， 如果 頁面外面 Mask 外面 有一大片 微小的值 會不會 GG呢 ??? 好像改回 Mgt_pre 比較安全???
         used_M   = Mgt_pre
 
-        I_pre_w_M = dis_img_pre * used_M  ### 這次試試看用 M 不用 M_pre
+        I_pre_w_M = dis_img_pre_croped_resized * used_M  ### 這次試試看用 M 不用 M_pre
         if(self.separate_out is False):
             W_pre_raw, C_pre_raw = self.model_obj(I_pre_w_M, Mask=used_M, training=self.training)
         else:
@@ -211,15 +211,15 @@ class I_w_M_to_W_to_C(Use_G_generate):
 
         ''' model postprocess輔助 visualize'''
         dis_img_ord         = dis_img_ord[0]
-        dis_img_pre         = dis_img_pre[0].numpy()
-        dis_img_pre_visual  = (dis_img_pre * 255).astype(np.uint8)
+        dis_img_pre         = (dis_img_pre[0].numpy() * 255).astype(np.uint8)
+        dis_img_pre_croped_resized_visual  = (dis_img_pre_croped_resized[0].numpy() * 255).astype(np.uint8)
         rec_hope            = rec_hope[0].numpy()
 
         '''cv2 bgr 與 rgb 的調整'''
         ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
         if(self.bgr2rgb):
             dis_img_ord        = dis_img_ord       [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
-            dis_img_pre_visual = dis_img_pre_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+            dis_img_pre_croped_resized_visual = dis_img_pre_croped_resized_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             rec_hope           = rec_hope          [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             I_w_M_visual       = I_w_M_visual      [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
 
@@ -228,7 +228,7 @@ class I_w_M_to_W_to_C(Use_G_generate):
             Check_dir_exist_and_build(private_rec_write_dir)    ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_npz_write_dir)    ### 建立 放輔助檔案 的資料夾
             cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre.jpg",  dis_img_pre_visual)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg",  dis_img_pre_croped_resized_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
 
@@ -271,32 +271,32 @@ class I_w_M_to_W_to_C(Use_G_generate):
             current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord, flow=F_w_Mgt)
             '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
-            # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img_pre_visual, F=Fgt)
+            # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img_pre_croped_resized_visual, F=Fgt)
             cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
 
             if(self.focus is False):
-                r_c_imgs   = [ [dis_img_pre_visual , Mgt_visual    , I_w_M_visual  , rec             , rec_hope ],
-                               [W_visual       , Wx_visual         , Wy_visual     , Wz_visual       , ],
-                               [Wx_raw_Gx      , Wx_raw_Gy         , Wy_raw_Gx     , Wy_raw_Gy       , Wz_raw_Gx     , Wz_raw_Gy    , Wx_w_M_Gx     , Wx_w_M_Gy    , Wy_w_M_Gx    , Wy_w_M_Gy    , Wz_w_M_Gx    , Wz_w_M_Gy     ],
-                               [F_visual       , Cx_visual         , Cy_visual     , ],
-                               [Cx_raw_Gx      , Cx_raw_Gy         , Cy_raw_Gx     , Cy_raw_Gy       , Cx_w_M_Gx     , Cx_w_M_Gy    , Cy_w_M_Gx     , Cy_w_M_Gy] ]
-                r_c_titles = [ ["dis_img"      , "Mgt"             , "I_with_M"    , "rec"           , "rec_hope"],
-                               ["W"            , "Wx"              , "Wy"          , "Wz"            ,    ],
-                               ["Wx_raw_Gx"    , "Wx_raw_Gy"       , "Wy_raw_Gx"   , "Wy_raw_Gy"     , "Wz_raw_Gx"   , "Wz_raw_Gy"     , "Wx_w_M_Gx"     , "Wx_w_M_Gy"  , "Wy_w_M_Gx"  , "Wy_w_M_Gy"  , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
-                               ["F"            , "Cx"              , "Cy"          , ],
-                               ["Cx_raw_Gx"    , "Cx_raw_Gy"       , "Cy_raw_Gx"   , "Cy_raw_Gy"     , "Cx_w_M_Gx"   , "Cx_w_M_Gy"     , "Cy_w_M_Gx"     , "Cy_w_M_Gy"] ]
+                r_c_imgs   = [ [dis_img_pre_croped_resized_visual , Mgt_visual    , I_w_M_visual  , rec             , rec_hope ],
+                               [W_visual           , Wx_visual     , Wy_visual     , Wz_visual       , ],
+                               [Wx_raw_Gx          , Wx_raw_Gy     , Wy_raw_Gx     , Wy_raw_Gy       , Wz_raw_Gx     , Wz_raw_Gy    , Wx_w_M_Gx     , Wx_w_M_Gy    , Wy_w_M_Gx    , Wy_w_M_Gy    , Wz_w_M_Gx    , Wz_w_M_Gy     ],
+                               [F_visual           , Cx_visual     , Cy_visual     , ],
+                               [Cx_raw_Gx          , Cx_raw_Gy     , Cy_raw_Gx     , Cy_raw_Gy       , Cx_w_M_Gx     , Cx_w_M_Gy    , Cy_w_M_Gx     , Cy_w_M_Gy] ]
+                r_c_titles = [ ["dis_img"          , "Mgt"         , "I_with_M"    , "rec"           , "rec_hope"],
+                               ["W"                , "Wx"          , "Wy"          , "Wz"            , ],
+                               ["Wx_raw_Gx"        , "Wx_raw_Gy"   , "Wy_raw_Gx"   , "Wy_raw_Gy"     , "Wz_raw_Gx"   , "Wz_raw_Gy"     , "Wx_w_M_Gx"     , "Wx_w_M_Gy"  , "Wy_w_M_Gx"  , "Wy_w_M_Gy"  , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
+                               ["F"                , "Cx"          , "Cy"          , ],
+                               ["Cx_raw_Gx"        , "Cx_raw_Gy"   , "Cy_raw_Gx"   , "Cy_raw_Gy"     , "Cx_w_M_Gx"   , "Cx_w_M_Gy"     , "Cy_w_M_Gx"     , "Cy_w_M_Gy"] ]
 
             else:
-                r_c_imgs   = [ [dis_img_pre_visual , Mgt_visual        , I_w_M_visual  , rec             , rec_hope ],
-                               [Wgt_visual     , W_raw_visual      , W_w_M_visual  , Wx_raw_visual   , Wx_w_M_visual , Wy_raw_visual, Wy_w_M_visual , Wz_raw_visual, Wz_w_M_visual ],
-                               [Wx_raw_Gx      , Wx_raw_Gy         , Wy_raw_Gx     , Wy_raw_Gy       , Wz_raw_Gx     , Wz_raw_Gy    , Wx_w_M_Gx     , Wx_w_M_Gy    , Wy_w_M_Gx    , Wy_w_M_Gy    , Wz_w_M_Gx    , Wz_w_M_Gy     ],
-                               [Fgt_visual     , F_raw_visual      , F_w_M_visual  , Cx_raw_visual   , Cx_w_M_visual , Cy_raw_visual, Cy_w_M_visual ,],
-                               [Cx_raw_Gx      , Cx_raw_Gy         , Cy_raw_Gx     , Cy_raw_Gy       , Cx_w_M_Gx     , Cx_w_M_Gy    , Cy_w_M_Gx     , Cy_w_M_Gy] ]
-                r_c_titles = [ ["dis_img"      , "Mgt"             , "I_with_M"    , "rec"           , "rec_hope"],
-                               ["Wgt"          , "W_raw"           , "W_w_M"       , "Wx_raw"        , "Wx_w_M"      , "Wy_raw"        , "Wy_w_M"        , "Wz_raw"     , "Wz_w_M"      ],
-                               ["Wx_raw_Gx"    , "Wx_raw_Gy"       , "Wy_raw_Gx"   , "Wy_raw_Gy"     , "Wz_raw_Gx"   , "Wz_raw_Gy"     , "Wx_w_M_Gx"     , "Wx_w_M_Gy"  , "Wy_w_M_Gx"  , "Wy_w_M_Gy"  , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
-                               ["Fgt"          , "F_raw"           , "F_w_M"       , "Cx_raw"        , "rec_hope"    , "Cx_w_M_visual" , "Cy_w_M_visual" , ],
-                               ["Cx_raw_Gx"    , "Cx_raw_Gy"       , "Cy_raw_Gx"   , "Cy_raw_Gy"     , "Cx_w_M_Gx"   , "Cx_w_M_Gy"     , "Cy_w_M_Gx"     , "Cy_w_M_Gy"] ]
+                r_c_imgs   = [ [dis_img_pre_croped_resized_visual , Mgt_visual        , I_w_M_visual  , rec             , rec_hope ],
+                               [Wgt_visual         , W_raw_visual      , W_w_M_visual  , Wx_raw_visual   , Wx_w_M_visual , Wy_raw_visual, Wy_w_M_visual , Wz_raw_visual, Wz_w_M_visual ],
+                               [Wx_raw_Gx          , Wx_raw_Gy         , Wy_raw_Gx     , Wy_raw_Gy       , Wz_raw_Gx     , Wz_raw_Gy    , Wx_w_M_Gx     , Wx_w_M_Gy    , Wy_w_M_Gx    , Wy_w_M_Gy    , Wz_w_M_Gx    , Wz_w_M_Gy     ],
+                               [Fgt_visual         , F_raw_visual      , F_w_M_visual  , Cx_raw_visual   , Cx_w_M_visual , Cy_raw_visual, Cy_w_M_visual , ],
+                               [Cx_raw_Gx          , Cx_raw_Gy         , Cy_raw_Gx     , Cy_raw_Gy       , Cx_w_M_Gx     , Cx_w_M_Gy    , Cy_w_M_Gx     , Cy_w_M_Gy] ]
+                r_c_titles = [ ["dis_img"          , "Mgt"             , "I_with_M"    , "rec"           , "rec_hope"],
+                               ["Wgt"              , "W_raw"           , "W_w_M"       , "Wx_raw"        , "Wx_w_M"      , "Wy_raw"        , "Wy_w_M"        , "Wz_raw"     , "Wz_w_M"      ],
+                               ["Wx_raw_Gx"        , "Wx_raw_Gy"       , "Wy_raw_Gx"   , "Wy_raw_Gy"     , "Wz_raw_Gx"   , "Wz_raw_Gy"     , "Wx_w_M_Gx"     , "Wx_w_M_Gy"  , "Wy_w_M_Gx"  , "Wy_w_M_Gy"  , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
+                               ["Fgt"              , "F_raw"           , "F_w_M"       , "Cx_raw"        , "rec_hope"    , "Cx_w_M_visual" , "Cy_w_M_visual" , ],
+                               ["Cx_raw_Gx"        , "Cx_raw_Gy"       , "Cy_raw_Gx"   , "Cy_raw_Gy"     , "Cx_w_M_Gx"   , "Cx_w_M_Gy"     , "Cy_w_M_Gx"     , "Cy_w_M_Gy"] ]
 
             single_row_imgs = Matplot_multi_row_imgs(
                                     rows_cols_imgs   = r_c_imgs,         ### 把要顯示的每張圖包成list
