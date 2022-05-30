@@ -107,19 +107,55 @@ def Syn_write_to_read_dir(write_dir, read_dir, build_new_dir=False, copy_sub_dir
     ######################################################################################################################################################################################################################################################
     ######################################################################################################################################################################################################################################################
 
-
     write_dir = write_dir.replace("/", "\\") + "\\"
     read_dir  = read_dir .replace("/", "\\") + "\\"
-    command   = f'xcopy "{write_dir}" "{read_dir}" /Y /Q'  ### 複製資料夾內的檔案(不包含子資料夾，子資料夾也想複製的話加/E，但我覺得不要，因為如果複製 上層資料夾， 會重複複製到很多次相同子資料夾， 浪費時間)
-    if(copy_sub_dir): command += " /E"  ### 如果有需要複製子資料夾， 再自己把 參數 copy_sub_dir 設True 囉！
-    ### /Y 預設覆蓋檔案的複製、/Q 不顯示複製的檔案、/E 子資料夾也會複製過去
-    ### 我找了很多資料，就是弄不掉 已複製 ... 個檔案，就算了吧～
-    os.system(command)
     if(print_msg):
         print("(src)write_dir:", write_dir)
         print("(dst) read_dir:", read_dir)
-        print("   use command:", command)
-        print("")
+
+    if(len(read_dir) <= 255 and len(write_dir) <= 255):
+        command   = f'xcopy "{write_dir}" "{read_dir}" /Y /Q'  ### 複製資料夾內的檔案(不包含子資料夾，子資料夾也想複製的話加/E，但我覺得不要，因為如果複製 上層資料夾， 會重複複製到很多次相同子資料夾， 浪費時間)
+        if(copy_sub_dir): command += " /E"  ### 如果有需要複製子資料夾， 再自己把 參數 copy_sub_dir 設True 囉！
+        ### /Y 預設覆蓋檔案的複製、/Q 不顯示複製的檔案、/E 子資料夾也會複製過去
+        ### 我找了很多資料，就是弄不掉 已複製 ... 個檔案，就算了吧～
+        os.system(command)
+        if(print_msg):
+            print("   use command:", command)
+            print("")
+    else:
+        print(f"(dst) read_dir > 255 個字， 沒辦法只能用 shutil.copyfile() 這種產生碎片的 copy囉")
+
+        ### 走訪 (src)write_dir 內所有的資料夾
+        from kong_util.util import Visit_sub_dir_include_self_and_get_dir_paths
+        src_dirs = []
+        Visit_sub_dir_include_self_and_get_dir_paths(write_dir, dir_containor=src_dirs)
+
+        ### 定位 和 建出 所有 (dst)read_dir 資料夾， 因為用 shutil.copyfile 需要 dst 資料夾存在
+        dst_dirs = []
+        for src_dir in src_dirs:
+            dst_dirs.append( src_dir.replace(write_dir, read_dir) )
+            Check_dir_exist_and_build(dst_dirs[-1])
+
+        ### 抓出所有的 src_dirs 內部的所有檔案path
+        src_file_paths = []
+        for src_dir in src_dirs:
+            src_dir_files = os.listdir(src_dir)
+            if(len(src_dir_files) > 0):
+                src_file_paths += [src_dir + "/" + file_name for file_name in src_dir_files if(os.path.isfile(src_dir + "/" + file_name))]
+
+        ### 定位所有的 dst_dirs 內部的所有檔案path
+        dst_file_paths = []
+        for src_file_path in src_file_paths:
+            dst_file_paths.append(src_file_path.replace(write_dir, read_dir))
+
+        import shutil
+        for go_path, src_file_path in enumerate(src_file_paths):
+            shutil.copyfile(src_file_paths[go_path], dst_file_paths[go_path])
+
+
+        # shutil.copytree(write_dir, read_dir)
+
+        # command   = f'robocopy "{write_dir}" "{read_dir}" /E'  ### 複製資料夾內的檔案(不包含子資料夾，子資料夾也想複製的話加/E，但我覺得不要，因為如果複製 上層資料夾， 會重複複製到很多次相同子資料夾， 浪費時間)
 
     ### 留幾版在刪掉，用一個個檔案複製的方式，但後來發現 用cmd指令 可直接copy 資料夾！且複寫也沒問題～　就用上面的方式了～
     ### 但覺得下面的觀念還不錯，就留一下囉
