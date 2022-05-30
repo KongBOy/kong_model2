@@ -59,14 +59,12 @@ class I_to_M(Use_G_generate):
             ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
             ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
             ### 對 pre 做 crop
-            dis_img_pre_croped_resized, pre_boundary = self.tight_crop(dis_img_pre  , gt_mask_pre)
-            ### 根據比例 放大回來 crop 出 ord
+            dis_img_pre_croped_resized, pre_boundary = self.tight_crop(dis_img_pre  , gt_mask_pre)  ### 可以看一下 丟進去model 的img 長什麼樣子
+            ### 根據比例 放大回來 crop 出 ord，目前這個case好像用不到，這是在rec的時候才會用到，如果是要 建 dataset 的話 要存 dis_img_ord 才對喔
             ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
             ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
-
-            ### 好像用不到，之前是想錯才覺得需要，現在想清楚了 要存的是 dis_img_ord 才對， 不過都寫了就先留著吧
             ord_l_out_amo = np.round(pre_boundary["l_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_t_out_amo = np.round(pre_boundary["t_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_out_amo = np.round(pre_boundary["r_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
@@ -84,7 +82,7 @@ class I_to_M(Use_G_generate):
         '''
         bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
         '''
-        dis_img_ord_croped_not_accurate  =  dis_img_ord_croped_not_accurate[0].astype(np.uint8)             ### 好像用不到，之前是想錯才覺得需要，現在想清楚了 要存的是 dis_img_ord 才對， 不過都寫了就先留著吧， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
+        dis_img_ord_croped_not_accurate  =  dis_img_ord_croped_not_accurate[0].astype(np.uint8)             ### 目前這個case好像用不到，這是在rec的時候才會用到，如果是要 建 dataset 的話 要存 dis_img_ord 才對喔， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
         dis_img_pre_croped_resized       = (dis_img_pre_croped_resized[0].numpy() * 255 ).astype(np.uint8)  ### 可以看一下 丟進去model 的img 長什麼樣子
         dis_img_ord                      = (dis_img_ord       [0].numpy()       ).astype(np.uint8)
         dis_img_pre                      = (dis_img_pre       [0].numpy() * 255 ).astype(np.uint8)
@@ -154,7 +152,7 @@ class I_to_M(Use_G_generate):
 
                 ###############################################################################
                 ### 準備存 dis_img
-                gather_dis_img_ord_dir_w_Crop  = gather_base_dir + "/0_dis_img_ord_w_Crop"  ### 好像用不到，之前是想錯才覺得需要，現在想清楚了 要存的是 dis_img_ord 才對， 不過都寫了就先留著吧， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
+                gather_dis_img_ord_dir_w_Crop  = gather_base_dir + "/0_dis_img_ord_w_Crop"  ### 目前這個case好像用不到，這是在rec的時候才會用到，如果是要 建 dataset 的話 要存 dis_img_ord 才對喔， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
                 gather_dis_img_pre_dir_w_Crop  = gather_base_dir + "/0_dis_img_pre_w_Crop"  ### 可以看一下 丟進去model 的img 長什麼樣子
                 gather_dis_img_ord_dir         = gather_base_dir + "/0_dis_img"
                 gather_dis_img_pre_dir         = gather_base_dir + "/0_dis_img_pre"
@@ -166,7 +164,7 @@ class I_to_M(Use_G_generate):
                 dis_img_pre_w_Crop_path  = f"{gather_dis_img_pre_dir_w_Crop}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
                 dis_img_ord_path         = f"{gather_dis_img_ord_dir}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
                 dis_img_pre_path         = f"{gather_dis_img_pre_dir}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
-                cv2.imwrite(dis_img_ord_w_Crop_path, dis_img_ord_croped_not_accurate)  ### 好像用不到，之前是想錯才覺得需要，現在想清楚了 要存的是 dis_img_ord 才對， 不過都寫了就先留著吧， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
+                cv2.imwrite(dis_img_ord_w_Crop_path, dis_img_ord_croped_not_accurate)  ### 目前這個case好像用不到，這是在rec的時候才會用到，如果是要 建 dataset 的話 要存 dis_img_ord 才對喔， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
                 cv2.imwrite(dis_img_pre_w_Crop_path, dis_img_pre_croped_resized)
                 cv2.imwrite(dis_img_ord_path      , dis_img_ord)
                 cv2.imwrite(dis_img_pre_path      , dis_img_pre)

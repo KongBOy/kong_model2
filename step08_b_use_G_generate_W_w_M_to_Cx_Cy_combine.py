@@ -75,13 +75,18 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
             ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
             ### 對 pre 做 crop
-            dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
-            ### 根據比例 放大回來 crop 出 ord
+            dis_img_pre_croped_resized, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)  ### 可以看一下 丟進去model 的img 長什麼樣子
+            ### 根據比例 放大回來 crop 出 ord， 這是在rec的時候才會用到， 現在 Wxyz_to_Cxy 要做 rec 就會用到了喔！
             ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
             ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
-            dis_img_ord  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
+            ord_l_out_amo = np.round(pre_boundary["l_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_t_out_amo = np.round(pre_boundary["t_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_r_out_amo = np.round(pre_boundary["r_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
+            ord_d_out_amo = np.round(pre_boundary["d_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
+            dis_img_ord_croped_not_accurate   = np.pad(dis_img_ord.numpy(), ( (0, 0), (ord_t_out_amo, ord_d_out_amo), (ord_l_out_amo, ord_r_out_amo), (0, 0)  ))  ### BHWC
+            dis_img_ord_croped_not_accurate   = dis_img_ord_croped_not_accurate[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
 
         ### 視覺化一下
         # fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(5 * 3, 5))
@@ -205,6 +210,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
 
         ### 這個是給後處理用的 dis_img_ord
         dis_img_ord = dis_img_ord [0].numpy()
+        dis_img_ord_croped_not_accurate = dis_img_ord_croped_not_accurate[0]
         rec_hope    = rec_hope    [0].numpy()
 
         ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
@@ -212,6 +218,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             rec_hope    = rec_hope  [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
             Fgt_visual  = Fgt_visual[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
             dis_img_ord = dis_img_ord   [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
+            dis_img_ord_croped_not_accurate = dis_img_ord_croped_not_accurate[:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
 
             if(self.focus is False):
                 F_visual       = F_visual  [:, :, ::-1]  ### tf2 讀出來是 rgb， 但cv2存圖是bgr， 所以記得要轉一下ch
@@ -278,7 +285,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
                 kernel_size = self.model_obj.discriminator.kernel_size
                 strides     = self.model_obj.discriminator.strides
                 layer       = self.model_obj.discriminator.depth_level
-                receptive_filed_feature_length = get_receptive_filed_feature_length(kernel_size, strides, layer, ord_len=dis_img_pre.shape[0])
+                receptive_filed_feature_length = get_receptive_filed_feature_length(kernel_size, strides, layer, ord_len=dis_img_pre_croped_resized.shape[0])
 
                 ### 模擬訓練中怎麼縮小， 這邊就怎麼縮小， 可以參考 step10_loss 裡的 BCE loss 喔～
                 BCE_Mask_type = self.model_obj.train_step.BCE_Mask_type.lower()
@@ -291,7 +298,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
                 M_used = M_used[0]
 
                 ### 取得 Mask 在原影像 的 receptive_filed_mask
-                receptive_filed_mask   = get_receptive_field_mask(kernel_size=kernel_size, strides=strides, layer=layer, img_shape=dis_img_pre.shape, Mask=M_used, vmin=0.5)  ### return HWC， vmin=0.5 是為了等等相乘時留一點透明度
+                receptive_filed_mask   = get_receptive_field_mask(kernel_size=kernel_size, strides=strides, layer=layer, img_shape=dis_img_pre_croped_resized.shape, Mask=M_used, vmin=0.5)  ### return HWC， vmin=0.5 是為了等等相乘時留一點透明度
 
                 ### D_out 跟 縮小M 相乘， 原影像 跟 原影像的receptive_filed_mask 相乘
                 fake_score_w_M         = fake_score * M_used
@@ -345,7 +352,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
         if(self.postprocess):
             current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
 
-            bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord, flow=F_w_Mgt)
+            bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord_croped_not_accurate, flow=F_w_Mgt)
             '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
             cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
 

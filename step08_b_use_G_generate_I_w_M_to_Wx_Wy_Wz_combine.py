@@ -58,13 +58,18 @@ class I_w_M_to_W(Use_G_generate):
             ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
             ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
             ### 對 pre 做 crop
-            dis_img_pre, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
-            ### 根據比例 放大回來 crop 出 ord
+            dis_img_pre_croped_resized, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)  ### 可以看一下 丟進去model 的img 長什麼樣子
+            ### 根據比例 放大回來 crop 出 ord，目前這個case好像用不到，這是在rec的時候才會用到，如果是要 建 dataset 的話 要存 dis_img_ord 才對喔
             ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
             ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
-            dis_img_ord  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
+            ord_l_out_amo = np.round(pre_boundary["l_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_t_out_amo = np.round(pre_boundary["t_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_r_out_amo = np.round(pre_boundary["r_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
+            ord_d_out_amo = np.round(pre_boundary["d_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
+            dis_img_ord_croped_not_accurate = np.pad(dis_img_ord.numpy(), ( (0, 0), (ord_t_out_amo, ord_d_out_amo), (ord_l_out_amo, ord_r_out_amo), (0, 0)  ))  ### BHWC， 目前這個case好像用不到，這是在rec的時候才會用到，如果是要 建 dataset 的話 要存 dis_img_ord 才對喔， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
+            dis_img_ord_croped_not_accurate = dis_img_ord_croped_not_accurate[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
 
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
         ''' tight crop end '''''''''''''''''''''''''''''''''
@@ -73,7 +78,7 @@ class I_w_M_to_W(Use_G_generate):
         Mgt_ord          = Wgt_w_Mgt_ord[0, ..., 3:4]  ### 給 test concat 用
         Mgt_pre          = Wgt_w_Mgt_pre[..., 3:4]
         Wgt_pre          = Wgt_w_Mgt_pre[..., 0:3]
-        I_pre_with_M_pre = dis_img_pre * Mgt_pre
+        I_pre_with_M_pre = dis_img_pre_croped_resized * Mgt_pre
 
         if(self.separate_out is False):
             W_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)
@@ -161,9 +166,9 @@ class I_w_M_to_W(Use_G_generate):
         Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = WcM_01_visual_op(Wgt_01)
         ''''''''''''''''''''''''''''''''''''''''''''''''
         ### 視覺化 Input (I)
-        dis_img_ord =  dis_img_ord[0].numpy()
-        dis_img_pre = (dis_img_pre[0].numpy() * 255 ).astype(np.uint8)
-        rec_hope  = rec_hope[0].numpy()
+        dis_img_ord        =  dis_img_ord[0].numpy()
+        dis_img_pre_croped_resized_visual = (dis_img_pre_croped_resized[0].numpy() * 255 ).astype(np.uint8)  ### 可以看一下 丟進去model 的img 長什麼樣子
+        rec_hope           = rec_hope[0].numpy()
 
         ### 視覺化 Input (I_w_M)
         I_w_M_01  = Value_Range_Postprocess_to_01(I_pre_with_M_pre, self.exp_obj.use_gt_range)
@@ -176,14 +181,15 @@ class I_w_M_to_W(Use_G_generate):
 
         ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
         if(self.bgr2rgb):
-            dis_img_ord  = dis_img_ord[:, :, ::-1]
-            rec_hope     = rec_hope[:, :, ::-1]
-            I_w_M_visual = I_w_M_visual[:, :, ::-1]
+            dis_img_ord        = dis_img_ord        [:, :, ::-1]
+            dis_img_pre_croped_resized_visual = dis_img_pre_croped_resized_visual [:, :, ::-1]  ### 可以看一下 丟進去model 的img 長什麼樣子
+            rec_hope           = rec_hope           [:, :, ::-1]
+            I_w_M_visual       = I_w_M_visual       [:, :, ::-1]
 
         if(current_ep == 0 or self.see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
             cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre.jpg" , dis_img_pre)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg" , dis_img_pre_croped_resized_visual)  ### 可以看一下 丟進去model 的img 長什麼樣子
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
 
@@ -218,9 +224,9 @@ class I_w_M_to_W(Use_G_generate):
         if(self.postprocess):
             current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             if(self.focus is False):
-                imgs       = [ [ dis_img_ord  , dis_img_pre   , Mgt_visual , I_w_M_visual   , W_visual , Wgt_visual],
+                imgs       = [ [ dis_img_ord  , dis_img_pre_croped_resized_visual, Mgt_visual , I_w_M_visual   , W_visual , Wgt_visual],
                                [ Wx_visual    , Wy_visual     , Wz_visual            ] ]
-                img_titles = [ ["dis_img_ord" , "dis_img_pre" , "Mgt"      , "I_with_M"     , "Wpred"      , "Wgt"     ],
+                img_titles = [ ["dis_img_ord" , "dis_img_pre_croped_resized" , "Mgt"      , "I_with_M"     , "Wpred"      , "Wgt"     ],
                                ["Wx"          , "Wy"          , "Wz"                 ] ]
 
                 ''' Sobel 部分 '''
@@ -235,9 +241,9 @@ class I_w_M_to_W(Use_G_generate):
                 img_titles += ["Wx_Gx"  , "Wx_Gy"  , "Wy_Gx"  , "Wy_Gy"  , "Wz_Gx"  , "Wz_Gy"  ]
 
             else:
-                imgs       = [ [ dis_img_ord   , dis_img_pre     , Mgt_visual    , I_w_M_visual    , W_raw_visual  , W_w_Mgt_visual  , Wgt_visual],
+                imgs       = [ [ dis_img_ord   , dis_img_pre_croped_resized_visual, Mgt_visual  , I_w_M_visual    , W_raw_visual  , W_w_Mgt_visual  , Wgt_visual],
                                [ Wx_raw_visual , Wx_w_Mgt_visual , Wy_raw_visual , Wy_w_Mgt_visual , Wz_raw_visual , Wz_w_Mgt_visual            ] ]
-                img_titles = [ ["dis_img_ord"  , "dis_img_pre"   , "Mgt"         , "I_with_M"      , "W_raw"       , "W_w_Mgt"       , "Wgt"],
+                img_titles = [ ["dis_img_ord"  , "dis_img_pre_croped_resized"   , "Mgt"         , "I_with_M"      , "W_raw"       , "W_w_Mgt"       , "Wgt"],
                                ["Wx_raw"       , "Wx_w_Mgt"      , "Wy_raw"      , "Wy_w_Mgt"      , "Wz_raw"      , "Wz_w_Mgt"        ]  ]
 
                 ''' Sobel 部分 '''

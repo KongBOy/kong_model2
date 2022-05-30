@@ -63,13 +63,12 @@ class I_w_M_to_W_to_C(Use_G_generate):
             ratio_h_p2o  = ord_h / pre_h  ### p2o 是 pre_to_ord 的縮寫
             ratio_w_p2o  = ord_w / pre_w  ### p2o 是 pre_to_ord 的縮寫
             ### 對 pre 做 crop
-            dis_img_pre_croped_resized, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)
-            ### 根據比例 放大回來 crop 出 ord
+            dis_img_pre_croped_resized, pre_boundary = self.tight_crop(dis_img_pre  , Mgt_pre_for_crop)  ### 可以看一下 丟進去model 的img 長什麼樣子
+            ### 根據比例 放大回來 crop 出 ord， 這是在rec的時候才會用到， 現在 I_w_M_to_Wxyz_to_Cxy 要做 rec 就會用到了喔！
             ord_l_pad    = np.round(pre_boundary["l_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
             ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
-
             ord_l_out_amo = np.round(pre_boundary["l_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_t_out_amo = np.round(pre_boundary["t_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_out_amo = np.round(pre_boundary["r_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
@@ -213,7 +212,7 @@ class I_w_M_to_W_to_C(Use_G_generate):
         dis_img_ord         = dis_img_ord[0].numpy()
         dis_img_ord_croped_not_accurate = dis_img_ord_croped_not_accurate[0]
         dis_img_pre         = (dis_img_pre[0].numpy() * 255).astype(np.uint8)
-        dis_img_pre_croped_resized_visual  = (dis_img_pre_croped_resized[0].numpy() * 255).astype(np.uint8)
+        dis_img_pre_croped_resized_visual  = (dis_img_pre_croped_resized[0].numpy() * 255).astype(np.uint8)  ### 可以看一下 丟進去model 的img 長什麼樣子
         rec_hope            = rec_hope[0].numpy()
 
         '''cv2 bgr 與 rgb 的調整'''
