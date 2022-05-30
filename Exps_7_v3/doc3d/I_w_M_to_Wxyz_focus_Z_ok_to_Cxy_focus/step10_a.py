@@ -35,7 +35,7 @@ from step10_b2_exp_builder import Exp_builder
 ### Model_builder
 from step09_3side_L5 import *
 
-# rm_paths = [path for path in sys.path if "kong_model2" in path]
+# rm_paths = [path for path in sys.path if code_dir in path]
 # for rm_path in rm_paths: sys.path.remove(rm_path)
 # rm_moduless = [module for module in sys.modules if "step09" in module]
 # for rm_module in rm_moduless: del sys.modules[rm_module]

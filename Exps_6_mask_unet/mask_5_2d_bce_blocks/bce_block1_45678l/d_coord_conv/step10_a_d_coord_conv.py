@@ -27,7 +27,7 @@ from step09_e2_mask_unet2_obj import *
 from step10_a2_loss_info_obj import *
 from step10_b2_exp_builder import Exp_builder
 
-rm_paths = [path for path in sys.path if "kong_model2" in path]
+rm_paths = [path for path in sys.path if code_dir in path]
 for rm_path in rm_paths: sys.path.remove(rm_path)
 rm_moduless = [module for module in sys.modules if "step09" in module]
 for rm_module in rm_moduless: del sys.modules[rm_module]
