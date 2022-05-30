@@ -231,7 +231,7 @@ class W_w_M_to_Cx_Cy(Use_G_generate):
             Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_rec_write_dir)    ### 建立 放輔助檔案 的資料夾
             ###################
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",          dis_img_ord)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",          dis_img_ord)  ### 存 dis_img_ord 沒錯， 這樣子做 tight_crop才正確 不是存 dis_img_ord_croped_not_accurate 喔！ 因為本身已經做過一次tight_crop了， 這樣子再做tight_crop 就多做一次囉～
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_W_01.jpg",         W_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_Wx_01.jpg",        Wx_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-ord_Wy_01.jpg",        Wy_visual)

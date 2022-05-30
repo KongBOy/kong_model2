@@ -188,7 +188,7 @@ class I_w_M_to_W(Use_G_generate):
 
         if(current_ep == 0 or self.see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)  ### 存 dis_img_ord 沒錯， 這樣子做 tight_crop才正確 不是存 dis_img_ord_croped_not_accurate 喔！ 因為本身已經做過一次tight_crop了， 這樣子再做tight_crop 就多做一次囉～
             cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg" , dis_img_pre_croped_resized_visual)  ### 可以看一下 丟進去model 的img 長什麼樣子
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)

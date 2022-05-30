@@ -228,9 +228,9 @@ class I_w_M_to_W_to_C(Use_G_generate):
             Check_dir_exist_and_build(private_write_dir)    ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_rec_write_dir)    ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_npz_write_dir)    ### 建立 放輔助檔案 的資料夾
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_ord_croped_not_accurate.jpg", dis_img_ord_croped_not_accurate)
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg"     , dis_img_pre_croped_resized_visual)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)  ### 存 dis_img_ord 沒錯， 這樣子做 tight_crop才正確 不是存 dis_img_ord_croped_not_accurate 喔！ 因為本身已經做過一次tight_crop了， 這樣子再做tight_crop 就多做一次囉～
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_ord_croped_not_accurate.jpg", dis_img_ord_croped_not_accurate)    ### 可以看一下 丟進去model 的img 對應原始size 長什麼樣子
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg"     , dis_img_pre_croped_resized_visual)  ### 可以看一下 丟進去model 的img 長什麼樣子
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
 
