@@ -65,8 +65,15 @@ class I_to_M(Use_G_generate):
             ord_r_pad    = np.round(pre_boundary["r_pad_slice"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_t_pad    = np.round(pre_boundary["t_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
             ord_d_pad    = np.round(pre_boundary["d_pad_slice"].numpy() * ratio_h_p2o).astype(np.int32)
-            dis_img_ord_croped_not_accurate  = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
 
+            ### 好像用不到，之前是想錯才覺得需要，現在想清楚了 要存的是 dis_img_ord 才對， 不過都寫了就先留著吧
+            ord_l_out_amo = np.round(pre_boundary["l_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_t_out_amo = np.round(pre_boundary["t_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
+            ord_r_out_amo = np.round(pre_boundary["r_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
+            ord_d_out_amo = np.round(pre_boundary["d_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
+            dis_img_ord_croped_not_accurate = np.pad(dis_img_ord.numpy(), ( (0, 0), (ord_t_out_amo, ord_d_out_amo), (ord_l_out_amo, ord_r_out_amo), (0, 0)  ))  ### BHWC， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
+            dis_img_ord_croped_not_accurate = dis_img_ord_croped_not_accurate[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
+            ### 可能還是會差 1個 pixel 之類的
 
         ''' use_model '''
         M_pre = self.model_obj.generator(dis_img_pre_croped_resized, training=self.training)
@@ -77,11 +84,12 @@ class I_to_M(Use_G_generate):
         '''
         bgr2rgb： tf2 讀出來是 rgb， 但 cv2 存圖是bgr， 所以此狀況記得要轉一下ch 把 bgr2rgb設True！
         '''
-        dis_img_ord_croped_not_accurate  =  dis_img_ord_croped_not_accurate[0].numpy().astype(np.uint8)
-        dis_img_pre_croped_resized  = (dis_img_pre_croped_resized[0].numpy() * 255 ).astype(np.uint8)
-        dis_img_pre         = (dis_img_pre       [0].numpy() * 255 ).astype(np.uint8)
-        Mgt_visual          = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
-        rec_hope            = rec_hope[0].numpy()
+        dis_img_ord_croped_not_accurate  =  dis_img_ord_croped_not_accurate[0].astype(np.uint8)             ### 好像用不到，之前是想錯才覺得需要，現在想清楚了 要存的是 dis_img_ord 才對， 不過都寫了就先留著吧， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
+        dis_img_pre_croped_resized       = (dis_img_pre_croped_resized[0].numpy() * 255 ).astype(np.uint8)  ### 可以看一下 丟進去model 的img 長什麼樣子
+        dis_img_ord                      = (dis_img_ord       [0].numpy()       ).astype(np.uint8)
+        dis_img_pre                      = (dis_img_pre       [0].numpy() * 255 ).astype(np.uint8)
+        Mgt_visual                       = (gt_mask_coord[0, ..., 0:1].numpy() * 255).astype(np.uint8)
+        rec_hope                         = rec_hope[0].numpy()
         # plt.figure()
         # plt.imshow(Mgt_visual)
         # plt.show()
@@ -93,14 +101,15 @@ class I_to_M(Use_G_generate):
         if(self.bgr2rgb):
             dis_img_ord_croped_not_accurate = dis_img_ord_croped_not_accurate[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
             dis_img_pre_croped_resized = dis_img_pre_croped_resized[:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
+            dis_img_ord        = dis_img_ord       [:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
             dis_img_pre        = dis_img_pre       [:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
             rec_hope           = rec_hope          [:, :, ::-1]  ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
 
         if(current_ep == 0 or self.see_reset_init):                                              ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
             Check_dir_exist_and_build(private_write_dir)                                   ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_mask_write_dir)                                  ### 建立 model生成的結果 的資料夾
-            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", dis_img_ord_croped_not_accurate)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
-            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg"    , dis_img_pre_croped_resized)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img(in_img).jpg", dis_img_ord)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
+            cv2.imwrite(private_write_dir  + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg", dis_img_pre_croped_resized)                ### 寫一張 in圖進去，進去資料夾時比較好看，0a是為了保證自動排序會放在第一張
             cv2.imwrite(private_write_dir  + "/" + "0b_u1b1-gt_mask.jpg", Mgt_visual)            ### 寫一張 gt圖進去，進去資料夾時比較好看，0b是為了保證自動排序會放在第二張
         cv2.imwrite(    private_mask_write_dir + "/" + f"{ep_it_string}-u1b1_mask.jpg", M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
@@ -145,10 +154,22 @@ class I_to_M(Use_G_generate):
 
                 ###############################################################################
                 ### 準備存 dis_img
-                gather_dis_img_dir  = gather_base_dir + "/0_dis_img_pre"
-                Check_dir_exist_and_build(gather_dis_img_dir)
-                dis_img_pre_path  = f"{gather_dis_img_dir}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
-                cv2.imwrite(dis_img_pre_path, dis_img_pre)
+                gather_dis_img_ord_dir_w_Crop  = gather_base_dir + "/0_dis_img_ord_w_Crop"  ### 好像用不到，之前是想錯才覺得需要，現在想清楚了 要存的是 dis_img_ord 才對， 不過都寫了就先留著吧， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
+                gather_dis_img_pre_dir_w_Crop  = gather_base_dir + "/0_dis_img_pre_w_Crop"  ### 可以看一下 丟進去model 的img 長什麼樣子
+                gather_dis_img_ord_dir         = gather_base_dir + "/0_dis_img"
+                gather_dis_img_pre_dir         = gather_base_dir + "/0_dis_img_pre"
+                Check_dir_exist_and_build(gather_dis_img_ord_dir_w_Crop)
+                Check_dir_exist_and_build(gather_dis_img_pre_dir_w_Crop)
+                Check_dir_exist_and_build(gather_dis_img_ord_dir)
+                Check_dir_exist_and_build(gather_dis_img_pre_dir)
+                dis_img_ord_w_Crop_path  = f"{gather_dis_img_ord_dir_w_Crop}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
+                dis_img_pre_w_Crop_path  = f"{gather_dis_img_pre_dir_w_Crop}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
+                dis_img_ord_path         = f"{gather_dis_img_ord_dir}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
+                dis_img_pre_path         = f"{gather_dis_img_pre_dir}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
+                cv2.imwrite(dis_img_ord_w_Crop_path, dis_img_ord_croped_not_accurate)  ### 好像用不到，之前是想錯才覺得需要，現在想清楚了 要存的是 dis_img_ord 才對， 不過都寫了就先留著吧， not_accurate 意思是可能會差1個pixel， 因為 乘完 ratio_p2o 視作四捨五入 
+                cv2.imwrite(dis_img_pre_w_Crop_path, dis_img_pre_croped_resized)
+                cv2.imwrite(dis_img_ord_path      , dis_img_ord)
+                cv2.imwrite(dis_img_pre_path      , dis_img_pre)
                 ###############################################################################
                 ### 準備存 rec_hope
                 gather_rec_hope_dir  = gather_base_dir + "/0_rec_hope"
