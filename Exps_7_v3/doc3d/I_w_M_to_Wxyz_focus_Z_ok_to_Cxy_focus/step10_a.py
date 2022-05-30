@@ -32,13 +32,13 @@ from step06_a_datas_obj import *
 from step10_a2_loss_info_obj import *
 from step10_b2_exp_builder import Exp_builder
 
-rm_paths = [path for path in sys.path if "kong_model2" in path]
-for rm_path in rm_paths: sys.path.remove(rm_path)
-rm_moduless = [module for module in sys.modules if "step09" in module]
-for rm_module in rm_moduless: del sys.modules[rm_module]
-
 ### Model_builder
 from step09_3side_L5 import *
+
+# rm_paths = [path for path in sys.path if "kong_model2" in path]
+# for rm_path in rm_paths: sys.path.remove(rm_path)
+# rm_moduless = [module for module in sys.modules if "step09" in module]
+# for rm_module in rm_moduless: del sys.modules[rm_module]
 
 ### Exp_builder
 from Exps_7_v3.doc3d.I_w_M_to_Wxyz_focus_Z_ok.pyr_Tcrop255_pad20_jit15.Mae_s001.pyr_2s.L5.step10_a                      import ch032_1side_6__2side_6 as I_w_M_to_W_Tcrop255_p20_2s_L5_Mae
@@ -60,6 +60,7 @@ from Exps_7_v3.doc3d.W_w_Mgt_to_Cx_Cy_focus_Z_ok.Sob_k25_s001_EroM.pyr_Tcrop255_
 from Exps_7_v3.doc3d.W_w_Mgt_to_Cx_Cy_focus_Z_ok.Sob_k25_s001_EroM_Mae_s001.pyr_Tcrop255_pad20_jit15.pyr_2s.L5.step10_a import ch032_1side_6__2side_6 as W_w_M_to_C_Tcrop255_p20_2s_L5_Sob_k25_Mae
 from Exps_7_v3.doc3d.W_w_Mgt_to_Cx_Cy_focus_Z_ok.Sob_k35_s001_EroM.pyr_Tcrop255_pad20_jit15.pyr_2s.L5.step10_a          import ch032_1side_6__2side_6 as W_w_M_to_C_Tcrop255_p20_2s_L5_Sob_k35
 from Exps_7_v3.doc3d.W_w_Mgt_to_Cx_Cy_focus_Z_ok.Sob_k35_s001_EroM_Mae_s001.pyr_Tcrop255_pad20_jit15.pyr_2s.L5.step10_a import ch032_1side_6__2side_6 as W_w_M_to_C_Tcrop255_p20_2s_L5_Sob_k35_Mae
+
 #############################################################################################################################################################################################################
 
 ###############################################################################################################################
