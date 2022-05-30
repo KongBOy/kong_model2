@@ -2,8 +2,8 @@ import sys
 sys.path.append("kong_util")
 
 from build_dataset_combine import Check_dir_exist_and_build
-from util import time_util
-from matplot_fig_ax_util import change_into_img_2D_coord_ax
+from kong_util.util import time_util
+from kong_util.matplot_fig_ax_util import change_into_img_2D_coord_ax
 
 from step0_access_path import Data_Access_Dir
 from step2_a_distort_curl_and_fold import get_dis_move_map, get_xy_f_and_m

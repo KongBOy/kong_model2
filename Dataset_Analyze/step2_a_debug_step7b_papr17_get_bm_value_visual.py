@@ -1,7 +1,7 @@
 import sys
 sys.path.append("kong_util")
 
-from matplot_fig_ax_util import check_fig_ax_init, coord_m_2D_scatter, move_map_2D_arrow, move_map_3D_scatter
+from kong_util.matplot_fig_ax_util import check_fig_ax_init, coord_m_2D_scatter, move_map_2D_arrow, move_map_3D_scatter
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.patches as patches
 import numpy as np

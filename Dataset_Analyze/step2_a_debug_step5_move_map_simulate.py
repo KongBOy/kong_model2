@@ -1,7 +1,7 @@
 import sys
 sys.path.append("kong_util")
 
-from matplot_fig_ax_util import check_fig_ax_init, move_map_2D_moving_visual
+from kong_util.matplot_fig_ax_util import check_fig_ax_init, move_map_2D_moving_visual
 from step2_a_util import wt_calculate
 
 def step5_move_map_simulate_visual(start_xy_m, move_xy, d_abs_norm_m, alpha_fold=0.8, alpha_curl=2.0, fig=None, ax=None, ax_c=None, tight_layout=False):  ### alpha參考 paper17印度 用的 https://github.com/XiyanLiu/AGUN

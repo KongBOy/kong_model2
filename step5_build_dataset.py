@@ -1,6 +1,6 @@
 import sys
 sys.path.append("kong_util")
-from build_dataset_combine import build_datasets
+from kong_util.build_dataset_combine import build_datasets
 
 #####################################################################################################################################################
 # dst_db_dir = "D:/Users/user/Desktop/db/"  ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！
@@ -184,7 +184,7 @@ from build_dataset_combine import build_datasets
 #                db_gt_name   = "gt_ord_img_db")
 
 
-# from util import  get_maxmin_train_move_from_path, get_max_db_move_xy
+# from kong_util.util import  get_maxmin_train_move_from_path, get_max_db_move_xy
 # db_name = "1_pure_unet2000-512to256_index"
 # max_train_move, min_train_move = get_maxmin_train_move_from_path(dst_db_dir+"datasets"+"/"+db_name+"/"+"train"+"/"+"move_maps")
 # np.save(dst_db_dir+"datasets"+"/"+db_name+"/"+"max_train_move",max_train_move)

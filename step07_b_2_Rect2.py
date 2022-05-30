@@ -335,8 +335,8 @@ def test_visual(test_dir_name, data_dict, start_index=0):
 
     from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec
     import matplotlib.pyplot as plt
-    from util import get_dir_imgs
-    from build_dataset_combine import Check_dir_exist_and_build
+    from kong_util.util import get_dir_imgs
+    from kong_util.build_dataset_combine import Check_dir_exist_and_build
     import numpy as np
 
     ### 建立放結果的資料夾

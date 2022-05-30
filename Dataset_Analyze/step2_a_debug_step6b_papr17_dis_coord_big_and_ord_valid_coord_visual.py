@@ -1,7 +1,7 @@
 import sys
 sys.path.append("kong_util")
 
-from matplot_fig_ax_util import check_fig_ax_init, move_map_2D_arrow, move_map_3D_scatter
+from kong_util.matplot_fig_ax_util import check_fig_ax_init, move_map_2D_arrow, move_map_3D_scatter
 from step2_a_util import step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord_simulate
 
 def step6_debug_b_Dis_coord_big_Move_map_Boundary_Ord_valid_coord_visual(dis_coord_big_m, move_map_m, start_xy_m,

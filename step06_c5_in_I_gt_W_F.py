@@ -41,7 +41,7 @@ class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_init_builder):
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # import matplotlib.pyplot as plt
-        # from util import method1
+        # from kong_util.util import method1
         # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine.take(3)):
         #     ''' 注意這裡的train_in 有多 dis_img 喔！
         #            train_in[0] 是 wc,      shape=(N, H, W, C)

@@ -1,7 +1,7 @@
 import sys
 sys.path.append("kong_util")
 
-from matplot_fig_ax_util import check_fig_ax_init, move_map_2D_arrow, move_map_3D_scatter
+from kong_util.matplot_fig_ax_util import check_fig_ax_init, move_map_2D_arrow, move_map_3D_scatter
 
 def step6_debug_c_Dis_coord_small_Move_map_Boundary_visual(dis_coord_small_m, move_map_m, start_xy_m,
                                                  boundary_value=0.95,

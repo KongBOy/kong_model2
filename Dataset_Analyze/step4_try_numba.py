@@ -1,10 +1,10 @@
 from step0_access_path import Data_Access_Dir
-from util import get_dir_moves, get_max_db_move_xy_from_numpy, get_dir_certain_moves, get_dir_certain_imgs, method2, get_max_db_move_xy_from_certain_move
+from kong_util.util import get_dir_moves, get_max_db_move_xy_from_numpy, get_dir_certain_moves, get_dir_certain_imgs, method2, get_max_db_move_xy_from_certain_move
 import numpy as np
 from numba import cuda
 import math
 import argparse
-from util import get_xy_map
+from kong_util.util import get_xy_map
 
 import cv2
 

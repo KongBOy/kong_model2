@@ -2,7 +2,7 @@ from step0_access_path import Data_Access_Dir
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
-from util import get_dir_moves, get_reference_map, method1, method2
+from kong_util.util import get_dir_moves, get_reference_map, method1, method2
 
 if(__name__ == "__main__"):
     # Data_Access_Dir = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！

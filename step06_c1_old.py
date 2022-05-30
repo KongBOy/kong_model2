@@ -59,7 +59,7 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # import matplotlib.pyplot as plt
-        # from util import method2
+        # from kong_util.util import method2
 
         # take_num = 5
         # print(self.tf_data.train_max)
@@ -161,7 +161,7 @@ class tf_Data_in_img_gt_mask_builder(tf_Data_in_dis_gt_img_builder):
         self._train_in_gt_and_test_in_gt_combine_then_train_shuffle()
 
         # import matplotlib.pyplot as plt
-        # from util import method1
+        # from kong_util.util import method1
         # for i, (train_in, train_in_pre, train_gt, train_gt_pre) in enumerate(self.tf_data.train_db_combine):
         #     # print(train_in.numpy().shape)       ### (10, 768, 768, 3)
         #     train_in     = train_in[0]          ### 值 0  ~ 255

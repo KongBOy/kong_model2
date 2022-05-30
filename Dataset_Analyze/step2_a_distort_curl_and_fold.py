@@ -3,9 +3,9 @@ sys.path.append("kong_util")
 
 import numpy as np
 import matplotlib.pyplot as plt
-from util import get_xy_f_and_m
-from matplot_fig_ax_util import check_fig_ax_init, mesh3D_scatter_and_z0_plane, move_map_2D_moving_visual
-from matplot_fig_ax_util import coord_f_2D_scatter, move_map_1D_value, move_map_2D_arrow
+from kong_util.util import get_xy_f_and_m
+from kong_util.matplot_fig_ax_util import check_fig_ax_init, mesh3D_scatter_and_z0_plane, move_map_2D_moving_visual
+from kong_util.matplot_fig_ax_util import coord_f_2D_scatter, move_map_1D_value, move_map_2D_arrow
 
 
 from step2_a_util                                                         import wt_calculate, step7b_dis_coord_big_find_ord_valid_mask_and_ord_valid_coord_simulate, apply_fm_to_get_dis_img, apply_bm_to_get_rec_img, step8_get_denser_fm_by_bm, step8_get_denser_bm_by_bm
@@ -382,7 +382,7 @@ def step7c_Before_Dis_coord_valid_area_is_Fm_and_inverse_backto_Ord_to_get_fm_va
 
 if(__name__ == "__main__"):
     import cv2
-    from util import get_dir_certain_imgs
+    from kong_util.util import get_dir_certain_imgs
     # img_dir = "H:/Working/2 Blender/data_dir/0_ord/tex"
     # imgs = get_dir_certain_imgs(img_dir, certain_word="pr_Page_001.jpg", float_return=False)
     img_dir = "kong_util/img_data"

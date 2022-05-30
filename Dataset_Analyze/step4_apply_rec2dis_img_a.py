@@ -4,7 +4,7 @@ import numpy as np
 import sys
 sys.path.append(r"C:\Users\TKU\Desktop\kong_model2\kong_util")
 from build_dataset_combine import Check_dir_exist_and_build
-from util import method2, get_dir_certain_imgs, get_dir_certain_moves
+from kong_util.util import method2, get_dir_certain_imgs, get_dir_certain_moves
 from step3_apply_mov2ord_img import apply_move
 
 # Data_Access_Dir = "D:/Users/user/Desktop/db/" ### 後面直接補上 "/"囉，就不用再 +"/"+，自己心裡知道就好！

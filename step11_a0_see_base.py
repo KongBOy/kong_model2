@@ -1,6 +1,6 @@
 import sys
 sys.path.append("kong_util")
-from util import get_dir_certain_file_names
+from kong_util.util import get_dir_certain_file_names
 
 from step06_a_datas_obj import Range
 

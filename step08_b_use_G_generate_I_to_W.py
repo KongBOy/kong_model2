@@ -5,8 +5,8 @@ from step06_a_datas_obj import Range
 
 import sys
 sys.path.append("kong_util")
-from build_dataset_combine import Check_dir_exist_and_build
-from matplot_fig_ax_util import Matplot_single_row_imgs
+from kong_util.build_dataset_combine import Check_dir_exist_and_build
+from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
 from step08_b_use_G_generate_0_util import WcM_01_visual_op, Value_Range_Postprocess_to_01
@@ -77,7 +77,7 @@ def I_Generate_W_see(model_obj, phase, index, in_img, in_img_pre, _3, Wgt_w_Mgt_
 
     if(postprocess):
         current_see_name = used_sees[index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-        from matplot_fig_ax_util import Matplot_single_row_imgs
+        from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
         imgs = [ in_img ,   W_visual , Wgt_visual]
         img_titles = ["in_img", "Wpred",   "Wgt"]
 

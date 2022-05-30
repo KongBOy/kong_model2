@@ -1,8 +1,8 @@
 import sys
 sys.path.append("kong_util")
 
-from matplot_fig_ax_util import check_fig_ax_init, move_map_2D_arrow
-from util import fill_nan_at_mask_zero
+from kong_util.matplot_fig_ax_util import check_fig_ax_init, move_map_2D_arrow
+from kong_util.util import fill_nan_at_mask_zero
 
 def step7_visual_util_c_before(see_inv_coord_m, see_inv_move_map_m, fm_nan_mask,
                         dis_coord_m, ord_ratio, ord_coord_m, see_coord_m,

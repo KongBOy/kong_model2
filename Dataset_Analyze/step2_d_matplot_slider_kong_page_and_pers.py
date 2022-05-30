@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons, TextBox
 
-from util import get_xy_map
+from kong_util.util import get_xy_map
 from step2_a_distort_page_and_pers import build_page_move_map, build_perspective_move_map
 
 

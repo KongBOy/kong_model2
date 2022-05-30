@@ -5,7 +5,7 @@ from step06_a_datas_obj import Range
 
 import sys
 sys.path.append("kong_util")
-from build_dataset_combine import Check_dir_exist_and_build
+from kong_util.build_dataset_combine import Check_dir_exist_and_build
 
 import matplotlib.pyplot as plt
 

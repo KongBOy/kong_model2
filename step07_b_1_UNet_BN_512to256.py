@@ -2,11 +2,11 @@ import sys
 sys.path.append("kong_util")
 import tensorflow as tf
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, ReLU, LeakyReLU, BatchNormalization, Concatenate
-from util import method2
+from kong_util.util import method2
 import matplotlib.pyplot as plt
 import time
-from build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg
-from matplot_fig_ax_util import Matplot_single_row_imgs  # matplot_visual_single_row_imgs
+from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg
+from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs  # matplot_visual_single_row_imgs
 import cv2
 from step4_apply_rec2dis_img_b_use_move_map import apply_move_to_rec2
 
@@ -228,9 +228,9 @@ def generate_sees(model_G, see_index, in_img_pre, gt_move_map, max_train_move, m
 ### test_g_in_db 還是要，因為要給generator生成還是需要他這樣子～
 ### db_dir 和 db_name 主要是為了拿 mac_db_move_xy 和 maxmin_train_move
 def test_visual(test_dir_name, model_dict, data_dict, start_index=0):
-    from build_dataset_combine import Check_dir_exist_and_build
+    from kong_util.build_dataset_combine import Check_dir_exist_and_build
     import numpy as np
-    from util import  get_dir_moves, get_dir_certain_imgs
+    from kong_util.util import  get_dir_moves, get_dir_certain_imgs
 
 
     ### 建立放結果的資料夾

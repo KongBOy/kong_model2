@@ -1,9 +1,9 @@
 import sys
 sys.path.append("kong_util")
 
-from matplot_fig_ax_util import check_fig_ax_init
+from kong_util.matplot_fig_ax_util import check_fig_ax_init
 import numpy as np
-from util import get_xy_f_and_m, method1
+from kong_util.util import get_xy_f_and_m, method1
 
 def wt_calculate_before(dis_type, d_abs_norm, alpha):
     '''

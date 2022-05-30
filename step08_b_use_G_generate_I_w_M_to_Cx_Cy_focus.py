@@ -4,9 +4,9 @@ import cv2
 
 import sys
 sys.path.append("kong_util")
-from build_dataset_combine import Check_dir_exist_and_build
+from kong_util.build_dataset_combine import Check_dir_exist_and_build
 from flow_bm_util import check_flow_quality_then_I_w_F_to_R
-from matplot_fig_ax_util import Matplot_single_row_imgs
+from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs
 
 import matplotlib.pyplot as plt
 from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, C_01_and_C_01_w_M_to_F_and_visualize

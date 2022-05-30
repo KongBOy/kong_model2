@@ -43,7 +43,7 @@ Change_name_used_Result_Read_Dirs = [
     Result_Write_Dir,  ### 別台電腦再 kong_model2 裡面的result
 ]
 
-from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
+from kong_util.build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
 import os
 
 def Syn_write_to_read_dir(write_dir, read_dir, build_new_dir=False, copy_sub_dir=False, print_msg=True):

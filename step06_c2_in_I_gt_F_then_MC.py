@@ -31,7 +31,7 @@ class tf_Data_in_dis_gt_mask_coord_builder(tf_Data_init_builder):
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # import matplotlib.pyplot as plt
-        # from util import method1
+        # from kong_util.util import method1
         # for i, (train_in, train_in_pre, train_gt, train_gt_pre, name) in enumerate(self.tf_data.train_db_combine):
         #     # if(  i == 0 and self.tf_data.train_shuffle is True) : print("first shuffle finish, cost time:"   , time.time() - start_time)
         #     # elif(i == 0 and self.tf_data.train_shuffle is False): print("first no shuffle finish, cost time:", time.time() - start_time)

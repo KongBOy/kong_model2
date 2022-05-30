@@ -8,11 +8,11 @@ import sys
 sys.path.append("kong_util")
 from step0_access_path import Analyze_Write_Dir, Analyze_Read_Dir, JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG, Syn_write_to_read_dir
 from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
-from build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop, Save_as_jpg
-from video_from_img import Video_combine_from_dir
-from multiprocessing import Process
+from kong_util.build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop, Save_as_jpg
+from kong_util.video_from_img import Video_combine_from_dir
+from kong_util.util import get_dir_certain_file_names, get_dir_certain_dir_names
 
-from util import get_dir_certain_file_names, get_dir_certain_dir_names
+from multiprocessing import Process
 
 import os
 import shutil

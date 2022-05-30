@@ -1,7 +1,7 @@
 import sys
 sys.path.append("kong_util")
 from build_dataset_combine import Check_dir_exist_and_build
-from util import get_dir_moves, get_dir_imgs, method2, get_xy_map, get_max_db_move_xy_from_numpy, time_util
+from kong_util.util import get_dir_moves, get_dir_imgs, method2, get_xy_map, get_max_db_move_xy_from_numpy, time_util
 import numpy as np
 import cv2
 import time

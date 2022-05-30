@@ -3,9 +3,10 @@ from step06_a_datas_obj import Range
 
 import sys
 sys.path.append("kong_util")
-from matplot_fig_ax_util import Matplot_multi_row_imgs
-from build_dataset_combine import Save_as_jpg,  Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
-from video_from_img import Video_combine_from_dir
+from kong_util.matplot_fig_ax_util import Matplot_multi_row_imgs
+from kong_util.build_dataset_combine import Save_as_jpg,  Check_dir_exist_and_build_new_dir, Find_ltrd_and_crop
+from kong_util.video_from_img import Video_combine_from_dir
+from kong_util.multiprocess_util import multi_processing_interface
 
 import cv2
 import time
@@ -14,7 +15,6 @@ from tqdm import tqdm
 # import matplotlib.pyplot as plt
 # import pdb
 
-from multiprocess_util import multi_processing_interface
 
 import datetime
 
