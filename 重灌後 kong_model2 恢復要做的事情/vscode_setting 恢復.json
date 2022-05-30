@@ -29,4 +29,5 @@
         "timeline.localHistory"
     ],
     "window.zoomLevel": -1,
+    "terminal.integrated.scrollback": 50000,
 }
