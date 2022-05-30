@@ -3,7 +3,7 @@ from step11_a0_see_base import See_info
 from step0_access_path import JPG_QUALITY, CORE_AMOUNT_WM_VISUAL, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
 from step0_access_path import Syn_write_to_read_dir
 
-from step08_b_use_G_generate_0_util import W_01_visual_op
+from step08_b_use_G_generate_0_util import WcM_01_visual_op
 
 from kong_util.util import get_dir_certain_file_names, move_dir_certain_file
 from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
@@ -232,7 +232,7 @@ class See_wc(See_info):
         WM_3d_plot(WM_back, savefig=True, save_path=WM_3D_path, **WM_range)
         if(os.path.isfile(WM_3D_gt_path) is False): WM_3d_plot(WM_gt_back, savefig=True, save_path=WM_3D_gt_path, **WM_range)
 
-        W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = W_01_visual_op(WM_01,    out_ch3=True)
+        W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = WcM_01_visual_op(WM_01,    out_ch3=True)
         Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(WM_01_gt, out_ch3=True)
 
         imgs = [ [in_img,     in_img,      in_img,      in_img],

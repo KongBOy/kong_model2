@@ -24,6 +24,7 @@ from Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop255_pad60_jit15.Bce_s001        
 
 ### L5
 from Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop255_pad60_jit15.Bce_s001             .pyr_2s.L5.step10_a import ch032_1side_6__2side_6 as Tcrop255_p20_Bce_L5
+from Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop255_pad60_jit15.Mae_s001             .pyr_2s.L5.step10_a import ch032_1side_6__2side_6 as Tcrop255_p20_Mae_L5
 from Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop255_pad60_jit15.Sob_k05_s001         .pyr_2s.L5.step10_a import ch032_1side_6__2side_6 as Tcrop255_p20_Sob_k05_L5
 from Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop255_pad60_jit15.Sob_k07_s001         .pyr_2s.L5.step10_a import ch032_1side_6__2side_6 as Tcrop255_p20_Sob_k07_L5
 from Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop255_pad60_jit15.Sob_k09_s001         .pyr_2s.L5.step10_a import ch032_1side_6__2side_6 as Tcrop255_p20_Sob_k09_L5
@@ -96,7 +97,7 @@ from Exps_7_v3.doc3d.I_to_M_Gk3_no_pad.pyr_Tcrop255_pad60_jit15.Sob_k35_s001_Bce
 
 ### L5
 Tcrop255_P20_Sob_L5 = [
-    [Tcrop255_p20_Bce_L5    , empty                  , empty                  , empty                  , empty               , ] ,
+    [Tcrop255_p20_Bce_L5    , Tcrop255_p20_Mae_L5    , empty                  , empty                  , empty               , ] ,
     [Tcrop255_p20_Sob_k05_L5, Tcrop255_p20_Sob_k07_L5, Tcrop255_p20_Sob_k09_L5, Tcrop255_p20_Sob_k11_L5, Tcrop255_p20_Sob_k13_L5, ] ,
     [Tcrop255_p20_Sob_k15_L5, Tcrop255_p20_Sob_k17_L5, Tcrop255_p20_Sob_k19_L5, Tcrop255_p20_Sob_k21_L5, Tcrop255_p20_Sob_k23_L5, ] ,
     [Tcrop255_p20_Sob_k25_L5, Tcrop255_p20_Sob_k27_L5, Tcrop255_p20_Sob_k29_L5, Tcrop255_p20_Sob_k31_L5, Tcrop255_p20_Sob_k33_L5, ] ,

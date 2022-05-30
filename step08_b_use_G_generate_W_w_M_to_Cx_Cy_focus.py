@@ -6,7 +6,7 @@ from step06_a_datas_obj import Range
 
 import sys
 
-from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, W_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual, C_01_and_C_01_w_M_to_F_and_visualize
+from step08_b_use_G_generate_0_util import Value_Range_Postprocess_to_01, WcM_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual, C_01_and_C_01_w_M_to_F_and_visualize
 from flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 # sys.path.append("kong_util")
@@ -52,7 +52,7 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_obj, phase, index, in_WM, in_WM_pre, _, Mgt_
     ### visualize W_pre
     W_01 = Value_Range_Postprocess_to_01(W_pre)
     W_01 = W_01[0].numpy()
-    W_visual, Wx_visual, Wy_visual, Wz_visual  = W_01_visual_op(W_01)
+    W_visual, Wx_visual, Wy_visual, Wz_visual  = WcM_01_visual_op(W_01)
 
     ### visualize Mgt_pre
     Mgt_visual = (Mgt_pre[0].numpy() * 255).astype(np.uint8)
@@ -60,7 +60,7 @@ def W_w_M_Gen_Cx_Cy_focus_see(model_obj, phase, index, in_WM, in_WM_pre, _, Mgt_
     ### visualize W_pre_W_M_pre
     W_w_M_01 = Value_Range_Postprocess_to_01(W_pre_W_M_pre)
     W_w_M_01 = W_w_M_01[0].numpy()
-    W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual  = W_01_visual_op(W_w_M_01)
+    W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual  = WcM_01_visual_op(W_w_M_01)
 
     ### Cx_pre, Cy_pre postprocess and visualize
     ### postprocess
