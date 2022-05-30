@@ -74,8 +74,8 @@ class I_w_M_to_W_to_C(Use_G_generate):
             ord_t_out_amo = np.round(pre_boundary["t_out_amo"].numpy() * ratio_w_p2o).astype(np.int32)
             ord_r_out_amo = np.round(pre_boundary["r_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
             ord_d_out_amo = np.round(pre_boundary["d_out_amo"].numpy() * ratio_h_p2o).astype(np.int32)
-            dis_img_ord   = np.pad(dis_img_ord.numpy(), ( (0, 0), (ord_t_out_amo, ord_d_out_amo), (ord_l_out_amo, ord_r_out_amo), (0, 0)  ))  ### BHWC
-            dis_img_ord   = dis_img_ord[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
+            dis_img_ord_croped_not_accurate   = np.pad(dis_img_ord.numpy(), ( (0, 0), (ord_t_out_amo, ord_d_out_amo), (ord_l_out_amo, ord_r_out_amo), (0, 0)  ))  ### BHWC
+            dis_img_ord_croped_not_accurate   = dis_img_ord_croped_not_accurate[:, ord_t_pad : ord_d_pad , ord_l_pad : ord_r_pad , :]  ### BHWC
             # self.tight_crop.reset_jit()  ### 注意 test 的時候我們不用 random jit 囉！
         ''' tight crop end '''''''''''''''''''''''''''''''''
 
@@ -210,7 +210,8 @@ class I_w_M_to_W_to_C(Use_G_generate):
         Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_01_concat_with_M_to_F_and_get_F_visual(Cgt_01, used_M)
 
         ''' model postprocess輔助 visualize'''
-        dis_img_ord         = dis_img_ord[0]
+        dis_img_ord         = dis_img_ord[0].numpy()
+        dis_img_ord_croped_not_accurate = dis_img_ord_croped_not_accurate[0]
         dis_img_pre         = (dis_img_pre[0].numpy() * 255).astype(np.uint8)
         dis_img_pre_croped_resized_visual  = (dis_img_pre_croped_resized[0].numpy() * 255).astype(np.uint8)
         rec_hope            = rec_hope[0].numpy()
@@ -219,6 +220,7 @@ class I_w_M_to_W_to_C(Use_G_generate):
         ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
         if(self.bgr2rgb):
             dis_img_ord        = dis_img_ord       [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+            dis_img_ord_croped_not_accurate   = dis_img_ord_croped_not_accurate  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             dis_img_pre_croped_resized_visual = dis_img_pre_croped_resized_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             rec_hope           = rec_hope          [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             I_w_M_visual       = I_w_M_visual      [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
@@ -228,7 +230,8 @@ class I_w_M_to_W_to_C(Use_G_generate):
             Check_dir_exist_and_build(private_rec_write_dir)    ### 建立 放輔助檔案 的資料夾
             Check_dir_exist_and_build(private_npz_write_dir)    ### 建立 放輔助檔案 的資料夾
             cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img.jpg",      dis_img_ord)
-            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg",  dis_img_pre_croped_resized_visual)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_ord_croped_not_accurate.jpg", dis_img_ord_croped_not_accurate)
+            cv2.imwrite(private_write_dir + "/" + "0a_u1a0-dis_img_pre_croped_resized.jpg"     , dis_img_pre_croped_resized_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a1-gt_mask.jpg",      Mgt_visual)
             cv2.imwrite(private_write_dir + "/" + "0a_u1a2-dis_img_w_Mgt(in_img).jpg", I_w_M_visual)
 
@@ -269,7 +272,7 @@ class I_w_M_to_W_to_C(Use_G_generate):
 
         if(self.postprocess):
             current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-            bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord, flow=F_w_Mgt)
+            bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord_croped_not_accurate, flow=F_w_Mgt)
             '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
             # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img_pre_croped_resized_visual, F=Fgt)
             cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
