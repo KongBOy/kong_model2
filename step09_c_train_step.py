@@ -206,10 +206,11 @@ def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None, 
     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
 ####################################################
 class Train_step_I_w_M_to_W_to_C():
-    def __init__(self, separate_out=False, focus=False, tight_crop=None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None, color_jit = None):
         self.separate_out   = separate_out
         self.focus      = focus
         self.tight_crop = tight_crop
+        self.color_jit = color_jit
 
     @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
@@ -226,6 +227,9 @@ class Train_step_I_w_M_to_W_to_C():
             I_pre, _ = self.tight_crop(I_pre, Mgt_pre_for_crop)
             Wgt  , _ = self.tight_crop(Wgt, Mgt_pre_for_crop)
             Fgt  , _ = self.tight_crop(Fgt, Mgt_pre_for_crop)
+
+        if(self.color_jit is not None):
+            I_pre = self.color_jit(I_pre, gt_mask)
 
         Mgt_pre = Wgt[..., 3:4]  ### 配合抓DB的方式用 in_dis_gt_wc_flow 的話：第一個 [0]是W， [1]是F， [0][..., 3:4] 或 [1][..., 0:1] 都可以取道Mask
 
@@ -457,10 +461,11 @@ def train_step_Multi_output_W_w_M_to_Cx_Cy_focus(model_obj, in_data, gt_data, lo
 ####################################################
 ####################################################
 class Train_step_I_w_M_to_W():
-    def __init__(self, separate_out=False, focus=False, tight_crop=None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None, color_jit = None):
         self.separate_out  = separate_out
         self.focus        = focus
         self.tight_crop   = tight_crop
+        self.color_jit = color_jit
 
     @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
@@ -472,6 +477,9 @@ class Train_step_I_w_M_to_W():
             self.tight_crop.reset_jit()
             in_data, _ = self.tight_crop(in_data, Mgt_pre_for_crop)
             gt_data, _ = self.tight_crop(gt_data, Mgt_pre_for_crop)
+
+        if(self.color_jit is not None):
+            in_data = self.color_jit(in_data, gt_mask)
 
         gt_mask  = gt_data[..., 3:4]
         I_with_M = in_data * gt_mask
