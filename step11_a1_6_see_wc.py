@@ -233,7 +233,7 @@ class See_wc(See_info):
         if(os.path.isfile(WM_3D_gt_path) is False): WM_3d_plot(WM_gt_back, savefig=True, save_path=WM_3D_gt_path, **WM_range)
 
         W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = WcM_01_visual_op(WM_01,    out_ch3=True)
-        Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = W_01_visual_op(WM_01_gt, out_ch3=True)
+        Wgt_visual, Wxgt_visual, Wygt_visual, Wzgt_visual = WcM_01_visual_op(WM_01_gt, out_ch3=True)
 
         imgs = [ [in_img,     in_img,      in_img,      in_img],
                  [W_visual,   Wx_visual,   Wy_visual,   Wz_visual  ],
