@@ -80,7 +80,7 @@ if(__name__ == "__main__"):
     if len(sys.argv) < 2:
         ############################################################################################################
         ### 直接按 F5 或打 python step10_b1_exp_obj_load_and_train_and_test.py，後面沒有接東西喔！才不會跑到下面給 step10_b_subprocss.py 用的程式碼~~~
-        p20_L5_Sob_k05__Sob_k05.build().run()
+        p20_L5_Mae__Mae.build().run()
         # print('no argument')
         sys.exit()
 
