@@ -228,10 +228,10 @@ class Train_step_I_w_M_to_W_to_C():
             Wgt  , _ = self.tight_crop(Wgt, Mgt_pre_for_crop)
             Fgt  , _ = self.tight_crop(Fgt, Mgt_pre_for_crop)
 
-        if(self.color_jit is not None):
-            I_pre = self.color_jit(I_pre, gt_mask)
-
         Mgt_pre = Wgt[..., 3:4]  ### 配合抓DB的方式用 in_dis_gt_wc_flow 的話：第一個 [0]是W， [1]是F， [0][..., 3:4] 或 [1][..., 0:1] 都可以取道Mask
+
+        if(self.color_jit is not None):
+            I_pre = self.color_jit(I_pre, Mgt_pre)
 
         I_pre_w_M_pre = I_pre * Mgt_pre
 
@@ -478,10 +478,11 @@ class Train_step_I_w_M_to_W():
             in_data, _ = self.tight_crop(in_data, Mgt_pre_for_crop)
             gt_data, _ = self.tight_crop(gt_data, Mgt_pre_for_crop)
 
+        gt_mask  = gt_data[..., 3:4]
+
         if(self.color_jit is not None):
             in_data = self.color_jit(in_data, gt_mask)
 
-        gt_mask  = gt_data[..., 3:4]
         I_with_M = in_data * gt_mask
 
         Wgt  = gt_data[..., 0:3]
