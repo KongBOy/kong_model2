@@ -23,6 +23,7 @@ from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
 color_jit = None
 use_what_gen_op     =            I_w_M_to_W(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=60, resize=(255, 255), jit_scale=  0) )
 use_what_train_step = Train_step_I_w_M_to_W(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=60, resize=(255, 255), jit_scale= 15), color_jit=color_jit )
+use_hid_ch = 36
 
 import time
 start_time = time.time()
