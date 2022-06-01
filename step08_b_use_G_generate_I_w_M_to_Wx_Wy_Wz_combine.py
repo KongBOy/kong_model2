@@ -127,9 +127,9 @@ class I_w_M_to_W(Use_G_generate):
                 if(go_sob == 2): Wx_raw_Gx, Wx_raw_Gy = sob_obj.Calculate_sobel_edges(Wx_raw_pre)
                 if(self.focus):
                     for go_sob, sob_obj in enumerate(sob_objs):
-                        if(go_sob == 0): Wz_w_M_Gx, Wz_w_M_Gy = sob_obj.Calculate_sobel_edges(Wz_raw_pre, Mask=Mgt_pre[np.newaxis, ...])
-                        if(go_sob == 1): Wy_w_M_Gx, Wy_w_M_Gy = sob_obj.Calculate_sobel_edges(Wy_raw_pre, Mask=Mgt_pre[np.newaxis, ...])
-                        if(go_sob == 2): Wx_w_M_Gx, Wx_w_M_Gy = sob_obj.Calculate_sobel_edges(Wx_raw_pre, Mask=Mgt_pre[np.newaxis, ...])
+                        if(go_sob == 0): Wz_w_M_Gx, Wz_w_M_Gy = sob_obj.Calculate_sobel_edges(Wz_raw_pre, Mask=Mgt_pre)
+                        if(go_sob == 1): Wy_w_M_Gx, Wy_w_M_Gy = sob_obj.Calculate_sobel_edges(Wy_raw_pre, Mask=Mgt_pre)
+                        if(go_sob == 2): Wx_w_M_Gx, Wx_w_M_Gy = sob_obj.Calculate_sobel_edges(Wx_raw_pre, Mask=Mgt_pre)
 
         Wx_raw_Gx = Wx_raw_Gx[0].numpy()
         Wx_raw_Gy = Wx_raw_Gy[0].numpy()
