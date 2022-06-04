@@ -137,22 +137,22 @@ class Result_analyzer:
 ########################################################################################################################################
 ########################################################################################################################################
 class Col_results_analyzer(Result_analyzer):
-    def __init__(self, ana_describe, ana_what_sees, ana_what, col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None):
+    def __init__(self, ana_describe, ana_what_sees, ana_what, col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None, reset_test_db_name=None):
         super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
 
         self.c_results = col_results
         self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
         self.c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_max_trained_epoch()去抓
-        self.check_exp_builder_change_to_result()
+        self.check_exp_builder_change_to_result(reset_test_db_name)
         print("Col_results_analyzer build finish")
         
         self.jump_to = jump_to
 
-    def check_exp_builder_change_to_result(self):
+    def check_exp_builder_change_to_result(self, reset_test_db_name=None):
         from step10_b2_exp_builder import Exp_builder
         for go_data, data in enumerate(self.c_results):
             if(type(data) == type(Exp_builder())):
-                self.c_results[go_data] = data.build().result_obj
+                self.c_results[go_data] = data.build(reset_test_db_name=reset_test_db_name).result_obj
 
     def _step0_get_c_trained_epochs(self):
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
@@ -438,7 +438,7 @@ class Col_results_analyzer(Result_analyzer):
 
 ### 目前小任務還沒有切multiprocess喔！
 class Row_col_results_analyzer(Result_analyzer):
-    def __init__(self, ana_describe, ana_what_sees, ana_what, row_col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None):
+    def __init__(self, ana_describe, ana_what_sees, ana_what, row_col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None, reset_test_db_name="None"):
         super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
         self.r_c_results = row_col_results
         self.r_c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_min_trained_epoch()去抓
@@ -446,7 +446,7 @@ class Row_col_results_analyzer(Result_analyzer):
 
         self.c_results_list = []
         for c_results in row_col_results:
-            self.c_results_list.append(Col_results_analyzer(ana_describe=ana_describe, ana_what_sees=ana_what_sees, ana_what=ana_what, col_results=c_results, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss, img_h=img_h, img_w=img_w))
+            self.c_results_list.append(Col_results_analyzer(ana_describe=ana_describe, ana_what_sees=ana_what_sees, ana_what=ana_what, col_results=c_results, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss, img_h=img_h, img_w=img_w, reset_test_db_name=reset_test_db_name))
         print("Row_col_results_analyzer build finish")
 
         self.jump_to = jump_to
