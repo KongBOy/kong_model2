@@ -464,7 +464,7 @@ class Use_G_generate:
 ######################################################################################################################################################################################################
 
 ### doc3d v2 [Z: Range(-0.50429183, 0.46694446), Y: Range(-1.2410645, 1.2485291), X: Range(-1.2387834, 1.2280148)]
-def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None, final_resize=None, by_the_way_fake_F=False, dis_img=None, dis_img_format=".png", zmin=None, zmax=None, ymin=None, ymax=None, xmin=None, xmax=None):
+def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None, final_resize=None, by_the_way_fake_F=False, dis_img=None, dis_img_format=".png", zmin=None, zmax=None, ymin=None, ymax=None, xmin=None, xmax=None, rec_hope=None, rec_hope_format=None):
     '''
     wc_type 有兩種： 
         Wzxy
@@ -473,23 +473,28 @@ def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None,
     fname = fname[ :-4]
 
     dis_img_dir       = f"{dst_dir}/0_dis_img"
+    rec_hope_dir      = f"{dst_dir}/0_rec_hope"
     uv_npy_dir        = f"{dst_dir}/1_uv-1_npy"
     uv_knpy_dir       = f"{dst_dir}/1_uv-3_knpy"
     wc_npy_dir        = f"{dst_dir}/2_wc-1_npy"
     W_w_M_npy_dir     = f"{dst_dir}/2_wc-4_W_w_M_npy"
     W_w_M_knpy_dir    = f"{dst_dir}/2_wc-5_W_w_M_knpy"
     W_w_M_visual_dir  = f"{dst_dir}/2_wc-6_W_w_M_visual"
+    ppt_visual_dir    = f"{dst_dir}/3_ppt_visual"
     dis_img_path      = f"{dis_img_dir}/{fname}.{dis_img_format}"
+    rec_hope_path     = f"{rec_hope_dir}/{fname}.{rec_hope_format}"
     uv_npy_path       = f"{uv_npy_dir}/{fname}.npy"
     uv_knpy_path      = f"{uv_knpy_dir}/{fname}.knpy"
     wc_npy_path       = f"{wc_npy_dir}/{fname}.npy"
     W_w_M_npy_path    = f"{W_w_M_npy_dir}/{fname}.npy"
     W_w_M_knpy_path   = f"{W_w_M_knpy_dir}/{fname}.knpy"
     W_w_M_visual_path = f"{W_w_M_visual_dir}/{fname}.png"
+    ppt_visual_path   = f"{ppt_visual_dir}/{fname}.png"
     Check_dir_exist_and_build(wc_npy_dir)
     Check_dir_exist_and_build(W_w_M_npy_dir)
     Check_dir_exist_and_build(W_w_M_knpy_dir)
     Check_dir_exist_and_build(W_w_M_visual_dir)
+    Check_dir_exist_and_build(ppt_visual_dir)
 
     ### 作處理前 要先 resize 到多大
     if(first_resize is not None): wc = cv2.resize(wc, first_resize)
@@ -497,20 +502,7 @@ def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None,
     ### 紀錄一下原始 shape
     h, w, c = wc.shape
 
-    ### 在 448 的狀態下 做 padding
-    wc = np.pad(wc, ( (pad_size, pad_size), (pad_size, pad_size), (0, 0)), "constant" )
-
-    ### Mask
-    Mask = ((wc[..., 0:1] > 0) & (wc[..., 1:2] > 0) & (wc[..., 2:3] > 0)).astype(np.uint8)
-
-        
-    ### 做完處理後 最後 要 resize 到多大
-    if(final_resize is not None):
-        wc   = cv2.resize(wc,   final_resize)
-        Mask = cv2.resize(Mask, final_resize)
-        Mask = Mask[..., np.newaxis]  ### Mask 做完 resize ， 因為ch1， 會被cv2 自動拿掉， 這邊要再補回來喔
-
-    ### 提取 Wx, Wy, Wz
+    ### 提取 Wx_post, Wy_post, Wz_post
     if  (wc_type.lower() == "Wzyx".lower() ):
         Wz = wc[..., 0:1]
         Wy = wc[..., 1:2]
@@ -520,34 +512,68 @@ def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None,
         Wx = wc[..., 1:2]
         Wy = wc[..., 2:3]
 
-    ### 值放回原始range
-    if(None not in [zmin, zmax]): Wz = Wz * (zmax - zmin) + zmin
-    if(None not in [ymin, ymax]): Wy = Wy * (ymax - ymin) + ymin
-    if(None not in [xmin, xmax]): Wx = Wx * (xmax - xmin) + xmin
+    ### wc_post 統一轉成 Wzyx
 
-    #########################################################
-    ### wc 統一轉成 Wzyx
-    wc = np.concatenate([Wz, Wy, Wx], axis=-1)
-    ### wc 和 W_w_M
-    wc = wc * Mask
-    W_w_M = np.concatenate( (wc, Mask), axis= -1 )
+    wc   = np.concatenate([Wz, Wy, Wx], axis=-1)
+    Mask = ((wc[..., 0:1] > 0) & (wc[..., 1:2] > 0) & (wc[..., 2:3] > 0)).astype(np.uint8)
+    wc_min = np.array([zmin, ymin, xmin]).reshape(1, 1, 3)
+    wc_max = np.array([zmax, ymax, xmax]).reshape(1, 1, 3)
+
+    nrows = 1
+    ncols = 3
+    fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(5 * ncols, 5 * nrows))
+    ax[0].imshow(cv2.resize(dis_img, (w, h)))
+    ax[1].imshow(wc)
+    ax[2].imshow(cv2.resize(rec_hope, (w, h)))
+    ax[0].axis("off")
+    ax[1].axis("off")
+    ax[2].axis("off")
+    plt.tight_layout()
+    plt.savefig(ppt_visual_path)
+    # plt.show()
+
+
+    ### 在 448 的狀態下 做 padding
+    wc_post   = np.pad(wc, ( (pad_size, pad_size), (pad_size, pad_size), (0, 0)), "constant" )
+    Mask_post = ((wc_post[..., 0:1] > 0) & (wc_post[..., 1:2] > 0) & (wc_post[..., 2:3] > 0)).astype(np.uint8)
+    ### 做完處理後 最後 要 resize 到多大
+    if(final_resize is not None):
+        wc_post   = cv2.resize(wc_post  , final_resize)
+        Mask_post = cv2.resize(Mask_post, final_resize)
+        Mask_post = Mask_post[..., np.newaxis]  ### 小心 cv2.resize 會自動把ch1去除掉， 所以要記得補回來喔
+    ### Mask_post
+    # Mask_post = ((wc_post[..., 0:1] > 0) & (wc_post[..., 1:2] > 0) & (wc_post[..., 2:3] > 0)).astype(np.uint8)
+    ### 值放回原始range， 記得 * M
+    wc_post = ( wc_post * (wc_max - wc_min) + wc_min ) * Mask_post
+    W_w_M = np.concatenate( (wc_post, Mask_post), axis= -1 )
 
     ### 轉 type
-    wc    = wc    .astype(np.float32)
-    W_w_M = W_w_M .astype(np.float32)
+    wc_post = wc_post.astype(np.float32)
+    W_w_M   = W_w_M  .astype(np.float32)
 
     ### 存起來
-    np.save(wc_npy_path    , wc)
+    np.save(wc_npy_path    , wc_post)
     np.save(W_w_M_npy_path , W_w_M)
     Save_npy_path_as_knpy(W_w_M_npy_path, W_w_M_knpy_path)
 
     ### 視覺化 和 存起來
-    fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(5 * 4, 5))
-    ax[0].imshow(Wz)
-    ax[1].imshow(Wy)
-    ax[2].imshow(Wx)
-    ax[3].imshow(Mask)
+    ### 每個 ch 取出來 等等視覺化比較好寫
+    Wz_post = wc_post[..., 0:1]
+    Wy_post = wc_post[..., 1:2]
+    Wx_post = wc_post[..., 2:3]
+
+
+    nrows = 1
+    ncols = 5
+    fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(5 * ncols, 5 * nrows))
+
+    ax[0].imshow(wc_post)
+    ax[1].imshow(Wz_post)
+    ax[2].imshow(Wy_post)
+    ax[3].imshow(Wx_post)
+    ax[4].imshow(Mask_post)
     plt.tight_layout()
+
     plt.savefig(W_w_M_visual_path)
     # plt.show()
     plt.close()
@@ -557,7 +583,7 @@ def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None,
         Check_dir_exist_and_build(uv_knpy_dir)
 
         fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
-        fake_F = np.concatenate([Mask, fake_C], axis=-1)
+        fake_F = np.concatenate([Mask_post, fake_C], axis=-1)
         np.save(uv_npy_path, fake_F)
         Save_npy_path_as_knpy(uv_npy_path, uv_knpy_path)
 
