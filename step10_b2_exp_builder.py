@@ -75,7 +75,7 @@ class Exp_builder():
         self.exp.multi_model_reload_exp_builders_dict = kwargs
         return self
 
-    def build_exp_temporary(self):
+    def build_exp_temporary(self, reset_test_db_name=None):
         '''
         這邊先建好 result_obj 的話就可以給 step11, step12 用喔，
         且 因為我有寫 在train時 會自動建新的 result，所以不用怕 用到這邊 給 step11, step12 建立的 default result_obj 囉！
@@ -89,7 +89,7 @@ class Exp_builder():
                 if  ("test_see"   in self.exp.phase): self.exp.db_builder.reset_test_db_name("see")
                 elif("test_train" in self.exp.phase): self.exp.db_builder.reset_test_db_name("train")
                 else:                                 self.exp.db_builder.reset_test_db_name(self.exp.phase)
-
+            if(reset_test_db_name is not None): self.exp.db_builder.reset_test_db_name(reset_test_db_name)
             self.db_obj = self.exp.db_builder.build()
             # print("1.result_name", self.exp.result_name, ", self.exp.use_gt_range~~~~~~~~~~~~~~~~~~~~~~~~~", self.exp.use_gt_range)  ### 追蹤see的建立過程
             self.exp.result_obj    = Result_builder().set_exp_obj_use_gt_range(self.exp.use_gt_range).set_by_result_name(self.exp.exp_dir + "/" + self.exp.result_name, self.db_obj).build()  ### 直接用 自己指定好的 result_name
@@ -111,7 +111,7 @@ class Exp_builder():
             # self.exp.loss_info_obj = Loss_info_builder(self.exp.loss_info_obj, in_obj_copy=True).set_logs_dir(self.exp.result_obj.logs_read_dir, self.exp.result_obj.logs_write_dir).build()  ### 上面定位出 logs_read/write_dir 後 更新 loss_info_obj， in_obj_copy 記得要設True，原因寫在 Loss_info_builde 裡面喔
             # print("self.exp.loss_info_obj.logs_read_dir", self.exp.loss_info_obj.logs_read_dir)
             # print("self.exp.loss_info_obj.logs_write_dir", self.exp.loss_info_obj.logs_write_dir)
-            # print()  ### 追蹤see的建立過程
+            # print()  ### 追蹤see的建立過
 
     def Auto_fill_result_name_Read(self):
         from step0_access_path import kong_model2_dir
@@ -148,8 +148,8 @@ class Exp_builder():
         else                                           : print(f"    Auto_fill_result_name_Read 找不到 已存在的 {current_exp_result_name} 不會自動填名字， 不做事直接跳過")
         print("Auto_fill_result_name_Read finish")
 
-    def build(self):
-        self.build_exp_temporary()
+    def build(self, reset_test_db_name=None):
+        self.build_exp_temporary(reset_test_db_name=reset_test_db_name)
         print(f"Experiment_builder build finish, can use {self.exp.exp_dir}")
         return self.exp
     ###########################################################################################################################################################################################################
