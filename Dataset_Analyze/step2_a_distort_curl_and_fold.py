@@ -1,5 +1,21 @@
-import sys
-sys.path.append("kong_util")
+#############################################################################################################################################################################################################
+#############################################################################################################################################################################################################
+### 把 kong_model2 加入 sys.path
+import os
+code_exe_path = os.path.realpath(__file__)                   ### 目前執行 step10_b.py 的 path
+code_exe_path_element = code_exe_path.split("\\")            ### 把 path 切分 等等 要找出 kong_model 在第幾層
+code_dir = "\\".join(code_exe_path_element[:-1])
+kong_layer = code_exe_path_element.index("kong_model2")      ### 找出 kong_model2 在第幾層
+kong_model2_dir = "\\".join(code_exe_path_element[:kong_layer + 1])  ### 定位出 kong_model2 的 dir
+import sys                                                   ### 把 kong_model2 加入 sys.path
+sys.path.append(kong_model2_dir)
+# print(__file__.split("\\")[-1])
+# print("    code_exe_path:", code_exe_path)
+# print("    code_exe_path_element:", code_exe_path_element)
+# print("    code_dir:", code_dir)
+# print("    kong_layer:", kong_layer)
+# print("    kong_model2_dir:", kong_model2_dir)
+#############################################################################################################################################################################################################
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -417,7 +433,7 @@ if(__name__ == "__main__"):
     pytorch_gridsample_boundary = 1.00
     start_xy_f, start_xy_m = get_xy_f_and_m(x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, w_res=w_res, h_res=h_res)  ### 拿到map的shape：(..., 2), f 是 flatten 的意思
 
-    debug_1to5 = False
+    debug_1to5 = True
     debug_papr17 = True  ### False
     debug_before = True  ### False
     ##################################################################################################################
