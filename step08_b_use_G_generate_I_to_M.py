@@ -12,6 +12,112 @@ import matplotlib.pyplot as plt
 import os
 import pdb
 
+def M_save_as_fake_F_and_WcM(gather_base_dir, current_see_name, M):
+    '''
+    M 要 h,w,c 喔
+    '''
+
+    h, w = M.shape[:2]
+    ### 準備存 fake_F
+    fake_C = np.zeros(shape=(h, w, 2), dtype=np.float32)
+    fake_F = np.concatenate((M, fake_C), axis=-1)
+    fake_F = fake_F.astype(np.float32)
+
+    ### 定位出 存檔案的位置
+    gather_fake_F_npy_dir  = gather_base_dir + "/1_uv-1_npy_then_npz"
+    gather_fake_F_knpy_dir = gather_base_dir + "/1_uv-3_knpy"
+    Check_dir_exist_and_build(gather_fake_F_npy_dir)
+    Check_dir_exist_and_build(gather_fake_F_knpy_dir)
+
+    ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
+    fake_F_npy_path  = f"{gather_fake_F_npy_dir}/{current_see_name}.npy"
+    fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{current_see_name}.knpy"
+    np.save(fake_F_npy_path, fake_F)
+    Save_npy_path_as_knpy(fake_F_npy_path, fake_F_knpy_path)
+    print("fake_F_npy_path     :", fake_F_npy_path)
+    print("fake_F_knpy_path    :", fake_F_knpy_path)
+
+    ### .npy刪除(因為超占空間) 改存 .npz
+    np.savez_compressed(fake_F_npy_path.replace(".npy", ".npz"), fake_F)
+    os.remove(fake_F_npy_path)
+    ###############################################################################
+    ### 準備存 fake_W_w_M (我是覺得不用存 W 了， 因為已經包含再 W_w_M 裡面了)
+    fake_W = np.zeros(shape=(h, w, 3), dtype=np.float32)
+    fale_W_w_M = np.concatenate((fake_W, M), axis=-1)
+    fale_W_w_M = fale_W_w_M.astype(np.float32)
+
+    ### 定位出 存檔案的位置
+    gather_fale_W_w_M_npy_dir  = gather_base_dir + "/2_wc-4_W_w_M_npy_then_npz"
+    gather_fale_W_w_M_knpy_dir = gather_base_dir + "/2_wc-5_W_w_M_knpy"
+    Check_dir_exist_and_build(gather_fale_W_w_M_npy_dir)
+    Check_dir_exist_and_build(gather_fale_W_w_M_knpy_dir)
+
+    ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
+    fale_W_w_M_npy_path  = f"{gather_fale_W_w_M_npy_dir}/{current_see_name}.npy"
+    fale_W_w_M_knpy_path = f"{gather_fale_W_w_M_knpy_dir}/{current_see_name}.knpy"
+    np.save(fale_W_w_M_npy_path, fale_W_w_M)
+    Save_npy_path_as_knpy(fale_W_w_M_npy_path, fale_W_w_M_knpy_path)
+    print("fale_W_w_M_npy_path :", fale_W_w_M_npy_path)
+    print("fale_W_w_M_knpy_path:", fale_W_w_M_knpy_path)
+
+    ### .npy刪除(因為超占空間) 改存 .npz
+    np.savez_compressed(fale_W_w_M_npy_path.replace(".npy", ".npz"), fale_W_w_M)
+    os.remove(fale_W_w_M_npy_path)
+
+def M_save_as_Trimap(gather_base_dir, current_see_name, Mask, dil_ksize, ero_ksize, status, dis_img, dil_comment, ero_comment):
+    ### 這段可以看一下 官方給的 dilate/erose 的 kernel 大概可以長怎樣
+    # canvas_size = 5
+    # nrows = 1
+    # ncols = 3
+    # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols, canvas_size * nrows))
+
+    # RECT_kernel    = cv2.getStructuringElement(cv2.MORPH_RECT   , (11, 11))  ### 全1
+    # CROSS_kernel   = cv2.getStructuringElement(cv2.MORPH_CROSS  , (11, 11))  ### 十字架
+    # ELLIPSE_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))  ### 橢圓形
+
+    # ax[0].imshow(RECT_kernel   , vmin=0, vmax=1)
+    # ax[1].imshow(CROSS_kernel  , vmin=0, vmax=1)
+    # ax[2].imshow(ELLIPSE_kernel, vmin=0, vmax=1)
+    # fig.tight_layout()
+    # plt.show()
+
+    '''
+    目前的status: ord/pre/255
+    '''
+
+    tri_M_bin   = np.where(Mask > 0.5, 1, 0).astype(np.float32)
+    if(dil_ksize > 0):
+        dil_kernel  = cv2.getStructuringElement(cv2.MORPH_RECT   , (dil_ksize, dil_ksize))  ### 全1
+        tri_dilated = cv2.dilate(tri_M_bin, dil_kernel, iterations=1) * 255
+    else: tri_dilated = tri_M_bin.copy() * 255
+
+    if(ero_ksize > 0):
+        ero_kernel  = cv2.getStructuringElement(cv2.MORPH_RECT   , (ero_ksize, ero_ksize))  ### 全1
+        tri_erosed  = cv2.erode (tri_M_bin, ero_kernel, iterations=1) * 255
+    else: tri_erosed = tri_M_bin.copy()  * 255
+
+    ### 
+    tri_M = tri_dilated.copy()
+    tri_M[ ( (tri_dilated == 255) & (tri_erosed == 0) ) ] = 128
+    tri_M = tri_M.astype(np.uint8)
+
+    ### 定位出 存檔案的位置
+    gather_trimap_msk  = gather_base_dir + f"/3_trimap_{status}_dil_k{dil_comment}__ero_k{ero_comment}/msk"
+    gather_trimap_tri  = gather_base_dir + f"/3_trimap_{status}_dil_k{dil_comment}__ero_k{ero_comment}/tri"
+    gather_trimap_img  = gather_base_dir + f"/3_trimap_{status}_dil_k{dil_comment}__ero_k{ero_comment}/img"
+    Check_dir_exist_and_build(gather_trimap_msk)
+    Check_dir_exist_and_build(gather_trimap_tri)
+    Check_dir_exist_and_build(gather_trimap_img)
+    tri_msk_path = f"{gather_trimap_msk}/{current_see_name}.png"
+    tri_map_path = f"{gather_trimap_tri}/{current_see_name}.png"
+    tri_img_path = f"{gather_trimap_img}/{current_see_name}.png"
+
+    ### 存起來
+    cv2.imwrite(tri_msk_path, (Mask * 255).astype(np.uint8))
+    cv2.imwrite(tri_map_path, tri_M)
+    cv2.imwrite(tri_img_path, dis_img)
+
+    return tri_M
 
 
 class I_to_M(Use_G_generate):
@@ -175,54 +281,23 @@ class I_to_M(Use_G_generate):
                 Check_dir_exist_and_build(gather_rec_hope_dir)
                 rec_hope_path  = f"{gather_rec_hope_dir}/{current_see_name}.{self.exp_obj.db_obj.in_format}"
                 cv2.imwrite(rec_hope_path, rec_hope)
-
                 ###############################################################################
-                ### 準備存 fake_F
-                fake_C = np.zeros(shape=(db_h, db_w, 2), dtype=np.float32)
-                fake_F = np.concatenate((M, fake_C), axis=-1)
-                fake_F = fake_F.astype(np.float32)
-
-                ### 定位出 存檔案的位置
-                gather_fake_F_npy_dir  = gather_base_dir + "/1_uv-1_npy_then_npz"
-                gather_fake_F_knpy_dir = gather_base_dir + "/1_uv-3_knpy"
-                Check_dir_exist_and_build(gather_fake_F_npy_dir)
-                Check_dir_exist_and_build(gather_fake_F_knpy_dir)
-
-                ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
-                fake_F_npy_path  = f"{gather_fake_F_npy_dir}/{current_see_name}.npy"
-                fake_F_knpy_path = f"{gather_fake_F_knpy_dir}/{current_see_name}.knpy"
-                np.save(fake_F_npy_path, fake_F)
-                Save_npy_path_as_knpy(fake_F_npy_path, fake_F_knpy_path)
-                print("fake_F_npy_path     :", fake_F_npy_path)
-                print("fake_F_knpy_path    :", fake_F_knpy_path)
-
-                ### .npy刪除(因為超占空間) 改存 .npz
-                np.savez_compressed(fake_F_npy_path.replace(".npy", ".npz"), fake_F)
-                os.remove(fake_F_npy_path)
+                ### 存 fake_F 和 fake_WcM
+                M_save_as_fake_F_and_WcM(gather_base_dir, current_see_name, M)
                 ###############################################################################
-                ### 準備存 fake_W_w_M (我是覺得不用存 W 了， 因為已經包含再 W_w_M 裡面了)
-                fake_W = np.zeros(shape=(db_h, db_w, 3), dtype=np.float32)
-                fale_W_w_M = np.concatenate((fake_W, M), axis=-1)
-                fale_W_w_M = fale_W_w_M.astype(np.float32)
-
-                ### 定位出 存檔案的位置
-                gather_fale_W_w_M_npy_dir  = gather_base_dir + "/2_wc-4_W_w_M_npy_then_npz"
-                gather_fale_W_w_M_knpy_dir = gather_base_dir + "/2_wc-5_W_w_M_knpy"
-                Check_dir_exist_and_build(gather_fale_W_w_M_npy_dir)
-                Check_dir_exist_and_build(gather_fale_W_w_M_knpy_dir)
-
-                ### 存.npy(必須要！不能直接存.npz，因為轉.knpy是要他存成檔案後把檔案頭去掉才能變.knpy喔) 和 .knpy
-                fale_W_w_M_npy_path  = f"{gather_fale_W_w_M_npy_dir}/{current_see_name}.npy"
-                fale_W_w_M_knpy_path = f"{gather_fale_W_w_M_knpy_dir}/{current_see_name}.knpy"
-                np.save(fale_W_w_M_npy_path, fale_W_w_M)
-                Save_npy_path_as_knpy(fale_W_w_M_npy_path, fale_W_w_M_knpy_path)
-                print("fale_W_w_M_npy_path :", fale_W_w_M_npy_path)
-                print("fale_W_w_M_knpy_path:", fale_W_w_M_knpy_path)
-
-                ### .npy刪除(因為超占空間) 改存 .npz
-                np.savez_compressed(fale_W_w_M_npy_path.replace(".npy", ".npz"), fale_W_w_M)
-                os.remove(fale_W_w_M_npy_path)
-
+                ### 存 trimap
+                dil_ksize_pre = 45
+                ero_ksize_pre =  1
+                dil_ksize_ord = int(dil_ksize_pre * ratio_h_p2o)
+                ero_ksize_ord = int(ero_ksize_pre * ratio_h_p2o)
+                dil_ksize_255 = int(dil_ksize_pre * 255 / 448)
+                ero_ksize_255 = int(ero_ksize_pre * 255 / 448)
+                tri_M_pre       = M.copy()
+                tri_M_ord       = cv2.resize(tri_M_pre, (ord_w, ord_h))
+                tri_M_255       = cv2.resize(tri_M_pre, (255  , 255))
+                tri_M_ord = M_save_as_Trimap(gather_base_dir=gather_base_dir, current_see_name=current_see_name, Mask=tri_M_ord, dil_ksize=dil_ksize_ord, ero_ksize=ero_ksize_ord, status="ord", dis_img=dis_img_ord                        , dil_comment=dil_ksize_pre, ero_comment=ero_ksize_pre)  ### comment 統一用pre才對， 因為我是用pre當基準， 要不然數字會一直變動
+                tri_M_pre = M_save_as_Trimap(gather_base_dir=gather_base_dir, current_see_name=current_see_name, Mask=tri_M_pre, dil_ksize=dil_ksize_pre, ero_ksize=ero_ksize_pre, status="pre", dis_img=dis_img_pre                        , dil_comment=dil_ksize_pre, ero_comment=ero_ksize_pre)  ### comment 統一用pre才對， 因為我是用pre當基準， 要不然數字會一直變動
+                tri_M_255 = M_save_as_Trimap(gather_base_dir=gather_base_dir, current_see_name=current_see_name, Mask=tri_M_255, dil_ksize=dil_ksize_255, ero_ksize=ero_ksize_255, status="255", dis_img=cv2.resize(dis_img_ord, (255, 255)), dil_comment=dil_ksize_pre, ero_comment=ero_ksize_pre)  ### comment 統一用pre才對， 因為我是用pre當基準， 要不然數字會一直變動
                 ###############################################################################
 
 
