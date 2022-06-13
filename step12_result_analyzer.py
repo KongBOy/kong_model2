@@ -59,7 +59,7 @@ class Result_analyzer:
         self.add_loss = add_loss
 
 
-    def Gather_all_see_final_img(self, print_msg=False, test_db_name="test"):
+    def Gather_all_see_final_img(self, test_db_name="test", print_msg=False):
         print("self.analyze_write_dir:", self.analyze_write_dir)
         time_ver_dir_names = get_dir_certain_dir_names(self.analyze_write_dir, certain_word=self.ana_what)          ### 列出 dir中 有哪些 dir
         time_ver_dir_name  = time_ver_dir_names[-1]                            ### 取最後一個最新的，比如：mask_epoch=all (20211111_231956)
@@ -84,6 +84,10 @@ class Result_analyzer:
                     print("src_path:", src_path, "  copy to")
                     print("dst_path:", dst_path, "  finish~")
 
+            write_dir = self.analyze_write_dir + "/" + time_ver_dir_name + "/" + test_db_name
+            read_dir  = self.analyze_read_dir  + "/" + time_ver_dir_name + "/" + test_db_name
+            Syn_write_to_read_dir(write_dir, read_dir, copy_sub_dir=False, print_msg=False)
+
         if(self.ana_what_sees == "see"):
             see_names = get_dir_certain_dir_names(time_ver_dir_path, self.ana_what_sees)
             for see_name in see_names:                                           ### 比如：see_001_real
@@ -101,7 +105,7 @@ class Result_analyzer:
                     print("src_path:", src_path, "  copy to")
                     print("dst_path:", dst_path, "  finish~")
 
-        Syn_write_to_read_dir(self.analyze_see_private_write_dir, self.analyze_see_public_read_dir, copy_sub_dir=False, print_msg=False)
+            Syn_write_to_read_dir(self.analyze_see_private_write_dir, self.analyze_see_public_read_dir, copy_sub_dir=False, print_msg=False)
         return self
 
     ########################################################################################################################################
