@@ -277,28 +277,28 @@ class I_w_M_to_W_to_C(Use_G_generate):
             cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
 
             if(self.focus is False):
-                r_c_imgs   = [ [dis_img_pre_croped_resized_visual , Mgt_visual    , I_w_M_visual  , rec             , rec_hope ],
-                               [W_visual           , Wx_visual     , Wy_visual     , Wz_visual       , ],
-                               [Wx_raw_Gx          , Wx_raw_Gy     , Wy_raw_Gx     , Wy_raw_Gy       , Wz_raw_Gx     , Wz_raw_Gy    , Wx_w_M_Gx     , Wx_w_M_Gy    , Wy_w_M_Gx    , Wy_w_M_Gy    , Wz_w_M_Gx    , Wz_w_M_Gy     ],
+                r_c_imgs   = [ [dis_img_pre_croped_resized_visual , Mgt_visual     , I_w_M_visual  , rec             , rec_hope ],
+                               [W_visual           , Wx_visual     , Wy_visual     , Wz_visual     , ],
+                               [Wx_w_M_Gx          , Wx_w_M_Gy     , Wy_w_M_Gx     , Wy_w_M_Gy     , Wz_w_M_Gx    , Wz_w_M_Gy     ],
                                [F_visual           , Cx_visual     , Cy_visual     , ],
-                               [Cx_raw_Gx          , Cx_raw_Gy     , Cy_raw_Gx     , Cy_raw_Gy       , Cx_w_M_Gx     , Cx_w_M_Gy    , Cy_w_M_Gx     , Cy_w_M_Gy] ]
-                r_c_titles = [ ["dis_img"          , "Mgt"         , "I_with_M"    , "rec"           , "rec_hope"],
-                               ["W"                , "Wx"          , "Wy"          , "Wz"            , ],
-                               ["Wx_raw_Gx"        , "Wx_raw_Gy"   , "Wy_raw_Gx"   , "Wy_raw_Gy"     , "Wz_raw_Gx"   , "Wz_raw_Gy"     , "Wx_w_M_Gx"     , "Wx_w_M_Gy"  , "Wy_w_M_Gx"  , "Wy_w_M_Gy"  , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
+                               [Cx_w_M_Gx          , Cx_w_M_Gy     , Cy_w_M_Gx     , Cy_w_M_Gy] ]
+                r_c_titles = [ ["dis_img"          , "Mgt"         , "I_with_M"    , "rec"         , "rec_hope"],
+                               ["W"                , "Wx"          , "Wy"          , "Wz"          , ],
+                               ["Wx_w_M_Gx"        , "Wx_w_M_Gy"   , "Wy_w_M_Gx"   , "Wy_w_M_Gy"   , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
                                ["F"                , "Cx"          , "Cy"          , ],
-                               ["Cx_raw_Gx"        , "Cx_raw_Gy"   , "Cy_raw_Gx"   , "Cy_raw_Gy"     , "Cx_w_M_Gx"   , "Cx_w_M_Gy"     , "Cy_w_M_Gx"     , "Cy_w_M_Gy"] ]
+                               ["Cx_w_M_Gx"        , "Cx_w_M_Gy"   , "Cy_w_M_Gx"   , "Cy_w_M_Gy"] ]
 
             else:
-                r_c_imgs   = [ [dis_img_pre_croped_resized_visual , Mgt_visual        , I_w_M_visual  , rec             , rec_hope ],
-                               [Wgt_visual         , W_raw_visual      , W_w_M_visual  , Wx_raw_visual   , Wx_w_M_visual , Wy_raw_visual, Wy_w_M_visual , Wz_raw_visual, Wz_w_M_visual ],
-                               [Wx_raw_Gx          , Wx_raw_Gy         , Wy_raw_Gx     , Wy_raw_Gy       , Wz_raw_Gx     , Wz_raw_Gy    , Wx_w_M_Gx     , Wx_w_M_Gy    , Wy_w_M_Gx    , Wy_w_M_Gy    , Wz_w_M_Gx    , Wz_w_M_Gy     ],
-                               [Fgt_visual         , F_raw_visual      , F_w_M_visual  , Cx_raw_visual   , Cx_w_M_visual , Cy_raw_visual, Cy_w_M_visual , ],
-                               [Cx_raw_Gx          , Cx_raw_Gy         , Cy_raw_Gx     , Cy_raw_Gy       , Cx_w_M_Gx     , Cx_w_M_Gy    , Cy_w_M_Gx     , Cy_w_M_Gy] ]
-                r_c_titles = [ ["dis_img"          , "Mgt"             , "I_with_M"    , "rec"           , "rec_hope"],
-                               ["Wgt"              , "W_raw"           , "W_w_M"       , "Wx_raw"        , "Wx_w_M"      , "Wy_raw"        , "Wy_w_M"        , "Wz_raw"     , "Wz_w_M"      ],
-                               ["Wx_raw_Gx"        , "Wx_raw_Gy"       , "Wy_raw_Gx"   , "Wy_raw_Gy"     , "Wz_raw_Gx"   , "Wz_raw_Gy"     , "Wx_w_M_Gx"     , "Wx_w_M_Gy"  , "Wy_w_M_Gx"  , "Wy_w_M_Gy"  , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
-                               ["Fgt"              , "F_raw"           , "F_w_M"       , "Cx_raw"        , "rec_hope"    , "Cx_w_M_visual" , "Cy_w_M_visual" , ],
-                               ["Cx_raw_Gx"        , "Cx_raw_Gy"       , "Cy_raw_Gx"   , "Cy_raw_Gy"     , "Cx_w_M_Gx"   , "Cx_w_M_Gy"     , "Cy_w_M_Gx"     , "Cy_w_M_Gy"] ]
+                r_c_imgs   = [ [dis_img_pre_croped_resized_visual , Mgt_visual     , I_w_M_visual  , rec             , rec_hope ],
+                               [Wgt_visual         , W_raw_visual  , W_w_M_visual  , Wx_raw_visual , Wx_w_M_visual , Wy_raw_visual, Wy_w_M_visual , Wz_raw_visual, Wz_w_M_visual ],
+                               [Wx_w_M_Gx          , Wx_w_M_Gy     , Wy_w_M_Gx     , Wy_w_M_Gy     , Wz_w_M_Gx    , Wz_w_M_Gy     ],
+                               [Fgt_visual         , F_raw_visual  , F_w_M_visual  , Cx_raw_visual , Cx_w_M_visual , Cy_raw_visual, Cy_w_M_visual , ],
+                               [Cx_w_M_Gx          , Cx_w_M_Gy     , Cy_w_M_Gx     , Cy_w_M_Gy] ]
+                r_c_titles = [ ["dis_img"          , "Mgt"         , "I_with_M"    , "rec"         , "rec_hope"],
+                               ["Wgt"              , "W_raw"       , "W_w_M"       , "Wx_raw"      , "Wx_w_M"      , "Wy_raw"        , "Wy_w_M"        , "Wz_raw"     , "Wz_w_M"      ],
+                               ["Wx_w_M_Gx"        , "Wx_w_M_Gy"   , "Wy_w_M_Gx"   , "Wy_w_M_Gy"   , "Wz_w_M_Gx"   , "Wz_w_M_Gy"     ],
+                               ["Fgt"              , "F_raw"       , "F_w_M"       , "Cx_raw"      , "rec_hope"    , "Cx_w_M_visual" , "Cy_w_M_visual" , ],
+                               ["Cx_w_M_Gx"        , "Cx_w_M_Gy"   , "Cy_w_M_Gx"   , "Cy_w_M_Gy"] ]
 
             single_row_imgs = Matplot_multi_row_imgs(
                                     rows_cols_imgs   = r_c_imgs,         ### 把要顯示的每張圖包成list
@@ -306,7 +306,7 @@ class I_w_M_to_W_to_C(Use_G_generate):
                                     fig_title        = "%s, current_ep=%04i" % (current_see_name, int(current_ep)),  ### 圖上的大標題
                                     add_loss         = self.add_loss,
                                     bgr2rgb          = self.bgr2rgb,
-                                    fix_size         =(256, 256))  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
+                                    fix_size         =(400, 400))  ### 這裡會轉第2次bgr2rgb， 剛好轉成plt 的 rgb
             single_row_imgs.Draw_img()
             single_row_imgs.Save_fig(dst_dir=public_write_dir, name=current_see_name)  ### 這裡是轉第2次的bgr2rgb， 剛好轉成plt 的 rgb  ### 如果沒有要接續畫loss，就可以存了喔！
             print("save to:", self.exp_obj.result_obj.test_write_dir)
