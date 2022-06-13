@@ -43,10 +43,12 @@ Change_name_used_Result_Read_Dirs = [
     Result_Write_Dir,  ### 別台電腦再 kong_model2 裡面的result
 ]
 
-from kong_util.build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
-import os
 
 def Syn_write_to_read_dir(write_dir, read_dir, build_new_dir=False, copy_sub_dir=False, print_msg=True):
+    from kong_util.build_dataset_combine import Check_dir_exist_and_build, Check_dir_exist_and_build_new_dir
+    from kong_util.util                  import Visit_sub_dir_include_self_and_get_dir_paths
+
+    import os
     """
     為了 HDD 不產生磁碟碎片，
     我在 train完的後處理 會儲存在 SSD 裡面， 此時是 write 在 SSD，
@@ -112,8 +114,15 @@ def Syn_write_to_read_dir(write_dir, read_dir, build_new_dir=False, copy_sub_dir
     if(print_msg):
         print("(src)write_dir:", write_dir)
         print("(dst) read_dir:", read_dir)
+    
+    ### 看一下 子資料夾 最長 的名字 會到多長
+    src_dirs = []
+    Visit_sub_dir_include_self_and_get_dir_paths(src_dir=write_dir, dir_containor=src_dirs)
+    src_dir_lens = [len(src_dir) for src_dir in src_dirs]
+    src_dir_len_max = max(src_dir_lens)
 
-    if(len(read_dir) <= 255 and len(write_dir) <= 255):
+    ### 如果 子資料夾 最長的名字 <255 用 xcopy，比較不會有碎片， >255 沒辦法用xcopy， 就只能用 shutil 囉
+    if(src_dir_len_max <= 255):
         command   = f'xcopy "{write_dir}" "{read_dir}" /Y /Q'  ### 複製資料夾內的檔案(不包含子資料夾，子資料夾也想複製的話加/E，但我覺得不要，因為如果複製 上層資料夾， 會重複複製到很多次相同子資料夾， 浪費時間)
         if(copy_sub_dir): command += " /E"  ### 如果有需要複製子資料夾， 再自己把 參數 copy_sub_dir 設True 囉！
         ### /Y 預設覆蓋檔案的複製、/Q 不顯示複製的檔案、/E 子資料夾也會複製過去
