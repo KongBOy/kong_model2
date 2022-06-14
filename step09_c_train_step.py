@@ -163,7 +163,7 @@ def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data, Mask=Non
     total_loss = 0
     for loss_name, loss_fun in loss_info_objs.loss_funs_dict.items():
         # print("loss_name:", loss_name)
-        if  ("tv"  in loss_name): losses.append(loss_fun(model_output))
+        if  ("tv"  in loss_name): losses.append(loss_fun(model_output, Mask))
         elif("bce" in loss_name): losses.append(loss_fun(gt_data, model_output))
         else:                     losses.append(loss_fun(gt_data, model_output, Mask))
         total_loss += losses[-1]

@@ -180,14 +180,18 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
 
     ### before ################################################################################################################################################
     def build_mae_loss_fun_and_containor(self):
-        loss_describe = "mae_s%03i" % self.args["mae_scale"]
+        if (isinstance(self.args["mae_scale"], int)): loss_describe = "Mae_s%03i"
+        else                                        : loss_describe = "Mae_s%.2f"
+        loss_describe = loss_describe % self.args["mae_scale"]
         self._update_loss_describe(loss_describe)
         self.loss_info_obj.loss_funs_dict [loss_describe]  = MAE(**self.args)
         self.loss_info_obj.loss_containors[loss_describe] = tf.keras.metrics.Mean(loss_describe, dtype=tf.float32)
         return self
 
     def build_mse_loss_fun_and_containor(self):
-        loss_describe = "mae_s%03i" % self.args["mse_scale"]
+        if (isinstance(self.args["mse_scale"], int)): loss_describe = "Mse_s%03i"
+        else                                        : loss_describe = "Mse_s%.2f"
+        loss_describe = loss_describe % self.args["mse_scale"]
         self._update_loss_describe(loss_describe)
         self.loss_info_obj.loss_funs_dict[loss_describe]  = mse_kong
         self.loss_info_obj.loss_containors[loss_describe] = tf.keras.metrics.Mean(loss_describe, dtype=tf.float32)
@@ -195,7 +199,9 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
 
     ### 2 ################################################################################################################################################
     def build_bce_loss_fun_and_containor(self):
-        loss_describe = "bce_s%03i" % self.args["bce_scale"]
+        if (isinstance(self.args["bce_scale"], int)): loss_describe = "Bce_s%03i"
+        else                                        : loss_describe = "Bce_s%.2f"
+        loss_describe = loss_describe % self.args["bce_scale"]
         self._update_loss_describe(loss_describe)
         self.loss_info_obj.loss_funs_dict [loss_describe] = BCE(**self.args)
         self.loss_info_obj.loss_containors[loss_describe] = tf.keras.metrics.Mean(name=loss_describe, dtype=tf.float32)
@@ -203,7 +209,18 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
 
     ### 3 ################################################################################################################################################
     def build_sobel_mae_loss_fun_and_containor(self):
-        loss_describe = "sobel_k%i_s%03i" % (self.args["sobel_kernel_size"], self.args["sobel_kernel_scale"])
+        if (isinstance(self.args["sobel_kernel_scale"], int)): loss_describe = "Sob_k%02i_s%03i"
+        else                                                 : loss_describe = "Sob_k%02i_s%.2f"
+        loss_describe = loss_describe % (self.args["sobel_kernel_size"], self.args["sobel_kernel_scale"])
+
+        ### 看 erose_M 是什麼設定
+        erose_M    = False
+        erose_More = False
+        if("erose_M"    in self.args.keys()): erose_M    = self.args["erose_M"]
+        if("erose_More" in self.args.keys()): erose_More = self.args["erose_More"]
+        if  (erose_M is True and erose_More is False): loss_describe += "_EroM"
+        elif(erose_M is True and erose_More is True):  loss_describe += "_EroMore"
+
         self._update_loss_describe(loss_describe)
         self.loss_info_obj.loss_funs_dict [loss_describe] = Sobel_MAE(**self.args)
         self.loss_info_obj.loss_containors[loss_describe] = tf.keras.metrics.Mean(name=loss_describe, dtype=tf.float32)
@@ -211,7 +228,18 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
 
     ### 4 ################################################################################################################################################
     def build_tv_loss_fun_and_containor(self):
-        loss_describe = "tv_s%03i" % self.args["tv_scale"]
+        if (isinstance(self.args["tv_scale"], int)): loss_describe = "Tv_s%03i"
+        else                                       : loss_describe = "Tv_s%.2f"
+        loss_describe = loss_describe % self.args["tv_scale"]
+
+        ### 看 erose_M 是什麼設定
+        erose_M    = False
+        erose_More = False
+        if("erose_M"    in self.args.keys()): erose_M    = self.args["erose_M"]
+        if("erose_More" in self.args.keys()): erose_More = self.args["erose_More"]
+        if  (erose_M is True and erose_More is False): loss_describe += "_EroM"
+        elif(erose_M is True and erose_More is True):  loss_describe += "_EroMore"
+
         self._update_loss_describe(loss_describe)
         self.loss_info_obj.loss_funs_dict ["tv"]  = Total_Variance(**self.args)
         self.loss_info_obj.loss_containors["tv" ] = tf.keras.metrics.Mean(name='tv', dtype=tf.float32)
@@ -219,7 +247,9 @@ class Loss_info_G_loss_builder(Loss_info_GAN_loss_builder):
 
     ### 10 ################################################################################################################################################
     def build_GAN_loss_fun_and_containor(self):
-        loss_describe = "GAN_s%03i" % self.args["GAN_scale"]
+        if (isinstance(self.args["GAN_scale"], int)): loss_describe = "GAN_s%03i"
+        else                                        : loss_describe = "GAN_s%.2f"
+        loss_describe = loss_describe % self.args["GAN_scale"]
         self._update_loss_describe(loss_describe)
         self.loss_info_obj.loss_funs_dict ["BCE_D_fake"] = BCE(bce_scale=self.args["GAN_scale"], **self.args)
         self.loss_info_obj.loss_containors["BCE_D_fake"] = tf.keras.metrics.Mean(name='2_D_fake', dtype=tf.float32)
