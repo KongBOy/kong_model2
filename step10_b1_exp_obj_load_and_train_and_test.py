@@ -499,15 +499,26 @@ class Experiment():
 
     def testing(self, add_loss=False, bgr2rgb=False, knpy_save=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
-        for test_index, (test_in, test_in_pre, test_gt, test_gt_pre, test_name, rec_hope) in enumerate(tqdm(zip(self.tf_data.test_in_db.ord.batch(1)       .take(self.tf_data.test_amount),
-                                                                                                                self.tf_data.test_in_db.pre .batch(1)      .take(self.tf_data.test_amount),
-                                                                                                                self.tf_data.test_gt_db.ord.batch(1)       .take(self.tf_data.test_amount),
-                                                                                                                self.tf_data.test_gt_db.pre.batch(1)       .take(self.tf_data.test_amount),
-                                                                                                                self.tf_data.test_name_db.ord.batch(1)     .take(self.tf_data.test_amount),
-                                                                                                                self.tf_data.rec_hope_test_db.ord.batch(1) .take(self.tf_data.test_amount)))):
+        test_combine_db = [ 
+            self.tf_data.test_in_db.ord.batch(1)       .take(self.tf_data.test_amount),
+            self.tf_data.test_in_db.pre .batch(1)      .take(self.tf_data.test_amount),
+            self.tf_data.test_gt_db.ord.batch(1)       .take(self.tf_data.test_amount),
+            self.tf_data.test_gt_db.pre.batch(1)       .take(self.tf_data.test_amount),
+            self.tf_data.test_name_db.ord.batch(1)     .take(self.tf_data.test_amount),
+            ]
+        if(self.db_obj.have_rec_hope):         test_combine_db += [self.tf_data.rec_hope_test_db.ord.batch(1)      .take(self.tf_data.test_amount)]
+        if(self.db_obj.have_DewarpNet_result): test_combine_db += [self.tf_data.DewarpNet_result_test.ord.batch(1) .take(self.tf_data.test_amount)]
+
+        for test_index, datas in enumerate(tqdm(zip(*test_combine_db))):
+            rec_hope         = None
+            DewarpNet_result = None
+            if  (len(datas) == 5): test_in, test_in_pre, test_gt, test_gt_pre, test_name,                            = datas
+            elif(len(datas) == 6): test_in, test_in_pre, test_gt, test_gt_pre, test_name, rec_hope                   = datas
+            elif(len(datas) == 7): test_in, test_in_pre, test_gt, test_gt_pre, test_name, rec_hope, DewarpNet_result = datas
+
             test_name = test_name[0].numpy().decode("utf-8")
             # self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
-            self.model_obj.generate_sees  (self.model_obj, "test", test_index, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, self, training=False, see_reset_init=True, postprocess=True, npz_save=True, knpy_save=knpy_save)
+            self.model_obj.generate_sees  (self.model_obj, "test", test_index, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, DewarpNet_result, self, training=False, see_reset_init=True, postprocess=True, npz_save=True, knpy_save=knpy_save)
         Save_as_jpg          (ord_dir  =self.result_obj.test_write_dir, dst_dir =self.result_obj.test_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完
         Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir, read_dir=self.result_obj.test_read_dir , build_new_dir=False, print_msg=False, copy_sub_dir=True)
 
