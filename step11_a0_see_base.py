@@ -75,6 +75,8 @@ class See_info:
 
         self.dis_img_path = self.get_path_savely(self.see_read_dir, certain_word="dis_img")
         if(self.dis_img_path is None): self.dis_img_path = self.get_path_savely(self.see_read_dir, certain_word="in_img")  ### 為了相容以前沒有寫 dis_img 的 result
+
+        self.rec_hope_path    = self.get_path_savely(self.see_read_dir, certain_word="rec_hope", certain_ext=".jpg")  ### search_dir_1 設 self.flow_v_write_dir 是因為 有可能 npy_to_npz 完 馬上就接著做
         # print("self.in_img_path" , self.in_img_path)
         # print("self.dis_img_path", self.dis_img_path)
         # self.in_img_names = get_dir_certain_file_names(self.see_read_dir, certain_word="in_img")
