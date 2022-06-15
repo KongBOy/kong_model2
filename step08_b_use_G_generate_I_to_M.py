@@ -6,7 +6,7 @@ from step06_a_datas_obj import Range
 import sys
 sys.path.append("kong_util")
 from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
-from step08_b_use_G_generate_0_util import Use_G_generate
+from step08_b_use_G_generate_0_util import Use_G_generate_Interface
 
 import matplotlib.pyplot as plt
 import os
@@ -120,7 +120,7 @@ def M_save_as_Trimap(gather_base_dir, current_see_name, Mask, dil_ksize, ero_ksi
     return tri_M
 
 
-class I_to_M(Use_G_generate):
+class I_to_M(Use_G_generate_Interface):
     def __init__(self, tight_crop=None):
         super(I_to_M, self).__init__()
         self.tight_crop = tight_crop

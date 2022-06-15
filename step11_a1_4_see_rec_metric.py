@@ -1,5 +1,6 @@
 from step11_a0_see_base import See_info
 
+from step0_access_path import kong_model2_dir
 from step0_access_path import JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
 from step0_access_path import Syn_write_to_read_dir
 
@@ -18,7 +19,6 @@ import numpy as np
 from tqdm import tqdm
 import os
 
-sys.path.append("SIFT_dev/SIFTflow")
 import matplotlib.pyplot as plt  ### debug用
 from   matplotlib.gridspec import GridSpec
 import datetime
@@ -73,8 +73,8 @@ class See_rec_metric(See_info):
         self.old2_matplot_metric_visual_write_dir = self.see_write_dir + "/2_matplot_metric_visual"
 
 
-        self.metrec_read_dir  = self.see_read_dir  + "/3_metric"
-        self.metrec_write_dir = self.see_write_dir + "/3_metric"
+        self.metric_read_dir  = self.see_read_dir  + "/3_metric"
+        self.metric_write_dir = self.see_write_dir + "/3_metric"
         self.metric_ld_color_read_dir  = self.see_read_dir  + "/3_metric/ld_color"
         self.metric_ld_color_write_dir = self.see_write_dir + "/3_metric/ld_color"
         self.metric_ld_gray_read_dir   = self.see_read_dir  + "/3_metric/ld_gray"
@@ -98,12 +98,12 @@ class See_rec_metric(See_info):
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Change_metric_dir, Current See:{self.see_name}")
         # start_time = time.time()
 
-        # move_dir_certain_file(self.old1_metric_read_dir,  certain_word=".npy", dst_dir=self.metrec_read_dir,  print_msg=print_msg)
-        # move_dir_certain_file(self.old1_metric_write_dir, certain_word=".npy", dst_dir=self.metrec_write_dir, print_msg=print_msg)
-        # move_dir_certain_file(self.old2_metric_read_dir,  certain_word=".npy", dst_dir=self.metrec_read_dir,  print_msg=print_msg)
-        # move_dir_certain_file(self.old2_metric_write_dir, certain_word=".npy", dst_dir=self.metrec_write_dir, print_msg=print_msg)
-        # move_dir_certain_file(self.old3_metric_read_dir,  certain_word=".npy", dst_dir=self.metrec_read_dir,  print_msg=print_msg)
-        # move_dir_certain_file(self.old3_metric_write_dir, certain_word=".npy", dst_dir=self.metrec_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old1_metric_read_dir,  certain_word=".npy", dst_dir=self.metric_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old1_metric_write_dir, certain_word=".npy", dst_dir=self.metric_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old2_metric_read_dir,  certain_word=".npy", dst_dir=self.metric_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old2_metric_write_dir, certain_word=".npy", dst_dir=self.metric_write_dir, print_msg=print_msg)
+        # move_dir_certain_file(self.old3_metric_read_dir,  certain_word=".npy", dst_dir=self.metric_read_dir,  print_msg=print_msg)
+        # move_dir_certain_file(self.old3_metric_write_dir, certain_word=".npy", dst_dir=self.metric_write_dir, print_msg=print_msg)
 
         # move_dir_certain_file(self.old1_metric_ld_color_read_dir,  certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_read_dir,  print_msg=print_msg)
         # move_dir_certain_file(self.old1_metric_ld_color_write_dir, certain_word="ld_epoch", certain_ext=".jpg", dst_dir=self.metric_ld_color_write_dir, print_msg=print_msg)
@@ -136,7 +136,7 @@ class See_rec_metric(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        # self.metric_names  = get_dir_certain_file_names(self.metrec_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
+        # self.metric_names  = get_dir_certain_file_names(self.metric_read_dir , certain_word="metric_epoch", certain_ext=".jpg")
         # self.metric_read_paths  = [self.matplot_metric_visual_read_dir + "/" + name for name in self.metric_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
         self.ld_color_visual_names       = get_dir_certain_file_names(self.metric_ld_color_read_dir , certain_word="ld_epoch", certain_ext=".jpg")
@@ -147,7 +147,8 @@ class See_rec_metric(See_info):
     ###############################################################################################
     ###############################################################################################
     def Calculate_SSIM_LD(self, single_see_core_amount=8,
-                                see_print_msg=False):
+                                see_print_msg=False,
+                                **args):
         """
         覺得還是要用 path 的方式 在 matlab 裡面 用 imread(path)，
         path 的方式：8秒左右
@@ -162,7 +163,7 @@ class See_rec_metric(See_info):
         start_time = time.time()
 
         ### See_method 第一部分：建立 存結果的資料夾
-        Check_dir_exist_and_build(self.metrec_write_dir)           ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.metric_write_dir)           ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
         Check_dir_exist_and_build(self.metric_ld_color_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
         Check_dir_exist_and_build(self.metric_ld_gray_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
         Check_dir_exist_and_build(self.metric_ld_matplot_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
@@ -198,13 +199,13 @@ class See_rec_metric(See_info):
         LDs   = np.array(LDs)[:, 1]
         # print("SSIMs", SSIMs)
         # print("LDs", LDs)
-        np.save(f"{self.metrec_write_dir}/SSIMs", SSIMs)
-        np.save(f"{self.metrec_write_dir}/LDs",   LDs)
+        np.save(f"{self.metric_write_dir}/SSIMs", SSIMs)
+        np.save(f"{self.metric_write_dir}/LDs",   LDs)
 
         ### See_method 第五部分：如果 write 和 read 資料夾不同，把 write完的結果 同步回 read資料夾喔！
         ###   記得順序是 先同步父 再 同步子 喔！
-        if(self.metrec_write_dir != self.metrec_read_dir):  ### 因為接下去的任務需要 此任務的結果， 如果 read/write 資料夾位置不一樣， write完的結果 copy 一份 放回read， 才能讓接下去的動作 有 東西 read 喔！
-            Syn_write_to_read_dir(write_dir=self.metrec_write_dir,          read_dir=self.metrec_read_dir,          build_new_dir=True)  ### 父
+        if(self.metric_write_dir != self.metric_read_dir):  ### 因為接下去的任務需要 此任務的結果， 如果 read/write 資料夾位置不一樣， write完的結果 copy 一份 放回read， 才能讓接下去的動作 有 東西 read 喔！
+            Syn_write_to_read_dir(write_dir=self.metric_write_dir,          read_dir=self.metric_read_dir,          build_new_dir=True)  ### 父
             Syn_write_to_read_dir(write_dir=self.metric_ld_color_write_dir, read_dir=self.metric_ld_color_read_dir, build_new_dir=True)  ### 子
             Syn_write_to_read_dir(write_dir=self.metric_ld_gray_write_dir,  read_dir=self.metric_ld_gray_read_dir,  build_new_dir=True)  ### 子
 
@@ -214,7 +215,7 @@ class See_rec_metric(See_info):
 
     ### See_method 第三部分：主要做的事情在這裡
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs):
-        from kong_use_evalUnwarp_sucess import use_DewarpNet_eval
+        from SIFT_dev.SIFTflow.kong_use_evalUnwarp_sucess import use_DewarpNet_eval
 
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             ### rec_GT 要怎麼轉成 rec_pred
@@ -230,7 +231,7 @@ class See_rec_metric(See_info):
             # print("path2~~~~~~~~~~~~", path2)
 
             ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
-            os.chdir("SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
+            os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
             [SSIM, LD, vx, vy, d, im1, im2] = use_DewarpNet_eval(path1, path2)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
             os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
 
@@ -270,7 +271,8 @@ class See_rec_metric(See_info):
     def Visual_SSIM_LD(self, add_loss=False,
                              bgr2rgb =False,
                              single_see_core_amount=8,
-                             see_print_msg=False):
+                             see_print_msg=False,
+                             **args):
 
         ### See_method 第零ａ部分：顯示開始資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Visual_SSIM_LD, Current See:{self.see_name}")
@@ -284,8 +286,8 @@ class See_rec_metric(See_info):
         self.get_bm_rec_info()
         self.get_metric_info()
 
-        SSIMs = np.load(f"{self.metrec_read_dir}/SSIMs.npy")
-        LDs   = np.load(f"{self.metrec_read_dir}/LDs.npy")
+        SSIMs = np.load(f"{self.metric_read_dir}/SSIMs.npy")
+        LDs   = np.load(f"{self.metric_read_dir}/LDs.npy")
 
         ### See_method 第三部分：主要做的事情在這裡， 如果要有想設計平行處理的功能 就要有 1.single_see_core_amount 和 2.下面的if/elif/else 和 3._see_method 前兩個參數要為 start_index, task_amount 相關詞喔！
         if(single_see_core_amount == 1):  ### single_see_core_amount 大於1 代表 單核心跑， 就重新導向 最原始的function囉 把 see內的任務 依序完成！
@@ -337,7 +339,7 @@ class See_rec_metric(See_info):
 
                 ### step2 把圖都畫上去
                 single_row_imgs.Draw_img()
-                single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.merged_ax_list[0], self.metrec_read_dir, go_epoch, min_epochs=self.see_rec_amount, ylim=25)
+                single_row_imgs.Draw_ax_loss_after_train(single_row_imgs.merged_ax_list[0], self.metric_read_dir, go_epoch, min_epochs=self.see_rec_amount, ylim=25)
                 single_row_imgs.merged_ax_list[1].imshow(ld_visual)
 
                 ### step3 重新規劃一下 各個圖 要顯示的 大小比例

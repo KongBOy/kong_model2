@@ -148,6 +148,12 @@ class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_init_builder):
             self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
             self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
+        if(self.tf_data.db_obj.have_DewarpNet_result):
+            self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
+            self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
+
+            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
             ##########################################################################################################################################
             ### 勿刪！用來測試寫得對不對！
             # import matplotlib.pyplot as plt
@@ -210,6 +216,13 @@ class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_init_builder):
             self.tf_data.rec_hope_train_amount = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
             self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
             self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+
+        if(self.tf_data.db_obj.have_DewarpNet_result):
+            self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
+            self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
+
+            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
 
 if(__name__ == "__main__"):
     from step09_d_KModel_builder_combine_step789 import MODEL_NAME, KModel_builder

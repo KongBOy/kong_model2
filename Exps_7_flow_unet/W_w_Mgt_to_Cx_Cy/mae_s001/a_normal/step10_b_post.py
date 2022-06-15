@@ -55,7 +55,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L4_ch001.{compress_and_bm_rec_all}"])
 #### 5l ############################################################################################
 # sb.run(cmd_python_step10_a + [f"L5_ch064.{compress_and_bm_rec_all}"])
-# sb.run(cmd_python_step10_a + [f"L5_ch032.{compress_and_bm_rec_all}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch032.{Calculate_and_Visual_SSIM_LD_all_from_begin}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch016.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch008.{compress_and_bm_rec_all}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch004.{compress_and_bm_rec_all}"])
