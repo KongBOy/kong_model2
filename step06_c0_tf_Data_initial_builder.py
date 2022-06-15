@@ -27,11 +27,12 @@ class tf_Data_init_builder:
         self.tf_data.train_shuffle = train_shuffle
         return self
 
-    def set_data_use_range(self, use_in_range, use_gt_range, use_rec_hope_range=Range(0, 255)):
+    def set_data_use_range(self, use_in_range, use_gt_range, use_rec_hope_range=Range(0, 255), use_DewarpNet_result_range=Range(0, 255)):
     # def set_data_use_range(self, use_in_range=Range(0, 1), use_gt_range=Range(0, 1), use_rec_hope_range=Range(0, 255), in_min=None, in_max=None, gt_min=None, gt_max=None, rec_hope_min=None, rec_hope_max=None):
         self.tf_data.use_in_range = use_in_range
         self.tf_data.use_gt_range = use_gt_range
         self.tf_data.use_rec_hope_range = use_rec_hope_range
+        self.tf_data.use_DewarpNet_result_range = use_DewarpNet_result_range
         # self.tf_data.in_max       = in_max
         # self.tf_data.in_min       = in_min
         # self.tf_data.gt_min       = gt_min
@@ -81,6 +82,10 @@ class tf_Data_init_builder:
         self.rec_hope_train_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_train_dir, file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
         self.rec_hope_test_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_test_dir,  file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
         self.rec_hope_see_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_see_dir,   file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range).build()
+
+        ### DewarpNet_result 不會有 train_factory
+        self.DewarpNet_result_test_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.DewarpNet_result_test_dir, file_format=self.tf_data.db_obj.DewarpNet_result_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.DewarpNet_result_range, use_range=self.tf_data.use_DewarpNet_result_range).build()
+        self.DewarpNet_result_see_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.DewarpNet_result_see_dir,  file_format=self.tf_data.db_obj.DewarpNet_result_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.DewarpNet_result_range, use_range=self.tf_data.use_DewarpNet_result_range).build()
 
     def _build_train_test_in_img_db(self):
         ### 整理程式碼後發現，所有模型的 輸入都是 dis_img呀！大家都一樣，寫成一個function給大家call囉， 會建立 train_in_img_db 和 test_in_img_db

@@ -519,6 +519,7 @@ class tf_Data:   ### 以上 以下 都是為了設定這個物件
         self.use_in_range = None
         self.use_gt_range = None
         self.use_rec_hope_range = None
+        self.use_DewarpNet_result_range = None
 
         # self.train_name_db    = None
         # self.train_in_db      = None
@@ -573,6 +574,10 @@ class tf_Data:   ### 以上 以下 都是為了設定這個物件
         self.rec_hope_train_db = tf_Data_element()
         self.rec_hope_test_db  = tf_Data_element()
         self.rec_hope_see_db   = tf_Data_element()
+
+        ### DewarpNet_result 不會有 train_db
+        self.DewarpNet_result_test = tf_Data_element()
+        self.DewarpNet_result_see  = tf_Data_element()
 
         ### 最主要是再 step7 unet generate image 時用到，但我覺得可以改寫！所以先註解掉了！
         # self.in_format          = None
