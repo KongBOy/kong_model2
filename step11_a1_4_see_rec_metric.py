@@ -18,7 +18,6 @@ import numpy as np
 from tqdm import tqdm
 import os
 
-sys.path.append("SIFT_dev/SIFTflow")
 import matplotlib.pyplot as plt  ### debug用
 from   matplotlib.gridspec import GridSpec
 import datetime
@@ -214,7 +213,7 @@ class See_rec_metric(See_info):
 
     ### See_method 第三部分：主要做的事情在這裡
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs):
-        from kong_use_evalUnwarp_sucess import use_DewarpNet_eval
+        from SIFT_dev.SIFTflow.kong_use_evalUnwarp_sucess import use_DewarpNet_eval
 
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             ### rec_GT 要怎麼轉成 rec_pred
@@ -230,7 +229,7 @@ class See_rec_metric(See_info):
             # print("path2~~~~~~~~~~~~", path2)
 
             ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
-            os.chdir("SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
+            os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
             [SSIM, LD, vx, vy, d, im1, im2] = use_DewarpNet_eval(path1, path2)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
             os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
 
