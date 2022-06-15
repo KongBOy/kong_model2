@@ -1,5 +1,6 @@
 from step11_a0_see_base import See_info
 
+from step0_access_path import kong_model2_dir
 from step0_access_path import JPG_QUALITY, CORE_AMOUNT_FIND_LTRD_AND_CROP, CORE_AMOUNT_SAVE_AS_JPG
 from step0_access_path import Syn_write_to_read_dir
 
