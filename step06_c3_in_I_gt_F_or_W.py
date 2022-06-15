@@ -132,6 +132,12 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
             self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
+        if(self.tf_data.db_obj.have_DewarpNet_result):
+            self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
+            self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
+
+            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
             ##########################################################################################################################################
             ### 勿刪！用來測試寫得對不對！
             # import matplotlib.pyplot as plt
@@ -182,6 +188,13 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
             self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
+        if(self.tf_data.db_obj.have_DewarpNet_result):
+            self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
+            self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
+
+            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
+
             ##########################################################################################################################################
             ### 勿刪！用來測試寫得對不對！
             # import matplotlib.pyplot as plt
@@ -225,6 +238,14 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
             self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
+        if(self.tf_data.db_obj.have_DewarpNet_result):
+            self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
+            self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
+
+            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
+            # print("self.tf_data.DewarpNet_result_test_amount", self.tf_data.DewarpNet_result_test_amount)
+            # print("self.tf_data.DewarpNet_result_see_amount", self.tf_data.DewarpNet_result_see_amount)
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # debug_tf_data(self.tf_data, use_train_test_see="train")
@@ -257,6 +278,12 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
             self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
+        if(self.tf_data.db_obj.have_DewarpNet_result):
+            self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
+            self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
+
+            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # debug_tf_data(self.tf_data, use_train_test_see="train")

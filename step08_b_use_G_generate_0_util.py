@@ -410,7 +410,7 @@ class Color_jit():
 
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
-class Use_G_generate:
+class Use_G_generate_Interface:
     def __init__(self):
         self.model_obj      = None
         self.phase          = None
@@ -420,6 +420,7 @@ class Use_G_generate:
         self.gt_ord         = None
         self.gt_pre         = None
         self.rec_hope       = None
+        self.DewarpNet_result = None
         self.exp_obj        = None
         self.training       = None
         self.see_reset_init = None
@@ -429,7 +430,7 @@ class Use_G_generate:
         self.add_loss       = None
         self.bgr2rgb        = None
 
-    def __call__(self, model_obj, phase, index, fname, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=None, see_reset_init=True, postprocess=False, npz_save=False, knpy_save=False, add_loss=False, bgr2rgb=True):
+    def __call__(self, model_obj, phase, index, fname, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, DewarpNet_result=None, exp_obj=None, training=None, see_reset_init=True, postprocess=False, npz_save=False, knpy_save=False, add_loss=False, bgr2rgb=True):
         self.model_obj      = model_obj
         self.phase          = phase
         self.index          = index
@@ -439,6 +440,7 @@ class Use_G_generate:
         self.gt_ord         = gt_ord
         self.gt_pre         = gt_pre
         self.rec_hope       = rec_hope
+        self.DewarpNet_result = DewarpNet_result
         self.exp_obj        = exp_obj
         self.training       = training
         self.see_reset_init = see_reset_init
@@ -452,7 +454,7 @@ class Use_G_generate:
     def doing_things(self):
         pass
 
-# class Use_G_generate:
+# class Use_G_generate_Interface:
 #     def __call__(self,model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False):
 #         self.doing_things(model_obj, phase, index, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=True, see_reset_init=True, postprocess=False, npz_save=False, add_loss=False, bgr2rgb=False)
 

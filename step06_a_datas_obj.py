@@ -149,6 +149,10 @@ class Datasets():  ### 以上 以下 都是為了要設定這個物件
         self.rec_hope_train_dir = None
         self.rec_hope_test_dir  = None
         self.rec_hope_see_dir   = None
+
+        ### DewarpNet_result 不會有 train_dir
+        self.DewarpNet_result_test_dir = None
+        self.DewarpNet_result_see_dir = None
         ''''''
         self.in_dir_name  = None
         self.gt_dir_name  = None
@@ -184,6 +188,10 @@ class Datasets():  ### 以上 以下 都是為了要設定這個物件
         self.have_see   = False
         self.have_rec_hope = False
 
+        self.have_DewarpNet_result = False
+        self.DewarpNet_result_format = "png"         ### 不用設定了，就直接固定吧，人家跑玩的結果就長這樣啦～
+        self.DewarpNet_result_range = Range(0, 255)  ### 不用設定了，就直接固定吧，人家跑玩的結果就長這樣啦～
+
         ### 這裡的東西我覺得跟 db_obj 相關性 沒有比 tf_data還來的大，所以把這幾個attr移到tf_data裡囉！
         ### 一切的一切最後就是要得到這個 data_dict
         ### 這些資訊要從 datapipline 那邊再設定
@@ -212,6 +220,10 @@ class Datasets():  ### 以上 以下 都是為了要設定這個物件
         print("rec_hope_test_dir  :%s," % self.rec_hope_test_dir)
         print("rec_hope_see_dir   :%s," % self.rec_hope_see_dir)
         print("in_format:%s, gt_format:%s, rec_hope_format:%s" % (self.in_format, self.gt_format, self.rec_hope_format))
+
+        print("DewarpNet_train_dir : 本來就不會有")
+        print("DewarpNet_result_test_dir  : %s" % self.DewarpNet_result_test_dir)
+        print("DewarpNet_result_see_dir   : %s" % self.DewarpNet_result_see_dir)
         print("可以先 copy past 這些 路徑 看看存不存在喔")
         return ""
 ####################################################################################################################################
@@ -240,7 +252,7 @@ class Dataset_basic_builder(Dataset_init_builder):
         return self
 
 class Dataset_dir_builder(Dataset_basic_builder):
-    def set_dir_manually(self, train_in_dir =None, train_gt_dir =None, test_in_dir =None, test_gt_dir =None, see_in_dir =None, see_gt_dir =None, rec_hope_train_dir=None, rec_hope_test_dir=None, rec_hope_see_dir=None,
+    def set_dir_manually(self, train_in_dir =None, train_gt_dir =None, test_in_dir =None, test_gt_dir =None, see_in_dir =None, see_gt_dir =None, rec_hope_train_dir=None, rec_hope_test_dir=None, rec_hope_see_dir=None, DewarpNet_result_test_dir=None, DewarpNet_result_see_dir=None,
                                train_in2_dir=None, train_gt2_dir=None, test_in2_dir=None, test_gt2_dir=None, see_in2_dir=None, see_gt2_dir=None):
         self.db.train_in_dir = train_in_dir
         self.db.train_gt_dir = train_gt_dir
@@ -259,6 +271,10 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.rec_hope_train_dir = rec_hope_train_dir
         self.db.rec_hope_test_dir  = rec_hope_test_dir
         self.db.rec_hope_see_dir   = rec_hope_see_dir
+
+        ### DewarpNet_result 不會有 train_dir
+        self.db.DewarpNet_result_test_dir = DewarpNet_result_test_dir
+        self.db.DewarpNet_result_see_dir  = DewarpNet_result_see_dir
         return self
 
     def set_dir_by_basic(self):
@@ -330,7 +346,10 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.rec_hope_train_dir = self.db.db_dir + "/train/0_rec_hope"
         self.db.rec_hope_test_dir  = self.db.db_dir + f"/{self.db.test_db_name}/0_rec_hope"
         self.db.rec_hope_see_dir   = self.db.db_dir + "/see/0_rec_hope"
-    
+
+        self.db.DewarpNet_result_test_dir = self.db.db_dir + f"/{self.db.test_db_name}/DewarpNet_result"
+        self.db.DewarpNet_result_see_dir  = self.db.db_dir + "/see/DewarpNet_result"
+
         ### check 資料正確性的資料夾
         self.db.check_train_in_dir = self.db.db_dir + "/check" + "/train/" + in_dir_name
         self.db.check_train_gt_dir = self.db.db_dir + "/check" + "/train/" + gt_dir_name
@@ -349,6 +368,9 @@ class Dataset_dir_builder(Dataset_basic_builder):
         self.db.check_rec_hope_train_dir = self.db.db_dir + "/check" + "/train/0_rec_hope"
         self.db.check_rec_hope_test_dir  = self.db.db_dir + "/check" + f"/{self.db.test_db_name}/0_rec_hope"
         self.db.check_rec_hope_see_dir   = self.db.db_dir + "/check" + "/see/0_rec_hope"
+
+        self.db.check_DewarpNet_result_test_dir = self.db.db_dir + "/check" + f"/{self.db.test_db_name}/DewarpNet_result"
+        self.db.check_DewarpNet_result_see_dir  = self.db.db_dir + "/check" + "/see/DewarpNet_result"
         return self
 
     def reset_test_db_name(self, test_db_name):
@@ -384,13 +406,14 @@ class Dataset_format_builder(Dataset_dir_builder):
         return self
 
 class Dataset_detail_builder(Dataset_format_builder):
-    def set_detail(self, have_train=True, have_see=False, have_rec_hope=False, see_version=None):
+    def set_detail(self, have_train=True, have_see=False, have_rec_hope=False, have_DewarpNet_result=False, see_version=None):
         """
         資料集 裡面有沒有 train/see 資料夾，有的時候因為懶所以還沒建就想用了這樣子
         """
         self.db.have_train    = have_train
         self.db.have_see      = have_see
         self.db.have_rec_hope = have_rec_hope
+        self.db.have_DewarpNet_result = have_DewarpNet_result
         self.db.see_version   = see_version
         return self
 
@@ -448,22 +471,22 @@ type8_blender_dis_wc_flow_try_mul_M           = Dataset_builder().set_basic(DB_C
 
 ##### Doc3d v1, v2
 ### I_to_M
-type8_blender_kong_doc3d_in_I_gt_MC           = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong    , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(0, 1)                                                                  , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver_else")
+type8_blender_kong_doc3d_in_I_gt_MC           = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_F_MC_norm_then_no_mul_M_wrong    , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(0, 1)                                                                  , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, have_DewarpNet_result=True, see_version="sees_ver_else")
 ### I_to_W
-type8_blender_kong_doc3d_in_I_gt_W            = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_hole_norm_then_mul_M_right     , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver_else")
-type8_blender_kong_doc3d_in_I_gt_W_ch_norm    = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver_else") .set_ch_ranges(gt_ch_ranges=[Range(-0.67187124, 0.63452387), Range(-1.2410645, 1.2485291), Range(-1.2280148, 1.2387834)])  ### V1
-type8_blender_kong_doc3d_in_I_gt_W_ch_norm_v2 = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver_else") .set_ch_ranges(gt_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)])  ### V2:Z的Range不一樣 和 X軸相反 min/max 值對調
+type8_blender_kong_doc3d_in_I_gt_W            = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_hole_norm_then_mul_M_right     , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, have_DewarpNet_result=True, see_version="sees_ver_else")
+type8_blender_kong_doc3d_in_I_gt_W_ch_norm    = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, have_DewarpNet_result=True, see_version="sees_ver_else") .set_ch_ranges(gt_ch_ranges=[Range(-0.67187124, 0.63452387), Range(-1.2410645, 1.2485291), Range(-1.2280148, 1.2387834)])  ### V1
+type8_blender_kong_doc3d_in_I_gt_W_ch_norm_v2 = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, have_DewarpNet_result=True, see_version="sees_ver_else") .set_ch_ranges(gt_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)])  ### V2:Z的Range不一樣 和 X軸相反 min/max 值對調
 # type8_blender_kong_doc3d_in_I_gt_W_ch_norm_only_for_doc3d_x_value_reverse    = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_ch_norm_then_mul_M_right_only_for_doc3d_x_value_reverse       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver_else") .set_ch_ranges(gt_ch_ranges=[Range(-0.67187124, 0.63452387), Range(-1.2410645, 1.2485291), Range(-1.2280148, 1.2387834)])
 
 ### W_to_W
 ###   hole norm 感覺用不到 就先不寫出來了
-type8_blender_kong_doc3d_in_W_gt_W_ch_norm_v2 = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_W_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-1.2410645, 1.2485291), in2_format="png", db_in2_range=Range(0, 255)                 , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver_else") .set_ch_ranges(in_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)], gt_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)])  ### V2: Z的Range不一樣 和 X軸相反 min/max 值對調
+type8_blender_kong_doc3d_in_W_gt_W_ch_norm_v2 = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_W_gt_W_ch_norm_then_mul_M_right       , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-1.2410645, 1.2485291), in2_format="png", db_in2_range=Range(0, 255)                 , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)                                                 , rec_hope_format="png", db_rec_hope_range=Range(0, 255), ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, have_DewarpNet_result=True, see_version="sees_ver_else") .set_ch_ranges(in_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)], gt_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)])  ### V2: Z的Range不一樣 和 X軸相反 min/max 值對調
 
 ### W_to_C
-type8_blender_kong_doc3d_in_W_and_I_gt_F      = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-1.2410645, 1.2485291) , in2_format="png", db_in2_range=Range(0, 255)                 , gt_format="knpy", db_gt_range =Range(0,   1)                                                                , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver_else")
+type8_blender_kong_doc3d_in_W_and_I_gt_F      = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_W_hole_norm_then_mul_M_right_and_I_gt_F_WC_norm_no_mul_M_wrong , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="knpy", db_in_range=Range(-1.2410645, 1.2485291) , in2_format="png", db_in2_range=Range(0, 255)                 , gt_format="knpy", db_gt_range =Range(0,   1)                                                                , rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, have_DewarpNet_result=True, see_version="sees_ver_else")
 ### I_w_M_to_W_to_C
-type8_blender_kong_doc3d                      = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_and_F_hole_norm_then_mul_M                , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)  , gt2_format="knpy", db_gt2_range=Range(0,   1), rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver_else")
-type8_blender_kong_doc3d_v2                   = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_and_F_ch_norm_then_mul_M                  , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)  , gt2_format="knpy", db_gt2_range=Range(0,   1), rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, see_version="sees_ver_else") .set_ch_ranges(gt_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)])  ### V2:Z的Range不一樣 和 X軸相反 min/max 值對調
+type8_blender_kong_doc3d                      = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_and_F_hole_norm_then_mul_M                , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)  , gt2_format="knpy", db_gt2_range=Range(0,   1), rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, have_DewarpNet_result=True, see_version="sees_ver_else")
+type8_blender_kong_doc3d_v2                   = Dataset_builder().set_basic(DB_C.type8_blender, DB_N.kong_doc3d, DB_GM.build_by_in_I_gt_W_and_F_ch_norm_then_mul_M                  , h=448, w=448).set_dir_by_basic().set_in_gt_format_and_range(in_format="png" , db_in_range=Range(0, 255)                                                                               , gt_format="knpy", db_gt_range =Range(-1.2410645, 1.2485291)  , gt2_format="knpy", db_gt2_range=Range(0,   1), rec_hope_format="png", db_rec_hope_range=Range(0, 255) ) .set_detail(have_train=True, have_see=True, have_rec_hope=True, have_DewarpNet_result=True, see_version="sees_ver_else") .set_ch_ranges(gt_ch_ranges=[Range(-0.50429183, 0.46694446), Range(-1.2410645, 1.2485291), Range(-1.2387834, 1.2280148)])  ### V2:Z的Range不一樣 和 X軸相反 min/max 值對調
 
 
 if(__name__ == "__main__"):
