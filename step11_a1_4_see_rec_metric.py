@@ -146,7 +146,8 @@ class See_rec_metric(See_info):
     ###############################################################################################
     ###############################################################################################
     def Calculate_SSIM_LD(self, single_see_core_amount=8,
-                                see_print_msg=False):
+                                see_print_msg=False,
+                                **args):
         """
         覺得還是要用 path 的方式 在 matlab 裡面 用 imread(path)，
         path 的方式：8秒左右
@@ -269,7 +270,8 @@ class See_rec_metric(See_info):
     def Visual_SSIM_LD(self, add_loss=False,
                              bgr2rgb =False,
                              single_see_core_amount=8,
-                             see_print_msg=False):
+                             see_print_msg=False,
+                             **args):
 
         ### See_method 第零ａ部分：顯示開始資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: doing Visual_SSIM_LD, Current See:{self.see_name}")
