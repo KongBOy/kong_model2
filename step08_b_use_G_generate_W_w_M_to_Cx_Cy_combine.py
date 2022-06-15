@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import os
 import pdb
 
-class W_w_M_to_Cx_Cy(Use_G_generate):
+class W_w_M_to_Cx_Cy(Use_G_generate_Interface):
     def __init__(self, separate_out=False, focus=False, tight_crop=None):
         super(W_w_M_to_Cx_Cy, self).__init__()
         self.separate_out = separate_out
