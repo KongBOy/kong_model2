@@ -1,9 +1,10 @@
 import numpy as np
 import cv2
-
+from step0_access_path import kong_model2_dir
 from step08_b_use_G_generate_0_util import Use_G_generate_Interface, Value_Range_Postprocess_to_01, WcM_01_visual_op, W_01_and_W_01_w_M_to_WM_and_visualize, C_01_and_C_01_w_M_to_F_and_visualize, C_01_concat_with_M_to_F_and_get_F_visual
 from kong_util.flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
+from kong_util.util import method2
 from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
 from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 
@@ -17,6 +18,38 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
         self.separate_out = separate_out
         self.focus = focus
         self.tight_crop = tight_crop
+
+        self.DewarpNet_ssims  = []
+        self.DewarpNet_lds    = []
+        self.my_rec_ssims     = []
+        self.my_rec_lds       = []
+
+    def save_SSIM_LD_mean(self, dst_dir):
+        amount = len(self.DewarpNet_ssims)
+
+        DewarpNet_ssim_mean = np.mean(np.array(self.DewarpNet_ssims))
+        DewarpNet_ld_mean   = np.mean(np.array(self.DewarpNet_lds  ))
+        my_rec_ssim_mean    = np.mean(np.array(self.my_rec_ssims   ))
+        my_rec_ld_mean      = np.mean(np.array(self.my_rec_lds     ))
+
+        dst_path = dst_dir + "/" + "0_SSIM_LD_mean.txt"
+        with open(dst_path, "w") as f:
+            f.write(f"mean\n")
+            f.write(f"DewarpNet_ssim_mean : {DewarpNet_ssim_mean }\n")
+            f.write(f"DewarpNet_ld_mean   : {DewarpNet_ld_mean   }\n")
+            f.write(f"my_rec_ssim_mean    : {my_rec_ssim_mean    }\n")
+            f.write(f"my_rec_ld_mean      : {my_rec_ld_mean      }\n")
+
+            for go_val in range(amount):
+                DewarpNet_ssim =  self.DewarpNet_ssims[go_val]
+                DewarpNet_ld   =  self.DewarpNet_lds  [go_val]
+                my_rec_ssim    =  self.my_rec_ssims   [go_val]
+                my_rec_ld      =  self.my_rec_lds     [go_val]
+                f.write(f"  current_id : {go_val}\n")
+                f.write(f"    DewarpNet_ssim : {DewarpNet_ssim }\n")
+                f.write(f"    DewarpNet_ld   : {DewarpNet_ld   }\n")
+                f.write(f"    my_rec_ssim    : {my_rec_ssim    }\n")
+                f.write(f"    my_rec_ld      : {my_rec_ld      }\n")
 
     def doing_things(self):
         current_ep    = self.exp_obj.current_ep
@@ -45,6 +78,7 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
         Wgt_pre = self.gt_pre [0]
         Fgt_ord = self.gt_ord [1]
         Fgt_pre = self.gt_pre [1]
+        DewarpNet_result = self.DewarpNet_result
 
         rec_hope = self.rec_hope
 
@@ -214,6 +248,7 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
         dis_img_pre         = (dis_img_pre[0].numpy() * 255).astype(np.uint8)
         dis_img_pre_croped_resized_visual  = (dis_img_pre_croped_resized[0].numpy() * 255).astype(np.uint8)  ### 可以看一下 丟進去model 的img 長什麼樣子
         rec_hope            = rec_hope[0].numpy()
+        DewarpNet_result    = DewarpNet_result[0].numpy()
 
         '''cv2 bgr 與 rgb 的調整'''
         ### 這裡是轉第1次的bgr2rgb， 轉成cv2 的 bgr
@@ -222,6 +257,7 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
             dis_img_ord_croped_not_accurate   = dis_img_ord_croped_not_accurate  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             dis_img_pre_croped_resized_visual = dis_img_pre_croped_resized_visual[:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             rec_hope           = rec_hope          [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+            DewarpNet_result   = DewarpNet_result  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             I_w_M_visual       = I_w_M_visual      [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
 
         if(current_ep == 0 or self.see_reset_init):  ### 第一次執行的時候，建立資料夾 和 寫一些 進去資料夾比較好看的東西
@@ -275,6 +311,85 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
             '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
             # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img_pre_croped_resized_visual, F=Fgt)
             cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.jpg" % current_ep, rec)
+
+            ''''''''''''''''''''''''''' LD/SSIM '''''''''''''''''''''''''''
+            from SIFT_dev.SIFTflow.kong_use_evalUnwarp_sucess import use_DewarpNet_eval, keep_aspect_ratio_and_resize_to_598400_area
+            # rec_hope_598400, resized_h, resized_w = keep_aspect_ratio_and_resize_to_598400_area(rec_hope)
+            # Dewarp_result_598400 = cv2.resize(DewarpNet_result, (resized_w, resized_h))
+            # rec_598400           = cv2.resize(rec             , (resized_w, resized_h))
+            rec_hope_598400      = cv2.resize(rec_hope        , (680, 880))
+            Dewarp_result_598400 = cv2.resize(DewarpNet_result, (680, 880))
+            rec_598400           = cv2.resize(rec             , (680, 880))
+            ### debug 視覺化一下
+            canvas_size = 5
+            nrows = 1
+            ncols = 3
+            fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols, canvas_size * nrows))
+            ax[0].imshow(rec_hope_598400)
+            ax[1].imshow(Dewarp_result_598400)
+            ax[2].imshow(rec_598400)
+            fig.tight_layout()
+            # plt.show()
+
+            ### Matplot 因為我不會直接傳array進去， 所以只好先存成檔案， 在 Matlab 裡面再 讀出來囉～
+            Check_dir_exist_and_build(used_sees[self.index].metric_write_dir)
+            DewarpNet_result_img_path      = used_sees[self.index].metric_write_dir + "/" + "1_DewarpNet_result_598400_rec.png"
+            my_rec_img_path                = used_sees[self.index].metric_write_dir + "/" + "2_My_Rec_result_598400_rec.png"
+            gt_rec_img_path                = used_sees[self.index].metric_write_dir + "/" + "3_GT_Rec_result_598400_rec.png"
+
+            cv2.imwrite(DewarpNet_result_img_path, Dewarp_result_598400)
+            cv2.imwrite(my_rec_img_path, rec_598400)
+            cv2.imwrite(gt_rec_img_path, rec_hope_598400)
+
+            ### 執行 DewarpNet 提供的 Matlab程式碼
+            ### result = [SSIM, LD, vx, vy, d, im1, im2]
+            ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
+            os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
+            DewarpNet_metrics = use_DewarpNet_eval(gt_rec_img_path, DewarpNet_result_img_path)
+            my_rec_metrics    = use_DewarpNet_eval(gt_rec_img_path, my_rec_img_path)
+            os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
+
+            ### LD 的 vx, vy圖
+            DewarpNet_ld_x = DewarpNet_metrics[2]
+            DewarpNet_ld_y = DewarpNet_metrics[3]
+            my_rec_ld_x    = my_rec_metrics[2]
+            my_rec_ld_y    = my_rec_metrics[3]
+            DewarpNet_result_ld_img_path   = used_sees[self.index].metric_write_dir + "/" + "4_DewarpNet_result_598400_ld.png"
+            my_rec_ld_img_path             = used_sees[self.index].metric_write_dir + "/" + "5_My_Rec_result_598400_ld.png"
+
+            DewarpNet_ld_visual = method2(DewarpNet_ld_x, DewarpNet_ld_y, color_shift=3)  ### 因為等等是 直接用 cv2 直接寫，所以不用 bgr2rgb喔
+            my_rec_ld_visual    = method2(my_rec_ld_x   , my_rec_ld_y   , color_shift=3)  ### 因為等等是 直接用 cv2 直接寫，所以不用 bgr2rgb喔
+            cv2.imwrite(DewarpNet_result_ld_img_path, DewarpNet_ld_visual)
+            cv2.imwrite(my_rec_ld_img_path          , my_rec_ld_visual   )
+
+
+            ### SSIM 和 LD 值
+            DewarpNet_ssim = DewarpNet_metrics[0]
+            DewarpNet_ld   = DewarpNet_metrics[1]
+            my_rec_ssim    = my_rec_metrics[0]
+            my_rec_ld      = my_rec_metrics[1]
+            DewarpNet_result_ssim_npy_path = used_sees[self.index].metric_write_dir + "/" + "SSIM" + "_" + "DewarpNet_result"
+            DewarpNet_result_ld_npy_path   = used_sees[self.index].metric_write_dir + "/" + "LD"   + "_" + "DewarpNet_result"
+            my_rec_ssim_npy_path           = used_sees[self.index].metric_write_dir + "/" + "SSIM" + "_" + "My_Rec_result"
+            my_rec_ld_npy_path             = used_sees[self.index].metric_write_dir + "/" + "LD"   + "_" + "My_Rec_result"
+            np.save(DewarpNet_result_ssim_npy_path, DewarpNet_ssim )
+            np.save(DewarpNet_result_ld_npy_path  , DewarpNet_ld   )
+            np.save(my_rec_ssim_npy_path          , my_rec_ssim    )
+            np.save(my_rec_ld_npy_path            , my_rec_ld      )
+
+            ld_ssim_together_txt_path   = used_sees[self.index].metric_write_dir + "/" + "6_LD_SSIM_together.txt"
+            with open(ld_ssim_together_txt_path, "w") as f:
+                f.write(f"DewarpNet ssim: {DewarpNet_ssim}\n")
+                f.write(f"DewarpNet ld  : {DewarpNet_ld  }\n")
+                f.write(f"my_rec    ssim: {my_rec_ssim   }\n")
+                f.write(f"my_rec    ld  : {my_rec_ld     }\n")
+
+            self.DewarpNet_ssims.append(DewarpNet_ssim)
+            self.DewarpNet_lds  .append(DewarpNet_ld  )
+            self.my_rec_ssims   .append(my_rec_ssim   )
+            self.my_rec_lds     .append(my_rec_ld     )
+            self.save_SSIM_LD_mean(public_write_dir)
+            ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
             if(self.focus is False):
                 r_c_imgs   = [ [dis_img_pre_croped_resized_visual , Mgt_visual     , I_w_M_visual  , rec             , rec_hope ],
