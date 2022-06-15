@@ -10,6 +10,8 @@ class Exp_builder():
             self.exp = Experiment()
         else: self.exp = exp
 
+        self.auto_fill_have_loss = False
+
     def set_basic(self, phase, db_builder, model_builder, loss_info_builders, exp_dir=".", code_exe_path=".", describe_mid=None, describe_end=None, result_name=None):
         self.exp.phase = phase
         self.exp.db_builder = db_builder
@@ -75,6 +77,10 @@ class Exp_builder():
         self.exp.multi_model_reload_exp_builders_dict = kwargs
         return self
 
+    def set_Auto_fill(self, have_loss):
+        self.auto_fill_have_loss = have_loss
+        return self
+
     def build_exp_temporary(self, reset_test_db_name=None):
         '''
         這邊先建好 result_obj 的話就可以給 step11, step12 用喔，
@@ -82,6 +88,13 @@ class Exp_builder():
 
         也補上 建好result 馬上設定 loss_info_obj 拉，這樣 step11, step12 也能用了！
         '''
+        ''' 建 虛擬的 loss_info_obj ，這樣就不用 exp_init() 就能使用 loss_info_obj裡面的東西囉， 這是要給 Auto_fill_result_name_Read() 用的， 裡面需要 loss_describe'''
+        loss_info_objs = []
+        for loss_info_builder in self.exp.loss_info_builders:
+            loss_info_builder = loss_info_builder.copy()  ### copy完後，新的 loss_info_builders 更新他的 logs_dir～ 因為有copy 所以 不會 loss_info_obj 都是相同的 logs_read/write_dir 的問題啦！
+            loss_info_objs.append(loss_info_builder.build())  ### 上面 logs_read/write_dir 後 更新 就可以建出 loss_info_objs 囉！
+        self.exp.loss_info_objs = loss_info_objs
+
         self.Auto_fill_result_name_Read()
         if(self.exp.result_name is not None):
             ''' 建 虛擬的 result_obj ，這樣就不用 exp_init() 就能使用 resul_obj裡面的東西囉'''
@@ -137,8 +150,13 @@ class Exp_builder():
         ### 對 list 做一些處理
         auto_fill_result_names.sort()  ### 比較能確保 越新的放越後面
 
+        ### 設定 現在exp 的 result_name
+        current_exp_result_name  = self.exp.model_builder.kong_model.model_describe
+        ### 2022/06/14 加入的， 因為現在要開始研究Loss了！ 所以開始也要記錄Loss囉， 這樣放同個資料夾才可以區隔不同的result_name
+        if(self.auto_fill_have_loss):
+            current_exp_result_name += "_" + self.exp.loss_info_objs[0].loss_describe
+
         ### 和 現在exp 的 result_name 比對
-        current_exp_result_name = self.exp.model_builder.kong_model.model_describe
         current_exp_result_name_exists = [ auto_fill_result_name for auto_fill_result_name in auto_fill_result_names if current_exp_result_name in auto_fill_result_name ]
         ### 做事情
         if( len(current_exp_result_name_exists) > 0): self.exp.result_name = current_exp_result_name_exists[-1]

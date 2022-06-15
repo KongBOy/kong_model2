@@ -426,11 +426,14 @@ class Sobel_MAE():
 
 
 class Total_Variance():
-    def __init__(self, tv_scale=1, **args):
-        self.tv_scale = tv_scale
+    def __init__(self, tv_scale=1, erose_M=False, erose_More=False, **args):
+        self.tv_scale   = tv_scale
+        self.erose_M    = erose_M
+        self.erose_More = erose_More
 
-    def __call__(self, image):
+    def __call__(self, image, Mask=None):
         n, h, w, c = image.get_shape()
+        if(Mask is not None): Mask = Mask[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         left  = image[:, :,  : -1, :]
         right = image[:, :, 1:   , :]
         top   = image[:,  : -1, :, :]
@@ -438,6 +441,34 @@ class Total_Variance():
 
         x_change = left - right
         y_change = top  - down
+        if(Mask is not None):
+            Mask_x = Mask[:, :,  : -1, :]
+            Mask_y = Mask[:,  : -1, :, :]
+            ### 看 Mask有沒有需要侵蝕
+            if(self.erose_M):
+                erose_kernel_size = 3                                              ### 設定 erose_ksize
+                if(self.erose_More): erose_kernel_size += 8                        ### 目前用眼睛看覺得+8不錯
+                erose_kernel = tf.ones((erose_kernel_size, erose_kernel_size, 1))  ### 設定 erose_kernel
+                ### 這行做事情： 侵蝕M 讓 M變小一點， 變小多少
+                Mask_x = tf.nn.erosion2d (Mask_x, filters=erose_kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)) + 1  ### 別忘記要 + 1
+                Mask_y = tf.nn.erosion2d (Mask_y, filters=erose_kernel, strides=(1, 1, 1, 1), padding="SAME", data_format="NHWC", dilations=(1, 1, 1, 1)) + 1  ### 別忘記要 + 1
+
+            ### debug用， 看一下 xy_change 長怎樣
+            # canvas_size = 5
+            # nrows = 1
+            # ncols = 6
+            # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols, canvas_size * nrows))
+            # ax[0].imshow(x_change[0])
+            # ax[1].imshow(y_change[0])
+            # ax[2].imshow(Mask[0])
+            x_change = x_change * Mask_x
+            y_change = y_change * Mask_y
+            # ax[3].imshow(x_change[0])
+            # ax[4].imshow(y_change[0])
+            # ax[5].imshow(Mask_x[0])
+            # fig.tight_layout()
+            # plt.show()
+
         x_variance = tf.reduce_mean( tf.abs(x_change) )
         y_variance = tf.reduce_mean( tf.abs(y_change) )
 
