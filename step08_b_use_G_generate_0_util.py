@@ -420,6 +420,7 @@ class Use_G_generate_Interface:
         self.gt_ord         = None
         self.gt_pre         = None
         self.rec_hope       = None
+        self.DewarpNet_result = None
         self.exp_obj        = None
         self.training       = None
         self.see_reset_init = None
@@ -429,7 +430,7 @@ class Use_G_generate_Interface:
         self.add_loss       = None
         self.bgr2rgb        = None
 
-    def __call__(self, model_obj, phase, index, fname, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, exp_obj=None, training=None, see_reset_init=True, postprocess=False, npz_save=False, knpy_save=False, add_loss=False, bgr2rgb=True):
+    def __call__(self, model_obj, phase, index, fname, in_ord, in_pre, gt_ord, gt_pre, rec_hope=None, DewarpNet_result=None, exp_obj=None, training=None, see_reset_init=True, postprocess=False, npz_save=False, knpy_save=False, add_loss=False, bgr2rgb=True):
         self.model_obj      = model_obj
         self.phase          = phase
         self.index          = index
@@ -439,6 +440,7 @@ class Use_G_generate_Interface:
         self.gt_ord         = gt_ord
         self.gt_pre         = gt_pre
         self.rec_hope       = rec_hope
+        self.DewarpNet_result = DewarpNet_result
         self.exp_obj        = exp_obj
         self.training       = training
         self.see_reset_init = see_reset_init
