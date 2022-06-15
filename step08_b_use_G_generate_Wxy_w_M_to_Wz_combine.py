@@ -9,14 +9,14 @@ from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi
 from kong_util.flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 
-from step08_b_use_G_generate_0_util import Use_G_generate, Value_Range_Postprocess_to_01, WcM_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual, C_01_and_C_01_w_M_to_F_and_visualize
+from step08_b_use_G_generate_0_util import Use_G_generate_Interface, Value_Range_Postprocess_to_01, WcM_01_visual_op, C_01_concat_with_M_to_F_and_get_F_visual, C_01_and_C_01_w_M_to_F_and_visualize
 
 import matplotlib.pyplot as plt
 import os
 import pdb
 from step10_a1_loss import Sobel_MAE
 
-class Wyx_w_M_to_Wz(Use_G_generate):
+class Wyx_w_M_to_Wz(Use_G_generate_Interface):
     def __init__(self, focus=False, tight_crop=None, sobel=None, sobel_only=False):
         super(Wyx_w_M_to_Wz, self).__init__()
         self.focus = focus

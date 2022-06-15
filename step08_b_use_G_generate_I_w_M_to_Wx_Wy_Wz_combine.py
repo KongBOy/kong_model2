@@ -4,13 +4,13 @@ import cv2
 from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_npy_path_as_knpy
 from kong_util.matplot_fig_ax_util import Matplot_single_row_imgs, Matplot_multi_row_imgs
 
-from step08_b_use_G_generate_0_util import Use_G_generate, Value_Range_Postprocess_to_01, WcM_01_visual_op
+from step08_b_use_G_generate_0_util import Use_G_generate_Interface, Value_Range_Postprocess_to_01, WcM_01_visual_op
 
 import matplotlib.pyplot as plt
 import os
 import pdb
 
-class I_w_M_to_W(Use_G_generate):
+class I_w_M_to_W(Use_G_generate_Interface):
     def __init__(self, separate_out=False, focus=False, tight_crop=None):
         super(I_w_M_to_W, self).__init__()
         self.separate_out = separate_out
