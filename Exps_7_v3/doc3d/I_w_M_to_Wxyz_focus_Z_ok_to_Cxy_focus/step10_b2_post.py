@@ -65,6 +65,13 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"p20_L5_Sob_k15_Mae__Sob_k05.{run}"])
 # sb.run(cmd_python_step10_a + [f"p20_L5_Sob_k25_Mae__Sob_k05.{run}"])
 # sb.run(cmd_python_step10_a + [f"p20_L5_Sob_k35_Mae__Sob_k05.{run}"])
+
+# sb.run(cmd_python_step10_a + [f"p20_L5_Sob_k05_Mae__Sob_k05_Mae.{run}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_Sob_k05_Mae_wiColorJ__Sob_k05_Mae.{run}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_Sob_k15_Mae_wiColorJ__Sob_k05_Mae.{run}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_Sob_k25_Mae_wiColorJ__Sob_k05_Mae.{run}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_Sob_k35_Mae_wiColorJ__Sob_k05_Mae.{run}"])
+
 ### p60
 # sb.run(cmd_python_step10_a + [f"p60_L5_Mae__Mae            .{run}"])
 # sb.run(cmd_python_step10_a + [f"p60_L5_Mae__Sob_k05        .{run}"])
@@ -105,3 +112,5 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"p60_L5_Sob_k15_Mae__Sob_k05.{run}"])
 # sb.run(cmd_python_step10_a + [f"p60_L5_Sob_k25_Mae__Sob_k05.{run}"])
 # sb.run(cmd_python_step10_a + [f"p60_L5_Sob_k35_Mae__Sob_k05.{run}"])
+
+# sb.run(cmd_python_step10_a + [f"p60_L5_Sob_k05_Mae__Sob_k05_Mae.{run}"])
