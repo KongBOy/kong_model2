@@ -499,15 +499,15 @@ class Experiment():
 
     def testing(self, add_loss=False, bgr2rgb=False, knpy_save=False):
         print("self.result_obj.test_write_dir", self.result_obj.test_write_dir)
-        test_combine_db = [ 
+        test_combine_db = [
             self.tf_data.test_in_db.ord.batch(1)       .take(self.tf_data.test_amount),
             self.tf_data.test_in_db.pre .batch(1)      .take(self.tf_data.test_amount),
             self.tf_data.test_gt_db.ord.batch(1)       .take(self.tf_data.test_amount),
             self.tf_data.test_gt_db.pre.batch(1)       .take(self.tf_data.test_amount),
             self.tf_data.test_name_db.ord.batch(1)     .take(self.tf_data.test_amount),
-            ]
+        ]
         if(self.db_obj.have_rec_hope):         test_combine_db += [self.tf_data.rec_hope_test_db.ord.batch(1)      .take(self.tf_data.test_amount)]
-        if(self.db_obj.have_DewarpNet_result): test_combine_db += [self.tf_data.DewarpNet_result_test.ord.batch(1) .take(self.tf_data.test_amount)]
+        if(self.db_obj.have_DewarpNet_result): test_combine_db += [self.tf_data.DewarpNet_result_test.ord.batch(1) .take(self.tf_data.DewarpNet_result_test_amount)]
 
         for test_index, datas in enumerate(tqdm(zip(*test_combine_db))):
             rec_hope         = None
@@ -530,19 +530,29 @@ class Experiment():
         see_reset_init：是給 test_see 用的，有時候製作 fake_exp 的時候，只會複製 ckpt, log, ... ，see 不會複製過來，所以會需要 重建一份see，這時see_reset_init要設True就會重建一下囉
         """
         # sample_start_time = time.time()
+        see_combine_db = [
+            self.tf_data.see_in_db.ord.batch(1)       .take(self.tf_data.see_amount),
+            self.tf_data.see_in_db.pre .batch(1)      .take(self.tf_data.see_amount),
+            self.tf_data.see_gt_db.ord.batch(1)       .take(self.tf_data.see_amount),
+            self.tf_data.see_gt_db.pre.batch(1)       .take(self.tf_data.see_amount),
+            self.tf_data.see_name_db.ord.batch(1)     .take(self.tf_data.see_amount),
+        ]
+        if(self.db_obj.have_rec_hope):         see_combine_db += [self.tf_data.rec_hope_see_db.ord.batch(1)      .take(self.tf_data.see_amount)]
+        if(self.db_obj.have_DewarpNet_result): see_combine_db += [self.tf_data.DewarpNet_result_see.ord.batch(1) .take(self.tf_data.DewarpNet_result_see_amount)]
 
-        for see_index, (test_in, test_in_pre, test_gt, test_gt_pre, see_name, rec_hope_pre) in enumerate(tqdm(zip(self.tf_data.see_in_db.ord.batch(1)   ,
-                                                                                                           self.tf_data.see_in_db.pre.batch(1)   ,
-                                                                                                           self.tf_data.see_gt_db.ord.batch(1)   ,
-                                                                                                           self.tf_data.see_gt_db.pre.batch(1)   ,
-                                                                                                           self.tf_data.see_name_db.ord.batch(1) ,
-                                                                                                           self.tf_data.rec_hope_see_db.pre.batch(1)))):
+        for see_index, datas in enumerate(tqdm(zip(*see_combine_db))):
+            rec_hope         = None
+            DewarpNet_result = None
+            if  (len(datas) == 5): see_in, see_in_pre, see_gt, see_gt_pre, see_name,                            = datas
+            elif(len(datas) == 6): see_in, see_in_pre, see_gt, see_gt_pre, see_name, rec_hope                   = datas
+            elif(len(datas) == 7): see_in, see_in_pre, see_gt, see_gt_pre, see_name, rec_hope, DewarpNet_result = datas
+
             see_name = see_name[0].numpy().decode("utf-8")
             if  ("unet"  in self.model_obj.model_name.value and
-                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj     , phase, see_index, see_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self.tf_data.max_train_move, self.tf_data.min_train_move, self.result_obj.result_write_dir, self, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
-            elif("flow"  in self.model_obj.model_name.value):     self.model_obj.generate_sees(self.model_obj     , phase, see_index, see_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)
-            elif("rect"  in self.model_obj.model_name.value):     self.model_obj.generate_sees(self.model_obj.rect, phase, see_index, see_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)
-            elif("justG" in self.model_obj.model_name.value):     self.model_obj.generate_sees(self.model_obj     , phase, see_index, see_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope_pre, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)
+                 "flow"  not in self.model_obj.model_name.value): self.model_obj.generate_sees(self.model_obj     , phase, see_index, see_name, see_in, see_in_pre, see_gt, see_gt_pre, rec_hope, DewarpNet_result, self.tf_data.max_train_move, self.tf_data.min_train_move, self.result_obj.result_write_dir, self, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)  ### 這的視覺化用的max/min應該要丟 train的才合理，因為訓練時是用train的max/min，
+            elif("flow"  in self.model_obj.model_name.value):     self.model_obj.generate_sees(self.model_obj     , phase, see_index, see_name, see_in, see_in_pre, see_gt, see_gt_pre, rec_hope, DewarpNet_result, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)
+            elif("rect"  in self.model_obj.model_name.value):     self.model_obj.generate_sees(self.model_obj.rect, phase, see_index, see_name, see_in, see_in_pre, see_gt, see_gt_pre, rec_hope, DewarpNet_result, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)
+            elif("justG" in self.model_obj.model_name.value):     self.model_obj.generate_sees(self.model_obj     , phase, see_index, see_name, see_in, see_in_pre, see_gt, see_gt_pre, rec_hope, DewarpNet_result, self, training, see_reset_init, postprocess=postprocess, npz_save=npz_save, knpy_save=False)
 
         # self.result_obj.save_all_single_see_as_matplot_visual_multiprocess() ### 不行這樣搞，對當掉！但可以分開用別的python執行喔～
         # print("sample all see time:", time.time()-sample_start_time)
