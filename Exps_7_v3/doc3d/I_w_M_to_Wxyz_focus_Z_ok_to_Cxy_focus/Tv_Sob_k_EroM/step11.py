@@ -22,26 +22,27 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 ###############################################################################################################################################################################################################
 from step10_a import *
 #################################################################################################################################################################################################################################################################################################################################################################################################
-#################################
 ##### 前fix 後change
+#################################
+##### 前change 後fix
 ### 分析 EroM
 combine1_fix_I_w_M_to_W__change_W_w_M_t_C_EroM_analyze = [
-    [p20_wiColorJ_L5_MaeSob_k03__MaeSob_k05        , p20_wiColorJ_L5_MaeSob_k05__MaeSob_k05        , p20_wiColorJ_L5_MaeSob_k09__MaeSob_k05        , p20_wiColorJ_L5_MaeSob_k11__MaeSob_k05        , ],
-    [p20_wiColorJ_L5_MaeSob_k03_EroM__MaeSob_k05   , p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05   , p20_wiColorJ_L5_MaeSob_k09_EroM__MaeSob_k05   , p20_wiColorJ_L5_MaeSob_k11_EroM__MaeSob_k05   , ],
-    [p20_wiColorJ_L5_MaeSob_k03_EroMore__MaeSob_k05, p20_wiColorJ_L5_MaeSob_k05_EroMore__MaeSob_k05, p20_wiColorJ_L5_MaeSob_k09_EroMore__MaeSob_k05, p20_wiColorJ_L5_MaeSob_k11_EroMore__MaeSob_k05, ],
+    [p20_wiColorJ_L5_MaeSob_k03__MaeSob_k05_EroM        , p20_wiColorJ_L5_MaeSob_k05__MaeSob_k05_EroM        , p20_wiColorJ_L5_MaeSob_k09__MaeSob_k05_EroM        , p20_wiColorJ_L5_MaeSob_k11__MaeSob_k05_EroM        , ],
+    [p20_wiColorJ_L5_MaeSob_k03_EroM__MaeSob_k05_EroM   , p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_EroM   , p20_wiColorJ_L5_MaeSob_k09_EroM__MaeSob_k05_EroM   , p20_wiColorJ_L5_MaeSob_k11_EroM__MaeSob_k05_EroM   , ],
+    [p20_wiColorJ_L5_MaeSob_k03_EroMore__MaeSob_k05_EroM, p20_wiColorJ_L5_MaeSob_k05_EroMore__MaeSob_k05_EroM, p20_wiColorJ_L5_MaeSob_k09_EroMore__MaeSob_k05_EroM, p20_wiColorJ_L5_MaeSob_k11_EroMore__MaeSob_k05_EroM, ],
 ]
 
 
 ### 分析TV
 combine2_fix_I_w_M_to_W__change_W_w_M_t_C_Tv_s001_analyze = [
-    [W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k03         , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k05         , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k09         , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k11         , ],
-    [W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k03_Tv_s001 , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k05_Tv_s001 , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k09_Tv_s001 , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k11_Tv_s001 , ],
+    [p20_wiColorJ_L5_MaeSob_k03__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k05__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k09__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k11__MaeSob_k05_EroM         , ],
+    [p20_wiColorJ_L5_MaeSob_k03_Tv_s001__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k05_Tv_s001__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k09_Tv_s001__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k11_Tv_s001__MaeSob_k05_EroM , ],
 ]
 combine = [
-    [W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k03_EroM         , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k05_EroM         , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k09_EroM         , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k11_EroM         , ],
-    [W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k03_Tv_s001_EroM , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k05_Tv_s001_EroM , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k09_Tv_s001_EroM , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k11_Tv_s001_EroM , ],
+    [p20_wiColorJ_L5_MaeSob_k03_EroM__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k09_EroM__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k11_EroM__MaeSob_k05_EroM         , ],
+    [p20_wiColorJ_L5_MaeSob_k03_Tv_s001_EroM__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k05_Tv_s001_EroM__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k09_Tv_s001_EroM__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroM__MaeSob_k05_EroM , ],
 ]
 combine = [
-    [W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k03_EroMore         , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k05_EroMore         , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k09_EroMore         , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k11_EroMore         , ],
-    [W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k03_Tv_s001_EroMore , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k05_Tv_s001_EroMore , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k09_Tv_s001_EroMore , W_w_M_to_C_Tcrop255_p20_wiColorJ_2s_L5_MaeSob_k11_Tv_s001_EroMore , ],
+    [p20_wiColorJ_L5_MaeSob_k03_EroMore__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k05_EroMore__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k09_EroMore__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k11_EroMore__MaeSob_k05_EroM         , ],
+    [p20_wiColorJ_L5_MaeSob_k03_Tv_s001_EroMore__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k05_Tv_s001_EroMore__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k09_Tv_s001_EroMore__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroMore__MaeSob_k05_EroM , ],
 ]
