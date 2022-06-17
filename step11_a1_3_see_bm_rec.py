@@ -92,8 +92,9 @@ class See_bm_rec(See_info):
                       └ ..._write_paths
                      file_amount
         """
-        self.bm_names  = get_dir_certain_file_names(self.bm_visual_read_dir , certain_word="bm_epoch", certain_ext=".jpg")
-        self.bm_read_paths  = [self.bm_visual_read_dir + "/" + name for name in self.bm_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
+        ''' 到2022/06/17 要口試前 三個禮拜為止都沒用到 bm存圖， 先註解起來吧~~ '''
+        # self.bm_names  = get_dir_certain_file_names(self.bm_visual_read_dir , certain_word="bm_epoch", certain_ext=".jpg")
+        # self.bm_read_paths  = [self.bm_visual_read_dir + "/" + name for name in self.bm_names]  ### 目前還沒用到～　所以也沒有寫 write_path 囉！
 
         self.rec_names  = get_dir_certain_file_names(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".jpg")
         self.rec_names += get_dir_certain_file_names(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".png")
