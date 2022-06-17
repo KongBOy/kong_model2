@@ -16,7 +16,7 @@ test                = "build().test(test_db_name='%s', %s)"   ### 第一個放 t
 
 bm_rec_see_print_msg = False
 bm_rec_result_print_msg = True
-test_Calculate_SSIM_LD_all_from_begin  = f"build().result_obj.result_do_all_single_see(used_what_see='test',                 see_method_name='Calculate_SSIM_LD', add_loss=False, bgr2rgb=True, see_core_amount=130, single_see_core_amount=1, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg})"
+test_Calculate_SSIM_LD_all_from_begin  = f"build().result_obj.result_do_all_single_see(used_what_see='test',                 see_method_name='Calculate_SSIM_LD', add_loss=False, bgr2rgb=True, see_core_amount=5, single_see_core_amount=1, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg})"
 test_Calculate_SSIM_LD_0_from_begin    = f"build().result_obj.result_do_single_see    (used_what_see='test', used_see_id= 0, see_method_name='Calculate_SSIM_LD', add_loss=False, bgr2rgb=True, see_core_amount=1, single_see_core_amount=1, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg})"
 test_Calculate_SSIM_LD_1_from_begin    = f"build().result_obj.result_do_single_see    (used_what_see='test', used_see_id= 1, see_method_name='Calculate_SSIM_LD', add_loss=False, bgr2rgb=True, see_core_amount=1, single_see_core_amount=1, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg})"
 test_Calculate_SSIM_LD_2_from_begin    = f"build().result_obj.result_do_single_see    (used_what_see='test', used_see_id= 2, see_method_name='Calculate_SSIM_LD', add_loss=False, bgr2rgb=True, see_core_amount=1, single_see_core_amount=1, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg})"
