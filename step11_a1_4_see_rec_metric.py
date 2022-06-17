@@ -81,10 +81,10 @@ class See_rec_metric(See_info):
         self.metric_ld_gray_write_dir  = self.see_write_dir + "/3_metric/ld_gray"
         self.metric_ld_matplot_read_dir   = self.see_read_dir  + "/3_metric/ld_matplot"
         self.metric_ld_matplot_write_dir  = self.see_write_dir + "/3_metric/ld_matplot"
-        self.metric_im1_read_dir   = self.see_read_dir  + "/3_metric/im1"
-        self.metric_im1_write_dir  = self.see_write_dir + "/3_metric/im1"
-        self.metric_im2_read_dir   = self.see_read_dir  + "/3_metric/im2"
-        self.metric_im2_write_dir  = self.see_write_dir + "/3_metric/im2"
+        self.metric_im1_pred_read_dir   = self.see_read_dir  + "/3_metric/im1_pred"
+        self.metric_im1_pred_write_dir  = self.see_write_dir + "/3_metric/im1_pred"
+        self.metric_im2_gt_read_dir     = self.see_read_dir  + "/3_metric/im2_gt"
+        self.metric_im2_gt_write_dir    = self.see_write_dir + "/3_metric/im2_gt"
 
 
         self.matplot_metric_visual_read_dir  = self.see_read_dir  + "/3_matplot_metric_visual"
@@ -167,8 +167,8 @@ class See_rec_metric(See_info):
         Check_dir_exist_and_build(self.metric_ld_color_write_dir)  ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
         Check_dir_exist_and_build(self.metric_ld_gray_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
         Check_dir_exist_and_build(self.metric_ld_matplot_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
-        Check_dir_exist_and_build(self.metric_im1_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
-        Check_dir_exist_and_build(self.metric_im2_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.metric_im1_pred_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
+        Check_dir_exist_and_build(self.metric_im2_gt_write_dir)   ### 不build new_dir 是因為 覺德 算一次的時間太長了ˊ口ˋ 怕不小心操作錯誤就要重算～
 
         ### See_method 第二部分：取得see資訊
         self.get_see_base_info()  ### 暫時寫這邊，到時應該要拉出去到result_level，要不然每做一次就要重新更新一次，但不用這麼頻繁，只需要一開始更新一次即可
@@ -205,9 +205,9 @@ class See_rec_metric(See_info):
         ### See_method 第五部分：如果 write 和 read 資料夾不同，把 write完的結果 同步回 read資料夾喔！
         ###   記得順序是 先同步父 再 同步子 喔！
         if(self.metric_write_dir != self.metric_read_dir):  ### 因為接下去的任務需要 此任務的結果， 如果 read/write 資料夾位置不一樣， write完的結果 copy 一份 放回read， 才能讓接下去的動作 有 東西 read 喔！
-            Syn_write_to_read_dir(write_dir=self.metric_write_dir,          read_dir=self.metric_read_dir,          build_new_dir=True)  ### 父
-            Syn_write_to_read_dir(write_dir=self.metric_ld_color_write_dir, read_dir=self.metric_ld_color_read_dir, build_new_dir=True)  ### 子
-            Syn_write_to_read_dir(write_dir=self.metric_ld_gray_write_dir,  read_dir=self.metric_ld_gray_read_dir,  build_new_dir=True)  ### 子
+            Syn_write_to_read_dir(write_dir=self.metric_write_dir,          read_dir=self.metric_read_dir,          build_new_dir=False, copy_sub_dir=True)  ### 父
+            # Syn_write_to_read_dir(write_dir=self.metric_ld_color_write_dir, read_dir=self.metric_ld_color_read_dir, build_new_dir=True)  ### 子
+            # Syn_write_to_read_dir(write_dir=self.metric_ld_gray_write_dir,  read_dir=self.metric_ld_gray_read_dir,  build_new_dir=True)  ### 子
 
         ### See_method 第零b部分：顯示結束資訊 和 計時
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"See level: finish Calculate_SSIM_LD, Current See:{self.see_name}, cost_time:{time.time() - start_time}")
@@ -215,26 +215,36 @@ class See_rec_metric(See_info):
 
     ### See_method 第三部分：主要做的事情在這裡
     def _do_matlab_SSIM_LD(self, start_epoch, epoch_amount, SSIMs, LDs):
-        from SIFT_dev.SIFTflow.kong_use_evalUnwarp_sucess import use_DewarpNet_eval
+        from SIFT_dev.SIFTflow.kong_use_evalUnwarp_sucess import use_DewarpNet_eval, keep_aspect_ratio_and_resize_to_598400_area
 
         for go_epoch in tqdm(range(start_epoch, start_epoch + epoch_amount)):
             ### rec_GT 要怎麼轉成 rec_pred
-            path1 = self.rec_read_paths[go_epoch]  ### bm_rec_matplot_visual/rec_visual/rec_epoch=0000.jpg
-            path2 = self.rec_hope_path     ### 0c-rec_hope.jpg
+            path_pred = self.rec_read_paths[go_epoch]  ### bm_rec_matplot_visual/rec_visual/rec_epoch=0000.jpg
+            path_gt = self.rec_hope_path     ### 0c-rec_hope.jpg
+
+            # rec_hope_598400, resized_h, resized_w = keep_aspect_ratio_and_resize_to_598400_area(rec_hope)
+            # Dewarp_result_598400 = cv2.resize(DewarpNet_result, (resized_w, resized_h))
+            # rec_598400           = cv2.resize(rec             , (resized_w, resized_h))
+
+            img_pred = cv2.imread(path_pred)
+            img_gt   = cv2.imread(path_gt)
+            img_pred_598400 = cv2.resize(img_pred, (680, 880))
+            img_gt_598400   = cv2.resize(img_gt  , (680, 880))
+            # img1_598400 = cv2.resize(img1, (200, 200))
+            # img2_598400 = cv2.resize(img2, (200, 200))
+            img_pred_598400_path = self.metric_im1_pred_write_dir  + "/im1_epoch=%04i.jpg" % go_epoch
+            img_gt_598400_path   = self.metric_im2_gt_write_dir  + "/im1_epoch=%04i.jpg" % go_epoch
+
+            cv2.imwrite(img_pred_598400_path, img_pred_598400)
+            cv2.imwrite(img_gt_598400_path  , img_gt_598400)
             # path2 = self.rec_read_paths[-1]        ### bm_rec_matplot_visual/rec_visual/rec_gt.jpg
-
-            ### rec_pred 要怎麼轉成 rec_GT
-            # path1 = self.rec_hope_path     ### 0c-rec_hope.jpg
-            # path2 = self.rec_read_paths[go_epoch]  ### bm_rec_matplot_visual/rec_visual/rec_epoch=0000.jpg
-
-            # print("path1~~~~~~~~~~~~", path1)
-            # print("path2~~~~~~~~~~~~", path2)
 
             ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
             os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
-            [SSIM, LD, vx, vy, d, im1, im2] = use_DewarpNet_eval(path1, path2)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
+            [SSIM, LD, vx, vy, d, im1, im2] = use_DewarpNet_eval(img_pred_598400_path, img_gt_598400_path)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
             os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
 
+            ### debug 部分， 確認 等等要算 SSIM/LD 的圖長怎樣
             # fig, ax = plt.subplots(nrows=1, ncols=2)
             # rec_img    = cv2.imread(path1)
             # rec_gt_img = cv2.imread(path2)
@@ -243,6 +253,7 @@ class See_rec_metric(See_info):
             # plt.show()
             # plt.close()
 
+            ### 存 d 用的
             single_row_imgs = Matplot_single_row_imgs(
                         imgs      =[d],    ### 把要顯示的每張圖包成list
                         img_titles=[],
@@ -259,8 +270,6 @@ class See_rec_metric(See_info):
 
             cv2.imwrite(self.metric_ld_color_write_dir + "/ld_epoch=%04i.jpg" % go_epoch, ld_visual)
             cv2.imwrite(self.metric_ld_gray_write_dir  + "/ld_epoch=%04i.jpg" % go_epoch, d.astype(np.uint8))
-            cv2.imwrite(self.metric_im1_write_dir  + "/im1_epoch=%04i.jpg" % go_epoch, (im1 * 255).astype(np.uint8))
-            cv2.imwrite(self.metric_im2_write_dir  + "/im1_epoch=%04i.jpg" % go_epoch, (im2 * 255).astype(np.uint8))
 
             # print(go_epoch, SSIM, LD)
             SSIMs.append((go_epoch, SSIM))
