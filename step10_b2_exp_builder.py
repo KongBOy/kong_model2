@@ -155,6 +155,7 @@ class Exp_builder():
         ### 2022/06/14 加入的， 因為現在要開始研究Loss了！ 所以開始也要記錄Loss囉， 這樣放同個資料夾才可以區隔不同的result_name
         if(self.auto_fill_have_loss):
             current_exp_result_name += "_" + self.exp.loss_info_objs[0].loss_describe
+            current_exp_result_name += "-"  ### 這個超級無敵重要，代表結尾， 如果沒有-的話舉例：Mae_s001_Sob_k03_s001 會找到 Mae_s001_Sob_k03_s001, Mae_s001_Sob_k03_s001_EroM, Mae_s001_Sob_k03_s001_EroMore ， 因為裡面都有 Mae_s001_Sob_k03_s001 喔！
 
         ### 和 現在exp 的 result_name 比對
         current_exp_result_name_exists = [ auto_fill_result_name for auto_fill_result_name in auto_fill_result_names if current_exp_result_name in auto_fill_result_name ]
