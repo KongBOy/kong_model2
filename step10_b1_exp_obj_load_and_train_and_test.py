@@ -718,8 +718,8 @@ class Experiment():
             ssim_path = test.metric_read_dir + "/" + "SSIMs.npy"
             ld   = np.load(ld_path)
             ssim = np.load(ssim_path)
-            ld   = ld  [0]
-            ssim = ssim[0]
+            ld   = ld  [-1]  ### -1 是取 final 的概念，因為如果是用 see， 可能會有很多個 epoch 的 LD/SSIM 數值喔！ 取-1 test也適用。
+            ssim = ssim[-1]  ### -1 是取 final 的概念，因為如果是用 see， 可能會有很多個 epoch 的 LD/SSIM 數值喔！ 取-1 test也適用。
 
             lds  .append(ld)
             ssims.append(ssim)
