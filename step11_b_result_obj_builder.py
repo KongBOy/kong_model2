@@ -172,7 +172,9 @@ class Result_train_builder(Result_sees_builder):
             ### 給 ana_describe，這是給 step12 用的，default 直 設 result.describe_end
             # self.result.ana_describe = result_name.split("-")[-1]
             # self.result.ana_describe = result_name.split("-")[-4]
-            self.result.ana_describe = result_name.split("-")[0].split("/")[-1]
+            check_date = result_name[-6:]
+            if(check_date.isdigit()): self.result.ana_describe = result_name.split("-")[0].split("/")[-1]  ### 如果是日期， 拿 dir 和 日期 之間的 東西
+            else                    : self.result.ana_describe = result_name.split("-")[1]  ### 如果不是日期， 拿 - 後面的東西
         else:
             self.result.ana_describe = "no result"
         return self

@@ -589,6 +589,32 @@ class Row_col_results_analyzer(Result_analyzer):
             self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         return self
 
+    def analyze_row_col_result_SSIM_LD(self):
+        ''' exp 要先執行完 Gather_test_SSIM_LD 來產生完 LD/SSIM_tboard 後才可以執行這個 funtion 來蒐集 各個 exp_obj 的 LD/SSIM_tboard 喔！ '''
+        print(f"{self.ana_describe} doing Row_Col_results_analyze SSIM_LD")
+        print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "start SSIM_LD")
+        print(f"analyze_write_dir: {self.analyze_write_dir}")
+
+        if  (self.ana_what_sees == "see"):  used_sees = self.r_c_results[0][0].sees
+        elif(self.ana_what_sees == "test"): used_sees = self.r_c_results[0][0].tests
+        analyze_see_private_read_dir  = self.analyze_read_dir  + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[0].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
+        analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[0].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
+        analyze_see_public_read_dir   = "/".join(analyze_see_private_read_dir .replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
+        analyze_see_public_write_dir  = "/".join(analyze_see_private_write_dir.replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
+        Check_dir_exist_and_build(analyze_see_public_write_dir)  ### 建立 存結果的資料夾
+
+        dst_write_dir = analyze_see_public_write_dir + "/" + "t"  ### 不要取太長的名字，要不燃 windows 長檔名問題會讓 tboard 讀不到資料
+        dst_read_dir  = analyze_see_public_read_dir  + "/" + "t"  ### 不要取太長的名字，要不燃 windows 長檔名問題會讓 tboard 讀不到資料
+        for r_results in self.r_c_results:
+            for r_c_result in r_results:
+                if("畫空白的圖" not in r_c_result.test_read_dir):
+                    tboard_src_path = r_c_result.test_read_dir + "/" + "LD_SSIM_tboard"
+                    tboard_dst_path = dst_write_dir + "/" + r_c_result.ana_describe
+                    shutil.copytree(tboard_src_path, tboard_dst_path)
+
+        Syn_write_to_read_dir(write_dir=dst_write_dir, read_dir=dst_read_dir, build_new_dir=False, copy_sub_dir=True, print_msg=True)
+
+        return self
     ### 好像都沒用到，先註解起來吧～再看看要不要 把功能用其他方式實現出來 再刪掉
     '''
     def _analyze_row_col_results_all_single_see(self, start_see, see_amount, single_see_multiprocess=False, single_see_core_amount=8):
