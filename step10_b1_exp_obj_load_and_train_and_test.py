@@ -520,7 +520,8 @@ class Experiment():
             # self.model_obj.generate_tests(self.model_obj.generator, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope=rec_hope, current_ep=self.current_ep, exp_obj=self, training=False, add_loss=False, bgr2rgb=False)
             self.model_obj.generate_sees  (self.model_obj, "test", test_index, test_name, test_in, test_in_pre, test_gt, test_gt_pre, rec_hope, DewarpNet_result, self, training=False, see_reset_init=True, postprocess=True, npz_save=True, knpy_save=knpy_save)
         Save_as_jpg          (ord_dir  =self.result_obj.test_write_dir, dst_dir =self.result_obj.test_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完
-        Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir, read_dir=self.result_obj.test_read_dir , build_new_dir=False, print_msg=False, copy_sub_dir=True)
+        if(self.result_obj.test_write_dir != self.result_obj.test_read_dir):
+            Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir, read_dir=self.result_obj.test_read_dir , build_new_dir=False, print_msg=False, copy_sub_dir=True)
 
     def train_step1_see_current_img(self, phase="train", training=False, see_reset_init=False, postprocess=False, npz_save=False):
         """
@@ -648,7 +649,8 @@ class Experiment():
         ### 雖然 先jpg 再crop 後的結果 佔的空間比較大， 但可以確保 不管重複跑幾次 crop 都不會壞掉喔！ 而這個 train_run_final_see 很容易需要重跑， 所以就將就一下吧～～
         Save_as_jpg          (self.result_obj.result_write_dir, self.result_obj.result_write_dir, delete_ord_file=True, quality_list=[cv2.IMWRITE_JPEG_QUALITY, JPG_QUALITY], core_amount=1)  ### matplot圖存完
         Find_ltrd_and_crop   (self.result_obj.result_write_dir, self.result_obj.result_write_dir, padding=15, search_amount=2, core_amount=1)  ### 有實驗過，要先crop完 再 壓成jpg 檔案大小才會變小喔！
-        Syn_write_to_read_dir(write_dir=self.result_obj.result_write_dir, read_dir=self.result_obj.result_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
+        if(self.result_obj.result_write_dir != self.result_obj.result_read_dir):
+            Syn_write_to_read_dir(write_dir=self.result_obj.result_write_dir, read_dir=self.result_obj.result_read_dir, build_new_dir=False, print_msg=False, copy_sub_dir=True)
         print("test see finish")
 
     # def test_see(self):
