@@ -777,8 +777,9 @@ class Experiment():
         plt.savefig(ld_ssim_value_visual_path)
 
         ### 同步 test_write / test_read
-        Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir , read_dir=self.result_obj.test_read_dir , build_new_dir=False, print_msg=True, copy_sub_dir=False)  ### 這個function寫出來的東西只有在 test_write_dir， 沒有寫進 sub_dir 所以不需要copy sub_dir
-        Syn_write_to_read_dir(write_dir=ld_ssim_value_tboard_write_path, read_dir=ld_ssim_value_tboard_read_path, build_new_dir=False, print_msg=True, copy_sub_dir=True )  ### 注意 tensorboard 是寫成資料夾， 所以copy_sub_dir 要 設 True 喔！
+        if(self.result_obj.test_write_dir != self.result_obj.test_read_dir):
+            Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir , read_dir=self.result_obj.test_read_dir , build_new_dir=False, print_msg=True, copy_sub_dir=False)  ### 這個function寫出來的東西只有在 test_write_dir， 沒有寫進 sub_dir 所以不需要copy sub_dir
+            Syn_write_to_read_dir(write_dir=ld_ssim_value_tboard_write_path, read_dir=ld_ssim_value_tboard_read_path, build_new_dir=False, print_msg=True, copy_sub_dir=True )  ### 注意 tensorboard 是寫成資料夾， 所以copy_sub_dir 要 設 True 喔！
         print("finish")
 
 
