@@ -13,7 +13,7 @@ from step11_b_result_obj_builder import Result_builder
 import sys
 sys.path.append("kong_util")
 from kong_util.util import time_util, get_dir_certain_file_names
-from kong_util.build_dataset_combine import Save_as_jpg, Find_ltrd_and_crop
+from kong_util.build_dataset_combine import Check_dir_exist_and_build, Save_as_jpg, Find_ltrd_and_crop
 
 from tqdm import tqdm, trange
 
@@ -681,6 +681,106 @@ class Experiment():
         import shutil
         # Check_dir_exist_and_build_new_dir(self.result_obj.ckpt_write_dir)
         shutil.copytree(self.result_obj.ckpt_read_dir, self.result_obj.ckpt_write_dir)
+
+    def Gather_test_SSIM_LD(self):
+        def ax_dot_text(ax, values):
+            for go_v, value in enumerate(values):
+                ax.annotate( text="%.1f" %  value,            ### 顯示的文字
+                    xy=(go_v, value),                         ### 要標註的目標點
+                    xytext=( 0 , 5),                          ### 顯示的文字放哪裡
+                    textcoords='offset points',               ### 目前東西放哪裡的坐標系用什麼
+                    # arrowprops=dict(arrowstyle="->",          ### 畫箭頭的資訊
+                    #                 connectionstyle= "arc3", )
+                                    )
+                ax.plot((go_v, go_v), (0, value), c="gray", alpha=0.5)
+
+        def draw(ax, values, text, xmin, xmax, ymin, ymax):
+            amount = len(values)
+            mean = np.mean(values)
+
+            x_ticks = range(amount)
+            ax.plot(x_ticks, values         , label=f"{text}s")
+            ax.plot(x_ticks, [mean] * amount, label=f"{text}_mean")
+
+            ax.set_title(f"{text}s_mean:{mean}")
+            ax.set_xticks(x_ticks)
+            ax.set_xticklabels(list(x_ticks), rotation = 90)
+            ax.set_xlim(xmin, xmax)
+            ax.set_ylim(ymin, ymax)
+            ax.legend()
+            ax_dot_text(ax, values)
+
+        ### 去各個 test料夾 蒐集出 lds 和 ssims
+        lds = []
+        ssims = []
+        for test in self.result_obj.tests:
+            ld_path   = test.metric_read_dir + "/" + "LDs.npy"
+            ssim_path = test.metric_read_dir + "/" + "SSIMs.npy"
+            ld   = np.load(ld_path)
+            ssim = np.load(ssim_path)
+            ld   = ld  [0]
+            ssim = ssim[0]
+
+            lds  .append(ld)
+            ssims.append(ssim)
+        lds   = np.array(lds)
+        ssims = np.array(ssims)
+        lds_mean   = np.mean(lds)
+        ssims_mean = np.mean(ssims)
+        amount = len(lds)
+
+        Check_dir_exist_and_build(self.result_obj.test_write_dir)
+
+        lds_mean_path   = self.result_obj.test_write_dir + "/" + "LDs_mean"
+        ssims_mean_path = self.result_obj.test_write_dir + "/" + "SSIMs_mean"
+        np.save(lds_mean_path, lds_mean)
+        np.save(ssims_mean_path, ssims_mean)
+
+        ### lds 和 ssims 寫成 txt
+        ld_ssim_value_txt_path    = self.result_obj.test_write_dir + "/" + "LD_SSIM_value.txt"
+        with open(ld_ssim_value_txt_path, "w") as f:
+            f.write(f"mean\n")
+            f.write(f"ld_mean      : {lds_mean      }\n")
+            f.write(f"ssim_mean    : {ssims_mean    }\n")
+
+            for go_val in range(amount):
+                ssim    =  ssims   [go_val]
+                ld      =  lds     [go_val]
+                f.write(f"  current_id : {go_val}\n")
+                f.write(f"    my_rec_ssim    : {ssim    }\n")
+                f.write(f"    my_rec_ld      : {ld      }\n")
+
+        ### writer = tf.summary.create_file_writer("/tmp/mylogs/eager")
+        ld_ssim_value_tboard_write_path    = self.result_obj.test_write_dir + "/" + "LD_SSIM_tboard"
+        ld_ssim_value_tboard_read_path     = self.result_obj.test_read_dir  + "/" + "LD_SSIM_tboard"
+        writer = tf.summary.create_file_writer(ld_ssim_value_tboard_write_path)
+        with writer.as_default():
+            for go_val in range(amount):
+                tf.summary.scalar("SSIMs", ssims[go_val], step=go_val)
+                tf.summary.scalar("LDs"  , lds  [go_val], step=go_val)
+                if(go_val > 0):
+                    tf.summary.scalar("mean_SSIM", np.mean(ssims[:go_val]), step=go_val)
+                    tf.summary.scalar("mean_LD"  , np.mean(lds  [:go_val]), step=go_val)
+
+
+        ### lds 和 ssims matplot視覺化
+        ld_ssim_value_visual_path = self.result_obj.test_write_dir + "/" + "LD_SSIM_value_visual"
+        import matplotlib.pyplot as plt
+        canvas_size = 3
+        nrows = 2
+        ncols = 1
+        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols * 6.3, canvas_size * nrows))
+        draw(ax=ax[0], values=lds  , text="LD"  , xmin=0, xmax=129, ymin=0, ymax=50)
+        draw(ax=ax[1], values=ssims, text="SSIM", xmin=0, xmax=129, ymin=0, ymax= 1)
+        fig.tight_layout()
+        # plt.show()
+        plt.savefig(ld_ssim_value_visual_path)
+
+        ### 同步 test_write / test_read
+        Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir , read_dir=self.result_obj.test_read_dir , build_new_dir=False, print_msg=True, copy_sub_dir=False)  ### 這個function寫出來的東西只有在 test_write_dir， 沒有寫進 sub_dir 所以不需要copy sub_dir
+        Syn_write_to_read_dir(write_dir=ld_ssim_value_tboard_write_path, read_dir=ld_ssim_value_tboard_read_path, build_new_dir=False, print_msg=True, copy_sub_dir=True )  ### 注意 tensorboard 是寫成資料夾， 所以copy_sub_dir 要 設 True 喔！
+        print("finish")
+
 
     def run(self):
         self.machine_ip   = socket.gethostbyname(socket.gethostname())  ### 取得 本機 IP   給 train_step5_show_time 紀錄

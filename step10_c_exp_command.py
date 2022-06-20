@@ -14,6 +14,8 @@ train_reload        = "build().train_reload()"
 train_run_final_see = "build().train_run_final_see()"
 test                = "build().test(test_db_name='%s', %s)"   ### 第一個放 test_db_name, 第二個放 knpy_save=True/False
 
+Gather_test_SSIM_LD = "build('%s').Gather_test_SSIM_LD()"
+
 bm_rec_see_print_msg = False
 bm_rec_result_print_msg = True
 test_Calculate_SSIM_LD_all_from_begin  = f"build().result_obj.result_do_all_single_see(used_what_see='test',                 see_method_name='Calculate_SSIM_LD', add_loss=False, bgr2rgb=True, see_core_amount=5, single_see_core_amount=1, see_print_msg={bm_rec_see_print_msg}, result_print_msg={bm_rec_result_print_msg})"
