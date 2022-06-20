@@ -30,6 +30,9 @@ im2=im2double(im2);
 cellsize=3;
 gridspacing=1;
 
+addpath(fullfile(pwd,'mexDenseSIFT'));
+addpath(fullfile(pwd,'mexDiscreteFlow'));
+
 sift1 = mexDenseSIFT(im1,cellsize,gridspacing);
 sift2 = mexDenseSIFT(im2,cellsize,gridspacing);
 
