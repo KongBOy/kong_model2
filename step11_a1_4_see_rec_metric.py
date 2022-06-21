@@ -261,8 +261,8 @@ class See_rec_metric(See_info):
             ### 轉gray 和 resize 後 最終用 哪兩張圖 來算 SSIM/LD 也存一份起來
             img_pred_598400_path = self.metric_im1_pred_write_dir  + "/im_pred_epoch=%04i.jpg" % go_epoch
             img_gt_598400_path   = self.metric_im2_gt_write_dir  + "/im_gt_epoch=%04i.jpg" % go_epoch
-            cv2.imwrite(img_pred_598400_path, im1)
-            cv2.imwrite(img_gt_598400_path  , im2)
+            cv2.imwrite(img_pred_598400_path, (im1 * 255).astype(np.uint8))
+            cv2.imwrite(img_gt_598400_path  , (im2 * 255).astype(np.uint8))
 
             ### debug 部分， 確認 等等要算 SSIM/LD 的圖長怎樣
             # fig, ax = plt.subplots(nrows=1, ncols=2)
