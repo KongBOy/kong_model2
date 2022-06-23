@@ -590,6 +590,7 @@ class Row_col_results_analyzer(Result_analyzer):
         return self
 
     def analyze_row_col_result_SSIM_LD(self):
+        from distutils.dir_util import copy_tree
         ''' exp 要先執行完 Gather_test_SSIM_LD 來產生完 LD/SSIM_tboard 後才可以執行這個 funtion 來蒐集 各個 exp_obj 的 LD/SSIM_tboard 喔！ '''
         print(f"{self.ana_describe} doing Row_Col_results_analyze SSIM_LD")
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "start SSIM_LD")
@@ -610,7 +611,7 @@ class Row_col_results_analyzer(Result_analyzer):
                 if("畫空白的圖" not in r_c_result.test_read_dir):
                     tboard_src_path = r_c_result.test_read_dir + "/" + "LD_SSIM_tboard"
                     tboard_dst_path = dst_write_dir + "/" + r_c_result.ana_describe
-                    shutil.copytree(tboard_src_path, tboard_dst_path)
+                    copy_tree(tboard_src_path, tboard_dst_path)
 
         Syn_write_to_read_dir(write_dir=dst_write_dir, read_dir=dst_read_dir, build_new_dir=False, copy_sub_dir=True, print_msg=True)
 
