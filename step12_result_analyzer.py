@@ -613,7 +613,8 @@ class Row_col_results_analyzer(Result_analyzer):
                     tboard_dst_path = dst_write_dir + "/" + r_c_result.ana_describe
                     copy_tree(tboard_src_path, tboard_dst_path)
 
-        Syn_write_to_read_dir(write_dir=dst_write_dir, read_dir=dst_read_dir, build_new_dir=False, copy_sub_dir=True, print_msg=True)
+        if(dst_write_dir != dst_read_dir):
+            Syn_write_to_read_dir(write_dir=dst_write_dir, read_dir=dst_read_dir, build_new_dir=False, copy_sub_dir=True, print_msg=True)
 
         return self
     ### 好像都沒用到，先註解起來吧～再看看要不要 把功能用其他方式實現出來 再刪掉
