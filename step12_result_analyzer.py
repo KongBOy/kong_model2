@@ -577,7 +577,8 @@ class Row_col_results_analyzer(Result_analyzer):
             video_p.start()
             video_p.join()   ### 還是乖乖join比較好， 雖然不join 可以不用等他結束才跑下個Process， 但因為存Video很耗記憶體， 如果存大圖 或 多epochs 容易爆記憶體！
             # Video_combine_from_dir(analyze_see_private_write_dir, analyze_see_private_write_dir)          ### 存成jpg後 順便 把所有圖 串成影片
-        Syn_write_to_read_dir(analyze_see_private_write_dir, analyze_see_private_read_dir, copy_sub_dir=False, print_msg=False)
+        if(analyze_see_private_write_dir != analyze_see_private_read_dir):
+            Syn_write_to_read_dir(analyze_see_private_write_dir, analyze_see_private_read_dir, copy_sub_dir=False, print_msg=False)
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: finish single_see, Current See:{see_num}")
         print("cost_time:", time.time() - start_time)
         return self
