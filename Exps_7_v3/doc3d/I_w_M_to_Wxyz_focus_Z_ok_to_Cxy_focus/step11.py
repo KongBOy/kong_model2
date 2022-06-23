@@ -48,8 +48,13 @@ combine1_fix_I_w_M_to_W__change_W_w_M_t_C = [
 combine2_change_I_w_M_to_W__fix_W_w_M_t_C = [
     [DewarpNet              , p20_L5_Sob_k05__Mae        , p20_L5_Sob_k15__Mae        , p20_L5_Sob_k25__Mae        , p20_L5_Sob_k35__Mae        , ], 
     [p20_L5_Mae__Mae        , p20_L5_Sob_k05_Mae__Mae    , p20_L5_Sob_k15_Mae__Mae    , p20_L5_Sob_k25_Mae__Mae    , p20_L5_Sob_k35_Mae__Mae    , ],
-    [DewarpNet              , p20_L5_Sob_k05__Sob_k05    , p20_L5_Sob_k15__Sob_k05    , p20_L5_Sob_k25__Sob_k05    , p20_L5_Sob_k35__Sob_k05    , ], 
+    [DewarpNet              , p20_L5_Sob_k05__Sob_k05    , p20_L5_Sob_k15__Sob_k05    , p20_L5_Sob_k25__Sob_k05    , p20_L5_Sob_k35__Sob_k05    , ],
     [p20_L5_Mae__Sob_k05    , p20_L5_Sob_k05_Mae__Sob_k05, p20_L5_Sob_k15_Mae__Sob_k05, p20_L5_Sob_k25_Mae__Sob_k05, p20_L5_Sob_k35_Mae__Sob_k05, ],
+]
+
+combine2_2_change_I_w_M_to_W__fix_W_w_M_t_C_good_set = [
+    [p20_L5_Sob_k05_Mae__Sob_k05_Mae         , p20_L5_Sob_k05_Mae_wiColorJ__Sob_k05_Mae, DewarpNet                               , empty                                   , ],
+    [p20_L5_Sob_k05_Mae_wiColorJ__Sob_k05_Mae, p20_L5_Sob_k15_Mae_wiColorJ__Sob_k05_Mae, p20_L5_Sob_k25_Mae_wiColorJ__Sob_k05_Mae, p20_L5_Sob_k35_Mae_wiColorJ__Sob_k05_Mae, ],
 ]
 
 combine3_fix_I_w_M_to_W__change_W_w_M_t_C = [
