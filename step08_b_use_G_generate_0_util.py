@@ -59,6 +59,7 @@ def C_01_and_C_01_w_M_to_F_and_visualize(C, M, out_ch3=False):
 
     C_w_M = C * M
     F_w_M, F_w_M_visual, Cx_w_M_visual, Cy_w_M_visual = C_01_concat_with_M_to_F_and_get_F_visual(C_w_M, M, out_ch3=out_ch3)
+    F_w_M_visual = F_w_M_visual * M
     return F, F_visual, Cx_visual, Cy_visual, F_w_M, F_w_M_visual, Cx_w_M_visual, Cy_w_M_visual
 
 def WcM_01_visual_op(WcM_01, out_ch3=False):

@@ -308,6 +308,24 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
         if(self.postprocess):
             current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord_croped_not_accurate, flow=F_w_Mgt)
+
+            ### 給 ppt 用的
+            h, w = bm.shape[:2]
+            bm_mask = np.ones(shape=(h, w, 1))
+            # canvas_size = 5
+            # nrows = 1
+            # ncols = 4
+            # fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols, canvas_size * nrows))
+            # ax[0].imshow(bm[..., 0])
+            # ax[1].imshow(bm[..., 1])
+            # plt.show()
+            bm_visual = np.concatenate( (bm[..., ::-1], bm_mask), axis=-1)
+            bm_visual = (bm_visual * 255).astype(np.uint8)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-bm.jpg", bm_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_raw_visual.jpg" , W_raw_visual[..., ::-1])
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_w_M_visual.jpg" , W_w_M_visual[..., ::-1])
+
             '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
             # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img_pre_croped_resized_visual, F=Fgt)
             cv2.imwrite(private_rec_write_dir + "/" + "rec_epoch=%04i.png" % current_ep, rec)
