@@ -31,9 +31,7 @@ import subprocess as sb
 ### 各別 test_000, test_001, ..., test_129 計算 SSIM/LD
 # sb.run(cmd_python_step10_a + [f"Model_run     .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"Google_down   .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"Google_down_hw.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 
 ### 蒐集 test_001 ~ test_129 的 SSIM/LD 來計算 mean, tboard 等
 # sb.run(cmd_python_step10_a + [f"Model_run     .{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"Google_down   .{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"Google_down_hw.{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
