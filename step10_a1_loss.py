@@ -400,7 +400,7 @@ class Sobel_MAE():
         gt_data = gt_data[:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
         if(Mask is not None): Mask    = Mask   [:, :h, :w, :]  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
 
-        print("Sobel_MAE.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
+        print(f"Sobel_MAE_k{self.sobel_kernel_size}.__call__.sobel_kernel_scale:", self.sobel_kernel_scale)
         img1_sobel_x, img1_sobel_y = self.Calculate_sobel_edges(image=gt_data,   Mask=Mask)
         img2_sobel_x, img2_sobel_y = self.Calculate_sobel_edges(image=pred_data, Mask=Mask)
 
