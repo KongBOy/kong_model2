@@ -47,9 +47,10 @@ combine2c_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_wiEroMore = [
     [Google_down, p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k03_Tv_s001_EroMore , p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_Tv_s001_EroMore , p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k09_Tv_s001_EroMore , p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k11_Tv_s001_EroMore , ],
 ]
 #################################
+####### 目前先用 127.28 跑
 ##### 前change 後fix
 ### 分析 EroM
-combine3b_fix_I_w_M_to_W__change_W_w_M_t_C__EroM_type_analyze = [
+comb3b_change_I_w_M_to_W__fix_W_w_M_t_C__EroM_type_analyze = [
     [Model_run                                          , Google_down                                        , empty                                              , empty                                              , ],
     [p20_wiColorJ_L5_MaeSob_k03__MaeSob_k05_EroM        , p20_wiColorJ_L5_MaeSob_k05__MaeSob_k05_EroM        , p20_wiColorJ_L5_MaeSob_k09__MaeSob_k05_EroM        , p20_wiColorJ_L5_MaeSob_k11__MaeSob_k05_EroM        , ],
     [p20_wiColorJ_L5_MaeSob_k03_EroM__MaeSob_k05_EroM   , p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_EroM   , p20_wiColorJ_L5_MaeSob_k09_EroM__MaeSob_k05_EroM   , p20_wiColorJ_L5_MaeSob_k11_EroM__MaeSob_k05_EroM   , ],
@@ -57,15 +58,48 @@ combine3b_fix_I_w_M_to_W__change_W_w_M_t_C__EroM_type_analyze = [
 ]
 
 ### 分析TV
-combine4a_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_woEroM = [
+comb4a_change_I_w_M_to_W__fix_W_w_M_t_C__wo_wiTv_s001_woEroM = [
     [Model_run  , p20_wiColorJ_L5_MaeSob_k03__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k05__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k09__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k11__MaeSob_k05_EroM         , ],
     [Google_down, p20_wiColorJ_L5_MaeSob_k03_Tv_s001__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k05_Tv_s001__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k09_Tv_s001__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k11_Tv_s001__MaeSob_k05_EroM , ],
 ]
-combine4b_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_wiEroM = [
+comb4b_change_I_w_M_to_W__fix_W_w_M_t_C__wo_wiTv_s001_wiEroM = [
     [Model_run  , p20_wiColorJ_L5_MaeSob_k03_EroM__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k09_EroM__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k11_EroM__MaeSob_k05_EroM         , ],
     [Google_down, p20_wiColorJ_L5_MaeSob_k03_Tv_s001_EroM__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k05_Tv_s001_EroM__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k09_Tv_s001_EroM__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroM__MaeSob_k05_EroM , ],
 ]
-combine4c_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_wiEroMore = [
+comb4c_change_I_w_M_to_W__fix_W_w_M_t_C__wo_wiTv_s001_wiEroMore = [
     [Model_run  , p20_wiColorJ_L5_MaeSob_k03_EroMore__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k05_EroMore__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k09_EroMore__MaeSob_k05_EroM         , p20_wiColorJ_L5_MaeSob_k11_EroMore__MaeSob_k05_EroM         , ],
     [Google_down, p20_wiColorJ_L5_MaeSob_k03_Tv_s001_EroMore__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k05_Tv_s001_EroMore__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k09_Tv_s001_EroMore__MaeSob_k05_EroM , p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroMore__MaeSob_k05_EroM , ],
 ]
+
+comb4d_change_I_w_M_to_W__fix_W_w_M_t_C_tboard_all = [[
+    Model_run,
+    Google_down,
+
+    p20_wiColorJ_L5_MaeSob_k03__MaeSob_k05_EroM                ,
+    p20_wiColorJ_L5_MaeSob_k03_EroM__MaeSob_k05_EroM           ,
+    p20_wiColorJ_L5_MaeSob_k03_EroMore__MaeSob_k05_EroM        ,
+    p20_wiColorJ_L5_MaeSob_k03_Tv_s001__MaeSob_k05_EroM        ,
+    p20_wiColorJ_L5_MaeSob_k03_Tv_s001_EroM__MaeSob_k05_EroM   ,
+    p20_wiColorJ_L5_MaeSob_k03_Tv_s001_EroMore__MaeSob_k05_EroM,
+
+    p20_wiColorJ_L5_MaeSob_k05__MaeSob_k05_EroM                ,
+    p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_EroM           ,
+    p20_wiColorJ_L5_MaeSob_k05_EroMore__MaeSob_k05_EroM        ,
+    p20_wiColorJ_L5_MaeSob_k05_Tv_s001__MaeSob_k05_EroM        ,
+    p20_wiColorJ_L5_MaeSob_k05_Tv_s001_EroM__MaeSob_k05_EroM   ,
+    p20_wiColorJ_L5_MaeSob_k05_Tv_s001_EroMore__MaeSob_k05_EroM,
+
+    p20_wiColorJ_L5_MaeSob_k09__MaeSob_k05_EroM                ,
+    p20_wiColorJ_L5_MaeSob_k09_EroM__MaeSob_k05_EroM           ,
+    p20_wiColorJ_L5_MaeSob_k09_EroMore__MaeSob_k05_EroM        ,
+    p20_wiColorJ_L5_MaeSob_k09_Tv_s001__MaeSob_k05_EroM        ,
+    p20_wiColorJ_L5_MaeSob_k09_Tv_s001_EroM__MaeSob_k05_EroM   ,
+    p20_wiColorJ_L5_MaeSob_k09_Tv_s001_EroMore__MaeSob_k05_EroM,
+
+    p20_wiColorJ_L5_MaeSob_k11__MaeSob_k05_EroM                ,
+    p20_wiColorJ_L5_MaeSob_k11_EroM__MaeSob_k05_EroM           ,
+    p20_wiColorJ_L5_MaeSob_k11_EroMore__MaeSob_k05_EroM        ,
+    p20_wiColorJ_L5_MaeSob_k11_Tv_s001__MaeSob_k05_EroM        ,
+    p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroM__MaeSob_k05_EroM   ,
+    p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroMore__MaeSob_k05_EroM,
+]]

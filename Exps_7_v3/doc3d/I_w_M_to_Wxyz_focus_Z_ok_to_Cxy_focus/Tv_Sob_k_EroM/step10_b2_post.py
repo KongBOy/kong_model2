@@ -26,7 +26,8 @@ from step10_c_exp_command import *
 import subprocess as sb
 
 #################################
-## 前change 後fix
+####### 目前先用 127.28 跑
+### 前change 後fix
 # sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k03__MaeSob_k05_EroM                 .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k03_EroM__MaeSob_k05_EroM            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k03_EroMore__MaeSob_k05_EroM         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
