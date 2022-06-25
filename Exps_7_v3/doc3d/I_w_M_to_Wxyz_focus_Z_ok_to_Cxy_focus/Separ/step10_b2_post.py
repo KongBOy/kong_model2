@@ -26,60 +26,18 @@ from step10_c_exp_command import *
 import subprocess as sb
 
 #################################
-## 前change 後fix
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k03__MaeSob_k05_EroM                 .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k03_EroM__MaeSob_k05_EroM            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k03_EroMore__MaeSob_k05_EroM         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k03_Tv_s001__MaeSob_k05_EroM         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k03_Tv_s001_EroM__MaeSob_k05_EroM    .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k03_Tv_s001_EroMore__MaeSob_k05_EroM .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05__MaeSob_k05_EroM                 .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_EroM            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroMore__MaeSob_k05_EroM         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_Tv_s001__MaeSob_k05_EroM         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_Tv_s001_EroM__MaeSob_k05_EroM    .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_Tv_s001_EroMore__MaeSob_k05_EroM .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k09__MaeSob_k05_EroM                 .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k09_EroM__MaeSob_k05_EroM            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k09_EroMore__MaeSob_k05_EroM         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k09_Tv_s001__MaeSob_k05_EroM         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k09_Tv_s001_EroM__MaeSob_k05_EroM    .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k09_Tv_s001_EroMore__MaeSob_k05_EroM .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k11__MaeSob_k05_EroM                 .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k11_EroM__MaeSob_k05_EroM            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k11_EroMore__MaeSob_k05_EroM         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k11_Tv_s001__MaeSob_k05_EroM         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroM__MaeSob_k05_EroM    .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroMore__MaeSob_k05_EroM .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-#################################
-### 前fix 後change
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k03                 .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k03_EroM            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k03_EroMore         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k03_Tv_s001         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k03_Tv_s001_EroM    .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k03_Tv_s001_EroMore .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05                 .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_EroM            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_EroMore         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_Tv_s001         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_Tv_s001_EroM    .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k05_Tv_s001_EroMore .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k09                 .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k09_EroM            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k09_EroMore         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k09_Tv_s001         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k09_Tv_s001_EroM    .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k09_Tv_s001_EroMore .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k11                 .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k11_EroM            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k11_EroMore         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k11_Tv_s001         .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k11_Tv_s001_EroM    .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
-# sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k05_EroM__MaeSob_k11_Tv_s001_EroMore .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+### woDIv
+# sb.run(cmd_python_step10_a + [f"p20_L5_woDiv_Sob_k05_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_woDiv_Sob_k15_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_woDiv_Sob_k25_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_woDiv_Sob_k35_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+### wiDIv
+# sb.run(cmd_python_step10_a + [f"p20_L5_wiDiv_Sob_k05_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_wiDiv_Sob_k15_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_wiDiv_Sob_k25_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_wiDiv_Sob_k35_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+### 3UNet
+# sb.run(cmd_python_step10_a + [f"p20_L5_3UNet_Sob_k05_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_3UNet_Sob_k15_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_3UNet_Sob_k25_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"p20_L5_3UNet_Sob_k35_Mae__Sob_k05_Mae.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])

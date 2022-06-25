@@ -214,9 +214,18 @@ class G_Unet_Body_builder(Ckpt_op_builder):
                  #  out_tanh=True,
                  #  skip_use_add=False, skip_use_cSE=False, skip_use_sSE=False, skip_use_scSE=False, skip_use_cnn=False, skip_cnn_k=3, skip_use_Acti=None,
                  **kwargs):
+        self.kong_model.model_describe_elements_full = ["L%i" % depth_level, "ch%03i" % hid_ch]
+        self.kong_model.model_describe_elements      = ["L%i" % depth_level, "ch%03i" % hid_ch]
+
+        ### Decoder 數量命名
+        if(d_amount > 1):
+            self.kong_model.model_describe_elements_full += ["Dec%i" % d_amount]
+            self.kong_model.model_describe_elements      += ["Dec%i" % d_amount]
+
+        ### block 命名
         if  (type(conv_block_num) == type(1)) :
-            self.kong_model.model_describe_elements_full = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
-            self.kong_model.model_describe_elements      = ["L%i" % depth_level, "ch%03i" % hid_ch, "block%i" % conv_block_num]
+            self.kong_model.model_describe_elements_full += ["block%i" % conv_block_num, unet_acti[:3], "out_%i" % out_ch]
+            self.kong_model.model_describe_elements      += ["block%i" % conv_block_num]
 
         ### pyramid 的命名
         elif(type(conv_block_num) == type([])):
@@ -230,8 +239,8 @@ class G_Unet_Body_builder(Ckpt_op_builder):
                     side_string_element.append(f"_{side_num}s{side_num_count}")
             side_string = "_".join(side_string_element)
 
-            self.kong_model.model_describe_elements_full = ["L%i" % depth_level, "ch%03i" % hid_ch, "bl_pyr_%s" % side_string, unet_acti[:3], "out_%i" % out_ch]
-            self.kong_model.model_describe_elements      = ["L%i" % depth_level, "ch%03i" % hid_ch, "bl_pyr_%s" % side_string]
+            self.kong_model.model_describe_elements_full += ["bl_pyr_%s" % side_string, unet_acti[:3], "out_%i" % out_ch]
+            self.kong_model.model_describe_elements      += ["bl_pyr_%s" % side_string]
         self.kong_model.model_describe_full = "_".join(self.kong_model.model_describe_elements_full)
         self.kong_model.model_describe      = "_".join(self.kong_model.model_describe_elements)
         g_args = {
@@ -337,6 +346,15 @@ class G_Unet_Body_builder(Ckpt_op_builder):
 
         self.build_ops.append(_build_multi_unet_body_part)  ### 先
         self.build_ops.append(self._build_G_ckpt_part)  ### 後
+        return self
+
+    def set_multi_model_separate_focus(self, I_to_W_separ=True, I_to_W_focus=True, W_to_C_separ=True, W_to_C_focus=True):
+        def _set_multi_model_separate_focus():
+            self.kong_model.generator.I_to_W_separ = I_to_W_separ
+            self.kong_model.generator.I_to_W_focus = I_to_W_focus
+            self.kong_model.generator.W_to_C_separ = W_to_C_separ
+            self.kong_model.generator.W_to_C_focus = W_to_C_focus
+        self.build_ops.append(_set_multi_model_separate_focus)
         return self
 
 class Old_model_and_512_256_Unet_builder(G_Unet_Body_builder):

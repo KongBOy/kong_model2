@@ -64,6 +64,45 @@ class Multi_Generator(tf.keras.models.Model):
 
             return Wz_pre_raw, Wy_pre_raw, Wx_pre_raw, Cx_pre_raw, Cy_pre_raw
 
+        elif(self.op_type == "I_to_Wxyz_to_Cxy_general"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
+            '''
+            注意 不能在這邊把 Wxyz concat 起來喔， 因為要分開算 loss！
+            '''
+            I_pre = input_tensor
+            ### W_sep
+            if(self.I_to_W_separ):
+                Wz_pre_raw, Wy_pre_raw, Wx_pre_raw = self.gens_dict["I_to_Wx_Wy_Wz"](I_pre)
+                W_pre_raw = tf.concat([Wz_pre_raw, Wy_pre_raw, Wx_pre_raw], axis=-1)
+            else:
+                W_pre_raw = self.gens_dict["I_to_Wx_Wy_Wz"](I_pre)
+
+            ### W_focus
+            b, h, w, c = W_pre_raw.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
+
+            if(self.I_to_W_focus): W_pre_w_M = W_pre_raw * Mask[:, :h, :w, :]
+            else                 : W_pre_w_M = W_pre_raw
+
+            Wz_pre_w_M = W_pre_w_M[..., 0:1]  ### 用 : 才可以 keepdims
+            Wy_pre_w_M = W_pre_w_M[..., 1:2]  ### 用 : 才可以 keepdims
+            Wx_pre_w_M = W_pre_w_M[..., 2:3]  ### 用 : 才可以 keepdims
+            ###########################################################
+            ### C_sep
+            if(self.W_to_C_separ):
+                Cx_pre_raw, Cy_pre_raw = self.gens_dict["W_to_Cx_Cy"](W_pre_w_M)
+                C_pre_raw = tf.concat([Cy_pre_raw, Cx_pre_raw], axis=-1)
+            else:
+                C_pre_raw = self.gens_dict["W_to_Cx_Cy"](W_pre_w_M)
+
+            ### C_focus
+            if(self.W_to_C_focus): C_pre_w_m = C_pre_raw * Mask[:, :h, :w, :]
+            else                 : C_pre_w_m = C_pre_raw
+
+            Cy_pre_w_M = C_pre_w_m[..., 0:1]  ### 用 : 才可以 keepdims
+            Cx_pre_w_M = C_pre_w_m[..., 1:2]  ### 用 : 才可以 keepdims
+
+            ### return
+            return Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M
+
 def see(model_obj, train_in_pre):
     M_pre, C_pre = model_obj.generator(train_in_pre)
 
