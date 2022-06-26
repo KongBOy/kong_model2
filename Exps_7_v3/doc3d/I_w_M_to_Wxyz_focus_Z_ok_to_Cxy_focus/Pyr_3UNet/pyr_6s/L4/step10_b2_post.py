@@ -30,344 +30,344 @@ import subprocess as sb
 ######### 2s1
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_1__2side_1__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_1__2side_1__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 
 ###################
 ############# 1s2
 ######### 2s1
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_1__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_1__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 
 ######### 2s1
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_2__2side_2__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 
 ###################
 ############# 1s3
 ######### 2s1
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_1__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_1__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ######### 2s2
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ######### 2s3
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s3
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_3__3side_3_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 
 ###################
 ############# 1s4
 ######### 2s1
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_1__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_1__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ######### 2s2
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_2__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ######### 2s3
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s3
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_3__3side_3_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ######### 2s4
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s3
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_3_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s4
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s4
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s3_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s4.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4__2side_4__3side_4_4side_4_5s4_6s4.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 
 ###################
 ############# 1s5
 ######### 2s1
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_1__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_1__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ######### 2s2
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_2__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ######### 2s3
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s3
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ######### 2s4
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s3
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_3_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s4
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s4
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s3_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s4_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s4_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s4_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s4_6s4.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s4_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s4_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s4_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_4__3side_4_4side_4_5s4_6s4.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ######### 2s5
 ##### 3s1
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_1_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_1_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s2
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_2_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_2_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_2_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_2_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_2_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_2_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_2_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_2_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s3
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_3_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s4
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s4
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s3_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s4_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s4_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s4_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s4_6s4.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s4_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s4_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s4_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_4_4side_4_5s4_6s4.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ##### 3s5
 ### 4s1
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_1_5s1_6s1.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_1_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s2
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_2_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_2_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_2_5s2_6s2.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_2_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_2_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_2_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s3
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s3_6s3.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_3_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s4
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s3_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s4_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s4_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s4_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s4_6s4.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s4_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s4_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s4_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_4_5s4_6s4.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 ### 4s5
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s1_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s2_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s2_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s3_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s3_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s3_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s4_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s4_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s4_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s4_6s4.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s4.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s5.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s1_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s2_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s2_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s3_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s3_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s3_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s4_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s4_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s4_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s4_6s4.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s4.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_5__3side_5_4side_5_5s5_6s5.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])

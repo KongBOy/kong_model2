@@ -25,11 +25,11 @@ from step10_c_exp_command import *
 ######################################################################################################################
 import subprocess as sb
 
-# sb.run(cmd_python_step10_a + [f"ch032_1side_1.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_2.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_3.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_4.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_5.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_6.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_7.{run}"])
-# sb.run(cmd_python_step10_a + [f"ch032_1side_8.{run}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_1.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_2.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_3.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_4.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_5.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_7.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_8.{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
