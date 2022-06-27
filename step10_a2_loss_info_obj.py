@@ -1055,6 +1055,7 @@ G_tv_s100_bce_s100_sobel_k5_s100_loss_info_builder = Loss_info_builder().set_los
 ### 9
 mae_s001_sobel_k3_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=3, sobel_kernel_scale=  1)
 mae_s001_sobel_k7_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=7, sobel_kernel_scale=  1)
+mae_s001_sobel_k9_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=9, sobel_kernel_scale=  1)
 mae_s001_sobel_k7_s780_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=7, sobel_kernel_scale=780)
 
 mae_s001_sobel_k5_s001_loss_info_builder = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size=5, sobel_kernel_scale=  1)
