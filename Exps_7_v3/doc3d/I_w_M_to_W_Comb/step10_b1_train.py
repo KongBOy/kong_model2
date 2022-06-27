@@ -42,4 +42,4 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__wiDiv__Mae_s001_Sob_k07_s001 .{train}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__wiDiv__Mae_s001_Sob_k09_s001 .{train}"])
 
-# sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__wiDiv__Mae_s001_Sob_k09_s001_ep10 .{train}"])
+# sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__wiDiv__Mae_s001_Sob_k09_s001_ep010 .{train}"])
