@@ -177,7 +177,7 @@ def one_loss_info_obj_total_loss(loss_info_objs, model_output, gt_data, Mask=Non
 
 def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None, Mask=None):
     with tf.GradientTape() as gen_tape:
-        model_outputs = model_obj.generator(in_data, training=True)
+        model_outputs = model_obj.generator(in_data, Mask=Mask, training=True)
         # print("in_data.numpy().shape", in_data.numpy().shape)
         # print("model_output.min()", model_output.numpy().min())  ### 用這show的時候要先把 @tf.function註解掉
         # print("model_output.max()", model_output.numpy().max())  ### 用這show的時候要先把 @tf.function註解掉
