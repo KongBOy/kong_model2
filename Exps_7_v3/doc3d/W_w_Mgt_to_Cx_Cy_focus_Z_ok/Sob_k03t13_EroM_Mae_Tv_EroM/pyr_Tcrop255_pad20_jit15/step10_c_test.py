@@ -55,4 +55,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__Mae_s001_Sob_k09_s001_eroM                    .{test % ('', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__Mae_s001_Sob_k11_s001_eroM                    .{test % ('', 'knpy_save=False')}"])
 
+### good ep010
+# sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__Mae_s001_Sob_k09_s001_ep010                   .{test % ('', 'knpy_save=False')}"])
+
+
 ### test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA

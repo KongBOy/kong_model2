@@ -54,3 +54,6 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__Mae_s001_Sob_k05_s001_eroM                    .{train}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__Mae_s001_Sob_k09_s001_eroM                    .{train}"])
 # sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__Mae_s001_Sob_k11_s001_eroM                    .{train}"])
+
+### good ep010
+# sb.run(cmd_python_step10_a + [f"L5_ch032_2blk__Mae_s001_Sob_k09_s001_ep010                   .{train}"])
