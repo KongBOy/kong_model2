@@ -187,7 +187,7 @@ class Generator(tf.keras.models.Model):
         if(to_L == 0): return self.unet_out_ch
         else:          return min(self.hid_ch * 2**(to_L - 1), ch_upper_bound)
 
-    def call(self, input_tensor, training=None):
+    def call(self, input_tensor, training=None, Mask=None):  ### Mask 沒有用到， 但是為了介面跟 step07_b_0b_Multi_UNet 一致， 所以還是寫出來喔～
         skips = []
 
         #####################################################
