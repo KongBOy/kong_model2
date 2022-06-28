@@ -11,6 +11,7 @@ class Exp_builder():
         else: self.exp = exp
 
         self.auto_fill_have_loss = False
+        self.auto_fill_have_ep   = False
 
     def set_basic(self, phase, db_builder, model_builder, loss_info_builders, exp_dir=".", code_exe_path=".", describe_mid=None, describe_end=None, result_name=None):
         self.exp.phase = phase
@@ -77,8 +78,9 @@ class Exp_builder():
         self.exp.multi_model_reload_exp_builders_dict = kwargs
         return self
 
-    def set_Auto_fill(self, have_loss):
+    def set_Auto_fill(self, have_loss=False, have_ep=False):
         self.auto_fill_have_loss = have_loss
+        self.auto_fill_have_ep   = have_ep
         return self
 
     def build_exp_temporary(self, reset_test_db_name=None):
@@ -153,9 +155,9 @@ class Exp_builder():
         ### 設定 現在exp 的 result_name
         current_exp_result_name  = self.exp.model_builder.kong_model.model_describe
         ### 2022/06/14 加入的， 因為現在要開始研究Loss了！ 所以開始也要記錄Loss囉， 這樣放同個資料夾才可以區隔不同的result_name
-        if(self.auto_fill_have_loss):
-            current_exp_result_name += "_" + self.exp.loss_info_objs[0].loss_describe
-            current_exp_result_name += "-"  ### 這個超級無敵重要，代表結尾， 如果沒有-的話舉例：Mae_s001_Sob_k03_s001 會找到 Mae_s001_Sob_k03_s001, Mae_s001_Sob_k03_s001_EroM, Mae_s001_Sob_k03_s001_EroMore ， 因為裡面都有 Mae_s001_Sob_k03_s001 喔！
+        if(self.auto_fill_have_loss): current_exp_result_name += "_" + self.exp.loss_info_objs[0].loss_describe
+        if(self.auto_fill_have_ep):   current_exp_result_name += "_ep%03i" % self.exp.epochs
+        current_exp_result_name += "-"  ### 這個超級無敵重要，代表結尾， 如果沒有-的話舉例：Mae_s001_Sob_k03_s001 會找到 Mae_s001_Sob_k03_s001, Mae_s001_Sob_k03_s001_EroM, Mae_s001_Sob_k03_s001_EroMore ， 因為裡面都有 Mae_s001_Sob_k03_s001 喔！
 
         ### 和 現在exp 的 result_name 比對
         current_exp_result_name_exists = [ auto_fill_result_name for auto_fill_result_name in auto_fill_result_names if current_exp_result_name in auto_fill_result_name ]
