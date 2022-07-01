@@ -738,6 +738,63 @@ class Experiment():
         np.save(lds_mean_path, lds_mean)
         np.save(ssims_mean_path, ssims_mean)
 
+        ld_rotate_126_path   = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "LDs.npy"
+        ssim_rotate_126_path = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "SSIMs.npy"
+        ld_rotate_127_path   = self.result_obj.tests[127].metric_read_dir + "/rotate/" + "LDs.npy"
+        ssim_rotate_127_path = self.result_obj.tests[127].metric_read_dir + "/rotate/" + "SSIMs.npy"
+
+        if(os.path.isfile(ld_rotate_126_path   ) and
+           os.path.isfile(ssim_rotate_126_path ) and
+           os.path.isfile(ld_rotate_127_path   ) and
+           os.path.isfile(ssim_rotate_127_path )  ):
+            ld_rotate_126   = np.load(ld_rotate_126_path)
+            ld_rotate_127   = np.load(ld_rotate_127_path)
+            ssim_rotate_126 = np.load(ssim_rotate_126_path)
+            ssim_rotate_127 = np.load(ssim_rotate_127_path)
+
+            lds_rotate = lds.copy()
+            ssims_rotate = ssims.copy()
+            lds_rotate[126] = ld_rotate_126
+            lds_rotate[127] = ld_rotate_127
+            ssims_rotate[126] = ssim_rotate_126
+            ssims_rotate[127] = ssim_rotate_127
+
+            lds_rotate_mean   = np.mean(lds_rotate)
+            ssims_rotate_mean = np.mean(ssims_rotate)
+
+            lds_rotate_mean_path   = self.result_obj.test_write_dir + "/" + "rotate_LDs_mean"
+            ssims_rotate_mean_path = self.result_obj.test_write_dir + "/" + "rotate_SSIMs_mean"
+            np.save(lds_rotate_mean_path, lds_rotate_mean)
+            np.save(ssims_rotate_mean_path, ssims_rotate_mean)
+
+            ### lds 和 ssims 寫成 txt
+            ld_ssim_rotate_value_txt_path    = self.result_obj.test_write_dir + "/" + "rotate_LD_SSIM_value.txt"
+            with open(ld_ssim_rotate_value_txt_path, "w") as f:
+                f.write(f"mean\n")
+                f.write(f"ld_mean      : {lds_rotate_mean      }\n")
+                f.write(f"ssim_mean    : {ssims_rotate_mean    }\n")
+
+                for go_val in range(amount):
+                    ssim    =  ssims_rotate   [go_val]
+                    ld      =  lds_rotate     [go_val]
+                    f.write(f"  current_id : {go_val}\n")
+                    f.write(f"    my_rec_ssim    : {ssim    }\n")
+                    f.write(f"    my_rec_ld      : {ld      }\n")
+
+            ### lds 和 ssims matplot視覺化
+            ld_ssim_rotate_value_visual_path = self.result_obj.test_write_dir + "/" + "rotate_LD_SSIM_value_visual"
+            import matplotlib.pyplot as plt
+            canvas_size = 3
+            nrows = 2
+            ncols = 1
+            fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols * 6.3, canvas_size * nrows))
+            draw(ax=ax[0], values=lds_rotate  , text="LD_rotate"  , xmin=0, xmax=129, ymin=0, ymax=50)
+            draw(ax=ax[1], values=ssims_rotate, text="SSIM_rotate", xmin=0, xmax=129, ymin=0, ymax= 1)
+            fig.tight_layout()
+            # plt.show()
+            plt.savefig(ld_ssim_rotate_value_visual_path)
+
+
         ### lds 和 ssims 寫成 txt
         ld_ssim_value_txt_path    = self.result_obj.test_write_dir + "/" + "LD_SSIM_value.txt"
         with open(ld_ssim_value_txt_path, "w") as f:
@@ -763,6 +820,17 @@ class Experiment():
                 if(go_val > 0):
                     tf.summary.scalar("mean_SSIM", np.mean(ssims[:go_val]), step=go_val)
                     tf.summary.scalar("mean_LD"  , np.mean(lds  [:go_val]), step=go_val)
+
+            if(os.path.isfile(ld_rotate_126_path   ) and
+                os.path.isfile(ssim_rotate_126_path ) and
+                os.path.isfile(ld_rotate_127_path   ) and
+                os.path.isfile(ssim_rotate_127_path )  ):
+                for go_val in range(amount):
+                    tf.summary.scalar("rotate_SSIMs", ssims_rotate[go_val], step=go_val)
+                    tf.summary.scalar("rotate_LDs"  , lds_rotate  [go_val], step=go_val)
+                    if(go_val > 0):
+                        tf.summary.scalar("rotate_mean_SSIM", np.mean(ssims_rotate[:go_val]), step=go_val)
+                        tf.summary.scalar("rotate_mean_LD"  , np.mean(lds_rotate  [:go_val]), step=go_val)
 
 
         ### lds 和 ssims matplot視覺化
