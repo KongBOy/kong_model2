@@ -77,9 +77,7 @@ class Result:
         '''
         used_see 目前可輸入: 'see' 或 'test'
         '''
-        if  (used_what_see == "see" ): task_amount = self.see_amount
-        elif(used_what_see == "test"): task_amount = self.test_amount
-        else:
+        if  (used_what_see != "see" and used_what_see != "test"):
             print(f"result_do_single_see 的 used_what_see 輸入錯誤， 目前輸入{used_what_see}, 目前只支援 'see' 或 'test'")
             exit()
 
