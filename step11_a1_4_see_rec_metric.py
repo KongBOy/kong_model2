@@ -75,6 +75,8 @@ class See_rec_metric(See_info):
 
         self.metric_read_dir  = self.see_read_dir  + "/3_metric"
         self.metric_write_dir = self.see_write_dir + "/3_metric"
+        self.metric_rotate_read_dir  = self.see_read_dir  + "/3_metric/rotate"
+        self.metric_rotate_write_dir = self.see_write_dir + "/3_metric/rotate"
         self.metric_ld_color_read_dir  = self.see_read_dir  + "/3_metric/ld_color"
         self.metric_ld_color_write_dir = self.see_write_dir + "/3_metric/ld_color"
         self.metric_ld_gray_read_dir   = self.see_read_dir  + "/3_metric/ld_gray"
@@ -253,16 +255,84 @@ class See_rec_metric(See_info):
             '''
 
             ### 已經參考 https://github.com/cvlab-stonybrook/DewarpNet/issues/22 把 轉 gray 和 resize 寫進 matlab code 裡面囉！ 不能在外面做， 因為實驗過了數值還是不一樣～
+            ### 跑 Matlab 的 SSIM / LD
             ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
             os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
             [SSIM, LD, vx, vy, d, im1, im2] = use_DewarpNet_eval(path_pred, path_gt)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
             os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
 
-            ### 轉gray 和 resize 後 最終用 哪兩張圖 來算 SSIM/LD 也存一份起來
-            img_pred_598400_path = self.metric_im1_pred_write_dir  + "/im_pred_epoch=%04i.jpg" % go_epoch
-            img_gt_598400_path   = self.metric_im2_gt_write_dir  + "/im_gt_epoch=%04i.jpg" % go_epoch
-            cv2.imwrite(img_pred_598400_path, (im2 * 255).astype(np.uint8))
-            cv2.imwrite(img_gt_598400_path  , (im1 * 255).astype(np.uint8))
+            # ### 轉gray 和 resize 後 最終用 哪兩張圖 來算 SSIM/LD 也存一份起來
+            # img_pred_598400_path = self.metric_im1_pred_write_dir  + "/im_pred_epoch=%04i.jpg" % go_epoch
+            # img_gt_598400_path   = self.metric_im2_gt_write_dir  + "/im_gt_epoch=%04i.jpg" % go_epoch
+            # cv2.imwrite(img_pred_598400_path, (im2 * 255).astype(np.uint8))
+            # cv2.imwrite(img_gt_598400_path  , (im1 * 255).astype(np.uint8))
+
+            ### 發現 test_126, test_127 的 gt 放反了
+            if( self.see_name == 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA/test_126' or self.see_name == 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA/test_127'):
+                Check_dir_exist_and_build(self.metric_rotate_write_dir)
+
+                rotate_img_pred_path = self.metric_rotate_write_dir + "/im1_pred_epoch=%04i.jpg" % go_epoch
+                rotate_img_gt_path   = self.metric_rotate_write_dir + "/im2_gt_epoch=%04i.jpg" % go_epoch
+
+                img_pred = cv2.imread(self.rec_read_paths[go_epoch])
+                img_gt   = cv2.imread(self.rec_hope_path)
+                # rotate_img_pred = cv2.rotate(img_pred, cv2.cv2.ROTATE_90_CLOCKWISE)
+                rotate_img_gt   = cv2.rotate(img_gt         , cv2.cv2.ROTATE_90_CLOCKWISE)
+                rotate_img_gt   = cv2.rotate(rotate_img_gt  , cv2.cv2.ROTATE_90_CLOCKWISE)
+                cv2.imwrite(rotate_img_pred_path, img_pred)
+                cv2.imwrite(rotate_img_gt_path  , rotate_img_gt  )
+
+                ### 跑 Matlab 的 SSIM / LD
+                ord_dir = os.getcwd()                                                                           ### step1 紀錄 目前的主程式資料夾
+                os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                                                ### step2 跳到 SIFTflow資料夾裡面
+                [rot_SSIM, rot_LD, rot_vx, rot_vy, rot_d, rot_im1, rot_im2] = use_DewarpNet_eval(rotate_img_pred_path, rotate_img_gt_path)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
+                os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
+
+                rot_im_pred_small_dir  = self.metric_rotate_write_dir + "/im1_pred"
+                rot_im_gt_small_dir    = self.metric_rotate_write_dir + "/im2_pred"
+                rot_ld_color_dir       = self.metric_rotate_write_dir + "/ld_color"
+                rot_ld_gray_dir        = self.metric_rotate_write_dir + "/ld_gray"
+                rot_ld_matplot_dir     = self.metric_rotate_write_dir + "/ld_matplot"
+                Check_dir_exist_and_build(rot_im_pred_small_dir  )
+                Check_dir_exist_and_build(rot_im_gt_small_dir    )
+                Check_dir_exist_and_build(rot_ld_color_dir       )
+                Check_dir_exist_and_build(rot_ld_gray_dir        )
+                Check_dir_exist_and_build(rot_ld_matplot_dir     )
+
+                rot_im_pred_small_path = rot_im_pred_small_dir + "/" + "im_pred_epoch=%04i.jpg" % go_epoch
+                rot_im_gt_small_path   = rot_im_gt_small_dir   + "/" + "im_gt_epoch=%04i.jpg" % go_epoch
+                rot_ld_color_path      = rot_ld_color_dir      + "/" + "ld_epoch=%04i.jpg" % go_epoch
+                rot_ld_gray_path       = rot_ld_gray_dir       + "/" + "ld_epoch=%04i.jpg" % go_epoch
+                rot_lds_path           = self.metric_rotate_write_dir + "/LDs"
+                rot_ssims_path         = self.metric_rotate_write_dir + "/SSIMs"
+
+
+                cv2.imwrite(rot_im_pred_small_path, (rot_im2 * 255).astype(np.uint8))
+                cv2.imwrite(rot_im_gt_small_path  , (rot_im1 * 255).astype(np.uint8))
+                ### 存 d 用的
+                rot_single_row_imgs = Matplot_single_row_imgs(
+                            imgs      =[rot_d],    ### 把要顯示的每張圖包成list
+                            img_titles=[],
+                            fig_title ="",   ### 圖上的大標題
+                            pure_img  =True,
+                            add_loss  =False,
+                            bgr2rgb   =False)
+                rot_single_row_imgs.Draw_img()
+                rot_single_row_imgs.Save_fig(rot_ld_matplot_dir, name="ld_epoch", epoch=go_epoch)
+                # plt.show()
+
+                ### 存 ld_visual
+                rot_ld_visual = method2(rot_vx, rot_vy, color_shift=3)  ### 因為等等是 直接用 cv2 直接寫，所以不用 bgr2rgb喔！
+
+                cv2.imwrite(rot_ld_color_path, rot_ld_visual)
+                cv2.imwrite(rot_ld_gray_path, rot_d.astype(np.uint8))
+
+                ### 存 LDs / SSIMs
+                np.save(rot_lds_path  , rot_LD)
+                np.save(rot_ssims_path, rot_SSIM)
+                with open(f"{self.metric_rotate_write_dir}/final_LD_SSIM.txt"  , "w") as f:
+                    f.write(f"final LD  :{rot_LD}\n")
+                    f.write(f"final SSIM:{rot_SSIM}")
 
             ### debug 部分， 確認 等等要算 SSIM/LD 的圖長怎樣
             # fig, ax = plt.subplots(nrows=1, ncols=2)
