@@ -526,7 +526,7 @@ def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None,
     ncols = 3
     fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(5 * ncols, 5 * nrows))
     ax[0].imshow(cv2.resize(dis_img, (w, h)))
-    ax[1].imshow(wc)
+    ax[1].imshow(wc[..., ::-1])
     ax[2].imshow(cv2.resize(rec_hope, (w, h)))
     ax[0].axis("off")
     ax[1].axis("off")
