@@ -582,6 +582,16 @@ class Experiment():
 
                     else:  ### 第二次後，先把np.array先讀出來append值後 再存進去
                         loss_npy_array = np.load(f"{loss_info_obj.logs_write_dir}/{loss_name}.npy", allow_pickle=True)  ### logs_read/write_dir 這較特別！因為這是在 "training 過程中執行的 read" ，  我們想read 的 npy_loss 在train中 是使用  logs_write_dir 來存， 所以就要去 logs_write_dir 來讀囉！ 所以這邊 np.load 裡面適用 logs_write_dir 是沒問題的！
+
+                        ### 用舊的實驗 做 train_reload
+                        if(len(loss_npy_array) < self.total_iters + 1):
+                            ### 新實驗的 ep_it 會比原本的 舊exp 大，新增一個 新的大容器， 把舊的 loss填進去
+                            temp_npy_array = np.array( [None] * (self.total_iters + 1))  ### 我最末尾還會在做一個， 頭 尾 都做 所以要 +1
+                            ### 把舊的 loss填進去
+                            for go_v, value in enumerate(loss_npy_array): temp_npy_array[go_v] = loss_npy_array[go_v]
+                            ### 新的容器 當 新的 loss_npy_array
+                            loss_npy_array = temp_npy_array
+
                         loss_npy_array[self.current_ex_it] = loss_value
                         np.save(loss_info_obj.logs_write_dir + "/" + loss_name, np.array(loss_npy_array))
                         # print(loss_npy_array)
