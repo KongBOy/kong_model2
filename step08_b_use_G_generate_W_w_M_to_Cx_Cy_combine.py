@@ -111,28 +111,6 @@ class W_w_M_to_Cx_Cy(Use_G_generate_Interface):
             # ax[1, 1].imshow(C_raw_pre[0, ..., 1])
             # fig.tight_layout()
             # plt.show()
-
-            ''' Sobel 部分 '''
-            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
-            loss_info_obj = self.exp_obj.loss_info_objs[0]
-            loss_fun_dict = loss_info_obj.loss_funs_dict
-            sob_objs = []
-            for loss_name, func_obj in loss_fun_dict.items():
-                if("sobel" in loss_name):
-                    sob_objs.append(func_obj)
-
-            ### 如果 gt_loss 沒有使用 sobel， 就自己建一個出來
-            if(len(sob_objs) == 0):
-                from step10_a1_loss import Sobel_MAE
-                sob_objs.append(Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True))
-
-            ### 把 所有的 model_out 套用上 相對應的 sobel
-            Cyx_raw_Gx, Cyx_raw_Gy = sob_objs[0].Calculate_sobel_edges(C_raw_pre)
-            Cy_raw_Gx = Cyx_raw_Gx[..., 1]
-            Cx_raw_Gx = Cyx_raw_Gx[..., 2]
-            Cy_raw_Gy = Cyx_raw_Gy[..., 1]
-            Cx_raw_Gy = Cyx_raw_Gy[..., 2]
-
         else:
             Cx_raw_pre, Cy_raw_pre = self.model_obj.generator(W_pre_W_M_pre, training=self.training)
             # ax[1, 0].imshow(Cy_raw_pre[0])
@@ -141,26 +119,57 @@ class W_w_M_to_Cx_Cy(Use_G_generate_Interface):
             # plt.show()
             C_raw_pre = np.concatenate([Cy_raw_pre, Cx_raw_pre], axis=-1)  ### tensor 會自動轉 numpy
 
-            ''' Sobel 部分 '''
-            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
-            sob_objs = []
+        ''' Sobel 部分 '''
+        ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+        sob_objs = []
+        sob_objs_len = len(sob_objs)
+        for go_l, loss_info_obj in enumerate(self.exp_obj.loss_info_objs):  ### 走訪   所有 loss_info_objs
+            loss_fun_dict = loss_info_obj.loss_funs_dict                    ### 把   目前的 loss_info_obj  的 loss_fun_dict 抓出來
+            for loss_name, func_obj in loss_fun_dict.items():               ### 走訪 目前的 loss_info_obj  的 當中的所有 loss
+                if("sobel" in loss_name): sob_objs.append(func_obj)         ### 如果 其中有使用到 sobel， 把它append 進去 sob_objs
+
+            ### 如果 gt_loss 沒有使用 sobel， 就自己建一個出來
+            if(sob_objs_len == len(sob_objs)):        ### 如果 sob_objs 的長度沒變， 代表 目前的loss_info_obj 當中的 gt_loss 沒有用 sobel
+                from step10_a1_loss import Sobel_MAE  ### 自己建一個
+                sob_objs.append(Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True))
+            ### 更新一下 目前的 sob_objs 的 長度
             sob_objs_len = len(sob_objs)
-            for go_l, loss_info_obj in enumerate(self.exp_obj.loss_info_objs):  ### 走訪   所有 loss_info_objs
-                loss_fun_dict = loss_info_obj.loss_funs_dict                    ### 把   目前的 loss_info_obj  的 loss_fun_dict 抓出來
-                for loss_name, func_obj in loss_fun_dict.items():               ### 走訪 目前的 loss_info_obj  的 當中的所有 loss
-                    if("sobel" in loss_name): sob_objs.append(func_obj)         ### 如果 其中有使用到 sobel， 把它append 進去 sob_objs
 
-                ### 如果 gt_loss 沒有使用 sobel， 就自己建一個出來
-                if(sob_objs_len == len(sob_objs)):        ### 如果 sob_objs 的長度沒變， 代表 目前的loss_info_obj 當中的 gt_loss 沒有用 sobel
-                    from step10_a1_loss import Sobel_MAE  ### 自己建一個
-                    sob_objs.append(Sobel_MAE(sobel_kernel_size=5, sobel_kernel_scale=1, stride=1, erose_M=True))
-                ### 更新一下 目前的 sob_objs 的 長度
-                sob_objs_len = len(sob_objs)
-
-            ### 把 所有的 model_out 套用上 相對應的 sobel
+        ### 把 所有的 model_out 套用上 相對應的 sobel
+        if(self.separate_out is False):
+            Cyx_raw_Gx, Cyx_raw_Gy = sob_objs[0].Calculate_sobel_edges(C_raw_pre)
+            Cy_raw_Gx = Cyx_raw_Gx[..., 1]
+            Cx_raw_Gx = Cyx_raw_Gx[..., 0]
+            Cy_raw_Gy = Cyx_raw_Gy[..., 1]
+            Cx_raw_Gy = Cyx_raw_Gy[..., 0]
+            if(self.focus):
+                Cxy_w_M_Gx, Cxy_w_M_Gy = sob_objs[0].Calculate_sobel_edges(C_raw_pre, Mask=Mgt_pre)
+                Cx_w_M_Gx = Cxy_w_M_Gx[..., 0]
+                Cy_w_M_Gx = Cxy_w_M_Gx[..., 1]
+                Cx_w_M_Gy = Cxy_w_M_Gy[..., 0]
+                Cy_w_M_Gy = Cxy_w_M_Gy[..., 1]
+        else:
             for go_sob, sob_obj in enumerate(sob_objs):
                 if(go_sob == 0): Cy_raw_Gx, Cy_raw_Gy = sob_obj.Calculate_sobel_edges(Cy_raw_pre)
                 if(go_sob == 1): Cx_raw_Gx, Cx_raw_Gy = sob_obj.Calculate_sobel_edges(Cx_raw_pre)
+                if(self.focus):
+                    ''' raw 乘完M 後 Sobel 部分 ，  這部分是只有 fucus is True 才需要 '''
+                    ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
+                    ### 把 所有的 model_out 套用上 相對應的 sobel
+                    for go_sob, sob_obj in enumerate(sob_objs):
+                        if(go_sob == 0): Cx_w_M_Gx, Cx_w_M_Gy = sob_obj.Calculate_sobel_edges(Cx_raw_pre, Mask=Mgt_pre)
+                        if(go_sob == 1): Cy_w_M_Gx, Cy_w_M_Gy = sob_obj.Calculate_sobel_edges(Cy_raw_pre, Mask=Mgt_pre)
+
+        Cy_raw_Gx = Cy_raw_Gx[0].numpy()
+        Cx_raw_Gx = Cx_raw_Gx[0].numpy()
+        Cy_raw_Gy = Cy_raw_Gy[0].numpy()
+        Cx_raw_Gy = Cx_raw_Gy[0].numpy()
+        if(self.focus):
+            Cx_w_M_Gx = Cx_w_M_Gx[0].numpy()
+            Cy_w_M_Gx = Cy_w_M_Gx[0].numpy()
+            Cx_w_M_Gy = Cx_w_M_Gy[0].numpy()
+            Cy_w_M_Gy = Cy_w_M_Gy[0].numpy()
+        ''' Sobel end '''''''''''''''''''''''''''''''''''''''
 
 
         ### 後處理 Output (C_raw_pre)
@@ -184,12 +193,6 @@ class W_w_M_to_Cx_Cy(Use_G_generate_Interface):
             F_raw_visual   = F_raw_visual   [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
             F_w_Mgt_visual = F_w_Mgt_visual [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
 
-            ''' raw 乘完M 後 Sobel 部分 ，  這部分是只有 fucus is True 才需要 '''
-            ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
-            ### 把 所有的 model_out 套用上 相對應的 sobel
-            for go_sob, sob_obj in enumerate(sob_objs):
-                if(go_sob == 0): Cy_w_M_Gx, Cy_w_M_Gy = sob_obj.Calculate_sobel_edges(Cy_raw_pre, Mask=Mgt_pre[:, :h, :w, :])
-                if(go_sob == 1): Cx_w_M_Gx, Cx_w_M_Gy = sob_obj.Calculate_sobel_edges(Cx_raw_pre, Mask=Mgt_pre[:, :h, :w, :])
 
         ### 視覺化 Output gt (Fgt)
         Fgt, Fgt_visual, Cxgt_visual, Cygt_visual = C_01_concat_with_M_to_F_and_get_F_visual(Cgt_01, Mgt)
@@ -362,10 +365,6 @@ class W_w_M_to_Cx_Cy(Use_G_generate_Interface):
 
                 ''' Sobel 部分 '''
                 ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
-                Cx_raw_Gx = Cx_raw_Gx[0].numpy()
-                Cx_raw_Gy = Cx_raw_Gy[0].numpy()
-                Cy_raw_Gx = Cy_raw_Gx[0].numpy()
-                Cy_raw_Gy = Cy_raw_Gy[0].numpy()
                 imgs       += [[Cx_raw_Gx, Cx_raw_Gy, Cy_raw_Gx, Cy_raw_Gy]]
                 img_titles += [["Cx_Gx"  , "Cx_Gy"  , "Cy_Gx"  , "Cy_Gy"  ]]
 
@@ -375,14 +374,6 @@ class W_w_M_to_Cx_Cy(Use_G_generate_Interface):
 
                 ''' Sobel 部分 '''
                 ### 也想看一下 model_out 丟進去 sobel 後的結果長什麼樣子
-                Cx_raw_Gx = Cx_raw_Gx[0].numpy()
-                Cx_raw_Gy = Cx_raw_Gy[0].numpy()
-                Cy_raw_Gx = Cy_raw_Gx[0].numpy()
-                Cy_raw_Gy = Cy_raw_Gy[0].numpy()
-                Cx_w_M_Gx = Cx_w_M_Gx[0].numpy()
-                Cx_w_M_Gy = Cx_w_M_Gy[0].numpy()
-                Cy_w_M_Gx = Cy_w_M_Gx[0].numpy()
-                Cy_w_M_Gy = Cy_w_M_Gy[0].numpy()
                 imgs       += [[ Cx_w_M_Gx ,  Cx_w_M_Gy ,  Cy_w_M_Gx ,  Cy_w_M_Gy ]]
                 imgs       += [[ Cx_raw_Gx ,  Cx_raw_Gy ,  Cy_raw_Gx ,  Cy_raw_Gy ]]
                 img_titles += [["Cx_w_M_Gx", "Cx_w_M_Gy", "Cy_w_M_Gx", "Cy_w_M_Gy"]]

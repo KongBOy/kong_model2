@@ -113,7 +113,7 @@ class I_w_M_to_W(Use_G_generate_Interface):
             Wy_raw_Gy = Wzyx_raw_Gy[..., 1]
             Wx_raw_Gy = Wzyx_raw_Gy[..., 2]
             if(self.focus):
-                Wzyx_w_M_Gx, Wzyx_w_M_Gy = sob_objs[0].Calculate_sobel_edges(W_raw_pre)
+                Wzyx_w_M_Gx, Wzyx_w_M_Gy = sob_objs[0].Calculate_sobel_edges(W_raw_pre, Mask=Mgt_pre)
                 Wz_w_M_Gx = Wzyx_w_M_Gx[..., 0]
                 Wy_w_M_Gx = Wzyx_w_M_Gx[..., 1]
                 Wx_w_M_Gx = Wzyx_w_M_Gx[..., 2]

@@ -154,30 +154,30 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
         if(self.separate_out is False):
             for go_sob, sob_obj in enumerate(sob_objs):
                 if(go_sob == 0): Wzyx_raw_Gx, Wzyx_raw_Gy = sob_obj.Calculate_sobel_edges(W_pre_raw)
-                if(go_sob == 1): Cyx_raw_Gx , Cyx_raw_Gy  = sob_obj.Calculate_sobel_edges(C_pre_raw)
+                if(go_sob == 1): Cxy_raw_Gx , Cxy_raw_Gy  = sob_obj.Calculate_sobel_edges(C_pre_raw)
             Wz_raw_Gx = Wzyx_raw_Gx[..., 0]
             Wy_raw_Gx = Wzyx_raw_Gx[..., 1]
             Wx_raw_Gx = Wzyx_raw_Gx[..., 2]
             Wz_raw_Gy = Wzyx_raw_Gy[..., 0]
             Wy_raw_Gy = Wzyx_raw_Gy[..., 1]
             Wx_raw_Gy = Wzyx_raw_Gy[..., 2]
-            Cy_raw_Gx = Cyx_raw_Gx [..., 0]
-            Cx_raw_Gx = Cyx_raw_Gx [..., 1]
-            Cy_raw_Gy = Cyx_raw_Gy [..., 0]
-            Cx_raw_Gy = Cyx_raw_Gy [..., 1]
+            Cy_raw_Gx = Cxy_raw_Gx [..., 1]
+            Cx_raw_Gx = Cxy_raw_Gx [..., 0]
+            Cy_raw_Gy = Cxy_raw_Gy [..., 1]
+            Cx_raw_Gy = Cxy_raw_Gy [..., 0]
             if(self.focus):
                 if(go_sob == 0): Wzyx_w_M_Gx, Wzyx_w_M_Gy = sob_obj.Calculate_sobel_edges(W_pre_raw, Mask=used_M[np.newaxis, ...])
-                if(go_sob == 1): Cyx_w_M_Gx , Cyx_w_M_Gy  = sob_obj.Calculate_sobel_edges(C_pre_raw, Mask=used_M[np.newaxis, ...])
+                if(go_sob == 1): Cxy_w_M_Gx , Cxy_w_M_Gy  = sob_obj.Calculate_sobel_edges(C_pre_raw, Mask=used_M[np.newaxis, ...])
                 Wz_w_M_Gx = Wzyx_w_M_Gx[..., 0]
                 Wy_w_M_Gx = Wzyx_w_M_Gx[..., 1]
                 Wx_w_M_Gx = Wzyx_w_M_Gx[..., 2]
                 Wz_w_M_Gy = Wzyx_w_M_Gy[..., 0]
                 Wy_w_M_Gy = Wzyx_w_M_Gy[..., 1]
                 Wx_w_M_Gy = Wzyx_w_M_Gy[..., 2]
-                Cy_w_M_Gx = Cyx_w_M_Gx [..., 0]
-                Cx_w_M_Gx = Cyx_w_M_Gx [..., 1]
-                Cy_w_M_Gy = Cyx_w_M_Gy [..., 0]
-                Cx_w_M_Gy = Cyx_w_M_Gy [..., 1]
+                Cy_w_M_Gx = Cxy_w_M_Gx [..., 1]
+                Cx_w_M_Gx = Cxy_w_M_Gx [..., 0]
+                Cy_w_M_Gy = Cxy_w_M_Gy [..., 1]
+                Cx_w_M_Gy = Cxy_w_M_Gy [..., 0]
         else:
             for go_sob, sob_obj in enumerate(sob_objs):
                 if(go_sob == 0): Wz_raw_Gx, Wz_raw_Gy = sob_obj.Calculate_sobel_edges(Wz_pre_raw)
