@@ -37,5 +37,6 @@ import subprocess as sb
 ### 一起訓練
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep002  .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_Sob_k09_Mae_ep001__ep002  .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_less_Sob_k09_Mae_ep001__ep002  .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep002  .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_Sob_k09_Mae_ep001__ep002  .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
