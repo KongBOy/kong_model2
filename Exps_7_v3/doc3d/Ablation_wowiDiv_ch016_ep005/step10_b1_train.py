@@ -25,9 +25,11 @@ from step10_c_exp_command import *
 ######################################################################################################################
 import subprocess as sb
 
+
 ### I_w_M_to_C_woDiv/wiDiv
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5_2blk__wiDiv__Mae_s001_Sob_k09_s001                         .{train}"])
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5_2blk__woDiv__Mae_s001_Sob_k09_s001                         .{train}"])
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5_2blk__woDiv_less__Mae_s001_Sob_k09_s001                         .{train}"])
 ### W_w_M_to_C_woDiv/wiDiv
 # sb.run(cmd_python_step10_a + [f"W_w_M_to_C__ch016_L5_2blk__wiDiv__Mae_s001_Sob_k09_s001                         .{train}"])
 # sb.run(cmd_python_step10_a + [f"W_w_M_to_C__ch016_L5_2blk__woDiv__Mae_s001_Sob_k09_s001                         .{train}"])
@@ -37,3 +39,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_Sob_k09_Mae_ep001__ep002 .{train}"])
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep002 .{train}"])
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_Sob_k09_Mae_ep001__ep002 .{train}"])
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_less_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep002 .{train}"])
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_less_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_Sob_k09_Mae_ep001__ep002 .{train}"])
+
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep002 .{train}"])
