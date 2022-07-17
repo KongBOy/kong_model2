@@ -37,6 +37,9 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"p20_L5_wiDiv_Sob_k15_Mae__Sob_k09_Mae             .{train}"])
 # sb.run(cmd_python_step10_a + [f"p20_L5_wiDiv_Sob_k25_Mae__Sob_k09_Mae             .{train}"])
 # sb.run(cmd_python_step10_a + [f"p20_L5_wiDiv_Sob_k35_Mae__Sob_k09_Mae             .{train}"])
+
+# sb.run(cmd_python_step10_a + [f"p20_L5_wiDiv_1s6_2s5__1s6_2s6_Sob_k09_Mae__Sob_k09_Mae .{train}"])
+
 ### 3UNet
 # sb.run(cmd_python_step10_a + [f"p20_L5_3UNet_Sob_k03_Mae__Sob_k09_Mae      .{train}"])
 # sb.run(cmd_python_step10_a + [f"p20_L5_3UNet_Sob_k05_Mae__Sob_k09_Mae      .{train}"])
