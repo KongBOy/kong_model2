@@ -34,8 +34,21 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"W_w_M_to_C__ch016_L5_2blk__woDiv__Mae_s001_Sob_k09_s001                         .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 
 ### 一起訓練
+### wiDiv wiDiv
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep002  .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_1s5_2s4_3s3_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_1s6_2s5_Sob_k09_Mae_ep001__ep002  .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_1s5_2s4_3s3_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep002  .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+##### wiDiv 3UNet
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep002  .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+### wiDiv woDiv
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_Sob_k09_Mae_ep001__ep002  .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_less_Sob_k09_Mae_ep001__ep002  .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+### woDiv wiDiv
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep002  .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_less_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep002 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+### woDiv woDiv
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_Sob_k09_Mae_ep001__ep002  .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_less_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_Sob_k09_Mae_ep001__ep002 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woDiv_less_Sob_k09_Mae_ep001__W_w_M_to_C_woDiv_less_Sob_k09_Mae_ep001__ep002 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])

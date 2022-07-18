@@ -86,3 +86,7 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k11_Tv_s001__MaeSob_k05_EroM         .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroM__MaeSob_k05_EroM    .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"p20_wiColorJ_L5_MaeSob_k11_Tv_s001_EroMore__MaeSob_k05_EroM .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+#################################
+### good
+# sb.run(cmd_python_step10_a + [f"good_p20_wiColorJ_L5_MaeSob_k09__MaeSob_k09                      .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"good_p20_wiColorJ_L5_MaeSob_k09__MaeSob_k03                      .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
