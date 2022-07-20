@@ -323,8 +323,8 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
             bm_visual = (bm_visual * 255).astype(np.uint8)
             cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-bm.jpg", bm_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
-            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_raw_visual.jpg" , W_visual_like_DewarpNet(W_raw_visual))
-            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_w_M_visual.jpg" , W_visual_like_DewarpNet(W_w_M_visual))
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_raw_visual.jpg" , W_visual_like_DewarpNet(W_raw_visual, used_M))
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_w_M_visual.jpg" , W_visual_like_DewarpNet(W_w_M_visual, used_M))
 
             '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
             # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img_pre_croped_resized_visual, F=Fgt)
