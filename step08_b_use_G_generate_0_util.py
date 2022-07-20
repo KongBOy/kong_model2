@@ -90,6 +90,14 @@ def W_01_and_W_01_w_M_to_WM_and_visualize(W_raw, M, out_ch3=False):
     W_w_M_c_M, W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual = W_01_concat_with_M_to_WM_and_get_W_visual(W_w_M, M, out_ch3=out_ch3)
     return W_raw_c_M, W_raw_visual, Wx_raw_visual, Wy_raw_visual, Wz_raw_visual, W_w_M_c_M, W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual
 
+def W_visual_like_DewarpNet(W, M):
+    '''
+    x 是 往左遞增
+    W 可以是 W_01 或 W_visual
+    '''
+    W_DewarpNet = W.copy()
+    W_DewarpNet[..., 2:3] = W_DewarpNet.max() - W_DewarpNet[..., 2:3] * M  ### W_DewarpNet.max() 會自動判斷 W_01 或 W_visual 要用 1 或 255
+    return W_DewarpNet
 ######################################################################################################################################################################################################
 ######################################################################################################################################################################################################
 class Tight_crop():
@@ -516,9 +524,13 @@ def wc_save_as_knpy(wc, wc_type, dst_dir, fname, pad_size=20, first_resize=None,
         Wy = wc[..., 2:3]
 
     ### wc_post 統一轉成 Wzyx
-
+    Mask = ((Wz > 0.0) & (Wy > 0.0) & (Wx > 0.0)).astype(np.uint8)
+    # Mask = np.where(Mask > 0.95, 1, 0)
+    Mask = cv2.erode(Mask, np.ones((3,3), np.uint8), iterations = 2)
+    Mask = Mask[..., np.newaxis]
+    Wx = (1 - Wx) * Mask
+    Wx = np.clip(Wx, 0, 1)
     wc   = np.concatenate([Wz, Wy, Wx], axis=-1)
-    Mask = ((wc[..., 0:1] > 0) & (wc[..., 1:2] > 0) & (wc[..., 2:3] > 0)).astype(np.uint8)
     wc_min = np.array([zmin, ymin, xmin]).reshape(1, 1, 3)
     wc_max = np.array([zmax, ymax, xmax]).reshape(1, 1, 3)
 

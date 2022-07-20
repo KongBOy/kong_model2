@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 from step0_access_path import kong_model2_dir
-from step08_b_use_G_generate_0_util import Use_G_generate_Interface, Value_Range_Postprocess_to_01, WcM_01_visual_op, W_01_and_W_01_w_M_to_WM_and_visualize, C_01_and_C_01_w_M_to_F_and_visualize, C_01_concat_with_M_to_F_and_get_F_visual
+from step08_b_use_G_generate_0_util import Use_G_generate_Interface, Value_Range_Postprocess_to_01, WcM_01_visual_op, W_01_and_W_01_w_M_to_WM_and_visualize, C_01_and_C_01_w_M_to_F_and_visualize, C_01_concat_with_M_to_F_and_get_F_visual, W_visual_like_DewarpNet
 from kong_util.flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 from kong_util.util import method2
@@ -323,12 +323,8 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
             bm_visual = (bm_visual * 255).astype(np.uint8)
             cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-bm.jpg", bm_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
-            ppt_W_raw_visual = W_raw_visual.copy()
-            ppt_W_raw_visual[..., 2:3] = 1 - ppt_W_raw_visual[..., 2:3] * used_M
-            ppt_W_w_M_visual = W_w_M_visual.copy()
-            ppt_W_w_M_visual[..., 2:3] = 1 - ppt_W_w_M_visual[..., 2:3] * used_M
-            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_raw_visual.jpg" , ppt_W_raw_visual)
-            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_w_M_visual.jpg" , ppt_W_w_M_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_raw_visual.jpg" , W_visual_like_DewarpNet(W_raw_visual))
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_w_M_visual.jpg" , W_visual_like_DewarpNet(W_w_M_visual))
 
             '''gt不能做bm_rec，因為 real_photo 沒有 C！ 所以雖然用 test_blender可以跑， 但 test_real_photo 會卡住， 因為 C 全黑！'''
             # gt_bm, gt_rec = check_F_quality_then_I_w_F_to_R(dis_img=dis_img_pre_croped_resized_visual, F=Fgt)
