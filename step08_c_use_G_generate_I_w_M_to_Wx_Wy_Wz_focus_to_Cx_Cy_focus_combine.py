@@ -324,9 +324,9 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
             cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-bm.jpg", bm_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
             ppt_W_raw_visual = W_raw_visual.copy()
-            ppt_W_raw_visual[..., 2] = 1 - ppt_W_raw_visual[..., 2] * used_M
+            ppt_W_raw_visual[..., 2:3] = 1 - ppt_W_raw_visual[..., 2:3] * used_M
             ppt_W_w_M_visual = W_w_M_visual.copy()
-            ppt_W_w_M_visual[..., 2] = 1 - ppt_W_w_M_visual[..., 2] * used_M
+            ppt_W_w_M_visual[..., 2:3] = 1 - ppt_W_w_M_visual[..., 2:3] * used_M
             cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_raw_visual.jpg" , ppt_W_raw_visual)
             cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u3_ppt-W_w_M_visual.jpg" , ppt_W_w_M_visual)
 
