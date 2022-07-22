@@ -37,8 +37,7 @@ comb_change_I_w_M_to_W__fix_W_w_M_t_C__Div_3UNet_analyze = [
 ]
 
 comb_change_I_w_M_to_W__fix_W_w_M_t_C__Div_3UNet_analyze2 = [
-    ### woDIv
-    [p20_L5_woDiv_Sob_k03_Mae__Sob_k05_Mae, p20_L5_woDiv_Sob_k05_Mae__Sob_k05_Mae, p20_L5_woDiv_Sob_k09_Mae__Sob_k05_Mae, p20_L5_woDiv_Sob_k11_Mae__Sob_k05_Mae, ] ,
+    [Google_down                          , empty                                , empty                                , empty                                , ] ,
     ### wiDIv
     [p20_L5_wiDiv_Sob_k03_Mae__Sob_k05_Mae, p20_L5_wiDiv_Sob_k05_Mae__Sob_k05_Mae, p20_L5_wiDiv_Sob_k09_Mae__Sob_k05_Mae, p20_L5_wiDiv_Sob_k11_Mae__Sob_k05_Mae, ] ,
     ### 3UNet
