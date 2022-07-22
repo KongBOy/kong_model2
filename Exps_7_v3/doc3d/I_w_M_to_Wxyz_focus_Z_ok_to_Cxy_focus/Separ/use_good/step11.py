@@ -21,25 +21,11 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
 from step10_a import *
-from Exps_7_v3.doc3d.DewarpNet_result.step10_a import Model_run, Google_down
+from Exps_7_v3.doc3d.DewarpNet_result.step10_a import Model_run, Google_down, Recti_run
 #################################################################################################################################################################################################################################################################################################################################################################################################
 #################################
-##### 前fix 後change
-### 分析 Div_3UNet_analyze
 
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__Div_3UNet_analyze = [
-    ### woDIv
-    [p20_L5_woDiv_Sob_k05_Mae__Sob_k05_Mae, p20_L5_woDiv_Sob_k15_Mae__Sob_k05_Mae, p20_L5_woDiv_Sob_k25_Mae__Sob_k05_Mae, p20_L5_woDiv_Sob_k35_Mae__Sob_k05_Mae, ] ,
-    ### wiDIv
-    [p20_L5_wiDiv_Sob_k05_Mae__Sob_k05_Mae, p20_L5_wiDiv_Sob_k15_Mae__Sob_k05_Mae, p20_L5_wiDiv_Sob_k25_Mae__Sob_k05_Mae, p20_L5_wiDiv_Sob_k35_Mae__Sob_k05_Mae, ] ,
-    ### 3UNet
-    [p20_L5_3UNet_Sob_k05_Mae__Sob_k05_Mae, p20_L5_3UNet_Sob_k15_Mae__Sob_k05_Mae, p20_L5_3UNet_Sob_k25_Mae__Sob_k05_Mae, p20_L5_3UNet_Sob_k35_Mae__Sob_k05_Mae, ] ,
-]
-
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__Div_3UNet_analyze2 = [
-    [Google_down                          , empty                                , empty                                , empty                                , ] ,
-    ### wiDIv
-    [p20_L5_wiDiv_Sob_k03_Mae__Sob_k05_Mae, p20_L5_wiDiv_Sob_k05_Mae__Sob_k05_Mae, p20_L5_wiDiv_Sob_k09_Mae__Sob_k05_Mae, p20_L5_wiDiv_Sob_k11_Mae__Sob_k05_Mae, ] ,
-    ### 3UNet
-    [p20_L5_3UNet_Sob_k03_Mae__Sob_k05_Mae, p20_L5_3UNet_Sob_k05_Mae__Sob_k05_Mae, p20_L5_3UNet_Sob_k09_Mae__Sob_k05_Mae, p20_L5_3UNet_Sob_k11_Mae__Sob_k05_Mae, ] ,
+ppt = [
+    [Google_down                          , Recti_run                                , p20_L5_wiDiv_Sob_k09_Mae__Sob_k09_Mae_gather_ep002                      , ] ,
+    [Google_down                          , Recti_run                                , p20_L5_wiDiv_Sob_k09_Mae__Sob_k09_Mae_gather_ep002                      , ] ,
 ]
