@@ -134,7 +134,7 @@ class Exp_builder():
             print("這是empty 填空的exp， 所以不 Auto_fill_result_name， 直接跳過不做事")
             return
         if( self.exp.result_name != ""):
-            print("有自己手動指定result_name， 就以自己指定的為主， 就不執行Auto_fill_result_name囉， 直接跳過不做事")
+            print(f"有自己手動指定result_name:{self.exp.result_name}， 就以自己指定的為主， 就不執行Auto_fill_result_name囉， 直接跳過不做事")
             return
 
         print("Auto_fill_result_name_Read start")
