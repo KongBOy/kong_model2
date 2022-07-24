@@ -508,7 +508,7 @@ class Row_col_results_analyzer(Result_analyzer):
 
         return r_c_imgs
 
-    ### 走訪所有results， 一旦發現有 in_img_path 就可以break囉！ 
+    ### 走訪所有results， 一旦發現有 in_img_path 就可以break囉！
     def _get_in_img_or_gt_img(self, see_num, get_what):
         for row_exps_results in self.r_c_exps_objs:
             img = row_exps_results._get_in_img_or_gt_img(see_num, get_what)
@@ -605,7 +605,6 @@ class Row_col_results_analyzer(Result_analyzer):
         return self
 
     def analyze_row_col_result_SSIM_LD(self):
-        from distutils.dir_util import copy_tree
         ''' exp 要先執行完 Gather_test_SSIM_LD 來產生完 LD/SSIM_tboard 後才可以執行這個 funtion 來蒐集 各個 exp_obj 的 LD/SSIM_tboard 喔！ '''
         print(f"{self.ana_describe} doing Row_Col_results_analyze SSIM_LD")
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "start SSIM_LD")
@@ -747,7 +746,8 @@ class Bm_Rec_exps_analyze(Result_analyzer):
 
 
 if(__name__ == "__main__"):
-    from step11_c_exp_grouping import  *
+    print("hello world")
+    # from step11_c_exp_grouping import  *
 
     # ana_title = "05_14-bm_rec-"
     # Bm_Rec_exps_analyze(ana_title + "0_1-epoch_old_shuf_exps",     epoch_old_shuf_exps)    .all_single_see_final_rec_analyze().analyze_tensorboard()
