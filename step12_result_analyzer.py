@@ -52,6 +52,7 @@ class Result_analyzer:
         wy
         wz
         w3d
+        ld_color
         '''
         self.show_in_img = show_in_img
         self.show_gt_img = show_gt_img
@@ -109,11 +110,30 @@ class Result_analyzer:
         return self
 
     ########################################################################################################################################
-    def _step0_c_results_get_see_base_info(self, c_results):
+########################################################################################################################################
+########################################################################################################################################
+class Col_exps_results_analyzer(Result_analyzer):
+    def __init__(self, ana_describe, ana_what_sees, ana_what, col_exps, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None, reset_test_db_name=None):
+        super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
+        self.c_exps    = col_exps
+        self.c_results = []     ### 會用 _c_exps_results_init 轉成 result
+        self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
+        self.c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_max_trained_epoch()去抓
+        self._c_exps_results_init(reset_test_db_name)
+        print("Col_exps_results_analyzer build finish")
+
+        self.jump_to = jump_to
+
+    def _c_exps_results_init(self, reset_test_db_name=None):
+        for go_data, data in enumerate(self.c_exps):
+            self.c_exps   [go_data] = data.build(reset_test_db_name=reset_test_db_name)
+            self.c_results.append(self.c_exps[go_data].result_obj)
+
+    def _step0_c_results_get_see_base_info(self):
         """
         update 一下 所有 result 的 sees， 這裡是 c_results 的所有 results
         """
-        for result in c_results:
+        for result in self.c_results:
             if  (self.ana_what_sees == "see"):  used_sees = result.sees
             elif(self.ana_what_sees == "test"): used_sees = result.tests
 
@@ -131,36 +151,11 @@ class Result_analyzer:
                 elif(self.ana_what.lower() == "wy"):   see.get_wc_info()
                 elif(self.ana_what.lower() == "wz"):   see.get_wc_info()
                 elif(self.ana_what.lower() == "w3d"):  see.get_wc_info()
-
-    def _step0_r_c_results_get_see_base_info(self, r_c_results):
-        """
-        update 一下 所有 result 的 sees， 這裡是 r_c_results 的所有 results， 會 一個個 r 去呼叫 _step0_c_results_get_see_base_info 來 處理 c_results 的 sees 喔！
-        """
-        for c_results in r_c_results:
-            self._step0_c_results_get_see_base_info(c_results)
-########################################################################################################################################
-########################################################################################################################################
-class Col_results_analyzer(Result_analyzer):
-    def __init__(self, ana_describe, ana_what_sees, ana_what, col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None, reset_test_db_name=None):
-        super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
-
-        self.c_results = col_results
-        self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
-        self.c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_max_trained_epoch()去抓
-        self.check_exp_builder_change_to_result(reset_test_db_name)
-        print("Col_results_analyzer build finish")
-        
-        self.jump_to = jump_to
-
-    def check_exp_builder_change_to_result(self, reset_test_db_name=None):
-        from step10_b2_exp_builder import Exp_builder
-        for go_data, data in enumerate(self.c_results):
-            if(type(data) == type(Exp_builder())):
-                self.c_results[go_data] = data.build(reset_test_db_name=reset_test_db_name).result_obj
+                elif(self.ana_what.lower() == "ld_color"):  see.get_metric_info()
 
     def _step0_get_c_trained_epochs(self):
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
-        self._step0_c_results_get_see_base_info(self.c_results)
+        self._step0_c_results_get_see_base_info()
 
         trained_epochs = []
         for result in self.c_results:
@@ -211,6 +206,7 @@ class Col_results_analyzer(Result_analyzer):
                 elif(self.ana_what.lower() == "wy"):   c_imgs.append(cv2.imread(used_sees[see_num].wy_read_paths[use_epoch]))
                 elif(self.ana_what.lower() == "wz"):   c_imgs.append(cv2.imread(used_sees[see_num].wz_read_paths[use_epoch]))
                 elif(self.ana_what.lower() == "w3d"):  c_imgs.append(cv2.imread(used_sees[see_num].WM_3D_epoch_read_path[use_epoch]))
+                elif(self.ana_what.lower() == "ld_color"):  c_imgs.append(cv2.imread(used_sees[see_num].ld_color_visual_read_path[use_epoch]))
 
                 # c_imgs.append(cv2.imread(used_sees[see_num].see_jpg_paths[epoch + 2]))
         return c_imgs
@@ -274,6 +270,24 @@ class Col_results_analyzer(Result_analyzer):
         from kong_util.multiprocess_util import multi_processing_interface
         multi_processing_interface(core_amount=core_amount, task_amount=task_amount, task=self._Draw_col_results_single_see_, task_args=[see_num, in_img, gt_img, c_titles, analyze_see_private_write_dir], print_msg=print_msg)
 
+    ### 走訪所有results， 一旦發現有 可以抓的到圖的 img_path 就可以break囉！
+    def _get_in_img_or_gt_img(self, see_num, get_what):
+        path = None
+        img = None
+        for result in self.c_results:
+            if  (self.ana_what_sees == "see" ):
+                if  (get_what == "in_img"): path = result.sees [see_num].in_img_path
+                elif(get_what == "gt_img"): path = result.sees [see_num].gt_img_path
+            elif(self.ana_what_sees == "test"):
+                if  (get_what == "in_img"): path = result.tests [see_num].in_img_path
+                elif(get_what == "gt_img"): path = result.tests [see_num].gt_img_path
+
+            if(os.path.isfile(path)):
+                img = cv2.imread(path)
+                return img
+        print(f"目前的 see_num{see_num} 沒有找到任何的 {get_what}, img 回傳 None")
+        return img
+
     def analyze_col_results_single_see(self, see_num, single_see_multiprocess=True, single_see_core_amount=8, print_msg=False):  ### single_see_multiprocess 預設是true，然後要記得在大任務multiprocess時，傳參數時這要設為false
         print(f"{self.ana_describe} doing analyze_col_results_single_see, single_see_multiprocess:{single_see_multiprocess}, single_see_core_amount:{single_see_core_amount}, doing see_num:{see_num}")
         print(f"analyze_write_dir: {self.analyze_write_dir}")
@@ -289,15 +303,22 @@ class Col_results_analyzer(Result_analyzer):
 
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！ 並且抓出各result的trained_epochs
-        self._step0_c_results_get_see_base_info(self.c_results)
+        self._step0_c_results_get_see_base_info()
         self.step0_get_c_min_trained_epoch()
         self.step0_get_c_max_trained_epoch()
 
         ### 抓 in/gt imgs， 因為 同個see 內所有epoch 的 in/gt 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see_ 的外面 ，然後再用 參數傳入
         in_img = None
         gt_img = None
-        if(self.show_in_img): in_img = cv2.imread(used_sees[see_num].in_img_path)
-        if(self.show_gt_img): gt_img = cv2.imread(used_sees[see_num].gt_flow_jpg_path)
+        if(self.show_in_img is True): in_img = self._get_in_img_or_gt_img(see_num=see_num, get_what="in_img")
+        if(self.show_gt_img is True): gt_img = self._get_in_img_or_gt_img(see_num=see_num, get_what="gt_img")
+
+        if(in_img is None and self.show_in_img is True):
+            print("所有的result 都沒有 in_img， 自動把 self.show_in_img 關掉")
+            self.show_in_img = False
+        if(gt_img is None and self.show_gt_img is True):
+            print("所有的result 都沒有 gt_img， 自動把 self.show_gt_img 關掉")
+            self.show_gt_img = False
 
         ### 抓 要顯示的 titles， 同上理， 每個epochs 的 c_title 都一樣， 只需要欻一次， 所以寫在 _Draw_col_results_single_see_ 的外面 ，然後再用 參數傳入
         c_titles = self.step1_get_c_titles()
@@ -411,7 +432,7 @@ class Col_results_analyzer(Result_analyzer):
     #     print(f"save to {analyze_see_private_write_dir}")
 
     #     ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
-    #     self._step0_c_results_get_see_base_info(self.c_results)
+    #     self._step0_c_results_get_see_base_info()
 
     #     ### 抓 各row的in/gt imgs
     #     in_imgs = []
@@ -442,66 +463,56 @@ class Col_results_analyzer(Result_analyzer):
 
 ### 目前小任務還沒有切multiprocess喔！
 class Row_col_results_analyzer(Result_analyzer):
-    def __init__(self, ana_describe, ana_what_sees, ana_what, row_col_results, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None, reset_test_db_name="None"):
+    def __init__(self, ana_describe, ana_what_sees, ana_what, row_col_exps, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None, reset_test_db_name="None"):
         super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
-        self.r_c_results = row_col_results
         self.r_c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_min_trained_epoch()去抓
         self.r_c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_max_trained_epoch()去抓
 
-        self.c_results_list = []
-        for c_results in row_col_results:
-            self.c_results_list.append(Col_results_analyzer(ana_describe=ana_describe, ana_what_sees=ana_what_sees, ana_what=ana_what, col_results=c_results, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss, img_h=img_h, img_w=img_w, reset_test_db_name=reset_test_db_name))
+        self.c_exps_results_list = []
+        for c_exps in row_col_exps:
+            self.c_exps_results_list.append(Col_exps_results_analyzer(ana_describe=ana_describe, ana_what_sees=ana_what_sees, ana_what=ana_what, col_exps=c_exps, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss, img_h=img_h, img_w=img_w, reset_test_db_name=reset_test_db_name))
         print("Row_col_results_analyzer build finish")
 
         self.jump_to = jump_to
 
-    def _step0_get_r_c_trained_epochs(self):
-        ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！
-        self._step0_r_c_results_get_see_base_info(self.r_c_results)
+    def _step0_r_c_results_get_see_base_info(self):
+        """
+        update 一下 所有 result 的 sees
+        """
+        for row_exps_results in self.c_exps_results_list:
+            row_exps_results._step0_c_results_get_see_base_info()
 
-        trained_epochs = []
-        for row_results in self.r_c_results:
-            for result in row_results:
-                if  (self.ana_what_sees == "see"):  used_sees = result.sees
-                elif(self.ana_what_sees == "test"): used_sees = result.tests
-                # print(f"{result.result_name}/{used_sees[0].see_name}:", "trained_epoch=", used_sees[0].trained_epoch)
-                trained_epochs.append(used_sees[0].trained_epoch)   ### 再把 sees[0]的 trained_epoch 抓出來
+    def _step0_get_r_c_trained_epochs(self):
+        trained_epochs = np.array([])
+        for row_exps_results in self.c_exps_results_list:
+            trained_epochs = np.append( trained_epochs, row_exps_results._step0_get_c_trained_epochs() )
         return trained_epochs
 
-    def step0_get_r_c_min_trained_epoch(self): self.r_c_min_trained_epoch = min(self._step0_get_r_c_trained_epochs())
-    def step0_get_r_c_max_trained_epoch(self): self.r_c_max_trained_epoch = max(self._step0_get_r_c_trained_epochs())
+    def step0_get_r_c_min_trained_epoch(self): self.r_c_min_trained_epoch = int(self._step0_get_r_c_trained_epochs().min())
+    def step0_get_r_c_max_trained_epoch(self): self.r_c_max_trained_epoch = int(self._step0_get_r_c_trained_epochs().max())
 
     def step1_get_r_c_titles(self):
         r_c_titles = []  ### r_c_titles 抓出所有要顯示的標題 ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
-        for c_results in self.c_results_list:
+        for c_results in self.c_exps_results_list:
             r_c_titles.append(c_results.step1_get_c_titles())
 
         return r_c_titles
 
     def step2b_get_r_c_imgs(self, see_num, epoch, in_img, gt_img):
         r_c_imgs   = []  ### r_c_imgs   抓出所要要顯示的圖   ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
-        for c_results in self.c_results_list:
+        for c_results in self.c_exps_results_list:
             r_c_imgs.append(c_results.step2b_get_c_results_imgs_and_attach_in_gt(see_num, epoch, in_img, gt_img))
 
         return r_c_imgs
 
+    ### 走訪所有results， 一旦發現有 in_img_path 就可以break囉！ 
     def _get_in_img_or_gt_img(self, see_num, get_what):
-        path = None
-        ### 走訪所有results， 一旦發現有 in_img_path 就可以break囉！ 
-        for c_results in self.r_c_results:
-            for result in c_results:
-                if  (self.ana_what_sees == "see" ):
-                    if  (get_what == "in_img"): path = result.sees [see_num].in_img_path
-                    elif(get_what == "gt_img"): path = result.sees [see_num].gt_img_path
-                elif(self.ana_what_sees == "test"):
-                    if  (get_what == "in_img"): path = result.tests [see_num].in_img_path
-                    elif(get_what == "gt_img"): path = result.tests [see_num].gt_img_path
-                if(path is not None): break
-            if(path is not None): break
-
-        if(path is None): img = None  ### 如果 所有result 都沒有 指定的 img
-        else:             img = cv2.imread(path)
-        return img
+        for row_exps_results in self.c_exps_results_list:
+            img = row_exps_results._get_in_img_or_gt_img(see_num, get_what)
+            if(img is not None): return img
+        else:
+            print(f"目前的 see_num{see_num} 沒有找到任何的 {get_what}, img 回傳 None")
+            return img
 
     ########################################################################################################################################
     ### 各row各col 皆 不同result，但全部都看相同某個see；這analyzer不會有 multi_see 的method喔！因為row被拿去show不同的result了，就沒有空間給multi_see拉，所以參數就不用 single_see_multiprocess囉！
@@ -550,14 +561,14 @@ class Row_col_results_analyzer(Result_analyzer):
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: start single_see, Current See:{see_num}")
         print(f"analyze_write_dir: {self.analyze_write_dir}")
         start_time = time.time()
-        if  (self.ana_what_sees == "see"):  used_sees = self.r_c_results[0][0].sees
-        elif(self.ana_what_sees == "test"): used_sees = self.r_c_results[0][0].tests
+        if  (self.ana_what_sees == "see"):  used_sees = self.c_exps_results_list[0].c_results[0].sees
+        elif(self.ana_what_sees == "test"): used_sees = self.c_exps_results_list[0].c_results[0].tests
         analyze_see_private_read_dir  = self.analyze_read_dir  + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_private_write_dir)  ### 建立 存結果的資料夾
 
         ### 在使用 所有 result 前， 要記得先去 update 一下 他們的 sees 喔！ 並且抓出各result的trained_epochs
-        self._step0_r_c_results_get_see_base_info(self.r_c_results)
+        self._step0_r_c_results_get_see_base_info()
         self.step0_get_r_c_min_trained_epoch()
         self.step0_get_r_c_max_trained_epoch()
 
@@ -584,8 +595,8 @@ class Row_col_results_analyzer(Result_analyzer):
         return self
 
     def analyze_row_col_results_all_single_see(self, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
-        if  (self.ana_what_sees == "see"):  used_see_amount = self.r_c_results[0][0].see_amount
-        elif(self.ana_what_sees == "test"): used_see_amount = self.r_c_results[0][0].test_amount
+        if  (self.ana_what_sees == "see"):  used_see_amount = self.c_exps_results_list[0].c_results[0].see_amount
+        elif(self.ana_what_sees == "test"): used_see_amount = self.c_exps_results_list[0].c_results[0].test_amount
         for go_see in range(used_see_amount):
             self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         return self
@@ -597,8 +608,8 @@ class Row_col_results_analyzer(Result_analyzer):
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "start SSIM_LD")
         print(f"analyze_write_dir: {self.analyze_write_dir}")
 
-        if  (self.ana_what_sees == "see"):  used_sees = self.r_c_results[0][0].sees
-        elif(self.ana_what_sees == "test"): used_sees = self.r_c_results[0][0].tests
+        if  (self.ana_what_sees == "see"):  used_sees = self.c_exps_results_list[0].c_results[0].sees
+        elif(self.ana_what_sees == "test"): used_sees = self.c_exps_results_list[0].c_results[0].tests
         analyze_see_private_read_dir  = self.analyze_read_dir  + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[0].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[0].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         analyze_see_public_read_dir   = "/".join(analyze_see_private_read_dir .replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
@@ -607,12 +618,11 @@ class Row_col_results_analyzer(Result_analyzer):
 
         dst_write_dir = analyze_see_public_write_dir + "/" + "t"  ### 不要取太長的名字，要不燃 windows 長檔名問題會讓 tboard 讀不到資料
         dst_read_dir  = analyze_see_public_read_dir  + "/" + "t"  ### 不要取太長的名字，要不燃 windows 長檔名問題會讓 tboard 讀不到資料
-        for r_results in self.r_c_results:
-            for r_c_result in r_results:
-                if("畫空白的圖" not in r_c_result.test_read_dir):
-                    tboard_src_path = r_c_result.test_read_dir + "/" + "LD_SSIM_tboard"
-                    tboard_dst_path = dst_write_dir + "/" + r_c_result.ana_describe
-                    copy_tree(tboard_src_path, tboard_dst_path)
+        for row_exps_results in self.c_exps_results_list:
+            for exp in row_exps_results.c_exps:
+                if("畫空白的圖" not in exp.result_obj.test_read_dir):
+                    tboard_dst_path = dst_write_dir + "/" + exp.result_obj.ana_describe
+                    exp.Gather_test_SSIM_LD(another_dst_path = tboard_dst_path)
 
         if(dst_write_dir != dst_read_dir):
             Syn_write_to_read_dir(write_dir=dst_write_dir, read_dir=dst_read_dir, build_new_dir=False, copy_sub_dir=True, print_msg=True)
@@ -777,7 +787,7 @@ if(__name__ == "__main__"):
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ### Result_analyzer 的 各method測試：
-    # try_c_result_analyzer = Col_results_analyzer(ana_describe="try_c_result_analyzer", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20 ])
+    # try_c_result_analyzer = Col_exps_results_analyzer(ana_describe="try_c_result_analyzer", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20 ])
     # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=False)
     # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=True)
     # try_c_result_analyzer.analyze_col_results_all_single_see(add_loss=True)
@@ -792,52 +802,52 @@ if(__name__ == "__main__"):
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ########################################################################################################################################################################
-    # os_book_G_D_mae136 = Col_results_analyzer(ana_describe="5_1_GD_Gmae136_epoch700", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae3, os_book_rect_1532_mae6, os_book_rect_1532_mae6_noD]); doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
+    # os_book_G_D_mae136 = Col_exps_results_analyzer(ana_describe="5_1_GD_Gmae136_epoch700", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae3, os_book_rect_1532_mae6, os_book_rect_1532_mae6_noD]); doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
     ##################################################################################################################
     # os_book_rect_D025目前太少，之後再加進去
-    # os_book_G_D_vs_justG = Col_results_analyzer(ana_describe="5_2_GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D01, os_book_rect_D00, os_book_rect_D00_justG]); doing_analyze_2page(os_book_G_D_vs_justG)
+    # os_book_G_D_vs_justG = Col_exps_results_analyzer(ana_describe="5_2_GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D01, os_book_rect_D00, os_book_rect_D00_justG]); doing_analyze_2page(os_book_G_D_vs_justG)
     ##################################################################################################################
-    # os_book_1532data_mae136920 = Col_results_analyzer(ana_describe="5_3_justG_136920", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20]); doing_analyze_2page(os_book_1532data_mae136920)
+    # os_book_1532data_mae136920 = Col_exps_results_analyzer(ana_describe="5_3_justG_136920", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20]); doing_analyze_2page(os_book_1532data_mae136920)
     ##################################################################################################################
     ### 5_4.放大縮小的比較 norm/ bigger
-    # os_book_justG_bigger = Col_results_analyzer(ana_describe="5_4_justG_a_bigger", col_results=[os_book_justG_normal, os_book_justG_bigger]); doing_analyze_2page(os_book_justG_bigger)
+    # os_book_justG_bigger = Col_exps_results_analyzer(ana_describe="5_4_justG_a_bigger", col_results=[os_book_justG_normal, os_book_justG_bigger]); doing_analyze_2page(os_book_justG_bigger)
     ##################################################################################################################
     ### 5_4.放大縮小的比較 bigger_wrong/norm/small/small2
-    # os_book_justG_big_small = Col_results_analyzer(ana_describe="5_4_justG_b_bigger_smaller", col_results=[os_book_justG_bigger, os_book_justG_normal, os_book_justG_smaller, os_book_justG_smaller2]); doing_analyze_2page(os_book_justG_big_small)
+    # os_book_justG_big_small = Col_exps_results_analyzer(ana_describe="5_4_justG_b_bigger_smaller", col_results=[os_book_justG_bigger, os_book_justG_normal, os_book_justG_smaller, os_book_justG_smaller2]); doing_analyze_2page(os_book_justG_big_small)
     ##################################################################################################################
     ### 5_5.focus
-    # os_book_focus_GD_vs_G = Col_results_analyzer(ana_describe="5_5_focus_GD_vs_G", col_results=[os_book_rect_nfocus, os_book_rect_focus, os_book_justG_nfocus, os_book_justG_focus]); doing_analyze_2page(os_book_focus_GD_vs_G)
+    # os_book_focus_GD_vs_G = Col_exps_results_analyzer(ana_describe="5_5_focus_GD_vs_G", col_results=[os_book_rect_nfocus, os_book_rect_focus, os_book_justG_nfocus, os_book_justG_focus]); doing_analyze_2page(os_book_focus_GD_vs_G)
     ##################################################################################################################
     ### 5_6.400 vs 1532
-    # os_book_400 = Col_results_analyzer(ana_describe="5_6_a_400_page", col_results=[os_book_400_rect, os_book_400_justG]); doing_analyze_2page(os_book_400)
+    # os_book_400 = Col_exps_results_analyzer(ana_describe="5_6_a_400_page", col_results=[os_book_400_rect, os_book_400_justG]); doing_analyze_2page(os_book_400)
     ##################################################################################################################
     ### 5_6.400 vs 1532
-    # os_book_400_vs_1532 = Col_results_analyzer(ana_describe="5_6_b_400_vs_1532_page", col_results=[os_book_400_rect, os_book_400_justG, os_book_1532_rect, os_book_1532_justG]); doing_analyze_2page(os_book_400_vs_1532)
+    # os_book_400_vs_1532 = Col_exps_results_analyzer(ana_describe="5_6_b_400_vs_1532_page", col_results=[os_book_400_rect, os_book_400_justG, os_book_1532_rect, os_book_1532_justG]); doing_analyze_2page(os_book_400_vs_1532)
     ##################################################################################################################
     ### 5_7.第一層 k7 vs k3
-    # os_book_first_k7_vs_k3 = Col_results_analyzer(ana_describe="5_7_first_k7_vs_k3", col_results=[os_book_GD_first_k7, os_book_GD_first_k3, os_book_G_first_k7, os_book_G_first_k3 ]); doing_analyze_2page(os_book_first_k7_vs_k3)
+    # os_book_first_k7_vs_k3 = Col_exps_results_analyzer(ana_describe="5_7_first_k7_vs_k3", col_results=[os_book_GD_first_k7, os_book_GD_first_k3, os_book_G_first_k7, os_book_G_first_k3 ]); doing_analyze_2page(os_book_first_k7_vs_k3)
     ##################################################################################################################
     ### 5_8a.GD + mrf比較
-    # os_book_GD_mrf     = Col_results_analyzer(ana_describe="5_8a_GD_mrf"    , col_results=[os_book_GD_no_mrf, os_book_GD_mrf_79, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf)
-    # os_book_GD_mrf_all = Col_results_analyzer(ana_describe="5_8a_GD_mrf_all", col_results=[os_book_GD_no_mrf, os_book_GD_mrf_7 , os_book_GD_mrf_79, os_book_GD_mrf_replace7, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf_all)
+    # os_book_GD_mrf     = Col_exps_results_analyzer(ana_describe="5_8a_GD_mrf"    , col_results=[os_book_GD_no_mrf, os_book_GD_mrf_79, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf)
+    # os_book_GD_mrf_all = Col_exps_results_analyzer(ana_describe="5_8a_GD_mrf_all", col_results=[os_book_GD_no_mrf, os_book_GD_mrf_7 , os_book_GD_mrf_79, os_book_GD_mrf_replace7, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf_all)
     ##################################################################################################################
     ### 5_8b._1 G + mrf比較
-    # os_book_G_mrf                      = Col_results_analyzer    (ana_describe="5_8b_1_G_mrf"                , col_results=[os_book_G_no_mrf, os_book_G_mrf_79, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf)
-    # os_book_G_mrf_all                  = Col_results_analyzer    (ana_describe="5_8b_1_G_mrf_all"            , col_results=[os_book_G_no_mrf, os_book_G_mrf_7,  os_book_G_mrf_79, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf_all)
+    # os_book_G_mrf                      = Col_exps_results_analyzer    (ana_describe="5_8b_1_G_mrf"                , col_results=[os_book_G_no_mrf, os_book_G_mrf_79, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf)
+    # os_book_G_mrf_all                  = Col_exps_results_analyzer    (ana_describe="5_8b_1_G_mrf_all"            , col_results=[os_book_G_no_mrf, os_book_G_mrf_7,  os_book_G_mrf_79, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf_all)
 
-    # os_book_8c_Gmrf_3branch            = Col_results_analyzer    (ana_describe="5_8c_Gmrf_3branch",  col_results=[os_book_G_mrf_135 ,  os_book_G_mrf_357 , os_book_G_mrf_3579 ]); doing_analyze_2page(os_book_8c_Gmrf_3branch )
-    # os_book_8d_GDmrf_3branch           = Col_results_analyzer    (ana_describe="5_8d_GDmrf_3branch", col_results=[os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]); doing_analyze_2page(os_book_8d_GDmrf_3branch)
+    # os_book_8c_Gmrf_3branch            = Col_exps_results_analyzer    (ana_describe="5_8c_Gmrf_3branch",  col_results=[os_book_G_mrf_135 ,  os_book_G_mrf_357 , os_book_G_mrf_3579 ]); doing_analyze_2page(os_book_8c_Gmrf_3branch )
+    # os_book_8d_GDmrf_3branch           = Col_exps_results_analyzer    (ana_describe="5_8d_GDmrf_3branch", col_results=[os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]); doing_analyze_2page(os_book_8d_GDmrf_3branch)
     # os_book_5_8cd                      = Row_col_results_analyzer(ana_describe="5_8cd", row_col_results=[[os_book_G_mrf_135,  os_book_G_mrf_357, os_book_G_mrf_3579],
     #                                                                                                      [os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]])
     # os_book_5_8cd.analyze_row_col_results_all_single_see_multiprocess(single_see_multiprocess=True, single_see_core_amount=10)
 
-    # os_book_8b_2_G_mrf753_k3                  = Col_results_analyzer    (ana_describe="5_8b_2_G_mrf753_k3"          , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_7_firstk3,  os_book_G_mrf_5_firstk3,  os_book_G_mrf_3_firstk3 ]); doing_analyze_2page(os_book_8b_2_G_mrf753_k3)
-    # os_book_8b_3_G_mrf97_75_53                = Col_results_analyzer    (ana_describe="5_8b_3_G_mrf97_75_53"        , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_79_firstk3, os_book_G_mrf_57_firstk3, os_book_G_mrf_35_firstk3]); doing_analyze_2page(os_book_8b_3_G_mrf97_75_53)
-    # os_book_8b_4_G_mrf_replace753             = Col_results_analyzer    (ana_describe="5_8b_4_G_mrf_replace753"     , col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace7,  os_book_G_mrf_replace5,  os_book_G_mrf_replace3 ]); doing_analyze_2page(os_book_8b_4_G_mrf_replace753)
-    # os_book_8b_5_G_mrf_replace97_75_53        = Col_results_analyzer    (ana_describe="5_8b_5_G_mrf_replace97_75_53", col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace79, os_book_G_mrf_replace57, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_5_G_mrf_replace97_75_53)
-    # os_book_8b_6a_Gmrf7_1_2branch_try_replace = Col_results_analyzer    (ana_describe="5_8b_6a_Gmrf7_1_2branch_try_replace", col_results=[os_book_G_mrf_7_firstk3,  os_book_G_mrf_79_firstk3, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_8b_6a_Gmrf7_1_2branch_try_replace)
-    # os_book_8b_6b_Gmrf5_1_2branch_try_replace = Col_results_analyzer    (ana_describe="5_8b_6b_Gmrf5_1_2branch_try_replace", col_results=[os_book_G_mrf_5_firstk3,  os_book_G_mrf_57_firstk3, os_book_G_mrf_replace5, os_book_G_mrf_replace57]); doing_analyze_2page(os_book_8b_6b_Gmrf5_1_2branch_try_replace)
-    # os_book_8b_6c_Gmrf3_1_2branch_try_replace = Col_results_analyzer    (ana_describe="5_8b_6c_Gmrf3_1_2branch_try_replace", col_results=[os_book_G_mrf_3_firstk3,  os_book_G_mrf_35_firstk3, os_book_G_mrf_replace3, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_6c_Gmrf3_1_2branch_try_replace)
+    # os_book_8b_2_G_mrf753_k3                  = Col_exps_results_analyzer    (ana_describe="5_8b_2_G_mrf753_k3"          , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_7_firstk3,  os_book_G_mrf_5_firstk3,  os_book_G_mrf_3_firstk3 ]); doing_analyze_2page(os_book_8b_2_G_mrf753_k3)
+    # os_book_8b_3_G_mrf97_75_53                = Col_exps_results_analyzer    (ana_describe="5_8b_3_G_mrf97_75_53"        , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_79_firstk3, os_book_G_mrf_57_firstk3, os_book_G_mrf_35_firstk3]); doing_analyze_2page(os_book_8b_3_G_mrf97_75_53)
+    # os_book_8b_4_G_mrf_replace753             = Col_exps_results_analyzer    (ana_describe="5_8b_4_G_mrf_replace753"     , col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace7,  os_book_G_mrf_replace5,  os_book_G_mrf_replace3 ]); doing_analyze_2page(os_book_8b_4_G_mrf_replace753)
+    # os_book_8b_5_G_mrf_replace97_75_53        = Col_exps_results_analyzer    (ana_describe="5_8b_5_G_mrf_replace97_75_53", col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace79, os_book_G_mrf_replace57, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_5_G_mrf_replace97_75_53)
+    # os_book_8b_6a_Gmrf7_1_2branch_try_replace = Col_exps_results_analyzer    (ana_describe="5_8b_6a_Gmrf7_1_2branch_try_replace", col_results=[os_book_G_mrf_7_firstk3,  os_book_G_mrf_79_firstk3, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_8b_6a_Gmrf7_1_2branch_try_replace)
+    # os_book_8b_6b_Gmrf5_1_2branch_try_replace = Col_exps_results_analyzer    (ana_describe="5_8b_6b_Gmrf5_1_2branch_try_replace", col_results=[os_book_G_mrf_5_firstk3,  os_book_G_mrf_57_firstk3, os_book_G_mrf_replace5, os_book_G_mrf_replace57]); doing_analyze_2page(os_book_8b_6b_Gmrf5_1_2branch_try_replace)
+    # os_book_8b_6c_Gmrf3_1_2branch_try_replace = Col_exps_results_analyzer    (ana_describe="5_8b_6c_Gmrf3_1_2branch_try_replace", col_results=[os_book_G_mrf_3_firstk3,  os_book_G_mrf_35_firstk3, os_book_G_mrf_replace3, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_6c_Gmrf3_1_2branch_try_replace)
     # os_book_5_8b_7_all                        = Row_col_results_analyzer(ana_describe="5_8b_7_all", row_col_results=[[os_book_G_mrf_7_firstk3,  os_book_G_mrf_79_firstk3, os_book_G_mrf_replace7, os_book_G_mrf_replace79],
     #                                                                                                                   [os_book_G_mrf_5_firstk3,  os_book_G_mrf_57_firstk3, os_book_G_mrf_replace5, os_book_G_mrf_replace57],
     #                                                                                                                   [os_book_G_mrf_3_firstk3,  os_book_G_mrf_35_firstk3, os_book_G_mrf_replace3, os_book_G_mrf_replace35]])
@@ -845,28 +855,28 @@ if(__name__ == "__main__"):
 
     ##################################################################################################################
     ### 5_9a.Gk7D，D_concat_try and k3 or k4
-    # os_book_Gk7D_concat_try_and_k3_k4          = Col_results_analyzer(ana_describe="5_9a_Gk7D_D_concat_try_and_k3,4"         , col_results=[os_book_Gk7_D_concat_k4, os_book_Gk7_D_concat_k3, os_book_Gk7_D_no_concat_k4, os_book_Gk7_D_no_concat_k3]);                   doing_analyze_2page(os_book_Gk7D_concat_try_and_k3_k4)
-    # os_book_Gk7D_concat_try_and_k3_k4_and_no_D = Col_results_analyzer(ana_describe="5_9a_Gk7D_D_concat_try_and_k3,4_and_no_D", col_results=[os_book_Gk7_D_concat_k4, os_book_Gk7_D_concat_k3, os_book_Gk7_D_no_concat_k4, os_book_Gk7_D_no_concat_k3, os_book_Gk7_no_D]); doing_analyze_2page(os_book_Gk7D_concat_try_and_k3_k4_and_no_D)
+    # os_book_Gk7D_concat_try_and_k3_k4          = Col_exps_results_analyzer(ana_describe="5_9a_Gk7D_D_concat_try_and_k3,4"         , col_results=[os_book_Gk7_D_concat_k4, os_book_Gk7_D_concat_k3, os_book_Gk7_D_no_concat_k4, os_book_Gk7_D_no_concat_k3]);                   doing_analyze_2page(os_book_Gk7D_concat_try_and_k3_k4)
+    # os_book_Gk7D_concat_try_and_k3_k4_and_no_D = Col_exps_results_analyzer(ana_describe="5_9a_Gk7D_D_concat_try_and_k3,4_and_no_D", col_results=[os_book_Gk7_D_concat_k4, os_book_Gk7_D_concat_k3, os_book_Gk7_D_no_concat_k4, os_book_Gk7_D_no_concat_k3, os_book_Gk7_no_D]); doing_analyze_2page(os_book_Gk7D_concat_try_and_k3_k4_and_no_D)
 
     ### 5_9b.Gk3D，D_concat_try and k3 or k4
-    # os_book_Gk3D_concat_try_and_k3_k4          = Col_results_analyzer(ana_describe="5_9b_Gk3D_D_concat_try_and_k3,4"         , col_results=[os_book_Gk3_D_concat_k4, os_book_Gk3_D_concat_k3, os_book_Gk3_D_no_concat_k4, os_book_Gk3_D_no_concat_k3]);                   doing_analyze_2page(os_book_Gk3D_concat_try_and_k3_k4)
-    # os_book_Gk3D_concat_try_and_k3_k4_and_no_D = Col_results_analyzer(ana_describe="5_9b_Gk3D_D_concat_try_and_k3,4_and_no_D", col_results=[os_book_Gk3_D_concat_k4, os_book_Gk3_D_concat_k3, os_book_Gk3_D_no_concat_k4, os_book_Gk3_D_no_concat_k3, os_book_Gk3_no_D]); doing_analyze_2page(os_book_Gk3D_concat_try_and_k3_k4_and_no_D)
+    # os_book_Gk3D_concat_try_and_k3_k4          = Col_exps_results_analyzer(ana_describe="5_9b_Gk3D_D_concat_try_and_k3,4"         , col_results=[os_book_Gk3_D_concat_k4, os_book_Gk3_D_concat_k3, os_book_Gk3_D_no_concat_k4, os_book_Gk3_D_no_concat_k3]);                   doing_analyze_2page(os_book_Gk3D_concat_try_and_k3_k4)
+    # os_book_Gk3D_concat_try_and_k3_k4_and_no_D = Col_exps_results_analyzer(ana_describe="5_9b_Gk3D_D_concat_try_and_k3,4_and_no_D", col_results=[os_book_Gk3_D_concat_k4, os_book_Gk3_D_concat_k3, os_book_Gk3_D_no_concat_k4, os_book_Gk3_D_no_concat_k3, os_book_Gk3_no_D]); doing_analyze_2page(os_book_Gk3D_concat_try_and_k3_k4_and_no_D)
 
     ##################################################################################################################
     ### 5_10.GD，D保持train 1次，G train 1,3,5次 比較
-    # os_book_D1Gmany                     = Col_results_analyzer(ana_describe="5_10_GD_D", col_results=[os_book_D1G1, os_book_D1G3, os_book_D1G5]); doing_analyze_2page(os_book_D1Gmany)
-    # os_book_GD_D_train1_G_train_135     = Col_results_analyzer(ana_describe="5_10_GD_D_train1_G_train_135"  , col_results=[os_book_D1G1 , os_book_D1G3, os_book_D1G5 ]); doing_analyze_2page(os_book_GD_D_train1_G_train_135)
+    # os_book_D1Gmany                     = Col_exps_results_analyzer(ana_describe="5_10_GD_D", col_results=[os_book_D1G1, os_book_D1G3, os_book_D1G5]); doing_analyze_2page(os_book_D1Gmany)
+    # os_book_GD_D_train1_G_train_135     = Col_exps_results_analyzer(ana_describe="5_10_GD_D_train1_G_train_135"  , col_results=[os_book_D1G1 , os_book_D1G3, os_book_D1G5 ]); doing_analyze_2page(os_book_GD_D_train1_G_train_135)
     ##################################################################################################################
-    # os_book_11a_G_res_try                  = Col_results_analyzer(ana_describe="5_11a_G_res_try"               , col_results=[os_book_Gk3_res              , os_book_Gk3_no_res               ]); doing_analyze_2page(os_book_11a_G_res_try)
-    # os_book_11b_G_mrf357_res_try           = Col_results_analyzer(ana_describe="5_11b_G_mrf357_res_try"          , col_results=[os_book_G_mrf_357_res        , os_book_G_mrf_357_no_res         ]); doing_analyze_2page(os_book_11b_G_mrf357_res_try)
-    # os_book_11c_Gk3_Dk4_no_concat_res_try  = Col_results_analyzer(ana_describe="5_11c_Gk3_Dk4_no_concat_res_try" , col_results=[os_book_Gk3_Dk4_no_concat_res, os_book_Gk3_Dk4_no_concat_no_res ]); doing_analyze_2page(os_book_11c_Gk3_Dk4_no_concat_res_try)
+    # os_book_11a_G_res_try                  = Col_exps_results_analyzer(ana_describe="5_11a_G_res_try"               , col_results=[os_book_Gk3_res              , os_book_Gk3_no_res               ]); doing_analyze_2page(os_book_11a_G_res_try)
+    # os_book_11b_G_mrf357_res_try           = Col_exps_results_analyzer(ana_describe="5_11b_G_mrf357_res_try"          , col_results=[os_book_G_mrf_357_res        , os_book_G_mrf_357_no_res         ]); doing_analyze_2page(os_book_11b_G_mrf357_res_try)
+    # os_book_11c_Gk3_Dk4_no_concat_res_try  = Col_exps_results_analyzer(ana_describe="5_11c_Gk3_Dk4_no_concat_res_try" , col_results=[os_book_Gk3_Dk4_no_concat_res, os_book_Gk3_Dk4_no_concat_no_res ]); doing_analyze_2page(os_book_11c_Gk3_Dk4_no_concat_res_try)
     ##################################################################################################################
-    # os_book_12_Gk3_resb_num           = Col_results_analyzer(ana_describe="5_12_Gk3_resb_num"           , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb20]); doing_analyze_2page(os_book_12_Gk3_resb_num)
-    # os_book_12_Gk3_resb_num_11_512ep  = Col_results_analyzer(ana_describe="5_12_Gk3_resb_num_11_512ep"  , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb11,  os_book_Gk3_resb20 ]); doing_analyze_2page(os_book_12_Gk3_resb_num_11_512ep)
+    # os_book_12_Gk3_resb_num           = Col_exps_results_analyzer(ana_describe="5_12_Gk3_resb_num"           , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb20]); doing_analyze_2page(os_book_12_Gk3_resb_num)
+    # os_book_12_Gk3_resb_num_11_512ep  = Col_exps_results_analyzer(ana_describe="5_12_Gk3_resb_num_11_512ep"  , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb11,  os_book_Gk3_resb20 ]); doing_analyze_2page(os_book_12_Gk3_resb_num_11_512ep)
 
     ##################################################################################################################
-    # os_book_13a_Gk3_coord_conv            = Col_results_analyzer(ana_describe="5_13a_Gk3_coord_conv"            , col_results=[os_book_Gk3_no_coord_conv           , os_book_Gk3_coord_conv_first, os_book_Gk3_coord_conv_first_end, os_book_Gk3_coord_conv_all]); doing_analyze_2page(os_book_13a_Gk3_coord_conv)
-    # os_book_13b_Gk3_mrf357_coord_conv     = Col_results_analyzer(ana_describe="5_13b_Gk3_mrf357_coord_conv"    , col_results=[os_book_Gk3_mrf_357_no_coord_conv   , os_book_Gk3_mrf357_coord_conv_first, os_book_Gk3_mrf357_coord_conv_all]); doing_analyze_2page(os_book_13b_Gk3_mrf357_coord_conv)
+    # os_book_13a_Gk3_coord_conv            = Col_exps_results_analyzer(ana_describe="5_13a_Gk3_coord_conv"            , col_results=[os_book_Gk3_no_coord_conv           , os_book_Gk3_coord_conv_first, os_book_Gk3_coord_conv_first_end, os_book_Gk3_coord_conv_all]); doing_analyze_2page(os_book_13a_Gk3_coord_conv)
+    # os_book_13b_Gk3_mrf357_coord_conv     = Col_exps_results_analyzer(ana_describe="5_13b_Gk3_mrf357_coord_conv"    , col_results=[os_book_Gk3_mrf_357_no_coord_conv   , os_book_Gk3_mrf357_coord_conv_first, os_book_Gk3_mrf357_coord_conv_all]); doing_analyze_2page(os_book_13b_Gk3_mrf357_coord_conv)
 
 
 
@@ -888,7 +898,7 @@ if(__name__ == "__main__"):
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ### 分析 bg 和 gt_color
-    # bg_and_gt_color_analyze = Col_results_analyzer(ana_describe="4_1-bg_and_gt_color_analyze", col_results=bg_and_gt_color_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
+    # bg_and_gt_color_analyze = Col_exps_results_analyzer(ana_describe="4_1-bg_and_gt_color_analyze", col_results=bg_and_gt_color_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
 
     ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ 不過single還是有好處：可以放很大喔！覺得有空再生成好了～
     # bg_and_gt_color_analyze.analyze_col_results_all_single_see_multiprocess(bg_and_gt_color_results)  ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ
@@ -915,7 +925,7 @@ if(__name__ == "__main__"):
 
     #################################################################################################################################
     ### 分析 mrf 取代 第一層7
-    # mrf_replace7_analyze = Col_results_analyzer(ana_describe="4_4-mrf_replace7_analyze", col_results=mrf_replace7_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
+    # mrf_replace7_analyze = Col_exps_results_analyzer(ana_describe="4_4-mrf_replace7_analyze", col_results=mrf_replace7_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
     ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ 不過single還是有好處：可以放很大喔！覺得有空再生成好了～
     # mrf_replace7_analyze.analyze_col_results_all_single_see_multiprocess(mrf_replace7_results)
 
@@ -954,9 +964,9 @@ if(__name__ == "__main__"):
 
 
     #########################################################################################################
-    ### Col_results_analyzer 的使用範例
+    ### Col_exps_results_analyzer 的使用範例
     # try_c_results = [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1]
-    # try_c_result_multi_see = Col_results_analyzer(ana_describe="try_c_result_multi_see", col_results=try_c_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
+    # try_c_result_multi_see = Col_exps_results_analyzer(ana_describe="try_c_result_multi_see", col_results=try_c_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
 
     # try_c_result_multi_see.analyze_col_results_multi_see([1, 3, 5], "see_1_3_5_jpg_then_crop")
     # try_c_result_multi_see.analyze_col_results_multi_see([1, 3, 5], "see_1_3_5_jpg")
