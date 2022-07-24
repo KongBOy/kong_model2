@@ -87,7 +87,8 @@ class Result_analyzer:
 
             write_dir = self.analyze_write_dir + "/" + time_ver_dir_name + "/" + test_db_name
             read_dir  = self.analyze_read_dir  + "/" + time_ver_dir_name + "/" + test_db_name
-            Syn_write_to_read_dir(write_dir, read_dir, copy_sub_dir=False, print_msg=False)
+            if(write_dir != read_dir):
+                Syn_write_to_read_dir(write_dir, read_dir, copy_sub_dir=False, print_msg=False)
 
         if(self.ana_what_sees == "see"):
             see_names = get_dir_certain_dir_names(time_ver_dir_path, self.ana_what_sees)
@@ -105,8 +106,8 @@ class Result_analyzer:
                 if(print_msg):
                     print("src_path:", src_path, "  copy to")
                     print("dst_path:", dst_path, "  finish~")
-
-            Syn_write_to_read_dir(self.analyze_see_private_write_dir, self.analyze_see_public_read_dir, copy_sub_dir=False, print_msg=False)
+            if(self.analyze_see_private_write_dir != self.analyze_see_public_read_dir):
+                Syn_write_to_read_dir(self.analyze_see_private_write_dir, self.analyze_see_public_read_dir, copy_sub_dir=False, print_msg=False)
         return self
 
     ########################################################################################################################################
