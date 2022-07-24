@@ -694,7 +694,10 @@ class Experiment():
         # Check_dir_exist_and_build_new_dir(self.result_obj.ckpt_write_dir)
         shutil.copytree(self.result_obj.ckpt_read_dir, self.result_obj.ckpt_write_dir)
 
-    def Gather_test_SSIM_LD(self):
+    def Gather_test_SSIM_LD(self, another_dst_path=None):
+        base_dir = self.result_obj.test_write_dir
+        if(another_dst_path is not None): base_dir = another_dst_path
+        
         def ax_dot_text(ax, values):
             for go_v, value in enumerate(values):
                 ax.annotate( text="%.1f" %  value,            ### 顯示的文字
@@ -741,10 +744,10 @@ class Experiment():
         ssims_mean = np.mean(ssims)
         amount = len(lds)
 
-        Check_dir_exist_and_build(self.result_obj.test_write_dir)
+        Check_dir_exist_and_build( base_dir )
 
-        lds_mean_path   = self.result_obj.test_write_dir + "/" + "LDs_mean"
-        ssims_mean_path = self.result_obj.test_write_dir + "/" + "SSIMs_mean"
+        lds_mean_path   = base_dir + "/" + "LDs_mean"
+        ssims_mean_path = base_dir + "/" + "SSIMs_mean"
         np.save(lds_mean_path, lds_mean)
         np.save(ssims_mean_path, ssims_mean)
 
@@ -772,13 +775,13 @@ class Experiment():
             lds_rotate_mean   = np.mean(lds_rotate)
             ssims_rotate_mean = np.mean(ssims_rotate)
 
-            lds_rotate_mean_path   = self.result_obj.test_write_dir + "/" + "rotate_LDs_mean"
-            ssims_rotate_mean_path = self.result_obj.test_write_dir + "/" + "rotate_SSIMs_mean"
+            lds_rotate_mean_path   = base_dir + "/" + "rotate_LDs_mean"
+            ssims_rotate_mean_path = base_dir + "/" + "rotate_SSIMs_mean"
             np.save(lds_rotate_mean_path, lds_rotate_mean)
             np.save(ssims_rotate_mean_path, ssims_rotate_mean)
 
             ### lds 和 ssims 寫成 txt
-            ld_ssim_rotate_value_txt_path    = self.result_obj.test_write_dir + "/" + "rotate_LD_SSIM_value.txt"
+            ld_ssim_rotate_value_txt_path    = base_dir + "/" + "rotate_LD_SSIM_value.txt"
             with open(ld_ssim_rotate_value_txt_path, "w") as f:
                 f.write(f"mean\n")
                 f.write(f"ld_mean      : {lds_rotate_mean      }\n")
@@ -792,7 +795,7 @@ class Experiment():
                     f.write(f"    my_rec_ld      : {ld      }\n")
 
             ### lds 和 ssims matplot視覺化
-            ld_ssim_rotate_value_visual_path = self.result_obj.test_write_dir + "/" + "rotate_LD_SSIM_value_visual"
+            ld_ssim_rotate_value_visual_path = base_dir + "/" + "rotate_LD_SSIM_value_visual"
             import matplotlib.pyplot as plt
             canvas_size = 3
             nrows = 2
@@ -806,7 +809,7 @@ class Experiment():
 
 
         ### lds 和 ssims 寫成 txt
-        ld_ssim_value_txt_path    = self.result_obj.test_write_dir + "/" + "LD_SSIM_value.txt"
+        ld_ssim_value_txt_path    = base_dir + "/" + "LD_SSIM_value.txt"
         with open(ld_ssim_value_txt_path, "w") as f:
             f.write(f"mean\n")
             f.write(f"ld_mean      : {lds_mean      }\n")
@@ -820,8 +823,8 @@ class Experiment():
                 f.write(f"    my_rec_ld      : {ld      }\n")
 
         ### writer = tf.summary.create_file_writer("/tmp/mylogs/eager")
-        ld_ssim_value_tboard_write_path    = self.result_obj.test_write_dir + "/" + "LD_SSIM_tboard"
-        ld_ssim_value_tboard_read_path     = self.result_obj.test_read_dir  + "/" + "LD_SSIM_tboard"
+        ld_ssim_value_tboard_write_path    = base_dir + "/" + "LD_SSIM_tboard"
+        ld_ssim_value_tboard_read_path     = base_dir + "/" + "LD_SSIM_tboard"
         writer = tf.summary.create_file_writer(ld_ssim_value_tboard_write_path)
         with writer.as_default():
             for go_val in range(amount):
@@ -844,7 +847,7 @@ class Experiment():
 
 
         ### lds 和 ssims matplot視覺化
-        ld_ssim_value_visual_path = self.result_obj.test_write_dir + "/" + "LD_SSIM_value_visual"
+        ld_ssim_value_visual_path = base_dir + "/" + "LD_SSIM_value_visual"
         import matplotlib.pyplot as plt
         canvas_size = 3
         nrows = 2
@@ -857,7 +860,7 @@ class Experiment():
         plt.savefig(ld_ssim_value_visual_path)
 
         ### 同步 test_write / test_read
-        if(self.result_obj.test_write_dir != self.result_obj.test_read_dir):
+        if(self.result_obj.test_write_dir != self.result_obj.test_read_dir and another_dst_path is None):
             Syn_write_to_read_dir(write_dir=self.result_obj.test_write_dir , read_dir=self.result_obj.test_read_dir , build_new_dir=False, print_msg=True, copy_sub_dir=False)  ### 這個function寫出來的東西只有在 test_write_dir， 沒有寫進 sub_dir 所以不需要copy sub_dir
             Syn_write_to_read_dir(write_dir=ld_ssim_value_tboard_write_path, read_dir=ld_ssim_value_tboard_read_path, build_new_dir=False, print_msg=True, copy_sub_dir=True )  ### 注意 tensorboard 是寫成資料夾， 所以copy_sub_dir 要 設 True 喔！
         print("Gather_test_SSIM_LD finish")
