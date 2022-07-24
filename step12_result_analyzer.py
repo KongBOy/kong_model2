@@ -471,9 +471,9 @@ class Row_col_results_analyzer(Result_analyzer):
         self.r_c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_min_trained_epoch()去抓
         self.r_c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_max_trained_epoch()去抓
 
-        self.c_exps_results_list = []
+        self.r_c_exps_objs = []
         for c_exps in row_col_exps:
-            self.c_exps_results_list.append(Col_exps_results_analyzer(ana_describe=ana_describe, ana_what_sees=ana_what_sees, ana_what=ana_what, col_exps=c_exps, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss, img_h=img_h, img_w=img_w, reset_test_db_name=reset_test_db_name))
+            self.r_c_exps_objs.append(Col_exps_results_analyzer(ana_describe=ana_describe, ana_what_sees=ana_what_sees, ana_what=ana_what, col_exps=c_exps, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss, img_h=img_h, img_w=img_w, reset_test_db_name=reset_test_db_name))
         print("Row_col_results_analyzer build finish")
 
         self.jump_to = jump_to
@@ -482,12 +482,12 @@ class Row_col_results_analyzer(Result_analyzer):
         """
         update 一下 所有 result 的 sees
         """
-        for row_exps_results in self.c_exps_results_list:
+        for row_exps_results in self.r_c_exps_objs:
             row_exps_results._step0_c_results_get_see_base_info()
 
     def _step0_get_r_c_trained_epochs(self):
         trained_epochs = np.array([])
-        for row_exps_results in self.c_exps_results_list:
+        for row_exps_results in self.r_c_exps_objs:
             trained_epochs = np.append( trained_epochs, row_exps_results._step0_get_c_trained_epochs() )
         return trained_epochs
 
@@ -496,21 +496,21 @@ class Row_col_results_analyzer(Result_analyzer):
 
     def step1_get_r_c_titles(self):
         r_c_titles = []  ### r_c_titles 抓出所有要顯示的標題 ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
-        for c_results in self.c_exps_results_list:
-            r_c_titles.append(c_results.step1_get_c_titles())
+        for c_exps_obj in self.r_c_exps_objs:
+            r_c_titles.append(c_exps_obj.step1_get_c_titles())
 
         return r_c_titles
 
     def step2b_get_r_c_imgs(self, see_num, epoch, in_img, gt_img):
         r_c_imgs   = []  ### r_c_imgs   抓出所要要顯示的圖   ，然後要記得每個row的第一張要放in_img，最後一張要放gt_img喔！
-        for c_results in self.c_exps_results_list:
-            r_c_imgs.append(c_results.step2b_get_c_results_imgs_and_attach_in_gt(see_num, epoch, in_img, gt_img))
+        for c_exps_obj in self.r_c_exps_objs:
+            r_c_imgs.append(c_exps_obj.step2b_get_c_results_imgs_and_attach_in_gt(see_num, epoch, in_img, gt_img))
 
         return r_c_imgs
 
     ### 走訪所有results， 一旦發現有 in_img_path 就可以break囉！ 
     def _get_in_img_or_gt_img(self, see_num, get_what):
-        for row_exps_results in self.c_exps_results_list:
+        for row_exps_results in self.r_c_exps_objs:
             img = row_exps_results._get_in_img_or_gt_img(see_num, get_what)
             if(img is not None): return img
         else:
@@ -564,8 +564,8 @@ class Row_col_results_analyzer(Result_analyzer):
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: start single_see, Current See:{see_num}")
         print(f"analyze_write_dir: {self.analyze_write_dir}")
         start_time = time.time()
-        if  (self.ana_what_sees == "see"):  used_sees = self.c_exps_results_list[0].c_exps[0].result_obj.sees
-        elif(self.ana_what_sees == "test"): used_sees = self.c_exps_results_list[0].c_exps[0].result_obj.tests
+        if  (self.ana_what_sees == "see"):  used_sees = self.r_c_exps_objs[0].c_exps[0].result_obj.sees
+        elif(self.ana_what_sees == "test"): used_sees = self.r_c_exps_objs[0].c_exps[0].result_obj.tests
         analyze_see_private_read_dir  = self.analyze_read_dir  + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_private_write_dir)  ### 建立 存結果的資料夾
@@ -598,8 +598,8 @@ class Row_col_results_analyzer(Result_analyzer):
         return self
 
     def analyze_row_col_results_all_single_see(self, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
-        if  (self.ana_what_sees == "see"):  used_see_amount = self.c_exps_results_list[0].c_exps[0].result_obj.see_amount
-        elif(self.ana_what_sees == "test"): used_see_amount = self.c_exps_results_list[0].c_exps[0].result_obj.test_amount
+        if  (self.ana_what_sees == "see"):  used_see_amount = self.r_c_exps_objs[0].c_exps[0].result_obj.see_amount
+        elif(self.ana_what_sees == "test"): used_see_amount = self.r_c_exps_objs[0].c_exps[0].result_obj.test_amount
         for go_see in range(used_see_amount):
             self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         return self
@@ -611,8 +611,8 @@ class Row_col_results_analyzer(Result_analyzer):
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "start SSIM_LD")
         print(f"analyze_write_dir: {self.analyze_write_dir}")
 
-        if  (self.ana_what_sees == "see"):  used_sees = self.c_exps_results_list[0].c_exps[0].result_obj.sees
-        elif(self.ana_what_sees == "test"): used_sees = self.c_exps_results_list[0].c_exps[0].result_obj.tests
+        if  (self.ana_what_sees == "see"):  used_sees = self.r_c_exps_objs[0].c_exps[0].result_obj.sees
+        elif(self.ana_what_sees == "test"): used_sees = self.r_c_exps_objs[0].c_exps[0].result_obj.tests
         analyze_see_private_read_dir  = self.analyze_read_dir  + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[0].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[0].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         analyze_see_public_read_dir   = "/".join(analyze_see_private_read_dir .replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
@@ -621,7 +621,7 @@ class Row_col_results_analyzer(Result_analyzer):
 
         dst_write_dir = analyze_see_public_write_dir + "/" + "t"  ### 不要取太長的名字，要不燃 windows 長檔名問題會讓 tboard 讀不到資料
         dst_read_dir  = analyze_see_public_read_dir  + "/" + "t"  ### 不要取太長的名字，要不燃 windows 長檔名問題會讓 tboard 讀不到資料
-        for row_exps_results in self.c_exps_results_list:
+        for row_exps_results in self.r_c_exps_objs:
             for exp in row_exps_results.c_exps:
                 if("畫空白的圖" not in exp.result_obj.test_read_dir):
                     tboard_dst_path = dst_write_dir + "/" + exp.result_obj.ana_describe
