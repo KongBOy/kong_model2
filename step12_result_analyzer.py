@@ -117,7 +117,6 @@ class Col_exps_results_analyzer(Result_analyzer):
     def __init__(self, ana_describe, ana_what_sees, ana_what, col_exps, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None, reset_test_db_name=None):
         super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
         self.c_exps    = col_exps
-        self.c_results = []     ### 會用 _c_exps_results_init 轉成 result
         self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
         self.c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_max_trained_epoch()去抓
         self._c_exps_results_init(reset_test_db_name)
@@ -128,13 +127,13 @@ class Col_exps_results_analyzer(Result_analyzer):
     def _c_exps_results_init(self, reset_test_db_name=None):
         for go_data, data in enumerate(self.c_exps):
             self.c_exps   [go_data] = data.build(reset_test_db_name=reset_test_db_name)
-            self.c_results.append(self.c_exps[go_data].result_obj)
 
     def _step0_c_results_get_see_base_info(self):
         """
-        update 一下 所有 result 的 sees， 這裡是 c_results 的所有 results
+        update 一下 所有 result 的 sees， 這裡是 c_exps 的所有 results
         """
-        for result in self.c_results:
+        for exp in self.c_exps:
+            result = exp.result_obj
             if  (self.ana_what_sees == "see"):  used_sees = result.sees
             elif(self.ana_what_sees == "test"): used_sees = result.tests
 
@@ -159,7 +158,8 @@ class Col_exps_results_analyzer(Result_analyzer):
         self._step0_c_results_get_see_base_info()
 
         trained_epochs = []
-        for result in self.c_results:
+        for exp in self.c_exps:
+            result = exp.result_obj
             ### 執行step12以前應該就要確保 see 已經生成完畢， 這樣子的假設下每個see都是一樣多檔案喔，所以就挑第一個拿他的trained_epoch就好囉～
             if  (self.ana_what_sees == "see"):  used_sees = result.sees
             elif(self.ana_what_sees == "test"): used_sees = result.tests
@@ -176,7 +176,7 @@ class Col_exps_results_analyzer(Result_analyzer):
         """
         c_titles = []
         if(self.show_in_img): c_titles = ["in_img"]
-        for result in self.c_results: c_titles.append(result.ana_describe)
+        for exp in self.c_exps: c_titles.append(exp.result_obj.ana_describe)
         if(self.show_gt_img): c_titles += ["gt_img"]
         return c_titles
 
@@ -185,9 +185,9 @@ class Col_exps_results_analyzer(Result_analyzer):
         step2a 取出 c_result_imgs
         """
         c_imgs = []
-        for result in self.c_results:
-            if  (self.ana_what_sees == "see"):  used_sees = result.sees
-            elif(self.ana_what_sees == "test"): used_sees = result.tests
+        for exp in self.c_exps:
+            if  (self.ana_what_sees == "see"):  used_sees = exp.result_obj.sees
+            elif(self.ana_what_sees == "test"): used_sees = exp.result_obj.tests
             trained_epoch = used_sees[see_num].trained_epoch  ### 名字弄短一點，下面 debug 也比較好寫
             use_epoch = min(trained_epoch, epoch)  ### 超出範圍就取最後一張
 
@@ -260,8 +260,8 @@ class Col_exps_results_analyzer(Result_analyzer):
                             add_loss       = self.add_loss)
             single_row_imgs.Draw_img()
             if(self.add_loss):
-                for go_result, result in enumerate(self.c_results):
-                    single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
+                for go_exp, exp in enumerate(self.c_exps):
+                    single_row_imgs.Draw_ax_loss_after_train(ax=single_row_imgs.ax[-1, go_exp + 1], logs_read_dir=exp.result_obj.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
             single_row_imgs.Save_fig(dst_dir=analyze_see_private_write_dir, name="epoch", epoch=go_epoch)
 
     def _Draw_col_results_single_see_multiprocess(self, see_num, in_img, gt_img, c_titles, analyze_see_private_write_dir, core_amount=8, task_amount=100, print_msg=False):
@@ -275,13 +275,13 @@ class Col_exps_results_analyzer(Result_analyzer):
     def _get_in_img_or_gt_img(self, see_num, get_what):
         path = None
         img = None
-        for result in self.c_results:
+        for exp in self.c_exps:
             if  (self.ana_what_sees == "see" ):
-                if  (get_what == "in_img"): path = result.sees [see_num].in_img_path
-                elif(get_what == "gt_img"): path = result.sees [see_num].gt_img_path
+                if  (get_what == "in_img"): path = exp.result_obj.sees [see_num].in_img_path
+                elif(get_what == "gt_img"): path = exp.result_obj.sees [see_num].gt_img_path
             elif(self.ana_what_sees == "test"):
-                if  (get_what == "in_img"): path = result.tests [see_num].in_img_path
-                elif(get_what == "gt_img"): path = result.tests [see_num].gt_img_path
+                if  (get_what == "in_img"): path = exp.result_obj.tests [see_num].in_img_path
+                elif(get_what == "gt_img"): path = exp.result_obj.tests [see_num].gt_img_path
 
             if(os.path.isfile(path)):
                 img = cv2.imread(path)
@@ -297,8 +297,8 @@ class Col_exps_results_analyzer(Result_analyzer):
         _Draw_col_results_single_see_ 的 前置步驟：設定格式
         """
         start_time = time.time()
-        if  (self.ana_what_sees == "see"):  used_sees = self.c_results[0].sees
-        elif(self.ana_what_sees == "test"): used_sees = self.c_results[0].tests
+        if  (self.ana_what_sees == "see"):  used_sees = self.c_exps[0].result_obj.sees
+        elif(self.ana_what_sees == "test"): used_sees = self.c_exps[0].result_obj.tests
         analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_private_write_dir)  ### 建立 存結果的資料夾
 
@@ -343,8 +343,8 @@ class Col_exps_results_analyzer(Result_analyzer):
         方便做事情的介面，自動走訪所有 see
         """
         start_time = time.time()
-        if  (self.ana_what_sees == "see"):  used_see_amount = self.c_results[0].see_amount
-        elif(self.ana_what_sees == "test"): used_see_amount = self.c_results[0].test_amount
+        if  (self.ana_what_sees == "see"):  used_see_amount = self.c_exps[0].result_obj.see_amount
+        elif(self.ana_what_sees == "test"): used_see_amount = self.c_exps[0].result_obj.test_amount
         for go_see in range(used_see_amount):
             self.analyze_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount)  ### 注意！大任務已經分給多core了，小任務不能再切分給多core囉！要不然會當掉！
         print(f"{self.ana_describe} doing analyze_col_results_all_single_see finish, cost_time:{time.time() - start_time}")
@@ -384,7 +384,8 @@ class Col_exps_results_analyzer(Result_analyzer):
     #         r_c_imgs = []
     #         for go_see_num, see_num in enumerate(see_nums):
     #             c_imgs   = [in_imgs[go_see_num]]
-    #             for result in self.c_results:
+    #             for exp in self.c_exps:
+    #                 result = exp.resulb_obj
     #                 epochs = len(result.sees[see_num].flow_ep_jpg_names)
     #                 # epochs = len(result.sees[see_num].rec_read_paths) - 2
     #                 # print("len(result.sees[see_num].rec_read_paths)", len(result.sees[see_num].rec_read_paths))
@@ -403,8 +404,9 @@ class Col_exps_results_analyzer(Result_analyzer):
     #                                         add_loss         = self.add_loss)
     #         multi_row_imgs.Draw_img()
     #         if(self.add_loss):
-    #             for go_result, result in enumerate(self.c_results):
-    #                 multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_result + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
+    #             for go_exp, exp in enumerate(self.c_ecps):
+    #                 result = exp.resulb_obj
+    #                 multi_row_imgs.Draw_ax_loss_after_train(ax=multi_row_imgs.ax[-1, go_exp + 1], logs_read_dir=result.logs_read_dir, cur_epoch=go_epoch, min_epochs=self.c_min_trained_epoch)
     #         multi_row_imgs.Save_fig(dst_dir=analyze_see_private_write_dir, name="epoch", epoch=go_epoch)
 
     # ### 包 multiprocess， _Draw_col_results_multi_see_ 的 multiprocess 介面
@@ -439,12 +441,12 @@ class Col_exps_results_analyzer(Result_analyzer):
     #     in_imgs = []
     #     gt_imgs = []
     #     for see_num in see_nums:
-    #         in_imgs.append(cv2.imread(self.c_results[0].sees[see_num].in_img_path))
-    #         gt_imgs.append(cv2.imread(self.c_results[0].sees[see_num].gt_flow_jpg_path))
+    #         in_imgs.append(cv2.imread(self.c_exps[0].result_obj.sees[see_num].in_img_path))
+    #         gt_imgs.append(cv2.imread(self.c_exps[0].result_obj.sees[see_num].gt_flow_jpg_path))
 
     #     ### 抓 第一row的 要顯示的 titles
     #     c_titles = ["in_img"]
-    #     for result in self.c_results: c_titles.append(result.ana_describe)
+    #     for exp in self.c_exps: c_titles.append(exp.result_obj.ana_describe)
     #     c_titles += ["gt_img"]
     #     r_c_titles = [c_titles]  ### 還是包成r_c_titles的形式喔！因為 matplot_visual_multi_row_imgs 當初寫的時候是包成 r_c_titles
 
@@ -562,8 +564,8 @@ class Row_col_results_analyzer(Result_analyzer):
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), f"Result level: start single_see, Current See:{see_num}")
         print(f"analyze_write_dir: {self.analyze_write_dir}")
         start_time = time.time()
-        if  (self.ana_what_sees == "see"):  used_sees = self.c_exps_results_list[0].c_results[0].sees
-        elif(self.ana_what_sees == "test"): used_sees = self.c_exps_results_list[0].c_results[0].tests
+        if  (self.ana_what_sees == "see"):  used_sees = self.c_exps_results_list[0].c_exps[0].result_obj.sees
+        elif(self.ana_what_sees == "test"): used_sees = self.c_exps_results_list[0].c_exps[0].result_obj.tests
         analyze_see_private_read_dir  = self.analyze_read_dir  + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[see_num].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         Check_dir_exist_and_build_new_dir(analyze_see_private_write_dir)  ### 建立 存結果的資料夾
@@ -596,8 +598,8 @@ class Row_col_results_analyzer(Result_analyzer):
         return self
 
     def analyze_row_col_results_all_single_see(self, single_see_multiprocess=False, single_see_core_amount=8, print_msg=False):
-        if  (self.ana_what_sees == "see"):  used_see_amount = self.c_exps_results_list[0].c_results[0].see_amount
-        elif(self.ana_what_sees == "test"): used_see_amount = self.c_exps_results_list[0].c_results[0].test_amount
+        if  (self.ana_what_sees == "see"):  used_see_amount = self.c_exps_results_list[0].c_exps[0].result_obj.see_amount
+        elif(self.ana_what_sees == "test"): used_see_amount = self.c_exps_results_list[0].c_exps[0].result_obj.test_amount
         for go_see in range(used_see_amount):
             self.analyze_row_col_results_single_see(go_see, single_see_multiprocess=single_see_multiprocess, single_see_core_amount=single_see_core_amount, print_msg=print_msg)
         return self
@@ -609,8 +611,8 @@ class Row_col_results_analyzer(Result_analyzer):
         print(datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S"), "start SSIM_LD")
         print(f"analyze_write_dir: {self.analyze_write_dir}")
 
-        if  (self.ana_what_sees == "see"):  used_sees = self.c_exps_results_list[0].c_results[0].sees
-        elif(self.ana_what_sees == "test"): used_sees = self.c_exps_results_list[0].c_results[0].tests
+        if  (self.ana_what_sees == "see"):  used_sees = self.c_exps_results_list[0].c_exps[0].result_obj.sees
+        elif(self.ana_what_sees == "test"): used_sees = self.c_exps_results_list[0].c_exps[0].result_obj.tests
         analyze_see_private_read_dir  = self.analyze_read_dir  + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[0].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         analyze_see_private_write_dir = self.analyze_write_dir + f"/{self.ana_what}_{self.ana_timestamp}/" + used_sees[0].see_name   ### (可以再想想好名字！)分析結果存哪裡定位出來
         analyze_see_public_read_dir   = "/".join(analyze_see_private_read_dir .replace("\\", "/").split("/")[:-1])  ### private 的上一層資料夾
