@@ -17,7 +17,7 @@ if(__name__ == "__main__"):
     # print("    kong_layer:", kong_layer)
     # print("    kong_model2_dir:", kong_model2_dir)
     #############################################################################################################################################################################################################
-    from step12_result_analyzer import Col_results_analyzer, Row_col_results_analyzer, Bm_Rec_exps_analyze
+    from step12_result_analyzer import Col_exps_results_analyzer, Row_col_results_analyzer, Bm_Rec_exps_analyze
     from step11_6c_tv_bce_block1_45678l import  *
     #############################################################################################################################################################################################################
     kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index

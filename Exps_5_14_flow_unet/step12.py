@@ -14,11 +14,11 @@ if(__name__ == "__main__"):
     sys.path.append(".")                                       ### 把 kong_model2 加進 sys.path
     print("os.getcwd()", os.getcwd())
     #############################################################################################################################################################################################################
-    from step12_result_analyzer import Col_results_analyzer, Row_col_results_analyzer, Bm_Rec_exps_analyze
+    from step12_result_analyzer import Col_exps_results_analyzer, Row_col_results_analyzer, Bm_Rec_exps_analyze
     from step11_c import  *
     ##################################################################################################################################################################
     epoch300_500_results = [ exp.result_obj for exp in epoch300_500_exps]
-    epoch300_500_analyze = Col_results_analyzer(ana_describe="epoch300_500_exps2", ana_what="rec", col_results=epoch300_500_results, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+    epoch300_500_analyze = Col_exps_results_analyzer(ana_describe="epoch300_500_exps2", ana_what="rec", col_results=epoch300_500_results, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # epoch300_500_analyze.analyze_col_results_single_see(see_num=0, single_see_multiprocess=False)
     # epoch300_500_analyze.analyze_col_results_single_see(see_num=0, single_see_multiprocess=True)
     # epoch300_500_analyze.analyze_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=14)

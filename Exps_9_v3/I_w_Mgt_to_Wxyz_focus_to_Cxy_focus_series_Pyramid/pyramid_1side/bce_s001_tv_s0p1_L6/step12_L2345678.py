@@ -52,7 +52,7 @@ if(__name__ == "__main__"):
                                             .Gather_all_see_final_img()
 
     '''
-    analyzer = Col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Col_exps_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                     ana_what_sees="see",
                                     ana_what="wc",
                                     col_results=ch032_1side_all__2side_all, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
