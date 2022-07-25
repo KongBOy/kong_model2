@@ -42,26 +42,91 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"W_w_M_to_C__ch016_L5__woD_L__NoFu_Less                        .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"W_w_M_to_C__ch016_L5__woD_L__NoFu_More                        .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 
-
-########## 還沒改
 ##### 一起訓練
-### 3UNet
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-### wiDiv
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-### woD_L
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-### woD_M
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+### 1. wiDiv wiDiv，第一個測這個， 因為我論文就主打這個
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+
+### 2. wiDiv woD_L(記得 woD_L 的 seperate 要設 False)，
+# 這部分我覺得可以先跳過
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_woD_L_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_woD_L_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_woD_L_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+### 3. woD_L wiDiv(記得 woD_L 的 seperate 要設 False)，
+# 這部分我覺得可以先跳過
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_wiDiv_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+### 4. woD_L woD_L(記得 woD_L 的 seperate 要設 False)，第二個測這個
+# 這個是我意想不到竟然做得更好的結果， 我想看看他可以做得多好
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
