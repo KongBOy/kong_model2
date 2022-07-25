@@ -17,7 +17,7 @@ if(__name__ == "__main__"):
     # print("    kong_layer:", kong_layer)
     # print("    kong_model2_dir:", kong_model2_dir)
     #############################################################################################################################################################################################################
-    from step12_result_analyzer import Row_col_results_analyzer
+    from step12_result_analyzer import Row_col_exps_analyzer
     from step11 import  *
     #############################################################################################################################################################################################################
     kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
@@ -44,7 +44,7 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "Layer_Ch_see"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
                                         row_col_results=block1_mask_L2345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
@@ -52,7 +52,7 @@ if(__name__ == "__main__"):
                                             # .Gather_all_see_final_img()
     ############################################################################
     ana_name = "Normal_vs_Limit_see"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
                                         row_col_results=block1_mask_L45678_normal_vs_limit, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
@@ -60,7 +60,7 @@ if(__name__ == "__main__"):
                                             # .Gather_all_see_final_img()
     ########################################################################################################################################################
     ana_name = "Layer_Ch_test"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="mask",
                                         row_col_results=block1_mask_L2345678, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\
@@ -68,7 +68,7 @@ if(__name__ == "__main__"):
                                             .Gather_all_see_final_img(test_db_name="test_real_photo_paper2", print_msg=True)
     ############################################################################
     ana_name = "Normal_vs_Limit_test"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="mask",
                                         row_col_results=block1_mask_L45678_normal_vs_limit, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\

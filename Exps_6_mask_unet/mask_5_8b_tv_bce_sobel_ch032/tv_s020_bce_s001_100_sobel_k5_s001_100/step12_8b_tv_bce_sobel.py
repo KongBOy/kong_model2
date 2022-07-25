@@ -17,7 +17,7 @@ if(__name__ == "__main__"):
     # print("    kong_layer:", kong_layer)
     # print("    kong_model2_dir:", kong_model2_dir)
     #############################################################################################################################################################################################################
-    from step12_result_analyzer import Col_exps_results_analyzer, Row_col_results_analyzer
+    from step12_result_analyzer import Col_exps_analyzer, Row_col_exps_analyzer
     from step11_8b_tv_bce_sobel import  *
     #############################################################################################################################################################################################################
     kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
@@ -44,7 +44,7 @@ if(__name__ == "__main__"):
     ### 直接看 dtd_hdr_mix 的狀況
     #################################################################################################################################################################################################################
     ana_name = "step20"
-    step20_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    step20_analyze = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=mask_ch032_tv_s20_bce_s001_100_sobel_k5_s001_100,
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\
@@ -54,7 +54,7 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "step40"
-    step40_analyze = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    step40_analyze = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                                   ana_what="mask",
                                                   row_col_results=mask_ch032_tv_s20_bce_s001_100_sobel_k5_s001_100[::2, ::2],
                                                   show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)\

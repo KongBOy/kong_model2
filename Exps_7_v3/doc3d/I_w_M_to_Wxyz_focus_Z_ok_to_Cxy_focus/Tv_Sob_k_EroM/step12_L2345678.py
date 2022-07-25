@@ -17,7 +17,7 @@ if(__name__ == "__main__"):
     # print("    kong_layer:", kong_layer)
     # print("    kong_model2_dir:", kong_model2_dir)
     #############################################################################################################################################################################################################
-    from step12_result_analyzer import Row_col_results_analyzer
+    from step12_result_analyzer import Row_col_exps_analyzer
     from step11 import  *
     #############################################################################################################################################################################################################
     kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
@@ -47,7 +47,7 @@ if(__name__ == "__main__"):
     ##### 前fix 後change
     ### 分析 EroM
     ana_name = "comb1b_fix_I_w_M_to_W__change_W_w_M_t_C__EroM_type_analyze"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb1b_fix_I_w_M_to_W__change_W_w_M_t_C__EroM_type_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -58,7 +58,7 @@ if(__name__ == "__main__"):
 
     ### 分析TV
     ana_name = "comb2a_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_woEroM"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb2a_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_woEroM, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -67,7 +67,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "comb2b_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_wiEroM"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb2b_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_wiEroM, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -76,7 +76,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "comb2c_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_wiEroMore"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb2c_fix_I_w_M_to_W__change_W_w_M_t_C__wo_wiTv_s001_wiEroMore, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -85,7 +85,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "comb2d_fix_I_w_M_to_W__change_W_w_M_t_C_tboard_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb2d_fix_I_w_M_to_W__change_W_w_M_t_C_tboard_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -96,7 +96,7 @@ if(__name__ == "__main__"):
     ##### 前change 後fix
     ### 分析 EroM
     ana_name = "comb3b_fix_I_w_M_to_W__change_W_w_M_t_C__EroM_type_analyze"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb3b_change_I_w_M_to_W__fix_W_w_M_t_C__EroM_type_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -105,7 +105,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
     ### 分析TV
     ana_name = "comb4a_change_I_w_M_to_W__fix_W_w_M_t_C__wo_wiTv_s001_woEroM"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb4a_change_I_w_M_to_W__fix_W_w_M_t_C__wo_wiTv_s001_woEroM, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -114,7 +114,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "comb4b_change_I_w_M_to_W__fix_W_w_M_t_C__wo_wiTv_s001_wiEroM"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb4b_change_I_w_M_to_W__fix_W_w_M_t_C__wo_wiTv_s001_wiEroM, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -123,7 +123,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "comb4c_change_I_w_M_to_W__fix_W_w_M_t_C__wo_wiTv_s001_wiEroMore"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb4c_change_I_w_M_to_W__fix_W_w_M_t_C__wo_wiTv_s001_wiEroMore, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -132,7 +132,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "comb4d_change_I_w_M_to_W__fix_W_w_M_t_C_tboard_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=comb4d_change_I_w_M_to_W__fix_W_w_M_t_C_tboard_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\

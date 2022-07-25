@@ -17,7 +17,7 @@ if(__name__ == "__main__"):
     # print("    kong_layer:", kong_layer)
     # print("    kong_model2_dir:", kong_model2_dir)
     #############################################################################################################################################################################################################
-    from step12_result_analyzer import Row_col_results_analyzer
+    from step12_result_analyzer import Row_col_exps_analyzer
     from step11_L2345678 import  *
     #############################################################################################################################################################################################################
     kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
@@ -47,7 +47,7 @@ if(__name__ == "__main__"):
     # 1side_1
     ########
     ana_name = "ch032_1side_1__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=ch032_1side_1__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
@@ -57,7 +57,7 @@ if(__name__ == "__main__"):
     # 1side_2
     ########
     ana_name = "ch032_1side_2__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=ch032_1side_2__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
@@ -67,7 +67,7 @@ if(__name__ == "__main__"):
     # 1side_3
     ########
     ana_name = "ch032_1side_3__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=ch032_1side_3__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
@@ -77,7 +77,7 @@ if(__name__ == "__main__"):
     # 1side_4
     ########
     ana_name = "ch032_1side_4__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=ch032_1side_4__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
@@ -87,7 +87,7 @@ if(__name__ == "__main__"):
     # 1side_5
     ########
     ana_name = "ch032_1side_5__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=ch032_1side_5__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
@@ -97,7 +97,7 @@ if(__name__ == "__main__"):
     # 1side_6
     ########
     ana_name = "ch032_1side_6__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=ch032_1side_6__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
@@ -107,7 +107,7 @@ if(__name__ == "__main__"):
     # 1side_7
     ########
     ana_name = "ch032_1side_7__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=ch032_1side_7__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
@@ -117,7 +117,7 @@ if(__name__ == "__main__"):
     # 1side_8
     ########
     ana_name = "ch032_1side_8__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=ch032_1side_8__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\
@@ -127,7 +127,7 @@ if(__name__ == "__main__"):
     # 1side_9
     ########
     ana_name = "ch032_1side_9__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="rec",
                                         row_col_results=ch032_1side_9__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize=20, title_fontsize=60, jump_to=60, fix_size=(800, 800))\

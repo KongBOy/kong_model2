@@ -31,14 +31,14 @@ if(__name__ == "__main__"):
     ##########################################################################################################################################################################################################################################################################################
     ana_dir = template_dir
     ##########################################################################################################################################################################################################################################################################################
-    from step12_result_analyzer import Col_exps_results_analyzer, Row_col_results_analyzer, Bm_Rec_exps_analyze
+    from step12_result_analyzer import Col_exps_analyzer, Row_col_exps_analyzer, Bm_Rec_exps_analyze
     from step11_c import  *
     #############################################################################################################################################################################################################
     '''
     以下留下一些example這樣子
     '''
     # epoch300_500_results = [ exp.result_obj for exp in epoch300_500_exps]
-    # epoch300_500_analyze = Col_exps_results_analyzer(ana_describe="epoch300_500_exps2", col_results=epoch300_500_results, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
+    # epoch300_500_analyze = Col_exps_analyzer(ana_describe="epoch300_500_exps2", col_results=epoch300_500_results, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # epoch300_500_analyze.analyze_col_results_single_see(see_num=0, single_see_multiprocess=False)
     # epoch300_500_analyze.analyze_col_results_single_see(see_num=0, single_see_multiprocess=True)
     # epoch300_500_analyze.analyze_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=14)
@@ -56,7 +56,7 @@ if(__name__ == "__main__"):
     # epoch300_500_analyze.analyze_col_results_multi_see(see_nums=[0, 1], save_name="see_1_and_2", multiprocess=True, core_amount=8)
 
     ############################################
-    # epoch300_500_analyze_2row_all = Row_col_results_analyzer(ana_describe="2row_ep300_500_a020",
+    # epoch300_500_analyze_2row_all = Row_col_exps_analyzer(ana_describe="2row_ep300_500_a020",
     #                                                         row_col_results=[epoch300_500_results[:5],
     #                                                                         epoch300_500_results[5:10]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # epoch300_500_analyze_2row_all.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=6)
@@ -65,7 +65,7 @@ if(__name__ == "__main__"):
 
 
     # unet_L7_2to3noC_skip_SE_results = [exp.result_obj for exp in unet_L7_2to3noC_skip_SE]
-    # unet_L7_2to3noC_skip_SE_analyze = Row_col_results_analyzer(ana_describe="unet_L7_2to3noC_skip_SE",
+    # unet_L7_2to3noC_skip_SE_analyze = Row_col_exps_analyzer(ana_describe="unet_L7_2to3noC_skip_SE",
     #                                                         row_col_results=[[unet_L7_2to3noC_skip_SE_results[0], unet_L7_2to3noC_skip_SE_results[1]],
     #                                                                         [unet_L7_2to3noC_skip_SE_results[2], unet_L7_2to3noC_skip_SE_results[3]]], show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False)
     # unet_L7_2to3noC_skip_SE_analyze.analyze_row_col_results_all_single_see(single_see_multiprocess=True, single_see_core_amount=8)
