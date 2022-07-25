@@ -17,7 +17,7 @@ if(__name__ == "__main__"):
     # print("    kong_layer:", kong_layer)
     # print("    kong_model2_dir:", kong_model2_dir)
     #############################################################################################################################################################################################################
-    from step12_result_analyzer import Row_col_results_analyzer
+    from step12_result_analyzer import Row_col_exps_analyzer
     from step11 import  *
     #############################################################################################################################################################################################################
     kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
@@ -47,7 +47,7 @@ if(__name__ == "__main__"):
     # 1side_1
     ########
     ana_name = "Tcrop255_Pad_Loss_analyze"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="mask",
                                         row_col_results=Tcrop255_Pad_Loss_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(256, 256))\
@@ -55,7 +55,7 @@ if(__name__ == "__main__"):
                                             .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel")
 
     # ana_name = "L2345678_Ch"  ### test_see
-    # analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    # analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
     #                                     ana_what_sees="test",
     #                                     ana_what="rec",
     #                                     row_col_results=Layer2345678_Ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\

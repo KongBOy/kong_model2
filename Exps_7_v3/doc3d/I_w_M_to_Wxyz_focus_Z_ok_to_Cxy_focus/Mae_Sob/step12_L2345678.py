@@ -17,7 +17,7 @@ if(__name__ == "__main__"):
     # print("    kong_layer:", kong_layer)
     # print("    kong_model2_dir:", kong_model2_dir)
     #############################################################################################################################################################################################################
-    from step12_result_analyzer import Row_col_results_analyzer
+    from step12_result_analyzer import Row_col_exps_analyzer
     from step11 import  *
     #############################################################################################################################################################################################################
     kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
@@ -44,7 +44,7 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     #################################################################################################################################################################################################################
     ana_name = "combine_loss_analyze"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=combine_loss_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -52,7 +52,7 @@ if(__name__ == "__main__"):
                                             # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")
 
     ana_name = "combine_loss_and_DewarpNet_analyze"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=combine_loss_and_DewarpNet_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -60,7 +60,7 @@ if(__name__ == "__main__"):
                                             # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")
 
     ana_name = "combine1_fix_I_w_M_to_W__change_W_w_M_t_C"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=combine1_fix_I_w_M_to_W__change_W_w_M_t_C, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -69,7 +69,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "combine2_change_I_w_M_to_W__fix_W_w_M_t_C"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=combine2_change_I_w_M_to_W__fix_W_w_M_t_C, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -78,7 +78,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "combine2_2_change_I_w_M_to_W__fix_W_w_M_t_C_good_set"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=combine2_2_change_I_w_M_to_W__fix_W_w_M_t_C_good_set, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -87,7 +87,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "combine3_fix_I_w_M_to_W__change_W_w_M_t_C"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=combine3_fix_I_w_M_to_W__change_W_w_M_t_C, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
@@ -96,7 +96,7 @@ if(__name__ == "__main__"):
                                             # .analyze_row_col_result_SSIM_LD()
 
     ana_name = "combine4_change_I_w_M_to_W__fix_W_w_M_t_C"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
                                         row_col_results=combine4_change_I_w_M_to_W__fix_W_w_M_t_C, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\

@@ -17,7 +17,7 @@ if(__name__ == "__main__"):
     # print("    kong_layer:", kong_layer)
     # print("    kong_model2_dir:", kong_model2_dir)
     #############################################################################################################################################################################################################
-    from step12_result_analyzer import Row_col_results_analyzer
+    from step12_result_analyzer import Row_col_exps_analyzer
     from step11 import  *
     #############################################################################################################################################################################################################
     kong_to_py_layer = len(code_exe_path_element) - 1 - kong_layer  ### 中間 -1 是為了長度轉index
@@ -45,14 +45,14 @@ if(__name__ == "__main__"):
     #################################################################################################################################################################################################################
     ### L5
     ana_name = "Tcrop255_P20_Sob_L5"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
                                         row_col_results=Tcrop255_P20_Sob_L5, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(256, 256), jump_to=80)\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
                                             .Gather_all_see_final_img()
     # ana_name = "Tcrop255_P20_Sob_add_Bce_L5"
-    # analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    # analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
     #                                     ana_what_sees="see",
     #                                     ana_what="mask",
     #                                     row_col_results=Tcrop255_P20_Sob_add_Bce_L5, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(256, 256), jump_to=80)\
@@ -60,14 +60,14 @@ if(__name__ == "__main__"):
     #                                         .Gather_all_see_final_img()
     # ### L6
     # ana_name = "Tcrop255_P20_Sob_L6"
-    # analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    # analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
     #                                     ana_what_sees="see",
     #                                     ana_what="mask",
     #                                     row_col_results=Tcrop255_P20_Sob_L6, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(256, 256), jump_to=80)\
     #                                         .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
     #                                         .Gather_all_see_final_img()
     # ana_name = "Tcrop255_P20_Sob_add_Bce_L6"
-    # analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    # analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
     #                                     ana_what_sees="see",
     #                                     ana_what="mask",
     #                                     row_col_results=Tcrop255_P20_Sob_add_Bce_L6, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(256, 256), jump_to=80)\
@@ -78,7 +78,7 @@ if(__name__ == "__main__"):
 
 
     # ana_name = "L2345678_Ch"  ### test_see
-    # analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    # analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
     #                                     ana_what_sees="test",
     #                                     ana_what="rec",
     #                                     row_col_results=Layer2345678_Ch, show_in_img=False, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=512, img_w=512)\

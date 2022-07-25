@@ -87,7 +87,7 @@ if(__name__ == "__main__"):
     # 1side_5
     ########
     ana_name = "ch032_1side_5__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
                                         row_col_results=ch032_1side_5__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
@@ -97,7 +97,7 @@ if(__name__ == "__main__"):
     # 1side_6
     ########
     ana_name = "ch032_1side_6__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
                                         row_col_results=ch032_1side_6__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
@@ -107,7 +107,7 @@ if(__name__ == "__main__"):
     # 1side_7
     ########
     ana_name = "ch032_1side_7__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
                                         row_col_results=ch032_1side_7__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
@@ -117,7 +117,7 @@ if(__name__ == "__main__"):
     # 1side_8
     ########
     ana_name = "ch032_1side_8__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
                                         row_col_results=ch032_1side_8__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
@@ -127,7 +127,7 @@ if(__name__ == "__main__"):
     # 1side_9
     ########
     ana_name = "ch032_1side_9__23side_all"
-    analyzer = Row_col_results_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="see",
                                         ana_what="mask",
                                         row_col_results=ch032_1side_9__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
