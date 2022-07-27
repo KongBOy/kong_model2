@@ -113,14 +113,14 @@ class Result_analyzer:
     ########################################################################################################################################
 ########################################################################################################################################
 ########################################################################################################################################
-class Col_exps_results_analyzer(Result_analyzer):
+class Col_exps_analyzer(Result_analyzer):
     def __init__(self, ana_describe, ana_what_sees, ana_what, col_exps, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None, reset_test_db_name=None):
         super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
         self.c_exps    = col_exps
         self.c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_min_trained_epoch()去抓
         self.c_max_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_c_max_trained_epoch()去抓
         self._c_exps_results_init(reset_test_db_name)
-        print("Col_exps_results_analyzer build finish")
+        print("Col_exps_analyzer build finish")
 
         self.jump_to = jump_to
 
@@ -465,7 +465,7 @@ class Col_exps_results_analyzer(Result_analyzer):
 
 
 ### 目前小任務還沒有切multiprocess喔！
-class Row_col_results_analyzer(Result_analyzer):
+class Row_col_exps_analyzer(Result_analyzer):
     def __init__(self, ana_describe, ana_what_sees, ana_what, row_col_exps, show_in_img=True, show_gt_img=True, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, jump_to=0, fix_size=None, reset_test_db_name="None"):
         super().__init__(ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb, add_loss, img_h=img_h, img_w=img_w, fontsize=fontsize, title_fontsize=title_fontsize, fix_size=fix_size)
         self.r_c_min_trained_epoch = None  ### 要使用的時候再去用 self.step0_get_r_c_min_trained_epoch()去抓
@@ -473,8 +473,8 @@ class Row_col_results_analyzer(Result_analyzer):
 
         self.r_c_exps_objs = []
         for c_exps in row_col_exps:
-            self.r_c_exps_objs.append(Col_exps_results_analyzer(ana_describe=ana_describe, ana_what_sees=ana_what_sees, ana_what=ana_what, col_exps=c_exps, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss, img_h=img_h, img_w=img_w, reset_test_db_name=reset_test_db_name))
-        print("Row_col_results_analyzer build finish")
+            self.r_c_exps_objs.append(Col_exps_analyzer(ana_describe=ana_describe, ana_what_sees=ana_what_sees, ana_what=ana_what, col_exps=c_exps, show_in_img=self.show_in_img, show_gt_img=self.show_gt_img, bgr2rgb=self.bgr2rgb, add_loss=self.add_loss, img_h=img_h, img_w=img_w, reset_test_db_name=reset_test_db_name))
+        print("Row_col_exps_analyzer build finish")
 
         self.jump_to = jump_to
 
@@ -790,7 +790,7 @@ if(__name__ == "__main__"):
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ### Result_analyzer 的 各method測試：
-    # try_c_result_analyzer = Col_exps_results_analyzer(ana_describe="try_c_result_analyzer", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20 ])
+    # try_c_result_analyzer = Col_exps_analyzer(ana_describe="try_c_result_analyzer", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20 ])
     # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=False)
     # try_c_result_analyzer.analyze_col_results_single_see(0, add_loss=True, single_see_multiprocess=True)
     # try_c_result_analyzer.analyze_col_results_all_single_see(add_loss=True)
@@ -805,81 +805,81 @@ if(__name__ == "__main__"):
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ########################################################################################################################################################################
-    # os_book_G_D_mae136 = Col_exps_results_analyzer(ana_describe="5_1_GD_Gmae136_epoch700", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae3, os_book_rect_1532_mae6, os_book_rect_1532_mae6_noD]); doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
+    # os_book_G_D_mae136 = Col_exps_analyzer(ana_describe="5_1_GD_Gmae136_epoch700", col_results=[os_book_rect_1532_mae1, os_book_rect_1532_mae3, os_book_rect_1532_mae6, os_book_rect_1532_mae6_noD]); doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
     ##################################################################################################################
     # os_book_rect_D025目前太少，之後再加進去
-    # os_book_G_D_vs_justG = Col_exps_results_analyzer(ana_describe="5_2_GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D01, os_book_rect_D00, os_book_rect_D00_justG]); doing_analyze_2page(os_book_G_D_vs_justG)
+    # os_book_G_D_vs_justG = Col_exps_analyzer(ana_describe="5_2_GD_vs_justG", col_results=[os_book_rect_D10, os_book_rect_D05, os_book_rect_D01, os_book_rect_D00, os_book_rect_D00_justG]); doing_analyze_2page(os_book_G_D_vs_justG)
     ##################################################################################################################
-    # os_book_1532data_mae136920 = Col_exps_results_analyzer(ana_describe="5_3_justG_136920", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20]); doing_analyze_2page(os_book_1532data_mae136920)
+    # os_book_1532data_mae136920 = Col_exps_analyzer(ana_describe="5_3_justG_136920", col_results=[os_book_justG_mae1, os_book_justG_mae3, os_book_justG_mae6, os_book_justG_mae9, os_book_justG_mae20]); doing_analyze_2page(os_book_1532data_mae136920)
     ##################################################################################################################
     ### 5_4.放大縮小的比較 norm/ bigger
-    # os_book_justG_bigger = Col_exps_results_analyzer(ana_describe="5_4_justG_a_bigger", col_results=[os_book_justG_normal, os_book_justG_bigger]); doing_analyze_2page(os_book_justG_bigger)
+    # os_book_justG_bigger = Col_exps_analyzer(ana_describe="5_4_justG_a_bigger", col_results=[os_book_justG_normal, os_book_justG_bigger]); doing_analyze_2page(os_book_justG_bigger)
     ##################################################################################################################
     ### 5_4.放大縮小的比較 bigger_wrong/norm/small/small2
-    # os_book_justG_big_small = Col_exps_results_analyzer(ana_describe="5_4_justG_b_bigger_smaller", col_results=[os_book_justG_bigger, os_book_justG_normal, os_book_justG_smaller, os_book_justG_smaller2]); doing_analyze_2page(os_book_justG_big_small)
+    # os_book_justG_big_small = Col_exps_analyzer(ana_describe="5_4_justG_b_bigger_smaller", col_results=[os_book_justG_bigger, os_book_justG_normal, os_book_justG_smaller, os_book_justG_smaller2]); doing_analyze_2page(os_book_justG_big_small)
     ##################################################################################################################
     ### 5_5.focus
-    # os_book_focus_GD_vs_G = Col_exps_results_analyzer(ana_describe="5_5_focus_GD_vs_G", col_results=[os_book_rect_nfocus, os_book_rect_focus, os_book_justG_nfocus, os_book_justG_focus]); doing_analyze_2page(os_book_focus_GD_vs_G)
+    # os_book_focus_GD_vs_G = Col_exps_analyzer(ana_describe="5_5_focus_GD_vs_G", col_results=[os_book_rect_nfocus, os_book_rect_focus, os_book_justG_nfocus, os_book_justG_focus]); doing_analyze_2page(os_book_focus_GD_vs_G)
     ##################################################################################################################
     ### 5_6.400 vs 1532
-    # os_book_400 = Col_exps_results_analyzer(ana_describe="5_6_a_400_page", col_results=[os_book_400_rect, os_book_400_justG]); doing_analyze_2page(os_book_400)
+    # os_book_400 = Col_exps_analyzer(ana_describe="5_6_a_400_page", col_results=[os_book_400_rect, os_book_400_justG]); doing_analyze_2page(os_book_400)
     ##################################################################################################################
     ### 5_6.400 vs 1532
-    # os_book_400_vs_1532 = Col_exps_results_analyzer(ana_describe="5_6_b_400_vs_1532_page", col_results=[os_book_400_rect, os_book_400_justG, os_book_1532_rect, os_book_1532_justG]); doing_analyze_2page(os_book_400_vs_1532)
+    # os_book_400_vs_1532 = Col_exps_analyzer(ana_describe="5_6_b_400_vs_1532_page", col_results=[os_book_400_rect, os_book_400_justG, os_book_1532_rect, os_book_1532_justG]); doing_analyze_2page(os_book_400_vs_1532)
     ##################################################################################################################
     ### 5_7.第一層 k7 vs k3
-    # os_book_first_k7_vs_k3 = Col_exps_results_analyzer(ana_describe="5_7_first_k7_vs_k3", col_results=[os_book_GD_first_k7, os_book_GD_first_k3, os_book_G_first_k7, os_book_G_first_k3 ]); doing_analyze_2page(os_book_first_k7_vs_k3)
+    # os_book_first_k7_vs_k3 = Col_exps_analyzer(ana_describe="5_7_first_k7_vs_k3", col_results=[os_book_GD_first_k7, os_book_GD_first_k3, os_book_G_first_k7, os_book_G_first_k3 ]); doing_analyze_2page(os_book_first_k7_vs_k3)
     ##################################################################################################################
     ### 5_8a.GD + mrf比較
-    # os_book_GD_mrf     = Col_exps_results_analyzer(ana_describe="5_8a_GD_mrf"    , col_results=[os_book_GD_no_mrf, os_book_GD_mrf_79, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf)
-    # os_book_GD_mrf_all = Col_exps_results_analyzer(ana_describe="5_8a_GD_mrf_all", col_results=[os_book_GD_no_mrf, os_book_GD_mrf_7 , os_book_GD_mrf_79, os_book_GD_mrf_replace7, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf_all)
+    # os_book_GD_mrf     = Col_exps_analyzer(ana_describe="5_8a_GD_mrf"    , col_results=[os_book_GD_no_mrf, os_book_GD_mrf_79, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf)
+    # os_book_GD_mrf_all = Col_exps_analyzer(ana_describe="5_8a_GD_mrf_all", col_results=[os_book_GD_no_mrf, os_book_GD_mrf_7 , os_book_GD_mrf_79, os_book_GD_mrf_replace7, os_book_GD_mrf_replace79]); doing_analyze_2page(os_book_GD_mrf_all)
     ##################################################################################################################
     ### 5_8b._1 G + mrf比較
-    # os_book_G_mrf                      = Col_exps_results_analyzer    (ana_describe="5_8b_1_G_mrf"                , col_results=[os_book_G_no_mrf, os_book_G_mrf_79, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf)
-    # os_book_G_mrf_all                  = Col_exps_results_analyzer    (ana_describe="5_8b_1_G_mrf_all"            , col_results=[os_book_G_no_mrf, os_book_G_mrf_7,  os_book_G_mrf_79, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf_all)
+    # os_book_G_mrf                      = Col_exps_analyzer    (ana_describe="5_8b_1_G_mrf"                , col_results=[os_book_G_no_mrf, os_book_G_mrf_79, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf)
+    # os_book_G_mrf_all                  = Col_exps_analyzer    (ana_describe="5_8b_1_G_mrf_all"            , col_results=[os_book_G_no_mrf, os_book_G_mrf_7,  os_book_G_mrf_79, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_G_mrf_all)
 
-    # os_book_8c_Gmrf_3branch            = Col_exps_results_analyzer    (ana_describe="5_8c_Gmrf_3branch",  col_results=[os_book_G_mrf_135 ,  os_book_G_mrf_357 , os_book_G_mrf_3579 ]); doing_analyze_2page(os_book_8c_Gmrf_3branch )
-    # os_book_8d_GDmrf_3branch           = Col_exps_results_analyzer    (ana_describe="5_8d_GDmrf_3branch", col_results=[os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]); doing_analyze_2page(os_book_8d_GDmrf_3branch)
-    # os_book_5_8cd                      = Row_col_results_analyzer(ana_describe="5_8cd", row_col_results=[[os_book_G_mrf_135,  os_book_G_mrf_357, os_book_G_mrf_3579],
+    # os_book_8c_Gmrf_3branch            = Col_exps_analyzer    (ana_describe="5_8c_Gmrf_3branch",  col_results=[os_book_G_mrf_135 ,  os_book_G_mrf_357 , os_book_G_mrf_3579 ]); doing_analyze_2page(os_book_8c_Gmrf_3branch )
+    # os_book_8d_GDmrf_3branch           = Col_exps_analyzer    (ana_describe="5_8d_GDmrf_3branch", col_results=[os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]); doing_analyze_2page(os_book_8d_GDmrf_3branch)
+    # os_book_5_8cd                      = Row_col_exps_analyzer(ana_describe="5_8cd", row_col_results=[[os_book_G_mrf_135,  os_book_G_mrf_357, os_book_G_mrf_3579],
     #                                                                                                      [os_book_GD_mrf_135,  os_book_GD_mrf_357, os_book_GD_mrf_3579]])
     # os_book_5_8cd.analyze_row_col_results_all_single_see_multiprocess(single_see_multiprocess=True, single_see_core_amount=10)
 
-    # os_book_8b_2_G_mrf753_k3                  = Col_exps_results_analyzer    (ana_describe="5_8b_2_G_mrf753_k3"          , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_7_firstk3,  os_book_G_mrf_5_firstk3,  os_book_G_mrf_3_firstk3 ]); doing_analyze_2page(os_book_8b_2_G_mrf753_k3)
-    # os_book_8b_3_G_mrf97_75_53                = Col_exps_results_analyzer    (ana_describe="5_8b_3_G_mrf97_75_53"        , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_79_firstk3, os_book_G_mrf_57_firstk3, os_book_G_mrf_35_firstk3]); doing_analyze_2page(os_book_8b_3_G_mrf97_75_53)
-    # os_book_8b_4_G_mrf_replace753             = Col_exps_results_analyzer    (ana_describe="5_8b_4_G_mrf_replace753"     , col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace7,  os_book_G_mrf_replace5,  os_book_G_mrf_replace3 ]); doing_analyze_2page(os_book_8b_4_G_mrf_replace753)
-    # os_book_8b_5_G_mrf_replace97_75_53        = Col_exps_results_analyzer    (ana_describe="5_8b_5_G_mrf_replace97_75_53", col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace79, os_book_G_mrf_replace57, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_5_G_mrf_replace97_75_53)
-    # os_book_8b_6a_Gmrf7_1_2branch_try_replace = Col_exps_results_analyzer    (ana_describe="5_8b_6a_Gmrf7_1_2branch_try_replace", col_results=[os_book_G_mrf_7_firstk3,  os_book_G_mrf_79_firstk3, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_8b_6a_Gmrf7_1_2branch_try_replace)
-    # os_book_8b_6b_Gmrf5_1_2branch_try_replace = Col_exps_results_analyzer    (ana_describe="5_8b_6b_Gmrf5_1_2branch_try_replace", col_results=[os_book_G_mrf_5_firstk3,  os_book_G_mrf_57_firstk3, os_book_G_mrf_replace5, os_book_G_mrf_replace57]); doing_analyze_2page(os_book_8b_6b_Gmrf5_1_2branch_try_replace)
-    # os_book_8b_6c_Gmrf3_1_2branch_try_replace = Col_exps_results_analyzer    (ana_describe="5_8b_6c_Gmrf3_1_2branch_try_replace", col_results=[os_book_G_mrf_3_firstk3,  os_book_G_mrf_35_firstk3, os_book_G_mrf_replace3, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_6c_Gmrf3_1_2branch_try_replace)
-    # os_book_5_8b_7_all                        = Row_col_results_analyzer(ana_describe="5_8b_7_all", row_col_results=[[os_book_G_mrf_7_firstk3,  os_book_G_mrf_79_firstk3, os_book_G_mrf_replace7, os_book_G_mrf_replace79],
+    # os_book_8b_2_G_mrf753_k3                  = Col_exps_analyzer    (ana_describe="5_8b_2_G_mrf753_k3"          , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_7_firstk3,  os_book_G_mrf_5_firstk3,  os_book_G_mrf_3_firstk3 ]); doing_analyze_2page(os_book_8b_2_G_mrf753_k3)
+    # os_book_8b_3_G_mrf97_75_53                = Col_exps_analyzer    (ana_describe="5_8b_3_G_mrf97_75_53"        , col_results=[os_book_G_no_mrf_firstk3, os_book_G_mrf_79_firstk3, os_book_G_mrf_57_firstk3, os_book_G_mrf_35_firstk3]); doing_analyze_2page(os_book_8b_3_G_mrf97_75_53)
+    # os_book_8b_4_G_mrf_replace753             = Col_exps_analyzer    (ana_describe="5_8b_4_G_mrf_replace753"     , col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace7,  os_book_G_mrf_replace5,  os_book_G_mrf_replace3 ]); doing_analyze_2page(os_book_8b_4_G_mrf_replace753)
+    # os_book_8b_5_G_mrf_replace97_75_53        = Col_exps_analyzer    (ana_describe="5_8b_5_G_mrf_replace97_75_53", col_results=[os_book_G_no_mrf,  os_book_G_mrf_replace79, os_book_G_mrf_replace57, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_5_G_mrf_replace97_75_53)
+    # os_book_8b_6a_Gmrf7_1_2branch_try_replace = Col_exps_analyzer    (ana_describe="5_8b_6a_Gmrf7_1_2branch_try_replace", col_results=[os_book_G_mrf_7_firstk3,  os_book_G_mrf_79_firstk3, os_book_G_mrf_replace7, os_book_G_mrf_replace79]); doing_analyze_2page(os_book_8b_6a_Gmrf7_1_2branch_try_replace)
+    # os_book_8b_6b_Gmrf5_1_2branch_try_replace = Col_exps_analyzer    (ana_describe="5_8b_6b_Gmrf5_1_2branch_try_replace", col_results=[os_book_G_mrf_5_firstk3,  os_book_G_mrf_57_firstk3, os_book_G_mrf_replace5, os_book_G_mrf_replace57]); doing_analyze_2page(os_book_8b_6b_Gmrf5_1_2branch_try_replace)
+    # os_book_8b_6c_Gmrf3_1_2branch_try_replace = Col_exps_analyzer    (ana_describe="5_8b_6c_Gmrf3_1_2branch_try_replace", col_results=[os_book_G_mrf_3_firstk3,  os_book_G_mrf_35_firstk3, os_book_G_mrf_replace3, os_book_G_mrf_replace35]); doing_analyze_2page(os_book_8b_6c_Gmrf3_1_2branch_try_replace)
+    # os_book_5_8b_7_all                        = Row_col_exps_analyzer(ana_describe="5_8b_7_all", row_col_results=[[os_book_G_mrf_7_firstk3,  os_book_G_mrf_79_firstk3, os_book_G_mrf_replace7, os_book_G_mrf_replace79],
     #                                                                                                                   [os_book_G_mrf_5_firstk3,  os_book_G_mrf_57_firstk3, os_book_G_mrf_replace5, os_book_G_mrf_replace57],
     #                                                                                                                   [os_book_G_mrf_3_firstk3,  os_book_G_mrf_35_firstk3, os_book_G_mrf_replace3, os_book_G_mrf_replace35]])
     # os_book_5_8b_7_all.analyze_row_col_results_all_single_see_multiprocess(single_see_multiprocess=True, single_see_core_amount=8)
 
     ##################################################################################################################
     ### 5_9a.Gk7D，D_concat_try and k3 or k4
-    # os_book_Gk7D_concat_try_and_k3_k4          = Col_exps_results_analyzer(ana_describe="5_9a_Gk7D_D_concat_try_and_k3,4"         , col_results=[os_book_Gk7_D_concat_k4, os_book_Gk7_D_concat_k3, os_book_Gk7_D_no_concat_k4, os_book_Gk7_D_no_concat_k3]);                   doing_analyze_2page(os_book_Gk7D_concat_try_and_k3_k4)
-    # os_book_Gk7D_concat_try_and_k3_k4_and_no_D = Col_exps_results_analyzer(ana_describe="5_9a_Gk7D_D_concat_try_and_k3,4_and_no_D", col_results=[os_book_Gk7_D_concat_k4, os_book_Gk7_D_concat_k3, os_book_Gk7_D_no_concat_k4, os_book_Gk7_D_no_concat_k3, os_book_Gk7_no_D]); doing_analyze_2page(os_book_Gk7D_concat_try_and_k3_k4_and_no_D)
+    # os_book_Gk7D_concat_try_and_k3_k4          = Col_exps_analyzer(ana_describe="5_9a_Gk7D_D_concat_try_and_k3,4"         , col_results=[os_book_Gk7_D_concat_k4, os_book_Gk7_D_concat_k3, os_book_Gk7_D_no_concat_k4, os_book_Gk7_D_no_concat_k3]);                   doing_analyze_2page(os_book_Gk7D_concat_try_and_k3_k4)
+    # os_book_Gk7D_concat_try_and_k3_k4_and_no_D = Col_exps_analyzer(ana_describe="5_9a_Gk7D_D_concat_try_and_k3,4_and_no_D", col_results=[os_book_Gk7_D_concat_k4, os_book_Gk7_D_concat_k3, os_book_Gk7_D_no_concat_k4, os_book_Gk7_D_no_concat_k3, os_book_Gk7_no_D]); doing_analyze_2page(os_book_Gk7D_concat_try_and_k3_k4_and_no_D)
 
     ### 5_9b.Gk3D，D_concat_try and k3 or k4
-    # os_book_Gk3D_concat_try_and_k3_k4          = Col_exps_results_analyzer(ana_describe="5_9b_Gk3D_D_concat_try_and_k3,4"         , col_results=[os_book_Gk3_D_concat_k4, os_book_Gk3_D_concat_k3, os_book_Gk3_D_no_concat_k4, os_book_Gk3_D_no_concat_k3]);                   doing_analyze_2page(os_book_Gk3D_concat_try_and_k3_k4)
-    # os_book_Gk3D_concat_try_and_k3_k4_and_no_D = Col_exps_results_analyzer(ana_describe="5_9b_Gk3D_D_concat_try_and_k3,4_and_no_D", col_results=[os_book_Gk3_D_concat_k4, os_book_Gk3_D_concat_k3, os_book_Gk3_D_no_concat_k4, os_book_Gk3_D_no_concat_k3, os_book_Gk3_no_D]); doing_analyze_2page(os_book_Gk3D_concat_try_and_k3_k4_and_no_D)
+    # os_book_Gk3D_concat_try_and_k3_k4          = Col_exps_analyzer(ana_describe="5_9b_Gk3D_D_concat_try_and_k3,4"         , col_results=[os_book_Gk3_D_concat_k4, os_book_Gk3_D_concat_k3, os_book_Gk3_D_no_concat_k4, os_book_Gk3_D_no_concat_k3]);                   doing_analyze_2page(os_book_Gk3D_concat_try_and_k3_k4)
+    # os_book_Gk3D_concat_try_and_k3_k4_and_no_D = Col_exps_analyzer(ana_describe="5_9b_Gk3D_D_concat_try_and_k3,4_and_no_D", col_results=[os_book_Gk3_D_concat_k4, os_book_Gk3_D_concat_k3, os_book_Gk3_D_no_concat_k4, os_book_Gk3_D_no_concat_k3, os_book_Gk3_no_D]); doing_analyze_2page(os_book_Gk3D_concat_try_and_k3_k4_and_no_D)
 
     ##################################################################################################################
     ### 5_10.GD，D保持train 1次，G train 1,3,5次 比較
-    # os_book_D1Gmany                     = Col_exps_results_analyzer(ana_describe="5_10_GD_D", col_results=[os_book_D1G1, os_book_D1G3, os_book_D1G5]); doing_analyze_2page(os_book_D1Gmany)
-    # os_book_GD_D_train1_G_train_135     = Col_exps_results_analyzer(ana_describe="5_10_GD_D_train1_G_train_135"  , col_results=[os_book_D1G1 , os_book_D1G3, os_book_D1G5 ]); doing_analyze_2page(os_book_GD_D_train1_G_train_135)
+    # os_book_D1Gmany                     = Col_exps_analyzer(ana_describe="5_10_GD_D", col_results=[os_book_D1G1, os_book_D1G3, os_book_D1G5]); doing_analyze_2page(os_book_D1Gmany)
+    # os_book_GD_D_train1_G_train_135     = Col_exps_analyzer(ana_describe="5_10_GD_D_train1_G_train_135"  , col_results=[os_book_D1G1 , os_book_D1G3, os_book_D1G5 ]); doing_analyze_2page(os_book_GD_D_train1_G_train_135)
     ##################################################################################################################
-    # os_book_11a_G_res_try                  = Col_exps_results_analyzer(ana_describe="5_11a_G_res_try"               , col_results=[os_book_Gk3_res              , os_book_Gk3_no_res               ]); doing_analyze_2page(os_book_11a_G_res_try)
-    # os_book_11b_G_mrf357_res_try           = Col_exps_results_analyzer(ana_describe="5_11b_G_mrf357_res_try"          , col_results=[os_book_G_mrf_357_res        , os_book_G_mrf_357_no_res         ]); doing_analyze_2page(os_book_11b_G_mrf357_res_try)
-    # os_book_11c_Gk3_Dk4_no_concat_res_try  = Col_exps_results_analyzer(ana_describe="5_11c_Gk3_Dk4_no_concat_res_try" , col_results=[os_book_Gk3_Dk4_no_concat_res, os_book_Gk3_Dk4_no_concat_no_res ]); doing_analyze_2page(os_book_11c_Gk3_Dk4_no_concat_res_try)
+    # os_book_11a_G_res_try                  = Col_exps_analyzer(ana_describe="5_11a_G_res_try"               , col_results=[os_book_Gk3_res              , os_book_Gk3_no_res               ]); doing_analyze_2page(os_book_11a_G_res_try)
+    # os_book_11b_G_mrf357_res_try           = Col_exps_analyzer(ana_describe="5_11b_G_mrf357_res_try"          , col_results=[os_book_G_mrf_357_res        , os_book_G_mrf_357_no_res         ]); doing_analyze_2page(os_book_11b_G_mrf357_res_try)
+    # os_book_11c_Gk3_Dk4_no_concat_res_try  = Col_exps_analyzer(ana_describe="5_11c_Gk3_Dk4_no_concat_res_try" , col_results=[os_book_Gk3_Dk4_no_concat_res, os_book_Gk3_Dk4_no_concat_no_res ]); doing_analyze_2page(os_book_11c_Gk3_Dk4_no_concat_res_try)
     ##################################################################################################################
-    # os_book_12_Gk3_resb_num           = Col_exps_results_analyzer(ana_describe="5_12_Gk3_resb_num"           , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb20]); doing_analyze_2page(os_book_12_Gk3_resb_num)
-    # os_book_12_Gk3_resb_num_11_512ep  = Col_exps_results_analyzer(ana_describe="5_12_Gk3_resb_num_11_512ep"  , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb11,  os_book_Gk3_resb20 ]); doing_analyze_2page(os_book_12_Gk3_resb_num_11_512ep)
+    # os_book_12_Gk3_resb_num           = Col_exps_analyzer(ana_describe="5_12_Gk3_resb_num"           , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb20]); doing_analyze_2page(os_book_12_Gk3_resb_num)
+    # os_book_12_Gk3_resb_num_11_512ep  = Col_exps_analyzer(ana_describe="5_12_Gk3_resb_num_11_512ep"  , col_results=[os_book_Gk3_resb0 , os_book_Gk3_resb1, os_book_Gk3_resb7, os_book_Gk3_resb9, os_book_Gk3_resb11,  os_book_Gk3_resb20 ]); doing_analyze_2page(os_book_12_Gk3_resb_num_11_512ep)
 
     ##################################################################################################################
-    # os_book_13a_Gk3_coord_conv            = Col_exps_results_analyzer(ana_describe="5_13a_Gk3_coord_conv"            , col_results=[os_book_Gk3_no_coord_conv           , os_book_Gk3_coord_conv_first, os_book_Gk3_coord_conv_first_end, os_book_Gk3_coord_conv_all]); doing_analyze_2page(os_book_13a_Gk3_coord_conv)
-    # os_book_13b_Gk3_mrf357_coord_conv     = Col_exps_results_analyzer(ana_describe="5_13b_Gk3_mrf357_coord_conv"    , col_results=[os_book_Gk3_mrf_357_no_coord_conv   , os_book_Gk3_mrf357_coord_conv_first, os_book_Gk3_mrf357_coord_conv_all]); doing_analyze_2page(os_book_13b_Gk3_mrf357_coord_conv)
+    # os_book_13a_Gk3_coord_conv            = Col_exps_analyzer(ana_describe="5_13a_Gk3_coord_conv"            , col_results=[os_book_Gk3_no_coord_conv           , os_book_Gk3_coord_conv_first, os_book_Gk3_coord_conv_first_end, os_book_Gk3_coord_conv_all]); doing_analyze_2page(os_book_13a_Gk3_coord_conv)
+    # os_book_13b_Gk3_mrf357_coord_conv     = Col_exps_analyzer(ana_describe="5_13b_Gk3_mrf357_coord_conv"    , col_results=[os_book_Gk3_mrf_357_no_coord_conv   , os_book_Gk3_mrf357_coord_conv_first, os_book_Gk3_mrf357_coord_conv_all]); doing_analyze_2page(os_book_13b_Gk3_mrf357_coord_conv)
 
 
 
@@ -901,7 +901,7 @@ if(__name__ == "__main__"):
     ########################################################################################################################################################################
     ########################################################################################################################################################################
     ### 分析 bg 和 gt_color
-    # bg_and_gt_color_analyze = Col_exps_results_analyzer(ana_describe="4_1-bg_and_gt_color_analyze", col_results=bg_and_gt_color_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
+    # bg_and_gt_color_analyze = Col_exps_analyzer(ana_describe="4_1-bg_and_gt_color_analyze", col_results=bg_and_gt_color_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
 
     ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ 不過single還是有好處：可以放很大喔！覺得有空再生成好了～
     # bg_and_gt_color_analyze.analyze_col_results_all_single_see_multiprocess(bg_and_gt_color_results)  ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ
@@ -923,12 +923,12 @@ if(__name__ == "__main__"):
 
     #################################################################################################################################
     ### 分析 mrf loss mae的比例
-    # mrf_loss_analyze = Row_col_results_analyzer(ana_describe="4_3-mrf_loss_analyze", row_col_results=mrf_r_c_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
+    # mrf_loss_analyze = Row_col_exps_analyzer(ana_describe="4_3-mrf_loss_analyze", row_col_results=mrf_r_c_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
     # mrf_loss_analyze.analyze_row_col_results_all_single_see_multiprocess()
 
     #################################################################################################################################
     ### 分析 mrf 取代 第一層7
-    # mrf_replace7_analyze = Col_exps_results_analyzer(ana_describe="4_4-mrf_replace7_analyze", col_results=mrf_replace7_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
+    # mrf_replace7_analyze = Col_exps_analyzer(ana_describe="4_4-mrf_replace7_analyze", col_results=mrf_replace7_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
     ### 覺得好像可以省，因為看multi的比較方便ˊ口ˋ 不過single還是有好處：可以放很大喔！覺得有空再生成好了～
     # mrf_replace7_analyze.analyze_col_results_all_single_see_multiprocess(mrf_replace7_results)
 
@@ -967,15 +967,15 @@ if(__name__ == "__main__"):
 
 
     #########################################################################################################
-    ### Col_exps_results_analyzer 的使用範例
+    ### Col_exps_analyzer 的使用範例
     # try_c_results = [mrf_7_9_1, mrf_7_11_1, mrf_9_11_1, mrf_13579_1]
-    # try_c_result_multi_see = Col_exps_results_analyzer(ana_describe="try_c_result_multi_see", col_results=try_c_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
+    # try_c_result_multi_see = Col_exps_analyzer(ana_describe="try_c_result_multi_see", col_results=try_c_results)  #  ; doing_analyze_2page(os_book_G_D_mae136); doing_analyze_2page(os_book_G_D_mae136)
 
     # try_c_result_multi_see.analyze_col_results_multi_see([1, 3, 5], "see_1_3_5_jpg_then_crop")
     # try_c_result_multi_see.analyze_col_results_multi_see([1, 3, 5], "see_1_3_5_jpg")
     # try_c_result_multi_see.analyze_col_results_single_see(1)
     ##################################################################################################################
-    ### Row_col_results_analyzer 的使用範例
-    # try_r_c_ana = Row_col_results_analyzer(ana_describe="try_row_col_results",row_col_results = [[os_book_justG_mae1 , os_book_justG_mae3],
+    ### Row_col_exps_analyzer 的使用範例
+    # try_r_c_ana = Row_col_exps_analyzer(ana_describe="try_row_col_results",row_col_results = [[os_book_justG_mae1 , os_book_justG_mae3],
     #                                                                                              [os_book_justG_mae20, os_book_justG_mae6] ])
     # try_r_c_ana.analyze_row_col_results_single_see(2)
