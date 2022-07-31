@@ -23,53 +23,93 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 from step10_a import *
 from Exps_7_v3.doc3d.DewarpNet_result.step10_a import Model_run, Google_down, Recti_run
 #################################################################################################################################################################################################################################################################################################################################################################################################
-#################################
+##### 前change(參no init) 後fix
+I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_Full_Less_analyze = [
+    [Google_down],
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less, ] ,
+]
+I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_Full_More_analyze = [
+    [Google_down],
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More, ] ,
+]
+I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_NoFu_Less_analyze = [
+    [Google_down],
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, ] ,
+]
+I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_NoFu_More_analyze = [
+    [Google_down],
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+]
+
+I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_all_analyze = [
+    [Google_down],
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less, ] ,
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More, ] ,
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, ] ,
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+]
+
+##### 前change 後fix
+I_w_M_to_W_change__W_w_M_t_C_fix_Full_Less_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less, ] ,
+]
+I_w_M_to_W_change__W_w_M_t_C_fix_Full_More_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More, ] ,
+]
+I_w_M_to_W_change__W_w_M_t_C_fix_NoFu_Less_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, ] ,
+]
+I_w_M_to_W_change__W_w_M_t_C_fix_NoFu_More_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+]
+
+I_w_M_to_W_change__W_w_M_t_C_fix_all_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+]
+##################################################################################################################################
 ##### 前fix 後change
-### 分析 Div_3UNet_analyze
-
-# ##### 一起訓練
-# ### 3UNet
-# I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010
-# ### wiDiv
-# I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010
-# ### woD_L
-# I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010
-# ### woD_M
-# I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010
-
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__3UNet_analyze = [
-    [Google_down, ],
-    [I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010, ] ,
-]
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__wiDiv_analyze = [
+I_w_M_to_W_fix_Full_Less_No_init__W_w_M_t_C_change_analyze = [
     [Google_down],
-    [I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010, ] ,
-]
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__woD_L_analyze = [
-    [Google_down],
-    [I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010, ] ,
-]
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__woD_M_analyze = [
-    [Google_down],
-    [I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010, ] ,
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
 ]
 
-comb_all__change_I_w_M_to_W_then_changeW_w_M_t_C_analyze = [
+I_w_M_to_W_fix_Full_Less__W_w_M_t_C_change_analyze = [
     [Google_down],
-    [I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010, ] ,
-    [I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010, ] ,
-    [I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010, ] ,
-    [I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010, I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+]
+I_w_M_to_W_fix_Full_More__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+]
+I_w_M_to_W_fix_NoFu_Less__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+]
+I_w_M_to_W_fix_NoFu_More__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+]
+
+I_w_M_to_W_fix_all__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+]
+
+I_w_M_to_W_fix_all_No_init__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_No_inital_train_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_Full_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
+    [exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
 ]

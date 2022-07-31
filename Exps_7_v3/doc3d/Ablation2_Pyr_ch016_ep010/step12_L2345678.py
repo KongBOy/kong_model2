@@ -42,48 +42,112 @@ if(__name__ == "__main__"):
     但建議不要用，已經測過，爆記憶體了
     """
     #################################################################################################################################################################################################################
-    #################################
-    ana_name = "comb_change_I_w_M_to_W__fix_W_w_M_t_C__3UNet_analyze"
+    ##### 前change(參no init) 後fix
+    ana_name = "I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_Full_Less_analyze"
     analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
-                                        row_col_results=comb_change_I_w_M_to_W__fix_W_w_M_t_C__3UNet_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                        row_col_exps=I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_Full_Less_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
+                                            # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            # .analyze_row_col_result_SSIM_LD()
+ 
+    ana_name = "I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_Full_More_analyze"
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="test",
+                                        ana_what="rec",
+                                        row_col_exps=I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_Full_More_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
                                             # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             # .analyze_row_col_result_SSIM_LD()
 
-    ana_name = "comb_change_I_w_M_to_W__fix_W_w_M_t_C__wiDiv_analyze"
+    ana_name = "I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_NoFu_Less_analyze"
     analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
-                                        row_col_results=comb_change_I_w_M_to_W__fix_W_w_M_t_C__wiDiv_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                        row_col_exps=I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_NoFu_Less_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
                                             # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             # .analyze_row_col_result_SSIM_LD()
 
-    ana_name = "comb_change_I_w_M_to_W__fix_W_w_M_t_C__woD_L_analyze"
+    ana_name = "I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_NoFu_More_analyze"
     analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
-                                        row_col_results=comb_change_I_w_M_to_W__fix_W_w_M_t_C__woD_L_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                        row_col_exps=I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_NoFu_More_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
                                             # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             # .analyze_row_col_result_SSIM_LD()
 
-    ana_name = "comb_change_I_w_M_to_W__fix_W_w_M_t_C__woD_M_analyze"
+    ana_name = "I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_all_analyze"
     analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
-                                        row_col_results=comb_change_I_w_M_to_W__fix_W_w_M_t_C__woD_M_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                        row_col_exps=I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_all_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
                                             # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             # .analyze_row_col_result_SSIM_LD()
-
-    ana_name = "comb_all__change_I_w_M_to_W_then_changeW_w_M_t_C_analyze"
+    ##################################################################################################################################
+    ##### 前fix 後change
+    ana_name = "I_w_M_to_W_fix_Full_Less_No_init__W_w_M_t_C_change_analyze"
     analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
                                         ana_what_sees="test",
                                         ana_what="rec",
-                                        row_col_results=comb_all__change_I_w_M_to_W_then_changeW_w_M_t_C_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                        row_col_exps=I_w_M_to_W_fix_Full_Less_No_init__W_w_M_t_C_change_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
                                             .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
                                             .analyze_row_col_result_SSIM_LD()
+
+    # ana_name = "I_w_M_to_W_fix_Full_Less__W_w_M_t_C_change_analyze"
+    # analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    #                                     ana_what_sees="test",
+    #                                     ana_what="rec",
+    #                                     row_col_exps=I_w_M_to_W_fix_Full_Less__W_w_M_t_C_change_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+    #                                         # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
+    #                                         # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+    #                                         # .analyze_row_col_result_SSIM_LD()
+
+    ana_name = "I_w_M_to_W_fix_Full_More__W_w_M_t_C_change_analyze"
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="test",
+                                        ana_what="rec",
+                                        row_col_exps=I_w_M_to_W_fix_Full_More__W_w_M_t_C_change_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
+                                            .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            .analyze_row_col_result_SSIM_LD()
+ 
+    ana_name = "I_w_M_to_W_fix_NoFu_Less__W_w_M_t_C_change_analyze"
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="test",
+                                        ana_what="rec",
+                                        row_col_exps=I_w_M_to_W_fix_NoFu_Less__W_w_M_t_C_change_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
+                                            # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            # .analyze_row_col_result_SSIM_LD()
+
+    ana_name = "I_w_M_to_W_fix_NoFu_More__W_w_M_t_C_change_analyze"
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="test",
+                                        ana_what="rec",
+                                        row_col_exps=I_w_M_to_W_fix_NoFu_More__W_w_M_t_C_change_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
+                                            # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            # .analyze_row_col_result_SSIM_LD()
+
+    # ana_name = "I_w_M_to_W_fix_all__W_w_M_t_C_change_analyze"
+    # analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+    #                                     ana_what_sees="test",
+    #                                     ana_what="rec",
+    #                                     row_col_exps=I_w_M_to_W_fix_all__W_w_M_t_C_change_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+    #                                         # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
+    #                                         # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+    #                                         # .analyze_row_col_result_SSIM_LD()
+
+    ana_name = "I_w_M_to_W_fix_all_No_init__W_w_M_t_C_change_analyze"
+    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
+                                        ana_what_sees="test",
+                                        ana_what="rec",
+                                        row_col_exps=I_w_M_to_W_fix_all_No_init__W_w_M_t_C_change_analyze, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, fix_size=(800, 800), reset_test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=1)\
+                                            # .Gather_all_see_final_img(test_db_name="test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA")\
+                                            # .analyze_row_col_result_SSIM_LD()
