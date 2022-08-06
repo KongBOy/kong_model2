@@ -23,6 +23,7 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
 from step10_a import *
 from Exps_7_v3.doc3d.DewarpNet_result.step10_a import Model_run, Google_down, Recti_run
 #################################################################################################################################################################################################################################################################################################################################################################################################
+####### wiDiv
 ##### 前change(參no init) 後fix
 I_w_M_to_W_change_have_no_init__W_w_M_t_C_fix_Full_Less_analyze = [
     [Google_down],
@@ -113,3 +114,59 @@ I_w_M_to_W_fix_all_No_init__W_w_M_t_C_change_analyze = [
     [exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_Less__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
     [exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_Full_More, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_Less, exp_I_w_M_to_W_ch016_wiDiv_NoFu_More__W_w_M_to_C_ch016_wiDiv_NoFu_More, ] ,
 ]
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+####### woD_L
+##### 前change 後fix
+woD_L__I_w_M_to_W_change__W_w_M_t_C_fix_Full_Less_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_Less, ] ,
+]
+woD_L__I_w_M_to_W_change__W_w_M_t_C_fix_Full_More_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_More, ] ,
+]
+woD_L__I_w_M_to_W_change__W_w_M_t_C_fix_NoFu_Less_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_Less, ] ,
+]
+woD_L__I_w_M_to_W_change__W_w_M_t_C_fix_NoFu_More_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_More, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+]
+
+woD_L__I_w_M_to_W_change__W_w_M_t_C_fix_all_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_Less, ] ,
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_More, ] ,
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_Less, ] ,
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_More, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+]
+##################################################################################################################################
+##### 前fix 後change
+woD_L__I_w_M_to_W_fix_Full_Less__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+]
+woD_L__I_w_M_to_W_fix_Full_More__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+]
+woD_L__I_w_M_to_W_fix_NoFu_Less__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+]
+woD_L__I_w_M_to_W_fix_NoFu_More__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+]
+
+woD_L__I_w_M_to_W_fix_all__W_w_M_t_C_change_analyze = [
+    [Google_down],
+    [exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+    [exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_Full_More__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+    [exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_Less__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+    [exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_Full_More, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_Less, exp_I_w_M_to_W_ch016_woD_L_NoFu_More__W_w_M_to_C_ch016_woD_L_NoFu_More, ] ,
+]
+
