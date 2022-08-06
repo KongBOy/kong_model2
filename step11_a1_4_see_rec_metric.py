@@ -289,7 +289,7 @@ class See_rec_metric(See_info):
                 os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
 
                 rot_im_pred_small_dir  = self.metric_rotate_write_dir + "/im1_pred"
-                rot_im_gt_small_dir    = self.metric_rotate_write_dir + "/im2_pred"
+                rot_im_gt_small_dir    = self.metric_rotate_write_dir + "/im2_gt"
                 rot_ld_color_dir       = self.metric_rotate_write_dir + "/ld_color"
                 rot_ld_gray_dir        = self.metric_rotate_write_dir + "/ld_gray"
                 rot_ld_matplot_dir     = self.metric_rotate_write_dir + "/ld_matplot"
