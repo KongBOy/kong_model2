@@ -751,6 +751,35 @@ class Experiment():
         np.save(lds_mean_path, lds_mean)
         np.save(ssims_mean_path, ssims_mean)
 
+        ### lds 和 ssims 寫成 txt
+        ld_ssim_value_txt_path    = base_dir + "/" + "LD_SSIM_value.txt"
+        with open(ld_ssim_value_txt_path, "w") as f:
+            f.write(f"mean\n")
+            f.write(f"ld_mean      : {lds_mean      }\n")
+            f.write(f"ssim_mean    : {ssims_mean    }\n")
+
+            for go_val in range(amount):
+                ssim    =  ssims   [go_val]
+                ld      =  lds     [go_val]
+                f.write(f"  current_id : {go_val}\n")
+                f.write(f"    my_rec_ssim    : {ssim    }\n")
+                f.write(f"    my_rec_ld      : {ld      }\n")
+
+        ### lds 和 ssims matplot視覺化
+        ld_ssim_value_visual_path = base_dir + "/" + "LD_SSIM_value_visual"
+        import matplotlib.pyplot as plt
+        canvas_size = 3
+        nrows = 2
+        ncols = 1
+        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols * 6.3, canvas_size * nrows))
+        draw(ax=ax[0], values=lds  , text="LD"  , xmin=0, xmax=129, ymin=0, ymax=50)
+        draw(ax=ax[1], values=ssims, text="SSIM", xmin=0, xmax=129, ymin=0, ymax= 1)
+        fig.tight_layout()
+        # plt.show()
+        plt.savefig(ld_ssim_value_visual_path)
+
+        ##########################################################################################################
+        ### 126, 127 反過來算
         ld_rotate_126_path   = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "LDs.npy"
         ssim_rotate_126_path = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "SSIMs.npy"
         ld_rotate_127_path   = self.result_obj.tests[127].metric_read_dir + "/rotate/" + "LDs.npy"
@@ -808,19 +837,9 @@ class Experiment():
             plt.savefig(ld_ssim_rotate_value_visual_path)
 
 
-        ### lds 和 ssims 寫成 txt
-        ld_ssim_value_txt_path    = base_dir + "/" + "LD_SSIM_value.txt"
-        with open(ld_ssim_value_txt_path, "w") as f:
-            f.write(f"mean\n")
-            f.write(f"ld_mean      : {lds_mean      }\n")
-            f.write(f"ssim_mean    : {ssims_mean    }\n")
-
-            for go_val in range(amount):
-                ssim    =  ssims   [go_val]
-                ld      =  lds     [go_val]
-                f.write(f"  current_id : {go_val}\n")
-                f.write(f"    my_rec_ssim    : {ssim    }\n")
-                f.write(f"    my_rec_ld      : {ld      }\n")
+        ##########################################################################################################
+        ##########################################################################################################
+        ### tensorboard
 
         ### writer = tf.summary.create_file_writer("/tmp/mylogs/eager")
         ld_ssim_value_tboard_write_path    = base_dir + "/" + "LD_SSIM_tboard"
@@ -845,19 +864,6 @@ class Experiment():
                         tf.summary.scalar("rotate_mean_SSIM", np.mean(ssims_rotate[:go_val]), step=go_val)
                         tf.summary.scalar("rotate_mean_LD"  , np.mean(lds_rotate  [:go_val]), step=go_val)
 
-
-        ### lds 和 ssims matplot視覺化
-        ld_ssim_value_visual_path = base_dir + "/" + "LD_SSIM_value_visual"
-        import matplotlib.pyplot as plt
-        canvas_size = 3
-        nrows = 2
-        ncols = 1
-        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols * 6.3, canvas_size * nrows))
-        draw(ax=ax[0], values=lds  , text="LD"  , xmin=0, xmax=129, ymin=0, ymax=50)
-        draw(ax=ax[1], values=ssims, text="SSIM", xmin=0, xmax=129, ymin=0, ymax= 1)
-        fig.tight_layout()
-        # plt.show()
-        plt.savefig(ld_ssim_value_visual_path)
 
         ### 同步 test_write / test_read
         if(self.result_obj.test_write_dir != self.result_obj.test_read_dir and another_dst_path is None):
