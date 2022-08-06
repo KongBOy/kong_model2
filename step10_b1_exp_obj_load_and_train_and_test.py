@@ -697,7 +697,7 @@ class Experiment():
     def Gather_test_SSIM_LD(self, another_dst_path=None):
         base_dir = self.result_obj.test_write_dir
         if(another_dst_path is not None): base_dir = another_dst_path
-        
+
         def ax_dot_text(ax, values):
             for go_v, value in enumerate(values):
                 ax.annotate( text="%.1f" %  value,            ### 顯示的文字
