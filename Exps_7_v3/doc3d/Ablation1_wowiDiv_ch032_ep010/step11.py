@@ -25,59 +25,8 @@ from Exps_7_v3.doc3d.DewarpNet_result.step10_a import Model_run, Google_down, Re
 #################################################################################################################################################################################################################################################################################################################################################################################################
 #################################
 ##### 前fix 後change
-### 分析 Div_3UNet_analyze
-
-# 從 step10a copy 過來的，總共就是要分析這些exps
-# ##### 一起訓練
-# ### 3UNet
-# I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__3UNet_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010
-# ### wiDiv
-# I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__wiDiv_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010
-# ### woD_L
-# I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_L_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010
-# ### woD_M
-# I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_3UNet_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_wiDiv_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_L_Sob_k09_Mae_ep001__ep010
-# I_w_M_to_W__woD_M_Sob_k09_Mae_ep001__W_w_M_to_C_woD_M_Sob_k09_Mae_ep001__ep010
-
-try_try_try = [Google_down, I_w_M_to_W_3UNet__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_3UNet__ep010, ]
-
-try_try_try2 = [
-    [Google_down, ],
-    [I_w_M_to_W_3UNet__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_3UNet__ep010, ] ,
-]
-
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__3UNet_analyze = [
-    [Google_down, ],
-    [I_w_M_to_W_3UNet__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_3UNet__ep010, ] ,
-]
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__wiDiv_analyze = [
+I_w_M_to_W_change_then_changeW_w_M_t_C_analyze = [
     [Google_down],
-    [I_w_M_to_W_3UNet__W_w_M_to_C_wiDiv__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_wiDiv__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_wiDiv__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_wiDiv__ep010, ] ,
-]
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__woD_L_analyze = [
-    [Google_down],
-    [I_w_M_to_W_3UNet__W_w_M_to_C_woD_L__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_woD_L__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_woD_L__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_woD_L__ep010, ] ,
-]
-comb_change_I_w_M_to_W__fix_W_w_M_t_C__woD_M_analyze = [
-    [Google_down],
-    [I_w_M_to_W_3UNet__W_w_M_to_C_woD_M__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_woD_M__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_woD_M__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_woD_M__ep010, ] ,
-]
-
-comb_all__change_I_w_M_to_W_then_changeW_w_M_t_C_analyze = [
-    [Google_down],
-    [I_w_M_to_W_3UNet__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_3UNet__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_3UNet__ep010, ] ,
-    [I_w_M_to_W_3UNet__W_w_M_to_C_wiDiv__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_wiDiv__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_wiDiv__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_wiDiv__ep010, ] ,
-    [I_w_M_to_W_3UNet__W_w_M_to_C_woD_L__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_woD_L__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_woD_L__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_woD_L__ep010, ] ,
-    [I_w_M_to_W_3UNet__W_w_M_to_C_woD_M__ep010, I_w_M_to_W_wiDiv__W_w_M_to_C_woD_M__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_woD_M__ep010, I_w_M_to_W_woD_M__W_w_M_to_C_woD_M__ep010, ] ,
+    [I_w_M_to_W_wiDiv__W_w_M_to_C_wiDiv__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_wiDiv__ep010, ] ,
+    [I_w_M_to_W_wiDiv__W_w_M_to_C_woD_L__ep010, I_w_M_to_W_woD_L__W_w_M_to_C_woD_L__ep010, ] ,
 ]
