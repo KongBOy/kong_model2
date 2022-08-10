@@ -27,20 +27,7 @@ import subprocess as sb
 
 
 ### I_w_M_to_C 3UNet/wiDiv/woDiv %& FL/FM/NL/NM
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__3UNet__Full_Less                        .{train}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__3UNet__Full_More                        .{train}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__3UNet__NoFu_Less                        .{train}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__3UNet__NoFu_More                        .{train}"])
-
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__wiDiv__Full_Less                        .{train}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__wiDiv__Full_More                        .{train}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__wiDiv__NoFu_Less                        .{train}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__wiDiv__NoFu_More                        .{train}"])
-
 # sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__woD_L__Full_Less                        .{train}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__woD_L__Full_More                        .{train}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__woD_L__NoFu_Less                        .{train}"])
-# sb.run(cmd_python_step10_a + [f"I_w_M_to_W__ch016_L5__woD_L__NoFu_More                        .{train}"])
 
 ### W_w_M_to_C woDiv
 # sb.run(cmd_python_step10_a + [f"W_w_M_to_C__ch016_L5__woD_L__Full_Less                        .{train}"])

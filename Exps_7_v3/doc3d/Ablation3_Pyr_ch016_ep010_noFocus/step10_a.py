@@ -57,10 +57,8 @@ from step10_a2_loss_info_obj import Loss_info_builder
 Mae_s001_Sob_k09_s001 = Loss_info_builder().set_loss_type("mae+sobel", mae_scale=  1, sobel_kernel_size= 9, sobel_kernel_scale=  1)
 
 ### I_w_M_to_W_use_loss_builders
-I_w_M_to_W_wiDiv_use_loss_builders_Mae_s001_Sob_k09_s001 = [Mae_s001_Sob_k09_s001.set_loss_target("UNet_z").copy(), Mae_s001_Sob_k09_s001.set_loss_target("UNet_y").copy(), Mae_s001_Sob_k09_s001.set_loss_target("UNet_x").copy()]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
 I_w_M_to_W_woDiv_use_loss_builders_Mae_s001_Sob_k09_s001 = [Mae_s001_Sob_k09_s001.set_loss_target("UNet_W").copy()]
 ### W_w_M_to_C_use_loss_builders
-W_w_M_to_C_wiDiv_use_loss_builders_Mae_s001_Sob_k09_s001 = [Mae_s001_Sob_k09_s001.set_loss_target("UNet_Cx").copy(), Mae_s001_Sob_k09_s001.set_loss_target("UNet_Cy").copy()]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
 W_w_M_to_C_woDiv_use_loss_builders_Mae_s001_Sob_k09_s001 = [Mae_s001_Sob_k09_s001.set_loss_target("UNet_C").copy()]
 ### 串一起
 I_w_M_to_W_to_C_use_loss_builders_Mae_s001_Sob_k09_s001  = [Mae_s001_Sob_k09_s001.set_loss_target("UNet_Wz").copy(), Mae_s001_Sob_k09_s001.set_loss_target("UNet_Wy").copy(), Mae_s001_Sob_k09_s001.set_loss_target("UNet_Wx").copy(), Mae_s001_Sob_k09_s001.set_loss_target("UNet_Cx").copy(), Mae_s001_Sob_k09_s001.set_loss_target("UNet_Cy").copy()]  ### z, y, x 順序是看 step07_b_0b_Multi_UNet 來對應的喔
