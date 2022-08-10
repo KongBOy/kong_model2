@@ -22,17 +22,14 @@ color_jit = Color_jit(do_ratio=0.6)
 ### I_w_M_to_W
 from step08_b_use_G_generate_I_w_M_to_Wx_Wy_Wz_combine import I_w_M_to_W
 from step09_c_train_step import Train_step_I_w_M_to_W
-I_w_M_to_W_woDiv_use_gen_op     =            I_w_M_to_W(  separate_out=False, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )
-I_w_M_to_W_woDiv_use_train_step = Train_step_I_w_M_to_W(  separate_out=False, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), color_jit=color_jit )
+I_w_M_to_W_woDiv_use_gen_op     =            I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )
+I_w_M_to_W_woDiv_use_train_step = Train_step_I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), color_jit=color_jit )
 
 ### W_w_M_to_C
 from step08_b_use_G_generate_W_w_M_to_Cx_Cy_combine import W_w_M_to_Cx_Cy
 from step09_c_train_step import Train_step_W_w_M_to_Cx_Cy
-W_w_M_to_C_woDiv_use_gen_op     =            W_w_M_to_Cx_Cy( separate_out=False, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )
-W_w_M_to_C_woDiv_use_train_step = Train_step_W_w_M_to_Cx_Cy( separate_out=False, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15) )
-W_w_M_to_C_wiDiv_use_gen_op     =            W_w_M_to_Cx_Cy( separate_out=True , focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )
-W_w_M_to_C_wiDiv_use_train_step = Train_step_W_w_M_to_Cx_Cy( separate_out=True , focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15) )
-
+W_w_M_to_C_woDiv_use_gen_op     =            W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )
+W_w_M_to_C_woDiv_use_train_step = Train_step_W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15) )
 
 ### common
 use_hid_ch = 16
