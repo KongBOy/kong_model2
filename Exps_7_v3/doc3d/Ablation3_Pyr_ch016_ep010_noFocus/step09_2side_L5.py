@@ -24,12 +24,16 @@ from step08_b_use_G_generate_I_w_M_to_Wx_Wy_Wz_combine import I_w_M_to_W
 from step09_c_train_step import Train_step_I_w_M_to_W
 I_w_M_to_W_woDiv_use_gen_op     =            I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )
 I_w_M_to_W_woDiv_use_train_step = Train_step_I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), color_jit=color_jit )
+I_w_M_to_W_woDiv_in_have_bg_use_gen_op     =            I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0), remove_in_bg=False )
+I_w_M_to_W_woDiv_in_have_bg_use_train_step = Train_step_I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), color_jit=color_jit, remove_in_bg=False )
 
 ### W_w_M_to_C
 from step08_b_use_G_generate_W_w_M_to_Cx_Cy_combine import W_w_M_to_Cx_Cy
 from step09_c_train_step import Train_step_W_w_M_to_Cx_Cy
 W_w_M_to_C_woDiv_use_gen_op     =            W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )
 W_w_M_to_C_woDiv_use_train_step = Train_step_W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15) )
+W_w_M_to_C_woDiv_in_have_bg_use_gen_op     =            W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0), remove_in_bg=False )
+W_w_M_to_C_woDiv_in_have_bg_use_train_step = Train_step_W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), remove_in_bg=False )
 
 ### common
 use_hid_ch = 16
@@ -46,20 +50,25 @@ import Exps_7_v3.Basic_Pyramid_1ch_model_for_import_ch016.pyr_2s.L5.step09_2side
 import Exps_7_v3.Basic_Pyramid_1ch_model_for_import_ch016.pyr_3s.L5.step09_3side_L5 as pyr_ch016_1ch_3s_model
 #########################################################################################
 ### I_w_M_to_C woDiv
-I_w_M_to_W_ch016__woD_L__Full_Less = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch=use_hid_ch    , depth_level=5, out_ch=3, unet_acti="sigmoid", conv_block_num=Full_Less_1side_6__2side_6          , ch_upper_bound= 2 ** 14)                                .set_gen_op( I_w_M_to_W_woDiv_use_gen_op ).set_train_step( I_w_M_to_W_woDiv_use_train_step )
+I_w_M_to_W_ch016__woD_L__Full_Less            = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch=use_hid_ch    , depth_level=5, out_ch=3, unet_acti="sigmoid", conv_block_num=Full_Less_1side_6__2side_6          , ch_upper_bound= 2 ** 14) .set_gen_op( I_w_M_to_W_woDiv_use_gen_op            ).set_train_step( I_w_M_to_W_woDiv_use_train_step )
+I_w_M_to_W_ch016__woD_L__Full_Less_in_have_bg = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch=use_hid_ch    , depth_level=5, out_ch=3, unet_acti="sigmoid", conv_block_num=Full_Less_1side_6__2side_6          , ch_upper_bound= 2 ** 14) .set_gen_op( I_w_M_to_W_woDiv_in_have_bg_use_gen_op ).set_train_step( I_w_M_to_W_woDiv_in_have_bg_use_train_step )
 ### W_w_M_to_C woDiv
-W_w_M_to_C_ch016__woD_L__Full_Less = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch=use_hid_ch    , depth_level=5, out_ch=2, unet_acti="sigmoid", conv_block_num=Full_Less_1side_6__2side_6          , ch_upper_bound= 2 ** 14)                                .set_gen_op( W_w_M_to_C_woDiv_use_gen_op ).set_train_step( W_w_M_to_C_woDiv_use_train_step )
+W_w_M_to_C_ch016__woD_L__Full_Less            = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch=use_hid_ch    , depth_level=5, out_ch=2, unet_acti="sigmoid", conv_block_num=Full_Less_1side_6__2side_6          , ch_upper_bound= 2 ** 14) .set_gen_op( W_w_M_to_C_woDiv_use_gen_op            ).set_train_step( W_w_M_to_C_woDiv_use_train_step )
+W_w_M_to_C_ch016__woD_L__Full_Less_in_have_bg = KModel_builder().set_model_name(MODEL_NAME.flow_unet2).set_unet3(out_conv_block=True, concat_before_down=True, kernel_size=3, padding="valid", hid_ch=use_hid_ch    , depth_level=5, out_ch=2, unet_acti="sigmoid", conv_block_num=Full_Less_1side_6__2side_6          , ch_upper_bound= 2 ** 14) .set_gen_op( W_w_M_to_C_woDiv_in_have_bg_use_gen_op ).set_train_step( W_w_M_to_C_woDiv_in_have_bg_use_train_step )
 #########################################################################################
 ###############################################################################################################################################################################################
 ### 合起來也寫一起好了拉
 from step08_c_use_G_generate_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus_combine import I_w_M_to_W_to_C
 from step09_c_train_step import Train_step_I_w_M_to_W_to_C
-use_gen_op_p20     =            I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
-use_train_step_p20 = Train_step_I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), color_jit=color_jit )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
+gather_use_gen_op_p20                =            I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0)                      )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
+gather_use_train_step_p20            = Train_step_I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), color_jit=color_jit )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
+gather_in_have_bg_use_gen_op_p20     =            I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0),                      remove_in_bg=False )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
+gather_in_have_bg_use_train_step_p20 = Train_step_I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), color_jit=color_jit, remove_in_bg=False )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
 
 ### 4. woD_L woD_L(記得 woD_L 的 seperate 要設 False)，第二個測這個，
 # 這個是我意想不到竟然做得更好的結果， 我想看看他可以做得多好
-I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wxyz_to_Cxy_general", I_to_Wx_Wy_Wz=I_w_M_to_W_ch016__woD_L__Full_Less, W_to_Cx_Cy=W_w_M_to_C_ch016__woD_L__Full_Less).set_multi_model_separate_focus(I_to_W_separ=False , I_to_W_focus=True, W_to_C_separ=False , W_to_C_focus=True).set_gen_op( use_gen_op_p20 ).set_train_step( use_train_step_p20 )
+I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less            = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wxyz_to_Cxy_general", I_to_Wx_Wy_Wz=I_w_M_to_W_ch016__woD_L__Full_Less           , W_to_Cx_Cy=W_w_M_to_C_ch016__woD_L__Full_Less           ).set_multi_model_separate_focus(I_to_W_separ=False , I_to_W_focus=False, W_to_C_separ=False , W_to_C_focus=False).set_gen_op( gather_use_gen_op_p20            ).set_train_step( gather_use_train_step_p20            )
+I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less_in_have_bg = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wxyz_to_Cxy_general", I_to_Wx_Wy_Wz=I_w_M_to_W_ch016__woD_L__Full_Less_in_have_bg, W_to_Cx_Cy=W_w_M_to_C_ch016__woD_L__Full_Less_in_have_bg).set_multi_model_separate_focus(I_to_W_separ=False , I_to_W_focus=False, W_to_C_separ=False , W_to_C_focus=False).set_gen_op( gather_in_have_bg_use_gen_op_p20 ).set_train_step( gather_in_have_bg_use_train_step_p20 )
 
 
 if(__name__ == "__main__"):
