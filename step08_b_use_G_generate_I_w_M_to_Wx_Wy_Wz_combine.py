@@ -11,11 +11,12 @@ import os
 import pdb
 
 class I_w_M_to_W(Use_G_generate_Interface):
-    def __init__(self, separate_out=False, focus=False, tight_crop=None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None, remove_in_bg=True):
         super(I_w_M_to_W, self).__init__()
         self.separate_out = separate_out
         self.focus = focus
         self.tight_crop = tight_crop
+        self.remove_in_bg = remove_in_bg
 
     def doing_things(self):
         current_ep    = self.exp_obj.current_ep
@@ -78,7 +79,8 @@ class I_w_M_to_W(Use_G_generate_Interface):
         Mgt_ord          = Wgt_w_Mgt_ord[0, ..., 3:4]  ### 給 test concat 用
         Mgt_pre          = Wgt_w_Mgt_pre[..., 3:4]
         Wgt_pre          = Wgt_w_Mgt_pre[..., 0:3]
-        I_pre_with_M_pre = dis_img_pre_croped_resized * Mgt_pre
+        if(self.remove_in_bg): I_pre_with_M_pre = dis_img_pre_croped_resized * Mgt_pre
+        else                 : I_pre_with_M_pre = dis_img_pre_croped_resized
 
         if(self.separate_out is False):
             W_raw_pre = self.model_obj.generator(I_pre_with_M_pre, training=self.training)

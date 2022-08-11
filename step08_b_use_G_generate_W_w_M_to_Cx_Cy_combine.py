@@ -15,11 +15,12 @@ import os
 import pdb
 
 class W_w_M_to_Cx_Cy(Use_G_generate_Interface):
-    def __init__(self, separate_out=False, focus=False, tight_crop=None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None, remove_in_bg=True):
         super(W_w_M_to_Cx_Cy, self).__init__()
         self.separate_out = separate_out
         self.focus = focus
         self.tight_crop = tight_crop
+        self.remove_in_bg = remove_in_bg
         if(self.tight_crop is not None): self.tight_crop.jit_scale = 0  ### 防呆 test 的時候我們不用 random jit 囉！
 
     def doing_things(self):
@@ -99,7 +100,8 @@ class W_w_M_to_Cx_Cy(Use_G_generate_Interface):
         ''' use_model '''
         W_pre   = in_WM_pre[..., 0:3]
         Mgt_pre = in_WM_pre[..., 3:4]
-        W_pre_W_M_pre = W_pre * Mgt_pre
+        if(self.remove_in_bg): W_pre_W_M_pre = W_pre * Mgt_pre
+        else                 : W_pre_W_M_pre = W_pre
         # fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(15, 5))
         # ax[0, 0].imshow(W_pre[0])
         # ax[0, 1].imshow(Mgt_pre[0])

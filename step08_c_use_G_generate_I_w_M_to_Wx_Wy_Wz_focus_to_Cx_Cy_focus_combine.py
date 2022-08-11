@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 from step0_access_path import kong_model2_dir
-from step08_b_use_G_generate_0_util import Use_G_generate_Interface, Value_Range_Postprocess_to_01, WcM_01_visual_op, W_01_and_W_01_w_M_to_WM_and_visualize, C_01_and_C_01_w_M_to_F_and_visualize, C_01_concat_with_M_to_F_and_get_F_visual, W_visual_like_DewarpNet
+from step08_b_use_G_generate_0_util import Use_G_generate_Interface, Value_Range_Postprocess_to_01, WcM_01_visual_op, W_01_concat_with_M_to_WM_and_get_W_visual, W_01_and_W_01_w_M_to_WM_and_visualize, C_01_and_C_01_w_M_to_F_and_visualize, C_01_concat_with_M_to_F_and_get_F_visual, W_visual_like_DewarpNet
 from kong_util.flow_bm_util import check_flow_quality_then_I_w_F_to_R
 
 from kong_util.util import method2
@@ -13,11 +13,12 @@ import os
 import pdb
 
 class I_w_M_to_W_to_C(Use_G_generate_Interface):
-    def __init__(self, separate_out=False, focus=False, tight_crop=None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None, remove_in_bg=True):
         super(I_w_M_to_W_to_C, self).__init__()
         self.separate_out = separate_out
         self.focus = focus
         self.tight_crop = tight_crop
+        self.remove_in_bg = remove_in_bg
 
         self.DewarpNet_ssims  = []
         self.DewarpNet_lds    = []
@@ -118,7 +119,9 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
         Mgt_pre = Wgt_pre[..., 3:4]  ### 但是思考了一下，因為我現在focus train， 頁面外面是 灰色的， 如果 頁面外面 Mask 外面 有一大片 微小的值 會不會 GG呢 ??? 好像改回 Mgt_pre 比較安全???
         used_M   = Mgt_pre
 
-        I_pre_w_M = dis_img_pre_croped_resized * used_M  ### 這次試試看用 M 不用 M_pre
+        if(self.remove_in_bg): I_pre_w_M = dis_img_pre_croped_resized * used_M  ### 這次試試看用 M 不用 M_pre
+        else                 : I_pre_w_M = dis_img_pre_croped_resized
+
         if(self.separate_out is False):
             W_pre_raw, C_pre_raw = self.model_obj(I_pre_w_M, Mask=used_M, training=self.training)
         else:

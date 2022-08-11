@@ -206,11 +206,12 @@ def _train_step_Multi_output(model_obj, in_data, gt_datas, loss_info_objs=None, 
     # loss_info_objs.loss_containors["mask_sobel_MAE_loss"](sob_loss)
 ####################################################
 class Train_step_I_w_M_to_W_to_C():
-    def __init__(self, separate_out=False, focus=False, tight_crop=None, color_jit = None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None, color_jit=None, remove_in_bg=True):
         self.separate_out   = separate_out
         self.focus      = focus
         self.tight_crop = tight_crop
         self.color_jit = color_jit
+        self.remove_in_bg = remove_in_bg
 
     @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
@@ -233,7 +234,8 @@ class Train_step_I_w_M_to_W_to_C():
         if(self.color_jit is not None):
             I_pre = self.color_jit(I_pre, Mgt_pre)
 
-        I_pre_w_M_pre = I_pre * Mgt_pre
+        if(self.remove_in_bg): in_data = I_pre * Mgt_pre
+        else                 : in_data = I_pre
 
         Wzgt = Wgt[..., 0:1]
         Wygt = Wgt[..., 1:2]
@@ -247,7 +249,7 @@ class Train_step_I_w_M_to_W_to_C():
         # fig, ax = plt.subplots(nrows=1, ncols=8, figsize=(40, 5))
         # ax[0].imshow(I_pre[0])
         # ax[1].imshow(Mgt_pre[0])
-        # ax[2].imshow(I_pre_w_M_pre[0])
+        # ax[2].imshow(in_data[0])
         # ax[3].imshow(Wzgt[0])
         # ax[4].imshow(Wygt[0])
         # ax[5].imshow(Wxgt[0])
@@ -256,8 +258,8 @@ class Train_step_I_w_M_to_W_to_C():
         # fig.tight_layout()
         # plt.show()
 
-        if(self.focus is False): _train_step_Multi_output(model_obj, in_data=I_pre_w_M_pre, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
-        else:                    _train_step_Multi_output(model_obj, in_data=I_pre_w_M_pre, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=Mgt_pre)
+        if(self.focus is False): _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+        else:                    _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=Mgt_pre)
 
 @tf.function
 def train_step_Multi_output_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus(model_obj, in_data, gt_data, loss_info_objs=None):
@@ -358,10 +360,11 @@ def train_step_Multi_output_I_w_M_to_Cx_Cy_focus(model_obj, in_data, gt_data, lo
 ####################################################
 ####################################################
 class Train_step_W_w_M_to_Cx_Cy():
-    def __init__(self, separate_out=False, focus=False, tight_crop=None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None, remove_in_bg=True):
         self.separate_out   = separate_out
         self.focus      = focus
         self.tight_crop = tight_crop
+        self.remove_in_bg = remove_in_bg
 
     @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
@@ -377,7 +380,8 @@ class Train_step_W_w_M_to_Cx_Cy():
 
         in_Mask  = W_con_M[..., 3:4]
         in_W     = W_con_M[..., 0:3]
-        W_w_M = in_W * in_Mask
+        if(self.remove_in_bg): in_data = in_W * in_Mask
+        else                 : in_data = in_W
 
         gt_c  = gt_data[..., 1:3]
         gt_cx = gt_data[..., 2:3]
@@ -390,18 +394,18 @@ class Train_step_W_w_M_to_Cx_Cy():
         # import matplotlib.pyplot as plt
         # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
         # ax[0].imshow(in_data[1][0])
-        # ax[1].imshow(W_w_M[0])
+        # ax[1].imshow(in_data[0])
         # ax[2].imshow(gt_cx[0])
         # ax[3].imshow(gt_cy[0])
         # fig.tight_layout()
         # plt.show()
 
         if(self.separate_out is False):
-            if(self.focus is False): _train_step_Single_output(model_obj, in_data=W_w_M, gt_data =gt_c    , loss_info_objs=loss_info_objs)
-            else:                    _train_step_Single_output(model_obj, in_data=W_w_M, gt_data =gt_c    , loss_info_objs=loss_info_objs, Mask=in_Mask)
+            if(self.focus is False): _train_step_Single_output(model_obj, in_data=in_data, gt_data =gt_c    , loss_info_objs=loss_info_objs)
+            else:                    _train_step_Single_output(model_obj, in_data=in_data, gt_data =gt_c    , loss_info_objs=loss_info_objs, Mask=in_Mask)
         else:
-            if(self.focus is False): _train_step_Multi_output (model_obj, in_data=W_w_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
-            else:                    _train_step_Multi_output (model_obj, in_data=W_w_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=in_Mask)
+            if(self.focus is False): _train_step_Multi_output (model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+            else:                    _train_step_Multi_output (model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=in_Mask)
 
 
 @tf.function
@@ -461,11 +465,12 @@ def train_step_Multi_output_W_w_M_to_Cx_Cy_focus(model_obj, in_data, gt_data, lo
 ####################################################
 ####################################################
 class Train_step_I_w_M_to_W():
-    def __init__(self, separate_out=False, focus=False, tight_crop=None, color_jit = None):
+    def __init__(self, separate_out=False, focus=False, tight_crop=None, color_jit = None, remove_in_bg=True):
         self.separate_out  = separate_out
         self.focus        = focus
         self.tight_crop   = tight_crop
         self.color_jit = color_jit
+        self.remove_in_bg = remove_in_bg
 
     @tf.function
     def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
@@ -483,7 +488,8 @@ class Train_step_I_w_M_to_W():
         if(self.color_jit is not None):
             in_data = self.color_jit(in_data, gt_mask)
 
-        I_with_M = in_data * gt_mask
+        if(self.remove_in_bg): in_data = in_data * gt_mask
+        else                 : in_data = in_data
 
         Wgt  = gt_data[..., 0:3]
         Wxgt = gt_data[..., 2:3]
@@ -495,13 +501,13 @@ class Train_step_I_w_M_to_W():
         # print("in_data.shape", in_data.shape)
         # print("gt_data.shape", gt_data.shape)
         # print("gt_mask.shape", gt_mask.shape)
-        # print("I_with_M.shape", I_with_M.shape)
+        # print("in_data.shape", in_data.shape)
         # print("Wxgt.shape", Wxgt.shape)
         # import matplotlib.pyplot as plt
         # fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(12, 8))
         # ax[0, 0].imshow(in_data[0]   , vmin=0, vmax=1)
         # ax[0, 1].imshow(gt_mask[0]   , vmin=0, vmax=1)
-        # ax[0, 2].imshow(I_with_M[0]  , vmin=0, vmax=1)
+        # ax[0, 2].imshow(in_data[0]  , vmin=0, vmax=1)
         # ax[1, 0].imshow(Wxgt[0]      , vmin=0, vmax=1)
         # ax[1, 1].imshow(Wygt[0]      , vmin=0, vmax=1)
         # ax[1, 2].imshow(Wzgt[0]      , vmin=0, vmax=1)
@@ -509,11 +515,11 @@ class Train_step_I_w_M_to_W():
         # plt.show()
 
         if(self.separate_out is False):
-            if(self.focus is False): _train_step_Single_output(model_obj, in_data=I_with_M, gt_data=Wgt     , loss_info_objs=loss_info_objs)
-            else:                    _train_step_Single_output(model_obj, in_data=I_with_M, gt_data=Wgt     , loss_info_objs=loss_info_objs, Mask=gt_mask)
+            if(self.focus is False): _train_step_Single_output(model_obj, in_data=in_data, gt_data=Wgt     , loss_info_objs=loss_info_objs)
+            else:                    _train_step_Single_output(model_obj, in_data=in_data, gt_data=Wgt     , loss_info_objs=loss_info_objs, Mask=gt_mask)
         else:
-            if(self.focus is False): _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
-            else:                    _train_step_Multi_output(model_obj, in_data=I_with_M, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=gt_mask)
+            if(self.focus is False): _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
+            else:                    _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=gt_mask)
 
 class Train_step_Wyx_w_M_to_Wz():
     def __init__(self, focus=False, tight_crop=None, sobel=None, sobel_only=False):
