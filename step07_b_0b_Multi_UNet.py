@@ -7,6 +7,11 @@ class Multi_Generator(tf.keras.models.Model):
         super(Multi_Generator, self).__init__(**kwargs)
         self.gens_dict = gens_dict
         self.op_type = op_type
+        ### 目前只有 I_to_Wxyz_to_Cxy_general 有用到
+        self.I_to_W_separ = None
+        self.I_to_W_focus = None
+        self.W_to_C_separ = None
+        self.W_to_C_focus = None
 
     def call(self, input_tensor, Mask=None, training=None):
         if  (self.op_type == "I_to_M_and_C"):  ### 最左邊的 I 是只 Model內本身的行為， 不會管 Model外 怎麼包喔， 意思就是 I 在 Model 外可以包成 I_w_M 也行， 反正 Model內都是唯一張img這樣子
@@ -69,39 +74,50 @@ class Multi_Generator(tf.keras.models.Model):
             注意 不能在這邊把 Wxyz concat 起來喔， 因為要分開算 loss！
             '''
             I_pre = input_tensor
-            ### W_sep
+            ''' W_sep '''
             if(self.I_to_W_separ):
                 Wz_pre_raw, Wy_pre_raw, Wx_pre_raw = self.gens_dict["I_to_Wx_Wy_Wz"](I_pre)
                 W_pre_raw = tf.concat([Wz_pre_raw, Wy_pre_raw, Wx_pre_raw], axis=-1)
             else:
                 W_pre_raw = self.gens_dict["I_to_Wx_Wy_Wz"](I_pre)
 
-            ### W_focus
+            ''' W_focus '''
+            ### 因為 後面有接網路， W 需要變成 下段網路的輸入， 所以需要 做準備看下段網路需不需要 乘M
             b, h, w, c = W_pre_raw.shape  ### 因為想嘗試 no_pad， 所以 pred 可能 size 會跟 gt 差一點點， 就以 pred為主喔！
-
             if(self.I_to_W_focus): W_pre_w_M = W_pre_raw * Mask[:, :h, :w, :]
             else                 : W_pre_w_M = W_pre_raw
 
-            Wz_pre_w_M = W_pre_w_M[..., 0:1]  ### 用 : 才可以 keepdims
-            Wy_pre_w_M = W_pre_w_M[..., 1:2]  ### 用 : 才可以 keepdims
-            Wx_pre_w_M = W_pre_w_M[..., 2:3]  ### 用 : 才可以 keepdims
+            ''' W_準備return的東西， 不過思考後， return Raw 才對， 所以整段不用了 '''
+            ### 應該要return raw回去才對， 不用擔心train沒用到Mask， 因為我在train_step裡面有寫的很OK， 會在那邊才用到Mask
+            # Wz_pre_w_M = W_pre_w_M[..., 0:1]  ### 用 : 才可以 keepdims
+            # Wy_pre_w_M = W_pre_w_M[..., 1:2]  ### 用 : 才可以 keepdims
+            # Wx_pre_w_M = W_pre_w_M[..., 2:3]  ### 用 : 才可以 keepdims
+            Wz_pre_raw = W_pre_raw[..., 0:1]  ### 用 : 才可以 keepdims
+            Wy_pre_raw = W_pre_raw[..., 1:2]  ### 用 : 才可以 keepdims
+            Wx_pre_raw = W_pre_raw[..., 2:3]  ### 用 : 才可以 keepdims
             ###########################################################
-            ### C_sep
+            ''' C_sep '''
             if(self.W_to_C_separ):
                 Cx_pre_raw, Cy_pre_raw = self.gens_dict["W_to_Cx_Cy"](W_pre_w_M)
                 C_pre_raw = tf.concat([Cy_pre_raw, Cx_pre_raw], axis=-1)
             else:
                 C_pre_raw = self.gens_dict["W_to_Cx_Cy"](W_pre_w_M)
 
-            ### C_focus
-            if(self.W_to_C_focus): C_pre_w_m = C_pre_raw * Mask[:, :h, :w, :]
-            else                 : C_pre_w_m = C_pre_raw
+            ''' C_focus '''
+            ### 因為 後面沒有接網路了， C 不需要 變成誰的 輸入， 所以 不需要 乘M 囉
+            # if(self.W_to_C_focus): C_pre_w_m = C_pre_raw * Mask[:, :h, :w, :]
+            # else                 : C_pre_w_m = C_pre_raw
 
-            Cy_pre_w_M = C_pre_w_m[..., 0:1]  ### 用 : 才可以 keepdims
-            Cx_pre_w_M = C_pre_w_m[..., 1:2]  ### 用 : 才可以 keepdims
+            ''' C_準備return的東西， 不過思考後， return Raw 才對， 所以整段不用了 '''
+            ### 應該要return raw回去才對， 不用擔心train沒用到Mask， 因為我在train_step裡面有寫的很OK， 會在那邊才用到Mask
+            # Cy_pre_w_M = C_pre_w_m[..., 0:1]  ### 用 : 才可以 keepdims
+            # Cx_pre_w_M = C_pre_w_m[..., 1:2]  ### 用 : 才可以 keepdims
+            Cy_pre_raw = C_pre_raw[..., 0:1]  ### 用 : 才可以 keepdims
+            Cx_pre_raw = C_pre_raw[..., 1:2]  ### 用 : 才可以 keepdims
 
-            ### return
-            return Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M
+            '''統一拆開來 return '''
+            ### 要不然 要區分 I_to_W_separ 和 I_to_W_separ 的 T/F ， 要分四種方式 return ， 太麻煩了不要找自己麻煩， 統一 拆開來 return
+            return Wz_pre_raw, Wy_pre_raw, Wx_pre_raw, Cx_pre_raw, Cy_pre_raw
 
 def see(model_obj, train_in_pre):
     M_pre, C_pre = model_obj.generator(train_in_pre)
