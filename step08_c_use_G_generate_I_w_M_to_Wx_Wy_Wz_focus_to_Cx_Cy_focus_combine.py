@@ -206,16 +206,17 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
         Cx_raw_Gx = Cx_raw_Gx[0].numpy()
         Cx_raw_Gy = Cx_raw_Gy[0].numpy()
 
-        Wz_w_M_Gx = Wz_w_M_Gx[0].numpy()
-        Wz_w_M_Gy = Wz_w_M_Gy[0].numpy()
-        Wy_w_M_Gx = Wy_w_M_Gx[0].numpy()
-        Wy_w_M_Gy = Wy_w_M_Gy[0].numpy()
-        Wx_w_M_Gx = Wx_w_M_Gx[0].numpy()
-        Wx_w_M_Gy = Wx_w_M_Gy[0].numpy()
-        Cy_w_M_Gx = Cy_w_M_Gx[0].numpy()
-        Cy_w_M_Gy = Cy_w_M_Gy[0].numpy()
-        Cx_w_M_Gx = Cx_w_M_Gx[0].numpy()
-        Cx_w_M_Gy = Cx_w_M_Gy[0].numpy()
+        if(self.focus):
+            Wz_w_M_Gx = Wz_w_M_Gx[0].numpy()
+            Wz_w_M_Gy = Wz_w_M_Gy[0].numpy()
+            Wy_w_M_Gx = Wy_w_M_Gx[0].numpy()
+            Wy_w_M_Gy = Wy_w_M_Gy[0].numpy()
+            Wx_w_M_Gx = Wx_w_M_Gx[0].numpy()
+            Wx_w_M_Gy = Wx_w_M_Gy[0].numpy()
+            Cy_w_M_Gx = Cy_w_M_Gx[0].numpy()
+            Cy_w_M_Gy = Cy_w_M_Gy[0].numpy()
+            Cx_w_M_Gx = Cx_w_M_Gx[0].numpy()
+            Cx_w_M_Gy = Cx_w_M_Gy[0].numpy()
         ''' Sobel end '''''''''''''''''''''''''''''''''''''''
 
 
@@ -228,13 +229,12 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
 
         '''model out visualize'''  ### 後處理： 拿掉 batch 和 弄成01 和 轉成 numpy
         if(self.focus is False):
-            W_visual,   Wx_visual,   Wy_visual,   Wz_visual   = WcM_01_visual_op(W_01_raw)
-            F,           F_visual,   Cx_visual,   Cy_visual   = C_01_concat_with_M_to_F_and_get_F_visual(C_01_raw,  Mgt)
-            F_visual   = F_visual  [:, :, ::-1]  ### cv2 處理完 是 bgr， 但這裡都是用 tf2 rgb的角度來處理， 所以就模擬一下 轉乘 tf2 的rgb囉！
+            W_raw_c_M, W_raw_visual, Wx_raw_visual,   Wy_raw_visual,   Wz_raw_visual  = W_01_concat_with_M_to_WM_and_get_W_visual(W_01_raw, used_M)
+            F_raw    , F_raw_visual, Cx_raw_visual,   Cy_raw_visual                   = C_01_concat_with_M_to_F_and_get_F_visual (C_01_raw, used_M)
 
         else:
             W_raw_c_M, W_raw_visual, Wx_raw_visual, Wy_raw_visual, Wz_raw_visual, W_w_M_c_M, W_w_M_visual, Wx_w_M_visual, Wy_w_M_visual, Wz_w_M_visual = W_01_and_W_01_w_M_to_WM_and_visualize(W_01_raw, used_M)
-            F_raw    , F_raw_visual, Cx_raw_visual, Cy_raw_visual, F_w_Mgt,   F_w_M_visual,   Cx_w_M_visual,   Cy_w_M_visual   = C_01_and_C_01_w_M_to_F_and_visualize(C_01_raw, used_M)
+            F_raw    , F_raw_visual, Cx_raw_visual, Cy_raw_visual,                F_w_Mgt,   F_w_M_visual, Cx_w_M_visual, Cy_w_M_visual                = C_01_and_C_01_w_M_to_F_and_visualize (C_01_raw, used_M)
 
         '''model gt visualize'''
         Wgt_pre = Wgt_pre[0].numpy()
@@ -287,28 +287,42 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
             cv2.imwrite(private_write_dir + "/" + "0b_u2b3-gt_b_Cxgt.jpg",   Cxgt_visual)
             cv2.imwrite(private_write_dir + "/" + "0b_u2b4-gt_b_Cygt.jpg",   Cygt_visual)
             cv2.imwrite(private_write_dir + "/" + "0c-rec_hope.jpg",          rec_hope)
+        if(self.focus):
+            if(self.npz_save is False): np.save            (private_write_dir     + "/" + f"{ep_it_string}_u1b1-W_w_Mgt", W_w_M_c_M)
+            if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + f"{ep_it_string}_u1b1-W_w_Mgt", W_w_M_c_M)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b2-W_raw_visual.jpg" , W_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b3-W_w_M_visual.jpg" , W_w_M_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b4-Wx_raw_visual.jpg", Wx_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b5-Wx_w_M_visual.jpg", Wx_w_M_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b6-Wy_raw_visual.jpg", Wy_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b7-Wy_w_M_visual.jpg", Wy_w_M_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b8-Wz_raw_visual.jpg", Wz_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b9-Wz_w_M_visual.jpg", Wz_w_M_visual)
 
-        if(self.npz_save is False): np.save            (private_write_dir     + "/" + f"{ep_it_string}_u1b1-W_w_Mgt", W_w_M_c_M)
-        if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + f"{ep_it_string}_u1b1-W_w_Mgt", W_w_M_c_M)
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b2-W_raw_visual.jpg" , W_raw_visual)
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b3-W_w_M_visual.jpg" , W_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b4-Wx_raw_visual.jpg", Wx_raw_visual)
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b5-Wx_w_M_visual.jpg", Wx_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b6-Wy_raw_visual.jpg", Wy_raw_visual)
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b7-Wy_w_M_visual.jpg", Wy_w_M_visual)
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b8-Wz_raw_visual.jpg", Wz_raw_visual)
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b9-Wz_w_M_visual.jpg", Wz_w_M_visual)
+            if(self.npz_save is False): np.save            (private_write_dir     + "/" + f"{ep_it_string}_u2b1-F_w_Mgt", F_w_Mgt)
+            if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + f"{ep_it_string}_u2b1-F_w_Mgt", F_w_Mgt)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b2-F_raw.jpg"   , F_raw_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b3-F_w_Mgt.jpg" , F_w_M_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b4-Cx_raw.jpg"  , Cx_raw_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b5-Cx_w_Mgt.jpg", Cx_w_M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b6-Cy_raw.jpg"  , Cy_raw_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b7-Cy_w_Mgt.jpg", Cy_w_M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+        else:
+            if(self.npz_save is False): np.save            (private_write_dir     + "/" + f"{ep_it_string}_u1b1-W_w_Mgt", W_raw_c_M)  ### 有空在整理這個要怎麼寫
+            if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + f"{ep_it_string}_u1b1-W_w_Mgt", W_raw_c_M)  ### 有空在整理這個要怎麼寫
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b2-W_raw_visual.jpg" , W_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b4-Wx_raw_visual.jpg", Wx_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b6-Wy_raw_visual.jpg", Wy_raw_visual)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u1b8-Wz_raw_visual.jpg", Wz_raw_visual)
 
-        if(self.npz_save is False): np.save            (private_write_dir     + "/" + f"{ep_it_string}_u2b1-F_w_Mgt", F_w_Mgt)
-        if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + f"{ep_it_string}_u2b1-F_w_Mgt", F_w_Mgt)
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b2-F_raw.jpg"   , F_raw_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b3-F_w_Mgt.jpg" , F_w_M_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b4-Cx_raw.jpg"  , Cx_raw_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b5-Cx_w_Mgt.jpg", Cx_w_M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b6-Cy_raw.jpg"  , Cy_raw_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
-        cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b7-Cy_w_Mgt.jpg", Cy_w_M_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            if(self.npz_save is False): np.save            (private_write_dir     + "/" + f"{ep_it_string}_u2b1-F_w_Mgt", F_raw)
+            if(self.npz_save is True ): np.savez_compressed(private_npz_write_dir + "/" + f"{ep_it_string}_u2b1-F_w_Mgt", F_raw)
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b2-F_raw.jpg"   , F_raw_visual)   ### 把 生成的 F_visual 存進相對應的資料夾
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b4-Cx_raw.jpg"  , Cx_raw_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
+            cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b6-Cy_raw.jpg"  , Cy_raw_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
+            Check_dir_exist_and_build(private_rec_write_dir)          ### 建立 放輔助檔案 的資料夾
             current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
             bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord_croped_not_accurate, flow=F_w_Mgt)
 
@@ -414,15 +428,15 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
 
             if(self.focus is False):
                 r_c_imgs   = [ [dis_img_pre_croped_resized_visual , Mgt_visual     , I_w_M_visual  , rec             , rec_hope ],
-                               [W_visual           , Wx_visual     , Wy_visual     , Wz_visual     , ],
-                               [Wx_w_M_Gx          , Wx_w_M_Gy     , Wy_w_M_Gx     , Wy_w_M_Gy     , Wz_w_M_Gx    , Wz_w_M_Gy     ],
-                               [F_visual           , Cx_visual     , Cy_visual     , ],
-                               [Cx_w_M_Gx          , Cx_w_M_Gy     , Cy_w_M_Gx     , Cy_w_M_Gy] ]
+                               [W_raw_visual       , Wx_raw_visual , Wy_raw_visual , Wz_raw_visual , ],
+                               [Wx_raw_Gx          , Wx_raw_Gy     , Wy_raw_Gx     , Wy_raw_Gy     , Wz_raw_Gx    , Wz_raw_Gy     ],
+                               [F_raw_visual       , Cx_raw_visual , Cy_raw_visual , ],
+                               [Cx_raw_Gx          , Cx_raw_Gy     , Cy_raw_Gx     , Cy_raw_Gy] ]
                 r_c_titles = [ ["dis_img"          , "Mgt"         , "I_with_M"    , "rec"         , "rec_hope"],
-                               ["W"                , "Wx"          , "Wy"          , "Wz"          , ],
-                               ["Wx_w_M_Gx"        , "Wx_w_M_Gy"   , "Wy_w_M_Gx"   , "Wy_w_M_Gy"   , "Wz_w_M_Gx"  , "Wz_w_M_Gy"     ],
-                               ["F"                , "Cx"          , "Cy"          , ],
-                               ["Cx_w_M_Gx"        , "Cx_w_M_Gy"   , "Cy_w_M_Gx"   , "Cy_w_M_Gy"] ]
+                               ["W_raw"            , "Wx_raw"      , "Wy_raw"      , "Wz_raw"      , ],
+                               ["Wx_raw_Gx"        , "Wx_raw_Gy"   , "Wy_raw_Gx"   , "Wy_raw_Gy"   , "Wz_raw_Gx"  , "Wz_raw_Gy"     ],
+                               ["F_raw"            , "Cx_raw"      , "Cy_raw"      , ],
+                               ["Cx_raw_Gx"        , "Cx_raw_Gy"   , "Cy_raw_Gx"   , "Cy_raw_Gy"] ]
 
             else:
                 r_c_imgs   = [ [dis_img_pre_croped_resized_visual , Mgt_visual     , I_w_M_visual  , rec             , rec_hope ],
