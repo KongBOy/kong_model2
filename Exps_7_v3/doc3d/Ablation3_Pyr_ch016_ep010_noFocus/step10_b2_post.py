@@ -31,6 +31,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"exp_W_w_M_to_C__ch016_L5__woD_L__Full_Less_in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"exp_W_w_M_to_C__ch016_L6__woD_L__Full_Less            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"exp_W_w_M_to_C__ch016_L6__woD_L__Full_Less_in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"exp_W_w_M_to_C__ch016_L7__woD_L__Full_Less            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"exp_W_w_M_to_C__ch016_L7__woD_L__Full_Less_in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 
 ##### 一起訓練
 ### 4. woD_L woD_L(記得 woD_L 的 seperate 要設 False)，第二個測這個
@@ -39,3 +41,5 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"exp_L5_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less_in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"exp_L6_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"exp_L6_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less_in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"exp_L7_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less            .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"exp_L7_I_w_M_to_W_ch016_woD_L_Full_Less__W_w_M_to_C_ch016_woD_L_Full_Less_in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
