@@ -323,13 +323,17 @@ class I_w_M_to_W_to_C(Use_G_generate_Interface):
             cv2.imwrite(private_write_dir + "/" + f"{ep_it_string}_u2b6-Cy_raw.jpg"  , Cy_raw_visual)  ### 我覺得不可以直接存npy，因為太大了！但最後為了省麻煩還是存了，相對就減少see的數量來讓總大小變小囉～
 
         if(self.postprocess):
+            use_what_flow = None
+            if(self.focus): use_what_flow = F_w_Mgt
+            else          : use_what_flow = F_raw
+
             Check_dir_exist_and_build(private_rec_write_dir)          ### 建立 放輔助檔案 的資料夾
             ''' 想做 by_flow 的話打開註解'''
             # Check_dir_exist_and_build(private_rec_by_flow_write_dir)  ### 建立 放輔助檔案 的資料夾
             current_see_name = self.fname.split(".")[0]   # used_sees[self.index].see_name.replace("/", "-")  ### 因為 test 會有多一層 "test_db_name"/test_001， 所以把 / 改成 - ，下面 Save_fig 才不會多一層資料夾
-            bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord_croped_not_accurate, flow=F_w_Mgt)
+            bm, rec       = check_flow_quality_then_I_w_F_to_R(dis_img=dis_img_ord_croped_not_accurate, flow=use_what_flow)
             ''' 想做 by_flow 的話打開註解'''
-            # rec_by_flow   = use_flow_to_rec(dis_img=dis_img_ord_croped_not_accurate, flow=F_w_Mgt)
+            # rec_by_flow   = use_flow_to_rec(dis_img=dis_img_ord_croped_not_accurate, flow=use_what_flow)
 
             ### 給 ppt 用的
             h, w = bm.shape[:2]
