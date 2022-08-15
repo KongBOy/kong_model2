@@ -101,7 +101,7 @@ if(__name__ == "__main__"):
     import numpy as np
 
     print("build_model cost time:", time.time() - start_time)
-    data = np.zeros(shape=(1, 128, 128, 1))
+    data = np.zeros(shape=(1, 256, 256, 1))
     use_model = DewarpUNet_I_w_M_to_W_IN
     use_model = use_model.build()
     result = use_model.generator(data)
@@ -118,7 +118,7 @@ if(__name__ == "__main__"):
     log_dir = f"{code_exe_dir}/use_Tensorboard_see_Graph/{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}"
     tboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
 
-    img_inputs = tf.keras.Input(shape=(128, 128, 1))
+    img_inputs = tf.keras.Input(shape=(256, 256, 1))
     use_model.generator(img_inputs)
     use_model.generator.compile(optimizer='adam', loss='mae', metrics=['accuracy'])
     use_model.generator.fit    (data, data, epochs=1, callbacks=[tboard_callback])
