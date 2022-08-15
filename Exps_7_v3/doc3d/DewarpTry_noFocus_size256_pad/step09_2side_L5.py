@@ -22,14 +22,14 @@ color_jit = Color_jit(do_ratio=0.6)
 ### I_w_M_to_W
 from step08_b_use_G_generate_I_w_M_to_Wx_Wy_Wz_combine import I_w_M_to_W
 from step09_c_train_step import Train_step_I_w_M_to_W
-I_w_M_to_W_woDiv_in_have_bg_use_gen_op     =            I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(128, 128), jit_scale=  0), remove_in_bg=False )
-I_w_M_to_W_woDiv_in_have_bg_use_train_step = Train_step_I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(128, 128), jit_scale= 15), color_jit=color_jit, remove_in_bg=False )
+I_w_M_to_W_woDiv_in_have_bg_use_gen_op     =            I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale=  0), remove_in_bg=False )
+I_w_M_to_W_woDiv_in_have_bg_use_train_step = Train_step_I_w_M_to_W(  separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale= 15), color_jit=color_jit, remove_in_bg=False )
 
 ### W_w_M_to_C
 from step08_b_use_G_generate_W_w_M_to_Cx_Cy_combine import W_w_M_to_Cx_Cy
 from step09_c_train_step import Train_step_W_w_M_to_Cx_Cy
-W_w_M_to_C_woDiv_in_have_bg_use_gen_op     =            W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(128, 128), jit_scale=  0), remove_in_bg=False )
-W_w_M_to_C_woDiv_in_have_bg_use_train_step = Train_step_W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(128, 128), jit_scale= 15), remove_in_bg=False )
+W_w_M_to_C_woDiv_in_have_bg_use_gen_op     =            W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale=  0), remove_in_bg=False )
+W_w_M_to_C_woDiv_in_have_bg_use_train_step = Train_step_W_w_M_to_Cx_Cy( separate_out=False, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale= 15), remove_in_bg=False )
 
 ### common
 use_hid_ch = 16
@@ -73,10 +73,8 @@ W_w_M_to_C_ch016_blk_2s_L7__woD_L_in_have_bg = KModel_builder().set_model_name(M
 ### 合起來也寫一起好了拉
 from step08_c_use_G_generate_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus_combine import I_w_M_to_W_to_C
 from step09_c_train_step import Train_step_I_w_M_to_W_to_C
-gather_use_gen_op_p20                =            I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(128, 128), jit_scale=  0)                      )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
-gather_use_train_step_p20            = Train_step_I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(128, 128), jit_scale= 15), color_jit=color_jit )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
-gather_in_have_bg_use_gen_op_p20     =            I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(128, 128), jit_scale=  0),                      remove_in_bg=False )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
-gather_in_have_bg_use_train_step_p20 = Train_step_I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(128, 128), jit_scale= 15), color_jit=color_jit, remove_in_bg=False )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
+gather_in_have_bg_use_gen_op_p20     =            I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale=  0),                      remove_in_bg=False )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
+gather_in_have_bg_use_train_step_p20 = Train_step_I_w_M_to_W_to_C(  separate_out=True, focus=False, tight_crop=Tight_crop(pad_size=20, resize=(256, 256), jit_scale= 15), color_jit=color_jit, remove_in_bg=False )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
 
 ### 4. woD_L woD_L(記得 woD_L 的 seperate 要設 False)，第二個測這個，
 # 這個是我意想不到竟然做得更好的結果， 我想看看他可以做得多好
