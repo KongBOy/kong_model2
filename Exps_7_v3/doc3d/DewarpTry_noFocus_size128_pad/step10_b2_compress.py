@@ -60,3 +60,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"exp_blk_2s__L5_I_w_M_to_W_ch016_woD_L__W_w_M_to_C_ch016_woD_L_in_have_bg .{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"exp_blk_2s__L6_I_w_M_to_W_ch016_woD_L__W_w_M_to_C_ch016_woD_L_in_have_bg .{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"exp_blk_2s__L7_I_w_M_to_W_ch016_woD_L__W_w_M_to_C_ch016_woD_L_in_have_bg .{compress_all}"])
+
+### 目前最接近 DewarpNet的架構
+# sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_I_w_M_to_W_IN__in_have_bg .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_W_w_M_to_C_IN__in_have_bg .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_Gather_IN__in_have_bg     .{compress_all}"])
