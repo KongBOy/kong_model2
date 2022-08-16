@@ -86,8 +86,8 @@ class UNet_down(tf.keras.layers.Layer):
         ''' 目前覺得這樣子展開來比較好看 '''
         if  (self.at_where == "top"):
             self.Conv    = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding=padding, use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
-            self.Skip_op = Use_what_skip_op(skip_op)  ### cse/sse/scse
-            if(self.Skip_op is not None): self.Skip_op = self.Skip_op(in_ch=out_ch, ratio=out_ch // 32)
+            self.Skip_op = Use_what_skip_op(skip_op)  ### cse/sse/scse， 看用哪個物件
+            if(self.Skip_op is not None): self.Skip_op = self.Skip_op(in_ch=out_ch, ratio=out_ch // 32)  ### 把物件創造出來
         elif(self.at_where == "middle"):
             self.Acti    = Use_what_acti(acti)
             self.Conv    = Conv2D(out_ch, kernel_size=kernel_size, strides=strides, padding=padding, use_bias=use_bias, name="conv_down")  #,bias=False) ### in_channel:3
