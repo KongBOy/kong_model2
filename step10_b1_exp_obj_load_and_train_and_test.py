@@ -34,6 +34,7 @@ class Experiment():
         self.db_obj        = None
         self.tf_data       = None
         self.img_resize    = None
+        self.doc3d_subdirs = None
         self.model_builder = None
         self.model_obj     = None
         self.loss_info_builders = None

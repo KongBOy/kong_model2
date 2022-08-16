@@ -7,6 +7,8 @@ import tensorflow as tf
 
 tf.keras.backend.set_floatx('float32')  ### 這步非常非常重要！用了才可以加速！
 
+from kong_util.util import get_dir_dir_names
+
 # import pdb
 ####################################################################################################
 class norm_and_resize_mapping_util():
@@ -265,6 +267,8 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
         self.use_range = None
         self.db_ch_ranges = None
 
+        self.doc3d_subdirs = None
+
         ### 跟上面不大一樣， 是從內部執行中才決定， 不是從 builder 設定的喔
         self.norm_use_what_min = None
         self.norm_use_what_max = None
@@ -276,8 +280,27 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
 
     ####################################################################################################
     def _build_file_name_db(self):
-        # print("debug _build_file_name_db self.ord_dir:", self.ord_dir + "/" + "*." + self.file_format)
-        return tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.file_format, shuffle=False)
+        ### debug用
+        # from tqdm import tqdm
+        # print("ord_dir", self.ord_dir)
+
+        ### 如果使用 doc3d 資料集 在 訓練時 可以指定 要用哪一個 subdir
+        if("doc3d" in self.ord_dir.lower() and "train" in self.ord_dir.lower()):
+            ### 如果沒有指定 doc3d_subdirs， 自動去 doc3d/train/.../... 裡面看 有哪些 subdirs
+            if(self.doc3d_subdirs is None): self.doc3d_subdirs = get_dir_dir_names(self.ord_dir)
+            # print("self.doc3d_subdirs", self.doc3d_subdirs)
+
+            ### 去 指定的 subdir 抓 file_names
+            for go_sub, doc3d_subdir in enumerate(self.doc3d_subdirs):
+                if(go_sub == 0): tf_file_names =                           tf.data.Dataset.list_files(self.ord_dir + f"/{doc3d_subdir}/" + "*." + self.file_format, shuffle=False)
+                else:            tf_file_names = tf_file_names.concatenate(tf.data.Dataset.list_files(self.ord_dir + f"/{doc3d_subdir}/" + "*." + self.file_format, shuffle=False))
+
+            ### debug用
+            # for _ in tqdm(tf_file_names): pass
+            return tf_file_names
+
+        else:
+            return tf.data.Dataset.list_files(self.ord_dir + "/" + "*." + self.file_format, shuffle=False)
 
     def step1_file_paths_to_names(self, file_path):
         return (tf.strings.split(file_path, "\\")[-1])
@@ -492,7 +515,7 @@ class tf_Data_element_factory_builder():
     def build(self):
         return self.tf_pipline_factory
 
-    def set_factory(self, ord_dir, file_format, img_resize, db_h, db_w, db_range, use_range, db_ch_ranges=None):
+    def set_factory(self, ord_dir, file_format, img_resize, db_h, db_w, db_range, use_range, db_ch_ranges=None, doc3d_subdirs=None):
         print("DB ord_dir:", ord_dir)
         self.tf_pipline_factory.ord_dir      = ord_dir
         self.tf_pipline_factory.file_format  = file_format
@@ -502,6 +525,7 @@ class tf_Data_element_factory_builder():
         self.tf_pipline_factory.db_range     = db_range
         self.tf_pipline_factory.use_range    = use_range
         self.tf_pipline_factory.db_ch_ranges = db_ch_ranges
+        self.tf_pipline_factory.doc3d_subdirs = doc3d_subdirs
         return self
 
 
@@ -515,6 +539,8 @@ class tf_Data:   ### 以上 以下 都是為了設定這個物件
         self.train_shuffle    = None
 
         self.img_resize       = None
+
+        self.doc3d_subdirs = None
 
         self.use_in_range = None
         self.use_gt_range = None
