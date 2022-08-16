@@ -77,6 +77,12 @@ class See_rec_metric(See_info):
         self.metric_write_dir = self.see_write_dir + "/3_metric"
         self.metric_rotate_read_dir  = self.see_read_dir  + "/3_metric/rotate"
         self.metric_rotate_write_dir = self.see_write_dir + "/3_metric/rotate"
+
+        self.metric_by_flow_read_dir  = self.see_read_dir  + "/3_metric/by_flow"
+        self.metric_by_flow_write_dir = self.see_write_dir + "/3_metric/by_flow"
+        self.metric_by_flow_rotate_read_dir  = self.see_read_dir  + "/3_metric/by_flow/rotate"
+        self.metric_by_flow_rotate_write_dir = self.see_write_dir + "/3_metric/by_flow/rotate"
+
         self.metric_ld_color_read_dir  = self.see_read_dir  + "/3_metric/ld_color"
         self.metric_ld_color_write_dir = self.see_write_dir + "/3_metric/ld_color"
         self.metric_ld_gray_read_dir   = self.see_read_dir  + "/3_metric/ld_gray"
@@ -227,144 +233,119 @@ class See_rec_metric(See_info):
             ### rec_GT 要怎麼轉成 rec_pred
             path_pred = self.rec_read_paths[go_epoch]  ### bm_rec_matplot_visual/rec_visual/rec_epoch=0000.jpg
             path_gt = self.rec_hope_path     ### 0c-rec_hope.jpg
-
-            # rec_hope_598400, resized_h, resized_w = keep_aspect_ratio_and_resize_to_598400_area(rec_hope)
-            # Dewarp_result_598400 = cv2.resize(DewarpNet_result, (resized_w, resized_h))
-            # rec_598400           = cv2.resize(rec             , (resized_w, resized_h))
-
-            '''
-            ### 已經參考 https://github.com/cvlab-stonybrook/DewarpNet/issues/22 把 轉 gray 和 resize 寫進 matlab code 裡面囉！ 不能在外面做， 因為實驗過了數值還是不一樣～
-            img_pred = cv2.imread(path_pred, 0)
-            img_gt   = cv2.imread(path_gt, 0)
-            # img_pred_598400 = cv2.resize(img_pred, (680, 880))  ### 參考印度，確定不對了
-            # img_gt_598400   = cv2.resize(img_gt  , (680, 880))  ### 參考印度，確定不對了
-            img_gt_598400, resized_h, resized_w = keep_aspect_ratio_and_resize_to_598400_area(img_gt)
-            img_pred_598400 = cv2.resize(img_pred, (resized_w, resized_h), interpolation=cv2.INTER_CUBIC)
-
-            img_pred_598400_path = self.metric_im1_pred_write_dir  + "/im_pred_epoch=%04i.jpg" % go_epoch
-            img_gt_598400_path   = self.metric_im2_gt_write_dir  + "/im_gt_epoch=%04i.jpg" % go_epoch
-
-            cv2.imwrite(img_pred_598400_path, img_pred_598400)
-            cv2.imwrite(img_gt_598400_path  , img_gt_598400)
-            # path2 = self.rec_read_paths[-1]        ### bm_rec_matplot_visual/rec_visual/rec_gt.jpg
-
-            ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
-            os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
-            [SSIM, LD, vx, vy, d, im1, im2] = use_DewarpNet_eval(img_pred_598400_path, img_gt_598400_path)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
-            os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
-            '''
-
-            ### 已經參考 https://github.com/cvlab-stonybrook/DewarpNet/issues/22 把 轉 gray 和 resize 寫進 matlab code 裡面囉！ 不能在外面做， 因為實驗過了數值還是不一樣～
-            ### 跑 Matlab 的 SSIM / LD
-            ord_dir = os.getcwd()                            ### step1 紀錄 目前的主程式資料夾
-            os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                    ### step2 跳到 SIFTflow資料夾裡面
-            [SSIM, LD, vx, vy, d, im1, im2] = use_DewarpNet_eval(path_pred, path_gt)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
-            os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
-
-            # ### 轉gray 和 resize 後 最終用 哪兩張圖 來算 SSIM/LD 也存一份起來
-            # img_pred_598400_path = self.metric_im1_pred_write_dir  + "/im_pred_epoch=%04i.jpg" % go_epoch
-            # img_gt_598400_path   = self.metric_im2_gt_write_dir  + "/im_gt_epoch=%04i.jpg" % go_epoch
-            # cv2.imwrite(img_pred_598400_path, (im2 * 255).astype(np.uint8))
-            # cv2.imwrite(img_gt_598400_path  , (im1 * 255).astype(np.uint8))
+            SSIM, LD = self.SSIM_LD_util(base_dir=self.metric_write_dir, pred_path=path_pred, gt_path=path_gt, go_epoch=go_epoch, rotate_gt=False)
 
             ### 發現 test_126, test_127 的 gt 放反了
             if( self.see_name == 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA/test_126' or self.see_name == 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA/test_127'):
-                Check_dir_exist_and_build(self.metric_rotate_write_dir)
+                self.SSIM_LD_util(base_dir=self.metric_rotate_write_dir, pred_path=path_pred, gt_path=path_gt, go_epoch=go_epoch, rotate_gt=True)
 
-                rotate_img_pred_path = self.metric_rotate_write_dir + "/im1_pred_epoch=%04i.jpg" % go_epoch
-                rotate_img_gt_path   = self.metric_rotate_write_dir + "/im2_gt_epoch=%04i.jpg" % go_epoch
+            ### 用 rec_by_flow
+            ###   檢查如果有做 by_flow 的話， 才去看他的 SSIM / LD
+            if( len(get_dir_certain_file_names(self.rec_by_flow_visual_read_dir, certain_word="rec")) > 0 ):
+                rec_by_flow_pred_path = self.rec_by_flow_read_paths[go_epoch]
+                self.SSIM_LD_util(base_dir=self.metric_by_flow_write_dir, pred_path=rec_by_flow_pred_path, gt_path=path_gt, go_epoch=go_epoch, rotate_gt=False)
 
-                img_pred = cv2.imread(self.rec_read_paths[go_epoch])
-                img_gt   = cv2.imread(self.rec_hope_path)
-                # rotate_img_pred = cv2.rotate(img_pred, cv2.cv2.ROTATE_90_CLOCKWISE)
-                rotate_img_gt   = cv2.rotate(img_gt         , cv2.cv2.ROTATE_90_CLOCKWISE)
-                rotate_img_gt   = cv2.rotate(rotate_img_gt  , cv2.cv2.ROTATE_90_CLOCKWISE)
-                cv2.imwrite(rotate_img_pred_path, img_pred)
-                cv2.imwrite(rotate_img_gt_path  , rotate_img_gt  )
+                ### 發現 test_126, test_127 的 gt 放反了
+                if( self.see_name == 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA/test_126' or self.see_name == 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA/test_127'):
+                    self.SSIM_LD_util(base_dir=self.metric_by_flow_rotate_write_dir, pred_path=rec_by_flow_pred_path, gt_path=path_gt, go_epoch=go_epoch, rotate_gt=True)
 
-                ### 跑 Matlab 的 SSIM / LD
-                ord_dir = os.getcwd()                                                                           ### step1 紀錄 目前的主程式資料夾
-                os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                                                ### step2 跳到 SIFTflow資料夾裡面
-                [rot_SSIM, rot_LD, rot_vx, rot_vy, rot_d, rot_im1, rot_im2] = use_DewarpNet_eval(rotate_img_pred_path, rotate_img_gt_path)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
-                os.chdir(ord_dir)                                ### step4 跳回 主程式資料夾
-
-                rot_im_pred_small_dir  = self.metric_rotate_write_dir + "/im1_pred"
-                rot_im_gt_small_dir    = self.metric_rotate_write_dir + "/im2_gt"
-                rot_ld_color_dir       = self.metric_rotate_write_dir + "/ld_color"
-                rot_ld_gray_dir        = self.metric_rotate_write_dir + "/ld_gray"
-                rot_ld_matplot_dir     = self.metric_rotate_write_dir + "/ld_matplot"
-                Check_dir_exist_and_build(rot_im_pred_small_dir  )
-                Check_dir_exist_and_build(rot_im_gt_small_dir    )
-                Check_dir_exist_and_build(rot_ld_color_dir       )
-                Check_dir_exist_and_build(rot_ld_gray_dir        )
-                Check_dir_exist_and_build(rot_ld_matplot_dir     )
-
-                rot_im_pred_small_path = rot_im_pred_small_dir + "/" + "im_pred_epoch=%04i.jpg" % go_epoch
-                rot_im_gt_small_path   = rot_im_gt_small_dir   + "/" + "im_gt_epoch=%04i.jpg" % go_epoch
-                rot_ld_color_path      = rot_ld_color_dir      + "/" + "ld_epoch=%04i.jpg" % go_epoch
-                rot_ld_gray_path       = rot_ld_gray_dir       + "/" + "ld_epoch=%04i.jpg" % go_epoch
-                rot_lds_path           = self.metric_rotate_write_dir + "/LDs"
-                rot_ssims_path         = self.metric_rotate_write_dir + "/SSIMs"
-
-
-                cv2.imwrite(rot_im_pred_small_path, (rot_im2 * 255).astype(np.uint8))
-                cv2.imwrite(rot_im_gt_small_path  , (rot_im1 * 255).astype(np.uint8))
-                ### 存 d 用的
-                rot_single_row_imgs = Matplot_single_row_imgs(
-                            imgs      =[rot_d],    ### 把要顯示的每張圖包成list
-                            img_titles=[],
-                            fig_title ="",   ### 圖上的大標題
-                            pure_img  =True,
-                            add_loss  =False,
-                            bgr2rgb   =False)
-                rot_single_row_imgs.Draw_img()
-                rot_single_row_imgs.Save_fig(rot_ld_matplot_dir, name="ld_epoch", epoch=go_epoch)
-                # plt.show()
-
-                ### 存 ld_visual
-                rot_ld_visual = method2(rot_vx, rot_vy, color_shift=3)  ### 因為等等是 直接用 cv2 直接寫，所以不用 bgr2rgb喔！
-
-                cv2.imwrite(rot_ld_color_path, rot_ld_visual)
-                cv2.imwrite(rot_ld_gray_path, rot_d.astype(np.uint8))
-
-                ### 存 LDs / SSIMs
-                np.save(rot_lds_path  , rot_LD)
-                np.save(rot_ssims_path, rot_SSIM)
-                with open(f"{self.metric_rotate_write_dir}/final_LD_SSIM.txt"  , "w") as f:
-                    f.write(f"final LD  :{rot_LD}\n")
-                    f.write(f"final SSIM:{rot_SSIM}")
-
-            ### debug 部分， 確認 等等要算 SSIM/LD 的圖長怎樣
-            # fig, ax = plt.subplots(nrows=1, ncols=2)
-            # rec_img    = cv2.imread(path1)
-            # rec_gt_img = cv2.imread(path2)
-            # ax[0].imshow(rec_img)
-            # ax[1].imshow(rec_gt_img)
-            # plt.show()
-            # plt.close()
-
-            ### 存 d 用的
-            single_row_imgs = Matplot_single_row_imgs(
-                        imgs      =[d],    ### 把要顯示的每張圖包成list
-                        img_titles=[],
-                        fig_title ="",   ### 圖上的大標題
-                        pure_img  =True,
-                        add_loss  =False,
-                        bgr2rgb   =False)
-            single_row_imgs.Draw_img()
-            single_row_imgs.Save_fig(self.metric_ld_matplot_write_dir, name="ld_epoch", epoch=go_epoch)
-            # print("d.max()~~~~~~~~~~", d.max())  ### 目前手動看 大概就是 epoch=0000 會很大 剩下epoch都很小， 然後epoch=0000 大概都40幾， 所以我設50囉！
-            # plt.show()
-
-            ### 存 ld_visual
-            ld_visual = method2(vx, vy, color_shift=3)  ### 因為等等是 直接用 cv2 直接寫，所以不用 bgr2rgb喔！
-
-            cv2.imwrite(self.metric_ld_color_write_dir + "/ld_epoch=%04i.jpg" % go_epoch, ld_visual)
-            cv2.imwrite(self.metric_ld_gray_write_dir  + "/ld_epoch=%04i.jpg" % go_epoch, d.astype(np.uint8))
 
             # print(go_epoch, SSIM, LD)
             SSIMs.append((go_epoch, SSIM))
             LDs  .append((go_epoch, LD))
+
+    def SSIM_LD_util(self, base_dir, pred_path, gt_path, go_epoch, rotate_gt=False):
+        from SIFT_dev.SIFTflow.kong_use_evalUnwarp_sucess import use_DewarpNet_eval
+        ### debug 部分， 確認 等等要算 SSIM/LD 的圖長怎樣
+        # fig, ax = plt.subplots(nrows=1, ncols=2)
+        # pred_img    = cv2.imread(pred_path)
+        # gt_img = cv2.imread(gt_path)
+        # ax[0].imshow(pred_img)
+        # ax[1].imshow(gt_img)
+        # plt.show()
+        # plt.close()
+
+        ### 看 gt 有沒有需要轉180度
+        if(rotate_gt):
+            Check_dir_exist_and_build(base_dir)
+            rotate_img_gt_path = base_dir + "/" + "im2_gt_rotate.png"
+            img_gt          = cv2.imread(gt_path)
+            rotate_img_gt   = cv2.rotate(img_gt         , cv2.cv2.ROTATE_90_CLOCKWISE)
+            rotate_img_gt   = cv2.rotate(rotate_img_gt  , cv2.cv2.ROTATE_90_CLOCKWISE)
+            cv2.imwrite( rotate_img_gt_path, rotate_img_gt  )
+            gt_path = rotate_img_gt_path
+
+        ### 已經參考 https://github.com/cvlab-stonybrook/DewarpNet/issues/22 把 轉 gray 和 resize 寫進 matlab code 裡面囉！ 不能在matlab外面做， 因為實驗過了數值還是不一樣～
+        ### 跑 Matlab 的 SSIM / LD
+        ord_dir = os.getcwd()                                                                           ### step1 紀錄 目前的主程式資料夾
+        os.chdir(f"{kong_model2_dir}/SIFT_dev/SIFTflow")                                                ### step2 跳到 SIFTflow資料夾裡面
+        [SSIM, LD, vx, vy, d, small_gt, small_pred] = use_DewarpNet_eval(pred_path, gt_path)  ### step3 執行 SIFTflow資料夾裡面 的 kong_use_evalUnwarp_sucess.use_DewarpNet_eval 來執行 kong_evalUnwarp_sucess.m
+        os.chdir(ord_dir)
+        im_pred_small_dir  = base_dir + "/im1_pred"
+        im_gt_small_dir    = base_dir + "/im2_gt"
+        ld_color_dir       = base_dir + "/ld_color"
+        ld_gray_dir        = base_dir + "/ld_gray"
+        ld_matplot_dir     = base_dir + "/ld_matplot"
+        Check_dir_exist_and_build(im_pred_small_dir)
+        Check_dir_exist_and_build(im_gt_small_dir  )
+        Check_dir_exist_and_build(ld_color_dir     )
+        Check_dir_exist_and_build(ld_gray_dir      )
+        Check_dir_exist_and_build(ld_matplot_dir   )
+
+        im_pred_small_path = im_pred_small_dir + "/" + "im_pred_epoch=%04i.jpg" % go_epoch
+        im_gt_small_path   = im_gt_small_dir   + "/" + "im_gt_epoch=%04i.jpg" % go_epoch
+        ld_color_path      = ld_color_dir      + "/" + "ld_epoch=%04i.jpg" % go_epoch
+        ld_gray_path       = ld_gray_dir       + "/" + "ld_epoch=%04i.jpg" % go_epoch
+        lds_path           = base_dir + "/final_LD"
+        ssims_path         = base_dir + "/final_SSIM"
+
+        cv2.imwrite(im_pred_small_path, (small_pred * 255).astype(np.uint8))
+        cv2.imwrite(im_gt_small_path  , (small_gt   * 255).astype(np.uint8))
+        ### 存 d_gray 用的
+        cv2.imwrite(ld_gray_path, d.astype(np.uint8))
+        ### 存 d_gray 用 min/max
+        single_row_imgs = Matplot_single_row_imgs(
+                    imgs      =[d],    ### 把要顯示的每張圖包成list
+                    img_titles=[],
+                    fig_title ="",   ### 圖上的大標題
+                    pure_img  =True,
+                    add_loss  =False,
+                    bgr2rgb   =False)
+        single_row_imgs.Draw_img()
+        single_row_imgs.Save_fig(ld_matplot_dir, name="ld_epoch", epoch=go_epoch)
+        # plt.show()
+
+        ### 存 ld_color
+        ld_color = method2(vx, vy, color_shift=3)  ### 因為等等是 直接用 cv2 直接寫，所以不用 bgr2rgb喔！
+        cv2.imwrite(ld_color_path, ld_color)
+
+        ### 存 LDs / SSIMs
+        np.save(lds_path  , LD)
+        np.save(ssims_path, SSIM)
+        with open(f"{base_dir}/final_LD_SSIM.txt"  , "w") as f:
+            f.write(f"final LD  :{LD}\n")
+            f.write(f"final SSIM:{SSIM}")
+
+
+        ### final compare 把想看的放一起
+        final_compare_dir = base_dir + "/final_compare"
+        Check_dir_exist_and_build(final_compare_dir)
+
+        final_compare_pred_path       = final_compare_dir + "/" + "img1_ord_pred.jpg"
+        final_compare_gt_path         = final_compare_dir + "/" + "img2_ord_gt.jpg"
+        final_compare_small_pred_path = final_compare_dir + "/" + "img3_LDsmall_pred.jpg"
+        final_compare_small_gt_path   = final_compare_dir + "/" + "img4_LDsmall_gt.jpg"
+        final_compare_ld_color        = final_compare_dir + "/" + "img5_LDcolor.jpg"
+        Check_dir_exist_and_build(im_pred_small_dir)
+        ord_pred = cv2.imread(pred_path)
+        ord_gt   = cv2.imread(gt_path)  ### 如果有 rotate 再上面已經自動換好了喔 這邊直接讀 gt_path 沒問題
+        cv2.imwrite(final_compare_pred_path,         ord_pred)
+        cv2.imwrite(final_compare_gt_path,           ord_gt)
+        cv2.imwrite(final_compare_small_pred_path,   (small_pred * 255).astype(np.uint8))
+        cv2.imwrite(final_compare_small_gt_path,     (small_gt   * 255).astype(np.uint8))
+        cv2.imwrite(final_compare_ld_color,          ld_color)
+
+        return SSIM, LD
 
     ###############################################################################################
     ###############################################################################################

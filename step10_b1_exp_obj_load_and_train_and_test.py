@@ -726,144 +726,212 @@ class Experiment():
             ax.legend()
             ax_dot_text(ax, values)
 
-        ### 去各個 test料夾 蒐集出 lds 和 ssims
-        lds = []
-        ssims = []
-        for test in self.result_obj.tests:
-            ld_path   = test.metric_read_dir + "/" + "LDs.npy"
-            ssim_path = test.metric_read_dir + "/" + "SSIMs.npy"
-            ld   = np.load(ld_path)
-            ssim = np.load(ssim_path)
-            ld   = ld  [-1]  ### -1 是取 final 的概念，因為如果是用 see， 可能會有很多個 epoch 的 LD/SSIM 數值喔！ 取-1 test也適用。
-            ssim = ssim[-1]  ### -1 是取 final 的概念，因為如果是用 see， 可能會有很多個 epoch 的 LD/SSIM 數值喔！ 取-1 test也適用。
+        def visit_result_tests_and_get_final_ssim_ld(rec_type):
+            '''
+            rec_type: ord / by_flow
+            '''
+            metric_exist = False
+            final_lds = []
+            final_ssims = []
+            for test in self.result_obj.tests:
+                if  (rec_type.lower() == "ord"):     base_dir = test.metric_read_dir
+                elif(rec_type.lower() == "by_flow"): base_dir = test.metric_by_flow_read_dir
+                final_ld_path   = base_dir + "/" + "final_LD.npy"
+                final_ssim_path = base_dir + "/" + "final_SSIM.npy"
 
-            lds  .append(ld)
-            ssims.append(ssim)
-        lds   = np.array(lds)
-        ssims = np.array(ssims)
-        lds_mean   = np.mean(lds)
-        ssims_mean = np.mean(ssims)
-        amount = len(lds)
+                if(os.path.isfile(final_ld_path) and os.path.isfile(final_ssim_path)):
+                    metric_exist = True
+                    final_ld   = np.load(final_ld_path)
+                    final_ssim = np.load(final_ssim_path)
+                    final_lds  .append(final_ld)
+                    final_ssims.append(final_ssim)
+                else:  ### 寫錯(沒有final 的概念在裡面)，但沒辦法已經錯了很久了， 為了相容性， 保留之前錯的方式囉
+                    lds_path   = base_dir + "/" + "LDs.npy"
+                    ssims_path = base_dir + "/" + "SSIMs.npy"
+                    if(os.path.isfile(lds_path) and os.path.isfile(ssims_path)):
+                        lds   = np.load(lds_path)
+                        ssims = np.load(ssims_path)
+                        final_ld   = lds  [-1]  ### -1 是取 final 的概念，因為如果是用 see， 可能會有很多個 epoch 的 LD/SSIM 數值喔！ 取-1 test也適用。
+                        final_ssim = ssims[-1]  ### -1 是取 final 的概念，因為如果是用 see， 可能會有很多個 epoch 的 LD/SSIM 數值喔！ 取-1 test也適用。
+                        final_lds  .append(final_ld)
+                        final_ssims.append(final_ssim)
 
-        Check_dir_exist_and_build( base_dir )
+            return metric_exist, np.array(final_ssims), np.array(final_lds)
 
-        lds_mean_path   = base_dir + "/" + "LDs_mean"
-        ssims_mean_path = base_dir + "/" + "SSIMs_mean"
-        np.save(lds_mean_path, lds_mean)
-        np.save(ssims_mean_path, ssims_mean)
+        def final_ssims_lds_calculate_mean_and_write_txt(base_dir, final_ssims, final_lds, title="metric1"):
+            Check_dir_exist_and_build( base_dir )
+            final_amount = len(final_lds)
 
-        ### lds 和 ssims 寫成 txt
-        ld_ssim_value_txt_path    = base_dir + "/" + "LD_SSIM_value.txt"
-        with open(ld_ssim_value_txt_path, "w") as f:
-            f.write(f"mean\n")
-            f.write(f"ld_mean      : {lds_mean      }\n")
-            f.write(f"ssim_mean    : {ssims_mean    }\n")
+            if(type(final_ssims) != type(np.array([]))):
+                final_lds   = np.array(final_lds)
+                final_ssims = np.array(final_ssims)
+            final_lds_mean   = np.mean(final_lds)
+            final_ssims_mean = np.mean(final_ssims)
 
-            for go_val in range(amount):
-                ssim    =  ssims   [go_val]
-                ld      =  lds     [go_val]
-                f.write(f"  current_id : {go_val}\n")
-                f.write(f"    my_rec_ssim    : {ssim    }\n")
-                f.write(f"    my_rec_ld      : {ld      }\n")
-
-        ### lds 和 ssims matplot視覺化
-        ld_ssim_value_visual_path = base_dir + "/" + "LD_SSIM_value_visual"
-        import matplotlib.pyplot as plt
-        canvas_size = 3
-        nrows = 2
-        ncols = 1
-        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols * 6.3, canvas_size * nrows))
-        draw(ax=ax[0], values=lds  , text="LD"  , xmin=0, xmax=129, ymin=0, ymax=50)
-        draw(ax=ax[1], values=ssims, text="SSIM", xmin=0, xmax=129, ymin=0, ymax= 1)
-        fig.tight_layout()
-        # plt.show()
-        plt.savefig(ld_ssim_value_visual_path)
-
-        ##########################################################################################################
-        ### 126, 127 反過來算
-        ld_rotate_126_path   = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "LDs.npy"
-        ssim_rotate_126_path = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "SSIMs.npy"
-        ld_rotate_127_path   = self.result_obj.tests[127].metric_read_dir + "/rotate/" + "LDs.npy"
-        ssim_rotate_127_path = self.result_obj.tests[127].metric_read_dir + "/rotate/" + "SSIMs.npy"
-
-        if(os.path.isfile(ld_rotate_126_path   ) and
-           os.path.isfile(ssim_rotate_126_path ) and
-           os.path.isfile(ld_rotate_127_path   ) and
-           os.path.isfile(ssim_rotate_127_path )  ):
-            ld_rotate_126   = np.load(ld_rotate_126_path)
-            ld_rotate_127   = np.load(ld_rotate_127_path)
-            ssim_rotate_126 = np.load(ssim_rotate_126_path)
-            ssim_rotate_127 = np.load(ssim_rotate_127_path)
-
-            lds_rotate = lds.copy()
-            ssims_rotate = ssims.copy()
-            lds_rotate[126] = ld_rotate_126
-            lds_rotate[127] = ld_rotate_127
-            ssims_rotate[126] = ssim_rotate_126
-            ssims_rotate[127] = ssim_rotate_127
-
-            lds_rotate_mean   = np.mean(lds_rotate)
-            ssims_rotate_mean = np.mean(ssims_rotate)
-
-            lds_rotate_mean_path   = base_dir + "/" + "rotate_LDs_mean"
-            ssims_rotate_mean_path = base_dir + "/" + "rotate_SSIMs_mean"
-            np.save(lds_rotate_mean_path, lds_rotate_mean)
-            np.save(ssims_rotate_mean_path, ssims_rotate_mean)
+            final_lds_mean_path   = base_dir + "/" + f"{title}_final_LDs_mean"
+            final_ssims_mean_path = base_dir + "/" + f"{title}_final_SSIMs_mean"
+            np.save(final_lds_mean_path, final_lds_mean)
+            np.save(final_ssims_mean_path, final_ssims_mean)
 
             ### lds 和 ssims 寫成 txt
-            ld_ssim_rotate_value_txt_path    = base_dir + "/" + "rotate_LD_SSIM_value.txt"
-            with open(ld_ssim_rotate_value_txt_path, "w") as f:
+            final_ld_ssim_value_txt_path    = base_dir + "/" + f"{title}_final_LD_SSIM_value.txt"
+            with open(final_ld_ssim_value_txt_path, "w") as f:
                 f.write(f"mean\n")
-                f.write(f"ld_mean      : {lds_rotate_mean      }\n")
-                f.write(f"ssim_mean    : {ssims_rotate_mean    }\n")
+                f.write(f"final_ld_mean      : {final_lds_mean      }\n")
+                f.write(f"final_ssim_mean    : {final_ssims_mean    }\n")
 
-                for go_val in range(amount):
-                    ssim    =  ssims_rotate   [go_val]
-                    ld      =  lds_rotate     [go_val]
+                for go_val in range(final_amount):
+                    final_ssim    =  final_ssims   [go_val]
+                    final_ld      =  final_lds     [go_val]
                     f.write(f"  current_id : {go_val}\n")
-                    f.write(f"    my_rec_ssim    : {ssim    }\n")
-                    f.write(f"    my_rec_ld      : {ld      }\n")
+                    f.write(f"    my_rec_ssim    : {final_ssim    }\n")
+                    f.write(f"    my_rec_ld      : {final_ld      }\n")
 
             ### lds 和 ssims matplot視覺化
-            ld_ssim_rotate_value_visual_path = base_dir + "/" + "rotate_LD_SSIM_value_visual"
+            final_ld_ssim_value_visual_path = base_dir + "/" + f"{title}_final_LD_SSIM_value_visual"
             import matplotlib.pyplot as plt
             canvas_size = 3
             nrows = 2
             ncols = 1
             fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols * 6.3, canvas_size * nrows))
-            draw(ax=ax[0], values=lds_rotate  , text="LD_rotate"  , xmin=0, xmax=129, ymin=0, ymax=50)
-            draw(ax=ax[1], values=ssims_rotate, text="SSIM_rotate", xmin=0, xmax=129, ymin=0, ymax= 1)
+            draw(ax=ax[0], values=final_lds  , text="final_LD"  , xmin=0, xmax=129, ymin=0, ymax=50)
+            draw(ax=ax[1], values=final_ssims, text="final_SSIM", xmin=0, xmax=129, ymin=0, ymax= 1)
             fig.tight_layout()
             # plt.show()
-            plt.savefig(ld_ssim_rotate_value_visual_path)
+            plt.savefig(final_ld_ssim_value_visual_path)
 
+        ####################################################################################################################################################################################################################
+        ####################################################################################################################################################################################################################
+        ####################################################################################################################################################################################################################
+        ### 正常 by_bm
+        ### 去各個 test料夾 蒐集出 lds 和 ssims
+        _, final_ssims, final_lds = visit_result_tests_and_get_final_ssim_ld(rec_type="ord")
+        final_amount = len(final_lds)
+        final_ssims_lds_calculate_mean_and_write_txt(base_dir=base_dir, final_ssims=final_ssims, final_lds=final_lds, title="metric1")
 
         ##########################################################################################################
-        ##########################################################################################################
+        ### 126, 127 反過來算
+        final_ld_rotate_126_path   = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "final_LD.npy"
+        final_ssim_rotate_126_path = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "final_SSIM.npy"
+        final_ld_rotate_127_path   = self.result_obj.tests[127].metric_read_dir + "/rotate/" + "final_LD.npy"
+        final_ssim_rotate_127_path = self.result_obj.tests[127].metric_read_dir + "/rotate/" + "final_SSIM.npy"
+        rotate_gt_exist = False
+        if(os.path.isfile(final_ld_rotate_126_path   ) and
+           os.path.isfile(final_ssim_rotate_126_path ) and
+           os.path.isfile(final_ld_rotate_127_path   ) and
+           os.path.isfile(final_ssim_rotate_127_path )  ):
+           rotate_gt_exist = True
+        else:  ### 如果不存在，換個路徑找找看
+            final_ld_rotate_126_path   = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "LDs.npy"
+            final_ssim_rotate_126_path = self.result_obj.tests[126].metric_read_dir + "/rotate/" + "SSIMs.npy"
+            final_ld_rotate_127_path   = self.result_obj.tests[127].metric_read_dir + "/rotate/" + "LDs.npy"
+            final_ssim_rotate_127_path = self.result_obj.tests[127].metric_read_dir + "/rotate/" + "SSIMs.npy"
+            if(os.path.isfile(final_ld_rotate_126_path   ) and
+               os.path.isfile(final_ssim_rotate_126_path ) and
+               os.path.isfile(final_ld_rotate_127_path   ) and
+               os.path.isfile(final_ssim_rotate_127_path )  ):
+                rotate_gt_exist = True
+
+        if(rotate_gt_exist):
+            final_ld_rotate_126   = np.load(final_ld_rotate_126_path)
+            final_ld_rotate_127   = np.load(final_ld_rotate_127_path)
+            final_ssim_rotate_126 = np.load(final_ssim_rotate_126_path)
+            final_ssim_rotate_127 = np.load(final_ssim_rotate_127_path)
+
+            final_lds_rotate = final_lds.copy()
+            final_ssims_rotate = final_ssims.copy()
+            final_lds_rotate[126] = final_ld_rotate_126
+            final_lds_rotate[127] = final_ld_rotate_127
+            final_ssims_rotate[126] = final_ssim_rotate_126
+            final_ssims_rotate[127] = final_ssim_rotate_127
+            final_ssims_lds_calculate_mean_and_write_txt(base_dir=base_dir, final_ssims=final_ssims_rotate, final_lds=final_lds_rotate, title="metric2_rotate")
+
+        ####################################################################################################################################################################################################################
+        ### by_flow
+        ### 去各個 test料夾 蒐集出 lds 和 ssims
+        by_flow_exist, by_flow_final_ssims, by_flow_final_lds = visit_result_tests_and_get_final_ssim_ld(rec_type="by_flow")
+        if(by_flow_exist):
+            final_ssims_lds_calculate_mean_and_write_txt(base_dir=base_dir, final_ssims=by_flow_final_ssims, final_lds=by_flow_final_lds, title="metric3_by_flow")
+
+            ##########################################################################################################
+            ### by_flow 的 126, 127 反過來算
+            final_ld_by_flow_rotate_126_path   = self.result_obj.tests[126].metric_read_dir + "/by_flow/rotate/" + "final_LD.npy"
+            final_ssim_by_flow_rotate_126_path = self.result_obj.tests[126].metric_read_dir + "/by_flow/rotate/" + "final_SSIM.npy"
+            final_ld_by_flow_rotate_127_path   = self.result_obj.tests[127].metric_read_dir + "/by_flow/rotate/" + "final_LD.npy"
+            final_ssim_by_flow_rotate_127_path = self.result_obj.tests[127].metric_read_dir + "/by_flow/rotate/" + "final_SSIM.npy"
+            by_flow_rotate_gt_exist = False
+
+            if(os.path.isfile(final_ld_by_flow_rotate_126_path   ) and
+            os.path.isfile(final_ssim_by_flow_rotate_126_path ) and
+            os.path.isfile(final_ld_by_flow_rotate_127_path   ) and
+            os.path.isfile(final_ssim_by_flow_rotate_127_path )  ):
+                by_flow_rotate_gt_exist = True
+            else:  ### 如果不存在，換個路徑找找看
+                final_ld_by_flow_rotate_126_path   = self.result_obj.tests[126].metric_read_dir + "/by_flow/rotate/" + "LDs.npy"
+                final_ssim_by_flow_rotate_126_path = self.result_obj.tests[126].metric_read_dir + "/by_flow/rotate/" + "SSIMs.npy"
+                final_ld_by_flow_rotate_127_path   = self.result_obj.tests[127].metric_read_dir + "/by_flow/rotate/" + "LDs.npy"
+                final_ssim_by_flow_rotate_127_path = self.result_obj.tests[127].metric_read_dir + "/by_flow/rotate/" + "SSIMs.npy"
+                if(os.path.isfile(final_ld_by_flow_rotate_126_path   ) and
+                os.path.isfile(final_ssim_by_flow_rotate_126_path ) and
+                os.path.isfile(final_ld_by_flow_rotate_127_path   ) and
+                os.path.isfile(final_ssim_by_flow_rotate_127_path )  ):
+                    by_flow_rotate_gt_exist = True
+
+            if(by_flow_rotate_gt_exist):
+                final_ld_by_flow_rotate_126   = np.load(final_ld_by_flow_rotate_126_path)
+                final_ld_by_flow_rotate_127   = np.load(final_ld_by_flow_rotate_127_path)
+                final_ssim_by_flow_rotate_126 = np.load(final_ssim_by_flow_rotate_126_path)
+                final_ssim_by_flow_rotate_127 = np.load(final_ssim_by_flow_rotate_127_path)
+
+                final_lds_by_flow_rotate = by_flow_final_lds.copy()
+                final_ssims_by_flow_rotate = by_flow_final_ssims.copy()
+                final_lds_by_flow_rotate[126] = final_ld_by_flow_rotate_126
+                final_lds_by_flow_rotate[127] = final_ld_by_flow_rotate_127
+                final_ssims_by_flow_rotate[126] = final_ssim_by_flow_rotate_126
+                final_ssims_by_flow_rotate[127] = final_ssim_by_flow_rotate_127
+                final_ssims_lds_calculate_mean_and_write_txt(base_dir=base_dir, final_ssims=final_ssims_by_flow_rotate, final_lds=final_lds_by_flow_rotate, title="metric4_by_flow_rotate")
+
+        ####################################################################################################################################################################################################################
+        ####################################################################################################################################################################################################################
+        ####################################################################################################################################################################################################################
         ### tensorboard
-
-        ### writer = tf.summary.create_file_writer("/tmp/mylogs/eager")
         ld_ssim_value_tboard_write_path    = base_dir + "/" + "LD_SSIM_tboard"
         ld_ssim_value_tboard_read_path     = base_dir + "/" + "LD_SSIM_tboard"
         writer = tf.summary.create_file_writer(ld_ssim_value_tboard_write_path)
         with writer.as_default():
-            for go_val in range(amount):
-                tf.summary.scalar("SSIMs", ssims[go_val], step=go_val)
-                tf.summary.scalar("LDs"  , lds  [go_val], step=go_val)
+            ##########################################################################################################
+            ### 正常 by_bm
+            for go_val in range(final_amount):
+                tf.summary.scalar("SSIMs", final_ssims[go_val], step=go_val)
+                tf.summary.scalar("LDs"  , final_lds  [go_val], step=go_val)
                 if(go_val > 0):
-                    tf.summary.scalar("mean_SSIM", np.mean(ssims[:go_val]), step=go_val)
-                    tf.summary.scalar("mean_LD"  , np.mean(lds  [:go_val]), step=go_val)
+                    tf.summary.scalar("mean_SSIM", np.mean(final_ssims[:go_val]), step=go_val)
+                    tf.summary.scalar("mean_LD"  , np.mean(final_lds  [:go_val]), step=go_val)
 
-            if(os.path.isfile(ld_rotate_126_path   ) and
-                os.path.isfile(ssim_rotate_126_path ) and
-                os.path.isfile(ld_rotate_127_path   ) and
-                os.path.isfile(ssim_rotate_127_path )  ):
-                for go_val in range(amount):
-                    tf.summary.scalar("rotate_SSIMs", ssims_rotate[go_val], step=go_val)
-                    tf.summary.scalar("rotate_LDs"  , lds_rotate  [go_val], step=go_val)
+            if(rotate_gt_exist):
+                for go_val in range(final_amount):
+                    tf.summary.scalar("rotate_SSIMs", final_ssims_rotate[go_val], step=go_val)
+                    tf.summary.scalar("rotate_LDs"  , final_lds_rotate  [go_val], step=go_val)
                     if(go_val > 0):
-                        tf.summary.scalar("rotate_mean_SSIM", np.mean(ssims_rotate[:go_val]), step=go_val)
-                        tf.summary.scalar("rotate_mean_LD"  , np.mean(lds_rotate  [:go_val]), step=go_val)
+                        tf.summary.scalar("rotate_mean_SSIM", np.mean(final_ssims_rotate[:go_val]), step=go_val)
+                        tf.summary.scalar("rotate_mean_LD"  , np.mean(final_lds_rotate  [:go_val]), step=go_val)
+
+            ##########################################################################################################
+            ### by_flow
+            if(by_flow_exist):
+                for go_val in range(final_amount):
+                    tf.summary.scalar("by_flow_SSIMs", by_flow_final_ssims[go_val], step=go_val)
+                    tf.summary.scalar("by_flow_LDs"  , by_flow_final_lds  [go_val], step=go_val)
+                    if(go_val > 0):
+                        tf.summary.scalar("by_flow_mean_SSIM", np.mean(by_flow_final_ssims[:go_val]), step=go_val)
+                        tf.summary.scalar("by_flow_mean_LD"  , np.mean(by_flow_final_lds  [:go_val]), step=go_val)
+                if(by_flow_rotate_gt_exist):
+                    for go_val in range(final_amount):
+                        tf.summary.scalar("by_flow_rotate_SSIMs", final_ssims_by_flow_rotate[go_val], step=go_val)
+                        tf.summary.scalar("by_flow_rotate_LDs"  , final_lds_by_flow_rotate  [go_val], step=go_val)
+                        if(go_val > 0):
+                            tf.summary.scalar("by_flow_rotate_mean_SSIM", np.mean(final_ssims_by_flow_rotate[:go_val]), step=go_val)
+                            tf.summary.scalar("by_flow_rotate_mean_LD"  , np.mean(final_lds_by_flow_rotate  [:go_val]), step=go_val)
 
 
         ### 同步 test_write / test_read

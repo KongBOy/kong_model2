@@ -60,6 +60,8 @@ class See_bm_rec(See_info):
         self.bm_visual_write_dir              = self.see_write_dir + "/2_bm_rec_matplot_visual/bm_visual"
         self.rec_visual_read_dir              = self.see_read_dir  + "/2_bm_rec_matplot_visual/rec_visual"
         self.rec_visual_write_dir             = self.see_write_dir + "/2_bm_rec_matplot_visual/rec_visual"
+        self.rec_by_flow_visual_read_dir      = self.see_read_dir  + "/2_bm_rec_matplot_visual/rec_visual/rec_by_flow"
+        self.rec_by_flow_visual_write_dir     = self.see_write_dir + "/2_bm_rec_matplot_visual/rec_visual/rec_by_flow"
 
         ### 資料夾的位置有改 保險起見加一下，久了確定 放的位置都更新了 可刪這行喔
         # self.Change_bm_rec_dir(print_msg=True)
@@ -99,6 +101,7 @@ class See_bm_rec(See_info):
         self.rec_names  = get_dir_certain_file_names(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".jpg")
         self.rec_names += get_dir_certain_file_names(self.rec_visual_read_dir, certain_word="rec_epoch", certain_ext=".png")
         self.rec_read_paths = [self.rec_visual_read_dir + "/" + name for name in self.rec_names]  ### 沒有 write_path， 因為 bm_rec 只需要指定 write_dir 即可寫入資料夾
+        self.rec_by_flow_read_paths = [self.rec_by_flow_visual_read_dir + "/" + name for name in self.rec_names]  ### 沒有 write_path， 因為 bm_rec 只需要指定 write_dir 即可寫入資料夾
 
         self.rec_gt_path = self.get_path_savely(self.rec_visual_read_dir, certain_word="gt", certain_ext=".jpg")  ### 沒有 write_path， 因為 bm_rec 只需要指定 write_dir 即可寫入資料夾
         # self.rec_gt_name = get_dir_certain_file_names(self.rec_visual_read_dir, certain_word="gt", certain_ext=".jpg")
