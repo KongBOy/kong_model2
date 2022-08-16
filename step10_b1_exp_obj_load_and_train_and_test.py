@@ -204,7 +204,7 @@ class Experiment():
             self.img_resize = (self.db_obj.h, self.db_obj.w)
             print("自動設定 img_resize 的結果為：", self.img_resize)
 
-        self.tf_data = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).build_by_db_get_method().build()  ### tf_data 抓資料
+        self.tf_data = tf_Data_builder().set_basic(self.db_obj, batch_size=self.batch_size, train_shuffle=self.train_shuffle).set_data_use_range(use_in_range=self.use_in_range, use_gt_range=self.use_gt_range).set_img_resize(self.img_resize).set_doc3d_subdirs(self.doc3d_subdirs).build_by_db_get_method().build()  ### tf_data 抓資料
 
         ##### 好像變成 it 設定專區， 那就順勢變成 it設定專區 吧～
         ### (算出來的1) 1個epoch內 會 更新 幾次
