@@ -578,7 +578,7 @@ class Experiment():
             with loss_info_obj.summary_writer.as_default():
                 for loss_name, loss_containor in loss_info_obj.loss_containors.items():  ### 單個output 裡的 多loss 的 case
                     ### tensorboard
-                    tf.summary.scalar(loss_name, loss_containor.result(), step=self.current_ep_it)
+                    tf.summary.scalar(loss_name, loss_containor.result(), step=self.current_ex_it)
                     tf.summary.scalar("lr", self.lr_current, step=self.current_ex_it)
 
                     ### 自己另存成 npy
