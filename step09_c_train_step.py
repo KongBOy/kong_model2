@@ -213,7 +213,7 @@ class Train_step_I_w_M_to_W_to_C():
         self.color_jit = color_jit
         self.remove_in_bg = remove_in_bg
 
-    # @tf.function
+    @tf.function
     def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         '''
         還沒有仔細寫
@@ -249,19 +249,19 @@ class Train_step_I_w_M_to_W_to_C():
         Cygt = Fgt[..., 1:2]
         gt_datas = [Wzgt, Wygt, Wxgt, Cxgt, Cygt]
 
-        ## debug 時 記得把 @tf.function 拿掉
-        import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(nrows=1, ncols=8, figsize=(40, 5))
-        ax[0].imshow(I_pre[0])
-        ax[1].imshow(Mgt_pre[0])
-        ax[2].imshow(in_data[0])
-        ax[3].imshow(Wzgt[0])
-        ax[4].imshow(Wygt[0])
-        ax[5].imshow(Wxgt[0])
-        ax[6].imshow(Cxgt[0])
-        ax[7].imshow(Cygt[0])
-        fig.tight_layout()
-        plt.show()
+        # ### debug 時 記得把 @tf.function 拿掉
+        # import matplotlib.pyplot as plt
+        # fig, ax = plt.subplots(nrows=1, ncols=8, figsize=(40, 5))
+        # ax[0].imshow(I_pre[0])
+        # ax[1].imshow(Mgt_pre[0])
+        # ax[2].imshow(in_data[0])
+        # ax[3].imshow(Wzgt[0])
+        # ax[4].imshow(Wygt[0])
+        # ax[5].imshow(Wxgt[0])
+        # ax[6].imshow(Cxgt[0])
+        # ax[7].imshow(Cygt[0])
+        # fig.tight_layout()
+        # plt.show()
 
         if(self.focus is False): _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
         else:                    _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=Mgt_pre)
@@ -282,7 +282,7 @@ def train_step_Multi_output_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus(model_obj, in
     Cygt = Fgt[..., 1:2]
     gt_datas = [Wzgt, Wygt, Wxgt, Cxgt, Cygt]
 
-    ## debug 時 記得把 @tf.function 拿掉
+    # ### debug 時 記得把 @tf.function 拿掉
     # import matplotlib.pyplot as plt
     # fig, ax = plt.subplots(nrows=1, ncols=8, figsize=(40, 5))
     # ax[0].imshow(I_pre[0])
@@ -324,7 +324,7 @@ def train_step_Multi_output_I_w_M_to_Cx_Cy(model_obj, in_data, gt_data, loss_inf
     # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
     # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
 
-    ## debug 時 記得把 @tf.function 拿掉
+    # ### debug 時 記得把 @tf.function 拿掉
     # import matplotlib.pyplot as plt
     # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
     # ax[0].imshow(in_data[0])
@@ -350,7 +350,7 @@ def train_step_Multi_output_I_w_M_to_Cx_Cy_focus(model_obj, in_data, gt_data, lo
     # print("gt_cx.numpy().shape", gt_cx.numpy().shape)
     # print("gt_cy.numpy().shape", gt_cy.numpy().shape)
 
-    ## debug 時 記得把 @tf.function 拿掉
+    # ### debug 時 記得把 @tf.function 拿掉
     # import matplotlib.pyplot as plt
     # fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(20, 5))
     # ax[0].imshow(in_data[0])
@@ -371,7 +371,7 @@ class Train_step_W_w_M_to_Cx_Cy():
         self.tight_crop = tight_crop
         self.remove_in_bg = remove_in_bg
 
-    # @tf.function
+    @tf.function
     def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
@@ -479,7 +479,7 @@ class Train_step_I_w_M_to_W():
         self.color_jit = color_jit
         self.remove_in_bg = remove_in_bg
 
-    # @tf.function
+    @tf.function
     def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
@@ -540,7 +540,7 @@ class Train_step_Wyx_w_M_to_Wz():
         self.sobel        = sobel
         self.sobel_only   = sobel_only
 
-    # @tf.function
+    @tf.function
     def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
@@ -866,7 +866,7 @@ class Train_step_I_to_M():
         self.tight_crop = tight_crop
         self.color_jit = color_jit
 
-    # @tf.function
+    @tf.function
     def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         gt_mask = gt_data[..., 0:1]
         if(self.tight_crop is not None):
