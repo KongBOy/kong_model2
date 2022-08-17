@@ -343,6 +343,34 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
         elif(self.use_range is None): print("tf_data 忘記設定 db_in/use_gt_range 或 rec_hope_range 了！，你可能會看到 Dataset.zip() 的錯誤喔 ~ ")
         return tf_data_element
 
+    ### dtd
+    def _dtd_bg_augmentation(self, img):
+        chance = tf.random.uniform(shape=[1])
+        ### dtd背景
+        if(chance > 0.3):
+            img_resized       = tf.image.resize(img, [200, 200], method=tf.image.ResizeMethod.AREA)  ### 參考 DewarpNet 的 augmentation方式
+            img_resized_tiled = tf.tile(img_resized, (3, 3, 1))
+            bg                = img_resized_tiled[:self.img_resize[0], :self.img_resize[1], :]
+            ### use_range 已經在 build_img_db 裡面處理好了， 這裡已經是對的 range 囉！
+
+        ### 單色背景
+        elif(chance < 0.3 and chance > 0.2):
+            c = tf.random.uniform(shape=(1, 1, 3))
+            bg = tf.ones(shape=[self.img_resize[0], self.img_resize[1], 3], dtype=tf.float32) * c  ### use_range 為  0 ~ 1
+            if  (self.use_range == Range(-1,   1)): bg = bg * 2 - 1                                ### use_range 為 -1 ~ 1
+            elif(self.use_range == Range( 0, 255)): bg = bg * 255                                  ### use_range 為  0 ~ 255
+        ### 最暗背景
+        else:
+            bg = tf.zeros(shape=[self.img_resize[0], self.img_resize[1], 3], dtype=tf.float32)  ### use_range 為  0 ~ 1 和 0 ~ 255 都適用
+            if(self.use_range == Range(-1,   1)): bg = bg * 2 - 1                               ### use_range 為 -1 ~ 1 時，最小為 -1
+
+        return bg
+
+    def build_dtd_img_db(self):
+        img_db = self.build_img_db()
+        img_db.pre = img_db.pre.map(self._dtd_bg_augmentation)
+        return img_db
+
     #####################################################################################
     def _build_flow_base_db(self):
         tf_data_element = tf_Data_element()
@@ -600,6 +628,8 @@ class tf_Data:   ### 以上 以下 都是為了設定這個物件
         self.rec_hope_train_db = tf_Data_element()
         self.rec_hope_test_db  = tf_Data_element()
         self.rec_hope_see_db   = tf_Data_element()
+
+        self.dtd = tf_Data_element()
 
         ### DewarpNet_result 不會有 train_db
         self.DewarpNet_result_test = tf_Data_element()

@@ -120,7 +120,7 @@ class Ttrain_step_w_GAN:
 
 
     @tf.function
-    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None, D_training=True, G_training=False):
+    def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None, D_training=True, G_training=False):
         if(self.op_type == "W_w_Mgt_to_Cx_Cy_focus"):
             in_Mask  = in_data[..., 3:4]
             in_W     = in_data[..., 0:3]
@@ -213,8 +213,8 @@ class Train_step_I_w_M_to_W_to_C():
         self.color_jit = color_jit
         self.remove_in_bg = remove_in_bg
 
-    @tf.function
-    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+    # @tf.function
+    def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         '''
         還沒有仔細寫
         '''
@@ -231,6 +231,11 @@ class Train_step_I_w_M_to_W_to_C():
 
         Mgt_pre = Wgt[..., 3:4]  ### 配合抓DB的方式用 in_dis_gt_wc_flow 的話：第一個 [0]是W， [1]是F， [0][..., 3:4] 或 [1][..., 0:1] 都可以取道Mask
 
+        if(bg_pre is not None):
+            b, h, w, c = I_pre.shape
+            bg_pre = bg_pre[:, :h, :w, :]
+            I_pre = bg_pre * ( 1 - Mgt_pre) + I_pre * Mgt_pre
+
         if(self.color_jit is not None):
             I_pre = self.color_jit(I_pre, Mgt_pre)
 
@@ -245,18 +250,18 @@ class Train_step_I_w_M_to_W_to_C():
         gt_datas = [Wzgt, Wygt, Wxgt, Cxgt, Cygt]
 
         ## debug 時 記得把 @tf.function 拿掉
-        # import matplotlib.pyplot as plt
-        # fig, ax = plt.subplots(nrows=1, ncols=8, figsize=(40, 5))
-        # ax[0].imshow(I_pre[0])
-        # ax[1].imshow(Mgt_pre[0])
-        # ax[2].imshow(in_data[0])
-        # ax[3].imshow(Wzgt[0])
-        # ax[4].imshow(Wygt[0])
-        # ax[5].imshow(Wxgt[0])
-        # ax[6].imshow(Cxgt[0])
-        # ax[7].imshow(Cygt[0])
-        # fig.tight_layout()
-        # plt.show()
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(nrows=1, ncols=8, figsize=(40, 5))
+        ax[0].imshow(I_pre[0])
+        ax[1].imshow(Mgt_pre[0])
+        ax[2].imshow(in_data[0])
+        ax[3].imshow(Wzgt[0])
+        ax[4].imshow(Wygt[0])
+        ax[5].imshow(Wxgt[0])
+        ax[6].imshow(Cxgt[0])
+        ax[7].imshow(Cygt[0])
+        fig.tight_layout()
+        plt.show()
 
         if(self.focus is False): _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs)
         else:                    _train_step_Multi_output(model_obj, in_data=in_data, gt_datas=gt_datas, loss_info_objs=loss_info_objs, Mask=Mgt_pre)
@@ -366,10 +371,12 @@ class Train_step_W_w_M_to_Cx_Cy():
         self.tight_crop = tight_crop
         self.remove_in_bg = remove_in_bg
 
-    @tf.function
-    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+    # @tf.function
+    def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+        W 不用color_jit
+        W 不用change_bg， 為了介面統一 __call__ 還是傳 bg_pre 進來
         '''
         Mgt_pre_for_crop = in_data[0][..., 3:4]
         W_con_M = in_data[0]
@@ -472,8 +479,8 @@ class Train_step_I_w_M_to_W():
         self.color_jit = color_jit
         self.remove_in_bg = remove_in_bg
 
-    @tf.function
-    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+    # @tf.function
+    def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
         '''
@@ -484,6 +491,11 @@ class Train_step_I_w_M_to_W():
             gt_data, _ = self.tight_crop(gt_data, Mgt_pre_for_crop)
 
         gt_mask  = gt_data[..., 3:4]
+
+        if(bg_pre is not None):
+            b, h, w, c = in_data.shape
+            bg_pre = bg_pre[:, :h, :w, :]
+            in_data = bg_pre * ( 1 - gt_mask) + in_data * gt_mask
 
         if(self.color_jit is not None):
             in_data = self.color_jit(in_data, gt_mask)
@@ -529,9 +541,11 @@ class Train_step_Wyx_w_M_to_Wz():
         self.sobel_only   = sobel_only
 
     # @tf.function
-    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+    def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         '''
         I_with_Mgt_to_C 是 Image_with_Mask(gt)_to_Coord 的縮寫
+        W 不用 color_jit
+        W 不用 change_bg， 為了介面統一 __call__ 還是傳 bg_pre 進來
         '''
         Mgt_pre_for_crop  = gt_data[..., 3:4]
         WM = in_data[0]
@@ -853,7 +867,7 @@ class Train_step_I_to_M():
         self.color_jit = color_jit
 
     # @tf.function
-    def __call__(self, model_obj, in_data, gt_data, loss_info_objs=None):
+    def __call__(self, model_obj, in_data, gt_data, bg_pre=None, loss_info_objs=None):
         gt_mask = gt_data[..., 0:1]
         if(self.tight_crop is not None):
             self.tight_crop.reset_jit()
@@ -871,6 +885,11 @@ class Train_step_I_to_M():
             # plt.savefig("debug_data/try_tight_crop/%03i" % debug_i)
             # plt.close()
             # debug_i += 1
+
+        if(bg_pre is not None):
+            b, h, w, c = in_data.shape
+            bg_pre = bg_pre[:, :h, :w, :]
+            in_data = bg_pre * ( 1 - gt_mask) + in_data * gt_mask
 
         if(self.color_jit is not None):
             in_data = self.color_jit(in_data, gt_mask)

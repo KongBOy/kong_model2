@@ -87,6 +87,17 @@ class tf_Data_init_builder:
         self.rec_hope_test_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_test_dir,  file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range, doc3d_subdirs=self.tf_data.doc3d_subdirs).build()
         self.rec_hope_see_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.rec_hope_see_dir,   file_format=self.tf_data.db_obj.rec_hope_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.db_rec_hope_range, use_range=self.tf_data.use_rec_hope_range, doc3d_subdirs=self.tf_data.doc3d_subdirs).build()
 
+        self.dtd_factory   = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.dtd_dir, file_format="jpg", img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=Range(0, 255), use_range=self.tf_data.use_in_range, doc3d_subdirs=self.tf_data.doc3d_subdirs).build()
+        if(self.tf_data.db_obj.have_dtd):
+            self.tf_data.dtd = self.dtd_factory.build_dtd_img_db()
+
+            if(self.tf_data.train_shuffle): self.tf_data.dtd.pre = self.tf_data.dtd.pre.shuffle(200)  ### 在 kong_model2_lots_try/try10_資料pipline 有很棒的模擬， 忘記可以去參考看看喔！
+            self.tf_data.dtd.pre = self.tf_data.dtd.pre.batch(self.tf_data.batch_size)       ### shuffle完 打包成一包包 batch
+            self.tf_data.dtd.pre = self.tf_data.dtd.pre.prefetch(-1)                         ### -1 代表 AUTOTUNE：https://www.tensorflow.org/api_docs/python/tf/data#AUTOTUNE，我自己的觀察是 他會視系統狀況自動調速度， 所以比較不會 cuda load failed 這樣子 ~~bb
+            # self.tf_data.dtd.pre = self.tf_data.dtd.pre.prefetch(self.tf_data.train_amount)  ### 反正就一個很大的數字， 可以穩定的用最高速跑， 但如果有再做別的事情可能會 cuda load failed 這樣子~ 如果設一個很大的數字， 觀察起來是會盡可能全速跑， 如果再做其他事情(看YT) 可能會　cuda error 喔～
+
+            self.tf_data.dtd_amount = get_db_amount(self.tf_data.db_obj.dtd_dir)
+
         ### DewarpNet_result 不會有 train_factory
         self.DewarpNet_result_test_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.DewarpNet_result_test_dir, file_format=self.tf_data.db_obj.DewarpNet_result_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.DewarpNet_result_range, use_range=self.tf_data.use_DewarpNet_result_range, doc3d_subdirs=self.tf_data.doc3d_subdirs).build()
         self.DewarpNet_result_see_factory  = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.DewarpNet_result_see_dir,  file_format=self.tf_data.db_obj.DewarpNet_result_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.DewarpNet_result_range, use_range=self.tf_data.use_DewarpNet_result_range, doc3d_subdirs=self.tf_data.doc3d_subdirs).build()

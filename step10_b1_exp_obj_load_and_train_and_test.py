@@ -391,10 +391,17 @@ class Experiment():
                     self.current_it_See_result_or_set_LR_or_Save_Model()
                     # if( self.current_ep_it % 10 == 0): break   ### debug用，看subprocess成不成功
             else:
+                ### 看有沒有 dtd 可以換背景
+                if(self.db_obj.have_dtd): bg_pre_iter = iter(self.tf_data.dtd.pre)
+
                 for _, train_in_pre, _, train_gt_pre, name in tqdm(self.tf_data.train_db_combine.take(it_train_amount)):
+                    ### 看有沒有 dtd 可以換背景
+                    bg_pre = None
+                    if(self.db_obj.have_dtd): bg_pre = next(bg_pre_iter)
+
                     ### train
                     # print("%06i" % it, name)  ### debug用
-                    self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, loss_info_objs=self.loss_info_objs)
+                    self.model_obj.train_step(model_obj=self.model_obj, in_data=train_in_pre, gt_data=train_gt_pre, bg_pre=bg_pre, loss_info_objs=self.loss_info_objs)
                     self.Current_ep_it_setting_and_update_current_exp_it(value= self.current_ep_it + 1)  ### +1 代表 after_rain 的意思
                     self.current_ex_it = self.current_ep * self.one_ep_iters + self.current_ep_it  ### 目前的it 在 exp 當中的哪裡
                     ### iter 看要不要 存圖、設定lr、儲存模型 (思考後覺得要在 after_train做)
