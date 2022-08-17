@@ -285,7 +285,7 @@ class tf_Data_element_factory(img_mapping_util, flow_wc_mapping_util, mask_mappi
         # print("ord_dir", self.ord_dir)
 
         ### 如果使用 doc3d 資料集 在 訓練時 可以指定 要用哪一個 subdir
-        if("doc3d" in self.ord_dir.lower() and "train" in self.ord_dir.lower()):
+        if("doc3d" in self.ord_dir.lower() and "train" in self.ord_dir.lower() and "rec_hope" not in self.ord_dir.lower()):
             ### 如果沒有指定 doc3d_subdirs， 自動去 doc3d/train/.../... 裡面看 有哪些 subdirs
             if(self.doc3d_subdirs is None): self.doc3d_subdirs = get_dir_dir_names(self.ord_dir)
             # print("self.doc3d_subdirs", self.doc3d_subdirs)
