@@ -227,12 +227,25 @@ class tf_Data_in_dis_gt_wc_flow_builder(tf_Data_init_builder):
 if(__name__ == "__main__"):
     from step09_d_KModel_builder_combine_step789 import MODEL_NAME, KModel_builder
     from step06_a_datas_obj import *
+    from step06_cFinal_tf_Data_builder import tf_Data_builder
     import time
 
     start_time = time.time()
     ''' mask1ch, flow 2ch合併 的形式'''
     ### 這裡為了debug方便 train_shuffle 設 False喔， 真的在train時應該有設True
-    # db_obj = type8_blender_kong_doc3d.build()
-    # print(db_obj)
-    # model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
-    # tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+    db_obj = type8_blender_kong_doc3d.build()
+    print(db_obj)
+    model_obj = KModel_builder().set_model_name(MODEL_NAME.flow_unet)
+    tf_data = tf_Data_builder().set_basic(db_obj, batch_size=1 , train_shuffle=True).set_img_resize(( 256, 256) ).set_data_use_range(use_in_range=Range(0, 1), use_gt_range=Range(0, 1)).build_by_db_get_method().build()
+
+    import matplotlib.pyplot as plt
+    canvas_size = 1.3
+    nrows = 2
+    ncols = 40
+    fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(canvas_size * ncols, canvas_size * nrows))
+
+    for go, data in enumerate(tf_data.dtd.ord.take(40)): ax[0, go].imshow(data)
+    for go, data in enumerate(tf_data.dtd.pre.take(40)): ax[1, go].imshow(data[0])
+    fig.tight_layout()
+    plt.show()
+    print("finish")
