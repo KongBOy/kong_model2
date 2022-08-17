@@ -1,5 +1,5 @@
 from step06_c0_tf_Data_initial_builder import tf_Data_init_builder
-from kong_util.util import get_db_amount
+from kong_util.util import get_db_npy_knpy_amount
 import tensorflow as tf
 ##########################################################################################################################################
 debug_dict = {}
@@ -153,8 +153,8 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
         self.tf_data.test_in_db .pre  = tf.data.Dataset.zip((self.tf_data.test_in_db.pre , self.tf_data.test_in2_db .pre))
 
         ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
-        self.tf_data.train_amount    = get_db_amount(self.tf_data.db_obj.train_in_dir)
-        self.tf_data.test_amount     = get_db_amount(self.tf_data.db_obj.test_in_dir)
+        self.tf_data.train_amount    = get_db_npy_knpy_amount(self.tf_data.db_obj.train_in_dir)
+        self.tf_data.test_amount     = get_db_npy_knpy_amount(self.tf_data.db_obj.test_in_dir)
 
         ##### GT 部分
         self.tf_data.train_gt_db = self.train_gt_factory.build_W_db_by_MW_hole_norm_then_mul_M_right()
@@ -171,23 +171,23 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
             self.tf_data.see_in_db.pre  = tf.data.Dataset.zip((self.tf_data.see_in_db.pre, self.tf_data.see_in2_db.pre))
 
             self.tf_data.see_gt_db   = self.see_gt_factory.build_W_db_by_MW_hole_norm_then_mul_M_right()
-            self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
+            self.tf_data.see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.see_in_dir)
 
         if(self.tf_data.db_obj.have_rec_hope):
             self.tf_data.rec_hope_train_db = self.rec_hope_train_factory.build_img_db()
             self.tf_data.rec_hope_test_db  = self.rec_hope_test_factory .build_img_db()
             self.tf_data.rec_hope_see_db   = self.rec_hope_see_factory  .build_img_db()
 
-            self.tf_data.rec_hope_train_amount = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
-            self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
-            self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+            self.tf_data.rec_hope_train_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_train_dir)
+            self.tf_data.rec_hope_test_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_test_dir)
+            self.tf_data.rec_hope_see_amount   = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
         if(self.tf_data.db_obj.have_DewarpNet_result):
             self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
             self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
 
-            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
-            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
+            self.tf_data.DewarpNet_result_test_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # debug_tf_data(self.tf_data, use_train_test_see="train")
@@ -212,8 +212,8 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
         self.tf_data.test_in_db .pre  = tf.data.Dataset.zip((self.tf_data.test_in_db.pre , self.tf_data.test_in2_db .pre))
 
         ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
-        self.tf_data.train_amount    = get_db_amount(self.tf_data.db_obj.train_in_dir)
-        self.tf_data.test_amount     = get_db_amount(self.tf_data.db_obj.test_in_dir)
+        self.tf_data.train_amount    = get_db_npy_knpy_amount(self.tf_data.db_obj.train_in_dir)
+        self.tf_data.test_amount     = get_db_npy_knpy_amount(self.tf_data.db_obj.test_in_dir)
 
         ##### GT 部分
         self.tf_data.train_gt_db = self.train_gt_factory.build_W_db_by_MW_ch_norm_then_mul_M_right()
@@ -230,23 +230,23 @@ class tf_Data_in_W_gt_W_builder(tf_Data_init_builder):
             self.tf_data.see_in_db.pre  = tf.data.Dataset.zip((self.tf_data.see_in_db.pre, self.tf_data.see_in2_db.pre))
 
             self.tf_data.see_gt_db   = self.see_gt_factory.build_W_db_by_MW_ch_norm_then_mul_M_right()
-            self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
+            self.tf_data.see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.see_in_dir)
 
         if(self.tf_data.db_obj.have_rec_hope):
             self.tf_data.rec_hope_train_db = self.rec_hope_train_factory.build_img_db()
             self.tf_data.rec_hope_test_db  = self.rec_hope_test_factory .build_img_db()
             self.tf_data.rec_hope_see_db   = self.rec_hope_see_factory  .build_img_db()
 
-            self.tf_data.rec_hope_train_amount = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
-            self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
-            self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+            self.tf_data.rec_hope_train_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_train_dir)
+            self.tf_data.rec_hope_test_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_test_dir)
+            self.tf_data.rec_hope_see_amount   = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
         if(self.tf_data.db_obj.have_DewarpNet_result):
             self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
             self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
 
-            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
-            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
+            self.tf_data.DewarpNet_result_test_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # debug_tf_data(self.tf_data, use_train_test_see="train")

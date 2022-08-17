@@ -10,7 +10,7 @@ import time
 from step06_a_datas_obj import DB_C, DB_N, DB_GM, Dataset_builder, Range
 from step06_b_data_pipline import tf_Data, tf_Data_element_factory_builder
 
-from kong_util.util import get_db_amount
+from kong_util.util import get_db_npy_knpy_amount, get_db_jpg_png_amount
 
 import tensorflow as tf
 
@@ -96,7 +96,7 @@ class tf_Data_init_builder:
             self.tf_data.dtd.pre = self.tf_data.dtd.pre.prefetch(-1)                         ### -1 代表 AUTOTUNE：https://www.tensorflow.org/api_docs/python/tf/data#AUTOTUNE，我自己的觀察是 他會視系統狀況自動調速度， 所以比較不會 cuda load failed 這樣子 ~~bb
             # self.tf_data.dtd.pre = self.tf_data.dtd.pre.prefetch(self.tf_data.train_amount)  ### 反正就一個很大的數字， 可以穩定的用最高速跑， 但如果有再做別的事情可能會 cuda load failed 這樣子~ 如果設一個很大的數字， 觀察起來是會盡可能全速跑， 如果再做其他事情(看YT) 可能會　cuda error 喔～
 
-            self.tf_data.dtd_amount = get_db_amount(self.tf_data.db_obj.dtd_dir)
+            self.tf_data.dtd_amount = get_db_jpg_png_amount(self.tf_data.db_obj.dtd_dir)
 
         ### DewarpNet_result 不會有 train_factory
         self.DewarpNet_result_test_factory = tf_Data_element_factory_builder().set_factory(self.tf_data.db_obj.DewarpNet_result_test_dir, file_format=self.tf_data.db_obj.DewarpNet_result_format, img_resize=self.tf_data.img_resize, db_h=self.tf_data.db_obj.h, db_w=self.tf_data.db_obj.w, db_range=self.tf_data.db_obj.DewarpNet_result_range, use_range=self.tf_data.use_DewarpNet_result_range, doc3d_subdirs=self.tf_data.doc3d_subdirs).build()
@@ -111,8 +111,8 @@ class tf_Data_init_builder:
         self.tf_data.test_name_db  = self.test_in_factory.build_name_db()
 
         ### 設定一下 train_amount，在 shuffle 計算 buffer 大小 的時候會用到， test_amount 忘記會不會用到了， 反正我就copy past 以前的程式碼， 有遇到再來補吧
-        self.tf_data.train_amount    = get_db_amount(self.tf_data.db_obj.train_in_dir)
-        self.tf_data.test_amount     = get_db_amount(self.tf_data.db_obj.test_in_dir)
+        self.tf_data.train_amount    = get_db_npy_knpy_amount(self.tf_data.db_obj.train_in_dir)
+        self.tf_data.test_amount     = get_db_npy_knpy_amount(self.tf_data.db_obj.test_in_dir)
 
     def _train_in_gt_and_test_in_gt_combine_then_train_shuffle(self):
         ### 先 zip 再 batch == 先 batch 再 zip (已經實驗過了，詳細內容看 try_lots 的 try10_資料pipline囉)

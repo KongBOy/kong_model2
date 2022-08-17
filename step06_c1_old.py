@@ -1,5 +1,5 @@
 from step06_c0_tf_Data_initial_builder import tf_Data_init_builder
-from kong_util.util import get_db_amount
+from kong_util.util import get_db_npy_knpy_amount
 
 import numpy as np
 import os
@@ -17,7 +17,7 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
 
 
         ### 在拿move_map db 之前，要先去抓 max/min train_move，我是設計放 train_gt_dir 下的.npy，如果怕混淆 要改放.txt之類的都可以喔！
-        ### 決定還是放在上一層好了，因為下面會用 get_db_amount 是算檔案數量的，雖然是去in_dir抓影像跟gt_dir沒關係，但還是怕有意外(以後忘記之類的)～放外面最安全囉！
+        ### 決定還是放在上一層好了，因為下面會用 get_db_npy_knpy_amount 是算檔案數量的，雖然是去in_dir抓影像跟gt_dir沒關係，但還是怕有意外(以後忘記之類的)～放外面最安全囉！
         ### 且放外面容易看到可以提醒自己有這東西的存在覺得ˊ口ˋ
         if(os.path.isfile(self.tf_data.db_obj.train_gt_dir + "/../max_train_move.npy") and
            os.path.isfile(self.tf_data.db_obj.train_gt_dir + "/../min_train_move.npy")):
@@ -54,7 +54,7 @@ class tf_Data_in_dis_gt_move_map_builder(tf_Data_init_builder):
 
             self.tf_data.see_gt_db   = self.see_gt_factory.build_mov_db()
 
-            self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
+            self.tf_data.see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.see_in_dir)
 
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
@@ -130,7 +130,7 @@ class tf_Data_in_dis_gt_img_builder(tf_Data_in_dis_gt_move_map_builder):
             self.tf_data.see_in_db   = self.see_in_factory.build_img_db()
             self.tf_data.see_gt_db   = self.see_gt_factory.build_img_db()
 
-            self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
+            self.tf_data.see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.see_in_dir)
         return self
     ############################################################
 

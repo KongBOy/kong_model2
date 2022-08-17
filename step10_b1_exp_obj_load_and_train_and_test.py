@@ -392,12 +392,17 @@ class Experiment():
                     # if( self.current_ep_it % 10 == 0): break   ### debug用，看subprocess成不成功
             else:
                 ### 看有沒有 dtd 可以換背景
-                if(self.db_obj.have_dtd): bg_pre_iter = iter(self.tf_data.dtd.pre)
+                if(self.db_obj.have_dtd):
+                    bg_pre_iter = iter(self.tf_data.dtd.pre)
+                    bg_loop = self.tf_data.dtd_amount // self.batch_size
+                    # print("tf_data.dtd_amount", self.tf_data.dtd_amount)
 
-                for _, train_in_pre, _, train_gt_pre, name in tqdm(self.tf_data.train_db_combine.take(it_train_amount)):
+                for go, (_, train_in_pre, _, train_gt_pre, name) in enumerate(tqdm(self.tf_data.train_db_combine.take(it_train_amount))):
                     ### 看有沒有 dtd 可以換背景
                     bg_pre = None
-                    if(self.db_obj.have_dtd): bg_pre = next(bg_pre_iter)
+                    if(self.db_obj.have_dtd):
+                        if(go % bg_loop == 0): bg_pre_iter = iter(self.tf_data.dtd.pre)
+                        bg_pre = next(bg_pre_iter)
 
                     ### train
                     # print("%06i" % it, name)  ### debug用

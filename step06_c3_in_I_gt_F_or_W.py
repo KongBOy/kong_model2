@@ -1,5 +1,5 @@
 from step06_c0_tf_Data_initial_builder import tf_Data_init_builder
-from kong_util.util import get_db_amount
+from kong_util.util import get_db_npy_knpy_amount
 
 ##########################################################################################################################################
 debug_dict = {}
@@ -120,7 +120,7 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             if  (get_what == "flow"): self.tf_data.see_gt_db = self.see_gt_factory.build_flow_db()
             elif(get_what == "wc"):   self.tf_data.see_gt_db = self.see_gt_factory.build_W_db_by_MW_hole_norm_no_mul_M_wrong()
 
-            self.tf_data.see_amount    = get_db_amount(self.tf_data.db_obj.see_in_dir)
+            self.tf_data.see_amount    = get_db_npy_knpy_amount(self.tf_data.db_obj.see_in_dir)
 
 
         if(self.tf_data.db_obj.have_rec_hope):
@@ -128,16 +128,16 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             self.tf_data.rec_hope_test_db  = self.rec_hope_test_factory .build_img_db()
             self.tf_data.rec_hope_see_db   = self.rec_hope_see_factory  .build_img_db()
 
-            self.tf_data.rec_hope_train_amount = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
-            self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
-            self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+            self.tf_data.rec_hope_train_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_train_dir)
+            self.tf_data.rec_hope_test_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_test_dir)
+            self.tf_data.rec_hope_see_amount   = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
         if(self.tf_data.db_obj.have_DewarpNet_result):
             self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
             self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
 
-            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
-            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
+            self.tf_data.DewarpNet_result_test_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
             ##########################################################################################################################################
             ### 勿刪！用來測試寫得對不對！
             # import matplotlib.pyplot as plt
@@ -177,23 +177,23 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             self.tf_data.see_in_db   = self.see_in_factory.build_img_db()
             self.tf_data.see_name_db = self.see_in_factory.build_name_db()
             self.tf_data.see_gt_db   = self.see_gt_factory.build_W_db_by_MW_hole_norm_then_mul_M_right()
-            self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
+            self.tf_data.see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.see_in_dir)
 
         if(self.tf_data.db_obj.have_rec_hope):
             self.tf_data.rec_hope_train_db = self.rec_hope_train_factory.build_img_db()
             self.tf_data.rec_hope_test_db  = self.rec_hope_test_factory .build_img_db()
             self.tf_data.rec_hope_see_db   = self.rec_hope_see_factory  .build_img_db()
 
-            self.tf_data.rec_hope_train_amount = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
-            self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
-            self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+            self.tf_data.rec_hope_train_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_train_dir)
+            self.tf_data.rec_hope_test_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_test_dir)
+            self.tf_data.rec_hope_see_amount   = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
         if(self.tf_data.db_obj.have_DewarpNet_result):
             self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
             self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
 
-            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
-            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
+            self.tf_data.DewarpNet_result_test_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
 
             ##########################################################################################################################################
             ### 勿刪！用來測試寫得對不對！
@@ -227,23 +227,23 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             self.tf_data.see_in_db   = self.see_in_factory.build_img_db()
             self.tf_data.see_name_db = self.see_in_factory.build_name_db()
             self.tf_data.see_gt_db   = self.see_gt_factory.build_W_db_by_MW_ch_norm_then_mul_M_right()
-            self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
+            self.tf_data.see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.see_in_dir)
 
         if(self.tf_data.db_obj.have_rec_hope):
             self.tf_data.rec_hope_train_db = self.rec_hope_train_factory.build_img_db()
             self.tf_data.rec_hope_test_db  = self.rec_hope_test_factory .build_img_db()
             self.tf_data.rec_hope_see_db   = self.rec_hope_see_factory  .build_img_db()
 
-            self.tf_data.rec_hope_train_amount = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
-            self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
-            self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+            self.tf_data.rec_hope_train_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_train_dir)
+            self.tf_data.rec_hope_test_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_test_dir)
+            self.tf_data.rec_hope_see_amount   = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
         if(self.tf_data.db_obj.have_DewarpNet_result):
             self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
             self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
 
-            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
-            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
+            self.tf_data.DewarpNet_result_test_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
             # print("self.tf_data.DewarpNet_result_test_amount", self.tf_data.DewarpNet_result_test_amount)
             # print("self.tf_data.DewarpNet_result_see_amount", self.tf_data.DewarpNet_result_see_amount)
         ##########################################################################################################################################
@@ -267,23 +267,23 @@ class tf_Data_in_dis_gt_flow_or_wc_builder(tf_Data_init_builder):
             self.tf_data.see_in_db   = self.see_in_factory.build_img_db()
             self.tf_data.see_name_db = self.see_in_factory.build_name_db()
             self.tf_data.see_gt_db   = self.see_gt_factory.build_W_db_by_MW_hole_norm_then_mul_M_right_only_for_doc3d_x_value_reverse()
-            self.tf_data.see_amount  = get_db_amount(self.tf_data.db_obj.see_in_dir)
+            self.tf_data.see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.see_in_dir)
 
         if(self.tf_data.db_obj.have_rec_hope):
             self.tf_data.rec_hope_train_db = self.rec_hope_train_factory.build_img_db()
             self.tf_data.rec_hope_test_db  = self.rec_hope_test_factory .build_img_db()
             self.tf_data.rec_hope_see_db   = self.rec_hope_see_factory  .build_img_db()
 
-            self.tf_data.rec_hope_train_amount = get_db_amount(self.tf_data.db_obj.rec_hope_train_dir)
-            self.tf_data.rec_hope_test_amount  = get_db_amount(self.tf_data.db_obj.rec_hope_test_dir)
-            self.tf_data.rec_hope_see_amount   = get_db_amount(self.tf_data.db_obj.rec_hope_see_dir)
+            self.tf_data.rec_hope_train_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_train_dir)
+            self.tf_data.rec_hope_test_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_test_dir)
+            self.tf_data.rec_hope_see_amount   = get_db_npy_knpy_amount(self.tf_data.db_obj.rec_hope_see_dir)
 
         if(self.tf_data.db_obj.have_DewarpNet_result):
             self.tf_data.DewarpNet_result_test = self.DewarpNet_result_test_factory.build_img_db()
             self.tf_data.DewarpNet_result_see  = self.DewarpNet_result_see_factory .build_img_db()
 
-            self.tf_data.DewarpNet_result_test_amount = get_db_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
-            self.tf_data.DewarpNet_result_see_amount  = get_db_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
+            self.tf_data.DewarpNet_result_test_amount = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_test_dir)
+            self.tf_data.DewarpNet_result_see_amount  = get_db_npy_knpy_amount(self.tf_data.db_obj.DewarpNet_result_see_dir)
         ##########################################################################################################################################
         ### 勿刪！用來測試寫得對不對！
         # debug_tf_data(self.tf_data, use_train_test_see="train")
