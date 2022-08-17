@@ -43,7 +43,6 @@ class tf_Data_builder(tf_Data_in_img_gt_mask_builder, tf_Data_in_dis_gt_mask_coo
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_I_gt_W_and_F_hole_norm_then_mul_M):                    self.build_by_in_I_gt_W_and_F_hole_norm_then_mul_M()
         elif  (self.tf_data.db_obj.get_method == DB_GM.build_by_in_I_gt_W_and_F_ch_norm_then_mul_M):                    self.build_by_in_I_gt_W_and_F_ch_norm_then_mul_M()
 
-
         return self
 
 
