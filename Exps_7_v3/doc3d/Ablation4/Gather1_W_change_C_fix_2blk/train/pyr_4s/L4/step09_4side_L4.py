@@ -8,7 +8,7 @@ color_jit = Color_jit(do_ratio=0.6)
 use_gen_op_p20     =            I_w_M_to_W_to_C(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )                       ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
 use_train_step_p20 = Train_step_I_w_M_to_W_to_C(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), color_jit=color_jit )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
 
-import Exps_7_v3.doc3d.Ablation4.I_w_M_to_W_pyr.pyr_4s.L4.step09_4side_L4 import *
+from Exps_7_v3.doc3d.Ablation4.I_w_M_to_W_pyr.pyr_4s.L4.step09_4side_L4 import *
 
 from Exps_7_v3.doc3d.Ablation4.W_w_M_to_C_pyr.pyr_2s.L5.step09_2side_L5 import ch032_pyramid_1side_6__2side_6 as W_w_M_to_Cxy_Tcrop255_p20_2s_L5
 
