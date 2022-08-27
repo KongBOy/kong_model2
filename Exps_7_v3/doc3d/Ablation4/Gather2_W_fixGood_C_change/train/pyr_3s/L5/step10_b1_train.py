@@ -86,3 +86,5 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_4.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_5.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_6.{run}"])
+#############################################################
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s4_3s3__ch032_1s5_2s3_2s3.{run}"])
