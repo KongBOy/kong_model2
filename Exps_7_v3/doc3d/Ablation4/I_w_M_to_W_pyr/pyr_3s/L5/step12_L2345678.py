@@ -103,10 +103,3 @@ if(__name__ == "__main__"):
                                         row_col_exps=ch032_1side_6__23side_all, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
                                             # .analyze_row_col_results_all_single_see(single_see_multiprocess=False, single_see_core_amount=6)\
                                             # .Gather_all_see_final_img()
-
-    ana_name = "all_result_see_metric"
-    analyzer = Row_col_exps_analyzer(ana_describe=f"{ana_dir}/0_ana_{ana_name}",
-                                        ana_what_sees="see",
-                                        ana_what="rec",
-                                        row_col_exps=all_result_see_metric, show_in_img=True, show_gt_img=False, bgr2rgb=True, add_loss=False, img_h=256, img_w=256, fontsize= 8, title_fontsize=16, jump_to=60)\
-                                            .analyze_row_col_result_SSIM_LD()

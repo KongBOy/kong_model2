@@ -20,10 +20,9 @@ if(os.getcwd() != code_exe_dir):                ### 如果 不是在 step10_b.py
     os.chdir(code_exe_dir)
 # print("current_path:", os.getcwd())
 ###############################################################################################################################################################################################################
-import Exps_7_v3.template_dir.pyramid_template_1_6.pyr_0s.bce_s001_tv_s0p1_L5.step10_a as L5_0side
-import Exps_7_v3.template_dir.pyramid_template_1_6.pyr_1s.bce_s001_tv_s0p1_L5.step10_a as L5_1side
-import Exps_7_v3.template_dir.pyramid_template_1_6.pyr_2s.bce_s001_tv_s0p1_L5.step10_a as L5_2side
-import step10_a as L5_3side
+import Exps_7_v3.doc3d.Ablation4.Gather1_W_change_C_fix_2blk.ep0_test.pyr_1s.L5.step10_a as L5_1side
+import Exps_7_v3.doc3d.Ablation4.Gather1_W_change_C_fix_2blk.ep0_test.pyr_2s.L5.step10_a as L5_2side
+import Exps_7_v3.doc3d.Ablation4.Gather1_W_change_C_fix_2blk.ep0_test.pyr_3s.L5.step10_a as L5_3side
 #################################################################################################################################################################################################################################################################################################################################################################################################
 ########
 # 1side_1
@@ -87,3 +86,6 @@ ch032_1side_6__23side_all = [
     [L5_2side.ch032_1side_6__2side_5 , L5_3side.ch032_1side_6__2side_5__3side_1 , L5_3side.ch032_1side_6__2side_5__3side_2 , L5_3side.ch032_1side_6__2side_5__3side_3 , L5_3side.ch032_1side_6__2side_5__3side_4 , L5_3side.ch032_1side_6__2side_5__3side_5 , L5_3side.empty                           , ],
     [L5_2side.ch032_1side_6__2side_6 , L5_3side.ch032_1side_6__2side_6__3side_1 , L5_3side.ch032_1side_6__2side_6__3side_2 , L5_3side.ch032_1side_6__2side_6__3side_3 , L5_3side.ch032_1side_6__2side_6__3side_4 , L5_3side.ch032_1side_6__2side_6__3side_5 , L5_3side.ch032_1side_6__2side_6__3side_6 , ],
 ]
+
+################################################################################
+all_result_see_metric = ch032_1side_1__23side_all + ch032_1side_2__23side_all + ch032_1side_3__23side_all + ch032_1side_4__23side_all + ch032_1side_5__23side_all + ch032_1side_6__23side_all
