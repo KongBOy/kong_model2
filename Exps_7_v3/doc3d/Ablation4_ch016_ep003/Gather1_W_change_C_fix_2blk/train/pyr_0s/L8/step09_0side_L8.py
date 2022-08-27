@@ -1,0 +1,35 @@
+#############################################################################################################################################################################################################
+from step08_c_use_G_generate_I_w_M_to_Wx_Wy_Wz_focus_to_Cx_Cy_focus_combine import I_w_M_to_W_to_C
+from step08_b_use_G_generate_0_util import Tight_crop, Color_jit
+from step09_c_train_step import Train_step_I_w_M_to_W_to_C
+from step09_d_KModel_builder_combine_step789 import KModel_builder, MODEL_NAME
+
+color_jit = Color_jit(do_ratio=0.6)
+use_gen_op_p20     =            I_w_M_to_W_to_C(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale=  0) )                       ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
+use_train_step_p20 = Train_step_I_w_M_to_W_to_C(  separate_out=True, focus=True, tight_crop=Tight_crop(pad_size=20, resize=(255, 255), jit_scale= 15), color_jit=color_jit )  ### 我目前的 multi_model 的 I_to_Wxyz_to_Cxy_general 是 全部都回傳 Wz_pre_w_M, Wy_pre_w_M, Wx_pre_w_M, Cx_pre_w_M, Cy_pre_w_M， 所以不管 wi/woDIV， Separate 全設 True 就對了
+
+from Exps_7_v3.doc3d.Ablation4.I_w_M_to_W_pyr.pyr_0s.L8.step09_0side_L8 import *
+
+from Exps_7_v3.doc3d.Ablation4.W_w_M_to_C_pyr.pyr_2s.L5.step09_2side_L5 import ch032_pyramid_1side_6__2side_6 as W_w_M_to_Cxy_Tcrop255_p20_2s_L5
+
+import time
+start_time = time.time()
+###############################################################################################################################################################################################
+#########################################################################################
+ch032_pyramid_0side_and_1s6_2s6 = KModel_builder().set_model_name(MODEL_NAME.multi_flow_unet).set_multi_model_builders(op_type="I_to_Wxyz_to_Cxy_general", I_to_Wx_Wy_Wz=ch032_pyramid_0side, W_to_Cx_Cy=W_w_M_to_Cxy_Tcrop255_p20_2s_L5).set_multi_model_separate_focus(I_to_W_separ=False, I_to_W_focus=True, W_to_C_separ=False, W_to_C_focus=True).set_gen_op( use_gen_op_p20 ).set_train_step( use_train_step_p20 )
+#########################################################################################
+###############################################################################################################################################################################################
+
+if(__name__ == "__main__"):
+    import numpy as np
+
+    print("build_model cost time:", time.time() - start_time)
+    data = np.zeros(shape=(1, 512, 512, 1))
+    use_model = ch032_pyramid_0side
+    use_model = use_model.build()
+    result = use_model.generator(data, Mask=data)
+    print(result[0].shape)
+
+    from kong_util.tf_model_util import Show_model_weights
+    Show_model_weights(use_model.generator)
+    use_model.generator.summary()
