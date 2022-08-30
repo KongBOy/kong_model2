@@ -71,3 +71,6 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep020_I_w_M_to_W_IN__in_have_bg .{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep020_W_w_M_to_C_IN__in_have_bg .{compress_all}"])
 # sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep020_Gather_IN__in_have_bg     .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep030_I_w_M_to_W_IN__in_have_bg .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep030_W_w_M_to_C_IN__in_have_bg .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep030_Gather_IN__in_have_bg     .{compress_all}"])

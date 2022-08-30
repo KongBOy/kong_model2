@@ -60,3 +60,6 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep020_I_w_M_to_W_IN__in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep020_W_w_M_to_C_IN__in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep020_Gather_IN__in_have_bg     .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep030_I_w_M_to_W_IN__in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep030_W_w_M_to_C_IN__in_have_bg .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"exp_DewarpUNet_ep030_Gather_IN__in_have_bg     .{test_Calculate_SSIM_LD_all_from_begin % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
