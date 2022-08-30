@@ -17,6 +17,8 @@ from multiprocessing import Process
 import os
 import shutil
 
+from step10_b2_exp_builder import Exp_builder
+from step10_b1_exp_obj_load_and_train_and_test import Experiment
 class Result_analyzer:
     def __init__(self, ana_describe, ana_what_sees, ana_what, show_in_img, show_gt_img, bgr2rgb=False, add_loss=False, img_h=768, img_w=768, fontsize=16, title_fontsize=20, fix_size=None):
         '''
@@ -126,7 +128,9 @@ class Col_exps_analyzer(Result_analyzer):
 
     def _c_exps_results_init(self, reset_test_db_name=None):
         for go_data, data in enumerate(self.c_exps):
-            self.c_exps   [go_data] = data.build(reset_test_db_name=reset_test_db_name)
+            if  (isinstance(data, Exp_builder)): self.c_exps[go_data] = data.build(reset_test_db_name=reset_test_db_name)
+            elif(isinstance(data, Experiment )): self.c_exps[go_data] = data  ### 有可能前面已經build好了， 所以到這邊已經是 exp_obj的狀態了， 這時就不用build了喔
+            else: print("Col_exps_analyzer 應該是傳錯東西進來了， 要傳 Exp_builder 進來喔～")
 
     def _step0_c_results_get_see_base_info(self):
         """
