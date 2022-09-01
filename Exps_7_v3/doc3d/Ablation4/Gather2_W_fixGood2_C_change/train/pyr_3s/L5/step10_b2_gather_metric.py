@@ -88,3 +88,4 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_6.{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 #############################################################
 # sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s4_3s3__ch032_1s5_2s3_2s3.{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s4_2s4_3s1__ch032_1s6_2s1_3s1.{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
