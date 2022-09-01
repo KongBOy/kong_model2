@@ -87,6 +87,10 @@ class Exp_builder():
         self.auto_fill_have_ep   = have_ep
         return self
 
+    def set_ckpt_keep_amount(self, ckpt_keep_amount):
+        self.exp.ckpt_keep_amount = ckpt_keep_amount
+        return self
+
     def build_exp_temporary(self, reset_test_db_name=None):
         '''
         這邊先建好 result_obj 的話就可以給 step11, step12 用喔，

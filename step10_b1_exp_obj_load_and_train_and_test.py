@@ -221,11 +221,11 @@ class Experiment():
             self.it_sees_amo_in_one_epoch = self.one_ep_iters // self.it_see_fq if(self.one_ep_iters % self.it_see_fq == 0 ) else self.one_ep_iters // self.it_see_fq + 1
 
         ### 3.model
-        self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
-        self.ckpt_write_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_write_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
+        self.ckpt_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_read_dir,  max_to_keep=self.ckpt_keep_amount)  ###step4 建立checkpoint manager 設定最多存2份
+        self.ckpt_write_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt, directory=self.result_obj.ckpt_write_dir, max_to_keep=self.ckpt_keep_amount)  ###step4 建立checkpoint manager 設定最多存2份
         if( self.model_obj.discriminator is not None):
-            self.ckpt_D_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt_D, directory=self.result_obj.ckpt_D_read_dir,  max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
-            self.ckpt_D_write_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt_D, directory=self.result_obj.ckpt_D_write_dir, max_to_keep=1)  ###step4 建立checkpoint manager 設定最多存2份
+            self.ckpt_D_read_manager  = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt_D, directory=self.result_obj.ckpt_D_read_dir,  max_to_keep=self.ckpt_keep_amount)  ###step4 建立checkpoint manager 設定最多存2份
+            self.ckpt_D_write_manager = tf.train.CheckpointManager(checkpoint=self.model_obj.ckpt_D, directory=self.result_obj.ckpt_D_write_dir, max_to_keep=self.ckpt_keep_amount)  ###step4 建立checkpoint manager 設定最多存2份
         if(reload_model):  ### 看需不需要reload model
             self.model_obj.ckpt.restore(self.ckpt_read_manager.latest_checkpoint)
             if(self.model_obj.discriminator is not None): self.model_obj.ckpt_D.restore(self.ckpt_D_read_manager.latest_checkpoint)
