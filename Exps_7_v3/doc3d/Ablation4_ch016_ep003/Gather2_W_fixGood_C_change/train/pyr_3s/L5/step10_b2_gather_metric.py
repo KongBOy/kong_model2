@@ -86,3 +86,5 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_4.{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_5.{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_6.{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
+#############################################################
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s5_3s2__ch032_1s3_2s2_3s2.{Gather_test_SSIM_LD % 'test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA'}"])
