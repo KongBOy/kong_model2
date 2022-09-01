@@ -40,7 +40,7 @@ for rm_module in rm_moduless: del sys.modules[rm_module]
 
 import Exps_7_v3.doc3d.Ablation4_ch016_ep003.W_w_M_to_C_pyr.pyr_4s.L3.step10_a as W_w_M_to_C_p20_pyr
 
-from Exps_7_v3.doc3d.Ablation4_ch016_ep003.I_w_M_to_W_pyr.pyr_3s.L5.step10_a import ch032_1side_6__2side_4__3side_3__ep010 as I_w_M_to_W_p20_3s_L5_Good
+from Exps_7_v3.doc3d.Ablation4_ch016_ep003.I_w_M_to_W_pyr.pyr_3s.L5.step10_a import ch032_1side_6__2side_5__3side_2__ep010 as I_w_M_to_W_p20_3s_L5_Good
 
 #############################################################################################################################################################################################################
 '''

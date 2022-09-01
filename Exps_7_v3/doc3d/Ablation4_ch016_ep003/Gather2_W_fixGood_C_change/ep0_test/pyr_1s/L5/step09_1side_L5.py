@@ -10,7 +10,7 @@ use_train_step_p20 = Train_step_I_w_M_to_W_to_C(  separate_out=True, focus=True,
 
 from Exps_7_v3.doc3d.Ablation4_ch016_ep003.W_w_M_to_C_pyr.pyr_1s.L5.step09_1side_L5 import *
 
-from Exps_7_v3.doc3d.Ablation4_ch016_ep003.I_w_M_to_W_pyr.pyr_3s.L5.step09_3side_L5 import ch032_pyramid_1side_6__2side_4__3side_3 as I_w_M_to_W_Tcrop255_p20_3s_L5_good
+from Exps_7_v3.doc3d.Ablation4_ch016_ep003.I_w_M_to_W_pyr.pyr_3s.L5.step09_3side_L5 import ch032_pyramid_1side_6__2side_5__3side_2 as I_w_M_to_W_Tcrop255_p20_3s_L5_good
 
 import time
 start_time = time.time()
