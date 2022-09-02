@@ -44,6 +44,7 @@ import subprocess as sb
 
 ##### 一起訓練
 ### 1. wiDiv wiDiv，第一個測這個， 因為我論文就主打這個
+# sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_ppt2', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_Full_More .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"exp_I_w_M_to_W_ch016_wiDiv_Full_Less__W_w_M_to_C_ch016_wiDiv_NoFu_Less .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])

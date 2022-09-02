@@ -89,4 +89,5 @@ import subprocess as sb
 #############################################################
 # sb.run(cmd_python_step10_a + [f"ch032_1side_5__2side_3__3side_3__ep010.{test % ('', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_3__2side_2__3side_2__ep010.{test % ('', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_1__ep010.{test % ('', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6__3side_6__ep010.{test % ('', 'knpy_save=False')}"])
