@@ -52,4 +52,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5.{run}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6.{run}"])
 #############################################################
-# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s5_3s2__ch032_1s6_2s6.{run}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s5_3s2__ch032_1s6_2s6   .{run}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s5_3s2__ch032_1s6_2s6__2.{run}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s5_3s2__ch032_1s6_2s6__3.{run}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s5_3s2__ch032_1s6_2s6__4.{run}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s5_3s2__ch032_1s6_2s6__5.{run}"])
