@@ -52,4 +52,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_5.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 # sb.run(cmd_python_step10_a + [f"ch032_1side_6__2side_6.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 #############################################################
-# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s6__ch032_1s6_2s6.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s6__ch032_1s6_2s6__1.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s6__ch032_1s6_2s6__2.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s6__ch032_1s6_2s6__3.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s6__ch032_1s6_2s6__4.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"gather_ep010__ch032_1s6_2s6__ch032_1s6_2s6__5.{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
