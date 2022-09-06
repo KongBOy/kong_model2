@@ -37,7 +37,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"exp_W_w_M_to_C_ch016_L5_noFocus_ChBg .{compress_all}"])
 
 ##### 一起訓練
-# sb.run(cmd_python_step10_a + [f"exp_L5_gather_normal__I_w_M_to_W_normal__W_w_M_to_C_normal             .{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"exp_L5_gather_ChBg__I_w_M_to_W_ChBg__W_w_M_to_C_normal                 .{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg      .{compress_all}"])
-# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus_ChBg__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_normal__I_w_M_to_W_normal__W_w_M_to_C_normal                .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_ChBg__I_w_M_to_W_ChBg__W_w_M_to_C_normal                    .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg         .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus_ChBg__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg    .{compress_all}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus_ChBg__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg__2 .{compress_all}"])

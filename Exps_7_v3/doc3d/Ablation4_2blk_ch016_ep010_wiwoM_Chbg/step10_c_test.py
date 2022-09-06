@@ -31,7 +31,8 @@ import subprocess as sb
 # sb.run(cmd_python_step10_a + [f"exp_W_w_M_to_C_ch016_L5_noFocus_ChBg .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
 
 ##### 一起訓練
-# sb.run(cmd_python_step10_a + [f"exp_L5_gather_normal__I_w_M_to_W_normal__W_w_M_to_C_normal             .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"exp_L5_gather_ChBg__I_w_M_to_W_ChBg__W_w_M_to_C_normal                 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg      .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
-# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus_ChBg__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_normal__I_w_M_to_W_normal__W_w_M_to_C_normal                .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_ChBg__I_w_M_to_W_ChBg__W_w_M_to_C_normal                    .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg         .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus_ChBg__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg    .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
+# sb.run(cmd_python_step10_a + [f"exp_L5_gather_noFocus_ChBg__I_w_M_to_W_noFocus_W_w_M_to_C_noFocus_ChBg__2 .{test % ('test_Kong_Crop_p60_gt_DewarpNet_p60_then_Use_KModel5_FBA', 'knpy_save=False')}"])
