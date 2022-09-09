@@ -38,9 +38,9 @@ for rm_path in rm_paths: sys.path.remove(rm_path)
 rm_moduless = [module for module in sys.modules if "step09" in module]
 for rm_module in rm_moduless: del sys.modules[rm_module]
 
-import Exps_7_v3.doc3d.Ablation4_ch016_ep003.W_w_M_to_C_pyr.pyr_6s.L7.step10_a as W_w_M_to_C_p20_pyr
+import Exps_7_v3.doc3d.Ablation4_ch016_ep003_7.W_w_M_to_C_pyr.pyr_6s.L7.step10_a as W_w_M_to_C_p20_pyr
 
-from Exps_7_v3.doc3d.Ablation4_ch016_ep003.I_w_M_to_W_pyr.pyr_3s.L5.step10_a import ch032_1side_6__2side_6__3side_6__ep010 as I_w_M_to_W_p20_3s_L5_Good
+from Exps_7_v3.doc3d.Ablation4_ch016_ep003_7.I_w_M_to_W_pyr.pyr_3s.L5.step10_a import ch032_1side_6__2side_6__3side_6__ep010 as I_w_M_to_W_p20_3s_L5_Good
 
 #############################################################################################################################################################################################################
 '''
